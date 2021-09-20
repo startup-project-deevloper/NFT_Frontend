@@ -15,7 +15,7 @@ import ChangeNFTToSynthetic from "../../components/ChangeNFTToSynthetic";
 import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
 import { Modal } from "shared/ui-kit";
 
-const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, match, withDrawn = true }) => {
+const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, match, withDrawn = false }) => {
   const classes = fractionalisedCollectionStyles();
 
   const isAuction = match.params.auction === "1";

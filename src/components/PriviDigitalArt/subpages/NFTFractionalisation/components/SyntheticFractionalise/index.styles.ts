@@ -147,7 +147,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       },
     },
     [theme.breakpoints.down(960)]: {
-      marginBottom: 16,
+      // marginBottom: 16,
     },
   },
 

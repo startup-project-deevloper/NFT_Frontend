@@ -198,7 +198,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
     <div className={classes.root}>
       <BackButton purple overrideFunction={goBack} />
       <Grid container spacing={1}>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <div className={classes.title}>
             Synthetic Fractionalise your NFT
           </div>

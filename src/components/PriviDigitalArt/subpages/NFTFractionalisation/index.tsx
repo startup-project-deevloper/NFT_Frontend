@@ -105,11 +105,9 @@ const NFTFractionalisation = () => {
     }
   };
 
-  console.log('===selectedTab===', selectedTab);
-
   const handleSyntheticClick = () => {
     setSelectedTab("synthetic");
-    history.push('/pix/fractionalisation/synthetic-derivative');
+    history.push('/pix/fractionalise/synthetic-derivative');
   }
   return (
     <>

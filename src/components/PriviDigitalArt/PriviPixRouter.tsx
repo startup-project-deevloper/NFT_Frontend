@@ -58,7 +58,7 @@ export default function PriviPixRouter(props) {
         component={SyntheticFractionalisedCollectionNFTPage}
       />
 
-      <Route path="/pix/fractionalisation" component={NFTFractionalisation} />
+      <Route path="/pix/fractionalise" component={NFTFractionalisation} />
 
       <Route exact path="/pix/pod_post/:id" component={WallPostPage} />
       <Route exact path="/pix/:id/profile" component={ProfilePage} />

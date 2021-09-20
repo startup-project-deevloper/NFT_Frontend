@@ -268,6 +268,13 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     width: 120,
     height: 40,
   },
+  withDrawnModal: {
+    display:"flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: 800,
+    fontSize: 18,
+  },
   table: {
     marginTop: 24,
     minHeight: 320,

@@ -232,7 +232,7 @@ export const CoinFlipHistoryTable = ({ datas }) => {
         const user = row.user;
         return [
           {
-            cell: row.nft || '',
+            cell: row.nft || "",
             cellAlign: "center",
           },
           {
@@ -246,7 +246,7 @@ export const CoinFlipHistoryTable = ({ datas }) => {
             cellAlign: "center",
           },
           {
-            cell: row.amount || '',
+            cell: row.amount || "",
             cellAlign: "center",
           },
           {
@@ -386,11 +386,15 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                   </Box>
                   <Box className={classes.hWrap2}>
                     <Box className={classes.h1}>5.000 JOTS</Box>
-                    <Box className={classes.h5} paddingY={1}>POOL TOTAL ACCRUED REWARD</Box>
+                    <Box className={classes.h5} paddingY={1}>
+                      POOL TOTAL ACCRUED REWARD
+                    </Box>
                   </Box>
                   <Box className={classes.hWrap2}>
                     <Box className={classes.h1}>0,9983 JOTS</Box>
-                    <Box className={classes.h5} paddingY={1}>LIQUIDITY SHARE VALUE</Box>
+                    <Box className={classes.h5} paddingY={1}>
+                      LIQUIDITY SHARE VALUE
+                    </Box>
                   </Box>
                 </Box>
               </Grid>
@@ -430,7 +434,9 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
         </Box>
       </Box>
       <Box className={classes.outBox}>
-        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>MY STAKING</Box>
+        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
+          MY STAKING
+        </Box>
         <Grid container className={classes.botRow} style={{ padding: "0 50px 30px 50px" }}>
           <Grid item md={3} xs={12}>
             <Box className={classes.infoItem}>
@@ -467,18 +473,25 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
               <SecondaryButton
                 size="medium"
                 style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2", height: 60 }}
+                onClick={() => setOpenRemoveLiquidityModal(true)}
               >
                 REMOVE
               </SecondaryButton>
-              <PrimaryButton size="medium" style={{ background: Color.Purple, width: "100%", height: 60 }} onClick={() => setOpenLiquidityModal(true)}>
+              <PrimaryButton
+                size="medium"
+                style={{ background: Color.Purple, width: "100%", height: 60 }}
+                onClick={() => setOpenLiquidityModal(true)}
+              >
                 ADD MORE
               </PrimaryButton>
             </Box>
           </Grid>
         </Grid>
       </Box>
-      <Box className={classes.outBox} style={{paddingBottom: 20}}>
-        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>Coin flip history</Box>
+      <Box className={classes.outBox} style={{ paddingBottom: 20 }}>
+        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
+          Coin flip history
+        </Box>
         <CoinFlipHistoryTable datas={flipHistory} />
       </Box>
       {openLiquidityModal && (

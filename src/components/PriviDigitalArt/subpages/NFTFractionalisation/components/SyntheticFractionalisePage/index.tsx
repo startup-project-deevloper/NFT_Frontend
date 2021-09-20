@@ -58,7 +58,7 @@ const SyntheticFractionalisePage = ({
   const history = useHistory();
 
   if (selectedTab !== "synthetic" || openFractionalize) {
-    history.push('/pix/fractionalisation/');
+    history.push('/pix/fractionalise/');
   }
 
   return (

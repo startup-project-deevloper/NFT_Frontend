@@ -211,7 +211,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
       color: "#431AB7",
       "& .MuiTableCell-head": {
         border: "none",
-        fontSize: FontSize.L,
+        fontSize: 18,
         fontWeight: "bold",
         color: "rgb(67, 26, 183)",
       },

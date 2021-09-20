@@ -237,10 +237,10 @@ export const CoinFlipHistoryTable = ({ datas }) => {
           },
           {
             cell: (
-              <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+              <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" gridColumnGap="8px">
                 {/* <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl: user?.anonAvatar ? require(`assets/anonAvatars/${user.anonAvatar}`) : "none"} /> */}
-                <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl : "none"} />
-                <Text ml={1.5}>{user?.name}</Text>
+                <Avatar size="tiny" url={user?.imageUrl ? user?.imageUrl : "none"} />
+                <Text>{user?.name}</Text>
               </Box>
             ),
             cellAlign: "center",
@@ -254,11 +254,20 @@ export const CoinFlipHistoryTable = ({ datas }) => {
             cellAlign: "center",
           },
           {
-            cell: (
-              <SecondaryButton size="medium" style={{ color: Color.Purple, border: "2px solid #9EACF2" }}>
-                <img src={require(`assets/icons/explorer.png`)} style={{ width: "32px", height: "32px" }} />
-              </SecondaryButton>
-            ),
+            cell: <SecondaryButton
+              size="medium"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: Color.Purple,
+                border: "0.7px solid #9EACF2",
+                borderRadius: "4px",
+                margin: "auto"
+              }}
+            >
+              <img src={require(`assets/icons/explorer.png`)} style={{ width: "24px", height: "24px" }} />
+            </SecondaryButton>,
             cellAlign: "center",
           },
         ];

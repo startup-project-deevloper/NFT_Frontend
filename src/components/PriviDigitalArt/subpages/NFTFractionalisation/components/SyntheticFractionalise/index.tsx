@@ -470,6 +470,8 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           open={openFractionaliseModal}
           onClose={() => setOpenFractionaliseModal(false)}
           selectedNFT={selectedNFT}
+          supplyToKeep={supply}
+          priceFraction={initialPrice}
         />
       )}
     </div>

@@ -1,8 +1,4 @@
-[![Test dev CI](https://github.com/Cache2020/PRIVIweb/actions/workflows/test-dev.yml/badge.svg?branch=dev)](https://github.com/Cache2020/PRIVIweb/actions/workflows/test-dev.yml)
 
-[![Deploy dev CI](https://github.com/Cache2020/PRIVIweb/actions/workflows/deploy-dev.yml/badge.svg?branch=dev)](https://github.com/Cache2020/PRIVIweb/actions/workflows/deploy-dev.yml)
-
-[![Deploy prod CI](https://github.com/Cache2020/PRIVIweb/actions/workflows/deploy-prod.yml/badge.svg?branch=prod)](https://github.com/Cache2020/PRIVIweb/actions/workflows/deploy-prod.yml)
 
 # PRIVI Front-end
 ```

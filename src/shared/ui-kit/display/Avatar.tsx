@@ -4,7 +4,7 @@ import { Color } from "../../constants/const";
 import { shadowDepth1 } from "../../constants/mixins";
 import { ExtendableStyled } from "shared/types/Avatar";
 
-type AvatarSize = "xxlarge" | "xlarge" | "large" | "medium" | "small";
+type AvatarSize = "xxlarge" | "xlarge" | "large" | "medium" | "small" | "tiny";
 
 type AvatarProps = ExtendableStyled<{
   url: string;
@@ -22,6 +22,7 @@ export const Avatar: React.FunctionComponent<AvatarProps> = React.memo(
 );
 
 const AVATAR_SIZES: { [key in AvatarSize]: number } = {
+  tiny: 24,
   small: 32,
   medium: 48,
   large: 72,
@@ -30,6 +31,7 @@ const AVATAR_SIZES: { [key in AvatarSize]: number } = {
 };
 
 const AVATAR_BORDERS: { [key in AvatarSize]: number } = {
+  tiny: 0,
   small: 1,
   medium: 2,
   large: 2,
@@ -38,11 +40,12 @@ const AVATAR_BORDERS: { [key in AvatarSize]: number } = {
 };
 
 const AVATAR_SHADOW: { [key in AvatarSize]: FlattenSimpleInterpolation } = {
+  tiny: shadowDepth1,
   small: shadowDepth1,
   medium: shadowDepth1,
   large: shadowDepth1,
-  xxlarge: shadowDepth1,
   xlarge: shadowDepth1,
+  xxlarge: shadowDepth1,
 };
 
 const AvatarImage = styled.img<{ size: AvatarSize; noBorder?: boolean }>`

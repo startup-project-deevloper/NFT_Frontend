@@ -314,6 +314,8 @@ export const NFTModal = (props: any) => {
             }
           }
         );
+      } else {
+        onAfterCreateAuction(resp);
       }
     });
   };
@@ -384,6 +386,8 @@ export const NFTModal = (props: any) => {
             onAfterCreateAuction(response.data);
           }
         });
+      } else {
+        onAfterCreateAuction(resp);
       }
     });
   };
@@ -394,7 +398,7 @@ export const NFTModal = (props: any) => {
       showAlertMessage("Selling order created successfully", { variant: "success" });
       props.onClose();
       if (props.reload) props.reload();
-    } else showAlertMessage("Selling order failed", { variant: "error" });
+    } else showAlertMessage("Selling order failed. Please try again", { variant: "error" });
   };
 
   const onAfterCreateAuction = async (resp: any) => {
@@ -403,7 +407,7 @@ export const NFTModal = (props: any) => {
       showAlertMessage("Auction created successfully", { variant: "success" });
       props.onClose();
       if (props.reload) props.reload();
-    } else showAlertMessage("Auction creation failed", { variant: "error" });
+    } else showAlertMessage("Auction creation failed. Please try again", { variant: "error" });
   };
 
   return (

@@ -12,8 +12,10 @@ import AuctionDetail from "./components/AuctionDetail";
 import OfferList from "./components/OfferList";
 import ChangeLockedNFT from "../../modals/ChangeLockedNFT";
 import ChangeNFTToSynthetic from "../../components/ChangeNFTToSynthetic";
+import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
+import { Modal } from "shared/ui-kit";
 
-const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, match }) => {
+const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, match, withDrawn = false }) => {
   const classes = fractionalisedCollectionStyles();
 
   const isAuction = match.params.auction === "1";
@@ -24,6 +26,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
   );
   const [openChangeLockedNFTModal, setOpenChangeLockedNFTModal] = useState<boolean>(false);
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
+  const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
 
   const handleOpenChangeLockedNFTModal = () => {
     setOpenChangeLockedNFTModal(true);
@@ -36,6 +39,13 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
   const handleProceedChangeLockedNFT = () => {
     setOpenChangeLockedNFTModal(false);
     setOpenChangeNFTToSynthetic(true);
+  };
+
+  const handleOpenWithdrawNFTModal = () => {
+    setOpenWithdrawNFTModal(true);
+  };
+  const handleCloseWithdrawNFTModal = () => {
+    setOpenWithdrawNFTModal(false);
   };
 
   const dummyTableData = [
@@ -181,21 +191,37 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
       <div className={classes.nftInfoSection}>
         <Box display="flex" justifyContent="space-between" pl={6}>
           <BackButton purple overrideFunction={goBack} />
-          <PrimaryButton
-            size="medium"
-            onClick={() => handleOpenChangeLockedNFTModal()}
-            style={{
-              background: "white",
-              border: "2px solid #431ab7",
-              color: "#431ab7",
-              padding: "0px 40px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            CHANGE LOCKED NFT
-            <img src={require("assets/icons/change.png")} className={classes.btnIcon} />
-          </PrimaryButton>
+          <Box display="flex" alignItems="center">
+            {isOwner ? (
+              <PrimaryButton
+                size="medium"
+                onClick={() => handleOpenWithdrawNFTModal()}
+                style={{
+                  background: "#431AB7",
+                  boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
+                  color: "#fff",
+                  padding: "0px 40px",
+                }}
+              >
+                Withdraw NFT
+              </PrimaryButton>
+            ) : (<></>)}
+            <PrimaryButton
+              size="medium"
+              onClick={() => handleOpenChangeLockedNFTModal()}
+              style={{
+                background: "white",
+                border: "2px solid #431ab7",
+                color: "#431ab7",
+                padding: "0px 40px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              CHANGE LOCKED NFT
+              <img src={require("assets/icons/change.png")} className={classes.btnIcon} />
+            </PrimaryButton>
+          </Box>
         </Box>
         <div className={classes.nftInfoMainContent}>
           <span>Verified</span>
@@ -208,7 +234,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
               <div className={classes.typo1}>Ownership</div>
               <div className={classes.typo2}>1 JOTs</div>
             </Box>
-            <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => {}}>
+            <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => { }}>
               <img src={require("assets/priviIcons/polygon.png")} />
               View on Polygonscan
             </PrimaryButton>
@@ -227,7 +253,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
           </Box>
           <div className={classes.nftCard}>
             <CollectionNFTCard
-              handleSelect={() => {}}
+              handleSelect={() => { }}
               item={{
                 image: require("assets/backgrounds/digital_art_1.png"),
                 name: "NFT NAME",
@@ -347,6 +373,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
         onClose={handleCloseChangeLockedNFTModal}
         onProceed={handleProceedChangeLockedNFT}
       />
+      <WithdrawNFTModel
+        open={openWithdrawNFTModal}
+        onClose={handleCloseWithdrawNFTModal}
+      />
+      <Modal size="small" isOpen={withDrawn} onClose={() => { }} className={classes.withDrawnModal}>
+        <img src={require("assets/icons/crystal_camera.png")} alt="" />
+        <Box color={"#431AB7"} paddingLeft={1}>This NFT is  beeing withdrawn</Box>
+      </Modal>
     </div>
   );
 };

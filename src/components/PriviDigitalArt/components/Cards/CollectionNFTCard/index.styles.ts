@@ -10,6 +10,9 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     height: 450,
     width: "100%",
     cursor: "pointer",
+    [theme.breakpoints.down("sm")]: {
+      height: 380,
+    },
   },
   innerBox: {
     background: "linear-gradient(180deg, rgba(255, 255, 255, 0.4) 3.83%, rgba(255, 255, 255, 0) 31.54%), #9EACF2",
@@ -23,18 +26,27 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
     color: "#fff",
+    [theme.breakpoints.down("sm")]: {
+      height: 360,
+    },
     "& img": {
       width: "100%",
       height: 223,
       borderRadius: 16.5,
       boxShadow: '0px 29.7482px 23.1375px -22.3112px rgba(63, 83, 183, 0.22)',
-      border: "0.82634px solid rgba(0, 0, 0, 0.09)"
+      border: "0.82634px solid rgba(0, 0, 0, 0.09)",
+      [theme.breakpoints.down("sm")]: {
+        height: 185,
+      },
     },
   },
   starGroup: {
     display: "flex",
     alignItems: "center",
-    marginTop: 10
+    marginTop: 10,
+    [theme.breakpoints.down("sm")]: {
+      marginTop: -4,
+    },
   },
   ntfName: {
     fontSize: 12,
@@ -64,6 +76,9 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     lineHeight: "17px",
     textTransform: "uppercase",
     color: '#431AB7',
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 11,
+    },
   },
   typo2: {
     fontSize: 12.3,
@@ -72,5 +87,8 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     lineHeight: "16px",
     textTransform: "uppercase",
     color: '#ffffff',
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 11,
+    },
   }
 }));

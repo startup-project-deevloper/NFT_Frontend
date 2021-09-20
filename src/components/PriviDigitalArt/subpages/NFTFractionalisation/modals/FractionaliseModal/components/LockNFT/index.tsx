@@ -7,7 +7,7 @@ import { useLockNFTStyles } from "./index.styles";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import EthBase from "shared/contracts/EthBase.sol/EthBase.json";
-import config from "shared/connectors/web3/config";
+import config from "shared/connectors/ethereum/config";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
 
@@ -25,10 +25,9 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
     try {
       const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
       const web3APIHandler = targetChain.apiHandler;
-      const web3Config = targetChain.config;
 
       const web3 = new Web3(library.provider);
-      const contractAddress = config.Ethereum.CONTRACT_ADDRESSES.ETH_BASE;
+      const contractAddress = config.CONTRACT_ADDRESSES.ETH_BASE;
       let response = await web3APIHandler.Erc721.setApprovalForToken(
         web3,
         account!,
@@ -36,7 +35,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
           to: contractAddress,
           tokenId: selectedNFT.BlockchainId,
         },
-        selectedNFT.TokenContractAddress
+        selectedNFT.tokenAddress
       );
       if (!response.success) {
         setIsLoading(false);

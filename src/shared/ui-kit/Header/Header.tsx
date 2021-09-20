@@ -1388,6 +1388,33 @@ const Header = props => {
                               {isPriviPix && (
                                 <MenuItem>
                                   <PrimaryButton
+                                    size="medium"
+                                    onClick={() => {}}
+                                    style={{
+                                      backgroundColor: "#DDFF57",
+                                      padding: "8px 24px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      color: "#431AB7",
+                                      fontSize: "14px",
+                                      borderRadius: "4px",
+                                    }}
+                                  >
+                                    <img
+                                      src={require("assets/icons/polygon_scan.png")}
+                                      style={{
+                                        width: "24px",
+                                        height: "24px",
+                                        marginRight: "16px",
+                                      }}
+                                    />
+                                    Polygon bridge
+                                  </PrimaryButton>
+                                </MenuItem>
+                              )}
+                              {isPriviPix && (
+                                <MenuItem>
+                                  <PrimaryButton
                                     className={classes.createPix}
                                     size="medium"
                                     isRounded

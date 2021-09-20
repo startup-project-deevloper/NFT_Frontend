@@ -93,9 +93,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             </div>
           </div>
         </Box>
-        <img src={require("assets/backgrounds/digital_art_1.png")} alt="collction image" />
         <div className={classes.collectionMainContent}>
-          <Box display="flex" justifyContent="space-between">
+        <img src={require("assets/backgrounds/digital_art_1.png")} alt="collction image" />
+          <Box display="flex" alignItems="center" justifyContent="space-between" gridColumnGap="20px" flexWrap="wrap" gridRowGap="30px">
             <div className={classes.typo1}>✨ Collection</div>
             <Box display="flex" alignItems="center" justifyContent="space-between">
               <Box display="flex" mr={"10px"}>
@@ -115,7 +115,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             <span>Cryptopunks</span>
             <span>Megapack</span>
           </div>
-          <Box display="flex" justifyContent="space-between" mt={"37px"}>
+          <Box className={classes.collectionInfos}>
             <Box display="flex" flexDirection="column">
               <div className={classes.typo3}>1.827 ETH</div>
               <div className={classes.typo4}>fraction Price</div>
@@ -170,7 +170,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {NFTList && NFTList.length ? (
               <Grid container spacing={2}>
                 {NFTList.map((item, idx) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
+                  <Grid item xs={12} sm={4} md={3}>
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {

@@ -32,4 +32,12 @@ const URL = (): string => {
   }
 };
 
+export const PriceFeed_URL = (): string => {
+  return process.env.REACT_APP_PRICE_FEED_URL || "http://localhost:3002";
+};
+
+export const PriceFeed_Token = (): string => {
+  return process.env.REACT_APP_PRICE_FEED_TOKEN || "SoMeR@nD0MsTrInG";
+};
+
 export default URL;

@@ -1,45 +1,55 @@
-import React, { useState } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { LoadingWrapper } from 'shared/ui-kit/Hocs';
+import React, { useState } from "react";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import Box from 'shared/ui-kit/Box';
-import { ReactComponent as CopyIcon } from 'assets/icons/copy-icon.svg';
+import Box from "shared/ui-kit/Box";
+import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
+import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import Axios from "axios";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import config from "shared/connectors/polygon/config";
+import { ContractInstance } from "shared/connectors/web3/functions";
+import { BlockchainNets } from "shared/constants/constants";
+import SyntheticProtocolRouter from "shared/connectors/polygon/contracts/pix/SyntheticProtocolRouter.json";
+
+const isDev = process.env.REACT_APP_ENV === "dev";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
+      width: "100%",
       padding: 50,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
     container: {
-      width: '100%',
+      width: "100%",
       maxWidth: 540,
-      textAlign: 'center',
+      textAlign: "center",
     },
     title: {
       fontSize: 20,
       fontWeight: 800,
-      lineHeight: '104.5%',
-      color: '#181818',
+      lineHeight: "104.5%",
+      color: "#181818",
     },
     description: {
       fontSize: 16,
-      lineHeight: '150%',
-      color: 'rgba(24, 24, 24, 0.7)',
+      lineHeight: "150%",
+      color: "rgba(24, 24, 24, 0.7)",
     },
     icon: {
       width: 160,
-      height: '100%',
+      height: "100%",
       marginBottom: 30,
     },
     btn: {
       height: 34,
-      backgroundColor: '#431AB7',
-      color: 'white',
-      width: '100%',
+      backgroundColor: "#431AB7",
+      color: "white",
+      width: "100%",
       marginTop: 30,
       fontSize: 14,
       fontWeight: 800,
@@ -47,10 +57,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     checkBtn: {
       height: 40,
-      backgroundColor: '#431AB7',
-      color: 'white',
+      backgroundColor: "#431AB7",
+      color: "white",
       marginTop: 30,
-      padding: '11px 32px',
+      padding: "11px 32px",
       fontSize: 14,
       fontWeight: 700,
       borderRadius: 4,
@@ -59,43 +69,125 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: "pointer",
     },
     result: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    }
-  }),
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
+  })
 );
 
-export default function CreateContract({ onClose, onCompleted }) {
+export default function CreateContract({ onClose, onCompleted, selectedNFT, supplyToKeep, priceFraction }) {
   const classes = useStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hash, setHash] = useState<string>('');
+  const [hash, setHash] = useState<string>("");
+  const { account, library, chainId } = useWeb3React();
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
+    console.log("chainId", chainId);
+    if (chainId !== 80001 && chainId !== 137) {
+      return;
+    }
     setIsLoading(true);
     setIsProceeding(true);
-    setTimeout(() => {
-      setHash('0xf273a38fec99acf1efe23423fsfwefwefeba');
+
+    try {
+      const { data: collectionInfo } = await Axios.get(
+        `${PriceFeed_URL()}/nft/collection-address?contract=${selectedNFT.tokenAddress}${
+          isDev ? "&network=rinkeby" : ""
+        }`,
+        {
+          headers: {
+            Authorization: `Basic ${PriceFeed_Token()}`,
+          },
+        }
+      );
+      // const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
+      // const web3APIHandler = targetChain.apiHandler;
+
+      const web3 = new Web3(library.provider);
+      const contractAddress = config.CONTRACT_ADDRESSES.Pix.SYNTHETIC_PROTOCOL_ROUTER;
+      // let response = await web3APIHandler.Erc721.setApprovalForToken(
+      //   web3,
+      //   account!,
+      //   {
+      //     to: contractAddress,
+      //     tokenId: selectedNFT.BlockchainId,
+      //   },
+      //   selectedNFT.tokenAddress
+      // );
+      // if (!response.success) {
+      //   setIsLoading(false);
+      //   return;
+      // }
+      const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
+      console.log(
+        "Polygon contract",
+        contractAddress,
+        selectedNFT.tokenAddress,
+        selectedNFT.BlockchainId,
+        supplyToKeep,
+        priceFraction,
+        collectionInfo.data.name,
+        collectionInfo.data.symbol
+      );
+      const gas = await contract.methods
+        .registerNFT(
+          selectedNFT.tokenAddress,
+          selectedNFT.BlockchainId,
+          supplyToKeep,
+          priceFraction,
+          collectionInfo.data.name,
+          collectionInfo.data.symbol
+        )
+        .estimateGas({ from: account });
+      console.log("polygon gas", gas);
+      const response = await contract.methods
+        .registerNFT(
+          selectedNFT.tokenAddress,
+          selectedNFT.BlockchainId,
+          supplyToKeep,
+          priceFraction,
+          collectionInfo.data.name,
+          collectionInfo.data.symbol
+        )
+        .send({ from: account, gas })
+        .on("receipt", receipt => {
+          onCompleted();
+          setIsLoading(false);
+        })
+        .on("error", error => {
+          console.log("error", error);
+          setIsLoading(false);
+        });
+      console.log("-response", response);
+      setHash(response.transactionHash);
+    } catch (err) {
+      console.log("error", err);
       setIsLoading(false);
-      onCompleted();
-    }, 3000);
-  }
+    }
+  };
 
   const handleCheck = () => {
     onClose();
-  }
+  };
 
   return (
     <div className={classes.root}>
       <div className={classes.container}>
         {isProceeding ? (
           <>
-            <LoadingWrapper loading={isLoading} theme="blue" iconWidth="80px" iconHeight="80px"></LoadingWrapper>
+            <LoadingWrapper
+              loading={isLoading}
+              theme="blue"
+              iconWidth="80px"
+              iconHeight="80px"
+            ></LoadingWrapper>
             <h1 className={classes.title}>Create contract on Polygon</h1>
             {isLoading ? (
               <p className={classes.description}>
-                Transaction is proceeding on Polygon Chain.<br/>
+                Transaction is proceeding on Polygon Chain.
+                <br />
                 This can take a moment, please be patient...
               </p>
             ) : (
@@ -109,20 +201,26 @@ export default function CreateContract({ onClose, onCompleted }) {
                     <CopyIcon />
                   </Box>
                 </CopyToClipboard>
-                <button className={classes.checkBtn} onClick={handleCheck}>Check on Polygon Scan</button>
+                <button className={classes.checkBtn} onClick={handleCheck}>
+                  Check on Polygon Scan
+                </button>
               </Box>
             )}
           </>
         ) : (
           <>
-            <img className={classes.icon} src={require('assets/icons/contract-ploygon-icon.png')} alt="" />
+            <img className={classes.icon} src={require("assets/icons/contract-ploygon-icon.png")} alt="" />
             <h1 className={classes.title}>Create contract on Polygon</h1>
             <p className={classes.description}>
-              The synthetic fractionalisation of your NFT requires 2 steps.<br/>
-              First, contract for your NFT will be created on Polygon.<br/>
+              The synthetic fractionalisation of your NFT requires 2 steps.
+              <br />
+              First, contract for your NFT will be created on Polygon.
+              <br />
               Second, your NFT will be locked in a Vault on Ethereum smart contract.
             </p>
-            <button className={classes.btn} onClick={handleProceed}>Proceed</button>
+            <button className={classes.btn} onClick={handleProceed}>
+              Proceed
+            </button>
           </>
         )}
       </div>

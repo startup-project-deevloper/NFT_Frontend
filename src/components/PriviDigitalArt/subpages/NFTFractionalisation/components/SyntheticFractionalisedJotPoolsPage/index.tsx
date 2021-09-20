@@ -205,18 +205,23 @@ export const CoinFlipHistoryTable = ({ datas }) => {
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "NFT",
+      headerAlign: "center",
     },
     {
       headerName: "WINNER",
+      headerAlign: "center",
     },
     {
       headerName: "AMOUNT",
+      headerAlign: "center",
     },
     {
       headerName: "DATE",
+      headerAlign: "center",
     },
     {
       headerName: "EXPLORER",
+      headerAlign: "center",
     },
   ];
   const [tableData, setTableData] = React.useState<Array<Array<CustomTableCellInfo>>>([]);
@@ -227,29 +232,35 @@ export const CoinFlipHistoryTable = ({ datas }) => {
         const user = row.user;
         return [
           {
-            cell: row.nft || "",
+            cell: row.nft || '',
+            cellAlign: "center",
           },
           {
             cell: (
-              <Box display="flex" flexDirection="row" alignItems="center">
+              <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
                 {/* <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl: user?.anonAvatar ? require(`assets/anonAvatars/${user.anonAvatar}`) : "none"} /> */}
                 <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl : "none"} />
                 <Text ml={1.5}>{user?.name}</Text>
               </Box>
             ),
+            cellAlign: "center",
           },
           {
-            cell: row.amount || "",
+            cell: row.amount || '',
+            cellAlign: "center",
           },
           {
             cell: format(new Date(row.date), "hh:kk, dd.MM.yyyy"),
+            cellAlign: "center",
           },
           {
-            cell: (
-              <SecondaryButton size="medium" style={{ color: Color.Purple, border: "2px solid #9EACF2" }}>
-                <img src={require(`assets/icons/explorer.png`)} style={{ width: "32px", height: "32px" }} />
-              </SecondaryButton>
-            ),
+            cell: <SecondaryButton
+              size="medium"
+              style={{ color: Color.Purple, border: "2px solid #9EACF2" }}
+            >
+              <img src={require(`assets/icons/explorer.png`)} style={{ width: "32px", height: "32px" }} />
+            </SecondaryButton>,
+            cellAlign: "center",
           },
         ];
       });
@@ -294,7 +305,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
     newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
     newRewardConfig.config.options.scales.xAxes[0].offset = true;
-    newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
+    newRewardConfig.config.options.scales.yAxes[0].ticks.display = false;
 
     setRewardConfig(newRewardConfig);
   }, [period]);
@@ -366,16 +377,12 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                     </Box>
                   </Box>
                   <Box className={classes.hWrap2}>
-                    <Box className={classes.h3}>5.000 JOTS</Box>
-                    <Box className={classes.h5} paddingY={1}>
-                      POOL TOTAL ACCRUED REWARD
-                    </Box>
+                    <Box className={classes.h1}>5.000 JOTS</Box>
+                    <Box className={classes.h5} paddingY={1}>POOL TOTAL ACCRUED REWARD</Box>
                   </Box>
                   <Box className={classes.hWrap2}>
-                    <Box className={classes.h3}>0,9983 JOTS</Box>
-                    <Box className={classes.h5} paddingY={1}>
-                      LIQUIDITY SHARE VALUE
-                    </Box>
+                    <Box className={classes.h1}>0,9983 JOTS</Box>
+                    <Box className={classes.h5} paddingY={1}>LIQUIDITY SHARE VALUE</Box>
                   </Box>
                 </Box>
               </Grid>
@@ -403,7 +410,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                       </Box>
                     </Box>
                   </Box>
-                  <Box flex={1} width={1} mt={3}>
+                  <Box flex={1} width={1} mt={3} className={classes.chartWrapper}>
                     {rewardConfig && <PrintChart config={rewardConfig} />}
                   </Box>
                 </Box>
@@ -412,54 +419,37 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
           </Box>
           {/* <Box className={classes.editWrap}>
           </Box> */}
-          <PrimaryButton
-            size="medium"
-            className={classes.h5}
-            mt={3}
-            style={{
-              background: "#DDFF57",
-              width: "100%",
-              height: "60px",
-              color: Color.Purple,
-              textTransform: "uppercase",
-            }}
-            onClick={() => setOpenLiquidityModal(true)}
-          >
-            Add liquidity
-          </PrimaryButton>
         </Box>
       </Box>
       <Box className={classes.outBox}>
-        <Box className={classes.h2} style={{ padding: "50px 0 30px 50px" }}>
-          MY STAKING
-        </Box>
+        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>MY STAKING</Box>
         <Grid container className={classes.botRow} style={{ padding: "0 50px 30px 50px" }}>
           <Grid item md={3} xs={12}>
             <Box className={classes.infoItem}>
-              <Box className={classes.h5} style={{ fontWeight: 800 }}>
+              <Box className={classes.h1} style={{ fontWeight: 800 }}>
                 SHARE AMOUNT
               </Box>
-              <Box className={classes.h5} mt={1}>
+              <Box className={classes.h3} mt={1}>
                 11 SHARES
               </Box>
             </Box>
           </Grid>
           <Grid item md={3} xs={12}>
             <Box className={classes.infoItem}>
-              <Box className={classes.h5} style={{ fontWeight: 800 }}>
+              <Box className={classes.h1} style={{ fontWeight: 800 }}>
                 POOL OWNERSHIP
               </Box>
-              <Box className={classes.h5} mt={1}>
+              <Box className={classes.h3} mt={1}>
                 20%
               </Box>
             </Box>
           </Grid>
           <Grid item md={3} xs={12}>
             <Box className={classes.infoItem}>
-              <Box className={classes.h5} style={{ fontWeight: 800 }}>
+              <Box className={classes.h1} style={{ fontWeight: 800 }}>
                 MY LIQUIDITY VALUE
               </Box>
-              <Box className={classes.h5} mt={1}>
+              <Box className={classes.h3} mt={1}>
                 1000 USD
               </Box>
             </Box>
@@ -468,26 +458,19 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
             <Box display="flex" alignItems="center">
               <SecondaryButton
                 size="medium"
-                style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2" }}
-                onClick={() => setOpenRemoveLiquidityModal(true)}
+                style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2", height: 60 }}
               >
                 REMOVE
               </SecondaryButton>
-              <PrimaryButton
-                size="medium"
-                style={{ background: Color.Purple, width: "100%" }}
-                onClick={() => setOpenLiquidityModal(true)}
-              >
+              <PrimaryButton size="medium" style={{ background: Color.Purple, width: "100%", height: 60 }} onClick={() => setOpenLiquidityModal(true)}>
                 ADD MORE
               </PrimaryButton>
             </Box>
           </Grid>
         </Grid>
       </Box>
-      <Box className={classes.outBox}>
-        <Box className={classes.h2} style={{ padding: "50px 0 30px 50px" }}>
-          Coin flip history
-        </Box>
+      <Box className={classes.outBox} style={{paddingBottom: 20}}>
+        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>Coin flip history</Box>
         <CoinFlipHistoryTable datas={flipHistory} />
       </Box>
       {openLiquidityModal && (

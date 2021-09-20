@@ -45,7 +45,7 @@ export default function PriviPixRouter(props) {
       <Route exact path="/pix/loan" component={NFTLoansPage} />
       <Route exact path="/pix/loan/positions" component={NFTPositionManagerPage} />
       <Route exact path="/pix/loan/:id" component={NFTLoanDetailPage} />
-      <Route exact path="/pix/fractionalisation" component={NFTFractionalisation} />
+      <Route path="/pix/fractionalisation" component={NFTFractionalisation} />
       <Route exact path="/pix/fractionalisation/:id" component={FractionPage} />
       <Route exact path="/pix/fractionalisation/synthetic/:id" component={SyntheticFractionPage} />
       <Route

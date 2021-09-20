@@ -1,0 +1,81 @@
+import { makeStyles } from "@material-ui/core";
+
+export const footerStyles = makeStyles(theme => ({
+  contentBox: {
+    borderTop: "1px solid #707582",
+    padding: `0px ${theme.spacing(20)}px`,
+    width: "100%",
+    [theme.breakpoints.down("sm")]: {
+      padding: `0px ${theme.spacing(10)}px`,
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: `0px ${theme.spacing(5)}px`,
+    },
+    fontFamily: "Agrandir",
+  },
+  flexBox: {
+    display: "flex",
+    alignItems: "center",
+  },
+  header1: {
+    color: "#FFFFFF",
+    fontSize: "22px",
+    fontWeight: "normal",
+    textDecoration: "underline",
+    cursor: "pointer",
+  },
+  title2: {
+    fontSize: "30px",
+    fontWeight: 400,
+  },
+  title3: {
+    color: "#FFFFFF",
+    fontSize: 30,
+    fontWeight: 400,
+  },
+  findUs: {
+    color: "white",
+  },
+  footerBox: {
+    maxWidth: "1000px",
+    margin: "auto",
+    display: "flex",
+    justifyContent: "space-between",
+    paddingTop: 100,
+    paddingBottom: 120,
+  },
+  snsBox: {
+    width: theme.spacing(5),
+    height: theme.spacing(5),
+    background: "linear-gradient(102.54deg, #00BFFF -9.09%, #8D2EFF 56.17%, #FF00C1 112.56%)",
+    borderRadius: "50%",
+    marginRight: theme.spacing(2),
+    justifyContent: "center",
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  footerTextWrapper: {
+    marginTop: 0,
+    marginLeft: 0,
+  },
+  '@media (max-width: 780px)' : {
+    findUs: {
+      marginTop: 10,
+    },
+    footerBox: {
+      flexDirection: "column",
+      paddingTop: 40,
+    },
+    footerTextWrapper: {
+      marginTop: 30,
+      marginLeft: 16,
+    },
+    contentBox: {
+      padding: "0 20px",
+    },
+    flexBox: {
+      justifyContent: "space-between",
+    },
+  }
+}));

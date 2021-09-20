@@ -1,0 +1,72 @@
+.creatorInfo {
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  img {
+    width: 72px;
+    height: 72px;
+    border-radius: 36px;
+    border: 2px solid #fff;
+    cursor: pointer;
+  }
+
+  div.personalInfo {
+    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+
+    .creatorFullName {
+      margin-bottom: 4px;
+      color: #181818;
+      font-family: "Agrandir";
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 23px;
+    }
+
+    .creatorOtherInfo {
+      display: flex;
+      align-items: center;
+
+      .creatorAlias {
+        color: #db00ff;
+        font-family: Agrandir;
+        font-weight: 400;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .userVerified {
+        margin-left: 4px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .userLevel {
+        margin-left: 4px;
+        padding: 3px 8px 1px;
+        font-size: 11px;
+        line-height: 12px;
+        font-weight: 400;
+        border: 1px solid #707582;
+        border-radius: 9px;
+        height: 18px;
+        min-width: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.darkGreyColor {
+  color: #707582 !important;
+  font-weight: 800 !important;
+}
+
+.greenColor {
+  color: #00ff15;
+}

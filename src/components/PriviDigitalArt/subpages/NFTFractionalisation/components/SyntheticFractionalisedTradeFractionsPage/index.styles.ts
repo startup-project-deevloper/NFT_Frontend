@@ -1,0 +1,167 @@
+import { makeStyles } from "@material-ui/core";
+import { Color, FontSize } from "shared/ui-kit";
+
+export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme => ({
+  root: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    color: "#431AB7",
+  },
+  outBox: {
+    width: "100%",
+    background: "#FFFFFF",
+    border: "1px solid #9EACF2",
+    boxSizing: "border-box",
+    borderRadius: "20px",
+    marginBottom: "10px",
+  },
+  boxBody: {
+    display: "flex",
+    alignItems: "center",
+  },
+  col_half: {
+    height: "100%",
+    flex: 1,
+    position: "relative"
+  },
+  crystal: {
+    position: "absolute",
+    width: 64,
+    height: 64,
+    left: 0,
+    top: 0,
+    transform: "rotate(22.65deg)",
+  },
+  h1: {
+    display: "flex",
+    fontStyle: "normal",
+    fontSize: 24,
+    lineHeight: "100%",
+  },
+  h2: {
+    display: "flex",
+    fontStyle: "normal",
+    fontSize: 22,
+    lineHeight: "100%",
+  },
+  h3: {
+    display: "flex",
+    fontStyle: "normal",
+    fontSize: 18,
+    lineHeight: "100%",
+  },
+  h4: {
+    display: "flex",
+    fontStyle: "normal",
+    fontSize: 14,
+    lineHeight: "100%",
+    "& img": {
+      margin: '0px 8px'
+    }
+  },
+  h5: {
+    display: "flex",
+    fontStyle: "normal",
+    fontSize: 13,
+    lineHeight: "100%",
+  },
+
+  chart: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%",
+    padding: "5px",
+    borderRadius: theme.spacing(2),
+    boxShadow: "0px 3.40102px 6.80203px #9EACF2",
+    background: Color.Purple,
+  },
+  controlParentBox: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    [theme.breakpoints.down("sm")]: {
+      alignItems: "flex-start",
+    },
+    width: "100%",
+  },
+  controlBox: {
+    display: "flex",
+    alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      alignItems: "flex-end",
+    },
+  },
+  liquidityBox: {
+    display: "flex",
+    alignItems: "center",
+    background: "rgba(157, 141, 203, 0.33)",
+    color: "#F0F5F8",
+    borderRadius: 8,
+    marginLeft: theme.spacing(1),
+    [theme.breakpoints.down("xs")]: {
+      marginTop: theme.spacing(1),
+    },
+    "& button": {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
+  },
+  groupButton: {
+    background: "transparent",
+    border: "none",
+    borderRadius: 8,
+    fontSize: 14,
+    color: Color.GrayDark,
+    padding: "8px 16px",
+    "& + &": {
+      marginLeft: 4,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 12,
+    },
+  },
+  selectedGroupButton: {
+    background: "rgba(221, 255, 87, 1)",
+    color: "#181818",
+  },
+  graphTitle: {
+    fontSize: 22,
+    fontWeight: 400,
+    color: "#FFF",
+    margin: 0,
+  },
+  graphDesc: {
+    fontSize: 12,
+    fontWeight: 400,
+    color: "#FFF",
+    margin: 0,
+  },
+
+  table: {
+    marginTop: 24,
+    minHeight: 400,
+    width: '100%',
+    "& .MuiTableCell-root": {
+      fontFamily: "Agrandir",
+      textAlign: 'center !important',
+    },
+    "& .MuiTableRow-head": {
+      background: Color.White,
+      color: "#431AB7",
+      "& .MuiTableCell-head": {
+        border: "none",
+        fontSize: FontSize.L,
+        fontWeight: "bold",
+        color: Color.GrayDark,
+      },
+    },
+
+    [theme.breakpoints.down("sm")]: {
+      minHeight: 200,
+    },
+  },
+}));

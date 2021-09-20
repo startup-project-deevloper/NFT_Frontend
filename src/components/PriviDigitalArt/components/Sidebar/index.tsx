@@ -1,0 +1,140 @@
+import React, { useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+
+import { useTypedSelector } from "store/reducers/Reducer";
+
+import CreateMediaModal from "../../modals/CreateMediaModal";
+import { SellModal } from "../../modals/SellModal";
+
+import styles from "shared/ui-kit/PriviAppSidebar/index.module.css";
+import AppSidebar from "shared/ui-kit/PriviAppSidebar";
+import useWindowDimensions from "shared/hooks/useWindowDimensions";
+
+const TABS = [
+  "HOME",
+  "MY NFT",
+  "EXPLORE",
+  "MARKETPLACE",
+  "PODS",
+  "NFT LOANS",
+  "LIKED CONTENT",
+  "NFT FRACTIONALISATION",
+];
+
+export default function Sidebar({ handleRefresh }) {
+  const width = useWindowDimensions().width;
+
+  if (width > 768) return <AppSidebar child={<SidebarContent handleRefresh={handleRefresh} />} theme="art" />;
+  else return null;
+}
+
+const SidebarContent = ({ handleRefresh }) => {
+  const user = useTypedSelector(state => state.user);
+  const location = useLocation();
+  const history = useHistory();
+
+  const [openCreateContentModal, setOpenCreateContentModal] = useState<boolean>(false);
+  const [openSellStartAuctionModal, setOpenSellStartAuctionModal] = useState<boolean>(false);
+
+  const getCurrentActiveTab = () => {
+    if (location.pathname.includes("mynft")) {
+      return TABS[1];
+    } else if (location.pathname.includes("explorer")) {
+      return TABS[2];
+    } else if (location.pathname.includes("marketplace")) {
+      return TABS[3];
+    } else if (location.pathname.includes("pods")) {
+      return TABS[4];
+    } else if (location.pathname.includes("loan")) {
+      return TABS[5];
+    } else if (location.pathname.includes("like")) {
+      return TABS[6];
+    } else if (location.pathname.includes("fractionalisation")) {
+      return TABS[7];
+    }
+
+    return TABS[0];
+  };
+
+  const goToPage = value => {
+    if (value === TABS[0]) {
+      history.push("/pix/");
+    } else if (value === TABS[1]) {
+      history.push("/pix/mynft");
+    } else if (value === TABS[2]) {
+      history.push("/pix/explorer");
+    } else if (value === TABS[3]) {
+      history.push("/pix/marketplace");
+    } else if (value === TABS[4]) {
+      history.push("/pix/pods");
+    } else if (value === TABS[5]) {
+      history.push("/pix/loan");
+    } else if (value === TABS[6]) {
+      history.push("/pix/like");
+    } else if (value === TABS[7]) {
+      history.push("/pix/fractionalisation");
+    }
+  };
+
+  const handleOpenCreateContentModal = () => {
+    setOpenCreateContentModal(true);
+  };
+  const handleOpenSellStartAuctionModal = () => {
+    setOpenSellStartAuctionModal(true);
+  };
+  const handleCloseCreateContentModal = () => {
+    setOpenCreateContentModal(false);
+  };
+  const handleCloseSellStartAuctionModal = () => {
+    setOpenSellStartAuctionModal(false);
+  };
+
+  return (
+    <div className={styles.content}>
+      <div className={styles.options}>
+        <ul>
+          {TABS.map((key, index) => (
+            <li
+              key={`option-${index}`}
+              className={key === getCurrentActiveTab() ? styles.selected : undefined}
+              onClick={() => {
+                goToPage(key);
+              }}
+            >
+              {key}
+            </li>
+          ))}
+        </ul>
+        <ul>
+          <li
+            onClick={
+              getCurrentActiveTab() === TABS[3]
+                ? handleOpenSellStartAuctionModal
+                : handleOpenCreateContentModal
+            }
+          >
+            <img src={require("assets/icons/add_green.png")} alt="create content" />
+            <span style={{ color: "#DDFF57", fontWeight: 400 }}>
+              {getCurrentActiveTab() === TABS[3] ? "Sell Content" : "Create NFT"}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      {openCreateContentModal && (
+        <CreateMediaModal
+          open={openCreateContentModal}
+          handleClose={handleCloseCreateContentModal}
+          handleRefresh={handleRefresh}
+        />
+      )}
+      {openSellStartAuctionModal && (
+        <SellModal
+          open={openSellStartAuctionModal}
+          onClose={handleCloseSellStartAuctionModal}
+          handleRefresh={handleRefresh}
+        />
+      )}
+    </div>
+  );
+};

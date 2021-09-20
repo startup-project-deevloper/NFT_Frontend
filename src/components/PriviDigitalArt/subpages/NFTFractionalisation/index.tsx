@@ -19,6 +19,8 @@ import Fractionalize from "./components/Fractionalise";
 import SyntheticFractionalise from "./components/SyntheticFractionalise";
 import { getFractionalizeVaults } from "shared/services/API/FractionalizeAPI";
 import SyntheticCollectionCard from "components/PriviDigitalArt/components/Cards/SyntheticCollectionCard";
+import PriviPixSyntheticRouter from "./PriviPixSyntheticRouter";
+import { useHistory } from "react-router";
 
 const TopNFTList = [
   {
@@ -65,13 +67,15 @@ const NFTFractionalisation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
-  const [selectedTab, setSeelectedTab] = useState<"pure" | "synthetic">("pure");
+  const [selectedTab, setSelectedTab] = useState<"pure" | "synthetic">("pure");
   const [hasMoreMedias, setHasMoreMedias] = useState<boolean>(true);
   const [lastIdx, setLastIdx] = useState<string>("");
   const [medias, setMedias] = useState<any[]>([]);
 
   const [openFractionalize, setOpenFractionalize] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const history = useHistory();
 
   useEffect(() => {
     if (selectedTab === "pure") {
@@ -101,6 +105,12 @@ const NFTFractionalisation = () => {
     }
   };
 
+  console.log('===selectedTab===', selectedTab);
+
+  const handleSyntheticClick = () => {
+    setSelectedTab("synthetic");
+    history.push('/pix/fractionalisation/synthetic-derivative');
+  }
   return (
     <>
       {openFractionalize ? (
@@ -115,7 +125,7 @@ const NFTFractionalisation = () => {
           <div className={classes.subTitleSection}>
             <div
               className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
-              onClick={() => setSeelectedTab("pure")}
+              onClick={() => setSelectedTab("pure")}
             >
               <span>Pure Fractionalisation</span>
             </div>
@@ -124,14 +134,14 @@ const NFTFractionalisation = () => {
                 { [classes.selectedTabSection]: selectedTab === "synthetic" },
                 classes.tabSection
               )}
-              onClick={() => setSeelectedTab("synthetic")}
+              onClick={handleSyntheticClick}
             >
               <span>
                 {isMobile ? "Synthetic Fractionalisation" : "Synthetic Derivative Fractionalisation"}
               </span>
             </div>
           </div>
-          {selectedTab === "pure" ? (
+          {selectedTab === "pure" && (
             <>
               <div className={classes.headerButtonGroup}>
                 <div className={classes.fractionalizeBtn} onClick={() => setOpenFractionalize(true)}>
@@ -201,88 +211,12 @@ const NFTFractionalisation = () => {
                 )}
               </div>
             </>
-          ) : (
-            <>
-              <div className={classes.syntheticSection}>
-                <div className={classes.rewardsWrapper}>
-                  <div className={classes.rewardsContent}>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} sm={12} md={8}>
-                        <div className={classes.rewardsTitle}>
-                          Create  a  synthetic<br />
-                          derivative out of your NFT collection
-                        </div>
-                        <div className={classes.rewardsDes}>
-                          Lock your NFT, get a synthetic copy, fractionalise it, create a derivative and get
-                          interest out of the trading fees.
-                        </div>
-                      </Grid>
-                      <Grid item xs={12} sm={12} md={4}>
-                        <div
-                          className={classes.syntheticFractionaliseBtn}
-                          onClick={() => setOpenFractionalize(true)}
-                        >
-                          Synthetic Fractionalise NFT
-                        </div>
-                        <div className={classes.tradeNFTBtnWrapper} onClick={() => {}}>
-                          <div className={classes.tradeNFTBtn}>Trade NFT Derivatives</div>
-                        </div>
-                      </Grid>
-                    </Grid>
-
-                    <img
-                      src={require("assets/icons/governance.svg")}
-                      alt="heart eyes"
-                      className={classes.heartEyeImg}
-                    />
-                  </div>
-                </div>
-                <div className={classes.NFTSection}>
-                  <div className={classes.topNFTWrapper}>
-                    <div className={classes.topNFTTitle}>
-                      <span>Featured NFT Collections</span>
-                    </div>
-                    <div className={classes.topNFTContent}>
-                      <Carousel isRTL={false} itemsToShow={3} pagination={false}>
-                        {TopNFTList.map((item, idx) => (
-                          <SyntheticCollectionCard item={item} />
-                        ))}
-                      </Carousel>
-                    </div>
-                  </div>
-                  <div className={classes.allNFTWrapper}>
-                    <div className={classes.allNFTTitle}>
-                      <span>View all Synthetic NFTs</span>
-                    </div>
-                    <div className={classes.allNFTSection}>
-                      {TopNFTList && TopNFTList.length ? (
-                        <Grid container spacing={2}>
-                          {TopNFTList.map((item, idx) => (
-                            <Grid item xs={12} sm={6} md={4} lg={3}>
-                              <SyntheticCollectionCard item={item} />
-                            </Grid>
-                          ))}
-                        </Grid>
-                      ) : (
-                        <div
-                          style={{
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingTop: 16,
-                            paddingBottom: 16,
-                          }}
-                        >
-                          <CircularLoadingIndicator theme="blue" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
           )}
+          <PriviPixSyntheticRouter
+            openFractionalize={openFractionalize}
+            selectedTab={selectedTab}
+            setOpenFractionalize={setOpenFractionalize}
+          />
         </div>
       )}
     </>

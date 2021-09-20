@@ -1,0 +1,303 @@
+.feedbackModal {
+  padding: 0;
+}
+.feedbackModal .feedback-modal {
+  background: #eae8fa;
+  min-height: 442px;
+  width: 535px;
+  max-width: 85vw;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feedbackModal .feedback-modal > section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.feedbackModal .feedback-modal > section.first {
+  align-items: center;
+}
+
+.feedbackModal .feedback-modal section img {
+  width: 50px;
+  height: 50px;
+}
+
+.feedbackModal .feedback-modal h3 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 104.5%;
+  text-align: center;
+  color: #181818;
+  margin: 0;
+  margin-top: 32px;
+}
+
+.feedbackModal .feedback-modal h4 {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 104.5%;
+  color: #181818;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.feedbackModal .feedback-modal h5 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 104.5%;
+  color: #181818;
+  margin-right: 7px;
+  margin: 0px;
+  margin-bottom: 8px;
+}
+
+.feedbackModal .feedback-modal h6 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 104.5%;
+  text-align: center;
+  color: #707582;
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.feedbackModal .feedback-modal .inputContainer {
+  width: 100%;
+  background: #f7f8fa;
+  border: 1px solid #e0e4f3;
+  border-radius: 10px;
+  padding: 18px;
+  color: #6b6b6b;
+  font-weight: normal;
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feedbackModal .feedback-modal input {
+  font-family: "Agrandir";
+}
+
+.feedbackModal .feedback-modal .first input {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  font-size: 18px;
+  height: auto;
+  border-radius: 0;
+}
+
+.feedbackModal .feedback-modal .inputContainer img {
+  width: 17px;
+  height: 17px;
+}
+
+.feedbackModal .feedback-modal .usersDisplay {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  max-height: calc(90vh - 40px - 450px);
+}
+
+.feedbackModal .feedback-modal .usersDisplay > div {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  justify-content: space-between;
+  border-bottom: 1px solid #eff2f8;
+  width: 100%;
+}
+
+.feedbackModal .feedback-modal .usersDisplay > div .left {
+  display: flex;
+  align-items: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 120%;
+  color: #181818;
+}
+
+.feedbackModal .feedback-modal .usersDisplay > div .avatar {
+  border: 1.5px solid #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2));
+  margin-right: 12px;
+  background: #c4c4c4;
+}
+
+.feedbackModal .feedback-modal .usersDisplay > div span img {
+  width: 16px;
+  height: 17px;
+}
+
+.feedbackModal .feedback-modal textarea,
+.feedbackModal .feedback-modal input {
+  background: #fff;
+  border: 1px solid #e0e4f3;
+  box-sizing: border-box;
+  border-radius: 10px;
+  padding: 18px 12px;
+}
+
+.feedbackModal .feedback-modal textarea {
+  height: 150px;
+  width: 100%;
+}
+
+.feedbackModal .feedback-modal input {
+  height: 40px;
+  width: 145px;
+  border-radius: 6px;
+  margin-right: 8px;
+}
+
+.feedbackModal .feedback-modal .tip-wrapper .MuiInput-root {
+  padding: 0;
+  margin: 0;
+  margin-right: 10px;
+  height: 40px;
+}
+
+.feedbackModal .feedback-modal .tip-wrapper input {
+  width: 145px;
+  border-radius: 6px;
+  margin-right: 0;
+  border: none;
+  background-color: #fff;
+}
+
+.feedbackModal .feedback-modal .tip-wrapper .selector-with-token {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e4f3;
+}
+
+.feedbackModal .feedback-modal .selector-with-token {
+  margin-left: 8px;
+  margin: 0;
+  background: #ffffff;
+  border: 1px solid #c0c6dc;
+  box-sizing: border-box;
+  border-radius: 6px;
+  height: 40px;
+  width: 115px;
+}
+
+.feedbackModal .feedback-modal .selector-with-token > div {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  margin: 0px 8px;
+  border-radius: 50%;
+}
+
+.feedbackModal .feedback-modal .selector-with-token .MuiSelect-select.MuiSelect-select {
+  padding: 0;
+  margin: 0;
+  width: 85px;
+  height: auto;
+}
+
+.feedbackModal .feedback-modal .selector-with-token .MuiFormControl-root {
+  margin: 0;
+  height: auto;
+  width: 85px;
+}
+
+.feedbackModal .feedback-modal .row {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 30px;
+  justify-content: space-between;
+}
+
+.feedbackModal .feedback-modal .row h5 {
+  margin: 0;
+}
+
+.feedbackModal .feedback-modal .row img {
+  width: 12px;
+  height: 12px;
+  margin-left: 7px;
+}
+
+.feedbackModal .feedback-modal .row > div {
+  display: flex;
+  align-items: center;
+}
+
+.feedbackModal .feedback-modal .buttons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.feedbackModal .feedback-modal .buttons :first-child {
+  color: #151414;
+  border: 1.5px solid #707582;
+  background: transparent;
+  margin-right: 12px;
+}
+
+.feedbackModal .feedback-modal .buttons button {
+  margin: 0;
+  height: auto;
+}
+
+.feedbackModal .feedback-modal .last .usersDisplay,
+.feedbackModal .feedback-modal .messageDisplay,
+.feedbackModal .feedback-modal .tipDisplay {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px 0px;
+  border-bottom: 1px solid hsla(0, 0%, 9%, 0.3);
+}
+
+.feedbackModal .feedback-modal .last .usersDisplay {
+  padding-top: 8px;
+}
+
+.feedbackModal .feedback-modal .last .usersDisplay > div {
+  border: none;
+}
+
+.feedbackModal .feedback-modal .messageDisplay > div,
+.feedbackModal .feedback-modal .tipDisplay > div {
+  width: 100%;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 104.5%;
+  color: #181818;
+}
+
+.feedbackModal .feedback-modal .messageDisplay > div {
+  font-size: 14px;
+}
+
+.feedbackModal .feedback-modal .tipDisplay > div {
+  font-size: 30px;
+}

@@ -1,0 +1,96 @@
+import React from "react";
+import { makeStyles } from "@material-ui/core";
+
+export const myNFTStyles = makeStyles(theme => ({
+  content: {
+    width: "100%",
+    height: "100%",
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    minHeight: "calc(100vh - 80px)",
+    maxHeight: "calc(100vh - 80px)",
+    overflowX: "hidden",
+    padding: "50px 24px 0px",
+    backgroundImage: `url(${require("assets/pixImages/fractionalise_background.png")})`,
+    backgroundRepeat: "inherit",
+    backgroundSize: "100% 100%",
+
+    [theme.breakpoints.down("xs")]: {
+      padding: "50px 12px 0px",
+    },
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: 800,
+    fontFamily: "Agrandir",
+    color: "#431AB7",
+    lineHeight: "104.5%",
+    textTransform: "uppercase",
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    [theme.breakpoints.down(950)]: {
+      fontSize: 35,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 22,
+    },
+  },
+  subTitleSection: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    fontSize: 18,
+    fontWeight: 800,
+    fontFamily: "Agrandir",
+    color: "#431AB7",
+    textTransform: "uppercase",
+    lineHeight: "23px",
+    marginTop: 32,
+    cursor: "pointer",
+    [theme.breakpoints.down(1110)]: {
+      fontSize: 15,
+    },
+    [theme.breakpoints.down(950)]: {
+      fontSize: 12,
+    },
+    [theme.breakpoints.down(950)]: {
+      fontSize: 11,
+    },
+  },
+  tabSection: {
+    minWidth: 482,
+    height: 55,
+    background: "#EFF2FD",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: "#431AB799",
+    [theme.breakpoints.down(1250)]: {
+      minWidth: 420,
+    },
+    [theme.breakpoints.down(1110)]: {
+      minWidth: 350,
+    },
+    [theme.breakpoints.down(950)]: {
+      minWidth: 275,
+    },
+    [theme.breakpoints.down(580)]: {
+      minWidth: 190,
+    },
+  },
+  selectedTabSection: {
+    color: "#431AB7",
+    borderBottom: "4px solid #431AB7",
+  },
+  cardsGroup: {
+    marginTop: 64,
+    width: "100%",
+    maxWidth: 1400,
+    [theme.breakpoints.down("sm")]: {
+      marginBottom: 50
+    },
+  }
+}));

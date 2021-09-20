@@ -14,7 +14,19 @@ export const syntheticCollectionCardStyles = makeStyles(theme => ({
     backgroundColor: "#FFF",
     boxShadow: "0px 4px 8px #9EACF2",
     borderRadius: 16,
-    position: 'relative'
+    position: 'relative',
+
+    [theme.breakpoints.down(1350)]: {
+      maxWidth: '33%',
+    },
+    [theme.breakpoints.down(1000)]: {
+      maxWidth: '50%',
+    },
+    [theme.breakpoints.down(860)]: {
+      margin: "auto",
+      maxWidth: 330,
+      marginBottom: 20,
+    },
   },
   image: {
     width: '100%',
@@ -69,6 +81,9 @@ export const syntheticCollectionCardStyles = makeStyles(theme => ({
     color: '#431AB7',
     fontSize: 18,
     fontWeight: 800,
+    [theme.breakpoints.down(1200)]: {
+      fontSize: 15,
+    },
   },
   avatar: {
     position: 'absolute',

@@ -2,7 +2,7 @@ import React from "react";
 import Carousel from "react-elastic-carousel";
 import { useHistory } from "react-router";
 
-import { Grid } from "@material-ui/core";
+import { createMuiTheme, Grid, MuiThemeProvider, useMediaQuery, useTheme } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import {
@@ -54,8 +54,20 @@ const SyntheticFractionalisePage = ({
   openFractionalize,
   setOpenFractionalize
 }) => {
+  const theme = createMuiTheme({
+    breakpoints: {
+      keys: ["xs", "sm", "md", "lg", "xl"],
+      values: { xs: 0, sm: 568, md: 860, lg: 1200, xl: 1460 }
+    }
+  });
   const classes = nftFractionalisationStyles();
   const history = useHistory();
+  const isTablet = useMediaQuery(theme.breakpoints.down(1200));
+  const isNarrow = useMediaQuery(theme.breakpoints.down(860));
+
+  const itemsToShow = (isNarrow)
+    ? 1 : isTablet
+      ? 2 : 3
 
   if (selectedTab !== "synthetic" || openFractionalize) {
     history.push('/pix/fractionalise/');
@@ -67,7 +79,7 @@ const SyntheticFractionalisePage = ({
         <div className={classes.rewardsWrapper}>
           <div className={classes.rewardsContent}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={8}>
+              <Grid item xs={12} sm={12} md={6} lg={8}>
                 <div className={classes.rewardsTitle}>
                   Create  a  synthetic<br />
                   derivative out of your NFT collection
@@ -77,7 +89,7 @@ const SyntheticFractionalisePage = ({
                   interest out of the trading fees.
                 </div>
               </Grid>
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item xs={12} sm={12} md={6} lg={4}>
                 <div
                   className={classes.syntheticFractionaliseBtn}
                   onClick={() => setOpenFractionalize(true)}
@@ -103,7 +115,7 @@ const SyntheticFractionalisePage = ({
               <span>Featured NFT Collections</span>
             </div>
             <div className={classes.topNFTContent}>
-              <Carousel isRTL={false} itemsToShow={3} pagination={false}>
+              <Carousel isRTL={false} itemsToShow={itemsToShow} pagination={false}>
                 {TopNFTList.map((item, idx) => (
                   <SyntheticCollectionCard item={item} />
                 ))}
@@ -116,13 +128,15 @@ const SyntheticFractionalisePage = ({
             </div>
             <div className={classes.allNFTSection}>
               {TopNFTList && TopNFTList.length ? (
-                <Grid container spacing={2}>
-                  {TopNFTList.map((item, idx) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                      <SyntheticCollectionCard item={item} />
-                    </Grid>
-                  ))}
-                </Grid>
+                <MuiThemeProvider theme={theme}>
+                  <Grid container spacing={2}>
+                    {TopNFTList.map((item, idx) => (
+                      <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                        <SyntheticCollectionCard item={item} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </MuiThemeProvider>
               ) : (
                 <div
                   style={{

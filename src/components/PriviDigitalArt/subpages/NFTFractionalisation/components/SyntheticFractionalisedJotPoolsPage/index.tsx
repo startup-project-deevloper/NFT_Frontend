@@ -469,6 +469,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
               <SecondaryButton
                 size="medium"
                 style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2" }}
+                onClick={() => setOpenRemoveLiquidityModal(true)}
               >
                 REMOVE
               </SecondaryButton>

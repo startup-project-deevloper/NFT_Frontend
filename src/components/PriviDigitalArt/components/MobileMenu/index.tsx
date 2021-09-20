@@ -6,7 +6,6 @@ import { Tab, Tabs } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import { useMobileMenuStyles } from "./index.styles";
 import { useHistory, useLocation } from "react-router-dom";
-import { PrimaryButton } from "shared/ui-kit";
 
 const TABS = [
   "HOME",
@@ -65,7 +64,7 @@ export default function MobileMenu() {
   };
 
   return (
-    <Box className={classes.container} display="flex" alignItems="center">
+    <Box className={classes.container}>
       <Tabs
         variant="scrollable"
         scrollButtons="auto"
@@ -84,29 +83,6 @@ export default function MobileMenu() {
           />
         ))}
       </Tabs>
-      <PrimaryButton
-        size="medium"
-        onClick={() => {}}
-        style={{
-          backgroundColor: "#DDFF57",
-          padding: "8px 24px",
-          display: "flex",
-          alignItems: "center",
-          color: "#431AB7",
-          fontSize: "14px",
-          width: "320px",
-        }}
-      >
-        <img
-          src={require("assets/icons/polygon_scan.png")}
-          style={{
-            width: "24px",
-            height: "24px",
-            marginRight: "16px",
-          }}
-        />
-        Polygon bridge
-      </PrimaryButton>
     </Box>
   );
 }

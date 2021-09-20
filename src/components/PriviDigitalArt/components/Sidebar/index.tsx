@@ -130,6 +130,7 @@ const SidebarContent = ({ handleRefresh }) => {
               alignItems: "center",
               color: "#431AB7",
               fontSize: "14px",
+              borderRadius: "4px",
             }}
           >
             <img

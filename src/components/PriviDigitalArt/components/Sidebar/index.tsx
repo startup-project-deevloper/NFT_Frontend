@@ -9,6 +9,7 @@ import { SellModal } from "../../modals/SellModal";
 import styles from "shared/ui-kit/PriviAppSidebar/index.module.css";
 import AppSidebar from "shared/ui-kit/PriviAppSidebar";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
+import { PrimaryButton } from "shared/ui-kit";
 
 const TABS = [
   "HOME",
@@ -118,6 +119,29 @@ const SidebarContent = ({ handleRefresh }) => {
               {getCurrentActiveTab() === TABS[3] ? "Sell Content" : "Create NFT"}
             </span>
           </li>
+          <PrimaryButton
+            size="medium"
+            onClick={() => {}}
+            style={{
+              backgroundColor: "#DDFF57",
+              margin: "14px 0 0 14px",
+              padding: "8px 24px",
+              display: "flex",
+              alignItems: "center",
+              color: "#431AB7",
+              fontSize: "14px",
+            }}
+          >
+            <img
+              src={require("assets/icons/polygon_scan.png")}
+              style={{
+                width: "24px",
+                height: "24px",
+                marginRight: "16px",
+              }}
+            />
+            Polygon bridge
+          </PrimaryButton>
         </ul>
       </div>
 

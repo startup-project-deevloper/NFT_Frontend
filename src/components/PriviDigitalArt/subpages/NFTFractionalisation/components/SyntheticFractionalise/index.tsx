@@ -47,7 +47,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const classes = useFractionaliseStyles();
   const { showAlertMessage } = useAlertMessage();
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down(960));
+  const isTablet = useMediaQuery(theme.breakpoints.down(768));
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [selectedNFT, setSelectedNFT] = useState<any>();
@@ -197,40 +197,91 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   return (
     <div className={classes.root}>
       <BackButton purple overrideFunction={goBack} />
-      <div className={classes.title}>
-        Synthetic Fractionalise your NFT
-      </div>
-      <Grid container spacing={5}>
-        <Grid item xs={12} md={6}>
-          <div className={classes.text}>
-            Lock your NFT, get a synthetic copy, fractionalise it, create a derivative and get interest out of the trading fees.
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          <div className={classes.title}>
+            Synthetic Fractionalise your NFT
           </div>
-          {!walletConnected && (
-            <div className={classes.walletRow}>
-              <div>
-                <img src={require("assets/emojiIcons/icon_bell.png")} alt="bell" />
-                To Synthetic Fractionalise your NFTs you need first to connect your wallet.
-              </div>
-              <button onClick={handleConnectWallet}>Connect Your Wallet</button>
+        </Grid>
+      </Grid>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          <Box display="flex" flexDirection="column" height="100%">
+            <div className={classes.text}>
+              {walletConnected ? "You will create a synthetic copy of the NFT you are selecting" : "Lock your NFT, get a synthetic copy, fractionalise it, create a derivative and get interest out of the trading fees."}
             </div>
-          )}
-
-          {isTablet && (
-            <Grid item xs={12} md={6}>
-              <div className={classes.nftsBox}>
-                <div className={classes.nftsTitle}>
-                  {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
-                  {!isSynthetic && <span>{userNFTs?.filter(n => n.selected)?.length ?? 0}</span>}
-                </div>
-                {isSynthetic && (
-                  <div className={classes.text} style={{ textAlign: "center" }}>
-                    You can only select one NFT
-                  </div>
+            {walletConnected ? (
+              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
+                {userNFTs && userNFTs.length > 0 ? (
+                  <MasonryGrid
+                    gutter={"24px"}
+                    data={userNFTs}
+                    renderItem={(item, index) => (
+                      <NFTCard
+                        item={item}
+                        key={`item-${index}`}
+                        handleSelect={() => {
+                          if (userNFTs) {
+                            let nftsCopy = [...userNFTs];
+                            const selected = !userNFTs[index].selected;
+                            nftsCopy[index] = {
+                              ...userNFTs[index],
+                              selected: !userNFTs[index].selected,
+                            };
+                            // only need one selected
+                            if (selected) {
+                              for (let i = 0; i < nftsCopy.length; i++) {
+                                if (i != index) nftsCopy[i].selected = false;
+                              }
+                            }
+                            setSelectedNFT(nftsCopy[index]);
+                            setUserNFTs(nftsCopy);
+                          }
+                        }}
+                      />
+                    )}
+                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
+                  />
+                ) : (
+                  <Box className={classes.emptyBox}>
+                    {/* <Box>😞</Box> */}
+                    <img src={require("assets/pixImages/not_found_wallet.png")} />
+                    <Box className={classes.detailsLabel} mt={1}>
+                      Not NFT found on your wallet.
+                    </Box>
+                  </Box>
                 )}
-                <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
-                <div className={classes.detailsLabel}>NFT Fractions details</div>
-                <Grid container spacing={2} style={{ display: "flex", alignItems: "flex-end" }}>
-                  {/* <Grid item xs={12} md={6}>
+              </LoadingWrapper>
+            ) : (
+              <Grid container className={classes.walletRow}>
+                <Grid item xs={12} md={6}>
+                  <div>
+                    <img src={require("assets/emojiIcons/icon_bell.png")} alt="bell" />
+                    To Synthetic Fractionalise your NFTs you need first to connect your wallet.
+                  </div>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <button onClick={handleConnectWallet}>Connect Your Wallet</button>
+                </Grid>
+              </Grid>
+            )}
+
+            {isTablet && (
+              <Grid item xs={12} sm={6}>
+                <div className={classes.nftsBox}>
+                  <div className={classes.nftsTitle}>
+                    {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
+                    {!isSynthetic && <span>{userNFTs?.filter(n => n.selected)?.length ?? 0}</span>}
+                  </div>
+                  {isSynthetic && (
+                    <div className={classes.text} style={{ textAlign: "center" }}>
+                      You can only select one NFT
+                    </div>
+                  )}
+                  <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
+                  <div className={classes.detailsLabel}>NFT Fractions details</div>
+                  <Grid container spacing={2} style={{ display: "flex", alignItems: "flex-end" }}>
+                    {/* <Grid item xs={12} md={6}>
                     <InputWithLabelAndTooltip
                       labelName="Name"
                       inputValue={name}
@@ -264,29 +315,29 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                       hasImage
                     />
                   </Grid> */}
-                  <Grid item xs={12} md={12}>
-                    <InputWithLabelAndTooltip
-                      labelName="Initial Fraction Price"
-                      inputValue={!initialPrice ? "" : initialPrice.toString()}
-                      minValue={0}
-                      required
-                      type="number"
-                      onInputValueChange={e => setInitialPrice(e.target.value)}
-                      theme="light"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={12} className={classes.shortLabel}>
-                    <InputWithLabelAndTooltip
-                      labelName="Your NFT will be fractionalised in 10000 JOTs. How many of them do you want to keep?"
-                      inputValue={!supply ? "" : supply.toString()}
-                      minValue={0}
-                      required
-                      type="number"
-                      onInputValueChange={e => setSupply(e.target.value)}
-                      theme="light"
-                    />
-                  </Grid>
-                  {/* <Grid item xs={12} md={12}>
+                    <Grid item xs={12} md={12}>
+                      <InputWithLabelAndTooltip
+                        labelName="Initial Fraction Price"
+                        inputValue={!initialPrice ? "" : initialPrice.toString()}
+                        minValue={0}
+                        required
+                        type="number"
+                        onInputValueChange={e => setInitialPrice(e.target.value)}
+                        theme="light"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={12} className={classes.shortLabel}>
+                      <InputWithLabelAndTooltip
+                        labelName="Your NFT will be fractionalised in 10000 JOTs. How many of them do you want to keep?"
+                        inputValue={!supply ? "" : supply.toString()}
+                        minValue={0}
+                        required
+                        type="number"
+                        onInputValueChange={e => setSupply(e.target.value)}
+                        theme="light"
+                      />
+                    </Grid>
+                    {/* <Grid item xs={12} md={12}>
                     <div className={classes.label}>Minimum Unlocking Date</div>
                     <DateInput
                       minDate={new Date()}
@@ -298,74 +349,30 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                     />
                   </Grid>
                   <Box className={classes.description}>Early withdrawal will have a penalty</Box> */}
-                  <Grid item xs={12} md={12}>
-                    <Box className={classes.borderBox}>
-                      A Synthetic NFT will be received when the NFT gets locked and validated.
-                      <b> You can earn from fees coming from liquidity pool and derivative trading</b>
-                    </Box>
+                    <Grid item xs={12} md={12}>
+                      <Box className={classes.borderBox}>
+                        A Synthetic NFT will be received when the NFT gets locked and validated.
+                        <b> You can earn from fees coming from liquidity pool and derivative trading</b>
+                      </Box>
+                    </Grid>
                   </Grid>
-                </Grid>
 
-                <Box mt="40px" display="flex" justifyContent="flex-end">
-                  <button
-                    disabled={!walletConnected}
-                    className={classes.nftsButton}
-                    onClick={handleFractionalise}
-                  >
-                    Continue
-                  </button>
-                </Box>
-              </div>
-            </Grid>
-          )}
-
-          {walletConnected && (
-            <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
-              {userNFTs && userNFTs.length > 0 ? (
-                <MasonryGrid
-                  gutter={"24px"}
-                  data={userNFTs}
-                  renderItem={(item, index) => (
-                    <NFTCard
-                      item={item}
-                      key={`item-${index}`}
-                      handleSelect={() => {
-                        if (userNFTs) {
-                          let nftsCopy = [...userNFTs];
-                          const selected = !userNFTs[index].selected;
-                          nftsCopy[index] = {
-                            ...userNFTs[index],
-                            selected: !userNFTs[index].selected,
-                          };
-                          // only need one selected
-                          if (selected) {
-                            for (let i = 0; i < nftsCopy.length; i++) {
-                              if (i != index) nftsCopy[i].selected = false;
-                            }
-                          }
-                          setSelectedNFT(nftsCopy[index]);
-                          setUserNFTs(nftsCopy);
-                        }
-                      }}
-                    />
-                  )}
-                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
-                />
-              ) : (
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  <Box className={classes.emptyBox}>
-                    <Box>😞</Box>
-                    <Box className={classes.detailsLabel} mt={1}>
-                      Not NFT found on your wallet.
-                    </Box>
+                  <Box mt="40px" display="flex" justifyContent="flex-end">
+                    <button
+                      disabled={!walletConnected}
+                      className={classes.nftsButton}
+                      onClick={handleFractionalise}
+                    >
+                      Continue
+                    </button>
                   </Box>
-                </Box>
-              )}
-            </LoadingWrapper>
-          )}
+                </div>
+              </Grid>
+            )}
+          </Box>
         </Grid>
         {!isTablet && (
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={6}>
             <div className={classes.nftsBox}>
               <div className={classes.nftsTitle}>
                 {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}

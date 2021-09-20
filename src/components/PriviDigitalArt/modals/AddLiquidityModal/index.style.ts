@@ -1,8 +1,9 @@
-import React from "react";
 import { makeStyles } from "@material-ui/core";
-import { Color, FontSize, Gradient } from "shared/ui-kit";
 
 export const AddLiquidityModalStyles = makeStyles((theme) => ({
+  container: {
+    maxWidth: "508px !important",
+  },
   inputLiquidity: {
     margin: "20px 0",
     background: "rgba(144, 155, 255, 0.16)",
@@ -17,14 +18,6 @@ export const AddLiquidityModalStyles = makeStyles((theme) => ({
     fontSize: "12px",
     minWidth: "55px",
   },
-
-  leftBalance: {
-    // paddingLeft: "20px",
-    // paddingRight: theme.spacing(20),
-    [theme.breakpoints.down("sm")]: {
-      paddingTop: "40px",
-    },
-  },
   usdWrap: {
     display: "flex",
     alignItems: "center",
@@ -34,14 +27,9 @@ export const AddLiquidityModalStyles = makeStyles((theme) => ({
   },
   point: {
     background: "#D9F66F",
-    width: "24px",
-    height: "24px",
-    borderRadius: "12px",
-  },
-  
-  rightLiquidity: {
-    // paddingRight: "20px",
-  },
-
-  
+    width: "13px",
+    height: "13px",
+    borderRadius: "100%",
+    marginRight: 4,
+  }
 }));

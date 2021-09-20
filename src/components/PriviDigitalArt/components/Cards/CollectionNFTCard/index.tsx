@@ -19,7 +19,7 @@ export default function CollectionNFTCard({ item, handleSelect, hiddenHeader = f
             </Box>
           )}
           <img src={require(`assets/backgrounds/digital_art_1.png`)} alt={item.MediaName} />
-          <Box display="flex" flexDirection="column" width={"90%"} mt={1}>
+          <Box display="flex" flexDirection="column" width={"90%"} mt={"4px"}>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
               <div className={classes.typo1}>Owner</div>
               <div className={classes.typo2}>{`${item.owner} JOTS`}</div>

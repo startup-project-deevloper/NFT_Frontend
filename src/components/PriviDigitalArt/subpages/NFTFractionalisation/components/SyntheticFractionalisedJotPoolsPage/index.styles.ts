@@ -20,6 +20,16 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     boxSizing: "border-box",
     borderRadius: "20px",
     marginBottom: "10px",
+    "& .MuiTableContainer-root": {
+      boxShadow: 'none',
+    },
+    "& .MuiTableCell-head": {
+      fontSize: 18,
+    },
+    "& .MuiTableCell-root": {
+      borderBottom: 'none',
+      borderTop: "1px solid rgba(224, 224, 224, 1)",
+    }
   },
   boxBody: {
     margin: "50px 50px",
@@ -36,7 +46,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     background: "#DDFF57",
     boxShadow: "0px 25px 36px -11px rgba(0, 0, 0, 0.02)",
     borderRadius: 20,
-    padding: "30px 30px 0 30px",
+    padding: "27px 27px 0 27px",
   },
   editWrap: {
     padding: "20px 0",
@@ -64,10 +74,14 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     boxShadow: "0px 3.40102px 6.80203px #9EACF2",
     background: Color.Purple,
   },
+  chartWrapper: {
+    padding: "30px 20px 30px 20px",
+  },
   controlParentBox: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    padding: "30px 40px",
     [theme.breakpoints.down("sm")]: {
       alignItems: "flex-start",
     },
@@ -140,10 +154,17 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     fontStyle: "normal",
     fontWeight: 800,
-    fontSize: "38px",
+    fontSize: "18px",
     lineHeight: "104.5%",
   },
   h2: {
+    fontFamily: "Agrandir",
+    fontStyle: "normal",
+    fontWeight: 800,
+    fontSize: "22px",
+    lineHeight: "104.5%",
+  },
+  sectionTitle: {
     fontFamily: "Agrandir",
     fontStyle: "normal",
     fontWeight: 800,
@@ -153,8 +174,8 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
   h3: {
     fontFamily: "Agrandir",
     fontStyle: "normal",
-    fontWeight: "bold",
-    fontSize: "29px",
+    fontWeight: 400,
+    fontSize: "24px",
     lineHeight: "104.5%",
   },
   h4: {
@@ -168,7 +189,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     fontStyle: "normal",
     fontWeight: "normal",
-    fontSize: "18px",
+    fontSize: "14px",
     lineHeight: "120%",
   },
   h6: {

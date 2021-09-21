@@ -52,6 +52,7 @@ const TopNFTList = [
 const SyntheticFractionalisePage = ({
   selectedTab,
   openFractionalize,
+  setSelectedTab,
   setOpenFractionalize
 }) => {
   const theme = createTheme({
@@ -70,7 +71,8 @@ const SyntheticFractionalisePage = ({
       ? 2 : 3
 
   if (selectedTab !== "synthetic" || openFractionalize) {
-    history.push('/pix/fractionalise/');
+    // history.push('/pix/fractionalise/');
+    setSelectedTab("synthetic");
   }
 
   return (

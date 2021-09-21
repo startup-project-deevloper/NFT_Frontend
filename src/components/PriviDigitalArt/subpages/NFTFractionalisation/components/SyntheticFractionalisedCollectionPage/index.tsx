@@ -86,7 +86,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     <div className={classes.root}>
       <div className={classes.collectionInfoSection}>
         <Box display="flex" justifyContent="space-between" className={classes.backButtonContainer}>
-          <BackButton purple overrideFunction={goBack} />
+          <BackButton purple overrideFunction={() => history.push('/pix/fractionalise/synthetic-derivative')} />
           <div className={classes.tradeDerivativeButton} onClick={() => {}}>
             <div>
               <span>TRADE DERIVATIVES</span>

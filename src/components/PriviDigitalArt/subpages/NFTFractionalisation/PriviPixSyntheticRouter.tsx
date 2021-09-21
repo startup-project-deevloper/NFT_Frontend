@@ -18,6 +18,7 @@ export default function PriviPixSyntheticRouter(props) {
       <Route exact path="/pix/fractionalise/synthetic-derivative">
         <SyntheticFractionalisePage
           openFractionalize={props.openFractionalize}
+          setSelectedTab={props.setSelectedTab}
           selectedTab={props.selectedTab}
           setOpenFractionalize={props.setOpenFractionalize}
         />

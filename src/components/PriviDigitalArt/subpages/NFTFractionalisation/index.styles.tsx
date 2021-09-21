@@ -420,6 +420,9 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   allNFTWrapper: {
     backgroundColor: '#FFF',
     padding: '50px 40px',
+    [theme.breakpoints.down(658)]: {
+      padding: '50px 15px',
+    },
   },
   topNFTTitle: {
     display: "flex",

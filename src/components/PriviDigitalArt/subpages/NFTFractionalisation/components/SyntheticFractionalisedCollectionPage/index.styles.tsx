@@ -20,6 +20,9 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       padding: "39px 25px",
     },
+    [theme.breakpoints.down("xs")]: {
+      padding: "39px 15px",
+    },
   },
   "@keyframes gradientmove": {
     "0%": { backgroundPosition: "100% 50%" },
@@ -89,12 +92,22 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       [theme.breakpoints.down("sm")]: {
         width: 237,
       },
+      [theme.breakpoints.down(600)]: {
+        width: "100%",
+        left: 0,
+        top: 0,
+        height: 320,
+        borderRadius: 20,
+      },
     },
     [theme.breakpoints.down("md")]: {
       padding: "30px 27px 42px 340px",
     },
     [theme.breakpoints.down("sm")]: {
       padding: "30px 15px 42px 260px",
+    },
+    [theme.breakpoints.down(600)]: {
+      padding: "350px 15px 30px"
     },
   },
   collectionInfos: {
@@ -115,12 +128,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       marginTop: 24,
       "& > div": {
         width: "50%",
-      }
-    },
-    [theme.breakpoints.down("xs")]: {
-      marginTop: 24,
-      "& > div": {
-        width: "100%",
+        paddingRight: 8,
       }
     },
   },
@@ -200,6 +208,9 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     width: "100%",
     [theme.breakpoints.down("sm")]: {
       padding: "24px 25px 0px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "24px 15px 0px",
     },
   },
   nftTabSection: {

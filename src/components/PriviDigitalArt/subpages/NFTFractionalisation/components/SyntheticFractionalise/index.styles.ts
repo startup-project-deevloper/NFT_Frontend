@@ -60,6 +60,9 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     lineHeight: "23px",
     color: "#431AB7",
     marginBottom: "24px",
+    [theme.breakpoints.down(768)]: {
+      fontSize: 16,
+    }
   },
   shortLabel: {
     "& label": {
@@ -71,20 +74,30 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    "& div": {
-      display: "flex",
-      alignItems: "center",
-      fontSize: "14px",
-      fontWeight: 800,
-      lineHeight: "18px",
-      color: "#431AB7",
-      width: "calc(60% - 24px)",
-      marginRight: "24px",
-      "& img": {
-        marginRight: "24px",
-        width: "32px",
-        height: "32px",
+    "& .MuiGrid-item": {
+      "& div": {
+        display: "flex",
+        alignItems: "center",
+        fontSize: "14px",
+        fontWeight: 800,
+        lineHeight: "18px",
+        color: "#431AB7",
+        // width: "calc(60% - 24px)",
+        // marginRight: "24px",
+        "& img": {
+          marginRight: "24px",
+          width: "32px",
+          height: "32px",
+        },
       },
+      "&:last-child": {
+        display: "flex",
+        justifyContent: "flex-end",
+        [theme.breakpoints.down("md")]: {
+          justifyContent: "center",
+          paddingTop: 35
+        }
+      }
     },
     fontFamily: "Agrandir",
     fontStyle: "normal",
@@ -98,7 +111,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       fontSize: "14px",
       lineHeight: "18px",
       textAlign: "center",
-      width: "40%",
+      // width: "40%",
       padding: "8px 32px",
     },
     [theme.breakpoints.down(1110)]: {
@@ -134,7 +147,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       },
     },
     [theme.breakpoints.down(960)]: {
-      marginBottom: 16,
+      // marginBottom: 16,
     },
   },
 
@@ -203,11 +216,21 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     },
   },
   emptyBox: {
-    borderRadius: theme.spacing(1),
     background: "#EFF2FD",
-    boxShadow: "0px 4px 8px #9EACF2",
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
-    textAlign: "center",
+    border: "1px solid rgba(67, 26, 183, 0.24)",
+    boxSizing: "border-box",
+    borderRadius: "20px",
+    // padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    // textAlign: "center",
+    display:"flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    // height: "100%",
+    // height: "calc(100% - 24px - 20px)",
+
+
   },
   label: {
     marginBottom: "9px",

@@ -13,6 +13,11 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     alignItems: "center",
     color: "#431AB7",
   },
+  addButtonWrapper: {
+    width: "100%",
+    marginTop: "25px",
+    borderRadius: "20px",
+  },
   outBox: {
     width: "100%",
     background: "#FFFFFF",
@@ -21,15 +26,15 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     borderRadius: "20px",
     marginBottom: "10px",
     "& .MuiTableContainer-root": {
-      boxShadow: 'none',
+      boxShadow: "none",
     },
     "& .MuiTableCell-head": {
       fontSize: 18,
     },
     "& .MuiTableCell-root": {
-      borderBottom: 'none',
+      borderBottom: "none",
       borderTop: "1px solid rgba(224, 224, 224, 1)",
-    }
+    },
   },
   boxBody: {
     margin: "50px 50px",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { Grid } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
@@ -6,11 +6,13 @@ import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { Avatar, Text } from "shared/ui-kit";
 import PrintChart from "shared/ui-kit/Chart/Chart";
+import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { SyntheticFractionalisedJotPoolsPageStyles } from "./index.styles";
 import AddLiquidityModal from "components/PriviDigitalArt/modals/AddLiquidityModal";
 import RemoveLiquidityModal from "components/PriviDigitalArt/modals/RemoveLiquidityModal";
 import { ReactComponent as ArrowUp } from "assets/icons/arrow_up.svg";
 import { ReactComponent as ArrowDown } from "assets/icons/arrow_down.svg";
+import LiquidityModal from "../../modals/LiquidityModal";
 
 const FreeHoursChartConfig = {
   config: {
@@ -237,7 +239,13 @@ export const CoinFlipHistoryTable = ({ datas }) => {
           },
           {
             cell: (
-              <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" gridColumnGap="8px">
+              <Box
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="center"
+                gridColumnGap="8px"
+              >
                 {/* <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl: user?.anonAvatar ? require(`assets/anonAvatars/${user.anonAvatar}`) : "none"} /> */}
                 <Avatar size="tiny" url={user?.imageUrl ? user?.imageUrl : "none"} />
                 <Text>{user?.name}</Text>
@@ -254,20 +262,22 @@ export const CoinFlipHistoryTable = ({ datas }) => {
             cellAlign: "center",
           },
           {
-            cell: <SecondaryButton
-              size="medium"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: Color.Purple,
-                border: "0.7px solid #9EACF2",
-                borderRadius: "4px",
-                margin: "auto"
-              }}
-            >
-              <img src={require(`assets/icons/explorer.png`)} style={{ width: "24px", height: "24px" }} />
-            </SecondaryButton>,
+            cell: (
+              <SecondaryButton
+                size="medium"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: Color.Purple,
+                  border: "0.7px solid #9EACF2",
+                  borderRadius: "4px",
+                  margin: "auto",
+                }}
+              >
+                <img src={require(`assets/icons/explorer.png`)} style={{ width: "24px", height: "24px" }} />
+              </SecondaryButton>
+            ),
             cellAlign: "center",
           },
         ];
@@ -292,6 +302,14 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const [flipHistory, setFlipHistory] = React.useState<any[]>(tempHistory);
   const [openLiquidityModal, setOpenLiquidityModal] = React.useState<boolean>(false);
   const [openRemoveLiquidityModal, setOpenRemoveLiquidityModal] = React.useState<boolean>(false);
+  const [amount, setAmount] = useState<number>(0);
+  const [isAdd, setIsAdd] = useState<boolean>(false);
+  const [openProceedModal, setOpenProceedModal] = useState<boolean>(false);
+
+  // todo: Remove code
+  const [liquidity, setLiquidity] = useState<number>(0);
+
+  const isProduction = process.env.REACT_APP_ENV === "Prod";
 
   React.useEffect(() => {
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
@@ -358,11 +376,31 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
     setPeriod(period);
   };
 
+  const handleConfirmAddLiquidity = async (amount: string) => {
+    // todo: Remove code
+    setLiquidity(prev => prev + 1);
+    setIsAdd(true);
+    setAmount(Number(amount));
+    setOpenProceedModal(true);
+
+    setOpenLiquidityModal(false);
+  };
+
+  const handleConfirmRemoveLiquidity = async (amount: string) => {
+    // todo: Remove code
+    setLiquidity(prev => prev - 1);
+    setIsAdd(false);
+    setAmount(Number(amount));
+    setOpenProceedModal(true);
+
+    setOpenRemoveLiquidityModal(false);
+  };
+
   return (
     <Box className={classes.root}>
       <Box className={classes.outBox}>
         <Box className={classes.boxBody}>
-          <Box className={classes.infoWrap}>
+          <Box className={classes.infoWrap} display="flex" flexDirection="column">
             <Grid container spacing={4}>
               <Grid item md={3} xs={12}>
                 <Box className={classes.leftJots}>
@@ -428,66 +466,84 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 </Box>
               </Grid>
             </Grid>
+            {liquidity === 0 && (
+              <Box className={classes.addButtonWrapper}>
+                <PrimaryButton
+                  size="large"
+                  onClick={() => setOpenLiquidityModal(true)}
+                  style={{
+                    width: "100%",
+                    background: "#DDFF57",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#431AB7",
+                  }}
+                >
+                  ADD LIQUIDITY
+                </PrimaryButton>
+              </Box>
+            )}
           </Box>
-          {/* <Box className={classes.editWrap}>
-          </Box> */}
         </Box>
       </Box>
-      <Box className={classes.outBox}>
-        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
-          MY STAKING
+      {liquidity !== 0 && (
+        <Box className={classes.outBox}>
+          <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
+            MY STAKING
+          </Box>
+          <Grid container className={classes.botRow} style={{ padding: "0 50px 30px 50px" }}>
+            <Grid item md={3} xs={12}>
+              <Box className={classes.infoItem}>
+                <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                  SHARE AMOUNT
+                </Box>
+                <Box className={classes.h3} mt={1}>
+                  11 SHARES
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Box className={classes.infoItem}>
+                <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                  POOL OWNERSHIP
+                </Box>
+                <Box className={classes.h3} mt={1}>
+                  20%
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Box className={classes.infoItem}>
+                <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                  MY LIQUIDITY VALUE
+                </Box>
+                <Box className={classes.h3} mt={1}>
+                  1000 USD
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Box display="flex" alignItems="center">
+                <SecondaryButton
+                  size="medium"
+                  style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2", height: 60 }}
+                  onClick={() => setOpenRemoveLiquidityModal(true)}
+                >
+                  REMOVE
+                </SecondaryButton>
+                <PrimaryButton
+                  size="medium"
+                  style={{ background: Color.Purple, width: "100%", height: 60 }}
+                  onClick={() => setOpenLiquidityModal(true)}
+                >
+                  ADD MORE
+                </PrimaryButton>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
-        <Grid container className={classes.botRow} style={{ padding: "0 50px 30px 50px" }}>
-          <Grid item md={3} xs={12}>
-            <Box className={classes.infoItem}>
-              <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                SHARE AMOUNT
-              </Box>
-              <Box className={classes.h3} mt={1}>
-                11 SHARES
-              </Box>
-            </Box>
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Box className={classes.infoItem}>
-              <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                POOL OWNERSHIP
-              </Box>
-              <Box className={classes.h3} mt={1}>
-                20%
-              </Box>
-            </Box>
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Box className={classes.infoItem}>
-              <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                MY LIQUIDITY VALUE
-              </Box>
-              <Box className={classes.h3} mt={1}>
-                1000 USD
-              </Box>
-            </Box>
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Box display="flex" alignItems="center">
-              <SecondaryButton
-                size="medium"
-                style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2", height: 60 }}
-                onClick={() => setOpenRemoveLiquidityModal(true)}
-              >
-                REMOVE
-              </SecondaryButton>
-              <PrimaryButton
-                size="medium"
-                style={{ background: Color.Purple, width: "100%", height: 60 }}
-                onClick={() => setOpenLiquidityModal(true)}
-              >
-                ADD MORE
-              </PrimaryButton>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
+      )}
+
       <Box className={classes.outBox} style={{ paddingBottom: 20 }}>
         <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
           Coin flip history
@@ -495,12 +551,23 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
         <CoinFlipHistoryTable datas={flipHistory} />
       </Box>
       {openLiquidityModal && (
-        <AddLiquidityModal open={openLiquidityModal} handleClose={() => setOpenLiquidityModal(false)} />
+        <AddLiquidityModal
+          open={openLiquidityModal}
+          handleClose={() => setOpenLiquidityModal(false)}
+          onConfirm={handleConfirmAddLiquidity}
+        />
       )}
       <RemoveLiquidityModal
         open={openRemoveLiquidityModal}
         onClose={() => setOpenRemoveLiquidityModal(false)}
-        onConfirm={() => setOpenRemoveLiquidityModal(false)}
+        onConfirm={handleConfirmRemoveLiquidity}
+      />
+      <LiquidityModal
+        open={openProceedModal}
+        onClose={() => setOpenProceedModal(false)}
+        amount={amount}
+        isAdd={isAdd}
+        onCompleted={() => {}}
       />
     </Box>
   );

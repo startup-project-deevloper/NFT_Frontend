@@ -17,14 +17,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     background: "#ffffff",
     width: "100%",
     position: "relative",
-    "& img": {
-      width: 436,
-      height: 334,
-      borderRadius: 30,
-      zIndex: 1,
-      position: "absolute",
-      top: 113,
-      left: 29,
+    [theme.breakpoints.down("sm")]: {
+      padding: "39px 25px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "39px 15px",
     },
   },
   "@keyframes gradientmove": {
@@ -70,16 +67,70 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     },
   },
   collectionMainContent: {
+    position: "relative",
     background: "linear-gradient(118.22deg, #431AB7 42.55%, #9EACF2 114.51%)",
     boxShadow: "0px 46px 49px -19px rgba(96, 71, 202, 0.17)",
     borderRadius: 20,
     width: "100%",
-    height: 320,
+    height: "auto",
     padding: "30px 27px 42px 480px",
     marginTop: 32,
     color: "#ffffff",
     display: "flex",
     flexDirection: "column",
+    "& img": {
+      width: 436,
+      height: "calc(100% + 14px)",
+      borderRadius: 30,
+      zIndex: 1,
+      position: "absolute",
+      top: -7,
+      left: 0,
+      [theme.breakpoints.down("md")]: {
+        width: 300,
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: 237,
+      },
+      [theme.breakpoints.down(600)]: {
+        width: "100%",
+        left: 0,
+        top: 0,
+        height: 320,
+        borderRadius: 20,
+      },
+    },
+    [theme.breakpoints.down("md")]: {
+      padding: "30px 27px 42px 340px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "30px 15px 42px 260px",
+    },
+    [theme.breakpoints.down(600)]: {
+      padding: "350px 15px 30px"
+    },
+  },
+  collectionInfos: {
+    display: "flex",
+    justifyContent: "space-between",
+    rowGap: 24,
+    columnGap: 30,
+    marginTop: 37,
+    [theme.breakpoints.down("md")]: {
+      flexWrap: "wrap",
+      justifyContent: "flex-start",
+      columnGap: 0,
+      "& > div": {
+        width: "50%",
+      }
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginTop: 24,
+      "& > div": {
+        width: "50%",
+        paddingRight: 8,
+      }
+    },
   },
   typo1: {
     fontSize: 18,
@@ -87,19 +138,28 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     textTransform: "uppercase",
     lineHeight: "104.5%",
     fontFamily: "Agrandir",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 16,
+    },
   },
   typo2: {
     fontSize: 16,
     fontWeight: 800,
     lineHeight: "104.5%",
     fontFamily: "Agrandir",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 12,
+    },
   },
   typo3: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 800,
     lineHeight: "104.5%",
     fontFamily: "Agrandir",
     textTransform: "uppercase",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 16,
+    },
   },
   typo4: {
     fontSize: 14,
@@ -115,6 +175,10 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     marginLeft: 24,
     marginRight: 30,
     cursor: "pointer",
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: 15,
+      marginRight: 15,
+    },
   },
   plusSection: {
     display: "flex",
@@ -131,15 +195,29 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     paddingBottom: 31,
     borderBottom: "1px solid #FFFFFF22",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 30,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 25,
+    },
   },
   nftSection: {
     background: "#F6F5F8",
     padding: "24px 30px 0px",
     width: "100%",
+    [theme.breakpoints.down("sm")]: {
+      padding: "24px 25px 0px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "24px 15px 0px",
+    },
   },
   nftTabSection: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "flex-start",
+    columnGap: 55,
     width: "100%",
     fontSize: 22,
     fontWeight: 800,
@@ -150,9 +228,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     cursor: "pointer",
     borderBottom: "1px solid #00000022",
     marginBottom: 30,
+    overflowX: "auto",
+    minWidth: "760px",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 18,
+      columnGap: 45,
+    },
   },
   tabSection: {
-    minWidth: 240,
     height: 54,
     display: "flex",
     justifyContent: "center",
@@ -168,7 +251,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   jotPoolSection: {
     width: "100%",
     marginBottom: 50,
-  } , 
+  } ,
 }));
 
 export const EthIcon = () => (

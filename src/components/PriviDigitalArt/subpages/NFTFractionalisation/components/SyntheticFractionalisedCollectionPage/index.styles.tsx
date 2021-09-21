@@ -215,6 +215,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     width: "100%",
     [theme.breakpoints.down("sm")]: {
       padding: "24px 25px 0px",
+      marginBottom: 40,
     },
     [theme.breakpoints.down("xs")]: {
       padding: "24px 15px 0px",

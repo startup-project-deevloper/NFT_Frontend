@@ -140,7 +140,49 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     color: "#FFF",
     margin: 0,
   },
-
+  priceContent: {
+    borderRadius: 16,
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+    background: "rgba(67, 26, 183, 0.1)",
+    padding: "30px 16px",
+    rowGap: 20,
+    [theme.breakpoints.down("sm")]: {
+      rowGap: 45,
+      paddingTop: 65,
+      borderRadius: 10,
+    },
+  },
+  priceSecondaryContent: {
+    background: "rgba(133, 183, 26, 0.1)",
+    [theme.breakpoints.down("sm")]: {
+      background: "rgba(67, 26, 183, 0.1)",
+    },
+  },
+  priceButton: {
+    maxWidth: 380,
+    fontSize: "14px !important",
+    marginLeft: "0 !important",
+    [theme.breakpoints.down(1400)]: {
+      padding: "0 8px !important",
+    },
+    [theme.breakpoints.down(1200)]: {
+      padding: "0 8px !important",
+    },
+  },
+  tableTitle: {
+    fontWeight: 800,
+    fontSize: 24,
+    color: "#431AB7",
+    marginTop: 12,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 20,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 18,
+    },
+  },
   table: {
     marginTop: 24,
     minHeight: 400,
@@ -148,20 +190,56 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     "& .MuiTableCell-root": {
       fontFamily: "Agrandir",
       textAlign: 'center !important',
+      [theme.breakpoints.down('xs')]: {
+        padding: 8,
+      },
+      [theme.breakpoints.down(350)]: {
+        padding: "8px 4px",
+      },
     },
     "& .MuiTableRow-head": {
       background: Color.White,
       color: "#431AB7",
       "& .MuiTableCell-head": {
         border: "none",
-        fontSize: FontSize.L,
+        fontSize: 14,
         fontWeight: "bold",
-        color: Color.GrayDark,
+        color: Color.Purple,
+        lineHeight: "104%",
+        [theme.breakpoints.down('sm')]: {
+          fontSize: 12,
+        },
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 9,
+        },
       },
+    },
+    "& .MuiTableCell-body": {
+      fontSize: 14,
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 12,
+      },
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 9,
+      },
+      "& img": {
+        width: 24,
+        [theme.breakpoints.down('sm')]: {
+          width: 18,
+        },
+        [theme.breakpoints.down('xs')]: {
+          width: 12,
+        },
+      }
     },
 
     [theme.breakpoints.down("sm")]: {
       minHeight: 200,
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: -16,
+      marginRight: -16,
+      width: "calc(100% + 32px)",
     },
   },
 }));

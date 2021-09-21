@@ -215,7 +215,7 @@ export const TransactionTable = ({ datas }) => {
           },
           {
             cell: (
-              <img src={require(`assets/icons/polygon_scan.png`)} style={{ width: "32px", height: "32px" }} />
+              <img src={require(`assets/icons/polygon_scan.png`)} />
             ),
           },
         ];
@@ -580,115 +580,76 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           ) : (
             <Box className={classes.outBox}>
               <Box p={3} position="relative">
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
-                    <Box
-                      borderRadius={16}
-                      display="flex"
-                      justifyContent="center"
-                      height="100%"
-                      p={4}
-                      bgcolor="rgba(67, 26, 183, 0.1)"
-                    >
-                      <table>
-                        <tbody>
-                          <tr>
-                            <td>
-                              <Box className={classes.h3}>Owner Price</Box>
-                            </td>
-                            <td>
-                              <Box ml={3} className={classes.h3}>
-                                Supply
-                              </Box>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Box className={classes.h1} fontWeight={800}>
-                                $0.28
-                              </Box>
-                            </td>
-                            <td>
-                              <Box ml={3} className={classes.h1} fontWeight={800}>
-                                2455 JOTs
-                              </Box>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td colSpan={2}>
-                              <PrimaryButton
-                                className={classes.h4}
-                                size="medium"
-                                style={{
-                                  background: "#431AB7",
-                                  width: "100%",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  color: Color.White,
-                                }}
-                                onClick={handleOpenBuyJotsModal}
-                              >
-                                Buy
-                              </PrimaryButton>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <Box className={`${classes.priceContent} ${classes.priceSecondaryContent}`}>
+                      <Box display="flex" justifyContent="center" gridColumnGap={24}>
+                        <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
+                          <Box className={classes.h3}>Owner Price</Box>
+                          <Box className={classes.h1} fontWeight={800}>
+                            $0.28
+                          </Box>
+                        </Box>
+                        <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
+                          <Box className={classes.h3}>
+                            Supply
+                          </Box>
+                          <Box className={classes.h1} fontWeight={800}>
+                            2455 JOTs
+                          </Box>
+                        </Box>
+                      </Box>
+                      <Box display="flex" justifyContent="center">
+                        <PrimaryButton
+                          className={classes.priceButton}
+                          size="medium"
+                          style={{
+                            background: "#431AB7",
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            color: Color.White,
+                          }}
+                          onClick={handleOpenBuyJotsModal}
+                        >
+                          Buy
+                        </PrimaryButton>
+                      </Box>
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Box
-                      borderRadius={16}
-                      display="flex"
-                      justifyContent="center"
-                      height="100%"
-                      p={4}
-                      bgcolor="rgba(67, 26, 183, 0.1)"
-                    >
-                      <table>
-                        <tbody>
-                          <tr>
-                            <td colSpan={2}>
-                              <Box width={1} display="flex" justifyContent="center" className={classes.h3}>
-                                Quickswap Price
-                              </Box>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td colSpan={2}>
-                              <Box
-                                width={1}
-                                display="flex"
-                                justifyContent="center"
-                                className={classes.h1}
-                                fontWeight={800}
-                              >
-                                $0.28
-                              </Box>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <PrimaryButton
-                                className={classes.h4}
-                                size="medium"
-                                style={{ background: "#431AB7", color: Color.White }}
-                              >
-                                Buy on Quickswap
-                              </PrimaryButton>
-                            </td>
-                            <td>
-                              <PrimaryButton
-                                className={classes.h4}
-                                size="medium"
-                                style={{ marginLeft: 24, background: "#DDFF57", color: Color.Purple }}
-                              >
-                                Add liquidity on Quickswap
-                              </PrimaryButton>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <Box className={classes.priceContent}>
+                      <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
+                        <Box width={1} display="flex" justifyContent="center" className={classes.h3}>
+                          Quickswap Price
+                        </Box>
+                        <Box
+                          width={1}
+                          display="flex"
+                          justifyContent="center"
+                          className={classes.h1}
+                          fontWeight={800}
+                        >
+                          $0.28
+                        </Box>
+                      </Box>
+                      <Box display="flex" flexWrap="wrap" justifyContent="center" gridColumnGap={8} gridRowGap={8}>
+                        <PrimaryButton
+                          className={classes.priceButton}
+                          size="medium"
+                          style={{ background: "#431AB7", color: Color.White }}
+                        >
+                          Buy on Quickswap
+                        </PrimaryButton>
+
+                        <PrimaryButton
+                          className={classes.priceButton}
+                          size="medium"
+                          style={{ background: "#DDFF57", color: Color.Purple }}
+                        >
+                          Add liquidity on Quickswap
+                        </PrimaryButton>
+                      </Box>
                     </Box>
                   </Grid>
                 </Grid>
@@ -731,7 +692,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       <Box className={classes.outBox}>
         <Box className={classes.boxBody}>
           <Box width={1} p={2}>
-            <Box my={1} className={classes.h1} fontWeight={800}>
+            <Box className={classes.tableTitle}>
               Transactions
             </Box>
             <TransactionTable datas={transList} />

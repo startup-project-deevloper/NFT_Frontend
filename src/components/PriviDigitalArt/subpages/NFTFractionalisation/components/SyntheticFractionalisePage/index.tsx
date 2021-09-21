@@ -79,7 +79,7 @@ const SyntheticFractionalisePage = ({
         <div className={classes.rewardsWrapper}>
           <div className={classes.rewardsContent}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6} lg={8}>
+              <Grid item xs={12} sm={12} md={6} lg={7}>
                 <div className={classes.rewardsTitle}>
                   Create  a  synthetic<br />
                   derivative out of your NFT collection
@@ -89,7 +89,7 @@ const SyntheticFractionalisePage = ({
                   interest out of the trading fees.
                 </div>
               </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4}>
+              <Grid item xs={12} sm={12} md={6} lg={5} className={classes.buttons}>
                 <div
                   className={classes.syntheticFractionaliseBtn}
                   onClick={() => setOpenFractionalize(true)}

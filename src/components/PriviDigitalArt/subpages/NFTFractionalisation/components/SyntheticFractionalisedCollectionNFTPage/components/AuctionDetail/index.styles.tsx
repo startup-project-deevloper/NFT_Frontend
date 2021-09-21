@@ -17,7 +17,10 @@ export const AuctionDetailStyles = makeStyles(theme => ({
       lineHeight: "104.5%",
       color: Color.Black,
       margin: 0
-    }
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: 24,
+    },
   },
   blueCircle: {
     width: 18,
@@ -51,7 +54,10 @@ export const AuctionDetailStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     color: Color.GrayDark,
     marginTop: "8px",
-    marginRight: "8px"
+    marginRight: "8px",
+    [theme.breakpoints.down("sm")]: {
+      color: Color.Purple,
+    },
   },
   endingTime: {
     display: "flex"
@@ -59,12 +65,40 @@ export const AuctionDetailStyles = makeStyles(theme => ({
   boxWithBorder: {
     padding: "24px 0",
     borderBottom: `1px dashed rgba(24, 24, 24, 0.3)`,
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
+  },
+  bidToken: {
+    margin: 0,
+    fontSize: 18,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 14,
+      color: "#707582",
+    },
+  },
+  boxInfo: {
+    [theme.breakpoints.down("sm")]: {
+      marginBottom: 20,
+    },
   },
   bottom: {
     paddingTop: 44,
     "& svg": {
       marginRight: "7px"
-    }
+    },
+    [theme.breakpoints.down("sm")]: {
+      paddingTop: 24,
+      flexDirection: "column",
+
+      "& span": {
+        fontSize: 14,
+        color: "#707582",
+      },
+      "& > div:nth-child(1)": {
+        marginBottom: 20,
+      },
+    },
   }
 }))
 

@@ -123,7 +123,7 @@ const MarketActivity = () => {
 
   return (
     <div className={classes.offerList}>
-      <span>👋 Total offers: 21</span>
+      <span className={classes.offerTitle}>👋 Total offers: 21</span>
       <div className={classes.table}>
         <CustomTable headers={tableHeaders} rows={dummyTableData} placeholderText="No offers" />
       </div>

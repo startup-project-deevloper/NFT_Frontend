@@ -10,7 +10,7 @@ export default ({ auction }) => {
     <Box className={classes.root} display="flex" flexDirection="column">
       <p>Auction Details</p>
       <Box display="flex" mt="2px" justifyContent="space-between" className={classes.boxWithBorder}>
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" className={classes.boxInfo}>
           <span className={classes.typo1}>🔥 Top bid</span>
           <span className={classes.typo2}>12000 JOTS</span>
           <span className={classes.typo3}>$3200</span>
@@ -30,8 +30,10 @@ export default ({ auction }) => {
         </Box>
       </Box>
       <Box display="flex" className={classes.boxWithBorder}>
-        <div className={classes.blueCircle} />
-        <span>Bidding token is JOTS</span>
+        <Box display="flex" alignItems="center">
+          <div className={classes.blueCircle} />
+          <span className={classes.bidToken}>Bidding token is JOTS</span>
+        </Box>
       </Box>
       <Box display="flex" justifyContent="space-between" className={classes.bottom}>
         <Box display="flex">

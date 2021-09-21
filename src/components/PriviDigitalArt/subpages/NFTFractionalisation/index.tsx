@@ -213,6 +213,7 @@ const NFTFractionalisation = () => {
           <PriviPixSyntheticRouter
             openFractionalize={openFractionalize}
             selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
             setOpenFractionalize={setOpenFractionalize}
           />
         </div>

@@ -34,6 +34,13 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     marginLeft: "7px",
     marginTop: "-2px",
   },
+  backButtonContainer: {
+    paddingLeft: 48,
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+    }
+  },
   socialIcons: {
     display: "flex",
     alignItems: "center",

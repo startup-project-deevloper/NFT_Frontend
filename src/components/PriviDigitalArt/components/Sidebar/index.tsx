@@ -51,7 +51,7 @@ const SidebarContent = ({ handleRefresh }) => {
       return TABS[5];
     } else if (location.pathname.includes("like")) {
       return TABS[6];
-    } else if (location.pathname.includes("fractionalisation")) {
+    } else if (location.pathname.includes("fractionalisation") || location.pathname.includes("fractionalise")) {
       return TABS[7];
     }
 

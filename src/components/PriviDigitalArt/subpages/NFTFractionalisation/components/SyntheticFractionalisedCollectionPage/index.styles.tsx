@@ -24,6 +24,13 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       padding: "39px 15px",
     },
   },
+  backButtonContainer: {
+    paddingLeft: 48,
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+    }
+  },
   "@keyframes gradientmove": {
     "0%": { backgroundPosition: "100% 50%" },
     "100%": { backgroundPosition: "0% 50%" },

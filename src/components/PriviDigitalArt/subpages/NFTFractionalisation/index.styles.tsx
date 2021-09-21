@@ -386,8 +386,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       bottom: -40,
       left: -50,
     },
-    [theme.breakpoints.down("xs")]: {
-      display: "none",
+    [theme.breakpoints.down(658)]: {
+      width: 89,
+      height: 82,
+      bottom: -40,
+      left: -40,
     },
   },
   buttons: {

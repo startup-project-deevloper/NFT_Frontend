@@ -189,7 +189,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
   return (
     <div className={classes.root}>
       <div className={classes.nftInfoSection}>
-        <Box display="flex" justifyContent="space-between" pl={6}>
+        <Box display="flex" justifyContent="space-between" className={classes.backButtonContainer}>
           <BackButton purple overrideFunction={goBack} />
           <Box display="flex" alignItems="center">
             {isOwner ? (

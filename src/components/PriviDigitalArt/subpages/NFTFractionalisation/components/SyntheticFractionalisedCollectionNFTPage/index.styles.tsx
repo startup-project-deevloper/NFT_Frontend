@@ -22,6 +22,13 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     marginLeft: "7px",
     marginTop: "-2px",
   },
+  backButtonContainer: {
+    paddingLeft: 48,
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+    }
+  },
   nftInfoMainContent: {
     background: "linear-gradient(293.66deg, #431AB7 8.36%, #9EACF2 72.12%)",
     boxShadow: "0px 46px 49px -19px rgba(96, 71, 202, 0.17)",

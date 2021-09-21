@@ -27,6 +27,7 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, onConf
           required
           type="number"
           theme="light"
+          minValue={1}
           endAdornment={<div className={classes.purpleText}>JOTS</div>}
         />
         <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7">

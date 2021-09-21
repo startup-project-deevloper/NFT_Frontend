@@ -23,6 +23,7 @@ export default function RemoveLiquidityModal({ open, onClose, onConfirm }) {
           inputValue={liquidity}
           onInputValueChange={e => setLiquidity(e.target.value)}
           overriedClasses={classes.inputLiquidity}
+          minValue={1}
           required
           type="number"
           theme="light"

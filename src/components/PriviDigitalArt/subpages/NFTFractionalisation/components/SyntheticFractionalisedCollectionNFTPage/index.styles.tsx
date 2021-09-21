@@ -13,27 +13,53 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     minHeight: "calc(100vh - 80px)",
     maxHeight: "calc(100vh - 80px)",
   },
+  header: {
+    paddingLeft: 48,
+    [theme.breakpoints.down("xs")]: {
+      paddingLeft: 4,
+    },
+  },
   nftInfoSection: {
     padding: "39px 32px 72px",
     background: "#ffffff",
     width: "100%",
+    [theme.breakpoints.down("md")]: {
+      padding: "30px 24px 72px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "24px 16px 46px",
+    },
   },
   btnIcon: {
     marginLeft: "7px",
     marginTop: "-2px",
+  },
+  socialIcons: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: 40,
+    [theme.breakpoints.down("sm")]: {
+      marginTop: 24,
+    },
   },
   nftInfoMainContent: {
     background: "linear-gradient(293.66deg, #431AB7 8.36%, #9EACF2 72.12%)",
     boxShadow: "0px 46px 49px -19px rgba(96, 71, 202, 0.17)",
     borderRadius: 20,
     width: "100%",
-    height: 320,
-    padding: "30px 400px 29px 32px",
+    padding: "30px 420px 29px 32px",
     marginTop: 62,
     color: "#ffffff",
     display: "flex",
     flexDirection: "column",
     position: "relative",
+
+    [theme.breakpoints.down("md")]: {
+      padding: "30px 300px 29px 32px",
+    },
+    [theme.breakpoints.down(600)]: {
+      padding: "310px 20px 29px",
+    },
 
     "& > span": {
       backgroundColor: Color.Green,
@@ -52,6 +78,20 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     position: "absolute",
     top: "-20px",
     right: "38px",
+    height: "calc(100% + 50px)",
+    "& > div": {
+      height: "100%",
+    },
+    [theme.breakpoints.down("md")]: {
+      maxWidth: 250,
+      right: "24px",
+    },
+    [theme.breakpoints.down(600)]: {
+      right: "50%",
+      transform: "translate(50%, 0)",
+      height: "354px",
+      width: 250
+    },
   },
   typo1: {
     fontSize: 14,
@@ -74,22 +114,40 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     fontFamily: "Agrandir",
     marginBottom: 14,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 20,
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: 0,
+      fontSize: 18,
+    },
   },
   typo4: {
     fontSize: 24,
     fontWeight: 400,
     lineHeight: "150%",
     fontFamily: "Agrandir",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 16,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14,
+    },
   },
   typo5: {
-    color:
+    background:
       "linear-gradient(275.7deg, #418DFF -22.23%, #4541FF 30.2%, #4541FF 46.57%, #EF41CB 94.97%, #EF41CB 102.17%, #EFA941 128.81%), linear-gradient(0deg, #431AB7, #431AB7)",
     fontSize: 34,
     fontWeight: 800,
     lineHeight: "150%",
     fontFamily: "Agrandir",
     letterSpacing: "0.02em",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
     marginRight: 14,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 24,
+    },
   },
   typo6: {
     color: "#431AB7",
@@ -99,6 +157,9 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     letterSpacing: "0.02em",
     opacity: 0.6,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 24,
+    },
   },
   typo7: {
     fontSize: 18,
@@ -114,16 +175,31 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     fontFamily: "Agrandir",
     marginTop: 36,
-    marginLeft: 53,
+    marginLeft: 16,
     color: "rgba(67, 26, 183, 1)",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 20,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 18,
+    },
   },
   potentialWinSection: {
     background: "rgba(158, 172, 242, 0.2)",
     borderRadius: 20,
-    padding: "32px 21px",
+    padding: "21px 32px",
     display: "flex",
     flexDirection: "column",
     marginTop: 42,
+    maxWidth: 320,
+    [theme.breakpoints.down("sm")]: {
+      padding: "13px 20px",
+      marginTop: 30,
+    },
+    [theme.breakpoints.down("xs")]: {
+      maxWidth: "100%",
+      marginTop: 0,
+    }
   },
   polygonscanBtn: {
     backgroundColor: `${Color.GreenLight} !important`,
@@ -131,7 +207,6 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     fontSize: "14px !important",
     lineHeight: "18px !important",
     padding: "8px 32px !important",
-    marginLeft: "87px",
     display: "flex",
     alignItems: "center",
     "& img": {
@@ -159,6 +234,9 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   mainTitleSection: {
     display: "flex",
     marginTop: 16,
+    columnGap: 16,
+    rowGap: 16,
+    flexWrap: "wrap",
     "& span:first-child": {
       color: Color.Purple,
       fontFamily: "Agrandir",
@@ -166,25 +244,33 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       fontSize: 44,
       lineHeight: "104.5%",
       textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
+      [theme.breakpoints.down("md")]: {
+        fontSize: 35,
+      }
     },
     "& span:last-child": {
       color: Color.GreenLight,
       backgroundColor: Color.Violet,
       borderRadius: 5,
       padding: "5px 10px",
-      marginLeft: 16,
       height: "fit-content",
       fontSize: "14px",
       lineHeight: "18px",
+      [theme.breakpoints.down("md")]: {
+        border: "1px solid #FFFFFF",
+      }
     },
   },
   nftDetailSection: {
     background: "#F6F5F8",
     padding: "24px 30px",
     width: "100%",
-
-    [theme.breakpoints.down("sm")]: {
-      padding: "24px 6px",
+    marginBottom: 50,
+    [theme.breakpoints.down("md")]: {
+      padding: 24,
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "24px 16px",
     },
   },
   nftTabSection: {
@@ -224,10 +310,26 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     backgroundRepeat: "no-repeat",
     backgroundSize: "100% 243px",
     padding: "40px 50px 31px",
-    height: 537,
     color: "#431AB7",
     display: "flex",
     flexDirection: "column",
+    [theme.breakpoints.down("md")]: {
+      "& img": {
+        width: 350,
+      },
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "25px 30px",
+      "& img": {
+        width: 250,
+      },
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "56px 20px 25px",
+      "& img": {
+        width: 150,
+      },
+    }
   },
   flipCoinButton: {
     background:
@@ -275,6 +377,12 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     borderRadius: 6,
     width: 120,
     height: 40,
+    [theme.breakpoints.down("sm")]: {
+      width: 76
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: 49
+    }
   },
   withDrawnModal: {
     display:"flex",
@@ -292,6 +400,12 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     "& .MuiTableCell-root": {
       fontFamily: "Agrandir",
       padding: "9px 16px",
+      [theme.breakpoints.down("sm")]: {
+        padding: "8px 12px",
+      },
+      [theme.breakpoints.down("xs")]: {
+        padding: "8px",
+      }
     },
     "& .MuiTableRow-head": {
       background: Color.GrayInputBackground,
@@ -301,13 +415,47 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         fontWeight: 700,
         fontFamily: "Agrandir",
         color: "rgba(67, 26, 183, 1)",
+        [theme.breakpoints.down("sm")]: {
+          fontSize: 14,
+        },
+        [theme.breakpoints.down("xs")]: {
+          fontSize: 12,
+        }
       },
+    },
+    "& .MuiTableRow-root": {
+      "& .MuiTableCell-body": {
+        fontSize: 14,
+        [theme.breakpoints.down("sm")]: {
+          fontSize: 12,
+        },
+        [theme.breakpoints.down("xs")]: {
+          fontSize: 9,
+        }
+      }
     },
 
     [theme.breakpoints.down("sm")]: {
       minHeight: 200,
     },
   },
+  userField: {
+    columnGap: 12,
+    [theme.breakpoints.down("sm")]: {
+      columnGap: 8,
+      "& > span": {
+        fontSize: "12px !important",
+      }
+    },
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      rowGap: 4,
+      columnGap: 4,
+      "& > span": {
+        fontSize: "10px !important",
+      }
+    }
+  }
 }));
 
 export const ShareIcon = () => (

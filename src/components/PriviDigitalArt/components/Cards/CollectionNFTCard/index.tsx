@@ -5,8 +5,8 @@ import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { collectionNFTCardStyles } from "./index.styles";
 
-export default function CollectionNFTCard({ item, handleSelect, hiddenHeader = false }) {
-  const classes = collectionNFTCardStyles({ hiddenHeader });
+export default function CollectionNFTCard({ item, handleSelect, hiddenHeader = false, customWidth = '', customHeight = '' }) {
+  const classes = collectionNFTCardStyles({ hiddenHeader, customWidth, customHeight });
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>

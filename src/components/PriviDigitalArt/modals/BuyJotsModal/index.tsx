@@ -1,16 +1,43 @@
 import React from "react";
-
+import Web3 from "web3";
 import { Grid } from "@material-ui/core";
 import { Header3, Header5, Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { BuyJotsModalStyles } from "./index.style";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 export default function BuyJotsModal({ open, handleClose = () => {} }) {
   const classes = BuyJotsModalStyles();
 
+  const { showAlertMessage } = useAlertMessage();
+
   const [jots, setJOTs] = React.useState<number>(0);
+  const { account, library, chainId } = useWeb3React();
+
+  const handleBuyJots = async () => {
+    // For polygon chain
+    const targetChain = BlockchainNets[1];
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+    const web3APIHandler = targetChain.apiHandler;
+    const web3Config = targetChain.config;
+    const web3 = new Web3(library.provider);
+
+    await web3APIHandler.SyntheticCollectionManager.buyJotTokens(web3, account!, {
+      tokenId: 5, // TODO: TEST ONLY
+      amount: jots,
+    });
+  };
 
   return (
     <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>
@@ -60,6 +87,7 @@ export default function BuyJotsModal({ open, handleClose = () => {} }) {
           <PrimaryButton
             size="medium"
             style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
+            onClick={handleBuyJots}
           >
             Confirm
           </PrimaryButton>

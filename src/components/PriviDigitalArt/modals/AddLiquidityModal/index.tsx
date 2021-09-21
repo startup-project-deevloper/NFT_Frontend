@@ -6,7 +6,7 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { AddLiquidityModalStyles } from "./index.style";
 
-export default function AddLiquidityModal({ open, handleClose = () => { } }) {
+export default function AddLiquidityModal({ open, handleClose = () => {}, onConfirm }) {
   const classes = AddLiquidityModalStyles();
 
   const [liquidity, setLiquidity] = React.useState<number>(0);
@@ -14,8 +14,12 @@ export default function AddLiquidityModal({ open, handleClose = () => { } }) {
   return (
     <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.container}>
       <Box>
-        <Box fontSize="24px" color="#431AB7">Add Liquidity</Box>
-        <Box fontSize="14px" fontWeight="400" mt={1}>Add liquidity to the JOT pool and earn on that liquidity.</Box>
+        <Box fontSize="24px" color="#431AB7">
+          Add Liquidity
+        </Box>
+        <Box fontSize="14px" fontWeight="400" mt={1}>
+          Add liquidity to the JOT pool and earn on that liquidity.
+        </Box>
         <InputWithLabelAndTooltip
           inputValue={liquidity}
           onInputValueChange={e => setLiquidity(e.target.value)}
@@ -23,6 +27,7 @@ export default function AddLiquidityModal({ open, handleClose = () => { } }) {
           required
           type="number"
           theme="light"
+          minValue={1}
           endAdornment={<div className={classes.purpleText}>JOTS</div>}
         />
         <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7">
@@ -30,16 +35,14 @@ export default function AddLiquidityModal({ open, handleClose = () => { } }) {
             <span>Wallet Balance</span>
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
-              <Box fontWeight="700">
-                0.00 BUSD
-              </Box>
+              <Box fontWeight="700">0.00 BUSD</Box>
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">
-            <span>MAX:{" "}<b>0</b></span>
-            <Box paddingLeft="12px">
-              Add All
-            </Box>
+            <span>
+              MAX: <b>0</b>
+            </span>
+            <Box paddingLeft="12px">Add All</Box>
           </Box>
         </Box>
         <Box display="flex" alignItems="center" justifyContent="space-between" mt={5}>
@@ -49,7 +52,11 @@ export default function AddLiquidityModal({ open, handleClose = () => { } }) {
           >
             Cancel
           </SecondaryButton>
-          <PrimaryButton size="medium" style={{ background: "#D9F66F", color: "#431AB7", minWidth: "56%"}}>
+          <PrimaryButton
+            size="medium"
+            style={{ background: "#D9F66F", color: "#431AB7", minWidth: "56%" }}
+            onClick={() => onConfirm(liquidity)}
+          >
             Confirm
           </PrimaryButton>
         </Box>

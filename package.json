@@ -17,6 +17,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@maticnetwork/maticjs": "^2.0.43",
+    "@maticnetwork/wallet-widget": "^1.0.6",
     "@metamask/detect-provider": "^1.2.0",
     "@polkadot/api": "^4.16.2",
     "@polkadot/api-contract": "^4.16.2",

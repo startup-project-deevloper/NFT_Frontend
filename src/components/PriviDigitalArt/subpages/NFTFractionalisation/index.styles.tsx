@@ -467,7 +467,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     background: "transparent",
     marginBottom: 50,
     position: "relative",
-    [theme.breakpoints.down(658)]: {
+    [theme.breakpoints.down(769)]: {
       marginBottom: 0,
     },
     "& button.rec-arrow-left": {
@@ -478,7 +478,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       [theme.breakpoints.down(1200)]: {
         right: 60,
       },
-      [theme.breakpoints.down(658)]: {
+      [theme.breakpoints.down(769)]: {
         display: "none",
       },
     },
@@ -490,7 +490,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       [theme.breakpoints.down(1200)]: {
         right: 0,
       },
-      [theme.breakpoints.down(658)]: {
+      [theme.breakpoints.down(769)]: {
         display: "none",
       },
     },

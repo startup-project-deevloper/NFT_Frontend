@@ -2,7 +2,7 @@ import React from "react";
 import Carousel from "react-elastic-carousel";
 import { useHistory } from "react-router";
 
-import { createMuiTheme, Grid, MuiThemeProvider, useMediaQuery, useTheme } from "@material-ui/core";
+import { createTheme, Grid, MuiThemeProvider, useMediaQuery, useTheme } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import {
@@ -54,10 +54,10 @@ const SyntheticFractionalisePage = ({
   openFractionalize,
   setOpenFractionalize
 }) => {
-  const theme = createMuiTheme({
+  const theme = createTheme({
     breakpoints: {
       keys: ["xs", "sm", "md", "lg", "xl"],
-      values: { xs: 0, sm: 568, md: 860, lg: 1200, xl: 1460 }
+      values: { xs: 0, sm: 658, md: 769, lg: 860, xl: 1200 }
     }
   });
   const classes = nftFractionalisationStyles();
@@ -79,7 +79,7 @@ const SyntheticFractionalisePage = ({
         <div className={classes.rewardsWrapper}>
           <div className={classes.rewardsContent}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={12} md={6} lg={8}>
+              <Grid item xs={12} sm={6} md={12} lg={6} xl={7}>
                 <div className={classes.rewardsTitle}>
                   Create  a  synthetic<br />
                   derivative out of your NFT collection
@@ -89,7 +89,7 @@ const SyntheticFractionalisePage = ({
                   interest out of the trading fees.
                 </div>
               </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={4}>
+              <Grid item xs={12} sm={6} md={12} lg={6} xl={5} className={classes.buttons}>
                 <div
                   className={classes.syntheticFractionaliseBtn}
                   onClick={() => setOpenFractionalize(true)}
@@ -131,7 +131,7 @@ const SyntheticFractionalisePage = ({
                 <MuiThemeProvider theme={theme}>
                   <Grid container spacing={2}>
                     {TopNFTList.map((item, idx) => (
-                      <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+                      <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
                         <SyntheticCollectionCard item={item} />
                       </Grid>
                     ))}

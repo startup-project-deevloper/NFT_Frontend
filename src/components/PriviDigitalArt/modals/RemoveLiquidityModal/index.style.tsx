@@ -1,6 +1,9 @@
 import { makeStyles } from "@material-ui/core";
 
 export const RemoveLiquidityModalStyles = makeStyles(theme => ({
+  container: {
+    maxWidth: "508px !important",
+  },
   inputLiquidity: {
     margin: "20px 0",
     background: "rgba(144, 155, 255, 0.16)",
@@ -16,14 +19,6 @@ export const RemoveLiquidityModalStyles = makeStyles(theme => ({
     minWidth: "55px",
     fontWeight: "bold",
   },
-
-  leftBalance: {
-    // paddingLeft: "20px",
-    // paddingRight: theme.spacing(20),
-    [theme.breakpoints.down("sm")]: {
-      paddingTop: "40px",
-    },
-  },
   usdWrap: {
     display: "flex",
     alignItems: "center",
@@ -36,9 +31,5 @@ export const RemoveLiquidityModalStyles = makeStyles(theme => ({
     width: "24px",
     height: "24px",
     borderRadius: "12px",
-  },
-
-  rightLiquidity: {
-    // paddingRight: "20px",
   },
 }));

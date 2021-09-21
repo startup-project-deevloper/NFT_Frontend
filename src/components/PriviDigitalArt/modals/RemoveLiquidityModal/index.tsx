@@ -13,45 +13,36 @@ export default function RemoveLiquidityModal({ open, onClose, onConfirm }) {
   const [liquidity, setLiquidity] = React.useState<number>(0);
 
   return (
-    <Modal size="medium" isOpen={open} onClose={onClose} showCloseIcon>
+    <Modal size="medium" isOpen={open} onClose={onClose} showCloseIcon className={classes.container}>
       <Box>
-        <Header3>Remove Liquidity</Header3>
+        <Box fontSize="24px" color="#431AB7">
+          Remove Liquidity
+        </Box>
         <Header5></Header5>
         <InputWithLabelAndTooltip
           inputValue={liquidity}
           onInputValueChange={e => setLiquidity(e.target.value)}
           overriedClasses={classes.inputLiquidity}
+          minValue={1}
           required
           type="number"
           theme="light"
           endAdornment={<div className={classes.purpleText}>JOTS</div>}
         />
-        <Grid container>
-          <Grid item md={8} xs={12}>
-            <Box className={classes.leftBalance} display="flex" alignItems="center">
-              <Header5 style={{ marginBottom: 0 }}>Liquidity</Header5>
-              <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
-                <Box className={classes.point}></Box>
-                <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
-                  200.00 JOTS
-                </Header5>
+        <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7">
+          <Box display="flex" alignItems="center" gridColumnGap="10px" fontSize="14px">
+            <span>Liquidity</span>
+            <Box className={classes.usdWrap} display="flex" alignItems="center">
+              <Box className={classes.point}></Box>
+              <Box fontWeight="700" marginLeft={1}>
+                200.00 JOTS
               </Box>
             </Box>
-          </Grid>
-          <Grid item md={4} xs={12}>
-            <Box
-              className={classes.rightLiquidity}
-              flexGrow={1}
-              display="flex"
-              alignItems="center"
-              justifyContent="flex-end"
-            >
-              <Box color="rgba(67, 26, 183, 0.3)" paddingX="15px">
-                Max
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
+          </Box>
+          <Box display="flex" alignItems="center" fontSize="16px">
+            <Box color="rgba(67, 26, 183, 0.3)">Max</Box>
+          </Box>
+        </Box>
         <Box display="flex" alignItems="center" mt={6} justifyContent="space-between">
           <SecondaryButton
             size="medium"

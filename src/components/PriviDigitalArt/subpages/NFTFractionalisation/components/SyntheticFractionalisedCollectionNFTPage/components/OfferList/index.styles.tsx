@@ -21,12 +21,24 @@ export const useStyles = makeStyles(theme => ({
     },
     "& > button": {
       padding: "8px 26px",
-      width: "522px",
+      width: "100%",
+      maxWidth: 522,
       background: Color.Purple,
       backdropFilter: "blur(10px)",
       borderRadius: "6px",
       margin: "38px auto 0",
       lineHeight: "normal",
+    },
+
+    [theme.breakpoints.down("sm")]: {
+      padding: "27px 10px",
+      marginBottom: 40,
+    },
+  },
+  offerTitle: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 18,
+      color: '#707582',
     },
   },
   table: {
@@ -47,6 +59,20 @@ export const useStyles = makeStyles(theme => ({
 
     [theme.breakpoints.down("sm")]: {
       minHeight: 200,
+      "& .MuiTableContainer-root": {
+        boxShadow: "none",
+        borderRadius: 0,
+      },
+      "& .MuiTableCell-body": {
+        fontSize: 10,
+        "& img": {
+          width: 24,
+          height: 24,
+        },
+        "& span": {
+          fontSize: 10,
+        }
+      },
     },
   },
   fromCell: {

@@ -286,6 +286,10 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     cursor: "pointer",
     borderBottom: "1px solid #00000022",
     marginBottom: 30,
+
+    [theme.breakpoints.down("sm")]: {
+      overflowX: 'auto',
+    },
   },
   tabSection: {
     minWidth: 240,

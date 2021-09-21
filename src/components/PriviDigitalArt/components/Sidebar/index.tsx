@@ -80,7 +80,7 @@ const SidebarContent = ({ handleRefresh }) => {
 
   const setBridgeWidget = () => {
     const widget = new Widget({
-      target: "#test",
+      target: "",
       appName: "priviPix",
       autoShowTime: 0.1,
       position: "center",
@@ -106,7 +106,7 @@ const SidebarContent = ({ handleRefresh }) => {
   };
 
   return (
-    <div id="test" className={styles.content}>
+    <div className={styles.content}>
       <div className={styles.options}>
         <ul>
           {TABS.map((key, index) => (

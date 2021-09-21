@@ -12,6 +12,7 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     cursor: "pointer",
     [theme.breakpoints.down("sm")]: {
       height: 380,
+      maxWidth: 320,
     },
   },
   innerBox: {

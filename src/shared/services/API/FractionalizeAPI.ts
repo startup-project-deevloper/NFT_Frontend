@@ -163,3 +163,12 @@ export async function placeBid(data: any): Promise<any> {
     throw e;
   }
 }
+
+export async function addFlipHistory(collectionId: string, nftId: string, data: any): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/flipHistory/${collectionId}/${nftId}`, data);
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+}

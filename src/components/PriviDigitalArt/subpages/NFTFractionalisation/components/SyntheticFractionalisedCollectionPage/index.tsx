@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
 
@@ -12,6 +12,7 @@ import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
+import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
 
 const NFTList = [
   {
@@ -79,14 +80,31 @@ const NFTList = [
 const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const classes = fractionalisedCollectionStyles();
   const history = useHistory();
+  const params: { id?: string } = useParams();
 
   const [selectedTab, setSelectedTab] = useState<"nft" | "jots_pool" | "trade_jots" | "auctions">("nft");
+
+  const [collection, setCollection] = useState<any>({});
+
+  useEffect(() => {
+    if (!params.id) return;
+
+    (async () => {
+      const response = await getSyntheticCollection(params.id);
+      if (response.success) {
+        setCollection(response.data);
+      }
+    })();
+  }, [params.id]);
 
   return (
     <div className={classes.root}>
       <div className={classes.collectionInfoSection}>
         <Box display="flex" justifyContent="space-between" className={classes.backButtonContainer}>
-          <BackButton purple overrideFunction={() => history.push('/pix/fractionalise/synthetic-derivative')} />
+          <BackButton
+            purple
+            overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
+          />
           <div className={classes.tradeDerivativeButton} onClick={() => {}}>
             <div>
               <span>TRADE DERIVATIVES</span>
@@ -94,8 +112,15 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         </Box>
         <div className={classes.collectionMainContent}>
-        <img src={require("assets/backgrounds/digital_art_1.png")} alt="collction image" />
-          <Box display="flex" alignItems="center" justifyContent="space-between" gridColumnGap="20px" flexWrap="wrap" gridRowGap="30px">
+          <img src={require("assets/backgrounds/digital_art_1.png")} alt="collction image" />
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            gridColumnGap="20px"
+            flexWrap="wrap"
+            gridRowGap="30px"
+          >
             <div className={classes.typo1}>✨ Collection</div>
             <Box display="flex" alignItems="center" justifyContent="space-between">
               <Box display="flex" mr={"10px"}>
@@ -136,45 +161,47 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         </div>
       </div>
       <div className={classes.nftSection}>
-        <div className={classes.nftTabSection}>
-          <div
-            className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
-            onClick={() => setSelectedTab("nft")}
-          >
-            <span>NFTS IN COLLECTION</span>
+        <Box width="100%" mb={4} style={{ overflowX: "auto" }}>
+          <div className={classes.nftTabSection}>
+            <div
+              className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
+              onClick={() => setSelectedTab("nft")}
+            >
+              <span>NFTS IN COLLECTION</span>
+            </div>
+            <div
+              className={cls({ [classes.selectedTabSection]: selectedTab === "jots_pool" }, classes.tabSection)}
+              onClick={() => setSelectedTab("jots_pool")}
+            >
+              <span>JOTS POOL</span>
+            </div>
+            <div
+              className={cls(
+                { [classes.selectedTabSection]: selectedTab === "trade_jots" },
+                classes.tabSection
+              )}
+              onClick={() => setSelectedTab("trade_jots")}
+            >
+              <span>TRADE JOTS</span>
+            </div>
+            <div
+              className={cls({ [classes.selectedTabSection]: selectedTab === "auctions" }, classes.tabSection)}
+              onClick={() => setSelectedTab("auctions")}
+            >
+              <span>AUCTIONS</span>
+            </div>
           </div>
-          <div
-            className={cls({ [classes.selectedTabSection]: selectedTab === "jots_pool" }, classes.tabSection)}
-            onClick={() => setSelectedTab("jots_pool")}
-          >
-            <span>JOTS POOL</span>
-          </div>
-          <div
-            className={cls(
-              { [classes.selectedTabSection]: selectedTab === "trade_jots" },
-              classes.tabSection
-            )}
-            onClick={() => setSelectedTab("trade_jots")}
-          >
-            <span>TRADE JOTS</span>
-          </div>
-          <div
-            className={cls({ [classes.selectedTabSection]: selectedTab === "auctions" }, classes.tabSection)}
-            onClick={() => setSelectedTab("auctions")}
-          >
-            <span>AUCTIONS</span>
-          </div>
-        </div>
+        </Box>
         {selectedTab === "nft" ? (
           <div className={classes.allNFTSection}>
-            {NFTList && NFTList.length ? (
+            {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
-                {NFTList.map((item, idx) => (
+                {collection.SyntheticNFT.map((item, idx) => (
                   <Grid item xs={12} sm={4} md={3}>
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {
-                        history.push("/pix/fractionalisation/collection/:collectionId/nft/:nftId/0");
+                        history.push(`/pix/fractionalisation/collection/${params.id}/nft/${item.NftId}/0`);
                       }}
                     />
                   </Grid>

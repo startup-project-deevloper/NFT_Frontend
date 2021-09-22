@@ -27,9 +27,7 @@ class TimeLogger {
   static init() {
     this.ticks = {};
   }
-  static log() {
-    console.log("TimeLogger", this.ticks);
-  }
+  static log() {}
 }
 
 export default TimeLogger;

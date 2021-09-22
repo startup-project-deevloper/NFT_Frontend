@@ -33,7 +33,7 @@ export default function BuyJotsModal({ open, handleClose = () => {} }) {
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
 
-    await web3APIHandler.SyntheticCollectionManager.buyJotTokens(web3, account!, {
+    const response = await web3APIHandler.SyntheticCollectionManager.buyJotTokens(web3, account!, {
       tokenId: 5, // TODO: TEST ONLY
       amount: jots,
     });

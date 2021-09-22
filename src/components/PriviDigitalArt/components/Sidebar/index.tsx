@@ -87,7 +87,7 @@ const SidebarContent = ({ handleRefresh }) => {
       height: 630,
       width: 540,
       overlay: false,
-      network: "mainnet",
+      network: "testnet",
       closable: true,
     });
     widget.create();

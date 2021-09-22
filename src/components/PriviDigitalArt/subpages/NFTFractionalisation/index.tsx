@@ -18,48 +18,8 @@ import {
 import Fractionalize from "./components/Fractionalise";
 import SyntheticFractionalise from "./components/SyntheticFractionalise";
 import { getFractionalizeVaults } from "shared/services/API/FractionalizeAPI";
-import SyntheticCollectionCard from "components/PriviDigitalArt/components/Cards/SyntheticCollectionCard";
 import PriviPixSyntheticRouter from "./PriviPixSyntheticRouter";
 import { useHistory } from "react-router";
-
-const TopNFTList = [
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    price: 492.17,
-    delta: 1.72,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    price: 492.17,
-    delta: -0.72,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    price: 492.17,
-    delta: -0.72,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    price: 492.17,
-    delta: -0.72,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    price: 492.17,
-    delta: -0.72,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    price: 492.17,
-    delta: -0.72,
-  },
-];
 
 const NFTFractionalisation = () => {
   const classes = nftFractionalisationStyles();
@@ -109,6 +69,12 @@ const NFTFractionalisation = () => {
     setSelectedTab("synthetic");
     history.push('/pix/fractionalise/synthetic-derivative');
   }
+
+  const handlePureClick = () => {
+    setSelectedTab("pure");
+    history.push('/pix/fractionalise/');
+  }
+
   return (
     <>
       {openFractionalize ? (
@@ -123,7 +89,7 @@ const NFTFractionalisation = () => {
           <div className={classes.subTitleSection}>
             <div
               className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
-              onClick={() => setSelectedTab("pure")}
+              onClick={handlePureClick}
             >
               <span>Pure Fractionalisation</span>
             </div>

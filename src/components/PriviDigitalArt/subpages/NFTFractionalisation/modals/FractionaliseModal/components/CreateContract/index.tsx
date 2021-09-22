@@ -5,7 +5,8 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import Box from "shared/ui-kit/Box";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
-import Axios from "axios";
+import axios from "axios";
+import URL from "shared/functions/getURL";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import config from "shared/connectors/polygon/config";
@@ -84,15 +85,11 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
   const { account, library, chainId } = useWeb3React();
 
   const handleProceed = async () => {
-    console.log("chainId", chainId);
-    if (chainId !== 80001 && chainId !== 137) {
-      return;
-    }
     setIsLoading(true);
     setIsProceeding(true);
 
     try {
-      const { data: collectionInfo } = await Axios.get(
+      const { data: collectionInfo } = await axios.get(
         `${PriceFeed_URL()}/nft/collection-address?contract=${selectedNFT.tokenAddress}${
           isDev ? "&network=rinkeby" : ""
         }`,
@@ -102,35 +99,11 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           },
         }
       );
-      // const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
-      // const web3APIHandler = targetChain.apiHandler;
 
       const web3 = new Web3(library.provider);
       const contractAddress = config.CONTRACT_ADDRESSES.Pix.SYNTHETIC_PROTOCOL_ROUTER;
-      // let response = await web3APIHandler.Erc721.setApprovalForToken(
-      //   web3,
-      //   account!,
-      //   {
-      //     to: contractAddress,
-      //     tokenId: selectedNFT.BlockchainId,
-      //   },
-      //   selectedNFT.tokenAddress
-      // );
-      // if (!response.success) {
-      //   setIsLoading(false);
-      //   return;
-      // }
+
       const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
-      console.log(
-        "Polygon contract",
-        contractAddress,
-        selectedNFT.tokenAddress,
-        selectedNFT.BlockchainId,
-        supplyToKeep,
-        priceFraction,
-        collectionInfo.data.name,
-        collectionInfo.data.symbol
-      );
       const gas = await contract.methods
         .registerNFT(
           selectedNFT.tokenAddress,
@@ -141,7 +114,6 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           collectionInfo.data.symbol
         )
         .estimateGas({ from: account });
-      console.log("polygon gas", gas);
       const response = await contract.methods
         .registerNFT(
           selectedNFT.tokenAddress,
@@ -160,8 +132,39 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           console.log("error", error);
           setIsLoading(false);
         });
-      console.log("-response", response);
       setHash(response.transactionHash);
+      const collection = response.events?.CollectionManagerRegistered?.returnValues;
+      const nftInfo = response.events?.TokenRegistered?.returnValues;
+
+      let params = {};
+      if (collection) {
+        params = {
+          collectionAddress: selectedNFT.tokenAddress,
+          SyntheticID: nftInfo.syntheticTokenId,
+          NftId: selectedNFT.BlockchainId,
+          JotName: `Privi Jot ${selectedNFT.MediaName}`,
+          JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
+          JotAddress: collection.jotAddress,
+          JotPoolAddress: collection.jotStakingAddress,
+          SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
+          SyntheticNFTAddress: collection.syntheticNFTAddress,
+          collectionName: collectionInfo.data.name,
+          collectionSymbol: collectionInfo.data.symbol,
+          description: collectionInfo.data.description,
+          imageUrl: collectionInfo.data.imageUrl,
+          quickSwapAddress: collection.quickSwapAddress,
+          collectionManagerID: collection.collectionManagerID,
+          isAddCollection: true,
+        };
+      } else {
+        params = {
+          collectionAddress: selectedNFT.tokenAddress,
+          SyntheticID: nftInfo.syntheticTokenId,
+          NftId: selectedNFT.BlockchainId,
+          isAddCollection: false,
+        };
+      }
+      await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
     } catch (err) {
       console.log("error", err);
       setIsLoading(false);

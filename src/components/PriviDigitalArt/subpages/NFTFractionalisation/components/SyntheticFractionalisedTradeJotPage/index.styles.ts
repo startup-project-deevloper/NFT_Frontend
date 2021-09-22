@@ -7,6 +7,7 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     padding: "30px",
     [theme.breakpoints.down("sm")]: {
       padding: "0",
+      paddingBottom: "30px"
     },
     display: "flex",
     flexDirection: "column",
@@ -120,6 +121,9 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     width: "100%",
     height: "100%",
     padding: "30px 45px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "20px 15px",
+    },
     borderRadius: theme.spacing(2),
     boxShadow: "0px 3.40102px 6.80203px #9EACF2",
     background: Color.Purple,
@@ -197,15 +201,12 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     margin: `${theme.spacing(1)}px ${theme.spacing(1)}px`,
   },
   controlParentBox: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
     [theme.breakpoints.down("sm")]: {
       alignItems: "flex-start",
     },
     width: "100%",
   },
-  controlBox: {
+  unitsBox: {
     display: "flex",
     alignItems: "center",
     [theme.breakpoints.down("xs")]: {
@@ -213,13 +214,58 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
       alignItems: "flex-end",
     },
   },
-  liquidityBox: {
+  unitButton: {
+    display: "flex",
+    alignItems: "center",
+    background: "#181F3D",
+    color: "#fff",
+    borderRadius: "100vh",
+    padding: "5px 8px",
+    [theme.breakpoints.down("xs")]: {
+      marginTop: theme.spacing(1),
+    },
+    "& button": {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
+  },
+  switchButton: {
+    background: "transparent",
+    border: "none",
+    borderRadius: "100vh",
+    fontSize: 14,
+    color: Color.White,
+    padding: "8px 16px",
+    "& + &": {
+      marginLeft: 4,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 12,
+    },
+  },
+  activeSwitchButton: {
+    background: "rgba(221, 255, 87, 1)",
+    color: "#181818",
+  },
+
+  periodBox: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      alignItems: "flex-end",
+    },
+  },
+  periodButton: {
     display: "flex",
     alignItems: "center",
     background: "rgba(157, 141, 203, 0.33)",
     color: "#F0F5F8",
     borderRadius: 8,
-    marginLeft: theme.spacing(1),
+    // marginLeft: theme.spacing(1),
     [theme.breakpoints.down("xs")]: {
       marginTop: theme.spacing(1),
     },

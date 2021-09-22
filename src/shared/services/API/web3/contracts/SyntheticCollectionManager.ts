@@ -20,9 +20,10 @@ const syntheticCollectionManager = (network: string) => {
           .BuyJotTokens(tokenId, amount)
           .send({ from: account, gas: gas });
         console.log("transaction succeed");
-        console.log(response);
         resolve({
-          data: {},
+          data: {
+            hash: response.transactionHash,
+          },
         });
       } catch (e) {
         console.log(e);

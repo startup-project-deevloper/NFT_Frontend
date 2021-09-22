@@ -36,9 +36,9 @@ const parseMoralisData = (data, address, selectedChain) => {
     Url: metadata.image,
     chainId: selectedChain.chainId,
     contractType: data.contract_type,
-    tokenAddress: data.token_address
-  }
-}
+    tokenAddress: data.token_address,
+  };
+};
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 import NormalNFTCard from "components/PriviDigitalArt/components/Cards/NormalNFTCard";
@@ -113,16 +113,16 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
     if (chainId != selectedChain.chainId) {
       const changed = await switchNetwork(selectedChain.chainId);
       if (!changed) setSelectedChain(prevSelectedChain);
-      else setChainIdCopy(selectedChain.chainId)
+      else setChainIdCopy(selectedChain.chainId);
       return changed;
     }
     return true;
-  }
+  };
 
   // sync metamask chain with dropdown chain selection and load nft balance from wallet
   const loadNFT = async () => {
     if (walletConnected) {
-      const changed = await handleSyncChain()
+      const changed = await handleSyncChain();
       if (changed) {
         setLoadingnNFTS(true);
         const { result } = await getNFTBalanceFromMoralis(account!, selectedChain.chainId!);
@@ -142,9 +142,9 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
               Object.keys(data).forEach(k => {
                 pixCreatedNftMap[k] = {
                   ...data[k],
-                  tokenAddress: selectedChain.config.CONTRACT_ADDRESSES.PRIVIERC721
+                  tokenAddress: selectedChain.config.CONTRACT_ADDRESSES.PRIVIERC721,
                 };
-              })
+              });
             }
           }
           // save externally created nft to backend
@@ -167,25 +167,21 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
     if (!name) {
       showAlertMessage("enter a valid name", { variant: "error" });
       return false;
-    }
-    else if (!symbol) {
+    } else if (!symbol) {
       showAlertMessage("enter a valid symbol", { variant: "error" });
       return false;
-    }
-    else if (!selectedNFT) {
+    } else if (!selectedNFT) {
       showAlertMessage("select a NFT", { variant: "error" });
       return false;
-    }
-    else if (!supply || !Number(supply)) {
+    } else if (!supply || !Number(supply)) {
       showAlertMessage("enter a valid supply", { variant: "error" });
       return false;
-    }
-    else if (!reservePrice || !Number(reservePrice)) {
+    } else if (!reservePrice || !Number(reservePrice)) {
       showAlertMessage("enter a valid list price", { variant: "error" });
       return false;
     }
     return true;
-  }
+  };
 
   const handleFractionalise = async () => {
     if (!walletConnected) {
@@ -211,7 +207,12 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
         MediaSymbol: selectedNFT.MediaSymbol,
         chainId: chainId,
       };
-      const resp = await selectedChain.apiHandler.Erc721.setApprovalForAll2(web3, account!, "ERC721_VAULT_FACTORY", selectedNFT.tokenAddress);
+      const resp = await selectedChain.apiHandler.Erc721.setApprovalForAll2(
+        web3,
+        account!,
+        "ERC721_VAULT_FACTORY",
+        selectedNFT.tokenAddress
+      );
       if (resp?.success) {
         const mintResp = await selectedChain.apiHandler.VaultFactory.mint(web3, account!, payload);
         if (mintResp?.success) {
@@ -224,8 +225,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
             showAlertMessage("NFT successfully fractionalized", { variant: "success" });
             goBack();
           }
-        }
-        else {
+        } else {
           showAlertMessage("NFT failed to be fractionalized", { variant: "error" });
         }
       }
@@ -248,7 +248,8 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
         <Grid container spacing={5}>
           <Grid item xs={12} md={6}>
             <div className={classes.text}>
-              Select one or more NFTs for your vault and then set your vault’s details to continue. Be aware you cannot add to the NFTs in a vault once they have been fractionalized.
+              Select one or more NFTs for your vault and then set your vault’s details to continue. Be aware
+              you cannot add to the NFTs in a vault once they have been fractionalized.
             </div>
             {!walletConnected && (
               <div className={classes.walletRow}>
@@ -435,7 +436,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                           nftsCopy[index] = {
                             ...userNFTs[index],
                             selected: !userNFTs[index].selected,
-                          }
+                          };
                           // only need one selected
                           if (selected) {
                             for (let i = 0; i < nftsCopy.length; i++) {
@@ -579,10 +580,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                 </Grid>
 
                 <Box mt="40px" p={"24px 0px 0px"} display="flex" justifyContent="flex-end">
-                  <button
-                    className={classes.nftsButton}
-                    onClick={handleFractionalise}
-                  >
+                  <button className={classes.nftsButton} onClick={handleFractionalise}>
                     Continue
                   </button>
                 </Box>

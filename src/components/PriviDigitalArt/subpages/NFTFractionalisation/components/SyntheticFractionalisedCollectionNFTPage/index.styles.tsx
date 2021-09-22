@@ -175,6 +175,9 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     letterSpacing: "0.02em",
     textAlign: "center",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 12,
+    },
   },
   typo8: {
     fontSize: 24,
@@ -296,6 +299,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
 
     [theme.breakpoints.down("sm")]: {
       overflowX: 'auto',
+      fontSize: 16,
     },
   },
   tabSection: {
@@ -304,6 +308,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+
+    [theme.breakpoints.down("xs")]: {
+      minWidth: 160,
+      width: '100%',
+    },
   },
   selectedTabSection: {
     borderBottom: "4px solid #431AB7",

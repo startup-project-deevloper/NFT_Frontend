@@ -20,9 +20,33 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     "& button": {
       height: "auto",
     },
+
+    [theme.breakpoints.down("xs")]: {
+      padding: "40px 30px",
+      marginBottom: 50,
+    },
+  },
+  nftWrapper: {
+    [theme.breakpoints.down("xs")]: {
+      padding: "35px 6px 0",
+      background: "#EFF2FD",
+      border: "1px solid #9EACF2",
+      borderRadius: 20,
+      marginLeft: -15,
+      marginRight: -15,
+    },
   },
   titleContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     width: "100%",
+
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 30,
+    },
   },
   title: {
     fontFamily: "Agrandir Grand",
@@ -33,7 +57,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     color: "#431AB7",
     margin: "24px 0px",
     [theme.breakpoints.down("xs")]: {
-      fontSize: 22,
+      fontSize: 18,
     },
   },
   text: {
@@ -44,6 +68,9 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     lineHeight: "23px",
     color: "#431AB7",
     marginBottom: "24px",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14,
+    },
   },
   shortLabel: {
     "& label": {
@@ -84,6 +111,11 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       textAlign: "center",
       width: "40%",
       padding: "8px 32px",
+
+      [theme.breakpoints.down("xs")]: {
+        width: "100%",
+        maxWidth: 260,
+      },
     },
   },
   nftsBox: {
@@ -145,9 +177,14 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     color: "#431AB7",
     fontStyle: "normal",
     fontWeight: 800,
-    fontSize: "14px",
+    fontSize: "16px",
     lineHeight: "120%",
     marginBottom: "16px",
+
+    [theme.breakpoints.down("xs")]: {
+      fontWeight: 400,
+      marginTop: 20,
+    },
   },
 
   purpleLabel: {
@@ -181,12 +218,25 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       textTransform: "uppercase",
     },
   },
+  emptyIcon: {
+    fontSize: 20,
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 52,
+    },
+  },
   emptyBox: {
     borderRadius: theme.spacing(1),
     background: "#EFF2FD",
     boxShadow: "0px 4px 8px #9EACF2",
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     textAlign: "center",
+    [theme.breakpoints.down("xs")]: {
+      border: "1px solid rgba(67, 26, 183, 0.24)",
+      width: "100%",
+      boxShadow: "none",
+      padding: "50px 30px 30px",
+    },
   },
   label: {
     marginBottom: "9px",
@@ -242,7 +292,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 91%, 0% 80%, 0% 0%)",
     padding: 8,
-    height: 416,
+    height: '100%',
     width: "100%",
     cursor: "pointer",
   },
@@ -255,14 +305,15 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 81%,  50% 92%, 0% 81%, 0% 0%)",
     padding: 4,
-    height: 422,
+    height: '100%',
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     color: "#fff",
     "& img": {
       width: "100%",
-      height: 250,
+      height: "100%",
+      maxHeight: 250,
     },
   },
   innerBox: {
@@ -271,22 +322,33 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 90%, 0% 80%, 0% 0%)",
     padding: 16,
-    height: 400,
+    height: '100%',
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     color: "#fff",
     "& img": {
       width: "100%",
-      height: 250,
+      height: "100%",
+      maxHeight: 250,
     },
     [theme.breakpoints.between(960, 980)]: {
       padding: 12,
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "10px 6px",
+    },
+  },
+  nftNameContainer: {
+    marignBottom: 8,
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: 0,
     },
   },
   starGroup: {
     display: "flex",
     alignItems: "center",
+    marginBottom: 30,
   },
   ntfName: {
     fontSize: 16,
@@ -295,6 +357,12 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     lineHeight: "21px",
     textTransform: "capitalize",
     marginBottom: 8,
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 12,
+      color: "#1A1B1C",
+      textAlign: "center",
+      margin: "auto",
+    },
   },
   priceSection: {
     display: "flex",

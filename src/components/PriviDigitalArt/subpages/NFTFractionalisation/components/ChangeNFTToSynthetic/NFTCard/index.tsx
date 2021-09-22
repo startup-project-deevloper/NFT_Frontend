@@ -12,7 +12,7 @@ export default function NFTCard({ item, handleSelect }) {
       <div className={classes.selectedOuterBox}>
         <div className={`${classes.card} ${item.selected ? classes.selected : ""}`}>
           <div className={classes.innerBox}>
-            <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={1}>
+            <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} className={classes.nftNameContainer}>
               <div className={classes.ntfName}>{item.MediaName}</div>
             </Box>
             <img
@@ -24,7 +24,7 @@ export default function NFTCard({ item, handleSelect }) {
                   : item?.UrlMainPhoto ??
                     item?.Url ??
                     item?.url ??
-                    require(`assets/backgrounds/digital_art_1.png`)
+                    require(`assets/backgrounds/nft-card-img.png`)
               }
               alt={item.MediaName}
             />

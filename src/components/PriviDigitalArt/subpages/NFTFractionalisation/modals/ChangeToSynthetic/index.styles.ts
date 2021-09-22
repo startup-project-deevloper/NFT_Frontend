@@ -4,6 +4,9 @@ export const ChangeToSyntheticStyles = makeStyles(theme => ({
   root: {
     maxWidth: "700px !important",
     padding: "138px 80px 70px !important",
+    [theme.breakpoints.down("xs")]: {
+      padding: "80px 20px 70px !important",
+    },
   },
   title: {
     fontSize: 20,
@@ -12,6 +15,9 @@ export const ChangeToSyntheticStyles = makeStyles(theme => ({
     color: "#181818",
     margin: 0,
     marginTop: 56,
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 18,
+    },
   },
   description: {
     fontSize: 16,
@@ -33,5 +39,8 @@ export const ChangeToSyntheticStyles = makeStyles(theme => ({
     fontWeight: 800,
     borderRadius: 4,
     width: "334px",
+    [theme.breakpoints.down("xs")]: {
+      width: "240px",
+    },
   },
 }));

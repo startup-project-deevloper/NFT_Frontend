@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, useMediaQuery } from "@material-ui/core";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
@@ -55,6 +55,7 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
   const [selectedNFT, setSelectedNFT] = useState<any>();
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
   const [openChangeToSyntheticModal, setOpenChangeToSyntheticModal] = useState<boolean>(false);
+  const isMobileScreen = useMediaQuery("(max-width:586px)");
 
   const handleConnectWallet = () => {
     setWalletConnected(true);
@@ -68,12 +69,7 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
     <div className={classes.root}>
       <BackButton purple overrideFunction={goBack} />
       {walletConnected ? (
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          className={classes.titleContainer}
-        >
+        <Box className={classes.titleContainer}>
           <Box display="flex" flexDirection="column">
             <div className={classes.title}>Synthetic Fractionalise your NFT</div>
             <div className={classes.text}>You will create a synthetic copy of the NFT you are selecting.</div>
@@ -101,18 +97,20 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
           {walletConnected && (
             <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
               {userNFTs && userNFTs.length > 0 ? (
-                <MasonryGrid
-                  gutter={"24px"}
-                  data={userNFTs}
-                  renderItem={(item, index) => (
-                    <NFTCard item={item} key={`item-${index}`} handleSelect={() => {}} />
-                  )}
-                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
-                />
+                <Box className={classes.nftWrapper}>
+                  <MasonryGrid
+                    gutter={isMobileScreen? "14px" : "24px"}
+                    data={userNFTs}
+                    renderItem={(item, index) => (
+                      <NFTCard item={item} key={`item-${index}`} handleSelect={() => {}} />
+                    )}
+                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
+                  />
+                </Box>
               ) : (
                 <Box display="flex" alignItems="center" justifyContent="center">
                   <Box className={classes.emptyBox}>
-                    <Box>😞</Box>
+                    <Box className={classes.emptyIcon}>😞</Box>
                     <Box className={classes.detailsLabel} mt={1}>
                       Not NFT found on your wallet.
                     </Box>
@@ -135,6 +133,7 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
 };
 
 const COLUMNS_COUNT_BREAK_POINTS_TWO = {
+  586: 2,
   800: 3,
   1440: 5,
 };

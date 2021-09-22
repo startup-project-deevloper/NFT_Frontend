@@ -8,8 +8,11 @@ export const useMobileMenuStyles = makeStyles(theme => ({
     height: "fit-content",
     minHeight: theme.spacing(8),
     zIndex: 1,
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       padding: 16,
+      marginBottom: 0,
+    },
+    [theme.breakpoints.down("xs")]: {
       paddingRight: 0,
       paddingBottom: 5,
       overflowX: "scroll",
@@ -17,11 +20,10 @@ export const useMobileMenuStyles = makeStyles(theme => ({
         background: "rgb(193 186 186 / 36%)",
       },
     },
-    [theme.breakpoints.down("sm")]: {
-      padding: "16px 16px",
-    },
   },
   content: {
+    display: "flex",
+    alignItems: "center",
     height: "fit-content",
     minHeight: 0,
 
@@ -42,6 +44,7 @@ export const useMobileMenuStyles = makeStyles(theme => ({
       color: "#9EACF2",
       fontSize: "14px",
       lineHeight: "16px",
+      paddingTop: 4,
     },
   },
   selected: {

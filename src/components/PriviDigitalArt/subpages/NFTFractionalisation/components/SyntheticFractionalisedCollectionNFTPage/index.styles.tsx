@@ -19,6 +19,17 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       paddingLeft: 4,
     },
   },
+  topButtonContainer: {
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      margin: "auto",
+
+      "& button": {
+        width: '100%',
+        margin: "0px 0px 10px 0px !important",
+      }
+    },
+  },
   nftInfoSection: {
     padding: "39px 32px 72px",
     background: "#ffffff",

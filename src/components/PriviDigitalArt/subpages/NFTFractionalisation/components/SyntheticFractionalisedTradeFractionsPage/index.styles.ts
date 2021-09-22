@@ -16,15 +16,45 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     boxSizing: "border-box",
     borderRadius: "20px",
     marginBottom: "10px",
+    padding: "36px 53px",
+
+    [theme.breakpoints.down(1080)]: {
+      padding: "36px 23px",
+    },
   },
   boxBody: {
     display: "flex",
     alignItems: "center",
+
+    [theme.breakpoints.down(1080)]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
   },
   col_half: {
     height: "100%",
     flex: 1,
-    position: "relative"
+    position: "relative",
+
+    [theme.breakpoints.down(1080)]: {
+      width: '100%',
+      borderRight: 'none',
+    },
+  },
+  ownerInfo: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+
+    [theme.breakpoints.down(1080)]: {
+      alignItems: "flex-start",
+
+      '& .MuiIconButton-root': {
+        paddingBottom: '0 !important',
+        paddingTop: '0 !important',
+        height: 'auto',
+      },
+    },
   },
   crystal: {
     position: "absolute",
@@ -34,23 +64,51 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     top: 0,
     transform: "rotate(22.65deg)",
   },
+  ownerTitle: {
+    marginBottom: "29px",
+    [theme.breakpoints.down(1080)]: {
+      marginBottom: "10px",
+
+      "& $h4": {
+        paddingBottom: 0,
+      },
+    },
+  },
+  tableContainer: {
+    padding: "36px 20px",
+    [theme.breakpoints.down("xs")]: {
+      padding: "0px",
+    },
+  },
   h1: {
     display: "flex",
     fontStyle: "normal",
     fontSize: 24,
     lineHeight: "100%",
+
+    [theme.breakpoints.down["xs"]]: {
+      fontSize: 18,
+    },
   },
   h2: {
     display: "flex",
     fontStyle: "normal",
     fontSize: 22,
     lineHeight: "100%",
+
+    [theme.breakpoints.down["xs"]]: {
+      fontSize: 18,
+    },
   },
   h3: {
     display: "flex",
     fontStyle: "normal",
     fontSize: 18,
     lineHeight: "100%",
+
+    [theme.breakpoints.down["xs"]]: {
+      fontSize: 16,
+    },
   },
   h4: {
     display: "flex",

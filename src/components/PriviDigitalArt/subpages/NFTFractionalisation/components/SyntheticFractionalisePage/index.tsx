@@ -100,7 +100,7 @@ const SyntheticFractionalisePage = ({
             <div className={classes.allNFTSection}>
               {collections.length ? (
                 <MuiThemeProvider theme={theme}>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={2} wrap="wrap">
                     {collections.map((item, idx) => (
                       <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
                         <SyntheticCollectionCard item={item} />

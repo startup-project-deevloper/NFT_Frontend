@@ -407,6 +407,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
   },
   NFTSection: {
+    width: "100%",
     marginTop: 160,
     [theme.breakpoints.down(1200)]: {
       marginTop: 80,

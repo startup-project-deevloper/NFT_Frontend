@@ -8,6 +8,7 @@ export const syntheticCollectionCardStyles = makeStyles(theme => ({
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     width: '100%',
+    margin: "auto",
     marginBottom: 20,
     cursor: 'pointer',
     border: "1px solid #E4E5EE",

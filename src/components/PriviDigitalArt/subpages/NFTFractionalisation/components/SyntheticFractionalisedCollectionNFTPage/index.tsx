@@ -17,12 +17,14 @@ import ChangeNFTToSynthetic from "../../components/ChangeNFTToSynthetic";
 import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
 import { Modal } from "shared/ui-kit";
 import { getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
+import FlipCoinModal from "../../modals/FlipCoinModal";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
   isFlipped = false,
   match,
   withDrawn = false,
+  selectedNFT,
 }) => {
   const params: { collectionId?: string; nftId?: string } = useParams();
 
@@ -37,6 +39,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeLockedNFTModal, setOpenChangeLockedNFTModal] = useState<boolean>(false);
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
+  const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
 
   const [nft, setNft] = useState<any>({});
   const theme = useTheme();
@@ -73,6 +76,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   };
   const handleCloseWithdrawNFTModal = () => {
     setOpenWithdrawNFTModal(false);
+  };
+
+  const handleFlipCoin = () => {
+    setOpenFlipCoinModal(true);
   };
 
   const dummyTableData = [
@@ -225,7 +232,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           className={`${classes.header} ${classes.backButtonContainer}`}
         >
           <BackButton purple overrideFunction={goBack} />
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" className={classes.topButtonContainer}>
             {isOwner ? (
               <PrimaryButton
                 size="medium"
@@ -399,7 +406,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               {isFlipped ? (
                 <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>
               ) : (
-                <div className={classes.flipCoinButton}>Flip The Coin</div>
+                <div className={classes.flipCoinButton} onClick={handleFlipCoin}>
+                  Flip The Coin
+                </div>
               )}
 
               <div className={classes.typo7}>You can flip the coin once every hour</div>
@@ -444,6 +453,13 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           This NFT is beeing withdrawn
         </Box>
       </Modal>
+      <FlipCoinModal
+        open={openFlipCoinModal}
+        onClose={() => setOpenFlipCoinModal(false)}
+        onCompleted={() => {}}
+        pred={1123}
+        selectedNFT={{ tokenId: 123 }}
+      />
     </div>
   );
 };

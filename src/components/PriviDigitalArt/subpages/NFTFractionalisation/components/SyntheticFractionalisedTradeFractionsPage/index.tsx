@@ -337,11 +337,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   return (
     <Box className={classes.root}>
       {isOwnerShipTab ? (
-        <Box className={classes.outBox} sx={{ padding: "36px 53px" }}>
+        <Box className={classes.outBox}>
           <Box display="flex" flexDirection="column">
             <Box
-              className={classes.h1}
-              sx={{ fontWeight: 800, fontFamily: "Agrandir", marginBottom: "29px" }}
+              className={`${classes.h1} ${classes.ownerTitle}`}
+              sx={{ fontWeight: 800, fontFamily: "Agrandir" }}
             >
               Ownership management
             </Box>
@@ -350,7 +350,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 className={classes.col_half}
                 sx={{ borderRight: "1px solid #ECE8F8", marginY: "15px", paddingY: "5px" }}
               >
-                <Box display="flex" flexDirection="column" alignItems="center">
+                <Box className={classes.ownerInfo}>
                   <Box className={classes.h4} pb={1} sx={{ justifyContent: "center", alignItems: "center" }}>
                     Your current ownership
                     <Tooltip
@@ -376,6 +376,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       padding: "0px 25px",
                       maxWidth: 170,
                       marginTop: 28,
+                      borderRadius: 4,
                     }}
                   >
                     Add more JOTS
@@ -386,7 +387,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 className={classes.col_half}
                 sx={{ borderRight: "1px solid #ECE8F8", marginY: "15px", paddingY: "5px" }}
               >
-                <Box display="flex" flexDirection="column" alignItems="center">
+                <Box className={classes.ownerInfo}>
                   <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
                     Current supply
                   </Box>
@@ -402,6 +403,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       padding: "0px 25px",
                       maxWidth: 215,
                       marginTop: 28,
+                      borderRadius: 4,
                     }}
                   >
                     Increase JOTS to Sale
@@ -409,7 +411,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 </Box>
               </Box>
               <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-                <Box display="flex" flexDirection="column" alignItems="center">
+                <Box className={classes.ownerInfo}>
                   <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
                     Current supply
                   </Box>
@@ -427,6 +429,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       marginTop: 28,
                       display: "flex",
                       alignItems: "center",
+                      borderRadius: 4,
                     }}
                   >
                     Swap on <img src={require("assets/pixImages/swap_icon.png")} alt="quick swap" /> Quickswap
@@ -695,7 +698,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       </Box>
       <Box className={classes.outBox}>
         <Box className={classes.boxBody}>
-          <Box width={1} p={2}>
+          <Box width={1} className={classes.tableContainer}>
             <Box className={classes.tableTitle}>Transactions</Box>
             <TransactionTable datas={transList} />
           </Box>

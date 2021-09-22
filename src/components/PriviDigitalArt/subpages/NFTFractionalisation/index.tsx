@@ -69,6 +69,12 @@ const NFTFractionalisation = () => {
     setSelectedTab("synthetic");
     history.push('/pix/fractionalise/synthetic-derivative');
   }
+
+  const handlePureClick = () => {
+    setSelectedTab("pure");
+    history.push('/pix/fractionalise/');
+  }
+
   return (
     <>
       {openFractionalize ? (
@@ -83,7 +89,7 @@ const NFTFractionalisation = () => {
           <div className={classes.subTitleSection}>
             <div
               className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
-              onClick={() => setSelectedTab("pure")}
+              onClick={handlePureClick}
             >
               <span>Pure Fractionalisation</span>
             </div>

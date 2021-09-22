@@ -28,14 +28,17 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     color: "#fff",
+    [theme.breakpoints.down("sm")]: {
+      paddingBottom: 20,
+    },
     "& img": {
       width: "100%",
-      height: 223,
+      height: 210,
       borderRadius: 16.5,
       boxShadow: '0px 29.7482px 23.1375px -22.3112px rgba(63, 83, 183, 0.22)',
       border: "0.82634px solid rgba(0, 0, 0, 0.09)",
       [theme.breakpoints.down("sm")]: {
-        height: 185,
+        height: 180,
       },
     },
   },

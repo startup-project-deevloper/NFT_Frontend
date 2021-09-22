@@ -81,6 +81,12 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
   },
   chartWrapper: {
     padding: "30px 20px 30px 20px",
+    [theme.breakpoints.down("sm")]: {
+      padding: 0,
+      "& canvas": {
+        width: "100%"
+      }
+    },
   },
   controlParentBox: {
     display: "flex",
@@ -89,6 +95,9 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     padding: "30px 40px",
     [theme.breakpoints.down("sm")]: {
       alignItems: "flex-start",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: 12,
     },
     width: "100%",
   },
@@ -175,6 +184,15 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     fontWeight: 800,
     fontSize: "24px",
     lineHeight: "104.5%",
+    padding: "35px 50px",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 20,
+      padding: "25px 32px"
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 18,
+      padding: "30px 16"
+    },
   },
   h3: {
     fontFamily: "Agrandir",
@@ -204,12 +222,43 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     fontSize: "16px",
     lineHeight: "120%",
   },
-
+  exploreButton: {
+    [theme.breakpoints.down("sm")]: {
+      minWidth: "76px !important"
+    },
+    [theme.breakpoints.down("xs")]: {
+      minWidth: "48px !important"
+    }
+  },
+  userField: {
+    columnGap: 12,
+    [theme.breakpoints.down("sm")]: {
+      columnGap: 8,
+      "& > span": {
+        fontSize: "12px !important",
+      }
+    },
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      rowGap: 4,
+      columnGap: 4,
+      "& > span": {
+        fontSize: "10px !important",
+      }
+    }
+  },
   table: {
     marginTop: 24,
     minHeight: 400,
     "& .MuiTableCell-root": {
       fontFamily: "Agrandir",
+      padding: "9px 16px",
+      [theme.breakpoints.down("sm")]: {
+        padding: "8px 12px",
+      },
+      [theme.breakpoints.down("xs")]: {
+        padding: "8px",
+      }
     },
     "& .MuiTableRow-head": {
       background: Color.White,
@@ -219,9 +268,25 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
         fontSize: 18,
         fontWeight: "bold",
         color: "rgb(67, 26, 183)",
+        [theme.breakpoints.down("sm")]: {
+          fontSize: 14,
+        },
+        [theme.breakpoints.down("xs")]: {
+          fontSize: 12,
+        }
       },
     },
-
+    "& .MuiTableRow-root": {
+      "& .MuiTableCell-body": {
+        fontSize: 14,
+        [theme.breakpoints.down("sm")]: {
+          fontSize: 12,
+        },
+        [theme.breakpoints.down("xs")]: {
+          fontSize: 9,
+        }
+      }
+    },
     [theme.breakpoints.down("sm")]: {
       minHeight: 200,
     },

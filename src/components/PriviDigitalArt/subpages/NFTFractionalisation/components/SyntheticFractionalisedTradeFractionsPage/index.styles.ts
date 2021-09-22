@@ -74,6 +74,12 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
       },
     },
   },
+  tableContainer: {
+    padding: "36px 20px",
+    [theme.breakpoints.down("xs")]: {
+      padding: "0px",
+    },
+  },
   h1: {
     display: "flex",
     fontStyle: "normal",

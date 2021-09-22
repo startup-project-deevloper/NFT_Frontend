@@ -694,7 +694,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       </Box>
       <Box className={classes.outBox}>
         <Box className={classes.boxBody}>
-          <Box width={1} p={2}>
+          <Box width={1} className={classes.tableContainer}>
             <Box className={classes.tableTitle}>
               Transactions
             </Box>

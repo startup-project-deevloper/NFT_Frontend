@@ -66,6 +66,8 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
+    padding: "0 15px",
     [theme.breakpoints.down(1250)]: {
       minWidth: 420,
     },
@@ -74,9 +76,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down(950)]: {
       minWidth: 275,
+      fontSize: 18,
     },
     [theme.breakpoints.down(580)]: {
       minWidth: 190,
+      fontSize: 16,
     },
   },
   selectedTabSection: {
@@ -273,6 +277,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down(900)]: {
       fontSize: 20,
+      lineHeight: '150%',
     },
   },
   rewardsDes: {
@@ -386,8 +391,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       bottom: -40,
       left: -50,
     },
-    [theme.breakpoints.down("xs")]: {
-      display: "none",
+    [theme.breakpoints.down(658)]: {
+      width: 89,
+      height: 82,
+      bottom: -40,
+      left: -40,
     },
   },
   buttons: {
@@ -417,6 +425,9 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   allNFTWrapper: {
     backgroundColor: '#FFF',
     padding: '50px 40px',
+    [theme.breakpoints.down(658)]: {
+      padding: '50px 15px',
+    },
   },
   topNFTTitle: {
     display: "flex",
@@ -464,7 +475,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     background: "transparent",
     marginBottom: 50,
     position: "relative",
-    [theme.breakpoints.down(658)]: {
+    [theme.breakpoints.down(769)]: {
       marginBottom: 0,
     },
     "& button.rec-arrow-left": {
@@ -475,7 +486,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       [theme.breakpoints.down(1200)]: {
         right: 60,
       },
-      [theme.breakpoints.down(658)]: {
+      [theme.breakpoints.down(769)]: {
         display: "none",
       },
     },
@@ -487,7 +498,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       [theme.breakpoints.down(1200)]: {
         right: 0,
       },
-      [theme.breakpoints.down(658)]: {
+      [theme.breakpoints.down(769)]: {
         display: "none",
       },
     },

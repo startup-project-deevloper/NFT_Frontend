@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import cls from "classnames";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
@@ -35,6 +36,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
   const handleOpenChangeLockedNFTModal = () => {
     setOpenChangeLockedNFTModal(true);
@@ -86,9 +90,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     [
       {
         cell: (
-          <Box display="flex" flexDirection="row" alignItems="center">
+          <Box className={classes.userField} display="flex" flexDirection="row" alignItems="center">
             <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
-            <Text ml={1.5}>@user_name</Text>
+            <Text>@user_name</Text>
           </Box>
         ),
       },
@@ -113,9 +117,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     [
       {
         cell: (
-          <Box display="flex" flexDirection="row" alignItems="center">
+          <Box className={classes.userField} display="flex" flexDirection="row" alignItems="center">
             <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
-            <Text ml={1.5}>@user_name</Text>
+            <Text>@user_name</Text>
           </Box>
         ),
       },
@@ -140,9 +144,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     [
       {
         cell: (
-          <Box display="flex" flexDirection="row" alignItems="center">
+          <Box className={classes.userField} display="flex" flexDirection="row" alignItems="center">
             <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
-            <Text ml={1.5}>@user_name</Text>
+            <Text>@user_name</Text>
           </Box>
         ),
       },
@@ -201,7 +205,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   return (
     <div className={classes.root}>
       <div className={classes.nftInfoSection}>
-        <Box display="flex" justifyContent="space-between" pl={6}>
+        <Box display="flex" justifyContent="space-between" flexWrap="wrap" gridColumnGap={24} gridRowGap={24} className={`${classes.header} ${classes.backButtonContainer}`}>
           <BackButton purple overrideFunction={goBack} />
           <Box display="flex" alignItems="center">
             {isOwner ? (
@@ -243,7 +247,16 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             <span>Cryptopunk #89</span>
             <span>Cryptopunks</span>
           </div>
-          <Box display="flex" mt={"30px"}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            flexWrap="wrap"
+            mt={"30px"}
+            pr="10%"
+            gridColumnGap="24px"
+            gridRowGap="24px"
+          >
             <Box display="flex" flexDirection="column">
               <div className={classes.typo1}>Ownership</div>
               <div className={classes.typo2}>1 JOTs</div>
@@ -253,7 +266,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               View on Polygonscan
             </PrimaryButton>
           </Box>
-          <Box display="flex" mt="40px" alignItems="center">
+          <Box className={classes.socialIcons}>
             <div className={classes.shareSection}>
               <ShareIcon />
             </div>
@@ -277,6 +290,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 price: 1,
               }}
               hiddenHeader
+              customHeight="100%"
             />
           </div>
         </div>
@@ -343,8 +357,13 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Box display="flex" flexDirection="column">
                   <div className={classes.typo3}>Flip a coin & win</div>
-                  <div className={classes.typo4}>Guess the result of the coin flip and win JOTS.</div>
-                  <div className={classes.typo4}>Increase your JOTs if you guess correctly!</div>
+                  <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <div>
+                      <div className={classes.typo4}>Guess the result of the coin flip and win JOTS.</div>
+                      <div className={classes.typo4}>Increase your JOTs if you guess correctly!</div>
+                    </div>
+                    {isMobile && <img src={require("assets/pixImages/flip_coin_presentation.png")} alt="presentation" />}
+                  </Box>
                   <div className={classes.potentialWinSection}>
                     <div className={classes.typo4}>Your potential Win</div>
                     <Box display="flex">
@@ -353,7 +372,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                     </Box>
                   </div>
                 </Box>
-                <img src={require("assets/pixImages/flip_coin_presentation.png")} alt="presentation" />
+                {!isMobile && <img src={require("assets/pixImages/flip_coin_presentation.png")} alt="presentation" />}
               </Box>
               {isFlipped ? (
                 <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>

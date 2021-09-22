@@ -15,11 +15,14 @@ const Button = styled.div<ButtonProps>`
   margin-bottom: ${p => (p.dark || p.purple ? 0 : "30px")};
   cursor: pointer;
   font-family: ${p => (p.purple ? "Agrandir" : "sans-serif")};
-  font-size: ${p => (p.purple ? "14px" : "18px")};
+  font-size: 18px;
+  font-weight: 800;
   display: flex;
   align-items: baseline;
   svg {
-    margin-right: ${p => (p.purple ? "15px" : "5px")};
+    width: 16px;
+    height: 13px;
+    margin-right: ${p => (p.purple ? "12px" : "5px")};
   }
 `;
 

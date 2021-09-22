@@ -244,7 +244,7 @@ export const CoinFlipHistoryTable = ({ datas }) => {
                 flexDirection="row"
                 alignItems="center"
                 justifyContent="center"
-                gridColumnGap="8px"
+                className={classes.userField}
               >
                 {/* <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl: user?.anonAvatar ? require(`assets/anonAvatars/${user.anonAvatar}`) : "none"} /> */}
                 <Avatar size="tiny" url={user?.imageUrl ? user?.imageUrl : "none"} />
@@ -265,6 +265,7 @@ export const CoinFlipHistoryTable = ({ datas }) => {
             cell: (
               <SecondaryButton
                 size="medium"
+                className={classes.exploreButton}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -545,7 +546,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
       )}
 
       <Box className={classes.outBox} style={{ paddingBottom: 20 }}>
-        <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
+        <Box className={classes.sectionTitle}>
           Coin flip history
         </Box>
         <CoinFlipHistoryTable datas={flipHistory} />

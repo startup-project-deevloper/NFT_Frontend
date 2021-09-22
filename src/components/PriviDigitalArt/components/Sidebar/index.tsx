@@ -10,6 +10,7 @@ import styles from "shared/ui-kit/PriviAppSidebar/index.module.css";
 import AppSidebar from "shared/ui-kit/PriviAppSidebar";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
 import { PrimaryButton } from "shared/ui-kit";
+import { Widget } from "@maticnetwork/wallet-widget";
 
 const TABS = [
   "HOME",
@@ -50,7 +51,7 @@ const SidebarContent = ({ handleRefresh }) => {
       return TABS[5];
     } else if (location.pathname.includes("like")) {
       return TABS[6];
-    } else if (location.pathname.includes("fractionalisation")) {
+    } else if (location.pathname.includes("fractionalisation") || location.pathname.includes("fractionalise")) {
       return TABS[7];
     }
 
@@ -77,6 +78,20 @@ const SidebarContent = ({ handleRefresh }) => {
     }
   };
 
+  const setBridgeWidget = () => {
+    const widget = new Widget({
+      target: "",
+      appName: "priviPix",
+      autoShowTime: 0.1,
+      position: "center",
+      height: 630,
+      width: 540,
+      overlay: false,
+      network: "mainnet",
+      closable: true,
+    });
+    widget.create();
+  };
   const handleOpenCreateContentModal = () => {
     setOpenCreateContentModal(true);
   };
@@ -121,7 +136,7 @@ const SidebarContent = ({ handleRefresh }) => {
           </li>
           <PrimaryButton
             size="medium"
-            onClick={() => {}}
+            onClick={() => setBridgeWidget()}
             style={{
               backgroundColor: "#DDFF57",
               margin: "14px 0 0 14px",

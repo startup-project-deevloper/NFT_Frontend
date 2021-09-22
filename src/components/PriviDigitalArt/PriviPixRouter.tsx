@@ -54,7 +54,7 @@ export default function PriviPixRouter(props) {
       />
       <Route
         exact
-        path="/pix/fractionalisation/collection/:collectionId/nft/:nftId/:auction"
+        path="/pix/fractionalisation/collection/:collectionId/nft/:nftId"
         component={SyntheticFractionalisedCollectionNFTPage}
       />
 

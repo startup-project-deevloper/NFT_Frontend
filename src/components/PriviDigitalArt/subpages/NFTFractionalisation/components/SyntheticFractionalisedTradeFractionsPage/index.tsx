@@ -214,9 +214,7 @@ export const TransactionTable = ({ datas }) => {
             cell: row.time || "",
           },
           {
-            cell: (
-              <img src={require(`assets/icons/polygon_scan.png`)} />
-            ),
+            cell: <img src={require(`assets/icons/polygon_scan.png`)} />,
           },
         ];
       });
@@ -234,6 +232,8 @@ export const TransactionTable = ({ datas }) => {
 export default function SyntheticFractionalisedTradeFractionsPage({
   isOwner = false,
   isOwnerShipTab = false,
+  collectionId,
+  nft,
 }: any) {
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
@@ -594,9 +594,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           </Box>
                         </Box>
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
-                          <Box className={classes.h3}>
-                            Supply
-                          </Box>
+                          <Box className={classes.h3}>Supply</Box>
                           <Box className={classes.h1} fontWeight={800}>
                             2455 JOTs
                           </Box>
@@ -636,7 +634,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           $0.28
                         </Box>
                       </Box>
-                      <Box display="flex" flexWrap="wrap" justifyContent="center" gridColumnGap={8} gridRowGap={8}>
+                      <Box
+                        display="flex"
+                        flexWrap="wrap"
+                        justifyContent="center"
+                        gridColumnGap={8}
+                        gridRowGap={8}
+                      >
                         <PrimaryButton
                           className={classes.priceButton}
                           size="medium"
@@ -695,16 +699,32 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       <Box className={classes.outBox}>
         <Box className={classes.boxBody}>
           <Box width={1} className={classes.tableContainer}>
-            <Box className={classes.tableTitle}>
-              Transactions
-            </Box>
+            <Box className={classes.tableTitle}>Transactions</Box>
             <TransactionTable datas={transList} />
           </Box>
         </Box>
       </Box>
-      <BuyJotsModal open={openBuyJotsModal} handleClose={handleCloseBuyJotsModal} />
-      <EditNFTPriceModal open={openEditPriceModal} onClose={handleCloseEditPriceModal} />
-      <EditJOTsSupplyModal open={openEditSupplyModal} onClose={handleCloseEditSupplyModal} />
+      <BuyJotsModal
+        open={openBuyJotsModal}
+        handleClose={handleCloseBuyJotsModal}
+        collectionId={collectionId}
+        nftId={nft?.NftId}
+        syntheticId={nft?.SyntheticID}
+      />
+      <EditNFTPriceModal
+        open={openEditPriceModal}
+        onClose={handleCloseEditPriceModal}
+        collectionId={collectionId}
+        nftId={nft?.NftId}
+        syntheticId={nft?.SyntheticID}
+      />
+      <EditJOTsSupplyModal
+        open={openEditSupplyModal}
+        onClose={handleCloseEditSupplyModal}
+        collectionId={collectionId}
+        nftId={nft?.NftId}
+        syntheticId={nft?.SyntheticID}
+      />
     </Box>
   );
 }

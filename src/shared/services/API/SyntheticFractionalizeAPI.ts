@@ -25,11 +25,43 @@ export async function getSyntheticCollection(id): Promise<any> {
   }
 }
 
+export async function getSyntheticNFT(collectionId, syntheticId): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticNFT`, {
+      params: {
+        collectionId,
+        syntheticId,
+      },
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
 /////////////////////////// POST /////////////////////////
 
-export async function buyJots(): Promise<any> {
+export async function buyJots(payload): Promise<any> {
   try {
-    const response = await axios.post(`${URL()}/syntheticFractionalize/buyJots`, { params: {} });
+    const response = await axios.post(`${URL()}/syntheticFractionalize/buyJots`, payload);
+    return response.data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
+export async function updatePriceFraction(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/updatePriceFraction`, payload);
+    return response.data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
+export async function updateSellingSupply(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/updateSellingSupply`, payload);
     return response.data;
   } catch (e) {
     throw new Error(e.message);

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import cls from "classnames";
 import { useMediaQuery, useTheme } from "@material-ui/core";
+import { useParams } from "react-router";
 
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
@@ -15,6 +16,7 @@ import ChangeLockedNFT from "../../modals/ChangeLockedNFT";
 import ChangeNFTToSynthetic from "../../components/ChangeNFTToSynthetic";
 import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
 import { Modal } from "shared/ui-kit";
+import { getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import FlipCoinModal from "../../modals/FlipCoinModal";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
@@ -24,6 +26,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   withDrawn = false,
   selectedNFT,
 }) => {
+  const params: { collectionId?: string; nftId?: string } = useParams();
+
   const classes = fractionalisedCollectionStyles();
 
   const isAuction = match.params.auction === "1";
@@ -37,8 +41,22 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
 
+  const [nft, setNft] = useState<any>({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+
+  useEffect(() => {
+    (async () => {
+      if (!params || !params.collectionId || !params.nftId) {
+        return;
+      }
+
+      const response = await getSyntheticNFT(params.collectionId, params.nftId);
+      if (response.success) {
+        setNft(response.data);
+      }
+    })();
+  }, [params]);
 
   const handleOpenChangeLockedNFTModal = () => {
     setOpenChangeLockedNFTModal(true);
@@ -205,7 +223,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   return (
     <div className={classes.root}>
       <div className={classes.nftInfoSection}>
-        <Box display="flex" justifyContent="space-between" flexWrap="wrap" gridColumnGap={24} gridRowGap={24} className={`${classes.header} ${classes.backButtonContainer}`}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          flexWrap="wrap"
+          gridColumnGap={24}
+          gridRowGap={24}
+          className={`${classes.header} ${classes.backButtonContainer}`}
+        >
           <BackButton purple overrideFunction={goBack} />
           <Box display="flex" alignItems="center" className={classes.topButtonContainer}>
             {isOwner ? (
@@ -362,7 +387,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                       <div className={classes.typo4}>Guess the result of the coin flip and win JOTS.</div>
                       <div className={classes.typo4}>Increase your JOTs if you guess correctly!</div>
                     </div>
-                    {isMobile && <img src={require("assets/pixImages/flip_coin_presentation.png")} alt="presentation" />}
+                    {isMobile && (
+                      <img src={require("assets/pixImages/flip_coin_presentation.png")} alt="presentation" />
+                    )}
                   </Box>
                   <div className={classes.potentialWinSection}>
                     <div className={classes.typo4}>Your potential Win</div>
@@ -372,7 +399,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                     </Box>
                   </div>
                 </Box>
-                {!isMobile && <img src={require("assets/pixImages/flip_coin_presentation.png")} alt="presentation" />}
+                {!isMobile && (
+                  <img src={require("assets/pixImages/flip_coin_presentation.png")} alt="presentation" />
+                )}
               </Box>
               {isFlipped ? (
                 <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>
@@ -393,11 +422,20 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           </>
         ) : selectedTab === "trade_fraction" ? (
           <div>
-            <SyntheticFractionalisedTradeFractionsPage isOwner={isOwner} />
+            <SyntheticFractionalisedTradeFractionsPage
+              isOwner={isOwner}
+              collectionId={params.collectionId}
+              nft={nft}
+            />
           </div>
         ) : selectedTab === "ownership" ? (
           <div>
-            <SyntheticFractionalisedTradeFractionsPage isOwner={isOwner} isOwnerShipTab={true} />
+            <SyntheticFractionalisedTradeFractionsPage
+              isOwner={isOwner}
+              isOwnerShipTab={true}
+              collectionId={params.collectionId}
+              nft={nft}
+            />
           </div>
         ) : (
           <></>

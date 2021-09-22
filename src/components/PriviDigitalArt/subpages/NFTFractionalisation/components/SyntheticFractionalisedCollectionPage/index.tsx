@@ -170,7 +170,10 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <span>NFTS IN COLLECTION</span>
             </div>
             <div
-              className={cls({ [classes.selectedTabSection]: selectedTab === "jots_pool" }, classes.tabSection)}
+              className={cls(
+                { [classes.selectedTabSection]: selectedTab === "jots_pool" },
+                classes.tabSection
+              )}
               onClick={() => setSelectedTab("jots_pool")}
             >
               <span>JOTS POOL</span>
@@ -185,7 +188,10 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <span>TRADE JOTS</span>
             </div>
             <div
-              className={cls({ [classes.selectedTabSection]: selectedTab === "auctions" }, classes.tabSection)}
+              className={cls(
+                { [classes.selectedTabSection]: selectedTab === "auctions" },
+                classes.tabSection
+              )}
               onClick={() => setSelectedTab("auctions")}
             >
               <span>AUCTIONS</span>
@@ -201,7 +207,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {
-                        history.push(`/pix/fractionalisation/collection/${params.id}/nft/${item.NftId}/0`);
+                        history.push(
+                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`
+                        );
                       }}
                     />
                   </Grid>

@@ -27,19 +27,19 @@ export const FractionaliseModal = ({ open, onClose, selectedNFT, supplyToKeep, p
           <StyledDivider type="solid" color="#DAE6E5" />
         </Box>
         {step === 0 ? (
-          <LockNFT
-            onClose={onClose}
-            onCompleted={() => handleCompleteStep(0)}
-            needLockLaterBtn={false}
-            selectedNFT={selectedNFT}
-          />
-        ) : step === 1 ? (
           <CreateContract
             onClose={onClose}
-            onCompleted={() => handleCompleteStep(1)}
+            onCompleted={() => handleCompleteStep(0)}
             selectedNFT={selectedNFT}
             supplyToKeep={supplyToKeep}
             priceFraction={priceFraction}
+          />
+        ) : step === 1 ? (
+          <LockNFT
+            onClose={onClose}
+            onCompleted={() => handleCompleteStep(1)}
+            needLockLaterBtn={false}
+            selectedNFT={selectedNFT}
           />
         ) : (
           <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} />

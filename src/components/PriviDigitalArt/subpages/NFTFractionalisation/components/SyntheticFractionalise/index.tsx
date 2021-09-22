@@ -20,9 +20,6 @@ import { DateInput } from "shared/ui-kit/DateTimeInput";
 import NFTCard from "./NFTCard";
 import { FractionaliseModal } from "../../modals/FractionaliseModal";
 
-declare let window: any;
-const isProd = process.env.REACT_APP_ENV === "prod";
-
 // parse it to same format as fb collection
 const parseMoralisData = (data, address, selectedChain) => {
   const metadata = data.metadata ? JSON.parse(data.metadata) : {};
@@ -156,16 +153,6 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
       return;
     }
     if (validate()) {
-      if (chainId !== 1 && chainId !== 4) {
-        try {
-          await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: isProd ? "0x1" : "0x4" }],
-          });
-        } catch (err) {
-          return;
-        }
-      }
       setOpenFractionaliseModal(true);
     }
   };

@@ -5,9 +5,6 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import { StepButton } from "@material-ui/core";
 
-declare let window: any;
-const isProd = process.env.REACT_APP_ENV === "prod";
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -50,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function getSteps() {
-  return ["Lock NFT on Ethereum", "Create contract on Polygon"]; //'Verify'
+  return ["Create contract on Polygon", "Lock NFT on Ethereum"]; //'Verify'
 }
 
 interface ProgressBarProps {
@@ -66,16 +63,6 @@ export default function ProgressBar({ step = 0, setStep, completedSteps }: Progr
   const handleStep = (index: number) => async () => {
     // If previous step is completed, then selectable.
     if (completedSteps.includes(index - 1)) {
-      if (index === 1) {
-        try {
-          await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: isProd ? "0x89" : "0x13881" }],
-          });
-        } catch (err) {
-          return;
-        }
-      }
       setStep(index);
     }
   };

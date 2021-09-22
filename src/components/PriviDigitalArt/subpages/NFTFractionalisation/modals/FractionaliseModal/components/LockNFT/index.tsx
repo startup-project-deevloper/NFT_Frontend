@@ -11,6 +11,9 @@ import config from "shared/connectors/ethereum/config";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
 
+declare let window: any;
+const isProd = process.env.REACT_APP_ENV === "prod";
+
 export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, selectedNFT }) {
   const classes = useLockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
@@ -19,6 +22,16 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
   const { account, library, chainId } = useWeb3React();
 
   const handleProceed = async () => {
+    if (chainId !== 1 && chainId !== 4) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: isProd ? "0x1" : "0x4" }],
+        });
+      } catch (err) {
+        return;
+      }
+    }
     setIsLoading(true);
     setIsProceeding(true);
 
@@ -67,6 +80,10 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
     onClose();
   };
 
+  const handleEtherScan = () => {
+    window.open(`https://${!isProd ? "rinkeby." : ""}etherscan.io/tx/${hash}`, "_blank");
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.container}>
@@ -93,7 +110,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
                     <CopyIcon />
                   </Box>
                 </CopyToClipboard>
-                <button className={classes.checkBtn} onClick={handleLater}>
+                <button className={classes.checkBtn} onClick={handleEtherScan}>
                   Check on Ethereum Scan
                 </button>
               </Box>

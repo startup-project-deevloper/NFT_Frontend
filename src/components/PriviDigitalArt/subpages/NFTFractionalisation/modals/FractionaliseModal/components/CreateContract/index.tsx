@@ -14,7 +14,8 @@ import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
 import SyntheticProtocolRouter from "shared/connectors/polygon/contracts/pix/SyntheticProtocolRouter.json";
 
-const isDev = process.env.REACT_APP_ENV === "dev";
+declare let window: any;
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,13 +86,25 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
   const { account, library, chainId } = useWeb3React();
 
   const handleProceed = async () => {
+    console.log('chainId', chainId);
+    if (chainId !== 80001 && chainId !== 137) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: isProd ? "0x89" : "0x13881" }],
+        });
+      } catch (err) {
+        console.log("err", err);
+        return;
+      }
+    }
     setIsLoading(true);
     setIsProceeding(true);
 
     try {
       const { data: collectionInfo } = await axios.get(
         `${PriceFeed_URL()}/nft/collection-address?contract=${selectedNFT.tokenAddress}${
-          isDev ? "&network=rinkeby" : ""
+          !isProd ? "&network=rinkeby" : ""
         }`,
         {
           headers: {
@@ -175,6 +188,10 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
     onClose();
   };
 
+  const handlePolygonScan = () => {
+    window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.container}>
@@ -204,7 +221,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
                     <CopyIcon />
                   </Box>
                 </CopyToClipboard>
-                <button className={classes.checkBtn} onClick={handleCheck}>
+                <button className={classes.checkBtn} onClick={handlePolygonScan}>
                   Check on Polygon Scan
                 </button>
               </Box>

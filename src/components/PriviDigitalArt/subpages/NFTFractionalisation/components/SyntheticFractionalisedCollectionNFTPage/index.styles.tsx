@@ -296,6 +296,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
 
     [theme.breakpoints.down("sm")]: {
       overflowX: 'auto',
+      fontSize: 16,
     },
   },
   tabSection: {

@@ -66,6 +66,8 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
+    padding: "0 15px",
     [theme.breakpoints.down(1250)]: {
       minWidth: 420,
     },
@@ -74,9 +76,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down(950)]: {
       minWidth: 275,
+      fontSize: 18,
     },
     [theme.breakpoints.down(580)]: {
       minWidth: 190,
+      fontSize: 16,
     },
   },
   selectedTabSection: {
@@ -273,6 +277,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down(900)]: {
       fontSize: 20,
+      lineHeight: '150%',
     },
   },
   rewardsDes: {

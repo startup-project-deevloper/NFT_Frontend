@@ -74,6 +74,31 @@ export const useStyles = makeStyles(theme => ({
         }
       },
     },
+
+    [theme.breakpoints.down("xs")]: {
+      minHeight: 200,
+      "& .MuiTableContainer-root": {
+        boxShadow: "none",
+        borderRadius: 0,
+      },
+      "& .MuiTableContainer-root .MuiTableRow-head .MuiTableCell-head": {
+        fontSize: 8,
+      },
+      "& .MuiTableCell-body": {
+        fontSize: 8,
+        "& img": {
+          width: 14,
+          height: 14,
+        },
+        "& span": {
+          fontSize: 8,
+          marginLeft: 10,
+        }
+      },
+      "& .MuiTableCell-root": {
+        padding: '9px',
+      },
+    },
   },
   fromCell: {
     display: "flex",

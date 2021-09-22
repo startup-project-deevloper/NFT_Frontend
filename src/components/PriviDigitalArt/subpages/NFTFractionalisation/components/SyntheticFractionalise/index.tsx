@@ -20,6 +20,9 @@ import { DateInput } from "shared/ui-kit/DateTimeInput";
 import NFTCard from "./NFTCard";
 import { FractionaliseModal } from "../../modals/FractionaliseModal";
 
+declare let window: any;
+const isProd = process.env.REACT_APP_ENV === "prod";
+
 // parse it to same format as fb collection
 const parseMoralisData = (data, address, selectedChain) => {
   const metadata = data.metadata ? JSON.parse(data.metadata) : {};
@@ -153,44 +156,17 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
       return;
     }
     if (validate()) {
+      if (chainId !== 1 && chainId !== 4) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: isProd ? "0x1" : "0x4" }],
+          });
+        } catch (err) {
+          return;
+        }
+      }
       setOpenFractionaliseModal(true);
-      // setLoading(true);
-      // await handleSyncChain();
-      // const web3 = new Web3(library.provider);
-      // const payload = {
-      //   name,
-      //   symbol,
-      //   token: selectedNFT.tokenAddress,
-      //   id: Number(selectedNFT.BlockchainId),
-      //   supply,
-      //   asset: selectedChain.config.TOKEN_ADDRESSES[reservePriceToken],
-      //   listPrice: reservePrice,
-      //   fee: managementFee,
-      //   // extra data
-      //   ownerAddress: account,
-      //   listToken: reservePriceToken,
-      //   MediaSymbol: selectedNFT.MediaSymbol,
-      //   chainId: chainId,
-      // };
-      // const resp = await selectedChain.apiHandler.Erc721.setApprovalForAll2(web3, account!, "ERC721_VAULT_FACTORY", selectedNFT.tokenAddress);
-      // if (resp?.success) {
-      //   const mintResp = await selectedChain.apiHandler.VaultFactory.mint(web3, account!, payload);
-      //   if (mintResp?.success) {
-      //     const data = {
-      //       ...payload,
-      //       ...mintResp.data,
-      //     };
-      //     const backendResp = await mint(data);
-      //     if (backendResp?.success) {
-      //       showAlertMessage("NFT successfully fractionalized", { variant: "success" });
-      //       goBack();
-      //     }
-      //   }
-      //   else {
-      //     showAlertMessage("NFT failed to be fractionalized", { variant: "error" });
-      //   }
-      // }
-      // setLoading(false);
     }
   };
 

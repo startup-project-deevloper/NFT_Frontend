@@ -136,35 +136,37 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         </div>
       </div>
       <div className={classes.nftSection}>
-        <div className={classes.nftTabSection}>
-          <div
-            className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
-            onClick={() => setSelectedTab("nft")}
-          >
-            <span>NFTS IN COLLECTION</span>
+        <Box width="100%" mb={4} style={{ overflowX: "auto" }}>
+          <div className={classes.nftTabSection}>
+            <div
+              className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
+              onClick={() => setSelectedTab("nft")}
+            >
+              <span>NFTS IN COLLECTION</span>
+            </div>
+            <div
+              className={cls({ [classes.selectedTabSection]: selectedTab === "jots_pool" }, classes.tabSection)}
+              onClick={() => setSelectedTab("jots_pool")}
+            >
+              <span>JOTS POOL</span>
+            </div>
+            <div
+              className={cls(
+                { [classes.selectedTabSection]: selectedTab === "trade_jots" },
+                classes.tabSection
+              )}
+              onClick={() => setSelectedTab("trade_jots")}
+            >
+              <span>TRADE JOTS</span>
+            </div>
+            <div
+              className={cls({ [classes.selectedTabSection]: selectedTab === "auctions" }, classes.tabSection)}
+              onClick={() => setSelectedTab("auctions")}
+            >
+              <span>AUCTIONS</span>
+            </div>
           </div>
-          <div
-            className={cls({ [classes.selectedTabSection]: selectedTab === "jots_pool" }, classes.tabSection)}
-            onClick={() => setSelectedTab("jots_pool")}
-          >
-            <span>JOTS POOL</span>
-          </div>
-          <div
-            className={cls(
-              { [classes.selectedTabSection]: selectedTab === "trade_jots" },
-              classes.tabSection
-            )}
-            onClick={() => setSelectedTab("trade_jots")}
-          >
-            <span>TRADE JOTS</span>
-          </div>
-          <div
-            className={cls({ [classes.selectedTabSection]: selectedTab === "auctions" }, classes.tabSection)}
-            onClick={() => setSelectedTab("auctions")}
-          >
-            <span>AUCTIONS</span>
-          </div>
-        </div>
+        </Box>
         {selectedTab === "nft" ? (
           <div className={classes.allNFTSection}>
             {NFTList && NFTList.length ? (

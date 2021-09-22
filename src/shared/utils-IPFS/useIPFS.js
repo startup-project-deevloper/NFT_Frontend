@@ -21,7 +21,6 @@ const useIPFS = () => {
 
   useEffect(() => {
     if (!multiAddr) return;
-    console.log("ipfsHttpsClient", multiAddr, ipfsHttpClient(multiAddr));
     if(multiAddr && ipfsHttpClient(multiAddr)) {
       setIpfs(ipfsHttpClient(multiAddr));
     }
@@ -46,15 +45,13 @@ const useIPFS = () => {
       content: file,
     };
 
-    console.log('File size to Upload', sizeToString(file.size));
     const options = {
       wrapWithDirectory: true,
-      progress: (prog) => console.log(`IPFS Upload: ${(100.0 * prog / file.size).toFixed(2)}%`),
+      progress: (prog) => {},
     };
 
     try {
       const added = await ipfs.add(fileDetails, options);
-      console.log('The File is Uploaded Successfully to IPFS');
       return added;
     } catch (err) {
       console.error(err);
@@ -140,10 +137,9 @@ const useIPFS = () => {
   const upload = async (file) => {
     try {
       const added = await ipfs.add(file, {
-        progress: (prog) => console.log(`IPFS Upload: ${(100.0 * prog / file.size).toFixed(2)}%`),
+        progress: (prog) => {},
         pin: false,
       });
-      console.log('IPFS Upload: 100%');
       return added;
     } catch (err) {
       console.error(err);

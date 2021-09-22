@@ -81,6 +81,12 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
   },
   chartWrapper: {
     padding: "30px 20px 30px 20px",
+    [theme.breakpoints.down("sm")]: {
+      padding: 0,
+      "& canvas": {
+        width: "100%"
+      }
+    },
   },
   controlParentBox: {
     display: "flex",
@@ -89,6 +95,9 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     padding: "30px 40px",
     [theme.breakpoints.down("sm")]: {
       alignItems: "flex-start",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: 12,
     },
     width: "100%",
   },

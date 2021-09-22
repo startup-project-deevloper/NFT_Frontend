@@ -9,6 +9,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     width: "100%",
     height: "100%",
     overflowY: "auto",
+    overflowX: "hidden",
     minHeight: "calc(100vh - 80px)",
     maxHeight: "calc(100vh - 80px)",
   },
@@ -218,7 +219,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       marginBottom: 40,
     },
     [theme.breakpoints.down("xs")]: {
-      padding: "24px 15px 0px",
+      padding: "24px 8px 0px",
     },
   },
   nftTabSection: {
@@ -227,7 +228,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     justifyContent: "flex-start",
     columnGap: 55,
     width: "100%",
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 800,
     fontFamily: "Agrandir",
     color: "#431AB7",
@@ -239,8 +240,12 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     overflowX: "auto",
     minWidth: "760px",
     [theme.breakpoints.down("sm")]: {
-      fontSize: 18,
       columnGap: 45,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14,
+      columnGap: 25,
+      paddingLeft: 16,
     },
   },
   tabSection: {

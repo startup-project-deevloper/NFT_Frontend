@@ -77,7 +77,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
               <>
                 <h1 className={classes.title}>Locking in progress</h1>
                 <p className={classes.description}>
-                  Transaction is proceeding on Polygon Chain. <br />
+                  Transaction is proceeding on Ethereum. <br />
                   This can take a moment, please be patient...
                 </p>
               </>
@@ -94,7 +94,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
                   </Box>
                 </CopyToClipboard>
                 <button className={classes.checkBtn} onClick={handleLater}>
-                  Check on Polygon Scan
+                  Check on Ethereum Scan
                 </button>
               </Box>
             )}

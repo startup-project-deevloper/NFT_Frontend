@@ -9,7 +9,6 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     width: "100%",
     height: "100%",
     overflowY: "auto",
-    overflowX: "hidden",
     minHeight: "calc(100vh - 80px)",
     maxHeight: "calc(100vh - 80px)",
   },
@@ -236,8 +235,6 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "23px",
     cursor: "pointer",
     borderBottom: "1px solid #00000022",
-    marginBottom: 30,
-    overflowX: "auto",
     minWidth: "760px",
     [theme.breakpoints.down("sm")]: {
       columnGap: 45,

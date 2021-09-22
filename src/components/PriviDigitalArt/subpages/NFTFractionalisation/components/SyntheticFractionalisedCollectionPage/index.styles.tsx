@@ -235,7 +235,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "23px",
     cursor: "pointer",
     borderBottom: "1px solid #00000022",
-    minWidth: "760px",
+    minWidth: "615px",
     [theme.breakpoints.down("sm")]: {
       columnGap: 45,
     },
@@ -243,6 +243,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       fontSize: 14,
       columnGap: 25,
       paddingLeft: 16,
+      minWidth: "465px",
     },
   },
   tabSection: {

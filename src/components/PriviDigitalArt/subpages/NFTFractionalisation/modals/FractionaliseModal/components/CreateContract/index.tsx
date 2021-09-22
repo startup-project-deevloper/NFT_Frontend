@@ -164,7 +164,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           isAddCollection: false,
         };
       }
-      await axios.post(`${URL()}/fractionalize/registerNFT`, params);
+      await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
     } catch (err) {
       console.log("error", err);
       setIsLoading(false);

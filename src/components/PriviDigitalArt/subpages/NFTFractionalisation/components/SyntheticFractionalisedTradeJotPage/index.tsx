@@ -17,12 +17,12 @@ const FreeHoursChartConfig = {
           label: "",
           data: [] as any[],
           pointRadius: 0,
-          borderJoinStyle: "round",
-          borderCapStyle: "round",
-          borderRadius: Number.MAX_VALUE,
-          lineTension: 0.2,
-          barPercentage: 0.3,
-          borderColor: "#DDFF57",
+          // borderJoinStyle: "round",
+          // borderCapStyle: "round",
+          // borderRadius: Number.MAX_VALUE,
+          // lineTension: 0.2,
+          // barPercentage: 0.3,
+          borderColor: "#9EACF2",
           borderWidth: 2,
           pointBackgroundColor: "#9EACF2",
         },
@@ -63,10 +63,10 @@ const FreeHoursChartConfig = {
       scales: {
         xAxes: [
           {
-            offset: true,
+            // offset: true,
             display: true,
             gridLines: {
-              color: "#431AB7",
+              color: Color.Purple,
               lineWidth: 50,
             },
             ticks: {
@@ -81,7 +81,7 @@ const FreeHoursChartConfig = {
             display: true,
             position: "right",
             gridLines: {
-              color: "#431AB7",
+              color: Color.Purple,
               drawBorder: false,
             },
             ticks: {
@@ -98,7 +98,7 @@ const FreeHoursChartConfig = {
         intersect: false,
         callbacks: {
           //This removes the tooltip title
-          title: function () {},
+          title: function () { },
           label: function (tooltipItem, data) {
             return `$${tooltipItem.yLabel.toFixed(4)}`;
           },
@@ -127,10 +127,11 @@ const FreeHoursChartConfig = {
 
 const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
   for (let index = 0; index < config.data.datasets.length; index++) {
-    let gradient = ref.createLinearGradient(0, 0, 0, 200);
+    let gradient = ref.createLinearGradient(0, 0, 0, 300);
     gradient.addColorStop(0, config.data.datasets[index].backgroundColor);
-    gradient.addColorStop(0.6, config.data.datasets[index].backgroundColor);
-    gradient.addColorStop(1, `${config.data.datasets[index].backgroundColor}33`);
+    gradient.addColorStop(0.8, Color.Purple);
+    // gradient.addColorStop(1, `${config.data.datasets[index].backgroundColor}33`);
+    gradient.addColorStop(1, Color.Purple);
     config.data.datasets[0].backgroundColor = gradient;
   }
 
@@ -157,6 +158,8 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
   const [rewardConfig, setRewardConfig] = React.useState<any>();
   const PERIODS = ["1D", "6D", "YTD"];
   const [period, setPeriod] = React.useState<string>(PERIODS[0]);
+  const UNITS = ["BTC", "USDC"];
+  const [unit, setUnit] = React.useState<string>(UNITS[0]);
 
 
   React.useEffect(() => {
@@ -166,23 +169,23 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
       period === PERIODS[0]
         ? getAllHours()
         : period === PERIODS[1]
-        ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
-        : MONTHLABELS.map(item => item.slice(0, 3).toUpperCase());
+          ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
+          : MONTHLABELS.map(item => item.slice(0, 3).toUpperCase());
     newRewardConfig.config.data.datasets[0].data =
       period === PERIODS[0]
-        ? getAllValues()
+        ? getAllValues(unit)
         : period === PERIODS[1]
-        ? getAllValuesInWeek()
-        : getAllValuesInYear();
-    newRewardConfig.config.data.datasets[0].backgroundColor = "#0FCEA6";
-    newRewardConfig.config.data.datasets[0].borderColor = "#0FCEA600";
-    newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#0FCEA6";
-    newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#0FCEA6";
+          ? getAllValuesInWeek(unit)
+          : getAllValuesInYear(unit);
+    newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
+    newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
+    newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
+    newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
     newRewardConfig.config.options.scales.xAxes[0].offset = true;
     newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
 
     setRewardConfig(newRewardConfig);
-  }, [period]);
+  }, [period, unit]);
 
   const getAllHours = React.useCallback(() => {
     const result: string[] = [];
@@ -193,28 +196,31 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     return result;
   }, []);
 
-  const getAllValues = React.useCallback(() => {
+  const getAllValues = React.useCallback((unit) => {
+    const maxVal = unit==='BTC' ? 500 : 1000
     const result: number[] = [];
     for (let index = 1; index <= 23; index++) {
-      result.push(Math.floor(Math.random() * 10000));
+      result.push(Math.floor(Math.random() * maxVal));
     }
 
     return result;
   }, []);
 
-  const getAllValuesInWeek = React.useCallback(() => {
+  const getAllValuesInWeek = React.useCallback((unit) => {
+    const maxVal = unit==='BTC' ? 500 : 1000
     const result: number[] = [];
     for (let index = 0; index < DAYLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * 10000));
+      result.push(Math.floor(Math.random() * maxVal));
     }
 
     return result;
   }, []);
 
-  const getAllValuesInYear = React.useCallback(() => {
+  const getAllValuesInYear = React.useCallback((unit) => {
+    const maxVal = unit==='BTC' ? 500 : 1000
     const result: number[] = [];
     for (let index = 0; index < MONTHLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * 10000));
+      result.push(Math.floor(Math.random() * maxVal));
     }
 
     return result;
@@ -222,6 +228,9 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
 
   const handleChangePeriod = (period: string) => () => {
     setPeriod(period);
+  };
+  const handleChangeUnit = (unit: string) => () => {
+    setUnit(unit);
   };
 
   return (
@@ -254,23 +263,43 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
               </Box>
             </Box>
           </Grid>
+          {/* chart gird */}
           <Grid item md={7} xs={12}>
             <Box className={classes.rightChart}>
+              {/* top control box */}
               <Box className={classes.controlParentBox}>
-                <Box display="flex" flexDirection="column">
-                  <h2 className={classes.graphTitle}>
-                    4245,24 USDC
-                  </h2>
-                  <p className={classes.graphDesc}>12 Sep 2021</p>
+                {/* coin + date and unit switch */}
+                <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
+                  {/* left coin value and date */}
+                  <Box display="flex" flexDirection="column">
+                    <h2 className={classes.graphTitle}>
+                      4245,24 USDC
+                    </h2>
+                    <p className={classes.graphDesc}>12 Sep 2021</p>
+                  </Box>
+                  {/* right unit switch */}
+                  <Box className={classes.unitsBox}>
+                    <Box className={classes.unitButton}>
+                      {UNITS.map((item, index)=>(
+                        <button
+                          key={`unit-button-${index}`}
+                          className={`${classes.switchButton} ${item===unit && classes.activeSwitchButton}`}
+                          onClick={handleChangeUnit(item)}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </Box>
+                  </Box>
                 </Box>
-                <Box className={classes.controlBox}>
-                  <Box className={classes.liquidityBox}>
+                {/* right period selector box */}
+                <Box className={classes.periodBox}>
+                  <Box className={classes.periodButton}>
                     {PERIODS.map((item, index) => (
                       <button
                         key={`period-button-${index}`}
-                        className={`${classes.groupButton} ${
-                          item === period && classes.selectedGroupButton
-                        }`}
+                        className={`${classes.groupButton} ${item === period && classes.selectedGroupButton
+                          }`}
                         onClick={handleChangePeriod(item)}
                         style={{ marginLeft: index > 0 ? "8px" : 0 }}
                       >
@@ -280,7 +309,8 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
                   </Box>
                 </Box>
               </Box>
-              <Box height={300} width={1} mt={3}>
+              {/* chart */}
+              <Box height={300} width={1}>
                 {rewardConfig && <PrintChart config={rewardConfig} />}
               </Box>
             </Box>

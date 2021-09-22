@@ -15,8 +15,15 @@ import ChangeLockedNFT from "../../modals/ChangeLockedNFT";
 import ChangeNFTToSynthetic from "../../components/ChangeNFTToSynthetic";
 import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
 import { Modal } from "shared/ui-kit";
+import FlipCoinModal from "../../modals/FlipCoinModal";
 
-const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, match, withDrawn = false }) => {
+const SyntheticFractionalisedCollectionNFTPage = ({
+  goBack,
+  isFlipped = false,
+  match,
+  withDrawn = false,
+  selectedNFT,
+}) => {
   const classes = fractionalisedCollectionStyles();
 
   const isAuction = match.params.auction === "1";
@@ -28,6 +35,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
   const [openChangeLockedNFTModal, setOpenChangeLockedNFTModal] = useState<boolean>(false);
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
+  const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
@@ -50,6 +58,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
   };
   const handleCloseWithdrawNFTModal = () => {
     setOpenWithdrawNFTModal(false);
+  };
+
+  const handleFlipCoin = () => {
+    setOpenFlipCoinModal(true);
   };
 
   const dummyTableData = [
@@ -209,7 +221,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
               >
                 Withdraw NFT
               </PrimaryButton>
-            ) : (<></>)}
+            ) : (
+              <></>
+            )}
             <PrimaryButton
               size="medium"
               onClick={() => handleOpenChangeLockedNFTModal()}
@@ -247,7 +261,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
               <div className={classes.typo1}>Ownership</div>
               <div className={classes.typo2}>1 JOTs</div>
             </Box>
-            <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => { }}>
+            <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => {}}>
               <img src={require("assets/priviIcons/polygon.png")} />
               View on Polygonscan
             </PrimaryButton>
@@ -266,7 +280,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
           </Box>
           <div className={classes.nftCard}>
             <CollectionNFTCard
-              handleSelect={() => { }}
+              handleSelect={() => {}}
               item={{
                 image: require("assets/backgrounds/digital_art_1.png"),
                 name: "NFT NAME",
@@ -363,7 +377,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
               {isFlipped ? (
                 <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>
               ) : (
-                <div className={classes.flipCoinButton}>Flip The Coin</div>
+                <div className={classes.flipCoinButton} onClick={handleFlipCoin}>
+                  Flip The Coin
+                </div>
               )}
 
               <div className={classes.typo7}>You can flip the coin once every hour</div>
@@ -392,14 +408,20 @@ const SyntheticFractionalisedCollectionNFTPage = ({ goBack, isFlipped = false, m
         onClose={handleCloseChangeLockedNFTModal}
         onProceed={handleProceedChangeLockedNFT}
       />
-      <WithdrawNFTModel
-        open={openWithdrawNFTModal}
-        onClose={handleCloseWithdrawNFTModal}
-      />
-      <Modal size="small" isOpen={withDrawn} onClose={() => { }} className={classes.withDrawnModal}>
+      <WithdrawNFTModel open={openWithdrawNFTModal} onClose={handleCloseWithdrawNFTModal} />
+      <Modal size="small" isOpen={withDrawn} onClose={() => {}} className={classes.withDrawnModal}>
         <img src={require("assets/icons/crystal_camera.png")} alt="" />
-        <Box color={"#431AB7"} paddingLeft={1}>This NFT is  beeing withdrawn</Box>
+        <Box color={"#431AB7"} paddingLeft={1}>
+          This NFT is beeing withdrawn
+        </Box>
       </Modal>
+      <FlipCoinModal
+        open={openFlipCoinModal}
+        onClose={() => setOpenFlipCoinModal(false)}
+        onCompleted={() => {}}
+        pred={1123}
+        selectedNFT={{ tokenId: 123 }}
+      />
     </div>
   );
 };

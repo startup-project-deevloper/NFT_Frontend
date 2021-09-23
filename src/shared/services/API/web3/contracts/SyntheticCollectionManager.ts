@@ -1,25 +1,42 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
+import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 
 const syntheticCollectionManager = (network: string) => {
-  const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_COLLECTION_MANAGER;
-  const jotContractAddress = config[network].CONTRACT_ADDRESSES.JOT;
+  const metadata = require("shared/connectors/web3/contracts/SyntheticCollectionManager.json");
 
-  const metadata = require("shared/connectors/polygon/contracts/pix/SyntheticCollectionManager.json");
-  const jotMetadata = require("shared/connectors/polygon/contracts/pix/Jot.json");
-  const buyJotTokens = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const buyJotTokens = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { tokenId, amount } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 
-        const contract = ContractInstance(web3, metadata.abi, contractAddress);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+        const approve = await jotAPI.approve(
+          web3,
+          account,
+          JotAddress,
+          SyntheticCollectionManagerAddress,
+          amount * Math.pow(10, decimals)
+        );
+
+        if (!approve) {
+          resolve(null);
+          return;
+        }
 
         console.log("Getting gas....");
-        const gas = await contract.methods.buyJotTokens(tokenId, amount).estimateGas({ from: account });
+        const gas = await contract.methods
+          .buyJotTokens(tokenId, amount * Math.pow(10, decimals))
+          .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
-          .buyJotTokens(tokenId, amount)
+          .buyJotTokens(tokenId, amount * Math.pow(10, decimals))
           .send({ from: account, gas: gas });
         console.log("transaction succeed");
         resolve({
@@ -34,12 +51,18 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
-  const updatePriceFraction = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const updatePriceFraction = async (
+    web3: Web3,
+    account: string,
+    collection: any,
+    payload: any
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { tokenId, price } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 
-        const contract = ContractInstance(web3, metadata.abi, contractAddress);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         console.log("Getting gas....");
         const gas = await contract.methods.updatePriceFraction(tokenId, price).estimateGas({ from: account });
@@ -60,12 +83,18 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
-  const increaseSellingSupply = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const increaseSellingSupply = async (
+    web3: Web3,
+    account: string,
+    collection: any,
+    payload: any
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { tokenId, amount } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 
-        const contract = ContractInstance(web3, metadata.abi, contractAddress);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         console.log("Getting gas....");
         const gas = await contract.methods
@@ -88,12 +117,18 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
-  const decreaseSellingSupply = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const decreaseSellingSupply = async (
+    web3: Web3,
+    account: string,
+    collection: any,
+    payload: any
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { tokenId, amount } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 
-        const contract = ContractInstance(web3, metadata.abi, contractAddress);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         console.log("Getting gas....");
         const gas = await contract.methods

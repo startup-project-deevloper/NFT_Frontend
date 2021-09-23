@@ -56,6 +56,13 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
       },
     },
   },
+  ownerPrice: {
+    padding: 20,
+
+    [theme.breakpoints.down(1080)]: {
+      padding: 0,
+    },
+  },
   crystal: {
     position: "absolute",
     width: 64,
@@ -63,6 +70,11 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     left: 0,
     top: 0,
     transform: "rotate(22.65deg)",
+
+    [theme.breakpoints.down(1080)]: {
+      left: -20,
+      top: -20,
+    },
   },
   ownerTitle: {
     marginBottom: "29px",
@@ -76,9 +88,21 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   },
   tableContainer: {
     padding: "36px 20px",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down(1080)]: {
       padding: "0px",
     },
+  },
+  ownerPriceBtn: {
+    [theme.breakpoints.down(1080)]: {
+      display: 'flex',
+      justifyContent: 'center',
+      width: '100%',
+      margin: 0,
+      marginLeft: "0 !important",
+      marginTop: 15,
+      borderRadius: "2px !important",
+      boxShadow: "0px 4.93997px 12.3499px -7.40995px rgba(79, 95, 17, 0.54)",
+    }
   },
   h1: {
     display: "flex",
@@ -86,7 +110,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontSize: 24,
     lineHeight: "100%",
 
-    [theme.breakpoints.down["xs"]]: {
+    [theme.breakpoints.down(1080)]: {
       fontSize: 18,
     },
   },
@@ -96,7 +120,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontSize: 22,
     lineHeight: "100%",
 
-    [theme.breakpoints.down["xs"]]: {
+    [theme.breakpoints.down(1080)]: {
       fontSize: 18,
     },
   },
@@ -106,7 +130,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontSize: 18,
     lineHeight: "100%",
 
-    [theme.breakpoints.down["xs"]]: {
+    [theme.breakpoints.down(1080)]: {
       fontSize: 16,
     },
   },
@@ -227,6 +251,11 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     },
     [theme.breakpoints.down(1200)]: {
       padding: "0 8px !important",
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: '100% !important',
+      borderRadius: '2px !important',
+      boxShadow: "0px 4.93997px 12.3499px -7.40995px rgba(79, 95, 17, 0.54)",
     },
   },
   tableTitle: {

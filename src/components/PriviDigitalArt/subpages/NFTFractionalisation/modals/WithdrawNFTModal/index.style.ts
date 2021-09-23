@@ -5,6 +5,16 @@ export const useWithdrawNFTModelStyles = makeStyles((theme: Theme) =>
     root: {
       maxWidth: "700px !important",
     },
+    container: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: "86px 38px 13px",
+
+      [theme.breakpoints.down('xs')]: {
+        padding: "86px 20px",
+      }
+    },
     title: {
       fontSize: 20,
       fontWeight: 800,
@@ -31,6 +41,12 @@ export const useWithdrawNFTModelStyles = makeStyles((theme: Theme) =>
       fontWeight: 800,
       borderRadius: 4,
       width: "50%",
+
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+        padding: 0,
+        textAlign: 'center',
+      },
     },
   }),
 );

@@ -43,7 +43,7 @@ export default function WithdrawNFTModel({ open, onClose }) {
       {isProceeding ? (
         <Box>
           {isLoading ? (
-            <Box display="flex" flexDirection="column" alignItems="center" p="86px 38px 13px">
+            <Box className={classes.container}>
               {/* <LoadingWrapper loading={true} theme="blue" iconWidth="80px" iconHeight="80px" /> */}
               <img className={classes.icon} src={require("assets/icons/exchange_polygon.png")} alt="" />
               <h1 className={classes.title}>Transaction in progress</h1>
@@ -56,7 +56,7 @@ export default function WithdrawNFTModel({ open, onClose }) {
               </button>
             </Box>
           ) : (
-            <Box display="flex" flexDirection="column" alignItems="center" p="86px 38px 13px">
+            <Box className={classes.container}>
               <img className={classes.icon} src={require("assets/icons/lock-nft-icon.png")} alt="" />
               <h1 className={classes.title}>Transaction in progress</h1>
               <p className={classes.description}>
@@ -69,7 +69,7 @@ export default function WithdrawNFTModel({ open, onClose }) {
           )}
         </Box>
       ) : (
-        <Box display="flex" flexDirection="column" alignItems="center" p="86px 38px 13px">
+        <Box className={classes.container}>
           <img className={classes.icon} src={require("assets/icons/icon_withdraw_nft.png")} alt="" />
           <h1 className={classes.title}>Withdraw real NFT</h1>
           <p className={classes.description}>

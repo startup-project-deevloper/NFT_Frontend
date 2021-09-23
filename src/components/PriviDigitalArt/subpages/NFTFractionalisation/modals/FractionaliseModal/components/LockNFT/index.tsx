@@ -10,11 +10,13 @@ import EthBase from "shared/contracts/EthBase.sol/EthBase.json";
 import config from "shared/connectors/ethereum/config";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
+import axios from "axios";
+import URL from "shared/functions/getURL";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
-export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, selectedNFT }) {
+export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, selectedNFT, syntheticID }) {
   const classes = useLockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,6 +33,9 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       } catch (err) {
         return;
       }
+    }
+    if (chainId !== 1 && chainId !== 4) {
+      return;
     }
     setIsLoading(true);
     setIsProceeding(true);
@@ -70,6 +75,10 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
           setIsLoading(false);
         });
       setHash(response.transactionHash);
+      await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
+        collectionAddress: selectedNFT.tokenAddress,
+        syntheticID,
+      });
     } catch (err) {
       console.log("error", err);
       setIsLoading(false);

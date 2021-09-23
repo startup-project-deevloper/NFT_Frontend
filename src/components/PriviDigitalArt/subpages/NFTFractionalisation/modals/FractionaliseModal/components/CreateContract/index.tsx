@@ -127,6 +127,9 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       if (!response) {
         setIsLoading(false);
       } else {
+        onCompleted();
+        setIsLoading(false);
+
         const { hash, collection, nftInfo } = response;
         setHash(hash);
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Grid, Fade, InputBase, Tooltip, IconButton } from "@material-ui/core";
+import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -244,6 +244,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
+  const isMobileScreen = useMediaQuery("(max-width:1080px)");
 
   React.useEffect(() => {
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
@@ -469,12 +470,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           </Box>
           {isOwner ? (
             <Box className={classes.outBox}>
-              <Box p={3} position="relative">
+              <Box className={classes.ownerPrice} position="relative">
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
                     <Box
                       borderRadius={16}
                       display="flex"
+                      flexDirection={isMobileScreen ? 'column' : 'row'}
                       justifyContent="center"
                       height="100%"
                       p={4}
@@ -504,30 +506,52 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                               </Box>
                             </td>
                           </tr>
-                          <tr>
-                            <td>
-                              <PrimaryButton
-                                className={classes.h4}
-                                size="medium"
-                                style={{ background: "#DDFF57", color: Color.Purple }}
-                                onClick={handleOpenEditPriceModal}
-                              >
-                                Edit Price
-                              </PrimaryButton>
-                            </td>
-                            <td>
-                              <PrimaryButton
-                                className={classes.h4}
-                                size="medium"
-                                style={{ marginLeft: 24, background: "#DDFF57", color: Color.Purple }}
-                                onClick={handleOpenEditSupplyModal}
-                              >
-                                Edit Supply
-                              </PrimaryButton>
-                            </td>
-                          </tr>
+                          {!isMobileScreen && (
+                            <tr>
+                              <td>
+                                <PrimaryButton
+                                  className={classes.h4}
+                                  size="medium"
+                                  style={{ background: "#DDFF57", color: Color.Purple }}
+                                  onClick={handleOpenEditPriceModal}
+                                >
+                                  Edit Price
+                                </PrimaryButton>
+                              </td>
+                              <td>
+                                <PrimaryButton
+                                  className={classes.h4}
+                                  size="medium"
+                                  style={{ marginLeft: 24, background: "#DDFF57", color: Color.Purple }}
+                                  onClick={handleOpenEditSupplyModal}
+                                >
+                                  Edit Supply
+                                </PrimaryButton>
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
+                      {isMobileScreen && (
+                        <Box display="flex" flexDirection="column">
+                          <PrimaryButton
+                            className={`${classes.h4} ${classes.ownerPriceBtn}`}
+                            size="medium"
+                            style={{ background: "#DDFF57", color: Color.Purple }}
+                            onClick={handleOpenEditPriceModal}
+                          >
+                            Edit Price
+                          </PrimaryButton>
+                          <PrimaryButton
+                            className={`${classes.h4} ${classes.ownerPriceBtn}`}
+                            size="medium"
+                            style={{ marginLeft: 24, background: "#DDFF57", color: Color.Purple }}
+                            onClick={handleOpenEditSupplyModal}
+                          >
+                            Edit Supply
+                          </PrimaryButton>
+                        </Box>
+                      )}
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -539,7 +563,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       display="flex"
                       justifyContent="center"
                     >
-                      <table>
+                      <table width="100%">
                         <tbody>
                           <tr>
                             <td>
@@ -558,7 +582,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           <tr>
                             <td>
                               <PrimaryButton
-                                className={classes.h4}
+                                className={`${classes.h4} ${classes.ownerPriceBtn}`}
                                 size="medium"
                                 style={{
                                   background: "#DDFF57",
@@ -582,7 +606,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             </Box>
           ) : (
             <Box className={classes.outBox}>
-              <Box p={3} position="relative">
+              <Box className={classes.ownerPrice} position="relative">
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <Box className={`${classes.priceContent} ${classes.priceSecondaryContent}`}>
@@ -620,7 +644,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Box className={classes.priceContent}>
-                      <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
+                      <Box display="flex" flexDirection="column" width={1} justifyContent="center" gridRowGap={8}>
                         <Box width={1} display="flex" justifyContent="center" className={classes.h3}>
                           Quickswap Price
                         </Box>

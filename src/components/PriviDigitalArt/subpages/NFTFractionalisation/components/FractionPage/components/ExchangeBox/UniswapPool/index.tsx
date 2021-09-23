@@ -99,8 +99,7 @@ export default function UniswapPool({}) {
     <Grid container direction="column" spacing={6}>
       <Grid item>
         <Grid container spacing={4}>
-          <Grid item md={6}>
-            <Grid container direction="column" spacing={2}>
+          <Grid item xs={6} sm={6}>
               <InputWithLabelAndTooltip
                 labelName="Pay"
                 inputValue={pay}
@@ -110,26 +109,23 @@ export default function UniswapPool({}) {
                 onInputValueChange={e => setPay(e.target.value)}
                 theme="light"
               />
-            </Grid>
           </Grid>
-          <Grid item md={6}>
-            <Grid container direction="column" spacing={2}>
+          <Grid item xs={6} sm={6}>
               <label>Balance: </label>
               <TokenSelect
+                style={{margin:0}}
                 tokens={tokenList}
                 value={payToken}
                 onChange={e => {
                   setPayToken(e.target.value as string);
                 }}
               />
-            </Grid>
           </Grid>
         </Grid>
       </Grid>
       <Grid item>
         <Grid container spacing={4}>
-          <Grid item md={6}>
-            <Grid container direction="column" spacing={2}>
+          <Grid item xs={6} sm={6}>
               <InputWithLabelAndTooltip
                 labelName="Receive"
                 inputValue={receive}
@@ -139,12 +135,9 @@ export default function UniswapPool({}) {
                 onInputValueChange={e => setReceive(e.target.value)}
                 theme="light"
               />
-            </Grid>
           </Grid>
-          <Grid item md={6}>
-            <Grid container direction="column" spacing={2}>
+          <Grid item xs={6} sm={6}>
               <Typography>Balance: </Typography>
-            </Grid>
           </Grid>
         </Grid>
       </Grid>

@@ -72,7 +72,7 @@ const usePriviExchangeStyles = makeStyles(theme => ({
     boxShadow: "0px 4px 8px #9EACF2",
     borderRadius: "16px",
     "& .MuiTableCell-head": {
-      backgroundColor: "white",
+      backgroundColor: "#F7F9FE",
       color: "#181818 !important",
       fontSize: "14px",
       lineHeight: "120%",
@@ -84,6 +84,16 @@ const usePriviExchangeStyles = makeStyles(theme => ({
       fontSize: "14px",
       lineHeight: "120%",
     },
+    [theme.breakpoints.down("md")]: {
+      "& .MuiTableCell-head": {
+        fontSize: 10,
+        padding: "16px 8px",
+      },
+      "& .MuiTableCell-body": {
+        fontSize: 10,
+        padding: "8px",
+      }
+    }
   },
   clickablePurple: {
     color: "#431AB7",

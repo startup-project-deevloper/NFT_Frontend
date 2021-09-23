@@ -56,6 +56,12 @@ export const useFractionPageStyles = makeStyles(theme => ({
     lineHeight: "18px",
     textAlign: "center",
     padding: "8px 32px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "8px 25px"
+    },
+    [theme.breakpoints.up("md")]: {
+      flex: 1,
+    },
   },
 
   leftImage: {
@@ -134,6 +140,7 @@ export const useFractionPageStyles = makeStyles(theme => ({
     },
   },
   tableContainer: {
+    position: "relative",
     marginTop: "40px",
     display: "flex",
     flexDirection: "column",
@@ -142,7 +149,7 @@ export const useFractionPageStyles = makeStyles(theme => ({
     borderRadius: "16px",
     "& .MuiTableCell-head": {
       backgroundColor: "#9EACF2",
-      color: "#DDFF57",
+      color: "#DDFF57 !important",
       fontSize: "17px",
       fontWeight: 800,
       lineHeight: "22px",

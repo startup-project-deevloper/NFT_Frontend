@@ -16,7 +16,7 @@ export default function MyNFTCard({ item }) {
     if (!item?.lock) {
       setOpenLockNFT(true);
     }
-  }
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
@@ -34,23 +34,18 @@ export default function MyNFTCard({ item }) {
               </div>
             )}
           </Box>
-          <img src={item.image} alt="nft image" />
+          <img src={item.image || require("assets/backgrounds/digital_art_1.png")} alt="nft image" />
           <div
             className={classes.nftModalButton}
-            style={item?.lock ? { background: "#F2C94C" } : {background: "#DDFF57"}}
+            style={item?.lock ? { background: "#F2C94C" } : { background: "#DDFF57" }}
             onClick={handleNFT}
           >
-            {item?.lock ? 'Verify NFT' : 'Lock NFT'}
+            {item?.lock ? "Verify NFT" : "Lock NFT"}
           </div>
         </div>
       </div>
       <div className={classes.shadow} />
-      {openLockNFT && (
-        <LockNFTModal
-          open={openLockNFT}
-          onClose={() => setOpenLockNFT(false)}
-        />
-      )}
+      {openLockNFT && <LockNFTModal open={openLockNFT} onClose={() => setOpenLockNFT(false)} />}
     </Box>
   );
 }

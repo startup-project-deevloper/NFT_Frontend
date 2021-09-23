@@ -13,6 +13,7 @@ import config from "shared/connectors/polygon/config";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
 import SyntheticProtocolRouter from "shared/connectors/polygon/contracts/pix/SyntheticProtocolRouter.json";
+import { useTypedSelector } from "store/reducers/Reducer";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -80,13 +81,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function CreateContract({ onClose, onCompleted, selectedNFT, supplyToKeep, priceFraction }) {
   const classes = useStyles();
+  const user = useTypedSelector(state => state.user);
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
 
   const handleProceed = async () => {
-    console.log('chainId', chainId);
+    console.log("chainId", chainId);
     if (chainId !== 80001 && chainId !== 137) {
       try {
         await window.ethereum.request({
@@ -168,6 +170,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           quickSwapAddress: collection.quickSwapAddress,
           collectionManagerID: collection.collectionManagerID,
           isAddCollection: true,
+          userId: user.id,
         };
       } else {
         params = {
@@ -175,6 +178,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           SyntheticID: nftInfo.syntheticTokenId,
           NftId: selectedNFT.BlockchainId,
           isAddCollection: false,
+          userId: user.id,
         };
       }
       await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);

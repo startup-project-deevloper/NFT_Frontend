@@ -17,6 +17,7 @@ export const FractionaliseModal = ({
 }) => {
   const classes = fractionaliseModalStyles();
   const [step, setStep] = useState<number>(0);
+  const [syntheticID, setSyntheticID] = useState<string>("");
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   const handleCompleteStep = stepIndex => {
@@ -39,7 +40,10 @@ export const FractionaliseModal = ({
         {step === 0 ? (
           <CreateContract
             onClose={onClose}
-            onCompleted={() => handleCompleteStep(0)}
+            onCompleted={id => {
+              handleCompleteStep(0);
+              setSyntheticID(id);
+            }}
             selectedNFT={selectedNFT}
             supplyToKeep={supplyToKeep}
             priceFraction={priceFraction}
@@ -50,6 +54,7 @@ export const FractionaliseModal = ({
             onCompleted={() => handleCompleteStep(1)}
             needLockLaterBtn={false}
             selectedNFT={selectedNFT}
+            syntheticID={syntheticID}
           />
         ) : (
           <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} />

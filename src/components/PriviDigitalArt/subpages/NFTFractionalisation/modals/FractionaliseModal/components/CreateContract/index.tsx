@@ -138,7 +138,6 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         )
         .send({ from: account, gas })
         .on("receipt", receipt => {
-          onCompleted();
           setIsLoading(false);
         })
         .on("error", error => {
@@ -178,6 +177,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         };
       }
       await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
+      onCompleted(nftInfo.syntheticTokenId);
     } catch (err) {
       console.log("error", err);
       setIsLoading(false);

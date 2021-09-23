@@ -157,21 +157,30 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
     }
   };
 
+  const fractionaliseSuccess = () => {
+    setUserNFTs(userNFTs.filter((_, index) => index !== selectedNFT.index));
+  };
+
+  const fractionaliseClose = () => {
+    setOpenFractionaliseModal(false);
+    setSelectedNFT(null);
+  };
+
   return (
     <div className={classes.root}>
       <BackButton purple overrideFunction={goBack} />
       <Grid container spacing={1}>
         <Grid item xs={12} sm={6}>
-          <div className={classes.title}>
-            Synthetic Fractionalise your NFT
-          </div>
+          <div className={classes.title}>Synthetic Fractionalise your NFT</div>
         </Grid>
       </Grid>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <Box display="flex" flexDirection="column" height="100%">
             <div className={classes.text}>
-              {walletConnected ? "You will create a synthetic copy of the NFT you are selecting" : "Lock your NFT, get a synthetic copy, fractionalise it, create a derivative and get interest out of the trading fees."}
+              {walletConnected
+                ? "You will create a synthetic copy of the NFT you are selecting"
+                : "Lock your NFT, get a synthetic copy, fractionalise it, create a derivative and get interest out of the trading fees."}
             </div>
             {walletConnected ? (
               <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
@@ -197,7 +206,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                                 if (i != index) nftsCopy[i].selected = false;
                               }
                             }
-                            setSelectedNFT(nftsCopy[index]);
+                            setSelectedNFT({ index, ...nftsCopy[index] });
                             setUserNFTs(nftsCopy);
                           }
                         }}
@@ -438,7 +447,8 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
       {openFractionaliseModal && (
         <FractionaliseModal
           open={openFractionaliseModal}
-          onClose={() => setOpenFractionaliseModal(false)}
+          onClose={fractionaliseClose}
+          onSuccess={fractionaliseSuccess}
           selectedNFT={selectedNFT}
           supplyToKeep={supply}
           priceFraction={initialPrice}

@@ -166,9 +166,9 @@ const PlusIcon = () => (
     <path
       d="M6 1V11M1 6L11 6"
       stroke="#2D3047"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

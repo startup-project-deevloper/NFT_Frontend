@@ -107,9 +107,9 @@ export const CalenderIcon = () => (
     <path
       d="M9.25 1.25V4.25M4.75 1.25V4.25M1 7.25H13M13 7.25V13.25C13 14.0784 12.3284 14.75 11.5 14.75H2.5C1.67157 14.75 1 14.0784 1 13.25V4.25C1 3.42157 1.67157 2.75 2.5 2.75H11.5C12.3284 2.75 13 3.42157 13 4.25V7.25Z"
       stroke="#727F9A"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -119,9 +119,9 @@ export const ClockIcon = () => (
     <path
       d="M8 4.25V8L10.25 10.25M14.75 8C14.75 11.7279 11.7279 14.75 8 14.75C4.27208 14.75 1.25 11.7279 1.25 8C1.25 4.27208 4.27208 1.25 8 1.25C11.7279 1.25 14.75 4.27208 14.75 8Z"
       stroke="#727F9A"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

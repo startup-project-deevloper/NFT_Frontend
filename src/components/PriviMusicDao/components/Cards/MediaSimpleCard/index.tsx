@@ -138,9 +138,9 @@ const CopyIcon = () => (
     <path
       d="M14.4424 1.16676L6.22155 9.08343M14.4424 1.16676L14.4425 5.91675M14.4424 1.16676L9.50994 1.16675M6.22158 1.16676H1.28906V13.8334H14.4424V9.08342"
       stroke="#2D3047"
-      stroke-width="1.1875"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.1875"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

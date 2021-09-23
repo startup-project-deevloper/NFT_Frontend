@@ -48,8 +48,11 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     lineHeight: "31px",
     color: "#431AB7",
     margin: "24px 0px",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("md")]: {
       fontSize: 22,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 24,
     },
   },
   text: {
@@ -60,11 +63,18 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     lineHeight: "23px",
     color: "#431AB7",
     marginBottom: "24px",
+    [theme.breakpoints.down("md")]: {
+      fontSize: 14,
+    },
   },
   walletRow: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    [theme.breakpoints.down("md")]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
     width: "100%",
     "& div": {
       display: "flex",
@@ -74,6 +84,11 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       lineHeight: "18px",
       color: "#431AB7",
       width: "calc(60% - 24px)",
+      [theme.breakpoints.down("md")]: {
+        width: "100%",
+        marginRight: 0,
+        paddingBottom: 25,
+      },
       marginRight: "24px",
       "& img": {
         marginRight: "24px",
@@ -93,7 +108,13 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       fontSize: "14px",
       lineHeight: "18px",
       textAlign: "center",
-      width: "40%",
+      width: "fit-content",
+      [theme.breakpoints.down("md")]: {
+        width: "80%"
+      },
+      [theme.breakpoints.down("xs")]: {
+        width: "100%"
+      },
       padding: "8px 32px",
     },
     [theme.breakpoints.down(1110)]: {

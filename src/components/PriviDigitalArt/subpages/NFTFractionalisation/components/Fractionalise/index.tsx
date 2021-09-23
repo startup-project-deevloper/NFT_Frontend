@@ -75,7 +75,8 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
   const { showAlertMessage } = useAlertMessage();
 
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down(960));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
@@ -233,6 +234,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
     }
   };
 
+  console.log(isMobile, isTablet)
   return (
     <LoadingScreen
       loading={loading}
@@ -246,7 +248,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
           {isSynthetic ? "Synthetic Fractionalise your NFT" : "FRACTIONALISE"}
         </div>
         <Grid container spacing={5}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={isTablet ? 5 : 6}>
             <div className={classes.text}>
               Select one or more NFTs for your vault and then set your vault’s details to continue. Be aware
               you cannot add to the NFTs in a vault once they have been fractionalized.
@@ -261,8 +263,8 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
               </div>
             )}
 
-            {isTablet && (
-              <Grid item xs={12} md={6}>
+            {isMobile && (
+              <Grid item xs={12} sm={6}>
                 <div className={classes.nftsBox}>
                   <div className={classes.nftsTitle}>
                     {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
@@ -275,8 +277,8 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                   )}
                   <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
                   <div className={classes.detailsLabel}>Vault details</div>
-                  <Grid container spacing={2} style={{ display: "flex", alignItems: "flex-end" }}>
-                    <Grid item xs={12} md={6}>
+                  <Grid container spacing={isMobile ? 1 : 2} style={{ display: "flex", alignItems: "flex-end" }}>
+                    <Grid item xs={6} sm={6}>
                       <InputWithLabelAndTooltip
                         labelName="Name"
                         inputValue={name}
@@ -287,7 +289,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                         theme="light"
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={6} sm={6}>
                       <label>Blockchain</label>
                       <Dropdown
                         value={selectedChain.value}
@@ -299,7 +301,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                         hasImage
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={6} sm={6}>
                       <InputWithLabelAndTooltip
                         labelName="Supply"
                         inputValue={supply === undefined ? "" : supply.toString()}
@@ -311,7 +313,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                         theme="light"
                       />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={6} sm={6}>
                       <InputWithLabelAndTooltip
                         labelName="Symbol"
                         inputValue={symbol}
@@ -323,7 +325,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       />
                     </Grid>
                     {!isSynthetic && (
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={6} sm={6}>
                         <label>Reserve Price</label>
                         <TokenSelect
                           tokens={tokenList}
@@ -335,7 +337,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       </Grid>
                     )}
                     {!isSynthetic && (
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={6} sm={6}>
                         <InputWithLabelAndTooltip
                           inputValue={reservePrice === undefined ? "" : reservePrice.toString()}
                           placeHolder={"0"}
@@ -348,7 +350,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       </Grid>
                     )}
                     {!isSynthetic && (
-                      <Grid item xs={12} md={12}>
+                      <Grid item xs={12} sm={12}>
                         <Box className={classes.purpleLabel} mb="1px">
                           Annual management Fee
                         </Box>
@@ -378,7 +380,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       </Grid>
                     )}
                     {isSynthetic && (
-                      <Grid item xs={12} md={12}>
+                      <Grid item xs={12} sm={12}>
                         <Box className={classes.borderBox}>
                           The <span>Staking Interest</span> you will earn for staking your original NFT is{" "}
                           <span>0.5%</span>
@@ -454,8 +456,9 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
               </LoadingWrapper>
             )}
           </Grid>
-          {!isTablet && (
-            <Grid item xs={12} md={6}>
+          {/* right form */}
+          {!isMobile && (
+            <Grid item xs={12} sm={isTablet ? 7 : 6}>
               <div className={classes.nftsBox}>
                 <div className={classes.nftsTitle}>
                   {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
@@ -469,7 +472,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                 <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
                 <div className={classes.detailsLabel}>Vault details</div>
                 <Grid container spacing={2} style={{ display: "flex", alignItems: "flex-end" }}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <InputWithLabelAndTooltip
                       labelName="Name"
                       inputValue={name}
@@ -480,7 +483,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       theme="light"
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <label>Blockchain</label>
                     <Dropdown
                       value={selectedChain.value}
@@ -492,7 +495,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       hasImage
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <InputWithLabelAndTooltip
                       labelName="Supply"
                       inputValue={supply === undefined ? "" : supply.toString()}
@@ -504,7 +507,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       theme="light"
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <InputWithLabelAndTooltip
                       labelName="Symbol"
                       inputValue={symbol}
@@ -516,7 +519,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     />
                   </Grid>
                   {!isSynthetic && (
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} sm={6}>
                       <label>Reserve Price</label>
                       <TokenSelect
                         tokens={tokenList}
@@ -528,7 +531,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     </Grid>
                   )}
                   {!isSynthetic && (
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} sm={6}>
                       <InputWithLabelAndTooltip
                         inputValue={reservePrice === undefined ? "" : reservePrice.toString()}
                         placeHolder={"0"}
@@ -541,7 +544,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     </Grid>
                   )}
                   {!isSynthetic && (
-                    <Grid item xs={12} md={12}>
+                    <Grid item xs={12} sm={12}>
                       <Box className={classes.purpleLabel} mb="1px">
                         Annual management Fee
                       </Box>
@@ -570,7 +573,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     </Grid>
                   )}
                   {isSynthetic && (
-                    <Grid item xs={12} md={12}>
+                    <Grid item xs={12} sm={12}>
                       <Box className={classes.borderBox}>
                         The <span>Staking Interest</span> you will earn for staking your original NFT is{" "}
                         <span>0.5%</span>

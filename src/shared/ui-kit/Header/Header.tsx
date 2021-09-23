@@ -1438,7 +1438,7 @@ const Header = props => {
                                         strokeLinejoin="round"
                                       />
                                     </svg>{" "}
-                                    Create
+                                    Create Content
                                   </PrimaryButton>
                                 </MenuItem>
                               )}

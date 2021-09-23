@@ -198,6 +198,16 @@ export const digitalArtModalStyles = makeStyles(theme => ({
     boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(3),
+    "& .MuiTableCell-root": {
+      fontFamily: "Agrandir",
+      padding: "9px 16px",
+      [theme.breakpoints.down("sm")]: {
+        padding: "8px 12px",
+      },
+      [theme.breakpoints.down("xs")]: {
+        padding: "8px",
+      }
+    },
     "& .MuiTableContainer-root": {
       borderRadius: 16,
       "& .MuiTableRow-head": {
@@ -206,8 +216,25 @@ export const digitalArtModalStyles = makeStyles(theme => ({
           color: Color.Black,
           opacity: 0.8,
           fontWeight: 400,
+          [theme.breakpoints.down("sm")]: {
+            fontSize: 14,
+          },
+          [theme.breakpoints.down("xs")]: {
+            fontSize: 12,
+          }
         },
       },
+    },
+    "& .MuiTableRow-root": {
+      "& .MuiTableCell-body": {
+        fontSize: 14,
+        [theme.breakpoints.down("sm")]: {
+          fontSize: 12,
+        },
+        [theme.breakpoints.down("xs")]: {
+          fontSize: 9,
+        }
+      }
     },
   },
   bidBox: {
@@ -267,7 +294,20 @@ export const digitalArtModalStyles = makeStyles(theme => ({
     "&:focus": {
       outline: "none",
     }
-
+  },
+  mediaInfo: {
+    display: "flex",
+    alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      justifyContent: "space-between",
+      width: "100%",
+    },
+  },
+  mediaUserInfo: {
+    [theme.breakpoints.down("xs")]: {
+      justifyContent: "space-between",
+      width: "100%",
+    },
   }
 }));
 

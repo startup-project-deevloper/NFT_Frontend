@@ -8,7 +8,7 @@ import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import config from "shared/connectors/polygon/config";
 import { ContractInstance } from "shared/connectors/web3/functions";
-import SyntheticCollectionManager from "shared/connectors/polygon/contracts/pix/SyntheticCollectionManager.json";
+import SyntheticCollectionManager from "shared/connectors/web3/contracts/SyntheticCollectionManager.json";
 import { Modal } from "shared/ui-kit";
 import * as API from "shared/services/API/FractionalizeAPI";
 

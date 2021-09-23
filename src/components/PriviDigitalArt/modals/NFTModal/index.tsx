@@ -213,7 +213,6 @@ export const NFTModal = (props: any) => {
       let endDate = new Date(auction.EndDateTime);
       let startDate = new Date(auction.StartDateTime);
 
-      // if (auction.StartDateTime < now) startDate = new Date(now + 15000); // add 15sec
       let startDateTimeInMs = startDate.getTime();
       if(startDateTimeInMs < now + 15 * 60 * 1000) {
         startDateTimeInMs = now + 15 * 60 * 1000;

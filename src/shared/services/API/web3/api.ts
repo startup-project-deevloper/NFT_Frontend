@@ -8,6 +8,7 @@ import tokenVault from "./contracts/TokenVault";
 import erc20Exchange from "./contracts/Erc20Exchange";
 import podManager from "./contracts/PodManager";
 import syntheticCollectionManager from "./contracts/SyntheticCollectionManager";
+import syntheticProtocolRouter from "./contracts/SyntheticProtocolRouter";
 
 const api = network => {
   return {
@@ -21,6 +22,7 @@ const api = network => {
     erc20Exchange: erc20Exchange(network),
     PodManager: podManager(network),
     SyntheticCollectionManager: syntheticCollectionManager(network),
+    SyntheticProtocolRouter: syntheticProtocolRouter(network),
   };
 };
 

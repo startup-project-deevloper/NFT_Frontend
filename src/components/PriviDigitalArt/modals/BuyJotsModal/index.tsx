@@ -13,7 +13,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { buyJots } from "shared/services/API/SyntheticFractionalizeAPI";
 
-export default function BuyJotsModal({ open, handleClose = () => {}, collectionId, nftId, syntheticId }) {
+export default function BuyJotsModal({ open, handleClose = () => {}, collectionId, nft }) {
   const classes = BuyJotsModalStyles();
 
   const { showAlertMessage } = useAlertMessage();
@@ -39,10 +39,15 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
 
-    const contractResponse = await web3APIHandler.SyntheticCollectionManager.buyJotTokens(web3, account!, {
-      tokenId: +nftId,
-      amount: +jots,
-    });
+    const contractResponse = await web3APIHandler.SyntheticCollectionManager.buyJotTokens(
+      web3,
+      account!,
+      nft,
+      {
+        tokenId: +nft.NftId,
+        amount: +jots,
+      }
+    );
     if (!contractResponse) {
       setLoading(false);
       showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
@@ -51,7 +56,7 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
 
     await buyJots({
       collectionId,
-      syntheticId,
+      nft,
       amount: jots,
       investor: account!,
       hash: contractResponse.data.hash,

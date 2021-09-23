@@ -8,7 +8,7 @@ import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import config from "shared/connectors/polygon/config";
 import { ContractInstance } from "shared/connectors/web3/functions";
-import JOTPoolRouter from "shared/connectors/polygon/contracts/pix/JotPool.json";
+import JOTPoolRouter from "shared/connectors/web3/contracts/JotPool.json";
 import { Modal } from "shared/ui-kit";
 
 declare let window: any;

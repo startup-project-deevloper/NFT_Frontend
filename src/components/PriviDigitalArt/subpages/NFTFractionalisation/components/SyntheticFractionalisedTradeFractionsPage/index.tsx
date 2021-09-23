@@ -476,7 +476,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     <Box
                       borderRadius={16}
                       display="flex"
-                      flexDirection={isMobileScreen ? 'column' : 'row'}
+                      flexDirection={isMobileScreen ? "column" : "row"}
                       justifyContent="center"
                       height="100%"
                       p={4}
@@ -644,7 +644,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Box className={classes.priceContent}>
-                      <Box display="flex" flexDirection="column" width={1} justifyContent="center" gridRowGap={8}>
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        width={1}
+                        justifyContent="center"
+                        gridRowGap={8}
+                      >
                         <Box width={1} display="flex" justifyContent="center" className={classes.h3}>
                           Quickswap Price
                         </Box>
@@ -732,8 +738,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         open={openBuyJotsModal}
         handleClose={handleCloseBuyJotsModal}
         collectionId={collectionId}
-        nftId={nft?.NftId}
-        syntheticId={nft?.SyntheticID}
+        nft={nft}
       />
       <EditNFTPriceModal
         open={openEditPriceModal}

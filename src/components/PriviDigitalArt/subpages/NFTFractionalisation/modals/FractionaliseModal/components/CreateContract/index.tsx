@@ -9,10 +9,7 @@ import axios from "axios";
 import URL from "shared/functions/getURL";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import config from "shared/connectors/polygon/config";
-import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
-import SyntheticProtocolRouter from "shared/connectors/polygon/contracts/pix/SyntheticProtocolRouter.json";
 import { useTypedSelector } from "store/reducers/Reducer";
 
 declare let window: any;
@@ -116,72 +113,56 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       );
 
       const web3 = new Web3(library.provider);
-      const contractAddress = config.CONTRACT_ADDRESSES.Pix.SYNTHETIC_PROTOCOL_ROUTER;
+      const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
+      const web3APIHandler = targetChain.apiHandler;
+      const response = await web3APIHandler.SyntheticProtocolRouter.registerNFT(web3, account!, {
+        tokenAddress: selectedNFT.tokenAddress,
+        chainId: selectedNFT.BlockchainId,
+        supply: supplyToKeep,
+        price: priceFraction,
+        name: collectionInfo.data.name,
+        symbol: collectionInfo.data.symbol,
+      });
 
-      const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
-      const gas = await contract.methods
-        .registerNFT(
-          selectedNFT.tokenAddress,
-          selectedNFT.BlockchainId,
-          supplyToKeep,
-          priceFraction,
-          collectionInfo.data.name,
-          collectionInfo.data.symbol
-        )
-        .estimateGas({ from: account });
-      const response = await contract.methods
-        .registerNFT(
-          selectedNFT.tokenAddress,
-          selectedNFT.BlockchainId,
-          supplyToKeep,
-          priceFraction,
-          collectionInfo.data.name,
-          collectionInfo.data.symbol
-        )
-        .send({ from: account, gas })
-        .on("receipt", receipt => {
-          setIsLoading(false);
-        })
-        .on("error", error => {
-          console.log("error", error);
-          setIsLoading(false);
-        });
-      setHash(response.transactionHash);
-      const collection = response.events?.CollectionManagerRegistered?.returnValues;
-      const nftInfo = response.events?.TokenRegistered?.returnValues;
-
-      let params = {};
-      if (collection) {
-        params = {
-          collectionAddress: selectedNFT.tokenAddress,
-          SyntheticID: nftInfo.syntheticTokenId,
-          NftId: selectedNFT.BlockchainId,
-          JotName: `Privi Jot ${selectedNFT.MediaName}`,
-          JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
-          JotAddress: collection.jotAddress,
-          JotPoolAddress: collection.jotStakingAddress,
-          SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
-          SyntheticNFTAddress: collection.syntheticNFTAddress,
-          collectionName: collectionInfo.data.name,
-          collectionSymbol: collectionInfo.data.symbol,
-          description: collectionInfo.data.description,
-          imageUrl: collectionInfo.data.imageUrl,
-          quickSwapAddress: collection.quickSwapAddress,
-          collectionManagerID: collection.collectionManagerID,
-          isAddCollection: true,
-          userId: user.id,
-        };
+      if (!response) {
+        setIsLoading(false);
       } else {
-        params = {
-          collectionAddress: selectedNFT.tokenAddress,
-          SyntheticID: nftInfo.syntheticTokenId,
-          NftId: selectedNFT.BlockchainId,
-          isAddCollection: false,
-          userId: user.id,
-        };
+        setIsLoading(false);
+
+        const { hash, collection, nftInfo } = response;
+        setHash(hash);
+
+        let params = {};
+        if (collection) {
+          params = {
+            collectionAddress: selectedNFT.tokenAddress,
+            SyntheticID: nftInfo.syntheticTokenId,
+            NftId: selectedNFT.BlockchainId,
+            JotName: `Privi Jot ${selectedNFT.MediaName}`,
+            JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
+            JotAddress: collection.jotAddress,
+            JotPoolAddress: collection.jotStakingAddress,
+            SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
+            SyntheticNFTAddress: collection.syntheticNFTAddress,
+            collectionName: collectionInfo.data.name,
+            collectionSymbol: collectionInfo.data.symbol,
+            description: collectionInfo.data.description,
+            imageUrl: collectionInfo.data.imageUrl,
+            quickSwapAddress: collection.quickSwapAddress,
+            collectionManagerID: collection.collectionManagerID,
+            isAddCollection: true,
+          };
+        } else {
+          params = {
+            collectionAddress: selectedNFT.tokenAddress,
+            SyntheticID: nftInfo.syntheticTokenId,
+            NftId: selectedNFT.BlockchainId,
+            isAddCollection: false,
+          };
+        }
+        await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
+        onCompleted(nftInfo.syntheticTokenId);
       }
-      await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
-      onCompleted(nftInfo.syntheticTokenId);
     } catch (err) {
       console.log("error", err);
       setIsLoading(false);

@@ -7,7 +7,14 @@ import ProgressBar from "./components/ProgressBar";
 import VerifyNFTLock from "./components/VerifyNFTLock";
 import { fractionaliseModalStyles } from "./index.styles";
 
-export const FractionaliseModal = ({ open, onClose, selectedNFT, supplyToKeep, priceFraction }) => {
+export const FractionaliseModal = ({
+  open,
+  onClose,
+  onSuccess,
+  selectedNFT,
+  supplyToKeep,
+  priceFraction,
+}) => {
   const classes = fractionaliseModalStyles();
   const [step, setStep] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -17,6 +24,9 @@ export const FractionaliseModal = ({ open, onClose, selectedNFT, supplyToKeep, p
       return;
     }
     setCompletedSteps([...completedSteps, stepIndex]);
+    if (stepIndex === 0) {
+      onSuccess();
+    }
   };
 
   return (

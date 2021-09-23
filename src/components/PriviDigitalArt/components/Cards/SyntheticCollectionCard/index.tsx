@@ -15,13 +15,13 @@ export default function SyntheticCollectionCard({ item }) {
     <div
       className={classes.card}
       onClick={() => {
-        history.push(`/pix/fractionalisation/collection/${item.Id}`);
+        history.push(`/pix/fractionalisation/collection/${item.id}`);
       }}
     >
       <div
         className={cls(classes.image, classes.fixed)}
         style={{
-          backgroundImage: `url(${require(`assets/collectionImages/async-art.png`)})`,
+          backgroundImage: `url(${item.imageUrl ?? require(`assets/collectionImages/async-art.png`)})`,
         }}
       />
       <div className={classes.info}>
@@ -32,12 +32,12 @@ export default function SyntheticCollectionCard({ item }) {
           }}
         />
         <Box className={classes.infoWrapper}>
-          <Box className={classes.title}>Collection name</Box>
+          <Box className={classes.title}>{item.collectionName}</Box>
           <Divider light />
           <Box className={classes.details}>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Locked NFTs</Box>
-              <Box className={classes.detailInfo}>10</Box>
+              <Box className={classes.detailInfo}>{item.nfts.filter(nft => nft.isLocked).length}</Box>
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Fraction Price</Box>

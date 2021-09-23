@@ -112,7 +112,10 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         </Box>
         <div className={classes.collectionMainContent}>
-          <img src={require("assets/backgrounds/digital_art_1.png")} alt="collction image" />
+          <img
+            src={collection.imageUrl ?? require("assets/backgrounds/digital_art_1.png")}
+            alt="collction image"
+          />
           <Box
             display="flex"
             alignItems="center"
@@ -137,8 +140,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             </Box>
           </Box>
           <div className={classes.mainTitleSection}>
-            <span>Cryptopunks</span>
-            <span>Megapack</span>
+            <span>{collection.collectionName}</span>
           </div>
           <Box className={classes.collectionInfos}>
             <Box display="flex" flexDirection="column">
@@ -146,7 +148,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo4}>fraction Price</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>14</div>
+              <div className={classes.typo3}>
+                {collection.SyntheticNFT?.filter(nft => nft.isLocked).length}
+              </div>
               <div className={classes.typo4}>locked NFTs in</div>
             </Box>
             <Box display="flex" flexDirection="column">

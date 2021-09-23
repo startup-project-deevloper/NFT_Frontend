@@ -48,9 +48,9 @@ const UpArrowIcon = () => (
     <path
       d="M7 4L4 1L1 4"
       stroke="#77788E"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -60,9 +60,9 @@ const DownArrwoIcon = () => (
     <path
       d="M1 1.60547L4 4.60547L7 1.60547"
       stroke="#77788E"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

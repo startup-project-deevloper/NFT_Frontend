@@ -218,9 +218,9 @@ export const LiveSaleIcon = () => (
     <path
       d="M8.16667 1.66602H3.5L1.5 7.66602H4.16667L2.83333 12.9993L10.1667 5.66602H6.56667L8.16667 1.66602Z"
       stroke="#431AB7"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -239,9 +239,9 @@ export const ClosedIcon = () => (
     <path
       d="M8.00001 1.5L1 8.50001M1.00001 1.5L8.00001 8.50001"
       stroke="#F2604C"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

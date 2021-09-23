@@ -337,15 +337,19 @@ const TradingTableHeaders: Array<CustomTableHeaderInfo> = [
 const ExchangeOfferTableHeaders: Array<CustomTableHeaderInfo> = [
   {
     headerName: "FROM",
+    headerAlign: "center",
   },
   {
     headerName: "TOKEN",
+    headerAlign: "center",
   },
   {
     headerName: "SYMBOL",
+    headerAlign: "center",
   },
   {
     headerName: "PRICE",
+    headerAlign: "center",
   },
   {
     headerName: "",
@@ -2137,30 +2141,32 @@ const MediaPage = () => {
                 }}
               >
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
-                  <Box display="flex" flexDirection="row" alignItems="center">
-                    <div
-                      className={classes.avatarImg}
-                      onClick={() => {
-                        history.push(`/pix/${media?.CreatorUrlSlug || media?.creator}/profile`);
-                      }}
-                    >
-                      <Avatar
-                        key={`creator-${media?.CreatorAddress}`}
-                        size="small"
-                        url={
-                          media?.CreatorImageUrl ?? media?.CreatorAnonAvatar
-                            ? require(`assets/anonAvatars/${media.CreatorAnonAvatar}`)
-                            : media?.url ?? "none"
-                        }
-                      />
-                    </div>
-                    <Box display="flex" flexDirection="column" ml={1} mr={4}>
-                      <Text color={Color.Black} className={classes.creatorName} mb={0.5}>
-                        {creatorInfo?.name || media?.CreatorName || media?.creator}
-                      </Text>
-                      {media?.CreatorUrlSlug && (
-                        <Text className={classes.creatorName} mt={0.5}>{`@${media?.CreatorUrlSlug}`}</Text>
-                      )}
+                  <Box display="flex" flexDirection="row" alignItems="center" className={classes.mediaUserInfo}>
+                    <Box display="flex" alignItems="center">
+                      <div
+                        className={classes.avatarImg}
+                        onClick={() => {
+                          history.push(`/pix/${media?.CreatorUrlSlug || media?.creator}/profile`);
+                        }}
+                      >
+                        <Avatar
+                          key={`creator-${media?.CreatorAddress}`}
+                          size="small"
+                          url={
+                            media?.CreatorImageUrl ?? media?.CreatorAnonAvatar
+                              ? require(`assets/anonAvatars/${media.CreatorAnonAvatar}`)
+                              : media?.url ?? "none"
+                          }
+                        />
+                      </div>
+                      <Box display="flex" flexDirection="column" ml={1} mr={4}>
+                        <Text color={Color.Black} className={classes.creatorName} mb={0.5}>
+                          {creatorInfo?.name || media?.CreatorName || media?.creator}
+                        </Text>
+                        {media?.CreatorUrlSlug && (
+                          <Text className={classes.creatorName} mt={0.5}>{`@${media?.CreatorUrlSlug}`}</Text>
+                        )}
+                      </Box>
                     </Box>
                     {user && !media?.tag && media?.CreatorAddress !== user.address && (
                       <SecondaryButton size="small" onClick={handleFollow} className={classes.followBtn}>
@@ -2224,40 +2230,44 @@ const MediaPage = () => {
                       </Text>
                     </Box>
                   )}
-                  <Text size={FontSize.XL} mr={5}>
-                    💾 {media?.shareCount || 0}
-                  </Text>
-                  <div>
-                    <Text size={FontSize.XL} mr={5}>
-                      👀 {(media?.TotalViews ?? 0) + 1}
-                    </Text>
-                  </div>
-                  <Hidden mdUp>
-                    <Box display="flex" flexDirection="row" alignItems="center">
-                      <Box mr={2} style={{ background: "rgba(67, 26, 183, 0.32)", borderRadius: "50%" }}>
-                        <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
-                      </Box>
-                      <Box mr={2}>
-                        <img
-                          src={require(bookmarked
-                            ? "assets/priviIcons/bookmark-filled-gray.svg"
-                            : "assets/priviIcons/bookmark-gray.svg")}
-                          alt="Bookmark"
-                          onClick={handleBookmark}
-                          style={{ cursor: "pointer", width: "24px", height: "24px" }}
-                        />
-                      </Box>
-                      <Box mb={1}>
-                        <div
-                          onClick={handleOpenShareMenu}
-                          ref={anchorShareMenuRef}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <img src={require(`assets/icons/more.png`)} alt="like" />
-                        </div>
-                      </Box>
+                  <Box className={classes.mediaInfo}>
+                    <Box display="flex" alignItems="center">
+                      <Text size={FontSize.XL} mr={5}>
+                        💾 {media?.shareCount || 0}
+                      </Text>
+                      <div>
+                        <Text size={FontSize.XL} mr={5}>
+                          👀 {(media?.TotalViews ?? 0) + 1}
+                        </Text>
+                      </div>
                     </Box>
-                  </Hidden>
+                    <Hidden mdUp>
+                      <Box display="flex" flexDirection="row" alignItems="center">
+                        <Box mr={2} style={{ background: "rgba(67, 26, 183, 0.32)", borderRadius: "50%" }}>
+                          <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
+                        </Box>
+                        <Box mr={2}>
+                          <img
+                            src={require(bookmarked
+                              ? "assets/priviIcons/bookmark-filled-gray.svg"
+                              : "assets/priviIcons/bookmark-gray.svg")}
+                            alt="Bookmark"
+                            onClick={handleBookmark}
+                            style={{ cursor: "pointer", width: "24px", height: "24px" }}
+                          />
+                        </Box>
+                        <Box mb={1}>
+                          <div
+                            onClick={handleOpenShareMenu}
+                            ref={anchorShareMenuRef}
+                            style={{ cursor: "pointer" }}
+                          >
+                            <img src={require(`assets/icons/more.png`)} alt="like" />
+                          </div>
+                        </Box>
+                      </Box>
+                    </Hidden>
+                  </Box>
                 </Box>
                 {!media?.Fraction && !media?.chain ? (
                   <>

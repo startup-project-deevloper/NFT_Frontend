@@ -9,9 +9,8 @@ import axios from "axios";
 import URL from "shared/functions/getURL";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import config from "shared/connectors/polygon/config";
-import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
+import { useTypedSelector } from "store/reducers/Reducer";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -79,6 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function CreateContract({ onClose, onCompleted, selectedNFT, supplyToKeep, priceFraction }) {
   const classes = useStyles();
+  const user = useTypedSelector(state => state.user);
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");

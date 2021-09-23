@@ -67,3 +67,14 @@ export async function updateSellingSupply(payload): Promise<any> {
     throw new Error(e.message);
   }
 }
+
+export async function getMySyntheticFractionalisedNFT(id): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/user/getMySyntheticFractionalisedNFT/${id}`, {
+      params: {},
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}

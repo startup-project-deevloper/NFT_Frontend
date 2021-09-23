@@ -43,7 +43,7 @@ const MyNFT = () => {
     (async () => {
       const response = await getMySyntheticFractionalisedNFT(user.id);
       if (response.success) {
-        setMyNFTs(response.data);
+        setMyNFTs(response.data?.nfts ?? []);
       }
     })();
   }, [user]);
@@ -78,7 +78,7 @@ const MyNFT = () => {
           )}
           {selectedTab === "synthetic" && (
             <Grid container spacing={2}>
-              {TopNFTList.map(item => (
+              {myNFTs.map(item => (
                 <Grid item xs={12} sm={6} md={4} lg={3}>
                   <MyNFTCard item={item} />
                 </Grid>

@@ -46,16 +46,14 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
 
       const contract = ContractInstance(web3, SyntheticCollectionManager.abi, contractAddress);
 
-      await API.addFlipHistory("0x06012c8cf97bead5deae237070f9587f8e7a266d", "5", {
-        winnerAddress: "requestId",
-        prediction: "prediction",
-        result: "randomResult",
-        tokenId: "tokenId",
-      });
+      const isAllowedToFlipGas = await contract.methods.isAllowedToFlip(701).estimateGas({ from: account });
+      console.log("polygon gas  11", isAllowedToFlipGas);
 
-      const gas = await contract.methods
-        .flipJot(selectedNFT.tokenId, parseInt(pred))
-        .estimateGas({ from: account });
+      const isAllowedToFlip = await contract.methods
+        .isAllowedToFlip(2)
+        .send({ from: account, gas: isAllowedToFlipGas });
+
+      const gas = await contract.methods.flipJot(2, parseInt("0")).estimateGas({ from: account });
       console.log("polygon gas", gas);
 
       const response = await contract.methods
@@ -69,7 +67,9 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
       console.log(" --- response ---", response);
       const { requestId, tokenId, prediction, randomResult } = response.FlipProcessed;
 
-      await API.addFlipHistory("0x06012c8cf97bead5deae237070f9587f8e7a266d", "5", {
+      await API.addFlipHistory({
+        collectionAddress: "0x06012c8cf97bead5deae237070f9587f8e7a266d",
+        syntheticID: "5",
         winnerAddress: "requestId",
         prediction: "prediction",
         result: "randomResult",

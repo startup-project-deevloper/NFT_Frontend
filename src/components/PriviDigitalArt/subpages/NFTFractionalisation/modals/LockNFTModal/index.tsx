@@ -10,7 +10,13 @@ export const LockNFTModal = ({ open, onClose }) => {
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
       <Box display="flex" flexDirection="column">
-        <LockNFT onClose={onClose} onCompleted={() => {}} needLockLaterBtn={false} selectedNFT={{}} />
+        <LockNFT
+          onClose={onClose}
+          onCompleted={() => {}}
+          needLockLaterBtn={false}
+          selectedNFT={{}}
+          syntheticID=""
+        />
       </Box>
     </Modal>
   );

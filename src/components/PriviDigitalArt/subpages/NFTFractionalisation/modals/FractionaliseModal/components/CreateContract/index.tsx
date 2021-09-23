@@ -127,7 +127,6 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       if (!response) {
         setIsLoading(false);
       } else {
-        onCompleted();
         setIsLoading(false);
 
         const { hash, collection, nftInfo } = response;
@@ -162,6 +161,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           };
         }
         await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
+        onCompleted(nftInfo.syntheticTokenId);
       }
     } catch (err) {
       console.log("error", err);

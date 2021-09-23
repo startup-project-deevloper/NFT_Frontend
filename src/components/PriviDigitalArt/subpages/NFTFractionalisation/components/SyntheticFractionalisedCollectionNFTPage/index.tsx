@@ -269,8 +269,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         <div className={classes.nftInfoMainContent}>
           <span>Verified</span>
           <div className={classes.mainTitleSection}>
-            <span>Cryptopunk #89</span>
-            <span>Cryptopunks</span>
+            <span>
+              {nft.collectionName} #{nft.NftId}
+            </span>
+            <span>{nft.collectionName}</span>
           </div>
           <Box
             display="flex"

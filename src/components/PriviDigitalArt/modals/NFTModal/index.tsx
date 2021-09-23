@@ -213,7 +213,7 @@ export const NFTModal = (props: any) => {
       let startDate = new Date(auction.StartDateTime);
       if (auction.StartDateTime < new Date().getTime()) startDate = new Date(new Date().getTime() + 15000); // add 15sec
 
-      let startDateTimeInMs = startDate.getTime();
+      let startDateTimeInMs = startDate.getTime() - 15 * 60 * 1000;
       let endDateTimeInMs = endDate.getTime();
       let mediaSymbol = auction.SelectedMedia.MediaSymbol;
 

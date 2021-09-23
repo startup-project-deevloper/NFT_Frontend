@@ -124,14 +124,16 @@ const SidebarContent = ({ handleRefresh }) => {
         <ul>
           <li
             onClick={
-              getCurrentActiveTab() === TABS[3]
-                ? handleOpenSellStartAuctionModal
-                : handleOpenCreateContentModal
+              // getCurrentActiveTab() === TABS[3]
+              //   ? handleOpenSellStartAuctionModal
+              //   : handleOpenCreateContentModal
+              handleOpenCreateContentModal
             }
           >
             <img src={require("assets/icons/add_green.png")} alt="create content" />
             <span style={{ color: "#DDFF57", fontWeight: 400 }}>
-              {getCurrentActiveTab() === TABS[3] ? "Sell Content" : "Create NFT"}
+              {/* {getCurrentActiveTab() === TABS[3] ? "Sell Content" : "Create NFT"} */}
+              Create Content
             </span>
           </li>
           <PrimaryButton

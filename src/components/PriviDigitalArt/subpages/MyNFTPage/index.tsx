@@ -42,7 +42,7 @@ const MyNFT = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await getMySyntheticFractionalisedNFT('priviUser145');
+      const response = await getMySyntheticFractionalisedNFT(user.id);
       if (response.success) {
         setMyNFTs(response.data?.nfts ?? []);
       }

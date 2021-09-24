@@ -2,6 +2,7 @@ import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
+import { toNDecimals } from "shared/functions/web3";
 
 const syntheticCollectionManager = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/SyntheticCollectionManager.json");
@@ -17,26 +18,37 @@ const syntheticCollectionManager = (network: string) => {
         const jotAPI = JOT(network);
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
-        const approve = await jotAPI.approve(
+        const allowance = await jotAPI.allowance(web3, JotAddress, {
+          owner: account,
+          spender: SyntheticCollectionManagerAddress,
+        });
+        console.log(allowance);
+        const approve1 = await jotAPI.approve(
           web3,
           account,
           JotAddress,
           SyntheticCollectionManagerAddress,
-          amount * Math.pow(10, decimals)
+          toNDecimals(amount, decimals)
         );
 
-        if (!approve) {
+        const approve2 = await jotAPI.approve(
+          web3,
+          account,
+          JotAddress,
+          config[network].CONTRACT_ADDRESSES.JOT_POOL,
+          toNDecimals(amount, decimals)
+        );
+
+        if (!approve1 || !approve2) {
           resolve(null);
           return;
         }
 
         console.log("Getting gas....");
-        const gas = await contract.methods
-          .buyJotTokens(tokenId, amount * Math.pow(10, decimals))
-          .estimateGas({ from: account });
+        const gas = await contract.methods.buyJotTokens(tokenId, amount).estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
-          .buyJotTokens(tokenId, amount * Math.pow(10, decimals))
+          .buyJotTokens(tokenId, amount)
           .send({ from: account, gas: gas });
         console.log("transaction succeed");
         resolve({

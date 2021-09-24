@@ -44,7 +44,7 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
       account!,
       nft,
       {
-        tokenId: +nft.NftId,
+        tokenId: +nft.SyntheticID,
         amount: +jots,
       }
     );

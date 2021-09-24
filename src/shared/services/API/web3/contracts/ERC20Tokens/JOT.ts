@@ -11,7 +11,7 @@ const jot = network => {
     account: string,
     contractAddress: string,
     spender: string,
-    amount?: number
+    amount: any
   ): Promise<any> => {
     return new Promise(async resolve => {
       try {
@@ -21,9 +21,16 @@ const jot = network => {
         console.log("Getting gas....");
         const gas = await contract.methods.approve(spender, approveAmount).estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
-        await contract.methods.approve(spender, approveAmount).send({ from: account, gas: gas });
-        console.log("transaction succeed");
-        resolve(true);
+        const response = await contract.methods
+          .approve(spender, approveAmount)
+          .send({ from: account, gas: gas });
+
+        if (response) {
+          console.log("transaction succeed");
+          resolve(true);
+        } else {
+          resolve(false);
+        }
       } catch (e) {
         console.log(e);
         resolve(false);

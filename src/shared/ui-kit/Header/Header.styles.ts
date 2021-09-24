@@ -400,4 +400,25 @@ export const headerStyles = makeStyles(theme => ({
       marginTop: 2,
     },
   },
+  iconMenu: {
+    height: 32,
+    padding: "0 14px"
+  },
+  pixLogo: {
+    display: "flex",
+    alignItems: "center",
+    padding: "0 24px",
+    "& > img": {
+      width: 135,
+    },
+    [theme.breakpoints.down(769)]: {
+      padding: "0 8px",
+      height: "100%",
+      borderLeft: "2px solid #ffffff",
+      borderRight: "2px solid #ffffff",
+      "& > img": {
+        width: 110,
+      },
+    },
+  }
 }));

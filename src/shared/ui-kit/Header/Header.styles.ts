@@ -42,6 +42,7 @@ export const headerStyles = makeStyles(theme => ({
       // alignSelf: "stretch",
       display: "flex",
       justifyContent: "flex-end",
+      alignItems: "center",
       padding: "0 12px",
       [theme.breakpoints.down("sm")]: {
         padding: 0,
@@ -402,15 +403,20 @@ export const headerStyles = makeStyles(theme => ({
   },
   iconMenu: {
     height: 32,
-    padding: "0 14px"
+    padding: "0 14px",
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer"
   },
   pixLogo: {
     display: "flex",
     alignItems: "center",
-    padding: "0 24px",
     "& > img": {
-      width: 135,
+      width: 136,
     },
+    background: "#9eacf2",
+    padding: "0 36px",
+    height: "100%",
     [theme.breakpoints.down(769)]: {
       padding: "0 8px",
       height: "100%",
@@ -419,6 +425,12 @@ export const headerStyles = makeStyles(theme => ({
       "& > img": {
         width: 110,
       },
+    },
+  },
+  mobileMenu: {
+    display: "none",
+    [theme.breakpoints.down(769)]: {
+      display: "block"
     },
   }
 }));

@@ -272,12 +272,12 @@ export const EthIcon = () => (
       d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z"
       fill="#627EEA"
     />
-    <path d="M12.375 3V9.6525L17.9978 12.165L12.375 3Z" fill="white" fill-opacity="0.602" />
+    <path d="M12.375 3V9.6525L17.9978 12.165L12.375 3Z" fill="white" fillOpacity="0.602" />
     <path d="M12.3735 3L6.75 12.165L12.3735 9.6525V3Z" fill="white" />
-    <path d="M12.375 16.476V20.9963L18.0015 13.212L12.375 16.476Z" fill="white" fill-opacity="0.602" />
+    <path d="M12.375 16.476V20.9963L18.0015 13.212L12.375 16.476Z" fill="white" fillOpacity="0.602" />
     <path d="M12.3735 20.9963V16.4753L6.75 13.212L12.3735 20.9963Z" fill="white" />
-    <path d="M12.375 15.4297L17.9978 12.1649L12.375 9.65393V15.4297Z" fill="white" fill-opacity="0.2" />
-    <path d="M6.75 12.1649L12.3735 15.4297V9.65393L6.75 12.1649Z" fill="white" fill-opacity="0.602" />
+    <path d="M12.375 15.4297L17.9978 12.1649L12.375 9.65393V15.4297Z" fill="white" fillOpacity="0.2" />
+    <path d="M6.75 12.1649L12.3735 15.4297V9.65393L6.75 12.1649Z" fill="white" fillOpacity="0.602" />
   </svg>
 );
 

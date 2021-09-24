@@ -130,8 +130,6 @@ const Header = props => {
 
   const [openMobileMenu, setOpenMobileMenu] = React.useState<boolean>(false);
   const anchorMobileMenuRef = React.useRef<HTMLDivElement>(null);
-  const [openMobileMessage, setOpenMobileMessage] = React.useState<boolean>(false);
-  const anchorMobileMessageRef = React.useRef<HTMLDivElement>(null);
 
   const handleOpenMobileMenu = (event: React.MouseEvent<EventTarget>) => {
     event.stopPropagation();
@@ -143,18 +141,6 @@ const Header = props => {
       return;
     }
     setOpenMobileMenu(false);
-  };
-
-  const handleOpenMobileMessage = (event: React.MouseEvent<EventTarget>) => {
-    event.stopPropagation();
-    setOpenMobileMessage(true);
-  };
-
-  const handleCloseMobileMessage = (event: React.MouseEvent<EventTarget>) => {
-    if (anchorMobileMessageRef.current && anchorMobileMessageRef.current.contains(event.target as HTMLElement)) {
-      return;
-    }
-    setOpenMobileMessage(false);
   };
 
   const handleListKeyDownMobileMenu = (event: React.KeyboardEvent) => {
@@ -682,14 +668,14 @@ const Header = props => {
     });
   }, [userSelector]);
 
-  const mobileMenu = (isMenu) => (
+  const mobileMenu = (
     <>
-      <div className={classes.iconMenu} ref={isMenu ? anchorMobileMenuRef : anchorMobileMessageRef} onClick={isMenu ? handleOpenMobileMenu : handleOpenMobileMessage}>
-        {isMenu ? <IconMenu /> : <IconMessagesWhite />}
+      <div className={classes.iconMenu} ref={anchorMobileMenuRef} onClick={handleOpenMobileMenu}>
+        <IconMenu />
       </div>
       <Popper
-        open={isMenu ? openMobileMenu : openMobileMessage}
-        anchorEl={isMenu ? anchorMobileMenuRef.current : anchorMobileMessageRef.current}
+        open={openMobileMenu}
+        anchorEl={anchorMobileMenuRef.current}
         transition
         disablePortal={false}
         placement="bottom"
@@ -698,7 +684,7 @@ const Header = props => {
         {({ TransitionProps }) => (
           <Grow {...TransitionProps}>
             <Paper className={classes.mobilePopup}>
-              <ClickAwayListener onClickAway={isMenu ? handleCloseMobileMenu : handleCloseMobileMessage}>
+              <ClickAwayListener onClickAway={handleCloseMobileMenu}>
                 <MenuList
                   autoFocusItem={openMobileMenu}
                   id="header-right-menu-list-grow"
@@ -893,7 +879,7 @@ const Header = props => {
       >
         <div className="header-left">
           <div className={classes.mobileMenu}>
-            {mobileMenu(true)}
+            {mobileMenu}
           </div>
           {isHideHeader ? (
             <div className={classes.pixLogo}>
@@ -928,7 +914,14 @@ const Header = props => {
               <div className="header-icons">
                 {!isZoo && (
                   isTablet ? (
-                    mobileMenu(false)
+                    <div
+                      className={classes.iconMenu}
+                      onClick={() => {
+                        history.push(`/pix/${userSelector.urlSlug}/messages`);
+                      }}
+                    >
+                      <IconMessagesWhite />
+                    </div>
                   ) : (
                     <ToolbarButtonWithPopper
                       theme={isTransparent ? "dark" : "light"}

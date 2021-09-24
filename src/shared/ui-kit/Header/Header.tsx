@@ -130,6 +130,8 @@ const Header = props => {
 
   const [openMobileMenu, setOpenMobileMenu] = React.useState<boolean>(false);
   const anchorMobileMenuRef = React.useRef<HTMLDivElement>(null);
+  const [openMobileMessage, setOpenMobileMessage] = React.useState<boolean>(false);
+  const anchorMobileMessageRef = React.useRef<HTMLDivElement>(null);
 
   const handleOpenMobileMenu = (event: React.MouseEvent<EventTarget>) => {
     event.stopPropagation();
@@ -141,6 +143,18 @@ const Header = props => {
       return;
     }
     setOpenMobileMenu(false);
+  };
+
+  const handleOpenMobileMessage = (event: React.MouseEvent<EventTarget>) => {
+    event.stopPropagation();
+    setOpenMobileMessage(true);
+  };
+
+  const handleCloseMobileMessage = (event: React.MouseEvent<EventTarget>) => {
+    if (anchorMobileMessageRef.current && anchorMobileMessageRef.current.contains(event.target as HTMLElement)) {
+      return;
+    }
+    setOpenMobileMessage(false);
   };
 
   const handleListKeyDownMobileMenu = (event: React.KeyboardEvent) => {
@@ -668,14 +682,14 @@ const Header = props => {
     });
   }, [userSelector]);
 
-  const mobileMenu = (
+  const mobileMenu = (isMenu) => (
     <>
-      <div className={classes.iconMenu} ref={anchorMobileMenuRef} onClick={handleOpenMobileMenu}>
-        <IconMenu />
+      <div className={classes.iconMenu} ref={isMenu ? anchorMobileMenuRef : anchorMobileMessageRef} onClick={isMenu ? handleOpenMobileMenu : handleOpenMobileMessage}>
+        {isMenu ? <IconMenu /> : <IconMessagesWhite />}
       </div>
       <Popper
-        open={openMobileMenu}
-        anchorEl={anchorMobileMenuRef.current}
+        open={isMenu ? openMobileMenu : openMobileMessage}
+        anchorEl={isMenu ? anchorMobileMenuRef.current : anchorMobileMessageRef.current}
         transition
         disablePortal={false}
         placement="bottom"
@@ -684,7 +698,7 @@ const Header = props => {
         {({ TransitionProps }) => (
           <Grow {...TransitionProps}>
             <Paper className={classes.mobilePopup}>
-              <ClickAwayListener onClickAway={handleCloseMobileMenu}>
+              <ClickAwayListener onClickAway={isMenu ? handleCloseMobileMenu : handleCloseMobileMessage}>
                 <MenuList
                   autoFocusItem={openMobileMenu}
                   id="header-right-menu-list-grow"
@@ -878,9 +892,9 @@ const Header = props => {
         }}
       >
         <div className="header-left">
-          <Hidden lgUp>
-            {mobileMenu}
-          </Hidden>
+          <div className={classes.mobileMenu}>
+            {mobileMenu(true)}
+          </div>
           {isHideHeader ? (
             <div className={classes.pixLogo}>
               <img
@@ -913,16 +927,20 @@ const Header = props => {
             <>
               <div className="header-icons">
                 {!isZoo && (
-                  <ToolbarButtonWithPopper
-                    theme={isTransparent ? "dark" : "light"}
-                    tooltip="Messages"
-                    icon={isTablet? IconMessagesWhite : IconMessages}
-                    badge={numberMessages > 0 ? numberMessages.toString() : undefined}
-                    openToolbar={openMessagesModal}
-                    handleOpenToolbar={showMessagesModal}
-                  >
-                    <MessageNotifications handleClosePopper={() => showMessagesModal(false)} />
-                  </ToolbarButtonWithPopper>
+                  isTablet ? (
+                    mobileMenu(false)
+                  ) : (
+                    <ToolbarButtonWithPopper
+                      theme={isTransparent ? "dark" : "light"}
+                      tooltip="Messages"
+                      icon={isTablet? IconMessagesWhite : IconMessages}
+                      badge={numberMessages > 0 ? numberMessages.toString() : undefined}
+                      openToolbar={openMessagesModal}
+                      handleOpenToolbar={showMessagesModal}
+                    >
+                      <MessageNotifications handleClosePopper={() => showMessagesModal(false)} />
+                    </ToolbarButtonWithPopper>
+                  )
                 )}
                 {!isZoo && (
                   <ToolbarButtonWithPopper

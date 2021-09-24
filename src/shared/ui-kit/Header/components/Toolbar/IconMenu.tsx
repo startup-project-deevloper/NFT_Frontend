@@ -5,9 +5,9 @@ export const IconMenu = () => (
     <path
       d="M5.33337 9.33334H26.6667M5.33337 16H26.6667M5.33337 22.6667H26.6667"
       stroke="white"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

@@ -141,7 +141,7 @@ export default function UniswapPool({}) {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item>
+      <Grid item style={{display:"flex", justifyContent:"flex-end"}}>
         <button
           onClick={() => {}}
           className={classes.buttonPurple}

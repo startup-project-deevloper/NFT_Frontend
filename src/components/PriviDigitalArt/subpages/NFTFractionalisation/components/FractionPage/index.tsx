@@ -61,6 +61,7 @@ const FractionPage = () => {
 
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [tradingTableHeader, setTradingTableHeader] = useState<Array<CustomTableHeaderInfo>>([
     {
@@ -340,25 +341,29 @@ const FractionPage = () => {
                   className={classes.detailImg}
                 />
               </Box>
-              {media?.FractionalizeData?.status !== "Auction" && (
-                <div className={classes.tableContainer}>
-                  <CustomTable
-                    headers={tradingTableHeader}
-                    rows={fractionalizeOwnershipData}
-                    placeholderText="No History"
-                    theme="offers blue"
-                  />
-                  {media?.FractionalizeData?.status !== "Auction" && isTablet && (
-                    <div className={classes.viewAll} onClick={handleOpenViewAllTransacions} style={{ position: "absolute", right: 16, top: 16, margin: 0, fontSize: 14, color:"#DDFF57" }}>
+              {!isMobile && (
+                <>
+                  {media?.FractionalizeData?.status !== "Auction" && (
+                    <div className={classes.tableContainer}>
+                      <CustomTable
+                        headers={tradingTableHeader}
+                        rows={fractionalizeOwnershipData}
+                        placeholderText="No History"
+                        theme="offers blue"
+                      />
+                      {media?.FractionalizeData?.status !== "Auction" && isTablet && (
+                        <div className={classes.viewAll} onClick={handleOpenViewAllTransacions} style={{ position: "absolute", right: 16, top: 16, margin: 0, fontSize: 14, color: "#DDFF57" }}>
+                          View All
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {media?.FractionalizeData?.status !== "Auction" && !isTablet && (
+                    <div className={classes.viewAll} onClick={handleOpenViewAllTransacions}>
                       View All
                     </div>
                   )}
-                </div>
-              )}
-              {media?.FractionalizeData?.status !== "Auction" && !isTablet && (
-                <div className={classes.viewAll} onClick={handleOpenViewAllTransacions}>
-                  View All
-                </div>
+                </>
               )}
             </Grid>
             {/* right column */}
@@ -481,6 +486,7 @@ const FractionPage = () => {
                 </Box>
               </Box>
 
+              {/* status icon row - Live Auction, Closed */}
               {media?.FractionalizeData?.status === "Auction" &&
                 (isAuctionLive ? (
                   <div className={classes.liveAuctionBtn}>
@@ -493,8 +499,9 @@ const FractionPage = () => {
                     <span>Closed</span>
                   </div>
                 ))}
+              {/* claim or Owner address */}
               {media?.FractionalizeData?.ownerAddress === user.address ? (
-                <Box display="flex" alignItems="center" color="#431AB7" mt={3} fontSize="14px">
+                <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7" mt={3} fontSize="14px">
                   <Box mr={3}>
                     <Box mb={0.5}>Reward accumulated</Box>
                     <Box fontSize="18px" fontWeight={800}>
@@ -529,6 +536,7 @@ const FractionPage = () => {
 
               <hr className={classes.divider} />
 
+              {/* price info row - reserve price, fee, total supply */}
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box display="flex" flexDirection="column">
                   <span className={classes.fractionTitle}>Reserve Price</span>
@@ -572,7 +580,9 @@ const FractionPage = () => {
                 isAuctionLive ? (
                   //case Live Auction
                   <>
-                    <AuctionDetails media={media} />
+                    <Box paddingBottom={3}>
+                      <AuctionDetails media={media} />
+                    </Box>
                     <ExchangeBox media={media} handleRefresh={loadData} />
                   </>
                 ) : (
@@ -584,6 +594,30 @@ const FractionPage = () => {
                 <ExchangeBox media={media} handleRefresh={loadData} />
               )}
             </Grid>
+            {isMobile && (
+              <Grid item xs={12} sm={6}>
+                {media?.FractionalizeData?.status !== "Auction" && (
+                  <div className={classes.tableContainer}>
+                    <CustomTable
+                      headers={tradingTableHeader}
+                      rows={fractionalizeOwnershipData}
+                      placeholderText="No History"
+                      theme="offers blue"
+                    />
+                    {media?.FractionalizeData?.status !== "Auction" && isTablet && (
+                      <div className={classes.viewAll} onClick={handleOpenViewAllTransacions} style={{ position: "absolute", right: 16, top: 16, margin: 0, fontSize: 14, color: "#DDFF57" }}>
+                        View All
+                      </div>
+                    )}
+                  </div>
+                )}
+                {media?.FractionalizeData?.status !== "Auction" && !isTablet && (
+                  <div className={classes.viewAll} onClick={handleOpenViewAllTransacions}>
+                    View All
+                  </div>
+                )}
+              </Grid>
+            )}
           </Grid>
         </Box>
         {openMediaPhotoDetailModal && (

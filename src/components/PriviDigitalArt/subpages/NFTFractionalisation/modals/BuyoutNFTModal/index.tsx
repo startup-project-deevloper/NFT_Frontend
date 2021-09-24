@@ -79,6 +79,7 @@ const useBuyoutModalStyles = makeStyles(theme => ({
     color: "#431AB7",
     fontSize: "12px",
     minWidth: "55px",
+    textAlign: "end",
   },
   smallText: {
     color: "#ABB3C3",
@@ -159,8 +160,8 @@ export default function BuyoutNFTModal({ open, onClose, media, handleRefresh }) 
 
   return (
     <Modal size="medium" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
-      <Grid container spacing={1}>
-        <Grid item xs={12} md={7} style={{ display: "flex", flexDirection: "column" }}>
+      <Grid container spacing={1} style={{paddingTop:"20px"}}>
+        <Grid item xs={12} sm={7} style={{ display: "flex", flexDirection: "column" }}>
           <InputWithLabelAndTooltip
             labelName={"Fractions Amount"}
             inputValue={buyoutAmount === undefined ? "" : buyoutAmount.toString()}
@@ -192,8 +193,8 @@ export default function BuyoutNFTModal({ open, onClose, media, handleRefresh }) 
         <Grid
           item
           xs={12}
-          md={5}
-          style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}
+          sm={5}
+          style={{ display: "flex", flexDirection: "column" }}
         >
           <label>
             Balance:{" "}
@@ -209,7 +210,7 @@ export default function BuyoutNFTModal({ open, onClose, media, handleRefresh }) 
         </Grid>
       </Grid>
 
-      <Box mt={3}>
+      <Box mt={3} display={"flex"} justifyContent="flex-end">
         <PrimaryButton
           size="medium"
           onClick={handleBuyout}

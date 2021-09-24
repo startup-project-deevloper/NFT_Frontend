@@ -142,6 +142,9 @@ export const useFractionPageStyles = makeStyles(theme => ({
   tableContainer: {
     position: "relative",
     marginTop: "40px",
+    [theme.breakpoints.down("xs")]: {
+      marginTop: "20px"
+    },
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",

@@ -177,7 +177,7 @@ export default function SetReservePriceModal({ open, onClose, media, handleRefre
         </div>
 
         <Grid container spacing={1}>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} sm={5}>
             <div className={classes.fakeSelect}>
               <Box display="flex" alignItems="center" fontFamily="Agrandir">
                   <img src={media?.FractionalizeData?.listToken? require(`assets/tokenImages/${media.FractionalizeData.listToken}.png`):"none"}
@@ -188,7 +188,7 @@ export default function SetReservePriceModal({ open, onClose, media, handleRefre
             </div>
           </Grid>
 
-          <Grid item xs={12} md={7}>
+          <Grid item xs={12} sm={7}>
             <InputWithLabelAndTooltip
               inputValue={reservePrice}
               onInputValueChange={e => {

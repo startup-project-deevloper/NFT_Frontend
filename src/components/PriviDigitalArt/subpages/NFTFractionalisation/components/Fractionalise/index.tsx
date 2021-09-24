@@ -263,6 +263,60 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
               </div>
             )}
 
+            {isSynthetic ? (
+              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
+                {TopNFTList && TopNFTList.length > 0 ? (
+                  <MasonryGrid
+                    gutter={"24px"}
+                    data={TopNFTList}
+                    renderItem={(item, index) => <NormalNFTCard item={item} index={index} />}
+                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
+                  />
+                ) : (
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    <Box className={classes.emptyBox}>
+                      <Box>😞</Box>
+                      <Box className={classes.detailsLabel} mt={1}>
+                        Not NFT found on your wallet.
+                      </Box>
+                    </Box>
+                  </Box>
+                )}
+              </LoadingWrapper>
+            ) : (
+              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
+                <MasonryGrid
+                  gutter={"24px"}
+                  data={userNFTs}
+                  renderItem={(item, index) => (
+                    <NFTSelectCard
+                      item={item}
+                      key={`item-${index}`}
+                      handleSelect={() => {
+                        if (userNFTs) {
+                          let nftsCopy = [...userNFTs];
+                          const selected = !userNFTs[index].selected;
+                          nftsCopy[index] = {
+                            ...userNFTs[index],
+                            selected: !userNFTs[index].selected,
+                          };
+                          // only need one selected
+                          if (selected) {
+                            for (let i = 0; i < nftsCopy.length; i++) {
+                              if (i != index) nftsCopy[i].selected = false;
+                            }
+                          }
+                          setSelectedNFT(nftsCopy[index]);
+                          setUserNFTs(nftsCopy);
+                        }
+                      }}
+                    />
+                  )}
+                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
+                />
+              </LoadingWrapper>
+            )}
+
             {isMobile && (
               <Grid item xs={12} sm={6}>
                 <div className={classes.nftsBox}>
@@ -402,59 +456,6 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
               </Grid>
             )}
 
-            {isSynthetic ? (
-              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
-                {TopNFTList && TopNFTList.length > 0 ? (
-                  <MasonryGrid
-                    gutter={"24px"}
-                    data={TopNFTList}
-                    renderItem={(item, index) => <NormalNFTCard item={item} index={index} />}
-                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
-                  />
-                ) : (
-                  <Box display="flex" alignItems="center" justifyContent="center">
-                    <Box className={classes.emptyBox}>
-                      <Box>😞</Box>
-                      <Box className={classes.detailsLabel} mt={1}>
-                        Not NFT found on your wallet.
-                      </Box>
-                    </Box>
-                  </Box>
-                )}
-              </LoadingWrapper>
-            ) : (
-              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
-                <MasonryGrid
-                  gutter={"24px"}
-                  data={userNFTs}
-                  renderItem={(item, index) => (
-                    <NFTSelectCard
-                      item={item}
-                      key={`item-${index}`}
-                      handleSelect={() => {
-                        if (userNFTs) {
-                          let nftsCopy = [...userNFTs];
-                          const selected = !userNFTs[index].selected;
-                          nftsCopy[index] = {
-                            ...userNFTs[index],
-                            selected: !userNFTs[index].selected,
-                          };
-                          // only need one selected
-                          if (selected) {
-                            for (let i = 0; i < nftsCopy.length; i++) {
-                              if (i != index) nftsCopy[i].selected = false;
-                            }
-                          }
-                          setSelectedNFT(nftsCopy[index]);
-                          setUserNFTs(nftsCopy);
-                        }
-                      }}
-                    />
-                  )}
-                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
-                />
-              </LoadingWrapper>
-            )}
           </Grid>
           {/* right form */}
           {!isMobile && (

@@ -341,12 +341,24 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       minWidth: "auto",
     },
   },
+  "@keyframes color-animation": {
+    "0%": {
+      backgroundPosition: "200% 50%"
+    },
+    "50%": {
+      backgroundPosition: "0% 50%"
+    },
+    "100%": {
+      backgroundPosition: "-200% 50%"
+    }
+  },
   syntheticFractionaliseBtn: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     height: 49,
-    background: "linear-gradient(275.7deg, #418DFF -22.23%, #4541FF 30.2%, #4541FF 46.57%, #EF41CB 94.97%, #EF41CB 102.17%, #EFA941 128.81%), linear-gradient(0deg, #DDFF57, #DDFF57)",
+    background: "linear-gradient(269.4deg, #418DFF -70.41%, #4541FF -24.89%, #4541FF 4.73%, #EF41CB 53.19%, #EF41CB 77.33%, #4541FF 95.86%, #418DFF 171.08%), linear-gradient(0deg, #C4C4C4, #C4C4C4)",
+    backgroundSize: "200% 200%",
     boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
     borderRadius: 8,
     fontSize: 18,
@@ -356,6 +368,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     lineHeight: "23px",
     cursor: "pointer",
     minWidth: 300,
+    animation: "$color-animation 3s ease infinite",
     [theme.breakpoints.down(1200)]: {
       fontSize: 16,
       padding: 0,

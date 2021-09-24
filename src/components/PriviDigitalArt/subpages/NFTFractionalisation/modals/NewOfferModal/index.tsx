@@ -296,7 +296,7 @@ export const NewOfferModal = ({ media, type, onClose, handleRefresh }) => {
           <label>
             {`Which price ${type === "Creating"? "and token":""} would you want to ${["Creating", "Selling"].includes(type) ? "sell" : "buy"} each fraction?`}
           </label>
-          {type === "Creating" && <Grid item xs={12} md={4}>
+          {type === "Creating" && <Grid item xs={5} sm={4}>
             <TokenSelect
               tokens={tokenList}
               value={token}
@@ -306,7 +306,7 @@ export const NewOfferModal = ({ media, type, onClose, handleRefresh }) => {
             />
           </Grid>}
 
-          <Grid item xs={12} md={type === "Creating"? 8: 12}>
+          <Grid item xs={type === "Creating"? 7: 12} sm={type === "Creating"? 8: 12}>
             <InputWithLabelAndTooltip
               inputValue={price}
               onInputValueChange={e => {

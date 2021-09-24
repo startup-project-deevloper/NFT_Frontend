@@ -1,4 +1,4 @@
-import { Box, Grid } from "@material-ui/core";
+import { Box, Grid, useMediaQuery, useTheme } from "@material-ui/core";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import React, { useState, useEffect, useMemo } from "react";
 import Web3 from "web3";
@@ -29,21 +29,6 @@ import { formatNumber } from "shared/functions/commonFunctions";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 
-const TradingTableHeaders: Array<CustomTableHeaderInfo> = [
-  {
-    headerName: "",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Fraction Ownership",
-    headerAlign: "center",
-  },
-  {
-    headerName: "",
-    headerAlign: "center",
-  },
-];
-
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
 const FractionPage = () => {
@@ -73,6 +58,25 @@ const FractionPage = () => {
   const [openViewAllTransacions, setOpenViewAllTransacions] = useState<boolean>(false);
   const [openByoutNFT, setOpenByoutNFT] = useState<boolean>(false);
   const [openUpdateReservePrice, setOpenUpdateReservePrice] = useState<boolean>(false);
+
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+
+  const [tradingTableHeader, setTradingTableHeader] = useState<Array<CustomTableHeaderInfo>>([
+    {
+      headerName: "",
+      headerAlign: "center",
+    },
+    {
+      headerName: "Fraction Ownership",
+      headerAlign: "center",
+    },
+    {
+      headerName: "",
+      headerAlign: "center",
+    },
+  ]);
 
   useEffect(() => {
     loadData();
@@ -311,7 +315,7 @@ const FractionPage = () => {
     return (
       Math.floor(
         (media?.FractionalizeData?.auctionData?.createdAt - new Date().getTime()) / 1000 +
-          media?.FractionalizeData?.auctionData?.auctionLength
+        media?.FractionalizeData?.auctionData?.auctionLength
       ) >= 0
     );
   }, [media]);
@@ -323,6 +327,7 @@ const FractionPage = () => {
         <Box width="100%">
           <div className={classes.title}>{media?.FractionalizeData?.name}</div>
           <Grid className={classes.leftImage} container spacing={5} wrap="wrap">
+            {/* left column */}
             <Grid item xs={12} sm={6} style={{ paddingTop: 0 }}>
               <Box
                 width={1}
@@ -336,22 +341,32 @@ const FractionPage = () => {
                   className={classes.detailImg}
                 />
               </Box>
-              {media?.FractionalizeData?.status !== "Auction" && (
-                <div className={classes.tableContainer}>
-                  <CustomTable
-                    headers={TradingTableHeaders}
-                    rows={fractionalizeOwnershipData}
-                    placeholderText="No History"
-                    theme="offers blue"
-                  />
-                </div>
-              )}
-              {media?.FractionalizeData?.status !== "Auction" && (
-                <div className={classes.viewAll} onClick={handleOpenViewAllTransacions}>
-                  View All
-                </div>
+              {!isMobile && (
+                <>
+                  {media?.FractionalizeData?.status !== "Auction" && (
+                    <div className={classes.tableContainer}>
+                      <CustomTable
+                        headers={tradingTableHeader}
+                        rows={fractionalizeOwnershipData}
+                        placeholderText="No History"
+                        theme="offers blue"
+                      />
+                      {media?.FractionalizeData?.status !== "Auction" && isTablet && (
+                        <div className={classes.viewAll} onClick={handleOpenViewAllTransacions} style={{ position: "absolute", right: 16, top: 16, margin: 0, fontSize: 14, color: "#DDFF57" }}>
+                          View All
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {media?.FractionalizeData?.status !== "Auction" && !isTablet && (
+                    <div className={classes.viewAll} onClick={handleOpenViewAllTransacions}>
+                      View All
+                    </div>
+                  )}
+                </>
               )}
             </Grid>
+            {/* right column */}
             <Grid
               item
               xs={12}
@@ -362,8 +377,10 @@ const FractionPage = () => {
                 paddingBottom: 0,
               }}
             >
+              {/* first row */}
               <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                 <Box display="flex" flexDirection="row" alignItems="center">
+                  {/* avatar */}
                   <div
                     className={classes.avatarImg}
                     onClick={() => {
@@ -377,11 +394,12 @@ const FractionPage = () => {
                         creatorInfo?.url
                           ? creatorInfo?.url
                           : creatorInfo.anonAvatar
-                          ? require(`assets/anonAvatars/${creatorInfo.anonAvatar}`)
-                          : "none"
+                            ? require(`assets/anonAvatars/${creatorInfo.anonAvatar}`)
+                            : "none"
                       }
                     />
                   </div>
+                  {/* user name */}
                   <Box display="flex" flexDirection="column" ml={1} mr={4}>
                     <Text color={Color.Black} className={classes.creatorName} mb={0.5}>
                       {creatorInfo?.name}
@@ -390,6 +408,7 @@ const FractionPage = () => {
                       <Text className={classes.creatorName} mt={0.5}>{`@${creatorInfo?.urlSlug}`}</Text>
                     )}
                   </Box>
+                  {/* button - follow etc. */}
                   {user &&
                     media?.FractionalizeData?.ownerAddress &&
                     media?.FractionalizeData?.ownerAddress !== user.address && (
@@ -398,6 +417,7 @@ const FractionPage = () => {
                       </SecondaryButton>
                     )}
                 </Box>
+                {/* bookmark */}
                 <Box display="flex" flexDirection="row" alignItems="center">
                   <Box mr={2}>
                     <img
@@ -416,13 +436,14 @@ const FractionPage = () => {
                   </Box>
                 </Box>
               </Box>
+              {/* share menu */}
               <SharePopup
                 item={media}
                 openMenu={openShareMenu}
                 anchorRef={anchorShareMenuRef}
                 handleCloseMenu={handleCloseShareMenu}
               />
-
+              {/* second row - token, meta mask, ether scan */}
               <Box
                 mt={3}
                 mb={3}
@@ -430,7 +451,7 @@ const FractionPage = () => {
                 justifyContent="space-between"
                 alignItems="center"
                 color={"#431AB7"}
-                fontSize="14px"
+                fontSize="12px"
                 fontWeight={800}
               >
                 <Box fontSize={"16px"}>{media?.MediaSymbol ?? "TOKEN NAME"}</Box>
@@ -440,6 +461,7 @@ const FractionPage = () => {
                   style={{ cursor: "pointer" }}
                   display="flex"
                   alignItems="center"
+                  paddingLeft={1}
                 >
                   <img
                     src={require("assets/walletImages/metamask.svg")}
@@ -464,6 +486,7 @@ const FractionPage = () => {
                 </Box>
               </Box>
 
+              {/* status icon row - Live Auction, Closed */}
               {media?.FractionalizeData?.status === "Auction" &&
                 (isAuctionLive ? (
                   <div className={classes.liveAuctionBtn}>
@@ -476,8 +499,9 @@ const FractionPage = () => {
                     <span>Closed</span>
                   </div>
                 ))}
+              {/* claim or Owner address */}
               {media?.FractionalizeData?.ownerAddress === user.address ? (
-                <Box display="flex" alignItems="center" color="#431AB7" mt={3} fontSize="14px">
+                <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7" mt={3} fontSize="14px">
                   <Box mr={3}>
                     <Box mb={0.5}>Reward accumulated</Box>
                     <Box fontSize="18px" fontWeight={800}>
@@ -503,8 +527,8 @@ const FractionPage = () => {
                     </svg>
                     {media?.FractionalizeData?.ownerAddress
                       ? media.FractionalizeData.ownerAddress.substr(0, 8) +
-                        " ... " +
-                        media?.FractionalizeData?.ownerAddress.substr(-8)
+                      " ... " +
+                      media?.FractionalizeData?.ownerAddress.substr(-8)
                       : ""}
                   </Box>
                 </Box>
@@ -512,6 +536,7 @@ const FractionPage = () => {
 
               <hr className={classes.divider} />
 
+              {/* price info row - reserve price, fee, total supply */}
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box display="flex" flexDirection="column">
                   <span className={classes.fractionTitle}>Reserve Price</span>
@@ -535,6 +560,7 @@ const FractionPage = () => {
 
               <hr className={classes.divider} />
 
+              {/* button row - Buyout NFT, Update reserve price */}
               {media?.FractionalizeData?.status !== "Auction" && (
                 <Box display="flex" alignItems="center" mb={3}>
                   <button
@@ -554,7 +580,9 @@ const FractionPage = () => {
                 isAuctionLive ? (
                   //case Live Auction
                   <>
-                    <AuctionDetails media={media} />
+                    <Box paddingBottom={3}>
+                      <AuctionDetails media={media} />
+                    </Box>
                     <ExchangeBox media={media} handleRefresh={loadData} />
                   </>
                 ) : (
@@ -566,6 +594,30 @@ const FractionPage = () => {
                 <ExchangeBox media={media} handleRefresh={loadData} />
               )}
             </Grid>
+            {isMobile && (
+              <Grid item xs={12} sm={6}>
+                {media?.FractionalizeData?.status !== "Auction" && (
+                  <div className={classes.tableContainer}>
+                    <CustomTable
+                      headers={tradingTableHeader}
+                      rows={fractionalizeOwnershipData}
+                      placeholderText="No History"
+                      theme="offers blue"
+                    />
+                    {media?.FractionalizeData?.status !== "Auction" && isTablet && (
+                      <div className={classes.viewAll} onClick={handleOpenViewAllTransacions} style={{ position: "absolute", right: 16, top: 16, margin: 0, fontSize: 14, color: "#DDFF57" }}>
+                        View All
+                      </div>
+                    )}
+                  </div>
+                )}
+                {media?.FractionalizeData?.status !== "Auction" && !isTablet && (
+                  <div className={classes.viewAll} onClick={handleOpenViewAllTransacions}>
+                    View All
+                  </div>
+                )}
+              </Grid>
+            )}
           </Grid>
         </Box>
         {openMediaPhotoDetailModal && (
@@ -576,8 +628,8 @@ const FractionPage = () => {
               media?.Type === "VIDEO_TYPE"
                 ? media?.UrlMainPhoto
                 : media?.Url ||
-                  media?.url ||
-                  `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
+                media?.url ||
+                `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
             }
           />
         )}

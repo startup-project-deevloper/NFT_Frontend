@@ -13,7 +13,6 @@ export const useMobileMenuStyles = makeStyles(theme => ({
       marginBottom: 0,
     },
     [theme.breakpoints.down("xs")]: {
-      paddingRight: 0,
       paddingBottom: 5,
       overflowX: "scroll",
       "&::-webkit-scrollbar-thumb": {

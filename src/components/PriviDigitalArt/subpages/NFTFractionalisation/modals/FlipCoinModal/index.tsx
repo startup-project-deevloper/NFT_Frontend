@@ -19,64 +19,64 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
   const [isFlipping, setIsFlipping] = useState<boolean>(true) // true - flipping dialog, false - result dialog (finished flipping)
   const [flipResult, setFlipResult] = useState<boolean>(false) // true - won, false - lost
   const [resultState, setResultState] = useState<number>(0) // 0 or 1
-  // const [isProceeding, seItsProceeding] = useState<boolean>(true);
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isProceeding, setIsProceeding] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hash, setHash] = useState<string>("");
-  // const { account, library, chainId } = useWeb3React();
-  // const isProduction = process.env.REACT_APP_ENV === "Prod";
-  // const handleProceed = async () => {
-  //   if ((!isProduction && chainId !== 80001) || (isProduction && chainId !== 137)) {
-  //     await window.ethereum.request({
-  //       method: "wallet_switchEthereumChain",
-  //       params: [{ chainId: isProduction ? "0x89" : "0x13881" }],
-  //     });
-  //   }
+  const { account, library, chainId } = useWeb3React();
+  const isProduction = process.env.REACT_APP_ENV === "Prod";
+  const handleProceed = async () => {
+    if ((!isProduction && chainId !== 80001) || (isProduction && chainId !== 137)) {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: isProduction ? "0x89" : "0x13881" }],
+      });
+    }
 
-  //   setIsLoading(true);
-  //   setIsProceeding(true);
+    setIsLoading(true);
+    setIsProceeding(true);
 
-  //   try {
-  //     const web3 = new Web3(library.provider);
-  //     const contractAddress = config.CONTRACT_ADDRESSES.Pix.JOT_POOL;
+    try {
+      const web3 = new Web3(library.provider);
+      const contractAddress = config.CONTRACT_ADDRESSES.Pix.JOT_POOL;
 
-  //     const contract = ContractInstance(web3, SyntheticCollectionManager.abi, contractAddress);
+      const contract = ContractInstance(web3, SyntheticCollectionManager.abi, contractAddress);
 
-  //     await API.addFlipHistory("0x06012c8cf97bead5deae237070f9587f8e7a266d", "5", {
-  //       winnerAddress: "requestId",
-  //       prediction: "prediction",
-  //       result: "randomResult",
-  //       tokenId: "tokenId",
-  //     });
+      await API.addFlipHistory("0x06012c8cf97bead5deae237070f9587f8e7a266d", "5", {
+        winnerAddress: "requestId",
+        prediction: "prediction",
+        result: "randomResult",
+        tokenId: "tokenId",
+      });
 
-  //     const gas = await contract.methods
-  //       .flipJot(selectedNFT.tokenId, parseInt(pred))
-  //       .estimateGas({ from: account });
-  //     console.log("polygon gas", gas);
+      const gas = await contract.methods
+        .flipJot(selectedNFT.tokenId, parseInt(pred))
+        .estimateGas({ from: account });
+      console.log("polygon gas", gas);
 
-  //     const response = await contract.methods
-  //       .flipJot(selectedNFT.tokenId, parseInt(pred))
-  //       .send({ from: account, gas })
-  //       .on("error", error => {
-  //         console.log("error", error);
-  //         setIsLoading(false);
-  //       });
+      const response = await contract.methods
+        .flipJot(selectedNFT.tokenId, parseInt(pred))
+        .send({ from: account, gas })
+        .on("error", error => {
+          console.log("error", error);
+          setIsLoading(false);
+        });
 
-  //     console.log(" --- response ---", response);
-  //     const { requestId, tokenId, prediction, randomResult } = response.FlipProcessed;
+      console.log(" --- response ---", response);
+      const { requestId, tokenId, prediction, randomResult } = response.FlipProcessed;
 
-  //     await API.addFlipHistory("0x06012c8cf97bead5deae237070f9587f8e7a266d", "5", {
-  //       winnerAddress: "requestId",
-  //       prediction: "prediction",
-  //       result: "randomResult",
-  //       tokenId: "tokenId",
-  //     });
+      await API.addFlipHistory("0x06012c8cf97bead5deae237070f9587f8e7a266d", "5", {
+        winnerAddress: "requestId",
+        prediction: "prediction",
+        result: "randomResult",
+        tokenId: "tokenId",
+      });
 
-  //     setHash(response.transactionHash);
-  //   } catch (err) {
-  //     console.log("error", err);
-  //     setIsLoading(false);
-  //   }
-  // };
+      setHash(response.transactionHash);
+    } catch (err) {
+      console.log("error", err);
+      setIsLoading(false);
+    }
+  };
 
   const handleLater = () => {
     onClose();

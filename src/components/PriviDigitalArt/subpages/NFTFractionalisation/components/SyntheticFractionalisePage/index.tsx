@@ -87,8 +87,8 @@ const SyntheticFractionalisePage = ({
             </div>
             <div className={classes.topNFTContent}>
               <Carousel isRTL={false} itemsToShow={itemsToShow} pagination={false}>
-                {collections.map((item, idx) => (
-                  <SyntheticCollectionCard item={item} />
+                {collections.map((item: any) => (
+                  <SyntheticCollectionCard item={item} key={item.id} />
                 ))}
               </Carousel>
             </div>
@@ -101,8 +101,8 @@ const SyntheticFractionalisePage = ({
               {collections.length ? (
                 <MuiThemeProvider theme={theme}>
                   <Grid container spacing={2} wrap="wrap">
-                    {collections.map((item, idx) => (
-                      <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
+                    {collections.map((item: any) => (
+                      <Grid item xs={12} sm={6} md={12} lg={6} xl={4} key={item.id}>
                         <SyntheticCollectionCard item={item} />
                       </Grid>
                     ))}

@@ -166,7 +166,7 @@ export const AddStackBopModal = (props: any) => {
 
 const InfoIcon = () => (
   <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect y="0.700195" width="16.6003" height="16.6003" rx="8.30014" fill="#54658F" fill-opacity="0.3" />
+    <rect y="0.700195" width="16.6003" height="16.6003" rx="8.30014" fill="#54658F" fillOpacity="0.3" />
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
@@ -178,7 +178,7 @@ const InfoIcon = () => (
 
 const DropIcon = () => (
   <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect y="0.556641" width="30" height="30" rx="15" fill="#4218B5" fill-opacity="0.05" />
+    <rect y="0.556641" width="30" height="30" rx="15" fill="#4218B5" fillOpacity="0.05" />
     <path
       d="M10 14.1133L15 19.1133L20 14.1133"
       stroke="#4218B5"

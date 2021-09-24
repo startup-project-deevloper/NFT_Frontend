@@ -39,6 +39,10 @@ const useOffersModalStyles = makeStyles(theme => ({
       color: "#181818 !important",
       fontSize: "14px",
       lineHeight: "120%",
+      [theme.breakpoints.down("xs")]: {
+        padding: 8,
+        fontSize: 12
+      },
     },
 
     "& .MuiTableCell-body": {
@@ -46,6 +50,10 @@ const useOffersModalStyles = makeStyles(theme => ({
       borderBottom: "1px solid #17171718",
       fontSize: "14px",
       lineHeight: "120%",
+      [theme.breakpoints.down("xs")]: {
+        padding: 8,
+        fontSize: 10
+      },
     },
   },
 }));

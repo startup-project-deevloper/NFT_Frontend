@@ -6,7 +6,7 @@ import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
-import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
+// import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
 import FractionalizedNFTCard from "components/PriviDigitalArt/components/Cards/FractionalizedNFTCard";
 import {
   nftFractionalisationStyles,
@@ -20,6 +20,13 @@ import SyntheticFractionalise from "./components/SyntheticFractionalise";
 import { getFractionalizeVaults } from "shared/services/API/FractionalizeAPI";
 import PriviPixSyntheticRouter from "./PriviPixSyntheticRouter";
 import { useHistory } from "react-router";
+
+const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
+  400: 1,
+  650: 2,
+  1200: 3,
+  1440: 4,
+};
 
 const NFTFractionalisation = () => {
   const classes = nftFractionalisationStyles();
@@ -108,9 +115,13 @@ const NFTFractionalisation = () => {
           {selectedTab === "pure" && (
             <>
               <div className={classes.headerButtonGroup}>
-                <div className={classes.fractionalizeBtn} onClick={() => setOpenFractionalize(true)}>
-                  Fractionalize
-                </div>
+                {/* fractionalize button */}
+                {!isMobile && (
+                  <div className={classes.fractionalizeBtn} onClick={() => setOpenFractionalize(true)}>
+                    Fractionalize
+                  </div>
+                )}
+                {/* button group */}
                 <div className={classes.filterBtnGroup}>
                   <div className={classes.liveSaleBtn}>
                     <LiveSaleIcon />
@@ -129,6 +140,12 @@ const NFTFractionalisation = () => {
                     <SortByIcon />
                   </div>
                 </div>
+                {/* fractionalize button */}
+                {isMobile && (
+                  <div className={classes.fractionalizeBtn} onClick={() => setOpenFractionalize(true)}>
+                    Fractionalize
+                  </div>
+                )}
               </div>
               <div className={classes.mediaSection}>
                 {medias && medias.length ? (
@@ -157,19 +174,19 @@ const NFTFractionalisation = () => {
                     )}
                   </>
                 ) : loading ? (
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "calc(100vh - 400px)",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          paddingTop: 16,
-                          paddingBottom: 16,
-                        }}
-                      >
-                        <CircularLoadingIndicator theme="blue" />
-                      </div>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "calc(100vh - 400px)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingTop: 16,
+                      paddingBottom: 16,
+                    }}
+                  >
+                    <CircularLoadingIndicator theme="blue" />
+                  </div>
                 ) : (
                   <div></div>
                 )}

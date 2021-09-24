@@ -60,11 +60,17 @@ const usePriviExchangeStyles = makeStyles(theme => ({
     alignItems: "center",
     color: "#181818",
     fontSize: "18px",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 14
+    },
     "& span": {
       color: "#431AB7",
       cursor: "pointer",
       marginLeft: "24px",
       fontSize: "14px",
+      [theme.breakpoints.down("sm")]: {
+        fontSize: 12
+      },
     },
   },
   offersTableContainer: {
@@ -72,7 +78,7 @@ const usePriviExchangeStyles = makeStyles(theme => ({
     boxShadow: "0px 4px 8px #9EACF2",
     borderRadius: "16px",
     "& .MuiTableCell-head": {
-      backgroundColor: "white",
+      backgroundColor: "#F7F9FE",
       color: "#181818 !important",
       fontSize: "14px",
       lineHeight: "120%",
@@ -84,6 +90,16 @@ const usePriviExchangeStyles = makeStyles(theme => ({
       fontSize: "14px",
       lineHeight: "120%",
     },
+    [theme.breakpoints.down("md")]: {
+      "& .MuiTableCell-head": {
+        fontSize: 10,
+        padding: "16px 8px",
+      },
+      "& .MuiTableCell-body": {
+        fontSize: 10,
+        padding: "8px",
+      }
+    }
   },
   clickablePurple: {
     color: "#431AB7",
@@ -229,44 +245,44 @@ export default function PriviExchange({ media, handleRefresh }) {
     <>
       {
         media?.FractionalizeData?.exchangeData ?
-        (<>
-          <Box className={classes.offersTitle} mb={3}>
-            Selling Offers{" "}
-            <span onClick={() => handleOpenViewAllOffersModal("Selling", sellingOffersData)}>View All</span>
-          </Box>
-          <Box className={classes.offersTableContainer} mb={3}>
-            <CustomTable
-              headers={OfferHeaders}
-              rows={sellingOffersData}
-              placeholderText="There are no Selling Offers yet"
-              theme="offers blue"
-            />
-          </Box>
-          <button className={classes.button} onClick={() => handleOpenNewOfferModal("Selling")}>
-            Sell Fraction
-          </button>
-         
-          <Box className={classes.offersTitle} mt={4} mb={3}>
-            Buying Offers{" "}
-            <span onClick={() => handleOpenViewAllOffersModal("Buying", buyingOffersData)}>View All</span>
-          </Box>
-          <Box className={classes.offersTableContainer} mb={3}>
-            <CustomTable
-              headers={OfferHeaders}
-              rows={buyingOffersData}
-              placeholderText="There are no Buying Offers yet"
-              theme="offers blue"
-            />
-          </Box>
-          <button className={classes.button} onClick={() => handleOpenNewOfferModal("Buying")}>
-            Buy Fraction
-          </button>
-        </>) :
-        (<>
-          <button className={classes.button} onClick={() => handleOpenNewOfferModal("Creating")}>
-            Create Exchange
-          </button>
-        </>)
+          (<>
+            <Box className={classes.offersTitle} mb={3}>
+              Selling Offers{" "}
+              <span onClick={() => handleOpenViewAllOffersModal("Selling", sellingOffersData)}>View All</span>
+            </Box>
+            <Box className={classes.offersTableContainer} mb={3}>
+              <CustomTable
+                headers={OfferHeaders}
+                rows={sellingOffersData}
+                placeholderText="There are no Selling Offers yet"
+                theme="offers blue"
+              />
+            </Box>
+            <button className={classes.button} onClick={() => handleOpenNewOfferModal("Selling")}>
+              Sell Fraction
+            </button>
+
+            <Box className={classes.offersTitle} mt={4} mb={3}>
+              Buying Offers{" "}
+              <span onClick={() => handleOpenViewAllOffersModal("Buying", buyingOffersData)}>View All</span>
+            </Box>
+            <Box className={classes.offersTableContainer} mb={3}>
+              <CustomTable
+                headers={OfferHeaders}
+                rows={buyingOffersData}
+                placeholderText="There are no Buying Offers yet"
+                theme="offers blue"
+              />
+            </Box>
+            <button className={classes.button} onClick={() => handleOpenNewOfferModal("Buying")}>
+              Buy Fraction
+            </button>
+          </>) :
+          (<>
+            <button className={classes.button} onClick={() => handleOpenNewOfferModal("Creating")}>
+              Create Exchange
+            </button>
+          </>)
       }
       {openViewAllOffersModal !== null && (
         <OffersModal

@@ -2,6 +2,7 @@ import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
+import { toNDecimals } from "shared/functions/web3";
 
 const syntheticProtocolRouter = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/SyntheticProtocolRouter.json");
@@ -19,13 +20,14 @@ const syntheticProtocolRouter = (network: string) => {
 
         const decimals = await jotAPI.decimals(web3, jotContractAddress);
 
-        const tPrice = web3.utils.toBN(price).mul(web3.utils.toBN(10).pow(web3.utils.toBN(decimals)));
+        const tPrice = toNDecimals(+price, decimals);
+        const tSupply = toNDecimals(+supply, decimals);
 
         const gas = await contract.methods
-          .registerNFT(tokenAddress, chainId, supply, tPrice, name, symbol)
+          .registerNFT(tokenAddress, chainId, tSupply, tPrice, name, symbol)
           .estimateGas({ from: account });
         const response = await contract.methods
-          .registerNFT(tokenAddress, chainId, supply, tPrice, name, symbol)
+          .registerNFT(tokenAddress, chainId, tSupply, tPrice, name, symbol)
           .send({ from: account, gas });
 
         resolve({

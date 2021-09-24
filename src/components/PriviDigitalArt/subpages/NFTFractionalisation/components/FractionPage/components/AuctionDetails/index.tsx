@@ -24,6 +24,9 @@ const useAuctionDetailsStyles = makeStyles(theme => ({
   bidBox: {
     borderRadius: theme.spacing(2),
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
+    [theme.breakpoints.down("sm")]: {
+      padding: "3px 5px"
+    },
     display: "flex",
     alignItems: "center",
     width: "fit-content",

@@ -31,10 +31,10 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     width: "100%",
     justifyContent: "center",
     [theme.breakpoints.down(950)]: {
-      fontSize: 35,
+      fontSize: 28,
     },
     [theme.breakpoints.down("xs")]: {
-      fontSize: 22,
+      fontSize: 18,
     },
   },
   subTitleSection: {
@@ -76,11 +76,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down(950)]: {
       minWidth: 275,
-      fontSize: 18,
+      fontSize: 14,
     },
     [theme.breakpoints.down(580)]: {
       minWidth: 190,
-      fontSize: 16,
+      fontSize: 14,
     },
   },
   selectedTabSection: {
@@ -88,11 +88,13 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   },
   headerButtonGroup: {
     display: "flex",
+    alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
     marginTop: 50,
-    [theme.breakpoints.down(920)]: {
+    [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
+      alignItems: "flex-start",
     },
   },
   fractionalizeBtn: {
@@ -112,26 +114,27 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down("xs")]: {
       fontSize: 16,
+      marginTop: 30,
     },
   },
   filterBtnGroup: {
     display: "flex",
     alignItems: "flex-end",
     columnGap: 10,
-    [theme.breakpoints.down(920)]: {
-      marginTop: 16,
+    [theme.breakpoints.down(750)]: {
+      // marginBottom: 30,
     },
   },
   liveSaleBtn: {
     display: "flex",
     height: 38,
-    padding: "10px 12px 10px 16px",
-    color: "#431AB7",
+    padding: "10px 16px",
+    color: "#fff",
     fontSize: 14,
     fontWeight: 800,
     fontFamily: "Agrandir",
     lineHeight: "18px",
-    background: "#DDFF57",
+    background: "#431AB7",
     borderRadius: 10,
     cursor: "pointer",
     "& span": {
@@ -514,7 +517,7 @@ export const LiveSaleIcon = () => (
   <svg width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M8.16667 1.66602H3.5L1.5 7.66602H4.16667L2.83333 12.9993L10.1667 5.66602H6.56667L8.16667 1.66602Z"
-      stroke="#431AB7"
+      stroke="#fff"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"

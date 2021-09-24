@@ -75,7 +75,8 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
   const { showAlertMessage } = useAlertMessage();
 
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down(960));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
@@ -233,6 +234,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
     }
   };
 
+  console.log(isMobile, isTablet)
   return (
     <LoadingScreen
       loading={loading}
@@ -246,7 +248,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
           {isSynthetic ? "Synthetic Fractionalise your NFT" : "FRACTIONALISE"}
         </div>
         <Grid container spacing={5}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={isTablet ? 5 : 6}>
             <div className={classes.text}>
               Select one or more NFTs for your vault and then set your vault’s details to continue. Be aware
               you cannot add to the NFTs in a vault once they have been fractionalized.
@@ -259,145 +261,6 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                 </div>
                 <button onClick={handleConnectWallet}>Connect Your Wallet</button>
               </div>
-            )}
-
-            {isTablet && (
-              <Grid item xs={12} md={6}>
-                <div className={classes.nftsBox}>
-                  <div className={classes.nftsTitle}>
-                    {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
-                    {!isSynthetic && <span>{userNFTs?.filter(n => n.selected)?.length ?? 0}</span>}
-                  </div>
-                  {isSynthetic && (
-                    <div className={classes.text} style={{ textAlign: "center" }}>
-                      You can only select one NFT
-                    </div>
-                  )}
-                  <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
-                  <div className={classes.detailsLabel}>Vault details</div>
-                  <Grid container spacing={2} style={{ display: "flex", alignItems: "flex-end" }}>
-                    <Grid item xs={12} md={6}>
-                      <InputWithLabelAndTooltip
-                        labelName="Name"
-                        inputValue={name}
-                        placeHolder={"Name..."}
-                        required
-                        type="text"
-                        onInputValueChange={e => setName(e.target.value)}
-                        theme="light"
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <label>Blockchain</label>
-                      <Dropdown
-                        value={selectedChain.value}
-                        menuList={filteredBlockchainNets}
-                        onChange={e => {
-                          setPrevSelectedChain(selectedChain);
-                          setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
-                        }}
-                        hasImage
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <InputWithLabelAndTooltip
-                        labelName="Supply"
-                        inputValue={supply === undefined ? "" : supply.toString()}
-                        placeHolder={"2"}
-                        minValue={0}
-                        required
-                        type="number"
-                        onInputValueChange={e => setSupply(e.target.value)}
-                        theme="light"
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <InputWithLabelAndTooltip
-                        labelName="Symbol"
-                        inputValue={symbol}
-                        placeHolder={"Symbol..."}
-                        required
-                        type="text"
-                        onInputValueChange={e => setSymbol(e.target.value)}
-                        theme="light"
-                      />
-                    </Grid>
-                    {!isSynthetic && (
-                      <Grid item xs={12} md={6}>
-                        <label>Reserve Price</label>
-                        <TokenSelect
-                          tokens={tokenList}
-                          value={reservePriceToken}
-                          onChange={e => {
-                            setReservePriceToken(e.target.value as string);
-                          }}
-                        />
-                      </Grid>
-                    )}
-                    {!isSynthetic && (
-                      <Grid item xs={12} md={6}>
-                        <InputWithLabelAndTooltip
-                          inputValue={reservePrice === undefined ? "" : reservePrice.toString()}
-                          placeHolder={"0"}
-                          minValue={0}
-                          required
-                          type="number"
-                          onInputValueChange={e => setReservePrice(e.target.value)}
-                          theme="light"
-                        />
-                      </Grid>
-                    )}
-                    {!isSynthetic && (
-                      <Grid item xs={12} md={12}>
-                        <Box className={classes.purpleLabel} mb="1px">
-                          Annual management Fee
-                        </Box>
-
-                        <div className={classes.sliderContainer}>
-                          <PurpleSlider
-                            defaultValue={managementFee}
-                            value={managementFee}
-                            valueLabelDisplay="auto"
-                            step={1}
-                            min={0}
-                            max={10}
-                            onChange={(event, newValue) => setManagementFee(newValue as number)}
-                          />
-                        </div>
-
-                        <Box
-                          className={classes.purpleLabel}
-                          mt="1px"
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                        >
-                          <div>0%</div>
-                          <div>10%</div>
-                        </Box>
-                      </Grid>
-                    )}
-                    {isSynthetic && (
-                      <Grid item xs={12} md={12}>
-                        <Box className={classes.borderBox}>
-                          The <span>Staking Interest</span> you will earn for staking your original NFT is{" "}
-                          <span>0.5%</span>
-                        </Box>
-                      </Grid>
-                    )}
-                  </Grid>
-
-                  <Box mt="40px" p={"24px 0px 0px"} display="flex" justifyContent="flex-end">
-                    <button
-                      disabled={!walletConnected}
-                      className={classes.nftsButton}
-                      onClick={handleFractionalise}
-                    >
-                      Continue
-                    </button>
-                  </Box>
-                </div>
-              </Grid>
             )}
 
             {isSynthetic ? (
@@ -453,9 +316,150 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                 />
               </LoadingWrapper>
             )}
+
+            {isMobile && (
+              <Grid item xs={12} sm={6}>
+                <div className={classes.nftsBox}>
+                  <div className={classes.nftsTitle}>
+                    {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
+                    {!isSynthetic && <span>{userNFTs?.filter(n => n.selected)?.length ?? 0}</span>}
+                  </div>
+                  {isSynthetic && (
+                    <div className={classes.text} style={{ textAlign: "center" }}>
+                      You can only select one NFT
+                    </div>
+                  )}
+                  <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
+                  <div className={classes.detailsLabel}>Vault details</div>
+                  <Grid container spacing={isMobile ? 1 : 2} style={{ display: "flex", alignItems: "flex-end" }}>
+                    <Grid item xs={6} sm={6}>
+                      <InputWithLabelAndTooltip
+                        labelName="Name"
+                        inputValue={name}
+                        placeHolder={"Name..."}
+                        required
+                        type="text"
+                        onInputValueChange={e => setName(e.target.value)}
+                        theme="light"
+                      />
+                    </Grid>
+                    <Grid item xs={6} sm={6}>
+                      <label>Blockchain</label>
+                      <Dropdown
+                        value={selectedChain.value}
+                        menuList={filteredBlockchainNets}
+                        onChange={e => {
+                          setPrevSelectedChain(selectedChain);
+                          setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
+                        }}
+                        hasImage
+                      />
+                    </Grid>
+                    <Grid item xs={6} sm={6}>
+                      <InputWithLabelAndTooltip
+                        labelName="Supply"
+                        inputValue={supply === undefined ? "" : supply.toString()}
+                        placeHolder={"2"}
+                        minValue={0}
+                        required
+                        type="number"
+                        onInputValueChange={e => setSupply(e.target.value)}
+                        theme="light"
+                      />
+                    </Grid>
+                    <Grid item xs={6} sm={6}>
+                      <InputWithLabelAndTooltip
+                        labelName="Symbol"
+                        inputValue={symbol}
+                        placeHolder={"Symbol..."}
+                        required
+                        type="text"
+                        onInputValueChange={e => setSymbol(e.target.value)}
+                        theme="light"
+                      />
+                    </Grid>
+                    {!isSynthetic && (
+                      <Grid item xs={6} sm={6}>
+                        <label>Reserve Price</label>
+                        <TokenSelect
+                          tokens={tokenList}
+                          value={reservePriceToken}
+                          onChange={e => {
+                            setReservePriceToken(e.target.value as string);
+                          }}
+                        />
+                      </Grid>
+                    )}
+                    {!isSynthetic && (
+                      <Grid item xs={6} sm={6}>
+                        <InputWithLabelAndTooltip
+                          inputValue={reservePrice === undefined ? "" : reservePrice.toString()}
+                          placeHolder={"0"}
+                          minValue={0}
+                          required
+                          type="number"
+                          onInputValueChange={e => setReservePrice(e.target.value)}
+                          theme="light"
+                        />
+                      </Grid>
+                    )}
+                    {!isSynthetic && (
+                      <Grid item xs={12} sm={12}>
+                        <Box className={classes.purpleLabel} mb="1px">
+                          Annual management Fee
+                        </Box>
+
+                        <div className={classes.sliderContainer}>
+                          <PurpleSlider
+                            defaultValue={managementFee}
+                            value={managementFee}
+                            valueLabelDisplay="auto"
+                            step={1}
+                            min={0}
+                            max={10}
+                            onChange={(event, newValue) => setManagementFee(newValue as number)}
+                          />
+                        </div>
+
+                        <Box
+                          className={classes.purpleLabel}
+                          mt="1px"
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                        >
+                          <div>0%</div>
+                          <div>10%</div>
+                        </Box>
+                      </Grid>
+                    )}
+                    {isSynthetic && (
+                      <Grid item xs={12} sm={12}>
+                        <Box className={classes.borderBox}>
+                          The <span>Staking Interest</span> you will earn for staking your original NFT is{" "}
+                          <span>0.5%</span>
+                        </Box>
+                      </Grid>
+                    )}
+                  </Grid>
+
+                  <Box mt="40px" p={"24px 0px 0px"} display="flex" justifyContent="flex-end">
+                    <button
+                      disabled={!walletConnected}
+                      className={classes.nftsButton}
+                      onClick={handleFractionalise}
+                    >
+                      Continue
+                    </button>
+                  </Box>
+                </div>
+              </Grid>
+            )}
+
           </Grid>
-          {!isTablet && (
-            <Grid item xs={12} md={6}>
+          {/* right form */}
+          {!isMobile && (
+            <Grid item xs={12} sm={isTablet ? 7 : 6}>
               <div className={classes.nftsBox}>
                 <div className={classes.nftsTitle}>
                   {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
@@ -469,7 +473,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                 <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
                 <div className={classes.detailsLabel}>Vault details</div>
                 <Grid container spacing={2} style={{ display: "flex", alignItems: "flex-end" }}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <InputWithLabelAndTooltip
                       labelName="Name"
                       inputValue={name}
@@ -480,7 +484,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       theme="light"
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <label>Blockchain</label>
                     <Dropdown
                       value={selectedChain.value}
@@ -492,7 +496,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       hasImage
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <InputWithLabelAndTooltip
                       labelName="Supply"
                       inputValue={supply === undefined ? "" : supply.toString()}
@@ -504,7 +508,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                       theme="light"
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sm={6}>
                     <InputWithLabelAndTooltip
                       labelName="Symbol"
                       inputValue={symbol}
@@ -516,7 +520,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     />
                   </Grid>
                   {!isSynthetic && (
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} sm={6}>
                       <label>Reserve Price</label>
                       <TokenSelect
                         tokens={tokenList}
@@ -528,7 +532,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     </Grid>
                   )}
                   {!isSynthetic && (
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} sm={6}>
                       <InputWithLabelAndTooltip
                         inputValue={reservePrice === undefined ? "" : reservePrice.toString()}
                         placeHolder={"0"}
@@ -541,7 +545,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     </Grid>
                   )}
                   {!isSynthetic && (
-                    <Grid item xs={12} md={12}>
+                    <Grid item xs={12} sm={12}>
                       <Box className={classes.purpleLabel} mb="1px">
                         Annual management Fee
                       </Box>
@@ -570,7 +574,7 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                     </Grid>
                   )}
                   {isSynthetic && (
-                    <Grid item xs={12} md={12}>
+                    <Grid item xs={12} sm={12}>
                       <Box className={classes.borderBox}>
                         The <span>Staking Interest</span> you will earn for staking your original NFT is{" "}
                         <span>0.5%</span>

@@ -1,26 +1,13 @@
 import React from "react";
 
-export const IconMessagesWhite: React.FunctionComponent<{ isActive: boolean }> = ({ isActive }) => (
-  <svg width="26" height="21" viewBox="0 0 26 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const IconMessagesWhite = () => (
+  <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
-      d="M2.23688 2.10602L11.4618 11.3309C12.4786 12.3477 14.1272 12.3477 15.1441 11.3309L24.3689 2.10602M2.88782 19.6815H23.718C24.437 19.6815 25.0199 19.0986 25.0199 18.3796V2.75696C25.0199 2.03795 24.437 1.45508 23.718 1.45508H2.88782C2.16881 1.45508 1.58594 2.03795 1.58594 2.75696V18.3796C1.58594 19.0986 2.16881 19.6815 2.88782 19.6815Z"
-      stroke={isActive ? "url(#paint0_linear)" : "#FFFFFF"}
-      strokeWidth="2"
+      d="M3.08951 11.5C3.08596 12.8199 3.40353 14.1219 4.01634 15.3C4.74295 16.7118 5.85997 17.8992 7.24229 18.7293C8.62462 19.5594 10.2176 19.9994 11.8429 20C13.2022 20.0035 14.543 19.6951 15.7562 19.1L21.6262 21L19.6695 15.3C20.2824 14.1219 20.5999 12.8199 20.5964 11.5C20.5958 9.92179 20.1426 8.37488 19.2878 7.03258C18.4329 5.69028 17.2101 4.6056 15.7562 3.90003C14.543 3.30496 13.2022 2.99659 11.8429 3.00003H11.328C9.18154 3.11502 7.15415 3.99479 5.63404 5.47089C4.11393 6.94699 3.20793 8.91568 3.08951 11V11.5Z"
+      stroke="white"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <defs>
-      <linearGradient
-        id="paint0_linear"
-        x1="3.76923"
-        y1="9.80001"
-        x2="22.844"
-        y2="12.2761"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop offset="0.828418" stopColor="#23D0C6" />
-        <stop offset="1" stopColor="#00CC8F" />
-      </linearGradient>
-    </defs>
   </svg>
 );

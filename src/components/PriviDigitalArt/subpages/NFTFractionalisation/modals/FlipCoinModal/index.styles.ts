@@ -16,17 +16,28 @@ export const FlipCoinModalStyles = makeStyles((theme: Theme) =>
       width: "100%",
       maxWidth: 540,
       textAlign: "center",
+      // backgroundImage: "url('assets/icon/coin_flip.gif')"
     },
     title: {
-      fontSize: 20,
+      fontSize: 38,
       fontWeight: 800,
       lineHeight: "104.5%",
-      color: "#181818",
+      color: "#431AB7",
     },
     description: {
+      fontSize: 18,
+      lineHeight: "150%",
+      color: "#54658F",
+    },
+    result: {
+      color: "#431AB7",
+      fontWeight: 800,
+    },
+    hash: {
       fontSize: 16,
       lineHeight: "150%",
-      color: "rgba(24, 24, 24, 0.7)",
+      color: "#54658F",
+      cursor: "pointer",
     },
     icon: {
       width: 160,
@@ -90,17 +101,44 @@ export const FlipCoinModalStyles = makeStyles((theme: Theme) =>
       color: "white",
       marginTop: 30,
       padding: "11px 32px",
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: 700,
       borderRadius: 4,
     },
-    hash: {
-      cursor: "pointer",
+    plainBtn: {
+      height: 40,
+      backgroundColor: "#fff",
+      border: "1px solid #431AB7",
+      color: "#431AB7",
+      marginTop: 30,
+      padding: "11px 32px",
+      fontSize: 16,
+      fontWeight: 700,
+      borderRadius: 4,
     },
-    result: {
+    main: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
     },
+    gifCoin: {
+      width: "calc(100% + 82px * 2)", 
+      height: "360px", 
+      backgroundImage: `url(${require("assets/icons/coin_flip.gif")})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      marginTop: "-50px",
+    },
+    imgWon: {
+      position: "absolute",
+      top: 0
+    },
+    imgLost: {
+    },
+    grad: {
+      background: "linear-gradient(91.78deg, #AA26C2 11.04%, #F84B4B 74.92%)",
+      WebkitBackgroundClip: "text",
+      WebkitTextFillColor: "transparent",
+    }
   })
 );

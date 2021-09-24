@@ -3,6 +3,7 @@ import cls from "classnames";
 import { Grid, useTheme } from "@material-ui/core";
 
 import { useTypedSelector } from "store/reducers/Reducer";
+import Box from "shared/ui-kit/Box";
 import MyNFTCard from "components/PriviDigitalArt/components/Cards/MyNFTCard";
 import { myNFTStyles } from "./index.styles";
 import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
@@ -41,7 +42,7 @@ const MyNFT = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await getMySyntheticFractionalisedNFT(user.id);
+      const response = await getMySyntheticFractionalisedNFT('priviUser145');
       if (response.success) {
         setMyNFTs(response.data?.nfts ?? []);
       }
@@ -77,13 +78,25 @@ const MyNFT = () => {
             </Grid>
           )}
           {selectedTab === "synthetic" && (
-            <Grid container spacing={2}>
-              {myNFTs.map(item => (
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                  <MyNFTCard item={item} />
+            <Box display="flex" flexDirection="column" gridRowGap={50}>
+              <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                <Box className={classes.sectionTitle} color="#431AB7">
+                  NFT To Lock
+                </Box>
+                <Grid container spacing={2}>
+                  {myNFTs.map(item => (
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                      <MyNFTCard item={item} />
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
+              </Box>
+              <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                <Box className={classes.sectionTitle} color="#F2604C">
+                  NFT To Verify
+                </Box>
+              </Box>
+            </Box>
           )}
         </div>
       </div>

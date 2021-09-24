@@ -5,16 +5,20 @@ import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { myNFTCardStyles } from "./index.styles";
 import { LockNFTModal } from "components/PriviDigitalArt/subpages/NFTFractionalisation/modals/LockNFTModal";
+import { VerifyLockNFTModal } from "components/PriviDigitalArt/subpages/NFTFractionalisation/modals/VerifyNFTLockModal";
 
 export default function MyNFTCard({ item }) {
   const classes = myNFTCardStyles();
   const history = useHistory();
   const { isSignedin } = useAuth();
   const [openLockNFT, setOpenLockNFT] = useState<boolean>(false);
+  const [openVerifyLockNFT, setOpenVerifyLockNFT] = useState<boolean>(false);
 
   const handleNFT = () => {
     if (!item?.lock) {
       setOpenLockNFT(true);
+    } else {
+      setOpenVerifyLockNFT(true);
     }
   };
 
@@ -46,6 +50,7 @@ export default function MyNFTCard({ item }) {
       </div>
       <div className={classes.shadow} />
       {openLockNFT && <LockNFTModal open={openLockNFT} onClose={() => setOpenLockNFT(false)} />}
+      {openVerifyLockNFT && <VerifyLockNFTModal open={openVerifyLockNFT} onClose={() => setOpenVerifyLockNFT(false)} />}
     </Box>
   );
 }

@@ -21,6 +21,7 @@ export const FractionaliseModal = ({
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   const handleCompleteStep = stepIndex => {
+    setStep(stepIndex + 1);
     if (completedSteps.includes(stepIndex)) {
       return;
     }
@@ -33,7 +34,9 @@ export const FractionaliseModal = ({
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
       <Box display="flex" flexDirection="column">
-        <ProgressBar step={step} setStep={setStep} completedSteps={completedSteps} />
+        {step < 3 && (
+          <ProgressBar step={step} setStep={setStep} completedSteps={completedSteps} />
+        )}
         <Box className={classes.divider}>
           <StyledDivider type="solid" color="#DAE6E5" />
         </Box>

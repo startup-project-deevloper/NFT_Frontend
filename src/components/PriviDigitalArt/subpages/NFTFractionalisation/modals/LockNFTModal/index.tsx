@@ -4,7 +4,7 @@ import Box from "shared/ui-kit/Box";
 import LockNFT from "../FractionaliseModal/components/LockNFT";
 import { lockNFTModalStyles } from "./index.styles";
 
-export const LockNFTModal = ({ open, onClose }) => {
+export const LockNFTModal = ({ open, onClose, nft, onLockCompleted }) => {
   const classes = lockNFTModalStyles();
 
   return (
@@ -12,10 +12,10 @@ export const LockNFTModal = ({ open, onClose }) => {
       <Box display="flex" flexDirection="column">
         <LockNFT
           onClose={onClose}
-          onCompleted={() => {}}
+          onCompleted={onLockCompleted}
           needLockLaterBtn={false}
-          selectedNFT={{}}
-          syntheticID=""
+          selectedNFT={nft}
+          syntheticID={nft.SyntheticID}
         />
       </Box>
     </Modal>

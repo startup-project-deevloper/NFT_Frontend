@@ -82,11 +82,9 @@ export async function updateSellingSupply(payload): Promise<any> {
   }
 }
 
-export async function getMySyntheticFractionalisedNFT(id): Promise<any> {
+export async function getMySyntheticFractionalisedNFT(): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/user/getMySyntheticFractionalisedNFT/${id}`, {
-      params: {},
-    });
+    const response = await axios.get(`${URL()}/syntheticFractionalize/myNFTs`);
     return response.data;
   } catch (e) {
     console.log(e.message);

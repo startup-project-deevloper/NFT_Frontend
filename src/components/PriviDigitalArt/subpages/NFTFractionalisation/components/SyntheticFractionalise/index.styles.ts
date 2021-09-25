@@ -281,32 +281,37 @@ export const PurpleSlider = withStyles({
 
 export const normalNFTCardStyles = makeStyles(theme => ({
   card: {
-    background: "#DDFF57",
+    background: "#431AB7",
     backdropFilter: "blur(4.82073px)",
     borderRadius: 11.3,
-    clipPath: "polygon(100% 0%, 100% 80%,  50% 91%, 0% 80%, 0% 0%)",
-    padding: 8,
-    height: 416,
+    height: 360,
     width: "100%",
+    maxWidth: '250px',
     cursor: "pointer",
   },
-  selected: {
-    background: "blue",
+  selectedCard: {
+    background: "#DDFF57",
+    borderRadius: 11.3,
+    padding: 8,
+    clipPath: "polygon(100% 0%, 100% 79%,  50% 91%, 0% 79%, 0% 0%)",
   },
   innerBox: {
     background: "#9EACF2",
     boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
     borderRadius: 11.3,
-    clipPath: "polygon(100% 0%, 100% 80%,  50% 90%, 0% 80%, 0% 0%)",
-    padding: 16,
-    height: 400,
+    clipPath: "polygon(100% 0%, 100% 79%,  50% 90%, 0% 79%, 0% 0%)",
+    padding: "11px 8px",
+    height: 343,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    color: "#fff",
+    color: "#1A1B1C",
     "& img": {
       width: "100%",
-      height: 250,
+      height: 170,
+      border: '0.550168px solid rgba(0, 0, 0, 0.09)',
+      boxShadow: '0px 19.806px 15.4047px -14.8545px rgba(63, 83, 183, 0.22)',
+      borderRadius: 11,
     },
     [theme.breakpoints.between(960, 980)]: {
       padding: 12,
@@ -315,13 +320,15 @@ export const normalNFTCardStyles = makeStyles(theme => ({
   starGroup: {
     display: "flex",
     alignItems: "center",
+    marginTop: 25
   },
   ntfName: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 800,
     fontFamily: "Agrandir",
-    lineHeight: "21px",
+    lineHeight: "13px",
     textTransform: "capitalize",
+    letterSpacing: '0.02em',
     marginBottom: 8,
   },
   priceSection: {

@@ -99,7 +99,7 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
               {userNFTs && userNFTs.length > 0 ? (
                 <Box className={classes.nftWrapper}>
                   <MasonryGrid
-                    gutter={isMobileScreen? "14px" : "24px"}
+                    gutter={isMobileScreen ? "14px" : "24px"}
                     data={userNFTs}
                     renderItem={(item, index) => (
                       <NFTCard item={item} key={`item-${index}`} handleSelect={() => {}} />

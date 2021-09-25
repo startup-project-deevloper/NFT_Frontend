@@ -41,12 +41,16 @@ const MyNFT = () => {
   const user = useTypedSelector(state => state.user);
 
   useEffect(() => {
-    (async () => {
-      const response = await getMySyntheticFractionalisedNFT(user.id);
-      if (response.success) {
-        setMyNFTs(response.data?.nfts ?? []);
-      }
-    })();
+    try {
+      if (!user || !user.id) return;
+      getMySyntheticFractionalisedNFT(user.id).then(res => {
+        if (res.success) {
+          setMyNFTs(res.data?.nfts ?? []);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }, [user]);
 
   return (

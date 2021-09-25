@@ -40,6 +40,53 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const flipJot = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId, prediction } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        console.log("Getting gas....");
+        const isAllowedToFlipGas = await contract.methods
+          .isAllowedToFlip(tokenId)
+          .estimateGas({ from: account });
+
+        console.log("Estimated gas....", isAllowedToFlipGas);
+
+        const isAllowedToFlip = await contract.methods
+          .isAllowedToFlip(tokenId)
+          .call({ from: account, gas: isAllowedToFlipGas });
+
+        console.log("Is Allowed to flip? --", isAllowedToFlip);
+
+        if (!isAllowedToFlip) {
+          resolve(null);
+        }
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+        const tPrediction = toNDecimals(prediction, decimals);
+
+        console.log("Getting gas... ", tPrediction, tokenId);
+
+        const gas = await contract.methods.flipJot(tokenId, tPrediction).estimateGas({ from: account });
+        console.log("polygon gas...", gas);
+
+        const response = await contract.methods
+          .flipJot(tokenId, parseInt(tPrediction))
+          .send({ from: account, gas });
+
+        resolve(response);
+      } catch (e) {
+        console.log(e);
+        resolve(null);
+      }
+    });
+  };
+
   const updatePriceFraction = async (
     web3: Web3,
     account: string,
@@ -179,6 +226,7 @@ const syntheticCollectionManager = (network: string) => {
     updatePriceFraction,
     increaseSellingSupply,
     decreaseSellingSupply,
+    flipJot,
     getSellingSupply,
   };
 };

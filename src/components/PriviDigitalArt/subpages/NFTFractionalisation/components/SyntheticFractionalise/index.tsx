@@ -51,7 +51,8 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [selectedNFT, setSelectedNFT] = useState<any>();
-  const [walletConnected, setWalletConnected] = useState<boolean>(false);
+  const { account, library, chainId } = useWeb3React();
+  const [walletConnected, setWalletConnected] = useState<boolean>(!!account);
   const [name, setName] = useState<string>("");
   const [prevSelectedChain, setPrevSelectedChain] = useState<any>(filteredBlockchainNets[1]);
   const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
@@ -59,7 +60,6 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const [initialPrice, setInitialPrice] = useState<string>("");
   const [minUnlockingDate, setMinUnlockingDate] = useState<string>(new Date().toDateString());
   const [symbol, setSymbol] = useState<string>("");
-  const { account, library, chainId } = useWeb3React();
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
   const [openFractionaliseModal, setOpenFractionaliseModal] = useState<boolean>(false);
 
@@ -159,11 +159,11 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 
   const fractionaliseSuccess = () => {
     setUserNFTs(userNFTs.filter((_, index) => index !== selectedNFT.index));
+    setSelectedNFT(null);
   };
 
   const fractionaliseClose = () => {
-    setOpenFractionaliseModal(false);
-    setSelectedNFT(null);
+    setOpenFractionaliseModal(false);    
   };
 
   return (

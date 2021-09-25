@@ -90,4 +90,22 @@ export const EditJOTsSupplyModalStyles = makeStyles(theme => ({
     color: "#ABB3C3",
     fontSize: "12px",
   },
+  switch: {
+    background: "#EFF2FD",
+    borderRadius: "20px",
+    display: "flex",
+    alignItems: "center",
+    height: "46px",
+    padding: "3px",
+    cursor: "pointer",
+    transition: "all 0.25s",
+    width: "fit-content",
+    "& button": {
+      borderRadius: "20px",
+      height: "100%",
+      transition: "all 0.25s",
+      padding: "0",
+      margin: "0",
+    },
+  },
 }));

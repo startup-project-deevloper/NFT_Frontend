@@ -137,6 +137,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         const { hash, collection, nftInfo } = response;
         setHash(hash);
 
+        console.log(collection, nftInfo);
+
         let params = {};
         if (collection) {
           params = {

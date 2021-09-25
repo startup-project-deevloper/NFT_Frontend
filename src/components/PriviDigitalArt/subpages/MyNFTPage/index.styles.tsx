@@ -92,5 +92,13 @@ export const myNFTStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       marginBottom: 50
     },
+  },
+  sectionTitle: {
+    fontWeight: 800,
+    fontSize: 24,
+    lineHeight: "130%",
+  },
+  syntheticContent: {
+    minHeight: 200,
   }
 }));

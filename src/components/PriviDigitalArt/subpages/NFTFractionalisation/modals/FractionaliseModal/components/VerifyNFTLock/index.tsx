@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { LoadingWrapper } from 'shared/ui-kit/Hocs';
 import Box from 'shared/ui-kit/Box';
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { useVerifyNFTLockStyles } from './index.styles';
 
 export default function VerifyNFTLock({ onClose, onCompleted }) {
@@ -21,6 +24,8 @@ export default function VerifyNFTLock({ onClose, onCompleted }) {
     onClose();
   }
 
+  const hash = "0xf273a38fec99acf1e....eba";
+
   return (
     <div className={classes.root}>
       <div className={classes.container}>
@@ -34,6 +39,18 @@ export default function VerifyNFTLock({ onClose, onCompleted }) {
                   Transaction is proceeding on Polygon Chain. <br/>
                   This can take a moment, please be patient...
                 </p>
+                <CopyToClipboard text={hash}>
+                  <Box mt="20px" display="flex" alignItems="center" justifyContent="center" className={classes.hash}>
+                    Hash:
+                    <Box color="#4218B5" mr={1} ml={1}>
+                      {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                    </Box>
+                    <CopyIcon />
+                  </Box>
+                </CopyToClipboard>
+                <button className={classes.checkBtn}>
+                  Check on Ethereum Scan
+                </button>
               </>
             ) : (
               <Box className={classes.result}>

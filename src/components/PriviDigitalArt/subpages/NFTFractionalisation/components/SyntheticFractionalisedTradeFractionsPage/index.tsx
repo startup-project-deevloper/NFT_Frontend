@@ -10,6 +10,7 @@ import { SyntheticFractionalisedTradeFractionsPageStyles } from "./index.styles"
 import BuyJotsModal from "../../../../modals/BuyJotsModal";
 import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
+import { getSyntheticNFTTransactions } from "shared/services/API/SyntheticFractionalizeAPI";
 
 const FreeHoursChartConfig = {
   config: {
@@ -188,7 +189,7 @@ export const TransactionTable = ({ datas }) => {
       headerName: "Time",
     },
     {
-      headerName: "Poligon Scan",
+      headerName: "Polygon Scan",
     },
   ];
   const [tableData, setTableData] = React.useState<Array<Array<CustomTableCellInfo>>>([]);
@@ -202,10 +203,10 @@ export const TransactionTable = ({ datas }) => {
             cell: <Box color="rgba(67, 26, 183, 1)">{row.type || ""}</Box>,
           },
           {
-            cell: row.tokenAmount || "",
+            cell: `${row.tokenAmount || "0"} JOTs`,
           },
           {
-            cell: row.value || "",
+            cell: `${row.value || "0"} USDT`,
           },
           {
             cell: <Box color="rgba(67, 26, 183, 1)">{row.account || ""}</Box>,
@@ -214,7 +215,17 @@ export const TransactionTable = ({ datas }) => {
             cell: row.time || "",
           },
           {
-            cell: <img src={require(`assets/icons/polygon_scan.png`)} />,
+            cell: (
+              <Box>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={"https://mumbai.polygonscan.com/tx/" + (row.hash ?? "")}
+                >
+                  <img src={require(`assets/icons/polygon_scan.png`)} />
+                </a>
+              </Box>
+            ),
           },
         ];
       });
@@ -270,6 +281,28 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
     setRewardConfig(newRewardConfig);
   }, [period]);
+
+  React.useEffect(() => {
+    handleRefresh();
+  }, [collectionId, nft]);
+
+  const handleRefresh = React.useCallback(() => {
+    (async () => {
+      const response = await getSyntheticNFTTransactions(collectionId, nft.SyntheticID);
+      if (response.success) {
+        setTransList(
+          response.data.map(txn => ({
+            type: "Buy",
+            tokenAmount: txn.Amount,
+            value: +txn.Amount * (+nft.Price || 1),
+            account: txn.To,
+            time: txn.Date,
+            hash: txn.Id,
+          }))
+        );
+      }
+    })();
+  }, [collectionId, nft]);
 
   const getAllHours = React.useCallback(() => {
     const result: string[] = [];
@@ -736,9 +769,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       </Box>
       <BuyJotsModal
         open={openBuyJotsModal}
-        handleClose={handleCloseBuyJotsModal}
         collectionId={collectionId}
         nft={nft}
+        handleRefresh={handleRefresh}
+        handleClose={handleCloseBuyJotsModal}
       />
       <EditNFTPriceModal
         open={openEditPriceModal}

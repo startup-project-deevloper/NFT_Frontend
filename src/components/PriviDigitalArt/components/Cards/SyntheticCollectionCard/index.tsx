@@ -37,7 +37,7 @@ export default function SyntheticCollectionCard({ item }) {
           <Box className={classes.details}>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Locked NFTs</Box>
-              <Box className={classes.detailInfo}>{item.nfts.filter(nft => nft.isLocked).length}</Box>
+              <Box className={classes.detailInfo}>{item.nfts?.filter(nft => nft.isLocked).length}</Box>
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Fraction Price</Box>

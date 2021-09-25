@@ -11,6 +11,7 @@ import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import { useTypedSelector } from "store/reducers/Reducer";
+import { toNDecimals } from "shared/functions/web3";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -115,11 +116,15 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const web3 = new Web3(library.provider);
       const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
       const web3APIHandler = targetChain.apiHandler;
+
+      const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
+      const price = toNDecimals(priceFraction, decimals);
+
       const response = await web3APIHandler.SyntheticProtocolRouter.registerNFT(web3, account!, {
         tokenAddress: selectedNFT.tokenAddress,
         chainId: selectedNFT.BlockchainId,
         supply: supplyToKeep,
-        price: priceFraction,
+        price,
         name: collectionInfo.data.name,
         symbol: collectionInfo.data.symbol,
       });
@@ -144,12 +149,14 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             JotPoolAddress: collection.jotStakingAddress,
             SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
             SyntheticNFTAddress: collection.syntheticNFTAddress,
+            Price: priceFraction,
             collectionName: collectionInfo.data.name,
             collectionSymbol: collectionInfo.data.symbol,
             description: collectionInfo.data.description,
             imageUrl: collectionInfo.data.imageUrl,
             quickSwapAddress: collection.quickSwapAddress,
             collectionManagerID: collection.collectionManagerID,
+            userId: user?.id,
             isAddCollection: true,
           };
         } else {
@@ -157,6 +164,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             collectionAddress: selectedNFT.tokenAddress,
             SyntheticID: nftInfo.syntheticTokenId,
             NftId: selectedNFT.BlockchainId,
+            Price: priceFraction,
+            userId: user?.id,
             isAddCollection: false,
           };
         }

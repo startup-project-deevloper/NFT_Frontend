@@ -25,12 +25,6 @@ export default function SyntheticCollectionCard({ item }) {
         }}
       />
       <div className={classes.info}>
-        <div
-          className={classes.avatar}
-          style={{
-            backgroundImage: `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)})`,
-          }}
-        />
         <Box className={classes.infoWrapper}>
           <Box className={classes.title}>{item.collectionName}</Box>
           <Divider light />
@@ -44,7 +38,7 @@ export default function SyntheticCollectionCard({ item }) {
               <Box className={classes.detailInfo}>2,44 USDC</Box>
             </Box>
             <Box className={classes.detailWrapper}>
-              <Box className={classes.detailLabel}>Impleid Valuation</Box>
+              <Box className={classes.detailLabel}>Implied Valuation</Box>
               <Box className={classes.detailInfo}>$2,543,437</Box>
             </Box>
           </Box>

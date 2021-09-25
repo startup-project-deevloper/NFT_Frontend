@@ -20,14 +20,14 @@ const syntheticProtocolRouter = (network: string) => {
 
         const decimals = await jotAPI.decimals(web3, jotContractAddress);
 
-        const tPrice = toNDecimals(+price, decimals);
+        // const tPrice = toNDecimals(+price, decimals);
         const tSupply = toNDecimals(+supply, decimals);
 
         const gas = await contract.methods
-          .registerNFT(tokenAddress, chainId, tSupply, tPrice, name, symbol)
+          .registerNFT(tokenAddress, chainId, tSupply, price, name, symbol)
           .estimateGas({ from: account });
         const response = await contract.methods
-          .registerNFT(tokenAddress, chainId, tSupply, tPrice, name, symbol)
+          .registerNFT(tokenAddress, chainId, tSupply, price, name, symbol)
           .send({ from: account, gas });
 
         resolve({

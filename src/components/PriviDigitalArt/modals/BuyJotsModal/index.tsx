@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Web3 from "web3";
 import { Grid } from "@material-ui/core";
 import { Header3, Header5, Modal } from "shared/ui-kit";
@@ -12,8 +12,17 @@ import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { buyJots } from "shared/services/API/SyntheticFractionalizeAPI";
+import { toDecimals, toNDecimals } from "shared/functions/web3";
 
-export default function BuyJotsModal({ open, handleClose = () => {}, collectionId, nft }) {
+const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
+
+export default function BuyJotsModal({
+  open,
+  collectionId,
+  nft,
+  handleRefresh = () => {},
+  handleClose = () => {},
+}) {
   const classes = BuyJotsModalStyles();
 
   const { showAlertMessage } = useAlertMessage();
@@ -22,9 +31,45 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
   const [loading, setLoading] = React.useState<boolean>(false);
   const { account, library, chainId } = useWeb3React();
 
-  const selectedChain = BlockchainNets[1];
+  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+
+  const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
+  const [maxJot, setMaxJot] = React.useState<number>(0);
+
+  useEffect(() => {
+    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
+      (async () => {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) {
+          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
+        }
+      })();
+    }
+  }, [chainId, selectedChain]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    (async () => {
+      const web3APIHandler = selectedChain.apiHandler;
+      const web3 = new Web3(library.provider);
+
+      const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
+      const balance = await web3APIHandler.Erc20["USDT"].balanceOf(web3, { account });
+      if (balance) {
+        const usdt = parseInt(toDecimals(balance, decimals));
+        setUsdtBalance(usdt);
+        setMaxJot(usdt / (+nft.Price || 1));
+      }
+    })();
+  }, [open, nft, selectedChain]);
 
   const handleBuyJots = async () => {
+    if (+jots > maxJot) {
+      showAlertMessage(`Can't be exceed the max JOTs.`, { variant: "error" });
+      return;
+    }
+
     setLoading(true);
     // For polygon chain
     const targetChain = BlockchainNets[1];
@@ -36,8 +81,23 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
       }
     }
     const web3APIHandler = targetChain.apiHandler;
-    const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
+
+    const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
+    const amount = toNDecimals(+jots * (+nft.Price || 1), decimals);
+
+    const approveResponse = await web3APIHandler.Erc20["USDT"].approve(
+      web3,
+      account!,
+      nft.SyntheticCollectionManagerAddress,
+      amount
+    );
+
+    if (!approveResponse) {
+      setLoading(false);
+      showAlertMessage("Failed to approve. Please try again", { variant: "error" });
+      return;
+    }
 
     const contractResponse = await web3APIHandler.SyntheticCollectionManager.buyJotTokens(
       web3,
@@ -48,19 +108,30 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
         amount: +jots,
       }
     );
-    if (!contractResponse) {
+    if (!contractResponse.success) {
       setLoading(false);
       showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
       return;
     }
 
-    await buyJots({
+    const response = await buyJots({
       collectionId,
-      nft,
+      syntheticId: nft.SyntheticID,
       amount: jots,
       investor: account!,
       hash: contractResponse.data.hash,
     });
+
+    setLoading(false);
+
+    if (!response.success) {
+      showAlertMessage("Failed to save transactions.", { variant: "error" });
+      return;
+    }
+
+    showAlertMessage("You bought JOTs successuflly", { variant: "success" });
+    handleRefresh();
+    handleClose();
   };
 
   return (
@@ -77,24 +148,25 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
             inputValue={jots}
             onInputValueChange={e => setJOTs(e.target.value)}
             overriedClasses={classes.inputJOTs}
+            maxValue={maxJot}
             required
             type="number"
             theme="light"
             endAdornment={<div className={classes.purpleText}>JOTS</div>}
           />
           <Grid container>
-            <Grid item md={8} xs={12}>
+            <Grid item md={7} xs={12}>
               <Box className={classes.leftBalance} display="flex" alignItems="center">
                 <Header5 style={{ marginBottom: 0 }}>Wallet Balance</Header5>
                 <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
                   <Box className={classes.point}></Box>
                   <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
-                    0.00 BUSD
+                    {usdtBalance.toFixed(2)} USDT
                   </Header5>
                 </Box>
               </Box>
             </Grid>
-            <Grid item md={4} xs={12}>
+            <Grid item md={5} xs={12}>
               <Box
                 className={classes.rightBalance}
                 flexGrow={1}
@@ -102,8 +174,8 @@ export default function BuyJotsModal({ open, handleClose = () => {}, collectionI
                 alignItems="center"
                 justifyContent="flex-end"
               >
-                <Box>MAX: 0</Box>
-                <Box color="rgba(67, 26, 183, 0.4)" paddingX="15px">
+                <Box>MAX: {maxJot.toFixed(2)}</Box>
+                <Box color="rgba(67,26, 183, 0.4)" paddingX="15px" onClick={() => setJOTs(maxJot)}>
                   Buy Max
                 </Box>
               </Box>

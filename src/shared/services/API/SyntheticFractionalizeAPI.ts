@@ -39,6 +39,20 @@ export async function getSyntheticNFT(collectionId, syntheticId): Promise<any> {
   }
 }
 
+export async function getSyntheticNFTTransactions(collectionId, syntheticId): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticNFTTransactions`, {
+      params: {
+        collectionId,
+        syntheticId,
+      },
+    });
+    return response.data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
 /////////////////////////// POST /////////////////////////
 
 export async function buyJots(payload): Promise<any> {

@@ -1,6 +1,5 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
-import config from "shared/connectors/web3/config";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { toNDecimals } from "shared/functions/web3";
 
@@ -18,47 +17,25 @@ const syntheticCollectionManager = (network: string) => {
         const jotAPI = JOT(network);
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
-        const allowance = await jotAPI.allowance(web3, JotAddress, {
-          owner: account,
-          spender: SyntheticCollectionManagerAddress,
-        });
-        console.log(allowance);
-        const approve1 = await jotAPI.approve(
-          web3,
-          account,
-          JotAddress,
-          SyntheticCollectionManagerAddress,
-          toNDecimals(amount, decimals)
-        );
-
-        const approve2 = await jotAPI.approve(
-          web3,
-          account,
-          JotAddress,
-          config[network].CONTRACT_ADDRESSES.JOT_POOL,
-          toNDecimals(amount, decimals)
-        );
-
-        if (!approve1 || !approve2) {
-          resolve(null);
-          return;
-        }
 
         console.log("Getting gas....");
-        const gas = await contract.methods.buyJotTokens(tokenId, amount).estimateGas({ from: account });
+        const gas = await contract.methods
+          .buyJotTokens(tokenId, toNDecimals(amount, decimals))
+          .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
-          .buyJotTokens(tokenId, amount)
+          .buyJotTokens(tokenId, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas });
         console.log("transaction succeed");
         resolve({
+          success: true,
           data: {
             hash: response.transactionHash,
           },
         });
       } catch (e) {
         console.log(e);
-        resolve(null);
+        resolve({ success: false });
       }
     });
   };
@@ -76,11 +53,17 @@ const syntheticCollectionManager = (network: string) => {
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
         console.log("Getting gas....");
-        const gas = await contract.methods.updatePriceFraction(tokenId, price).estimateGas({ from: account });
+        const gas = await contract.methods
+          .updatePriceFraction(tokenId, toNDecimals(price, decimals))
+          .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
-          .updatePriceFraction(tokenId, price)
+          .updatePriceFraction(tokenId, toNDecimals(price, decimals))
           .send({ from: account, gas: gas });
         console.log("transaction succeed");
         resolve({

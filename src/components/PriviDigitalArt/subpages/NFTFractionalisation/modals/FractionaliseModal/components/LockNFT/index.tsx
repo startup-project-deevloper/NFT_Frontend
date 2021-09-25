@@ -12,6 +12,8 @@ import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
 import axios from "axios";
 import URL from "shared/functions/getURL";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -22,20 +24,16 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
 
   const handleProceed = async () => {
+    console.log("chainId", chainId);
     if (chainId !== 1 && chainId !== 4) {
-      try {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: isProd ? "0x1" : "0x4" }],
-        });
-      } catch (err) {
+      let changed = await switchNetwork(isProd ? 1 : 4);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to ethereum network`, { variant: "error" });
         return;
       }
-    }
-    if (chainId !== 1 && chainId !== 4) {
-      return;
     }
     setIsLoading(true);
     setIsProceeding(true);
@@ -56,6 +54,8 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         selectedNFT.tokenAddress
       );
       if (!response.success) {
+        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+        setIsProceeding(false);
         setIsLoading(false);
         return;
       }
@@ -72,6 +72,8 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         })
         .on("error", error => {
           console.log("error", error);
+          showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+          setIsProceeding(false);
           setIsLoading(false);
         });
       setHash(response.transactionHash);
@@ -81,7 +83,9 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       });
     } catch (err) {
       console.log("error", err);
+      setIsProceeding(false);
       setIsLoading(false);
+      showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
     }
   };
 

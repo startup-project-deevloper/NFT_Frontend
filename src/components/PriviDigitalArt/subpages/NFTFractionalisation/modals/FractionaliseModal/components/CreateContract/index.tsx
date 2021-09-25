@@ -12,6 +12,8 @@ import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { toNDecimals } from "shared/functions/web3";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -84,17 +86,14 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
 
   const handleProceed = async () => {
     console.log("chainId", chainId);
     if (chainId !== 80001 && chainId !== 137) {
-      try {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: isProd ? "0x89" : "0x13881" }],
-        });
-      } catch (err) {
-        console.log("err", err);
+      let changed = await switchNetwork(isProd ? 137 : 80001);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
         return;
       }
     }
@@ -130,6 +129,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       });
 
       if (!response) {
+        setIsProceeding(false);
         setIsLoading(false);
       } else {
         setIsLoading(false);
@@ -146,7 +146,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             JotName: `Privi Jot ${selectedNFT.MediaName}`,
             JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
             JotAddress: collection.jotAddress,
-            JotPoolAddress: collection.jotStakingAddress,
+            JotPoolAddress: collection.jotPoolAddress,
             SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
             SyntheticNFTAddress: collection.syntheticNFTAddress,
             Price: priceFraction,
@@ -156,6 +156,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             imageUrl: collectionInfo.data.imageUrl,
             quickSwapAddress: collection.quickSwapAddress,
             collectionManagerID: collection.collectionManagerID,
+            auctionAddress: collection.auctionAddress,
             userId: user?.id,
             isAddCollection: true,
           };
@@ -174,6 +175,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       }
     } catch (err) {
       console.log("error", err);
+      setIsProceeding(false);
       setIsLoading(false);
     }
   };

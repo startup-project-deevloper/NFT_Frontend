@@ -236,7 +236,12 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         ) : selectedTab === "jots_pool" ? (
           <div className={classes.jotPoolSection}>
-            <SyntheticFractionalisedJotPoolsPage />
+            <SyntheticFractionalisedJotPoolsPage
+              collection={{
+                ...collection,
+                collectionAddress: params.id,
+              }}
+            />
           </div>
         ) : selectedTab === "auctions" ? (
           <div className={classes.allNFTSection}>

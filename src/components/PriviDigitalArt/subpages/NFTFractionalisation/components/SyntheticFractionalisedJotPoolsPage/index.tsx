@@ -295,6 +295,7 @@ export const CoinFlipHistoryTable = ({ datas }) => {
 };
 
 export default function SyntheticFractionalisedJotPoolsPage(props: any) {
+  const { collection } = props;
   const classes = SyntheticFractionalisedJotPoolsPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
   const PERIODS = ["1D", "6D", "YTD"];
@@ -546,9 +547,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
       )}
 
       <Box className={classes.outBox} style={{ paddingBottom: 20 }}>
-        <Box className={classes.sectionTitle}>
-          Coin flip history
-        </Box>
+        <Box className={classes.sectionTitle}>Coin flip history</Box>
         <CoinFlipHistoryTable datas={flipHistory} />
       </Box>
       {openLiquidityModal && (
@@ -566,6 +565,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
       <LiquidityModal
         open={openProceedModal}
         onClose={() => setOpenProceedModal(false)}
+        collection={collection}
         amount={amount}
         isAdd={isAdd}
         onCompleted={() => {}}

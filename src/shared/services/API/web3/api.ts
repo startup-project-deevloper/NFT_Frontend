@@ -9,6 +9,7 @@ import erc20Exchange from "./contracts/Erc20Exchange";
 import podManager from "./contracts/PodManager";
 import syntheticCollectionManager from "./contracts/SyntheticCollectionManager";
 import syntheticProtocolRouter from "./contracts/SyntheticProtocolRouter";
+import jotPool from "./contracts/JotPool";
 
 const api = network => {
   return {
@@ -23,6 +24,7 @@ const api = network => {
     PodManager: podManager(network),
     SyntheticCollectionManager: syntheticCollectionManager(network),
     SyntheticProtocolRouter: syntheticProtocolRouter(network),
+    JotPool: jotPool(network),
   };
 };
 

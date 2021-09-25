@@ -6,72 +6,66 @@ import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { LiquidityModalStyles } from "./index.styles";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import config from "shared/connectors/polygon/config";
-import { ContractInstance } from "shared/connectors/web3/functions";
-import JOTPoolRouter from "shared/connectors/web3/contracts/JotPool.json";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { Modal } from "shared/ui-kit";
 
-declare let window: any;
-
-export default function LiquidityModal({ open, onClose, onCompleted, amount, isAdd = false }) {
+export default function LiquidityModal({ open, onClose, onCompleted, amount, collection, isAdd = false }) {
   const classes = LiquidityModalStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
-
-  const isProduction = process.env.REACT_APP_ENV === "Prod";
+  const { showAlertMessage } = useAlertMessage();
 
   const handleProceed = async () => {
-    if ((!isProduction && chainId !== 80001) || (isProduction && chainId !== 137)) {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: isProduction ? "0x89" : "0x13881" }],
-      });
-    }
-
     setIsLoading(true);
     setIsProceeding(true);
 
+    const targetChain = BlockchainNets[1];
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+
     try {
-      const web3 = new Web3(library.provider);
-      const contractAddress = config.CONTRACT_ADDRESSES.Pix.JOT_POOL;
-
-      const contract = ContractInstance(web3, JOTPoolRouter.abi, contractAddress);
-
-      let response: any;
-
       if (isAdd) {
-        const gas = await contract.methods.addLiquidity(Number(amount)).estimateGas({ from: account });
-        console.log("polygon gas", gas);
+        const web3APIHandler = targetChain.apiHandler;
+        const web3 = new Web3(library.provider);
 
-        response = await contract.methods
-          .addLiquidity(parseInt(amount))
-          .send({ from: account, gas })
-          .on("receipt", receipt => {
-            setIsLoading(false);
-          })
-          .on("error", error => {
-            console.log("error", error);
-            setIsLoading(false);
-          });
+        const contractResponse = await web3APIHandler.JotPool.addLiquidity(web3, account!, collection, {
+          amount,
+        });
+
+        if (!contractResponse) {
+          setIsLoading(false);
+          showAlertMessage("Failed to approve. Please try again", { variant: "error" });
+          return;
+        }
+
+        showAlertMessage("You added liquidity successuflly", { variant: "success" });
+        setHash(contractResponse?.data?.hash);
+        setIsLoading(false);
       } else {
-        const gas = await contract.methods.removeLiquidity(Number(amount)).estimateGas({ from: account });
-        console.log("polygon gas", gas);
-
-        response = await contract.methods
-          .removeLiquidity(parseInt(amount))
-          .send({ from: account, gas })
-          .on("receipt", receipt => {
-            setIsLoading(false);
-          })
-          .on("error", error => {
-            console.log("error", error);
-            setIsLoading(false);
-          });
+        // const gas = await contract.methods.removeLiquidity(Number(amount)).estimateGas({ from: account });
+        // console.log("polygon gas", gas);
+        // response = await contract.methods
+        //   .removeLiquidity(parseInt(amount))
+        //   .send({ from: account, gas })
+        //   .on("receipt", receipt => {
+        //     setIsLoading(false);
+        //   })
+        //   .on("error", error => {
+        //     console.log("error", error);
+        //     setIsLoading(false);
+        //   });
       }
 
-      setHash(response.transactionHash);
+      // setHash(response.transactionHash);
     } catch (err) {
       console.log("error", err);
       setIsLoading(false);

@@ -6,75 +6,77 @@ import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { FlipCoinModalStyles } from "./index.styles";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import config from "shared/connectors/polygon/config";
-import { ContractInstance } from "shared/connectors/web3/functions";
-import SyntheticCollectionManager from "shared/connectors/web3/contracts/SyntheticCollectionManager.json";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
 import { Modal } from "shared/ui-kit";
 import * as API from "shared/services/API/FractionalizeAPI";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 declare let window: any;
 
 export default function FlipCoinModal({ open, onClose, onCompleted, pred, selectedNFT }) {
   const classes = FlipCoinModalStyles();
-  const [isFlipping, setIsFlipping] = useState<boolean>(true) // true - flipping dialog, false - result dialog (finished flipping)
-  const [flipResult, setFlipResult] = useState<boolean>(false) // true - won, false - lost
-  const [resultState, setResultState] = useState<number>(0) // 0 or 1
-  const [isProceeding, setIsProceeding] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isFlipping, setIsFlipping] = useState<boolean>(false); // true - flipping dialog, false - result dialog (finished flipping)
+  const [flipResult, setFlipResult] = useState<boolean>(false); // true - won, false - lost
+  const [resultState, setResultState] = useState<number>(0); // 0 or 1
+
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
-  const isProduction = process.env.REACT_APP_ENV === "Prod";
+  const { showAlertMessage } = useAlertMessage();
+
+  useEffect(() => {
+    if (open) {
+      handleProceed();
+      setIsFlipping(true);
+    }
+  }, [open]);
+
   const handleProceed = async () => {
-    if ((!isProduction && chainId !== 80001) || (isProduction && chainId !== 137)) {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: isProduction ? "0x89" : "0x13881" }],
-      });
+    const targetChain = BlockchainNets[1];
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
     }
 
-    setIsLoading(true);
-    setIsProceeding(true);
-
     try {
+      const web3APIHandler = targetChain.apiHandler;
+      const web3Config = targetChain.config;
       const web3 = new Web3(library.provider);
-      const contractAddress = config.CONTRACT_ADDRESSES.Pix.JOT_POOL;
 
-      const contract = ContractInstance(web3, SyntheticCollectionManager.abi, contractAddress);
+      const contractResponse = await web3APIHandler.SyntheticCollectionManager.flipJot(
+        web3,
+        account!,
+        selectedNFT,
+        {
+          tokenId: +selectedNFT.SyntheticID,
+          prediction: pred,
+        }
+      );
 
-      const isAllowedToFlipGas = await contract.methods.isAllowedToFlip(701).estimateGas({ from: account });
-      console.log("polygon gas  11", isAllowedToFlipGas);
+      if (contractResponse === "not allowed") {
+        showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
+        return;
+      }
 
-      const isAllowedToFlip = await contract.methods
-        .isAllowedToFlip(2)
-        .send({ from: account, gas: isAllowedToFlipGas });
+      console.log("response", contractResponse);
 
-      const gas = await contract.methods.flipJot(2, parseInt("0")).estimateGas({ from: account });
-      console.log("polygon gas", gas);
-
-      const response = await contract.methods
-        .flipJot(selectedNFT.tokenId, parseInt(pred))
-        .send({ from: account, gas })
-        .on("error", error => {
-          console.log("error", error);
-          setIsLoading(false);
-        });
-
-      console.log(" --- response ---", response);
-      const { requestId, tokenId, prediction, randomResult } = response.FlipProcessed;
+      const { requestId, tokenId, prediction, randomResult, transactionHash } = contractResponse;
 
       await API.addFlipHistory({
-        collectionAddress: "0x06012c8cf97bead5deae237070f9587f8e7a266d",
-        syntheticID: "5",
-        winnerAddress: "requestId",
-        prediction: "prediction",
-        result: "randomResult",
-        tokenId: "tokenId",
+        collectionAddress: selectedNFT.collectionAddress,
+        syntheticID: selectedNFT.SyntheticID,
+        winnerAddress: requestId,
+        prediction: prediction,
+        result: randomResult,
+        tokenId,
       });
 
-      setHash(response.transactionHash);
+      setHash(transactionHash);
     } catch (err) {
       console.log("error", err);
-      setIsLoading(false);
     }
   };
 
@@ -92,7 +94,8 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
                 <div className={classes.gifCoin}></div>
                 <h1 className={classes.title}>Flipping a Coin</h1>
                 <p className={classes.description}>
-                  The coin is beeing flipped, it may take a moment to process the results of your flip. Please be patient as it can last up to 30 seconds.
+                  The coin is beeing flipped, it may take a moment to process the results of your flip. Please
+                  be patient as it can last up to 30 seconds.
                 </p>
                 <CopyToClipboard text={hash}>
                   <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
@@ -111,7 +114,14 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
               <>
                 {flipResult ? (
                   <Box className={classes.main}>
-                    <img className={classes.imgWon} src={resultState === 0 ? require('assets/icons/won_0.png') : require('assets/icons/won_1.png')} />
+                    <img
+                      className={classes.imgWon}
+                      src={
+                        resultState === 0
+                          ? require("assets/icons/won_0.png")
+                          : require("assets/icons/won_1.png")
+                      }
+                    />
                     <Box width="100%" height="200px"></Box>
                     <h1 className={classes.title}>You have won!</h1>
                     <p className={classes.description}>
@@ -124,18 +134,28 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
                   </Box>
                 ) : (
                   <Box className={classes.main}>
-                    <img className={classes.imgLost} src={resultState === 0 ? require('assets/icons/lost_0.png') : require('assets/icons/lost_1.png')} />
+                    <img
+                      className={classes.imgLost}
+                      src={
+                        resultState === 0
+                          ? require("assets/icons/lost_0.png")
+                          : require("assets/icons/lost_1.png")
+                      }
+                    />
                     <h1 className={`${classes.title} ${classes.grad}`}>You have lost!</h1>
                     <p className={classes.description}>
-                      Unfortunatelly! You have guessed incorrectly <br />and the result was {resultState} <br />
-                      <span className={`${classes.result} ${classes.grad}`}>you have lost 0.1 JOTS to the owner</span>
+                      Unfortunatelly! You have guessed incorrectly <br />
+                      and the result was {resultState} <br />
+                      <span className={`${classes.result} ${classes.grad}`}>
+                        you have lost 0.1 JOTS to the owner
+                      </span>
                     </p>
                     <Box display="flex" alignItems="center" width="100%">
-                      <button className={classes.plainBtn} onClick={handleLater} style={{flex:1}}>
+                      <button className={classes.plainBtn} onClick={handleLater} style={{ flex: 1 }}>
                         Close
                       </button>
                       <Box width="10px" />
-                      <button className={classes.checkBtn} onClick={handleLater} style={{flex:1}}>
+                      <button className={classes.checkBtn} onClick={handleLater} style={{ flex: 1 }}>
                         Flip Again
                       </button>
                     </Box>

@@ -459,8 +459,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         open={openFlipCoinModal}
         onClose={() => setOpenFlipCoinModal(false)}
         onCompleted={() => {}}
-        pred={1123}
-        selectedNFT={{ tokenId: 123 }}
+        pred={0.1}
+        selectedNFT={{
+          ...nft,
+          collectionAddress: params.collectionId,
+        }}
       />
     </div>
   );

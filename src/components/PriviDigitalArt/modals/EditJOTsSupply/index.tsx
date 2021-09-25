@@ -12,10 +12,12 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { updateSellingSupply } from "shared/services/API/SyntheticFractionalizeAPI";
 
-export default function EditJOTsModal({ open, onClose, collectionId, nftId, syntheticId }) {
+export default function EditJOTsModal({ open, onClose, collectionId, nft }) {
   const classes = EditJOTsSupplyModalStyles();
-  const maxRef = useRef<string>("1000");
-  const [nftSupply, setNFTSupply] = useState<string>("");
+
+  const [maxSupply, setMaxSupply] = useState<number>(0);
+  const [nftSupply, setNFTSupply] = useState<number>(0);
+  const [mode, setMode] = useState<boolean>(false);
 
   const { showAlertMessage } = useAlertMessage();
 
@@ -24,7 +26,28 @@ export default function EditJOTsModal({ open, onClose, collectionId, nftId, synt
 
   const selectedChain = BlockchainNets[1];
 
-  const handleEditPrice = async () => {
+  React.useEffect(() => {
+    if (!open) return;
+
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      if (chainId && chainId !== targetChain?.chainId) {
+        const isHere = await switchNetwork(targetChain?.chainId || 0);
+        if (!isHere) {
+          showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+          return;
+        }
+      }
+      const web3APIHandler = targetChain.apiHandler;
+      const web3Config = targetChain.config;
+      const web3 = new Web3(library.provider);
+
+      const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft);
+      setMaxSupply(+sellingSupply);
+    })();
+  }, [chainId, open]);
+
+  const handleEditSupply = async () => {
     setLoading(true);
     // For polygon chain
     const targetChain = BlockchainNets[1];
@@ -39,27 +62,54 @@ export default function EditJOTsModal({ open, onClose, collectionId, nftId, synt
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
 
-    const contractResponse = await web3APIHandler.SyntheticCollectionManager.increaseSellingSupply(
-      web3,
-      account!,
-      {
-        tokenId: +nftId,
-        amount: +nftSupply,
-      }
-    );
+    let contractResponse;
+
+    if (!mode) {
+      contractResponse = await web3APIHandler.SyntheticCollectionManager.increaseSellingSupply(
+        web3,
+        account!,
+        nft,
+        {
+          tokenId: +nft.SyntheticID,
+          amount: +nftSupply,
+        }
+      );
+    } else {
+      contractResponse = await web3APIHandler.SyntheticCollectionManager.decreaseSellingSupply(
+        web3,
+        account!,
+        nft,
+        {
+          tokenId: +nft.SyntheticID,
+          amount: +nftSupply,
+        }
+      );
+    }
+
+    const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft);
+    setMaxSupply(sellingSupply);
+
     if (!contractResponse) {
       setLoading(false);
-      showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
+      showAlertMessage("Failed to update selling supply. Please try again", { variant: "error" });
       return;
     }
 
-    await updateSellingSupply({
+    const response = await updateSellingSupply({
       collectionId,
-      syntheticId,
-      amount: +nftSupply,
-      investor: account!,
-      hash: contractResponse.data.hash,
+      syntheticId: nft.SyntheticID,
+      supply: sellingSupply,
     });
+
+    setLoading(false);
+
+    if (!response.success) {
+      showAlertMessage("Failed to update selling supply.", { variant: "error" });
+      return;
+    }
+
+    showAlertMessage("Successfully updated selling supply.", { variant: "success" });
+    onClose();
   };
 
   return (
@@ -70,8 +120,37 @@ export default function EditJOTsModal({ open, onClose, collectionId, nftId, synt
       handleClose={onClose}
     >
       <Modal size="medium" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
-        <div className={classes.title}>Edit JOTs Supply</div>
-        <div className={classes.subtitle}>Set a new supply of JOTs for your NFT</div>
+        <Box display="flex" justifyContent="center" mb={2}>
+          <div
+            className={classes.switch}
+            onClick={() => {
+              setMode(!mode);
+            }}
+          >
+            <button
+              style={{
+                background: mode ? "transparent" : "#431AB7",
+                color: mode ? "#431AB7" : "white",
+                padding: mode ? "0px 12px" : "0px 16px",
+              }}
+            >
+              Increase Supply
+            </button>
+            <button
+              style={{
+                background: !mode ? "transparent" : "#431AB7",
+                color: !mode ? "#431AB7" : "white",
+                padding: !mode ? "0px 12px" : "0px 16px",
+              }}
+            >
+              Decrease Supply
+            </button>
+          </div>
+        </Box>
+
+        <div className={classes.subtitle}>
+          {mode ? "Decrease" : "Increase"} the selling supply for your JOTs
+        </div>
 
         <Grid container spacing={1}>
           <Grid item xs={12} md={7}>
@@ -82,12 +161,12 @@ export default function EditJOTsModal({ open, onClose, collectionId, nftId, synt
               }}
               placeHolder="0.0"
               minValue={"0"}
-              maxValue={maxRef.current}
+              maxValue={maxSupply}
               required
               type="number"
               theme="light"
               endAdornment={
-                <div className={classes.purpleText} onClick={() => setNFTSupply(maxRef.current)}>
+                <div className={classes.purpleText} onClick={() => setNFTSupply(maxSupply)}>
                   MAX
                 </div>
               }
@@ -95,7 +174,7 @@ export default function EditJOTsModal({ open, onClose, collectionId, nftId, synt
           </Grid>
           <Grid item xs={12} md={5}>
             <div className={classes.select}>
-              <Dropdown value={"jots"} menuList={[{ name: "JOTS", value: "jots" }]} onChange={() => {}} />
+              <InputWithLabelAndTooltip type="text" inputValue={"JOTS"} theme="privi-pix" />
             </div>
           </Grid>
         </Grid>
@@ -116,7 +195,7 @@ export default function EditJOTsModal({ open, onClose, collectionId, nftId, synt
           </SecondaryButton>
           <PrimaryButton
             size="medium"
-            onClick={handleEditPrice}
+            onClick={handleEditSupply}
             style={{
               borderColor: Color.Purple,
               background: Color.Purple,

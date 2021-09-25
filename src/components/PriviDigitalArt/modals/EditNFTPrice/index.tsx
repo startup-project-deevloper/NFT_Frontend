@@ -11,8 +11,9 @@ import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { updatePriceFraction } from "shared/services/API/SyntheticFractionalizeAPI";
+import { toNDecimals } from "shared/functions/web3";
 
-export default function EditNFTPriceModal({ open, onClose, collectionId, nftId, syntheticId }) {
+export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) {
   const classes = EditNFTPriceModalStyles();
 
   const { showAlertMessage } = useAlertMessage();
@@ -39,27 +40,37 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nftId, 
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
 
+    const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
+    const price = toNDecimals(+nftPrice, decimals);
+
     const contractResponse = await web3APIHandler.SyntheticCollectionManager.updatePriceFraction(
       web3,
       account!,
+      nft,
       {
-        tokenId: +nftId,
-        price: +nftPrice,
+        tokenId: +nft.SyntheticID,
+        price: price,
       }
     );
     if (!contractResponse) {
       setLoading(false);
-      showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
+      showAlertMessage("Failed to update price fraction. Please try again", { variant: "error" });
       return;
     }
 
-    await updatePriceFraction({
+    const response = await updatePriceFraction({
       collectionId,
-      syntheticId,
+      syntheticId: nft.SyntheticID,
       price: nftPrice,
-      investor: account!,
-      hash: contractResponse.data.hash,
     });
+
+    setLoading(false);
+    if (!response.success) {
+      showAlertMessage("Failed to update price fraction", { variant: "error" });
+    }
+
+    showAlertMessage("Successfully updated price fraction", { variant: "error" });
+    onClose();
   };
 
   return (
@@ -88,9 +99,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nftId, 
             />
           </Grid>
           <Grid item xs={12} md={5}>
-            <div className={classes.select}>
-              <Dropdown value={"jots"} menuList={[{ name: "JOTS", value: "jots" }]} onChange={() => {}} />
-            </div>
+            <InputWithLabelAndTooltip type="text" inputValue={"USDT/JOT"} theme="privi-pix" />
           </Grid>
         </Grid>
 

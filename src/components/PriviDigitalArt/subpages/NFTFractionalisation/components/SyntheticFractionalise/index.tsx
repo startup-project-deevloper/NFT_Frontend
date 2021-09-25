@@ -159,11 +159,11 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 
   const fractionaliseSuccess = () => {
     setUserNFTs(userNFTs.filter((_, index) => index !== selectedNFT.index));
+    setSelectedNFT(null);
   };
 
   const fractionaliseClose = () => {
-    setOpenFractionaliseModal(false);
-    setSelectedNFT(null);
+    setOpenFractionaliseModal(false);    
   };
 
   return (

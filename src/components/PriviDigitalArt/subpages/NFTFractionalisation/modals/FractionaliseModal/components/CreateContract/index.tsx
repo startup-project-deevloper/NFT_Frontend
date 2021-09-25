@@ -10,7 +10,6 @@ import URL from "shared/functions/getURL";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
-import { useTypedSelector } from "store/reducers/Reducer";
 import { toNDecimals } from "shared/functions/web3";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
@@ -81,7 +80,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function CreateContract({ onClose, onCompleted, selectedNFT, supplyToKeep, priceFraction }) {
   const classes = useStyles();
-  const user = useTypedSelector(state => state.user);
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
@@ -137,8 +135,6 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         const { hash, collection, nftInfo } = response;
         setHash(hash);
 
-        console.log(collection, nftInfo);
-
         let params = {};
         if (collection) {
           params = {
@@ -159,7 +155,6 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             quickSwapAddress: collection.quickSwapAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
-            userId: user?.id,
             isAddCollection: true,
           };
         } else {
@@ -168,7 +163,6 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticID: nftInfo.syntheticTokenId,
             NftId: selectedNFT.BlockchainId,
             Price: priceFraction,
-            userId: user?.id,
             isAddCollection: false,
           };
         }

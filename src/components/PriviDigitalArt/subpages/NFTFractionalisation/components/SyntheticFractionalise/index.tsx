@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
+
 import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
+
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import { Color, StyledDivider } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-import NFTSelectCard from "components/PriviDigitalArt/components/Cards/NFTSelectCard";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { BlockchainNets } from "shared/constants/constants";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import Web3 from "web3";
 import { getNFTBalanceFromMoralis } from "shared/services/API/balances/externalAPI";
 import { switchNetwork } from "shared/functions/metamask";
-import { useFractionaliseStyles, PurpleSlider } from "./index.styles";
-import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
+import { useFractionaliseStyles } from "./index.styles";
 import { saveExternallyFetchedNfts, getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
 import { DateInput } from "shared/ui-kit/DateTimeInput";
 import NFTCard from "./NFTCard";
@@ -46,8 +45,10 @@ const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const classes = useFractionaliseStyles();
   const { showAlertMessage } = useAlertMessage();
+
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down(768));
+  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [selectedNFT, setSelectedNFT] = useState<any>();
@@ -163,7 +164,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   };
 
   const fractionaliseClose = () => {
-    setOpenFractionaliseModal(false);    
+    setOpenFractionaliseModal(false);
   };
 
   return (
@@ -175,7 +176,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
         </Grid>
       </Grid>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={isTablet ? 12 : 7}>
           <Box display="flex" flexDirection="column" height="100%">
             <div className={classes.text}>
               {walletConnected
@@ -185,35 +186,44 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
             {walletConnected ? (
               <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
                 {userNFTs && userNFTs.length > 0 ? (
-                  <MasonryGrid
-                    gutter={"24px"}
-                    data={userNFTs}
-                    renderItem={(item, index) => (
-                      <NFTCard
-                        item={item}
-                        key={`item-${index}`}
-                        handleSelect={() => {
-                          if (userNFTs) {
-                            let nftsCopy = [...userNFTs];
-                            const selected = !userNFTs[index].selected;
-                            nftsCopy[index] = {
-                              ...userNFTs[index],
-                              selected: !userNFTs[index].selected,
-                            };
-                            // only need one selected
-                            if (selected) {
-                              for (let i = 0; i < nftsCopy.length; i++) {
-                                if (i != index) nftsCopy[i].selected = false;
+                  <Box
+                    width={1}
+                    borderRadius={20}
+                    bgcolor="#EFF2FD"
+                    border="1px solid rgba(67, 26, 183, 0.24)"
+                    boxSizing="border-box"
+                    padding="41px 29px"
+                  >
+                    <MasonryGrid
+                      gutter={"12px"}
+                      data={userNFTs}
+                      renderItem={(item, index) => (
+                        <NFTCard
+                          item={item}
+                          key={`item-${index}`}
+                          handleSelect={() => {
+                            if (userNFTs) {
+                              let nftsCopy = [...userNFTs];
+                              const selected = !userNFTs[index].selected;
+                              nftsCopy[index] = {
+                                ...userNFTs[index],
+                                selected: !userNFTs[index].selected,
+                              };
+                              // only need one selected
+                              if (selected) {
+                                for (let i = 0; i < nftsCopy.length; i++) {
+                                  if (i != index) nftsCopy[i].selected = false;
+                                }
                               }
+                              setSelectedNFT({ index, ...nftsCopy[index] });
+                              setUserNFTs(nftsCopy);
                             }
-                            setSelectedNFT({ index, ...nftsCopy[index] });
-                            setUserNFTs(nftsCopy);
-                          }
-                        }}
-                      />
-                    )}
-                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
-                  />
+                          }}
+                        />
+                      )}
+                      columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
+                    />
+                  </Box>
                 ) : (
                   <Box className={classes.emptyBox}>
                     {/* <Box>😞</Box> */}
@@ -239,7 +249,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
             )}
 
             {isTablet && (
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12} style={{ marginTop: 24 }}>
                 <div className={classes.nftsBox}>
                   <div className={classes.nftsTitle}>
                     {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
@@ -344,7 +354,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           </Box>
         </Grid>
         {!isTablet && (
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={5}>
             <div className={classes.nftsBox}>
               <div className={classes.nftsTitle}>
                 {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
@@ -459,8 +469,10 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 };
 
 const COLUMNS_COUNT_BREAK_POINTS_TWO = {
-  800: 1,
-  1440: 2,
+  400: 1,
+  600: 2,
+  900: 3,
+  1440: 3,
 };
 
 export default SyntheticFractionalise;

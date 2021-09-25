@@ -778,15 +778,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         open={openEditPriceModal}
         onClose={handleCloseEditPriceModal}
         collectionId={collectionId}
-        nftId={nft?.NftId}
-        syntheticId={nft?.SyntheticID}
+        nft={nft}
       />
       <EditJOTsSupplyModal
         open={openEditSupplyModal}
         onClose={handleCloseEditSupplyModal}
         collectionId={collectionId}
-        nftId={nft?.NftId}
-        syntheticId={nft?.SyntheticID}
+        nft={nft}
       />
     </Box>
   );

@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function getSteps() {
-  return ["Create contract on Polygon", "Lock NFT on Ethereum"]; //'Verify'
+  return ["Create contract on Polygon", "Lock NFT on Ethereum", "Verify"];
 }
 
 interface ProgressBarProps {

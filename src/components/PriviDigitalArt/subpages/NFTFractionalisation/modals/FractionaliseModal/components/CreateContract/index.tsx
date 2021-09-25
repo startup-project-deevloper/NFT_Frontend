@@ -156,6 +156,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             imageUrl: collectionInfo.data.imageUrl,
             quickSwapAddress: collection.quickSwapAddress,
             collectionManagerID: collection.collectionManagerID,
+            userId: user?.id,
             isAddCollection: true,
           };
         } else {
@@ -164,6 +165,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticID: nftInfo.syntheticTokenId,
             NftId: selectedNFT.BlockchainId,
             Price: priceFraction,
+            userId: user?.id,
             isAddCollection: false,
           };
         }

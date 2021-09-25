@@ -164,9 +164,9 @@ export async function placeBid(data: any): Promise<any> {
   }
 }
 
-export async function addFlipHistory(collectionId: string, nftId: string, data: any): Promise<any> {
+export async function addFlipHistory(data: any): Promise<any> {
   try {
-    const response = await axios.post(`${URL()}/flipHistory/${collectionId}/${nftId}`, data);
+    const response = await axios.post(`${URL()}/syntheticFractionalize/addFlipHistory`, data);
     return response.data;
   } catch (e) {
     throw e;

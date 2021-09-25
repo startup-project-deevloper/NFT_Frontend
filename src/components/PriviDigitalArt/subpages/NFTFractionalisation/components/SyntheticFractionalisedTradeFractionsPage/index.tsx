@@ -11,6 +11,7 @@ import BuyJotsModal from "../../../../modals/BuyJotsModal";
 import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
 import { getSyntheticNFTTransactions } from "shared/services/API/SyntheticFractionalizeAPI";
+import AddJOTsModal from "components/PriviDigitalArt/modals/AddJOTsModal";
 
 const FreeHoursChartConfig = {
   config: {
@@ -255,6 +256,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
+  const [openAddJOTsModal, setOpenAddJOTsModal] = React.useState<boolean>(false);
+
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
 
   React.useEffect(() => {
@@ -344,10 +347,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     setPeriod(period);
   };
 
-  const handleCloseBuyJotsModal = () => {
-    setOpenBuyJotsModal(false);
-  };
-
   const handleOpenBuyJotsModal = () => {
     setOpenBuyJotsModal(true);
   };
@@ -366,6 +365,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const handleOpenEditSupplyModal = () => {
     setOpenEditSupplyModal(true);
+  };
+
+  const handleOpenAddJOTsModal = () => {
+    setOpenAddJOTsModal(true);
   };
 
   return (
@@ -412,6 +415,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       marginTop: 28,
                       borderRadius: 4,
                     }}
+                    onClick={handleOpenAddJOTsModal}
                   >
                     Add more JOTS
                   </PrimaryButton>
@@ -439,6 +443,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       marginTop: 28,
                       borderRadius: 4,
                     }}
+                    onClick={handleOpenEditSupplyModal}
                   >
                     Increase JOTS to Sale
                   </PrimaryButton>
@@ -772,17 +777,23 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
         handleRefresh={handleRefresh}
-        handleClose={handleCloseBuyJotsModal}
+        handleClose={() => setOpenBuyJotsModal(false)}
       />
       <EditNFTPriceModal
         open={openEditPriceModal}
-        onClose={handleCloseEditPriceModal}
+        onClose={() => setOpenEditPriceModal(false)}
         collectionId={collectionId}
         nft={nft}
       />
       <EditJOTsSupplyModal
         open={openEditSupplyModal}
-        onClose={handleCloseEditSupplyModal}
+        onClose={() => setOpenEditSupplyModal(false)}
+        collectionId={collectionId}
+        nft={nft}
+      />
+      <AddJOTsModal
+        open={openAddJOTsModal}
+        handleClose={() => setOpenAddJOTsModal(false)}
         collectionId={collectionId}
         nft={nft}
       />

@@ -5,6 +5,8 @@
 // import trax from "./TRAX";
 // import dai from "./DAI";
 // import pix from "./PIX";
+import jot from "./JOT";
+
 import erc20_standard from "./ERC20Standard";
 import config from "shared/connectors/web3/config";
 const erc20 = network => {
@@ -21,6 +23,7 @@ const erc20 = network => {
   Object.keys(config[network].TOKEN_ADDRESSES).forEach(token => {
     instance[token] = erc20_standard(network, token);
   });
+  instance["JOT"] = jot(network);
   return instance;
 };
 

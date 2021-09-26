@@ -49,6 +49,7 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, onConf
           <SecondaryButton
             size="medium"
             style={{ color: "#151414", maxWidth: "50px", border: "2px solid #9EACF2" }}
+            onClick={handleClose}
           >
             Cancel
           </SecondaryButton>

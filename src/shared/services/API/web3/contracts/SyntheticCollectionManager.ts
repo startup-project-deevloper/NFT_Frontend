@@ -40,7 +40,7 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
-  const getOwnerSupply = (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+  const getOwnerSupply = (web3: Web3, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { tokenId } = payload;
@@ -48,18 +48,18 @@ const syntheticCollectionManager = (network: string) => {
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
-        // const response = await contract.methods.getOwnerSupply(tokenId).call();
+        const jotAPI = JOT(network);
 
-        contract.methods.getSellingSupply(tokenId).call((err, result) => {
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getOwnerSupply(tokenId).call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            console.log("transaction succeed.... 1", result);
+            resolve(toDecimals(result, decimals));
           }
         });
-
-        // console.log("303030300303", response);
       } catch (err) {
         console.log(err);
         resolve({ success: false });

@@ -18,7 +18,7 @@ export default function CollectionNFTCard({
         <div className={classes.innerBox}>
           {!hiddenHeader && (
             <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={"10px"}>
-              <div className={classes.ntfName}>{item.name}</div>
+              <div className={classes.ntfName}>{item.name || item.NftId}</div>
               <div className={classes.verifiedSection}>{item.isVerified ? "Verified" : "Unverified"}</div>
             </Box>
           )}
@@ -26,15 +26,15 @@ export default function CollectionNFTCard({
           <Box display="flex" flexDirection="column" width={"90%"} mt={"4px"}>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
               <div className={classes.typo1}>Owner</div>
-              <div className={classes.typo2}>{`${item.owner} JOTS`}</div>
+              <div className={classes.typo2}>{`${item.owner || 0} JOTS`}</div>
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
               <div className={classes.typo1}>Available</div>
-              <div className={classes.typo2}>{`${item.available} JOTS`}</div>
+              <div className={classes.typo2}>{`${item.available || 0} JOTS`}</div>
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
               <div className={classes.typo1}>Price</div>
-              <div className={classes.typo2}>{`${item.price} USDT/JOT`}</div>
+              <div className={classes.typo2}>{`${item.price || 0} USDT/JOT`}</div>
             </Box>
           </Box>
           <div className={classes.starGroup}>

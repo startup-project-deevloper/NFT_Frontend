@@ -46,8 +46,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const isAuction = match.params.auction === "1";
   // const isOwner = match.params.auction === "2";
 
-  console.log(`match------------`, match);
-
   const [selectedTab, setSelectedTab] = useState<"flip_coin" | "trade_fraction" | "auction" | "ownership">(
     "flip_coin"
   );

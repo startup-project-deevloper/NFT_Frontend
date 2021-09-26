@@ -203,7 +203,6 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     paddingBottom: 31,
     borderBottom: "1px solid #FFFFFF22",
-    maxWidth: 300,
     [theme.breakpoints.down("sm")]: {
       fontSize: 30,
     },

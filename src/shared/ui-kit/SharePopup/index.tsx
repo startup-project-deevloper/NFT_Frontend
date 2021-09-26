@@ -20,12 +20,16 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
   };
 
   const handleShareWithQR = () => {
-    if (item?.MediaSymbol || item.PodAddress) {
-      setShareLink(
-        `${getPrefixURL()}/${item.PodAddress ? "pod" : ""}/${item.MediaSymbol || item.PodAddress || item.id}`
-      );
+    if(item?.Type === "SYNTHETIC_FRACTIONALISATION") {
+      setShareLink(`${getPrefixURL()}/fractionalisation/collection/item.collectionId/nft/item.SyntheticID}`);
     } else {
-      setShareLink(`${getPrefixURL()}/pix/pod_post/${item.id}`);
+      if (item?.MediaSymbol || item.PodAddress) {
+        setShareLink(
+          `${getPrefixURL()}/${item.PodAddress ? "pod" : ""}/${item.MediaSymbol || item.PodAddress || item.id}`
+        );
+      } else {
+        setShareLink(`${getPrefixURL()}/pod_post/${item.id}`);
+      }
     }
     handleCloseMenu();
     setOpenQrCodeModal(!openQrCodeModal);
@@ -37,15 +41,19 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
 
   const handleOpenShareModal = () => {
     handleCloseMenu();
-    if (item?.MediaSymbol || item.PodAddress) {
-      shareMediaToSocial(
-        item?.MediaSymbol || item.PodAddress,
-        item.MediaSymbol ? "Media" : "Pod",
-        item.MediaSymbol ? item.Type : "PIX-PODS",
-        item.MediaSymbol ? "" : `pix/pod/${item.PodAddress}`
-      );
+    if(item?.Type === "SYNTHETIC_FRACTIONALISATION") {
+      shareMediaToSocial('', "SYNTHETIC_FRACTIONALISATION", "SYNTHETIC_FRACTIONALISATION", `pix/fractionalisation/collection/${item.CollectionId}/nft/${item.SyntheticID}`);
     } else {
-      shareMediaToSocial(item.id, "Pod_Post", "PIX-PODS", item.MediaSymbol ? "" : `pix/pod_post/${item.id}`);
+      if (item?.MediaSymbol || item.PodAddress) {
+        shareMediaToSocial(
+          item?.MediaSymbol || item.PodAddress,
+          item.MediaSymbol ? "Media" : "Pod",
+          item.MediaSymbol ? item.Type : "PIX-PODS",
+          item.MediaSymbol ? "" : `pix/pod/${item.PodAddress}`
+        );
+      } else {
+        shareMediaToSocial(item.id, "Pod_Post", "PIX-PODS", item.MediaSymbol ? "" : `pix/pod_post/${item.id}`);
+      }
     }
   };
 

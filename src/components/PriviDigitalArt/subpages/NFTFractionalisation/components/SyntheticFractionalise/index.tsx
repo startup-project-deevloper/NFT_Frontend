@@ -63,6 +63,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const [symbol, setSymbol] = useState<string>("");
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
   const [openFractionaliseModal, setOpenFractionaliseModal] = useState<boolean>(false);
+  const [fractionaliseSuccessed, setFractionaliseSuccessed] = useState<boolean>(false);
 
   useEffect(() => {
     loadNFT();
@@ -160,11 +161,15 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 
   const fractionaliseSuccess = () => {
     setUserNFTs(userNFTs.filter((_, index) => index !== selectedNFT.index));
-    setSelectedNFT(null);
+    setFractionaliseSuccessed(true);
   };
 
   const fractionaliseClose = () => {
     setOpenFractionaliseModal(false);
+    if (fractionaliseSuccessed) {
+      setSelectedNFT(null);
+      setFractionaliseSuccessed(false);
+    }
   };
 
   return (

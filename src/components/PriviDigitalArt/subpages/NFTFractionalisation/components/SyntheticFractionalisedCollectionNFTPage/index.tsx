@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
-import { useMediaQuery, useTheme } from "@material-ui/core";
 import { useParams } from "react-router";
+import { useSelector } from "react-redux";
+
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
@@ -9,7 +11,6 @@ import { PrimaryButton, Avatar, Text } from "shared/ui-kit";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import SyntheticFractionalisedTradeFractionsPage from "../SyntheticFractionalisedTradeFractionsPage";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
-import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
 import AuctionDetail from "./components/AuctionDetail";
 import OfferList from "./components/OfferList";
 import ChangeLockedNFT from "../../modals/ChangeLockedNFT";
@@ -18,16 +19,21 @@ import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
 import { Modal } from "shared/ui-kit";
 import { getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import FlipCoinModal from "../../modals/FlipCoinModal";
-import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
+
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
   isFlipped = false,
   match,
   withDrawn = false,
-  selectedNFT,
 }) => {
   const params: { collectionId?: string; nftId?: string } = useParams();
 
@@ -45,10 +51,13 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
+  const [ownershipJot, setOwnershipJot] = useState<number>(0);
 
   const [nft, setNft] = useState<any>({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
 
   const [loadingData, setLoadingData] = useState<boolean>(true);
 
@@ -69,6 +78,32 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response.success) {
         setNft(response.data);
         setLoadingData(false);
+
+        const targetChain = BlockchainNets[1];
+
+        if (chainId && chainId !== targetChain?.chainId) {
+          const isHere = await switchNetwork(targetChain?.chainId || 0);
+          if (!isHere) {
+            showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+            return;
+          }
+        }
+
+        const web3APIHandler = targetChain.apiHandler;
+        const web3Config = targetChain.config;
+        const web3 = new Web3(library.provider);
+
+        const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
+          web3,
+          response.data,
+          {
+            tokenId: +response.data.SyntheticID,
+          }
+        );
+
+        if (contractResponse) {
+          setOwnershipJot(contractResponse);
+        }
       }
     })();
   }, [params]);
@@ -114,7 +149,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -141,7 +176,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -168,7 +203,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -195,7 +230,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -293,16 +328,24 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             <Box
               display="flex"
               alignItems="center"
-              justifyContent="space-between"
               flexWrap="wrap"
               mt={"30px"}
               pr="10%"
               gridColumnGap="24px"
               gridRowGap="24px"
             >
-              <Box display="flex" flexDirection="column">
+              <Box display="flex" flexDirection="column" mr={"87px"}>
                 <div className={classes.typo1}>Ownership</div>
-                <div className={classes.typo2}>1 JOTs</div>
+                <div className={classes.typo2}>{ownershipJot} JOTs</div>
+              </Box>
+              <Box display="flex" flexDirection="column" mr={"75px"}>
+                <div className={classes.typo1}>Owner</div>
+                <Box display="flex" alignItems="center">
+                  <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
+                  <Box ml={1}>
+                    <div className={classes.typo2}>User name</div>
+                  </Box>
+                </Box>
               </Box>
               <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => {}}>
                 <img src={require("assets/priviIcons/polygon.png")} />
@@ -481,7 +524,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           open={openFlipCoinModal}
           onClose={() => setOpenFlipCoinModal(false)}
           onCompleted={() => {}}
-          pred={0.1}
+          pred={1}
           selectedNFT={{
             ...nft,
             collectionAddress: params.collectionId,

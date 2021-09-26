@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
+import Web3 from "web3";
 
-import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
@@ -13,6 +14,11 @@ import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
 import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork, addJotAddress } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 
 const NFTList = [
   {
@@ -77,14 +83,19 @@ const NFTList = [
   },
 ];
 
+const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
+
 const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const classes = fractionalisedCollectionStyles();
   const history = useHistory();
   const params: { id?: string } = useParams();
+  const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
 
   const [selectedTab, setSelectedTab] = useState<"nft" | "jots_pool" | "trade_jots" | "auctions">("nft");
 
   const [collection, setCollection] = useState<any>({});
+  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
 
   useEffect(() => {
     if (!params.id) return;
@@ -97,6 +108,48 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     })();
   }, [params.id]);
 
+  useEffect(() => {
+    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
+      (async () => {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) {
+          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
+        }
+      })();
+    }
+  }, [chainId, selectedChain]);
+
+  const handleAddToMetamask = async () => {
+    const targetChain = BlockchainNets[1];
+    const web3 = new Web3(library.provider);
+    const web3APIHandler = targetChain.apiHandler;
+
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+
+    const { JotAddress, JotSymbol } = collection;
+
+    const decimals = await web3APIHandler.Erc20["JOT"].decimals(web3, JotAddress);
+
+    await addJotAddress({
+      address: JotAddress,
+      symbol: JotSymbol,
+      decimals,
+    });
+  };
+
+  /// Circulating Supply = Locked NFTs * 10000
+  const circulatingSupply = useMemo(() => {
+    const lockedCount = collection.SyntheticNFT?.filter(nft => nft.isLocked).length || 0;
+    if (lockedCount >= 100) return `$${lockedCount / 100}M`;
+    return `$${lockedCount * 10}K`;
+  }, [collection]);
+
   return (
     <div className={classes.root}>
       <div className={classes.collectionInfoSection}>
@@ -105,16 +158,26 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             purple
             overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
           />
-          <Box display="flex" alignItems="center">
-            <div className={classes.tradeDerivativeButton} onClick={() => { }}>
+          <Box display="flex">
+            <div className={classes.tradeDerivativeButton} onClick={() => {}}>
               <div>
                 <span>TRADE DERIVATIVES</span>
               </div>
             </div>
-            <div className={classes.metaMaskButton} onClick={() => { }}>
-              <img src={require("assets/walletImages/metamask.svg")} alt="metamask" />
-              <span>Add to Metamask</span>
-            </div>
+            <Box
+              onClick={handleAddToMetamask}
+              className={classes.metaMaskBtn}
+              display="flex"
+              alignItems="center"
+              marginLeft={1}
+            >
+              <img
+                src={require("assets/walletImages/metamask.svg")}
+                alt=""
+                style={{ marginRight: "8px", height: "24px", width: "24px" }}
+              />
+              Add to Metamask
+            </Box>
           </Box>
         </Box>
         <div className={classes.collectionMainContent}>
@@ -164,7 +227,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo4}>ACRRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>$12K</div>
+              <div className={classes.typo3}>{circulatingSupply}</div>
               <div className={classes.typo4}>Circulating Supply</div>
             </Box>
           </Box>

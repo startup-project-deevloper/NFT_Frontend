@@ -33,7 +33,7 @@ const jotPool = (network: string) => {
           resolve(null);
         }
 
-        console.log("Getting gas....", amount);
+        console.log("Getting gas....", tAmount);
         const gas = await contract.methods.addLiquidity(tAmount).estimateGas({ from: account });
 
         console.log("calced gas price is.... ", gas);

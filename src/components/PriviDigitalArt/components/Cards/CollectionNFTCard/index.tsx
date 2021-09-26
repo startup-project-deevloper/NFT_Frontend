@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Box from "shared/ui-kit/Box";
-import useIPFS from "shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { collectionNFTCardStyles } from "./index.styles";
 
-export default function CollectionNFTCard({ item, handleSelect, hiddenHeader = false, customWidth = '', customHeight = '' }) {
+export default function CollectionNFTCard({
+  item,
+  handleSelect,
+  hiddenHeader = false,
+  customWidth = "",
+  customHeight = "",
+}) {
   const classes = collectionNFTCardStyles({ hiddenHeader, customWidth, customHeight });
 
   return (

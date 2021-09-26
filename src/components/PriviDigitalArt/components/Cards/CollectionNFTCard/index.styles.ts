@@ -21,7 +21,7 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     boxShadow: "0px 3px 1.50913px rgba(0, 0, 0, 0.3)",
     borderRadius: 8.4,
     clipPath: "polygon(100% 0%, 100% 85%,  50% 99.5%, 0% 85%, 0% 0%)",
-    padding: 11,
+    padding: '11px 11px 24px',
     paddingTop: ({ hiddenHeader }: any) => hiddenHeader ? "36px" : "11px",
     height: "100%",
     display: "flex",
@@ -34,7 +34,7 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     },
     "& img": {
       width: "100%",
-      height: 210,
+      height: ({ hiddenHeader }: any) => hiddenHeader ? "190px" : "210px",
       borderRadius: 16.5,
       boxShadow: '0px 29.7482px 23.1375px -22.3112px rgba(63, 83, 183, 0.22)',
       border: "0.82634px solid rgba(0, 0, 0, 0.09)",

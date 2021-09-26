@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import cls from "classnames";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import Axios from "axios";
 
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
@@ -21,14 +24,13 @@ import { getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import FlipCoinModal from "../../modals/FlipCoinModal";
 import { RootState } from "store/reducers/Reducer";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
-import Web3 from "web3";
-import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { SharePopup } from "shared/ui-kit/SharePopup";
+import URL from "shared/functions/getURL";
+import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
@@ -43,6 +45,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 
   const isAuction = match.params.auction === "1";
   // const isOwner = match.params.auction === "2";
+
+  console.log(`match------------`, match);
 
   const [selectedTab, setSelectedTab] = useState<"flip_coin" | "trade_fraction" | "auction" | "ownership">(
     "flip_coin"
@@ -273,13 +277,64 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     );
   }
 
-  const handleGiveFruit = () => {};
+  const handleGiveFruit = type => {
+    let body = {};
+    if (
+      (nft.BlockchainNetwork && nft.BlockchainNetwork.toLowerCase().includes("privi")) ||
+      (nft.blockchain && nft.blockchain.toLowerCase().includes("privi"))
+    ) {
+      body = {
+        userId: nft.priviUser.id,
+        fruitId: type,
+        mediaAddress: nft.NftId,
+        mediaType: nft.Type,
+        tag: "privi",
+      };
+    } else {
+      body = {
+        userId: nft.priviUser.id,
+        fruitId: type,
+        mediaAddress: nft.NftId,
+        mediaType: nft.Type || nft.type,
+        tag: nft.JotSymbol,
+        subCollection: match.params.collectionId,
+      };
+    }
+
+    Axios.post(`${URL()}/media/fruit`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = { ...nft };
+        itemCopy.fruits = resp.fruitsArray;
+
+        setNft(itemCopy);
+      }
+    });
+  };
+
   const handleOpenShareMenu = () => {
     setOpenShareMenu(!openShareMenu);
   };
 
   const handleCloseShareMenu = () => {
     setOpenShareMenu(false);
+  };
+
+  const handleFollow = () => {
+    const body = {
+      userAddress: nft.priviUser.id,
+      communityAddress: match.params.collectionId,
+    };
+
+    Axios.post(`${URL()}/community/follow`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = { ...nft };
+        itemCopy.Followers = [...(itemCopy.Followers ?? []), nft.priviUser.id];
+
+        setNft(itemCopy);
+      }
+    });
   };
 
   return (
@@ -365,17 +420,13 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               </PrimaryButton>
             </Box>
             <Box className={classes.socialIcons}>
-              <div
-                className={classes.shareSection}
-                onClick={handleOpenShareMenu}
-                ref={anchorShareMenuRef}
-              >
+              <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
                 <ShareIcon />
               </div>
               <div className={classes.socialSection}>
                 {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
-              <div className={classes.plusSection}>
+              <div className={classes.plusSection} onClick={handleFollow}>
                 <PlusIcon />
                 <span>Follow</span>
               </div>

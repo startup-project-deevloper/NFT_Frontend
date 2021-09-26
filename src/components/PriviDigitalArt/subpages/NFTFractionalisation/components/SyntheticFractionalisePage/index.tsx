@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Carousel from "react-elastic-carousel";
 import { useHistory } from "react-router";
 
-import { createTheme, Grid, MuiThemeProvider, useMediaQuery, useTheme } from "@material-ui/core";
+import { createTheme, Grid, MuiThemeProvider, useMediaQuery } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";

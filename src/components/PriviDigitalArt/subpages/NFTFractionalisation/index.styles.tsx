@@ -519,6 +519,16 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
         display: "none",
       },
     },
+    "& .rec-slider-container": {
+      "& .rec-carousel-item": {
+        "& > .rec-item-wrapper": {
+          minWidth: 330,
+          maxWidth: 370,
+          width: "unset",
+          marginRight: 24,
+        }
+      }
+    },
   },
   allNFTSection: {
     width: "100%",

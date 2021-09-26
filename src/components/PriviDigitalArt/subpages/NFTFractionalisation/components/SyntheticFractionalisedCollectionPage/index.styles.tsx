@@ -29,7 +29,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     alignItems: "center",
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 0,
-    }
+    },
   },
   "@keyframes gradientmove": {
     "0%": { backgroundPosition: "100% 50%" },
@@ -80,6 +80,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     borderRadius: 20,
     width: "100%",
     height: "auto",
+    minHeight: 320,
     padding: "30px 27px 42px 480px",
     marginTop: 32,
     color: "#ffffff",
@@ -114,7 +115,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       padding: "30px 15px 42px 260px",
     },
     [theme.breakpoints.down(600)]: {
-      padding: "350px 15px 30px"
+      padding: "350px 15px 30px",
     },
   },
   collectionInfos: {
@@ -129,14 +130,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       columnGap: 0,
       "& > div": {
         width: "50%",
-      }
+      },
     },
     [theme.breakpoints.down("sm")]: {
       marginTop: 24,
       "& > div": {
         width: "50%",
         paddingRight: 8,
-      }
+      },
     },
   },
   typo1: {
@@ -263,7 +264,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   jotPoolSection: {
     width: "100%",
     marginBottom: 50,
-  } ,
+  },
 }));
 
 export const EthIcon = () => (

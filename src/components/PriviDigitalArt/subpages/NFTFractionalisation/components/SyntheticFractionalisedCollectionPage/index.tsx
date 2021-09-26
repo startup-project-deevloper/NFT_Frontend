@@ -105,11 +105,17 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             purple
             overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
           />
-          <div className={classes.tradeDerivativeButton} onClick={() => {}}>
-            <div>
-              <span>TRADE DERIVATIVES</span>
+          <Box display="flex" alignItems="center">
+            <div className={classes.tradeDerivativeButton} onClick={() => { }}>
+              <div>
+                <span>TRADE DERIVATIVES</span>
+              </div>
             </div>
-          </div>
+            <div className={classes.metaMaskButton} onClick={() => { }}>
+              <img src={require("assets/walletImages/metamask.svg")} alt="metamask" />
+              <span>Add to Metamask</span>
+            </div>
+          </Box>
         </Box>
         <div className={classes.collectionMainContent}>
           <img

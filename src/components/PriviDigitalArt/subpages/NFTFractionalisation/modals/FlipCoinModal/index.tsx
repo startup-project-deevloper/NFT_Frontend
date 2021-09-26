@@ -56,23 +56,30 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
         }
       );
 
-      if (contractResponse === "not allowed") {
+      if (!contractResponse) {
         showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
+        setIsFlipping(false);
         return;
       }
 
       console.log("response", contractResponse);
 
-      const { requestId, tokenId, prediction, randomResult, transactionHash } = contractResponse;
+      const {
+        events: {
+          CoinFlipped: { returnValues },
+        },
+        transactionHash,
+      } = contractResponse;
+      // const { prediction, tokenId, requestId } = returnValues;
 
-      await API.addFlipHistory({
-        collectionAddress: selectedNFT.collectionAddress,
-        syntheticID: selectedNFT.SyntheticID,
-        winnerAddress: requestId,
-        prediction: prediction,
-        result: randomResult,
-        tokenId,
-      });
+      // await API.addFlipHistory({
+      //   collectionAddress: selectedNFT.collectionAddress,
+      //   syntheticID: selectedNFT.SyntheticID,
+      //   winnerAddress: requestId,
+      //   prediction: prediction,
+      //   randomResult: returnValues["0"],
+      //   tokenId,
+      // });
 
       setHash(transactionHash);
     } catch (err) {

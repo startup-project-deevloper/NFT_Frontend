@@ -22,12 +22,17 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
   isFlipped = false,
   match,
   withDrawn = false,
-  selectedNFT,
 }) => {
   const params: { collectionId?: string; nftId?: string } = useParams();
 
@@ -45,10 +50,13 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
+  const [ownershipJot, setOwnershipJot] = useState<number>(0);
 
   const [nft, setNft] = useState<any>({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
 
   const [loadingData, setLoadingData] = useState<boolean>(true);
 
@@ -69,6 +77,32 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response.success) {
         setNft(response.data);
         setLoadingData(false);
+
+        const targetChain = BlockchainNets[1];
+
+        if (chainId && chainId !== targetChain?.chainId) {
+          const isHere = await switchNetwork(targetChain?.chainId || 0);
+          if (!isHere) {
+            showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+            return;
+          }
+        }
+
+        const web3APIHandler = targetChain.apiHandler;
+        const web3Config = targetChain.config;
+        const web3 = new Web3(library.provider);
+
+        const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
+          web3,
+          response.data,
+          {
+            tokenId: +response.data.SyntheticID,
+          }
+        );
+
+        if (contractResponse) {
+          setOwnershipJot(contractResponse);
+        }
       }
     })();
   }, [params]);
@@ -302,7 +336,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             >
               <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Ownership</div>
-                <div className={classes.typo2}>1 JOTs</div>
+                <div className={classes.typo2}>{ownershipJot} JOTs</div>
               </Box>
               <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => {}}>
                 <img src={require("assets/priviIcons/polygon.png")} />
@@ -481,7 +515,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           open={openFlipCoinModal}
           onClose={() => setOpenFlipCoinModal(false)}
           onCompleted={() => {}}
-          pred={0.1}
+          pred={1}
           selectedNFT={{
             ...nft,
             collectionAddress: params.collectionId,

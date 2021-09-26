@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
-import Carousel from "react-elastic-carousel";
 
-import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
-// import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
 import FractionalizedNFTCard from "components/PriviDigitalArt/components/Cards/FractionalizedNFTCard";
 import {
   nftFractionalisationStyles,
@@ -74,13 +72,13 @@ const NFTFractionalisation = () => {
 
   const handleSyntheticClick = () => {
     setSelectedTab("synthetic");
-    history.push('/pix/fractionalise/synthetic-derivative');
-  }
+    history.push("/pix/fractionalise/synthetic-derivative");
+  };
 
   const handlePureClick = () => {
     setSelectedTab("pure");
-    history.push('/pix/fractionalise/');
-  }
+    history.push("/pix/fractionalise/");
+  };
 
   return (
     <>

@@ -56,23 +56,69 @@ export default function FlipCoinModal({ open, onClose, onCompleted, pred, select
         }
       );
 
-      if (contractResponse === "not allowed") {
+      if (!contractResponse) {
         showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
+        setIsFlipping(false);
         return;
       }
 
       console.log("response", contractResponse);
 
-      const { requestId, tokenId, prediction, randomResult, transactionHash } = contractResponse;
+      const {
+        events: {
+          CoinFlipped: { returnValues },
+        },
+        transactionHash,
+      } = contractResponse;
+      // const { prediction, tokenId, requestId } = returnValues;
 
-      await API.addFlipHistory({
-        collectionAddress: selectedNFT.collectionAddress,
-        syntheticID: selectedNFT.SyntheticID,
-        winnerAddress: requestId,
-        prediction: prediction,
-        result: randomResult,
-        tokenId,
-      });
+      // await API.addFlipHistory({
+      //   collectionAddress: selectedNFT.collectionAddress,
+      //   syntheticID: selectedNFT.SyntheticID,
+      //   winnerAddress: requestId,
+      //   prediction: prediction,
+      //   randomResult: returnValues["0"],
+      //   tokenId,
+      // });
+
+      const subscription_1 = web3.eth
+        .subscribe("logs", { address: account as string }, (err, result) => {
+          console.log("subscribe 1... ", result);
+        })
+        .on("data", data => {
+          console.log("data 1... ", data);
+        })
+        .on("changed", data => {
+          console.log("onChanged... 1", data);
+        });
+
+      console.log("4545454545454545445", subscription_1);
+
+      const subscription = web3.eth
+        .subscribe("logs", { address: selectedNFT.SyntheticCollectionManagerAddress }, (err, result) => {
+          console.log("subscribe... ", result);
+        })
+        .on("data", data => {
+          console.log("data... ", data);
+        })
+        .on("changed", data => {
+          console.log("onChanged... 2", data);
+        });
+
+      console.log("3939393939393993", subscription);
+
+      const subscription_2 = web3.eth
+        .subscribe("logs", { address: selectedNFT.SyntheticCollectionManagerAddress }, (err, result) => {
+          console.log("subscribe... 2", result);
+        })
+        .on("data", data => {
+          console.log("data... 2", data);
+        })
+        .on("changed", data => {
+          console.log("onChanged... 3", data);
+        });
+
+      console.log("12121212121212121212", subscription_2);
 
       setHash(transactionHash);
     } catch (err) {

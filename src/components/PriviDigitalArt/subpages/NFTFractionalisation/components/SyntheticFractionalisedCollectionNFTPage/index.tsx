@@ -22,12 +22,17 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
   isFlipped = false,
   match,
   withDrawn = false,
-  selectedNFT,
 }) => {
   const params: { collectionId?: string; nftId?: string } = useParams();
 
@@ -49,6 +54,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [nft, setNft] = useState<any>({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
 
   const [loadingData, setLoadingData] = useState<boolean>(true);
 
@@ -72,6 +79,34 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       }
     })();
   }, [params]);
+
+  useEffect(() => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      if (chainId && chainId !== targetChain?.chainId) {
+        const isHere = await switchNetwork(targetChain?.chainId || 0);
+        if (!isHere) {
+          showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+          return;
+        }
+      }
+
+      const web3APIHandler = targetChain.apiHandler;
+      const web3Config = targetChain.config;
+      const web3 = new Web3(library.provider);
+
+      const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
+        web3,
+        account!,
+        nft,
+        {
+          tokenId: +nft.SyntheticID,
+        }
+      );
+
+      console.log("3399393939393993", contractResponse);
+    })();
+  }, [nft]);
 
   const handleOpenChangeLockedNFTModal = () => {
     setOpenChangeLockedNFTModal(true);
@@ -481,7 +516,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           open={openFlipCoinModal}
           onClose={() => setOpenFlipCoinModal(false)}
           onCompleted={() => {}}
-          pred={0.1}
+          pred={1}
           selectedNFT={{
             ...nft,
             collectionAddress: params.collectionId,

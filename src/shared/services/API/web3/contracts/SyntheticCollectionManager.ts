@@ -40,12 +40,38 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const getOwnerSupply = (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        // const response = await contract.methods.getOwnerSupply(tokenId).call();
+
+        contract.methods.getSellingSupply(tokenId).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            console.log("transaction succeed.... 1", result);
+          }
+        });
+
+        // console.log("303030300303", response);
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+
   const flipJot = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { tokenId, prediction } = payload;
-        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
-
+        const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         console.log("Getting gas....");
@@ -65,18 +91,13 @@ const syntheticCollectionManager = (network: string) => {
           resolve(null);
         }
 
-        const jotAPI = JOT(network);
+        console.log("Getting gas... ", prediction, tokenId);
 
-        const decimals = await jotAPI.decimals(web3, JotAddress);
-        const tPrediction = toNDecimals(prediction, decimals);
-
-        console.log("Getting gas... ", tPrediction, tokenId);
-
-        const gas = await contract.methods.flipJot(tokenId, tPrediction).estimateGas({ from: account });
+        const gas = await contract.methods.flipJot(tokenId, prediction).estimateGas({ from: account });
         console.log("polygon gas...", gas);
 
         const response = await contract.methods
-          .flipJot(tokenId, parseInt(tPrediction))
+          .flipJot(tokenId, parseInt(prediction))
           .send({ from: account, gas });
 
         resolve(response);
@@ -228,6 +249,7 @@ const syntheticCollectionManager = (network: string) => {
     decreaseSellingSupply,
     flipJot,
     getSellingSupply,
+    getOwnerSupply,
   };
 };
 

@@ -164,7 +164,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 <span>TRADE DERIVATIVES</span>
               </div>
             </div>
-
             <Box
               onClick={handleAddToMetamask}
               className={classes.metaMaskBtn}

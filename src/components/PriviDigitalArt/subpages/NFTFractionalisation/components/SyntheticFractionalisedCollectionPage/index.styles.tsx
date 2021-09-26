@@ -73,6 +73,27 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       },
     },
   },
+  metaMaskButton: {
+    display: "flex",
+    alignItems: "center",
+    background: "#431AB7",
+    padding: "10px 32px",
+    borderRadius: 7,
+    cursor: "pointer",
+    marginLeft: 24,
+    "& img": {
+      width: 32,
+    },
+    "& span": {
+      marginLeft: "10px",
+      fontSize: 18,
+      fontWeight: 800,
+      textTransform: "uppercase",
+      lineHeight: "120%",
+      fontFamily: "Agrandir",
+      color: "white",
+    },
+  },
   collectionMainContent: {
     position: "relative",
     background: "linear-gradient(118.22deg, #431AB7 42.55%, #9EACF2 114.51%)",

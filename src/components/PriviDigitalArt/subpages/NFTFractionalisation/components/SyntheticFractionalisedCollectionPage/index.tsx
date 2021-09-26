@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
 
-import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";

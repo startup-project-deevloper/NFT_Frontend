@@ -887,7 +887,7 @@ const Header = props => {
                 onClick={() => {
                   history.push("/pix/");
                 }}
-                src={require('assets/logos/privi_pix_alpha.svg')}
+                src={require('assets/logos/privi_color_log.png')}
                 alt="privi"
               />
             </div>

@@ -125,20 +125,13 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   };
 
   const validate = () => {
-    // if (!name) {
-    //   showAlertMessage("Please enter a valid name", { variant: "error" });
-    //   return false;
-    // } else if (!symbol) {
-    //   showAlertMessage("Please enter a valid symbol", { variant: "error" });
-    //   return false;
-    // } else
     if (!selectedNFT) {
       showAlertMessage("Please select a NFT", { variant: "error" });
       return false;
-    } else if (!initialPrice || !Number(initialPrice)) {
+    } else if (!initialPrice || Number(initialPrice) <= 0) {
       showAlertMessage("Please enter a valid initial fraction price", { variant: "error" });
       return false;
-    } else if (!supply || !Number(supply)) {
+    } else if (!supply || Number(supply) <= 0) {
       showAlertMessage("Please enter a valid supply", { variant: "error" });
       return false;
     }

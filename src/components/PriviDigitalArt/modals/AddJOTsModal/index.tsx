@@ -1,0 +1,211 @@
+import React, { useEffect } from "react";
+import Web3 from "web3";
+import { Grid } from "@material-ui/core";
+import { Header3, Header5, Modal } from "shared/ui-kit";
+import Box from "shared/ui-kit/Box";
+import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
+import { AddJotsModalStyles } from "./index.styles";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
+import { buyJots } from "shared/services/API/SyntheticFractionalizeAPI";
+import { toDecimals, toNDecimals } from "shared/functions/web3";
+import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
+
+const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
+
+export default function AddJotsModal({
+  open,
+  collectionId,
+  nft,
+  handleRefresh = () => {},
+  handleClose = () => {},
+}) {
+  const classes = AddJotsModalStyles();
+
+  const { showAlertMessage } = useAlertMessage();
+
+  const [jots, setJOTs] = React.useState<number>(0);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [disabled, setDisabled] = React.useState<boolean>(false);
+  const { account, library, chainId } = useWeb3React();
+
+  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+
+  const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
+  const [jotBalance, setJotBalance] = React.useState<number>(0);
+  const [maxJot, setMaxJot] = React.useState<number>(0);
+
+  useEffect(() => {
+    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
+      (async () => {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) {
+          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
+        }
+      })();
+    }
+  }, [chainId, selectedChain]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    (async () => {
+      setDisabled(true);
+      const web3APIHandler = selectedChain.apiHandler;
+      const web3 = new Web3(library.provider);
+
+      const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
+      const balance = await web3APIHandler.Erc20["USDT"].balanceOf(web3, { account });
+      const usdt = parseInt(toDecimals(balance || 0, decimals));
+      setUsdtBalance(usdt);
+      setMaxJot(usdt / (+nft.Price || 1));
+
+      const jotDecimals = await web3APIHandler.Erc20["JOT"].decimals(web3, nft.JotAddress);
+      const jotBalance = await web3APIHandler.Erc20["JOT"].balanceOf(web3, nft.JotAddress, { account });
+      const jot = parseInt(toDecimals(jotBalance || 0, jotDecimals));
+
+      setJotBalance(jot);
+      setDisabled(false);
+    })();
+  }, [open, nft, selectedChain]);
+
+  const handleAddJots = async () => {
+    if (+jots > maxJot) {
+      showAlertMessage(`Can't be exceed the max JOTs.`, { variant: "error" });
+      return;
+    }
+
+    setLoading(true);
+    // For polygon chain
+    const targetChain = BlockchainNets[1];
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+    const web3APIHandler = targetChain.apiHandler;
+    const web3 = new Web3(library.provider);
+
+    const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
+    const amount = toNDecimals(+jots * (+nft.Price || 1), decimals);
+
+    // const approveResponse = await web3APIHandler.Erc20["USDT"].approve(
+    //   web3,
+    //   account!,
+    //   nft.SyntheticCollectionManagerAddress,
+    //   amount
+    // );
+
+    // if (!approveResponse) {
+    //   setLoading(false);
+    //   showAlertMessage("Failed to approve. Please try again", { variant: "error" });
+    //   return;
+    // }
+
+    // const contractResponse = await web3APIHandler.SyntheticCollectionManager.buyJotTokens(
+    //   web3,
+    //   account!,
+    //   nft,
+    //   {
+    //     tokenId: +nft.SyntheticID,
+    //     amount: +jots,
+    //   }
+    // );
+    // if (!contractResponse.success) {
+    //   setLoading(false);
+    //   showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
+    //   return;
+    // }
+
+    // const response = await buyJots({
+    //   collectionId,
+    //   syntheticId: nft.SyntheticID,
+    //   amount: jots,
+    //   investor: account!,
+    //   hash: contractResponse.data.hash,
+    // });
+
+    // setLoading(false);
+
+    // if (!response.success) {
+    //   showAlertMessage("Failed to save transactions.", { variant: "error" });
+    //   return;
+    // }
+
+    // showAlertMessage("You bought JOTs successuflly", { variant: "success" });
+    // handleRefresh();
+    // handleClose();
+  };
+
+  return (
+    <LoadingScreen
+      loading={loading}
+      title={`Transaction \nin progress`}
+      subTitle={`Transaction is proceeding on ${selectedChain.value}.\nThis can take a moment, please be patient...`}
+      handleClose={handleClose}
+    >
+      <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>
+        <Box>
+          <Header3>Add JOTs</Header3>
+          <InputWithLabelAndTooltip
+            inputValue={jots}
+            onInputValueChange={e => setJOTs(e.target.value)}
+            overriedClasses={classes.inputJOTs}
+            maxValue={maxJot}
+            required
+            type="number"
+            theme="light"
+            endAdornment={<div className={classes.purpleText}>JOTS</div>}
+            disabled={disabled}
+          />
+          <Grid container>
+            <Grid item md={7} xs={12}>
+              <Box className={classes.leftBalance} display="flex" alignItems="center">
+                <Header5 style={{ marginBottom: 0 }}>Wallet Balance</Header5>
+                <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
+                  <Box className={classes.point}></Box>
+                  <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
+                    {jotBalance.toFixed(2)} JOTs
+                  </Header5>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item md={5} xs={12}>
+              <Box
+                className={classes.rightBalance}
+                flexGrow={1}
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-end"
+              >
+                <Box onClick={() => setJOTs(maxJot)}>MAX: {maxJot.toFixed(2)}</Box>
+              </Box>
+            </Grid>
+          </Grid>
+          <Box display="flex" alignItems="center" mt={6} justifyContent="space-between">
+            <SecondaryButton
+              size="medium"
+              style={{ color: Color.Purple, width: "100px", border: "2px solid #151414" }}
+              onClick={handleClose}
+            >
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton
+              size="medium"
+              style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
+              onClick={handleAddJots}
+            >
+              Confirm
+            </PrimaryButton>
+          </Box>
+        </Box>
+      </Modal>
+    </LoadingScreen>
+  );
+}

@@ -10,7 +10,7 @@ export async function getSyntheticCollections(): Promise<any> {
     });
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }
 
@@ -21,7 +21,7 @@ export async function getSyntheticCollection(id): Promise<any> {
     });
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }
 
@@ -35,7 +35,7 @@ export async function getSyntheticNFT(collectionId, syntheticId): Promise<any> {
     });
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }
 
@@ -49,7 +49,7 @@ export async function getSyntheticNFTTransactions(collectionId, syntheticId): Pr
     });
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }
 
@@ -60,7 +60,7 @@ export async function buyJots(payload): Promise<any> {
     const response = await axios.post(`${URL()}/syntheticFractionalize/buyJots`, payload);
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }
 
@@ -69,7 +69,7 @@ export async function updatePriceFraction(payload): Promise<any> {
     const response = await axios.post(`${URL()}/syntheticFractionalize/updatePriceFraction`, payload);
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }
 
@@ -78,17 +78,15 @@ export async function updateSellingSupply(payload): Promise<any> {
     const response = await axios.post(`${URL()}/syntheticFractionalize/updateSellingSupply`, payload);
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }
 
-export async function getMySyntheticFractionalisedNFT(id): Promise<any> {
+export async function getMySyntheticFractionalisedNFT(): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/user/getMySyntheticFractionalisedNFT/${id}`, {
-      params: {},
-    });
+    const response = await axios.get(`${URL()}/syntheticFractionalize/myNFTs`);
     return response.data;
   } catch (e) {
-    throw new Error(e.message);
+    console.log(e.message);
   }
 }

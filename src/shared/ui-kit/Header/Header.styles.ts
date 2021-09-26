@@ -427,6 +427,12 @@ export const headerStyles = makeStyles(theme => ({
       },
     },
   },
+  pixLogoZoo: {
+    display: "flex",
+    alignItems: "center",
+    padding: "0 36px",
+    height: "100%",
+  },
   mobileMenu: {
     display: "none",
     [theme.breakpoints.down(769)]: {

@@ -310,7 +310,7 @@ const Header = props => {
                   user.creds.length ?? 0,
                   user.badges ?? [],
                   user.urlSlug ??
-                    `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
+                  `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
                   user.twitter ?? "",
                   user.anon ?? false,
                   user.verified ?? false,
@@ -522,10 +522,10 @@ const Header = props => {
             >
               <div>My apps</div>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <PrimaryButton size="small" onClick={() => {}}>
+                <PrimaryButton size="small" onClick={() => { }}>
                   See All
                 </PrimaryButton>
-                <SecondaryButton size="small" onClick={() => {}}>
+                <SecondaryButton size="small" onClick={() => { }}>
                   Edit
                 </SecondaryButton>
               </div>
@@ -613,7 +613,7 @@ const Header = props => {
                 justifyContent: "center",
               }}
             >
-              <SecondaryButton size="medium" onClick={() => {}} style={{ marginTop: "16px" }}>
+              <SecondaryButton size="medium" onClick={() => { }} style={{ marginTop: "16px" }}>
                 Discover More Apps
               </SecondaryButton>
             </div>
@@ -697,12 +697,12 @@ const Header = props => {
                         style={{
                           backgroundImage: userSelector.id
                             ? `url(${getUserAvatar({
-                                id: userSelector.id,
-                                anon: userSelector.anon,
-                                hasPhoto: userSelector.hasPhoto,
-                                anonAvatar: userSelector.anonAvatar,
-                                url: userSelector.url,
-                              })})`
+                              id: userSelector.id,
+                              anon: userSelector.anon,
+                              hasPhoto: userSelector.hasPhoto,
+                              anonAvatar: userSelector.anonAvatar,
+                              url: userSelector.url,
+                            })})`
                             : "none",
                           cursor: ownUser ? "pointer" : "auto",
                           backgroundRepeat: "no-repeat",
@@ -764,11 +764,11 @@ const Header = props => {
                         tooltip="Notifications"
                         icon={
                           !props.openTab ||
-                          !pathName.toLowerCase().includes("privi-music") ||
-                          !pathName.toLowerCase().includes("pods") ||
-                          (props.openTab &&
-                            (props.openTab.type === OpenType.Search ||
-                              props.openTab.type === OpenType.Home))
+                            !pathName.toLowerCase().includes("privi-music") ||
+                            !pathName.toLowerCase().includes("pods") ||
+                            (props.openTab &&
+                              (props.openTab.type === OpenType.Search ||
+                                props.openTab.type === OpenType.Home))
                             ? IconNotifications
                             : IconNotificationsWhite
                         }
@@ -804,7 +804,7 @@ const Header = props => {
                   <MenuItem>
                     <PrimaryButton
                       size="medium"
-                      onClick={() => {}}
+                      onClick={() => { }}
                       style={{
                         backgroundColor: "#DDFF57",
                         padding: "8px 24px",
@@ -882,15 +882,26 @@ const Header = props => {
             {mobileMenu}
           </div>
           {isHideHeader ? (
-            <div className={classes.pixLogo}>
-              <img
-                onClick={() => {
-                  history.push("/pix/");
-                }}
-                src={require('assets/logos/privi_pix_alpha.svg')}
-                alt="privi"
-              />
-            </div>
+            pathName.includes("/zoo/page") ?
+              <div className={classes.pixLogoZoo}>
+                <img
+                  onClick={() => {
+                    history.push("/pix/");
+                  }}
+                  src={require('assets/logos/privi_color_log.png')}
+                  alt="privi"
+                />
+              </div>
+              :
+              <div className={classes.pixLogo}>
+                <img
+                  onClick={() => {
+                    history.push("/pix/");
+                  }}
+                  src={require('assets/logos/privi_pix_alpha.svg')}
+                  alt="privi"
+                />
+              </div>
           ) : (
             <>
               <div className="header-title">PRIVI</div>
@@ -926,7 +937,7 @@ const Header = props => {
                     <ToolbarButtonWithPopper
                       theme={isTransparent ? "dark" : "light"}
                       tooltip="Messages"
-                      icon={isTablet? IconMessagesWhite : IconMessages}
+                      icon={isTablet ? IconMessagesWhite : IconMessages}
                       badge={numberMessages > 0 ? numberMessages.toString() : undefined}
                       openToolbar={openMessagesModal}
                       handleOpenToolbar={showMessagesModal}
@@ -939,7 +950,7 @@ const Header = props => {
                   <ToolbarButtonWithPopper
                     theme={isTransparent ? "dark" : "light"}
                     tooltip="Notifications"
-                    icon={isTablet? IconNotificationsWhite : IconNotifications}
+                    icon={isTablet ? IconNotificationsWhite : IconNotifications}
                     badge={unreadNotifications > 0 ? unreadNotifications.toString() : undefined}
                     onIconClick={markAllNotificationsAsRead}
                     openToolbar={openNotificationModal}
@@ -1024,12 +1035,12 @@ const Header = props => {
               </Hidden>
             </>
           ) : // <div className="header-buttons">
-          //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
-          //     Get Privi Wallet
-          //   </button>
-          //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
-          // </div>
-          null}
+            //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
+            //     Get Privi Wallet
+            //   </button>
+            //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
+            // </div>
+            null}
         </div>
         <SignInModal open={openSignInModal} handleClose={() => setOpenSignInModal(false)} />
         <Popper
@@ -1172,7 +1183,7 @@ const Header = props => {
             user={userSelector}
             handleClose={handleCloseSocialTokenModal}
             type={"FT"}
-            handleRefresh={() => {}}
+            handleRefresh={() => { }}
             open={openCreateSocialTokenModal}
           />
         )}

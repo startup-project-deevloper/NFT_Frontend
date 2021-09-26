@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -97,6 +97,13 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     })();
   }, [params.id]);
 
+  /// Circulating Supply = Locked NFTs * 10000
+  const circulatingSupply = useMemo(() => {
+    const lockedCount = collection.SyntheticNFT?.filter(nft => nft.isLocked).length || 0;
+    if(lockedCount >= 100) return `$${lockedCount / 100}M`;
+    return `$${lockedCount * 10}K`;
+  }, [collection]);
+
   return (
     <div className={classes.root}>
       <div className={classes.collectionInfoSection}>
@@ -158,7 +165,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo4}>ACRRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>$12K</div>
+              <div className={classes.typo3}>{circulatingSupply}</div>
               <div className={classes.typo4}>Circulating Supply</div>
             </Box>
           </Box>

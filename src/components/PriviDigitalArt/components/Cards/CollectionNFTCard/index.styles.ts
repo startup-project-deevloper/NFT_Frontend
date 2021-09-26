@@ -9,6 +9,7 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     padding: 9,
     height:  ({ customHeight }: any) => customHeight ? customHeight : 410,
     width: "100%",
+    minWidth: 278,
     cursor: "pointer",
     [theme.breakpoints.down("sm")]: {
       height:  ({ customHeight }: any) => customHeight ? customHeight : 350,

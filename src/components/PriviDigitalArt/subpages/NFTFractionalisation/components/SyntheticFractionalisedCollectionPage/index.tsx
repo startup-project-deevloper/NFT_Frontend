@@ -214,7 +214,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
                 {collection.SyntheticNFT.map((item, idx) => (
-                  <Grid item xs={12} sm={4} md={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {

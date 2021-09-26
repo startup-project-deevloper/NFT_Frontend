@@ -2,23 +2,23 @@ import React, { useState, useEffect, useMemo } from "react";
 import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
 import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
 
 import { Grid } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
-import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
 import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
-import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
+import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 
 const NFTList = [
   {
@@ -276,7 +276,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
                 {collection.SyntheticNFT.map((item, idx) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
+                  <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {

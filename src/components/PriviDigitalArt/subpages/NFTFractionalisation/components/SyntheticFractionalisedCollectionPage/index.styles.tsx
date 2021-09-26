@@ -80,6 +80,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     borderRadius: 20,
     width: "100%",
     height: "auto",
+    minHeight: 320,
     padding: "30px 27px 42px 480px",
     marginTop: 32,
     color: "#ffffff",

@@ -526,6 +526,9 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
           maxWidth: 370,
           width: "unset",
           marginRight: 24,
+          "& > div": {
+            boxShadow: "none",
+          }
         }
       }
     },

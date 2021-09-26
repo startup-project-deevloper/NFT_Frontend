@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
 import Web3 from "web3";
 
-import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
@@ -143,6 +143,13 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     });
   };
 
+  /// Circulating Supply = Locked NFTs * 10000
+  const circulatingSupply = useMemo(() => {
+    const lockedCount = collection.SyntheticNFT?.filter(nft => nft.isLocked).length || 0;
+    if (lockedCount >= 100) return `$${lockedCount / 100}M`;
+    return `$${lockedCount * 10}K`;
+  }, [collection]);
+
   return (
     <div className={classes.root}>
       <div className={classes.collectionInfoSection}>
@@ -221,7 +228,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo4}>ACRRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>$12K</div>
+              <div className={classes.typo3}>{circulatingSupply}</div>
               <div className={classes.typo4}>Circulating Supply</div>
             </Box>
           </Box>
@@ -270,7 +277,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
                 {collection.SyntheticNFT.map((item, idx) => (
-                  <Grid item xs={12} sm={4} md={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {

@@ -149,7 +149,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -176,7 +176,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -203,7 +203,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -230,7 +230,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       {
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },

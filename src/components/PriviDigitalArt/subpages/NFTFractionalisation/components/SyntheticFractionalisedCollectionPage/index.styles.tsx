@@ -265,6 +265,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     width: "100%",
     marginBottom: 50,
   },
+  metaMaskBtn: {
+    cursor: "pointer",
+    backgroundColor: "#431AB7",
+    borderRadius: 4,
+    padding: "9px 32px",
+    color: "white",
+    fontWeight: 800,
+  },
 }));
 
 export const EthIcon = () => (

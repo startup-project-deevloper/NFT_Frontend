@@ -50,9 +50,8 @@ const chainInfoMap = {
       decimals: 18,
     },
     blockExplorerUrls: ["https://rinkeby.etherscan.io/"],
-  }
-}
-
+  },
+};
 
 export const switchNetwork = (chainId: number): Promise<any> => {
   return new Promise(async resolve => {
@@ -70,7 +69,7 @@ export const switchNetwork = (chainId: number): Promise<any> => {
             params: [
               {
                 chainId: `0x${chainId.toString(16)}`,
-                ...chainInfoMap[chainId]
+                ...chainInfoMap[chainId],
               },
             ],
           });
@@ -99,4 +98,21 @@ export const getTokenBalances = async (chainId: number, address: string) => {
     console.log("fetching balance error: " + err.message);
   }
   return [];
-}
+};
+
+export const addJotAddress = (data: any): Promise<any> => {
+  return new Promise(async resolve => {
+    try {
+      await (window as any).ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: data,
+        },
+      });
+      resolve(true);
+    } catch (error) {
+      resolve(false);
+    }
+  });
+};

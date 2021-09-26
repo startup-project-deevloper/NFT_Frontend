@@ -22,12 +22,13 @@ import FlipCoinModal from "../../modals/FlipCoinModal";
 import { RootState } from "store/reducers/Reducer";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
-
+import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { SharePopup } from "shared/ui-kit/SharePopup";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
@@ -58,9 +59,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
-
+  const [openShareMenu, setOpenShareMenu] = React.useState(false);
+  const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
   const [loadingData, setLoadingData] = useState<boolean>(true);
 
+  /// TODO This is wrong
   const isOwner = React.useMemo(
     () => nft && userSelector && nft.priviUser && nft.priviUser.id === userSelector.id,
     [nft, userSelector]
@@ -270,6 +273,15 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     );
   }
 
+  const handleGiveFruit = () => {};
+  const handleOpenShareMenu = () => {
+    setOpenShareMenu(!openShareMenu);
+  };
+
+  const handleCloseShareMenu = () => {
+    setOpenShareMenu(false);
+  };
+
   return (
     <LoadingWrapper loading={loadingData}>
       <div className={classes.root}>
@@ -353,17 +365,27 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               </PrimaryButton>
             </Box>
             <Box className={classes.socialIcons}>
-              <div className={classes.shareSection}>
+              <div
+                className={classes.shareSection}
+                onClick={handleOpenShareMenu}
+                ref={anchorShareMenuRef}
+              >
                 <ShareIcon />
               </div>
               <div className={classes.socialSection}>
-                <img src={require("assets/icons/social.png")} />
+                {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
               <div className={classes.plusSection}>
                 <PlusIcon />
                 <span>Follow</span>
               </div>
             </Box>
+            <SharePopup
+              item={{ ...nft, Type: "SYNTHETIC_FRACTIONALISATION", CollectionId: params.collectionId }}
+              openMenu={openShareMenu}
+              anchorRef={anchorShareMenuRef}
+              handleCloseMenu={handleCloseShareMenu}
+            />
             <div className={classes.nftCard}>
               <CollectionNFTCard
                 handleSelect={() => {}}

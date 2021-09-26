@@ -411,10 +411,10 @@ export const headerStyles = makeStyles(theme => ({
   pixLogo: {
     display: "flex",
     alignItems: "center",
-    // "& > img": {
-    //   width: 136,
-    // },
-    // background: "#9eacf2",
+    "& > img": {
+      width: 136,
+    },
+    background: "#9eacf2",
     padding: "0 36px",
     height: "100%",
     [theme.breakpoints.down(769)]: {
@@ -422,10 +422,16 @@ export const headerStyles = makeStyles(theme => ({
       height: "100%",
       borderLeft: "2px solid #ffffff",
       borderRight: "2px solid #ffffff",
-      // "& > img": {
-      //   width: 110,
-      // },
+      "& > img": {
+        width: 110,
+      },
     },
+  },
+  pixLogoZoo: {
+    display: "flex",
+    alignItems: "center",
+    padding: "0 36px",
+    height: "100%",
   },
   mobileMenu: {
     display: "none",

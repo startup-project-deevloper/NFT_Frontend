@@ -201,13 +201,18 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     fontFamily: "Agrandir",
     marginTop: 36,
-    marginLeft: 16,
+    marginLeft: 50,
     color: "rgba(67, 26, 183, 1)",
+    [theme.breakpoints.down("md")]: {
+      marginLeft: 30,
+    },
     [theme.breakpoints.down("sm")]: {
       fontSize: 20,
+      marginLeft: 12,
     },
     [theme.breakpoints.down("xs")]: {
       fontSize: 18,
+      marginLeft: 8,
     },
   },
   potentialWinSection: {

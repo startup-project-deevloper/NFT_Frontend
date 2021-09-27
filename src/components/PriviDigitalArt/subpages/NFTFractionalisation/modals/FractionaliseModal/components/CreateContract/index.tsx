@@ -155,6 +155,9 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             quickSwapAddress: collection.quickSwapAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
+            lTokenLite: collection.lTokenLite_,
+            pTokenLite: collection.pTokenLite_,
+            perpetualPoolLiteAddress: collection.perpetualPoolLiteAddress_,
             isAddCollection: true,
           };
         } else {
@@ -166,8 +169,12 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             isAddCollection: false,
           };
         }
-        await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
-        onCompleted(nftInfo.syntheticTokenId);
+        const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
+        if (data.success) {
+          onCompleted(nftInfo.syntheticTokenId);
+        } else {
+          showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
+        }
       }
     } catch (err) {
       console.log("error", err);

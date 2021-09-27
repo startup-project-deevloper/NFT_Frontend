@@ -18,20 +18,20 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     minHeight: "calc(100vh - 80px)",
     maxHeight: "calc(100vh - 80px)",
     overflowX: "hidden",
-    padding: "50px 16px 0px 16px",
+    padding: "50px 0px 0px 0px",
     backgroundImage: `url(${require("assets/pixImages/fractionalise_background.png")})`,
     backgroundRepeat: "inherit",
     backgroundSize: "100% 100%",
-    [theme.breakpoints.down("xs")]: {
-      padding: "50px 12px 0px",
-    },
+    // [theme.breakpoints.down("xs")]: {
+    //   padding: "50px 0px 0px",
+    // },
   },
   titleBar: {
     width: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "0 20px",
+    padding: "0 35px",
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
     },
@@ -82,6 +82,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     textTransform: "uppercase",
     lineHeight: "23px",
     marginTop: 32,
+    padding: "0 20px",
     cursor: "pointer",
     [theme.breakpoints.down(1110)]: {
       fontSize: 15,
@@ -89,8 +90,8 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     [theme.breakpoints.down(950)]: {
       fontSize: 12,
     },
-    [theme.breakpoints.down(950)]: {
-      fontSize: 11,
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 0"
     },
   },
   tabSection: {
@@ -99,8 +100,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    margin: "0 30px",
-    padding: "0 10px",
+    margin: "0 40px",
     [theme.breakpoints.down(1250)]: {
       minWidth: 420,
     },
@@ -262,7 +262,6 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: "95%",
     flexDirection: "column",
   },
   rewardsWrapper: {
@@ -433,20 +432,20 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     width: 107,
     height: 99,
     position: "absolute",
-    bottom: -2,
-    left: -52,
+    bottom: -20,
+    left: -50,
     transform: "rotate(-12.57deg)",
-    [theme.breakpoints.down(1200)]: {
+    [theme.breakpoints.down(860)]: {
       width: 107,
       height: 99,
-      bottom: -40,
-      left: -50,
+      bottom: -30,
+      left: -40,
     },
     [theme.breakpoints.down(658)]: {
       width: 89,
       height: 82,
-      bottom: -40,
-      left: -40,
+      bottom: -30,
+      left: -35,
     },
   },
   buttons: {
@@ -463,7 +462,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   },
   topNFTWrapper: {
     backgroundColor: "#F6F5F8",
-    padding: "50px 40px",
+    padding: "50px 0",
     [theme.breakpoints.down(1200)]: {
       padding: "30px 0",
     },
@@ -471,14 +470,15 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   allNFTWrapper: {
     backgroundColor: "#FFF",
     padding: "50px 40px",
-    [theme.breakpoints.down(658)]: {
-      padding: "30px 0",
+    [theme.breakpoints.down(860)]: {
+      padding: "50px 25px",
     },
   },
   topNFTTitle: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 30,
+    padding: "0 25px",
+    paddingBottom: "25px",
     "& span": {
       fontSize: 32,
       fontWeight: 800,
@@ -506,7 +506,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     lineHeight: "130%",
     "& span": {
-      paddingBottom: 16,
+      paddingBottom: 25,
     },
     "& img": {
       width: 80,

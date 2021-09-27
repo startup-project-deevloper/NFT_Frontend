@@ -35,7 +35,7 @@ const MyNFT = () => {
   const [myNFTs, setMyNFTs] = useState<any[]>([]);
 
   const theme = useTheme();
-  const [selectedTab, setSelectedTab] = useState<"owned" | "synthetic">("owned");
+  const [selectedTab, setSelectedTab] = useState<"owned" | "synthetic">("synthetic");
 
   useEffect(() => {
     try {

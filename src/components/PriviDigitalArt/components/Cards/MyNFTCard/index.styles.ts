@@ -10,7 +10,7 @@ export const myNFTCardStyles = makeStyles(theme => ({
     height: 516,
     width: "100%",
     cursor: "pointer",
-    minWidth: 265,
+    minWidth: 250,
   },
   innerBox: {
     background: "#9EACF2",

@@ -117,7 +117,9 @@ const NFTFractionalisation = () => {
                 display: "flex",
                 alignItems: "center",
               })}
-
+              onClick={() => {
+                history.push("/pix/mynft");
+              }}
             >
               Manage  Portfolio
               <Box className={classes.countCircle}>5</Box>

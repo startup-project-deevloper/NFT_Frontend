@@ -9,7 +9,7 @@ import { useHistory, useLocation } from "react-router-dom";
 
 const TABS = [
   "HOME",
-  "MY NFT",
+  "MANAGE NFT",
   "EXPLORE",
   "MARKETPLACE",
   "PODS",

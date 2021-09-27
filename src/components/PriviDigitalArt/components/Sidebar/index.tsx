@@ -14,7 +14,7 @@ import { Widget } from "@maticnetwork/wallet-widget";
 
 const TABS = [
   "HOME",
-  "MY NFT",
+  "MANAGE NFT",
   "EXPLORE",
   "MARKETPLACE",
   "PODS",

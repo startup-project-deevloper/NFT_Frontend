@@ -74,7 +74,7 @@ const SidebarContent = ({ handleRefresh }) => {
     } else if (value === TABS[6]) {
       history.push("/pix/like");
     } else if (value === TABS[7]) {
-      history.push("/pix/fractionalise");
+      history.push("/pix/fractionalise/");
     }
   };
 

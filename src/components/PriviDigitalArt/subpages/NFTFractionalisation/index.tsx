@@ -19,6 +19,7 @@ import SyntheticFractionalise from "./components/SyntheticFractionalise";
 import { getFractionalizeVaults } from "shared/services/API/FractionalizeAPI";
 import PriviPixSyntheticRouter from "./PriviPixSyntheticRouter";
 import { useHistory } from "react-router";
+import { useLocation } from "react-router-dom";
 
 const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
   400: 1,
@@ -42,6 +43,7 @@ const NFTFractionalisation = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const history = useHistory();
+  const location = useLocation();
 
   useEffect(() => {
     if (selectedTab === "pure") {
@@ -55,6 +57,12 @@ const NFTFractionalisation = () => {
       });
     }
   }, [openFractionalize]);
+
+  useEffect(() => {
+    if (!location.pathname.includes('synthetic-derivative')) {
+      setSelectedTab("pure");
+    }
+  }, [location]);
 
   const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {

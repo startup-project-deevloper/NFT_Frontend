@@ -137,7 +137,7 @@ const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
 
   return config;
 };
-const DAYLABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAYLABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const MONTHLABELS = [
   "January",
   "February",
@@ -156,9 +156,9 @@ const MONTHLABELS = [
 export default function SyntheticFractionalisedTradeJotPage(props: any) {
   const classes = syntheticFractionalisedTradeJotPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
-  const PERIODS = ["1D", "6D", "YTD"];
+  const PERIODS = ["1h", "1D", "7D"];
   const [period, setPeriod] = React.useState<string>(PERIODS[0]);
-  const UNITS = ["BTC", "USDC"];
+  const UNITS = ["JOTs", "USDT"];
   const [unit, setUnit] = React.useState<string>(UNITS[0]);
 
 
@@ -167,16 +167,16 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     newRewardConfig.configurer = configurer;
     newRewardConfig.config.data.labels =
       period === PERIODS[0]
-        ? getAllHours()
+        ? getAllMinues()
         : period === PERIODS[1]
-          ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
-          : MONTHLABELS.map(item => item.slice(0, 3).toUpperCase());
+          ? getAllHours()
+          : DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
     newRewardConfig.config.data.datasets[0].data =
       period === PERIODS[0]
         ? getAllValues(unit)
         : period === PERIODS[1]
-          ? getAllValuesInWeek(unit)
-          : getAllValuesInYear(unit);
+          ? getAllValues(unit)
+          : getAllValuesInWeek(unit);
     newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
     newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
@@ -186,6 +186,15 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
 
     setRewardConfig(newRewardConfig);
   }, [period, unit]);
+
+  const getAllMinues = React.useCallback(() => {
+    const result: any[] = [];
+    for (let index = 0; index <= 11; index++) {
+      result.push(5 * index);
+    }
+
+    return result;
+  }, []);
 
   const getAllHours = React.useCallback(() => {
     const result: string[] = [];
@@ -197,7 +206,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
   }, []);
 
   const getAllValues = React.useCallback((unit) => {
-    const maxVal = unit==='BTC' ? 500 : 1000
+    const maxVal = unit==='JOTs' ? 500 : 1000
     const result: number[] = [];
     for (let index = 1; index <= 23; index++) {
       result.push(Math.floor(Math.random() * maxVal));
@@ -207,7 +216,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
   }, []);
 
   const getAllValuesInWeek = React.useCallback((unit) => {
-    const maxVal = unit==='BTC' ? 500 : 1000
+    const maxVal = unit==='JOTs' ? 500 : 1000
     const result: number[] = [];
     for (let index = 0; index < DAYLABELS.length; index++) {
       result.push(Math.floor(Math.random() * maxVal));
@@ -217,7 +226,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
   }, []);
 
   const getAllValuesInYear = React.useCallback((unit) => {
-    const maxVal = unit==='BTC' ? 500 : 1000
+    const maxVal = unit==='JOTs' ? 500 : 1000
     const result: number[] = [];
     for (let index = 0; index < MONTHLABELS.length; index++) {
       result.push(Math.floor(Math.random() * maxVal));
@@ -273,7 +282,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
                   {/* left coin value and date */}
                   <Box display="flex" flexDirection="column">
                     <h2 className={classes.graphTitle}>
-                      4245,24 USDC
+                      4245,24 USDT
                     </h2>
                     <p className={classes.graphDesc}>12 Sep 2021</p>
                   </Box>

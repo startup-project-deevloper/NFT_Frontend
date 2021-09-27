@@ -1,91 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Box from "shared/ui-kit/Box";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { FlipCoinModalStyles } from "./index.styles";
-import Web3 from "web3";
-import { useWeb3React } from "@web3-react/core";
-import { BlockchainNets } from "shared/constants/constants";
-import { switchNetwork } from "shared/functions/metamask";
 import { Modal } from "shared/ui-kit";
-import * as API from "shared/services/API/FractionalizeAPI";
-import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 declare let window: any;
 
-export default function FlipCoinModal({ open, onClose, onCompleted, pred, selectedNFT }) {
+// true - flipping dialog, false - result dialog (finished flipping)
+// true - won, false - lost
+export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, hash, resultState }) {
   const classes = FlipCoinModalStyles();
-  const [isFlipping, setIsFlipping] = useState<boolean>(false); // true - flipping dialog, false - result dialog (finished flipping)
-  const [flipResult, setFlipResult] = useState<boolean>(false); // true - won, false - lost
-  const [resultState, setResultState] = useState<number>(0); // 0 or 1
-
-  const [hash, setHash] = useState<string>("");
-  const { account, library, chainId } = useWeb3React();
-  const { showAlertMessage } = useAlertMessage();
-
-  useEffect(() => {
-    if (open) {
-      handleProceed();
-      setIsFlipping(true);
-    }
-  }, [open]);
-
-  const handleProceed = async () => {
-    const targetChain = BlockchainNets[1];
-    if (chainId && chainId !== targetChain?.chainId) {
-      const isHere = await switchNetwork(targetChain?.chainId || 0);
-      if (!isHere) {
-        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
-        return;
-      }
-    }
-
-    try {
-      const web3APIHandler = targetChain.apiHandler;
-      const web3Config = targetChain.config;
-      const web3 = new Web3(library.provider);
-
-      const contractResponse = await web3APIHandler.SyntheticCollectionManager.flipJot(
-        web3,
-        account!,
-        selectedNFT,
-        {
-          tokenId: +selectedNFT.SyntheticID,
-          prediction: pred,
-        }
-      );
-
-      if (!contractResponse) {
-        showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
-        setIsFlipping(false);
-        return;
-      }
-
-      console.log("response", contractResponse);
-
-      const {
-        events: {
-          CoinFlipped: { returnValues },
-        },
-        transactionHash,
-      } = contractResponse;
-      // const { prediction, tokenId, requestId } = returnValues;
-
-      // await API.addFlipHistory({
-      //   collectionAddress: selectedNFT.collectionAddress,
-      //   syntheticID: selectedNFT.SyntheticID,
-      //   winnerAddress: requestId,
-      //   prediction: prediction,
-      //   randomResult: returnValues["0"],
-      //   tokenId,
-      // });
-
-      setHash(transactionHash);
-    } catch (err) {
-      console.log("error", err);
-    }
-  };
 
   const handleLater = () => {
     onClose();

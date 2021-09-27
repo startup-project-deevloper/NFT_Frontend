@@ -45,13 +45,13 @@ export default function SyntheticCollectionCard({ item }) {
         setBalance(balanceResponse);
       }
 
-      const priceResponse = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, item, {
-        tokenId: +item.SyntheticID,
-      });
+      // const priceResponse = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, item, {
+      //   tokenId: +item.SyntheticID,
+      // });
 
-      if (priceResponse) {
-        setPrice(priceResponse);
-      }
+      // if (priceResponse) {
+      //   setPrice(priceResponse);
+      // }
     })();
   }, []);
 

@@ -98,7 +98,6 @@ const syntheticCollectionManager = (network: string) => {
   const getJotFractionPrice = (web3: Web3, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        console.log("939393939", collection, payload);
         const { tokenId } = payload;
         const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 

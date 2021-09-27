@@ -17,72 +17,8 @@ import { getSyntheticCollection } from "shared/services/API/SyntheticFractionali
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 import { SharePopup } from "shared/ui-kit/SharePopup";
-
-const NFTList = [
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: false,
-    started_at: null,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: false,
-    started_at: null,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: false,
-    started_at: null,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: true,
-    started_at: 1631747005555,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: true,
-    started_at: 1631747005555,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: true,
-    started_at: 1631747005555,
-  },
-];
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -294,7 +230,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
                 {collection.SyntheticNFT.map((item, idx) => (
-                  <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {
@@ -332,14 +268,16 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         ) : selectedTab === "auctions" ? (
           <div className={classes.allNFTSection}>
-            {NFTList && NFTList.length ? (
+            {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
-                {NFTList.map((item, idx) => (
+                {collection.SyntheticNFT.map((item, idx) => (
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <AuctionCard
                       auction={item}
                       onClick={() => {
-                        history.push(`/pix/fractionalisation/collection/${match.params.id}/nft/:nftId/1`);
+                        history.push(
+                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}/1`
+                        );
                       }}
                     />
                   </Grid>

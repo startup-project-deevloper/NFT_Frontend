@@ -410,6 +410,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     borderRadius: 6,
     width: 120,
     height: 40,
+    margin: "auto",
     [theme.breakpoints.down("sm")]: {
       width: 76,
     },
@@ -438,6 +439,18 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       },
       [theme.breakpoints.down("xs")]: {
         padding: "8px",
+      },
+      "&:first-child": {
+        paddingLeft: 50,
+        [theme.breakpoints.down("md")]: {
+          paddingLeft: 30,
+        },
+        [theme.breakpoints.down("sm")]: {
+          paddingLeft: 12,
+        },
+        [theme.breakpoints.down("xs")]: {
+          paddingLeft: 8,
+        },
       },
     },
     "& .MuiTableRow-head": {

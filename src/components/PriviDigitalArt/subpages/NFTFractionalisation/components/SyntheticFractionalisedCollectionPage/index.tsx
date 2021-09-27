@@ -170,7 +170,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             purple
             overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
           />
-          <Box display="flex">
+          <Box display="flex" className={classes.buttonWrapper}>
             <div className={classes.tradeDerivativeButton} onClick={() => { }}>
               <div>
                 <span>TRADE DERIVATIVES</span>

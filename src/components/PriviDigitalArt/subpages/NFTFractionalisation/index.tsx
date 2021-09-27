@@ -3,7 +3,8 @@ import cls from "classnames";
 
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
-import { CircularLoadingIndicator } from "shared/ui-kit";
+import Box from "shared/ui-kit/Box";
+import { CircularLoadingIndicator, SecondaryButton } from "shared/ui-kit";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import FractionalizedNFTCard from "components/PriviDigitalArt/components/Cards/FractionalizedNFTCard";
 import {
@@ -90,7 +91,38 @@ const NFTFractionalisation = () => {
         )
       ) : (
         <div className={classes.content} onScroll={handleScroll}>
-          <div className={classes.title}>✨ NFT Fractionalisation ✨</div>
+          <div className={classes.titleBar}>
+            <div className={classes.title}>NFT Fractionalisation</div>
+            <SecondaryButton size="medium"
+              style={ !isMobile ? ({
+                height: "50px",
+                fontSize: "18px",
+                padding: "0 50px",
+                position: "relative",
+                background: "#431AB7",
+                borderRadius: "8px",
+                color: "#fff",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+              }) : ({
+                height: "30px",
+                fontSize: "14px",
+                padding: "0 30px",
+                position: "relative",
+                background: "#431AB7",
+                borderRadius: "8px",
+                color: "#fff",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+              })}
+
+            >
+              Manage  Portfolio
+              <Box className={classes.countCircle}>5</Box>
+            </SecondaryButton>
+          </div>
           <div className={classes.subTitleSection}>
             <div
               className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}

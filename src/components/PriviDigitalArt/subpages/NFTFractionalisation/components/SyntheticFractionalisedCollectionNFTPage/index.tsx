@@ -11,7 +11,7 @@ import { useMediaQuery, useTheme } from "@material-ui/core";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
 import { PrimaryButton, Avatar, Text } from "shared/ui-kit";
-import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
+import { CustomTable, CustomTableHeaderInfo, CustomTableCellInfo } from "shared/ui-kit/Table";
 import SyntheticFractionalisedTradeFractionsPage from "../SyntheticFractionalisedTradeFractionsPage";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import AuctionDetail from "./components/AuctionDetail";
@@ -184,7 +184,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     }
   };
 
-  const dummyTableData = [
+  const dummyTableData: Array<Array<CustomTableCellInfo>> = [
     [
       {
         cell: "JOT Pool",
@@ -196,9 +196,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "False",
       },
       {
+        cellAlign: "center",
         cell: "12:09pm April 23, 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
             <img src={require("assets/icons/polygon_scan.png")} />
@@ -223,9 +225,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "Correct",
       },
       {
+        cellAlign: "center",
         cell: "12:09pm April 23, 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
             <img src={require("assets/icons/polygon_scan.png")} />
@@ -250,9 +254,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "Correct",
       },
       {
+        cellAlign: "center",
         cell: "12:09pm April 23, 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
             <img src={require("assets/icons/polygon_scan.png")} />
@@ -277,9 +283,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "Correct",
       },
       {
+        cellAlign: "center",
         cell: "12:09pm April 23, 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
             <img src={require("assets/icons/polygon_scan.png")} />
@@ -300,9 +308,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     },
     {
       headerName: "DATE",
+      headerAlign: "center",
     },
     {
       headerName: "EXPLORER",
+      headerAlign: "center",
     },
   ];
   const dummyAuction = {

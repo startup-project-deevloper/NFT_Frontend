@@ -109,42 +109,26 @@ const syntheticCollectionManager = (network: string) => {
 
         console.log(" --- response ....", response);
 
-        const res = contract.events
-          .FlipProcessed({
-            fromBlock: blockNumber,
-            toBlock: blockNumber + 3,
-          })
-          .on("data", event => console.log("data", event))
-          .on("changed", changed => console.log("changed", changed))
-          .on("error", err => console.log("err", err))
-          .on("connected", str => {
-            console.log("conected", str);
-          });
 
-        console.log("flipProcessed event...", res);
-
-        const subscription = web3.eth
-          .subscribe(
-            "logs",
-            {
-              address: SyntheticCollectionManagerAddress,
+        await new Promise(resolve => setTimeout(resolve, 35000));
+   
+        await contract.getPastEvents('FlipProcessed',{
+          fromBlock: blockNumber,
+          toBlock: 'latest'
             },
-            (err, result) => {
-              console.log("subscribe ... ", err, result);
-            }
-          )
-          .on("data", data => {
-            console.log("data ... ", data);
-          })
-          .on("changed", data => {
-            console.log("onChanged... ", data);
-          })
-          .on("error", err => console.log("err", err))
-          .on("connected", str => {
-            console.log("conected", str);
-          });
+        (error, events) => {
+          console.log(events)
+        });
 
-        console.log("subscription...", subscription);
+
+        // const res = await contract.events
+        //   .FlipProcessed()
+        //   .on("data", event => console.log("data", event))
+
+        // console.log("flipProcessed event...", res);
+
+
+        // console.log("subscription...", res);
         resolve(response);
       } catch (e) {
         console.log(e);

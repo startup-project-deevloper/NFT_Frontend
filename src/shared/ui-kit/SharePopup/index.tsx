@@ -21,7 +21,9 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
 
   const handleShareWithQR = () => {
     if(item?.Type === "SYNTHETIC_FRACTIONALISATION") {
-      setShareLink(`${getPrefixURL()}/fractionalisation/collection/item.collectionId/nft/item.SyntheticID}`);
+      setShareLink(`${getPrefixURL()}/fractionalisation/collection/${item.collectionId}/nft/${item.SyntheticID}`);
+    } else if(item?.Type === "SYNTHETIC_COLLECTION") {
+      setShareLink(`${getPrefixURL()}/fractionalisation/collection/${item.collectionId}`);
     } else {
       if (item?.MediaSymbol || item.PodAddress) {
         setShareLink(
@@ -43,6 +45,8 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
     handleCloseMenu();
     if(item?.Type === "SYNTHETIC_FRACTIONALISATION") {
       shareMediaToSocial('', "SYNTHETIC_FRACTIONALISATION", "SYNTHETIC_FRACTIONALISATION", `pix/fractionalisation/collection/${item.CollectionId}/nft/${item.SyntheticID}`);
+    } else if(item?.Type === "SYNTHETIC_COLLECTION") {
+      shareMediaToSocial('', "SYNTHETIC_COLLECTION", "SYNTHETIC_COLLECTION", `pix/fractionalisation/collection/${item.CollectionId}`);
     } else {
       if (item?.MediaSymbol || item.PodAddress) {
         shareMediaToSocial(

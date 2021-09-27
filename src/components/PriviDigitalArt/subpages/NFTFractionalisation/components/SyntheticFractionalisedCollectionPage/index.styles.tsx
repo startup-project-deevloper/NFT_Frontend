@@ -107,7 +107,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     color: "#ffffff",
     display: "flex",
     flexDirection: "column",
-    "& img": {
+    "& > img": {
       width: 436,
       height: "calc(100% + 14px)",
       borderRadius: 30,
@@ -201,8 +201,8 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   },
   shareSection: {
     display: "flex",
-    marginLeft: 24,
-    marginRight: 30,
+    paddingLeft: 24,
+    paddingRight: 30,
     cursor: "pointer",
     [theme.breakpoints.down("sm")]: {
       marginLeft: 15,

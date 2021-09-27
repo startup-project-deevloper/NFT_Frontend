@@ -104,7 +104,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 
         const web3APIHandler = targetChain.apiHandler;
         const web3Config = targetChain.config;
-        const web3 = new Web3(library.provider);
+        const web3 = new Web3(library?.provider);
 
         const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
           web3,

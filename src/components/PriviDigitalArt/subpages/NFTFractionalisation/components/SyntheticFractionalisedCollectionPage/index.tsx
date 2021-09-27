@@ -19,6 +19,7 @@ import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
+import { SharePopup } from "shared/ui-kit/SharePopup";
 
 const NFTList = [
   {
@@ -97,12 +98,17 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [collection, setCollection] = useState<any>({});
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
 
+  const [openShareMenu, setOpenShareMenu] = React.useState(false);
+  const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!params.id) return;
 
     (async () => {
       const response = await getSyntheticCollection(params.id);
       if (response.success) {
+        console.log(params);
+        console.log(response.data);
         setCollection(response.data);
       }
     })();
@@ -143,6 +149,14 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     });
   };
 
+  const handleOpenShareMenu = () => {
+    setOpenShareMenu(!openShareMenu);
+  };
+
+  const handleCloseShareMenu = () => {
+    setOpenShareMenu(false);
+  };
+
   /// Circulating Supply = Locked NFTs * 10000
   const circulatingSupply = useMemo(() => {
     const lockedCount = collection.SyntheticNFT?.filter(nft => nft.isLocked).length || 0;
@@ -159,7 +173,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
           />
           <Box display="flex">
-            <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+            <div className={classes.tradeDerivativeButton} onClick={() => { }}>
               <div>
                 <span>TRADE DERIVATIVES</span>
               </div>
@@ -199,7 +213,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 <EthIcon />
               </Box>
               <div className={classes.typo2}>Ethereum</div>
-              <div className={classes.shareSection}>
+              <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
                 <ShareIcon />
               </div>
               <div className={classes.plusSection}>
@@ -208,6 +222,12 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo2}>Follow</div>
             </Box>
           </Box>
+          <SharePopup
+            item={{ ...collection, Type: "SYNTHETIC_COLLECTION", CollectionId: params.id }}
+            openMenu={openShareMenu}
+            anchorRef={anchorShareMenuRef}
+            handleCloseMenu={handleCloseShareMenu}
+          />
           <div className={classes.mainTitleSection}>
             <span>{collection.collectionName}</span>
           </div>

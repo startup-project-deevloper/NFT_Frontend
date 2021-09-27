@@ -7,6 +7,7 @@ import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { useFractionaliseStyles } from "./index.styles";
 import NFTCard from "./NFTCard";
 import ChangeToSyntheticModal from "../../modals/ChangeToSynthetic";
+import { useWeb3React } from "@web3-react/core";
 
 const dummyNFTs = [
   {
@@ -53,7 +54,8 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>(dummyNFTs);
   const [selectedNFT, setSelectedNFT] = useState<any>();
-  const [walletConnected, setWalletConnected] = useState<boolean>(false);
+  const { account, library, chainId } = useWeb3React();
+  const [walletConnected, setWalletConnected] = useState<boolean>(!!account);
   const [openChangeToSyntheticModal, setOpenChangeToSyntheticModal] = useState<boolean>(false);
   const isMobileScreen = useMediaQuery("(max-width:586px)");
 

@@ -468,9 +468,10 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 
 const COLUMNS_COUNT_BREAK_POINTS_TWO = {
   400: 1,
-  600: 2,
-  900: 3,
-  1440: 3,
+  490: 2,
+  959: 1,
+  1180: 2,
+  1500: 3,
 };
 
 export default SyntheticFractionalise;

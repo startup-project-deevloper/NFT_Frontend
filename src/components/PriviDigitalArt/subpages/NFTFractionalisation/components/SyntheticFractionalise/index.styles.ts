@@ -286,7 +286,8 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     height: 360,
     width: "100%",
-    maxWidth: '250px',
+    maxWidth: '230px',
+    minWidth: '200px',
     cursor: "pointer",
   },
   selectedCard: {
@@ -300,7 +301,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 79%,  50% 90%, 0% 79%, 0% 0%)",
-    padding: "11px 8px",
+    padding: "20px 8px",
     height: 343,
     display: "flex",
     flexDirection: "column",
@@ -329,7 +330,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     lineHeight: "13px",
     textTransform: "capitalize",
     letterSpacing: '0.02em',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   priceSection: {
     display: "flex",

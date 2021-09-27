@@ -30,14 +30,14 @@ export default function MobileMenu() {
       return TABS[2];
     } else if (location.pathname.includes("marketplace")) {
       return TABS[3];
-    } else if (location.pathname.includes("pods")) {
-      return TABS[4];
+    // } else if (location.pathname.includes("pods")) {
+    //   return TABS[4];
     } else if (location.pathname.includes("loan")) {
-      return TABS[5];
+      return TABS[4];
     } else if (location.pathname.includes("like")) {
-      return TABS[6];
+      return TABS[5];
     } else if (location.pathname.includes("fractionalisation") || location.pathname.includes("fractionalise")) {
-      return TABS[7];
+      return TABS[6];
     }
 
     return TABS[0];
@@ -52,13 +52,13 @@ export default function MobileMenu() {
       history.push("/pix/explorer");
     } else if (value === TABS[3]) {
       history.push("/pix/marketplace");
+    // } else if (value === TABS[4]) {
+    //   history.push("/pix/pods");
     } else if (value === TABS[4]) {
-      history.push("/pix/pods");
-    } else if (value === TABS[5]) {
       history.push("/pix/loan");
-    } else if (value === TABS[6]) {
+    } else if (value === TABS[5]) {
       history.push("/pix/like");
-    } else if (value === TABS[7]) {
+    } else if (value === TABS[6]) {
       history.push("/pix/fractionalise");
     }
   };

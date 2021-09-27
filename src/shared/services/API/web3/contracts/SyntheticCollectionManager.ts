@@ -27,6 +27,7 @@ const syntheticCollectionManager = (network: string) => {
           .buyJotTokens(tokenId, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas });
         console.log("transaction succeed");
+
         resolve({
           success: true,
           data: {
@@ -100,6 +101,50 @@ const syntheticCollectionManager = (network: string) => {
           .flipJot(tokenId, parseInt(prediction))
           .send({ from: account, gas });
 
+        const {
+          events: {
+            CoinFlipped: { blockNumber },
+          },
+        } = response;
+
+        console.log(" --- response ....", response);
+
+        const res = contract.events
+          .FlipProcessed({
+            fromBlock: blockNumber,
+            toBlock: blockNumber + 3,
+          })
+          .on("data", event => console.log("data", event))
+          .on("changed", changed => console.log("changed", changed))
+          .on("error", err => console.log("err", err))
+          .on("connected", str => {
+            console.log("conected", str);
+          });
+
+        console.log("flipProcessed event...", res);
+
+        const subscription = web3.eth
+          .subscribe(
+            "logs",
+            {
+              address: SyntheticCollectionManagerAddress,
+            },
+            (err, result) => {
+              console.log("subscribe ... ", err, result);
+            }
+          )
+          .on("data", data => {
+            console.log("data ... ", data);
+          })
+          .on("changed", data => {
+            console.log("onChanged... ", data);
+          })
+          .on("error", err => console.log("err", err))
+          .on("connected", str => {
+            console.log("conected", str);
+          });
+
+        console.log("subscription...", subscription);
         resolve(response);
       } catch (e) {
         console.log(e);

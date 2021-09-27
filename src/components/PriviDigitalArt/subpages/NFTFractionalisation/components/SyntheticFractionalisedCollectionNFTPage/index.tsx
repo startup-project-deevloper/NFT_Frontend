@@ -55,6 +55,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
   const [ownershipJot, setOwnershipJot] = useState<number>(0);
+  const [isFlipping, setIsFlipping] = useState<boolean>(false);
+  const [flipResult, setFlipResult] = useState<boolean>(false);
+  const [hashFlipping, setHashFlipping] = useState<string>("");
 
   const [nft, setNft] = useState<any>({});
   const theme = useTheme();
@@ -133,8 +136,52 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     setOpenWithdrawNFTModal(false);
   };
 
-  const handleFlipCoin = () => {
+  const handleFlipCoin = async () => {
+    const targetChain = BlockchainNets[1];
     setOpenFlipCoinModal(true);
+    setIsFlipping(true);
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+
+    try {
+      const web3APIHandler = targetChain.apiHandler;
+      const web3Config = targetChain.config;
+      const web3 = new Web3(library.provider);
+
+      const contractResponse = await web3APIHandler.SyntheticCollectionManager.flipJot(web3, account!, nft, {
+        tokenId: +nft.SyntheticID,
+        prediction: 1,
+      });
+
+      if (!contractResponse) {
+        showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
+        return;
+      }
+
+      console.log("response", contractResponse);
+
+      // const {
+      //   returnValues: { prediction, tokenId, requestId, randomResult }, transactionHash
+      // } = contractResponse;
+
+      // await API.addFlipHistory({
+      //   collectionAddress: selectedNFT.collectionAddress,
+      //   syntheticID: selectedNFT.SyntheticID,
+      //   winnerAddress: requestId,
+      //   prediction: prediction,
+      //   randomResult,
+      //   tokenId,
+      // });
+
+      // setHash(transactionHash);
+    } catch (err) {
+      console.log("error", err);
+    }
   };
 
   const dummyTableData = [
@@ -594,12 +641,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         <FlipCoinModal
           open={openFlipCoinModal}
           onClose={() => setOpenFlipCoinModal(false)}
-          onCompleted={() => {}}
-          pred={1}
-          selectedNFT={{
-            ...nft,
-            collectionAddress: params.collectionId,
-          }}
+          isFlipping={isFlipping}
+          flipResult={flipResult}
+          hash={hashFlipping}
+          resultState={0}
         />
       </div>
     </LoadingWrapper>

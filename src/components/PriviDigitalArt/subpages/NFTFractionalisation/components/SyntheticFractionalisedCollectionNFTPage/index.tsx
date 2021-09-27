@@ -197,7 +197,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       },
       {
         cellAlign: "center",
-        cell: "12:09pm April 23, 2021",
+        cell: "12:22, 21.09 2021",
       },
       {
         cellAlign: "center",
@@ -226,7 +226,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       },
       {
         cellAlign: "center",
-        cell: "12:09pm April 23, 2021",
+        cell: "12:22, 21.09 2021",
       },
       {
         cellAlign: "center",
@@ -255,7 +255,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       },
       {
         cellAlign: "center",
-        cell: "12:09pm April 23, 2021",
+        cell: "12:22, 21.09 2021",
       },
       {
         cellAlign: "center",
@@ -284,7 +284,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       },
       {
         cellAlign: "center",
-        cell: "12:09pm April 23, 2021",
+        cell: "12:22, 21.09 2021",
       },
       {
         cellAlign: "center",

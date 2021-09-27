@@ -53,4 +53,18 @@ export const BuyJotsModalStyles = makeStyles(theme => ({
     height: "24px",
     borderRadius: "12px",
   },
+
+  checkBtn: {
+    height: 40,
+    backgroundColor: "#431AB7",
+    color: "white",
+    marginTop: 30,
+    padding: "11px 32px",
+    fontSize: 14,
+    fontWeight: 700,
+    borderRadius: 4,
+  },
+  hash: {
+    cursor: "pointer",
+  },
 }));

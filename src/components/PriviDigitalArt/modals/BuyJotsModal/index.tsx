@@ -13,7 +13,10 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { buyJots } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 
+const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
 export default function BuyJotsModal({
@@ -35,6 +38,7 @@ export default function BuyJotsModal({
 
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
   const [maxJot, setMaxJot] = React.useState<number>(0);
+  const [hash, setHash] = React.useState<string>("");
 
   useEffect(() => {
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
@@ -114,6 +118,7 @@ export default function BuyJotsModal({
       return;
     }
 
+    setHash(contractResponse.data.hash);
     const response = await buyJots({
       collectionId,
       syntheticId: nft.SyntheticID,
@@ -134,11 +139,37 @@ export default function BuyJotsModal({
     handleClose();
   };
 
+  const handlePolygonScan = () => {
+    window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
+  };
+
   return (
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on ${selectedChain.value}.\nThis can take a moment, please be patient...`}
+      subTitle={
+        <>
+          <p>
+            Transaction is proceeding on ${selectedChain.value}.\nThis can take a moment, please be patient...
+          </p>
+          {!loading && (
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <CopyToClipboard text={hash}>
+                <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
+                  Hash:
+                  <Box color="#4218B5" mr={1} ml={1}>
+                    {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                  </Box>
+                  <CopyIcon />
+                </Box>
+              </CopyToClipboard>
+              <button className={classes.checkBtn} onClick={handlePolygonScan}>
+                Check on Polygon Scan
+              </button>
+            </Box>
+          )}
+        </>
+      }
       handleClose={handleClose}
     >
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>

@@ -94,7 +94,7 @@ const NFTFractionalisation = () => {
           <div className={classes.titleBar}>
             <div className={classes.title}>NFT Fractionalisation</div>
             <SecondaryButton size="medium"
-              style={ !isMobile ? ({
+              style={!isMobile ? ({
                 height: "50px",
                 fontSize: "18px",
                 padding: "0 50px",
@@ -123,27 +123,29 @@ const NFTFractionalisation = () => {
               <Box className={classes.countCircle}>5</Box>
             </SecondaryButton>
           </div>
-          <div className={classes.subTitleSection}>
-            <div
-              className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
-              onClick={handlePureClick}
-            >
-              <span>Pure Fractionalisation</span>
+          <Box width="100%" borderBottom="2px solid rgba(196,196,196,0.4)">
+            <div className={classes.subTitleSection}>
+              <div
+                className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
+                onClick={handlePureClick}
+              >
+                <span>Pure Fractionalisation</span>
+              </div>
+              <div
+                className={cls(
+                  { [classes.selectedTabSection]: selectedTab === "synthetic" },
+                  classes.tabSection
+                )}
+                onClick={handleSyntheticClick}
+              >
+                <span>
+                  {isMobile ? "Synthetic Fractionalisation" : "Synthetic Derivative Fractionalisation"}
+                </span>
+              </div>
             </div>
-            <div
-              className={cls(
-                { [classes.selectedTabSection]: selectedTab === "synthetic" },
-                classes.tabSection
-              )}
-              onClick={handleSyntheticClick}
-            >
-              <span>
-                {isMobile ? "Synthetic Fractionalisation" : "Synthetic Derivative Fractionalisation"}
-              </span>
-            </div>
-          </div>
+          </Box>
           {selectedTab === "pure" && (
-            <>
+            <Box width="100%" paddingX={isMobile ? "20px" : "35px"}>
               <div className={classes.headerButtonGroup}>
                 {/* fractionalize button */}
                 {!isMobile && (
@@ -221,7 +223,7 @@ const NFTFractionalisation = () => {
                   <div></div>
                 )}
               </div>
-            </>
+            </Box>
           )}
           <PriviPixSyntheticRouter
             openFractionalize={openFractionalize}

@@ -5,8 +5,6 @@ import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { FlipCoinModalStyles } from "./index.styles";
 import { Modal } from "shared/ui-kit";
 
-declare let window: any;
-
 // true - flipping dialog, false - result dialog (finished flipping)
 // true - won, false - lost
 export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, hash, resultState }) {
@@ -82,13 +80,9 @@ export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, h
                         you have lost 0.1 JOTS to the owner
                       </span>
                     </p>
-                    <Box display="flex" alignItems="center" width="100%">
-                      <button className={classes.plainBtn} onClick={handleLater} style={{ flex: 1 }}>
+                    <Box display="flex" alignItems="center" width="100%" justifyContent="center">
+                      <button className={classes.plainBtn} onClick={onClose} style={{ width: "70%" }}>
                         Close
-                      </button>
-                      <Box width="10px" />
-                      <button className={classes.checkBtn} onClick={handleLater} style={{ flex: 1 }}>
-                        Flip Again
                       </button>
                     </Box>
                   </Box>

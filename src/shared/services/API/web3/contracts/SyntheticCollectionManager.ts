@@ -71,7 +71,7 @@ const syntheticCollectionManager = (network: string) => {
   const flipJot = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { tokenId, prediction } = payload;
+        const { tokenId, prediction, setFlippingHash } = payload;
         const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
@@ -101,35 +101,34 @@ const syntheticCollectionManager = (network: string) => {
           .flipJot(tokenId, parseInt(prediction))
           .send({ from: account, gas });
 
+        console.log("coinFlipped... ", response);
+        setFlippingHash(response.transactionHash);
+
         const {
           events: {
-            CoinFlipped: { blockNumber },
+            CoinFlipped: {
+              blockNumber,
+              returnValues: { requestId },
+            },
           },
         } = response;
 
-        console.log(" --- response ....", response);
-
-
         await new Promise(resolve => setTimeout(resolve, 35000));
-   
-        await contract.getPastEvents('FlipProcessed',{
-          fromBlock: blockNumber,
-          toBlock: 'latest'
-            },
-        (error, events) => {
-          console.log(events)
-        });
 
-
-        // const res = await contract.events
-        //   .FlipProcessed()
-        //   .on("data", event => console.log("data", event))
-
-        // console.log("flipProcessed event...", res);
-
-
-        // console.log("subscription...", res);
-        resolve(response);
+        await contract.getPastEvents(
+          "FlipProcessed",
+          {
+            fromBlock: blockNumber,
+            toBlock: "latest",
+          },
+          (error, events) => {
+            console.log(events);
+            const event = events
+              .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
+              .find(res => res.requestId === requestId);
+            resolve(event);
+          }
+        );
       } catch (e) {
         console.log(e);
         resolve(null);

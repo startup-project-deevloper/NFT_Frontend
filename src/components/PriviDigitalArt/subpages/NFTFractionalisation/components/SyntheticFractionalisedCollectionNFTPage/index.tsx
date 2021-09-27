@@ -31,6 +31,8 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import URL from "shared/functions/getURL";
 import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
+import FlipCoinInputGuessModal from "../../modals/FlipCoinInputGuessModal";
+import * as API from "shared/services/API/FractionalizeAPI";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
@@ -57,7 +59,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [ownershipJot, setOwnershipJot] = useState<number>(0);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [flipResult, setFlipResult] = useState<boolean>(false);
-  const [hashFlipping, setHashFlipping] = useState<string>("");
+  const [flipGuess, setFlipGuess] = useState<number>(0);
+  const [flippingHash, setFlippingHash] = useState<string>("");
 
   const [nft, setNft] = useState<any>({});
   const theme = useTheme();
@@ -67,6 +70,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
   const [loadingData, setLoadingData] = useState<boolean>(true);
+  const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
+  const [resultState, setResultState] = useState<number>(0);
 
   /// TODO This is wrong
   const isOwner = React.useMemo(
@@ -136,8 +141,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     setOpenWithdrawNFTModal(false);
   };
 
-  const handleFlipCoin = async () => {
+  const handleSetFlipGuess = async value => {
     const targetChain = BlockchainNets[1];
+    setFlipGuess(value);
+    setOpenFlipCoinGuessModal(false);
     setOpenFlipCoinModal(true);
     setIsFlipping(true);
     if (chainId && chainId !== targetChain?.chainId) {
@@ -155,7 +162,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 
       const contractResponse = await web3APIHandler.SyntheticCollectionManager.flipJot(web3, account!, nft, {
         tokenId: +nft.SyntheticID,
-        prediction: 1,
+        prediction: flipGuess,
+        setFlippingHash: setFlippingHash,
       });
 
       if (!contractResponse) {
@@ -163,22 +171,21 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         return;
       }
 
-      console.log("response", contractResponse);
+      console.log("contractResponse... ", contractResponse);
+      const { prediction, tokenId, requestId, randomResult } = contractResponse;
 
-      // const {
-      //   returnValues: { prediction, tokenId, requestId, randomResult }, transactionHash
-      // } = contractResponse;
+      await API.addFlipHistory({
+        collectionAddress: nft.collectionAddress,
+        syntheticID: nft.SyntheticID,
+        winnerAddress: requestId,
+        prediction: prediction,
+        randomResult,
+        tokenId,
+      });
 
-      // await API.addFlipHistory({
-      //   collectionAddress: selectedNFT.collectionAddress,
-      //   syntheticID: selectedNFT.SyntheticID,
-      //   winnerAddress: requestId,
-      //   prediction: prediction,
-      //   randomResult,
-      //   tokenId,
-      // });
-
-      // setHash(transactionHash);
+      setIsFlipping(false);
+      setResultState(+randomResult);
+      setFlipResult(prediction === randomResult);
     } catch (err) {
       console.log("error", err);
     }
@@ -591,7 +598,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 {isFlipped ? (
                   <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>
                 ) : (
-                  <div className={classes.flipCoinButton} onClick={handleFlipCoin}>
+                  <div className={classes.flipCoinButton} onClick={() => setOpenFlipCoinGuessModal(true)}>
                     Flip The Coin
                   </div>
                 )}
@@ -638,13 +645,18 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             This NFT is beeing withdrawn
           </Box>
         </Modal>
+        <FlipCoinInputGuessModal
+          open={OpenFlipCoinGuessModal}
+          onClose={() => setOpenFlipCoinGuessModal(false)}
+          setResult={handleSetFlipGuess}
+        />
         <FlipCoinModal
           open={openFlipCoinModal}
           onClose={() => setOpenFlipCoinModal(false)}
           isFlipping={isFlipping}
           flipResult={flipResult}
-          hash={hashFlipping}
-          resultState={0}
+          resultState={resultState}
+          hash={flippingHash}
         />
       </div>
     </LoadingWrapper>

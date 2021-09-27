@@ -118,18 +118,33 @@ const SyntheticFractionalisePage = ({
               </Box>
             </Box>
             <div className={classes.topNFTContent}>
-              <Carousel
-                isRTL={false}
-                itemsToShow={itemsToShow}
-                pagination={false}
-                showArrows={false}
-                ref={carouselRef}
-                itemPadding={[0, 12]}
-              >
-                {collections.map((item: any) => (
-                  <SyntheticCollectionCard item={item} key={item.id} />
-                ))}
-              </Carousel>
+              {collections.length ? (
+                <Carousel
+                  isRTL={false}
+                  itemsToShow={itemsToShow}
+                  pagination={false}
+                  showArrows={false}
+                  ref={carouselRef}
+                  itemPadding={[0, 12]}
+                >
+                  {collections.map((item: any) => (
+                    <SyntheticCollectionCard item={item} key={item.id} />
+                  ))}
+                </Carousel>
+              ) : (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                  }}
+                >
+                  <CircularLoadingIndicator theme="blue" />
+                </div>
+              )}
             </div>
           </div>
           <div className={classes.allNFTWrapper}>

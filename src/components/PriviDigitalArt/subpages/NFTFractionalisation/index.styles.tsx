@@ -79,7 +79,6 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     fontWeight: 800,
     fontFamily: "Agrandir",
     color: "#431AB7",
-    textTransform: "uppercase",
     lineHeight: "23px",
     marginTop: 32,
     padding: "0 20px",

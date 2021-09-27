@@ -170,6 +170,7 @@ const tempHistory = [
 
 export const TransactionTable = ({ datas }) => {
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
+  const isMobile = useMediaQuery("(max-width:1080px)");
   // const usersList = useSelector((state: RootState) => state.usersInfoList);
   // const getUserInfo = (address: string) => usersList.find(u => u.address === address);
 
@@ -210,7 +211,9 @@ export const TransactionTable = ({ datas }) => {
             cell: `${row.value || "0"} USDT`,
           },
           {
-            cell: <Box color="rgba(67, 26, 183, 1)">{row.account || ""}</Box>,
+            cell: <Box color="rgba(67, 26, 183, 1)">{
+              row.account || ""
+            }</Box>,
           },
           {
             cell: row.time || "",
@@ -298,7 +301,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             type: "Buy",
             tokenAmount: txn.Amount,
             value: +txn.Amount * (+nft.Price || 1),
-            account: txn.To,
+            account:
+              txn.To
+              ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
+              : '',
             time: txn.Date,
             hash: txn.Id,
           }))

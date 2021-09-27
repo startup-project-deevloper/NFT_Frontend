@@ -24,6 +24,23 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       padding: "39px 15px",
     },
   },
+  buttonWrapper: {
+    display: 'flex',
+
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: 'column',
+
+      '& > div': {
+        width: '100%',
+        height: 47,
+        margin: 0,
+      },
+
+      '& > div:nth-child(1)': {
+        marginBottom: 10,
+      },
+    },
+  },
   backButtonContainer: {
     paddingLeft: 48,
     alignItems: "center",
@@ -70,6 +87,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         background: "#1A1B1C",
         WebkitBackgroundClip: "text",
         WebkitTextFillColor: "transparent",
+      },
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      "& > div": {
+        padding: 0,
+        justifyContent: 'center',
+        height: '100%',
       },
     },
   },

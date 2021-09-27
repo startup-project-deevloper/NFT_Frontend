@@ -352,16 +352,18 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 
   const handleFollow = () => {
     const body = {
-      userAddress: nft.priviUser.id,
-      communityAddress: match.params.collectionId,
+      userId: nft.priviUser.id,
+      collectionId: match.params.collectionId,
+      syntheticId: match.params.nftId,
     };
 
-    Axios.post(`${URL()}/community/follow`, body).then(res => {
+    Axios.post(`${URL()}/syntheticFractionalize/follow`, body).then(res => {
       const resp = res.data;
       if (resp.success) {
-        const itemCopy = { ...nft };
-        itemCopy.Followers = [...(itemCopy.Followers ?? []), nft.priviUser.id];
-
+        const itemCopy = {
+          ...nft,
+          follows: [...resp.follows],
+        };
         setNft(itemCopy);
       }
     });
@@ -457,8 +459,16 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
               <div className={classes.plusSection} onClick={handleFollow}>
-                <PlusIcon />
-                <span>Follow</span>
+                {nft &&
+                nft.follows &&
+                nft.follows.filter(item => item.userId === nft.priviUser.id).length > 0 ? (
+                  <span>Following</span>
+                ) : (
+                  <>
+                    <PlusIcon />
+                    <span>Follow</span>
+                  </>
+                )}
               </div>
             </Box>
             <SharePopup

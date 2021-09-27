@@ -79,7 +79,7 @@ export default function SyntheticCollectionCard({ item }) {
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Fraction Price</Box>
-              <Box className={classes.detailInfo}>{price} USDC</Box>
+              <Box className={classes.detailInfo}>XXXX USDC</Box>
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Implied Valuation</Box>

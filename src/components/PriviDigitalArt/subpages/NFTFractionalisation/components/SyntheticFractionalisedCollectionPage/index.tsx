@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 
-import { Grid } from "@material-ui/core";
+import { Grid, useMediaQuery } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
@@ -20,7 +20,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 import { SharePopup } from "shared/ui-kit/SharePopup";
-
+/*
 const NFTList = [
   {
     image: require("assets/backgrounds/digital_art_1.png"),
@@ -83,6 +83,9 @@ const NFTList = [
     started_at: 1631747005555,
   },
 ];
+*/
+
+const NFTList = [];
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -100,6 +103,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
 
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery("(max-width:599px)");
 
   useEffect(() => {
     if (!params.id) return;
@@ -199,26 +203,44 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           />
           <Box
             display="flex"
-            alignItems="center"
+            flexDirection={isMobile ? 'column' : 'row'}
+            alignItems={isMobile ? "flex-start" : "center"}
             justifyContent="space-between"
             gridColumnGap="20px"
             flexWrap="wrap"
             gridRowGap="30px"
           >
-            <div className={classes.typo1}>✨ Collection</div>
-            <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Box display="flex" mr={"10px"}>
-                <EthIcon />
+            {isMobile && (
+              <Box className={classes.mobileEthContainer} display="flex" alignItems="center" justifyContent="space-between">
+                <Box display="flex" mr={"10px"}>
+                  <EthIcon />
+                </Box>
+                <div className={classes.typo2}>Ethereum</div>
+                <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
+                  <ShareIcon />
+                </div>
+                <div className={classes.plusSection}>
+                  <PlusIcon />
+                </div>
+                <div className={classes.typo2}>Follow</div>
               </Box>
-              <div className={classes.typo2}>Ethereum</div>
-              <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
-                <ShareIcon />
-              </div>
-              <div className={classes.plusSection}>
-                <PlusIcon />
-              </div>
-              <div className={classes.typo2}>Follow</div>
-            </Box>
+            )}
+            <div className={classes.typo1}>✨ Collection</div>
+            {!isMobile && (
+              <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Box display="flex" mr={"10px"}>
+                  <EthIcon />
+                </Box>
+                <div className={classes.typo2}>Ethereum</div>
+                <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
+                  <ShareIcon />
+                </div>
+                <div className={classes.plusSection}>
+                  <PlusIcon />
+                </div>
+                <div className={classes.typo2}>Follow</div>
+              </Box>
+            )}
           </Box>
           <SharePopup
             item={{ ...collection, Type: "SYNTHETIC_COLLECTION", CollectionId: params.id }}
@@ -346,18 +368,25 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 ))}
               </Grid>
             ) : (
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingTop: 16,
-                  paddingBottom: 16,
-                }}
-              >
-                <CircularLoadingIndicator theme="blue" />
-              </div>
+              NFTList && NFTList.length === 0 ? (
+                <Box className={classes.noAuction}>
+                  <img src={require("assets/icons/no_auctions.png")}/>
+                  <span>No active auctions right now.</span>
+                </Box>
+              ) : (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                  }}
+                >
+                  <CircularLoadingIndicator theme="blue" />
+                </div>
+              )
             )}
           </div>
         ) : (

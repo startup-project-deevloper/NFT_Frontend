@@ -24,10 +24,41 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       padding: "39px 15px",
     },
   },
-  buttonWrapper: {
+  noAuction: {
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 28,
+    color: "#431AB7",
+
+    "& img": {
+      width: '100%',
+      height: '100%',
+      maxWidth: 430,
+      marginBottom: 35,
+    },
 
     [theme.breakpoints.down("sm")]: {
+      fontSize: 18,
+    },
+  },
+  buttonWrapper: {
+    display: 'flex',
+    [theme.breakpoints.between(769, 880) ]: {
+      flexDirection: 'column',
+
+      '& > div': {
+        width: '100%',
+        height: 47,
+        margin: 0,
+      },
+
+      '& > div:nth-child(1)': {
+        marginBottom: 10,
+      },
+    },
+    [theme.breakpoints.down(768)]: {
       flexDirection: 'column',
 
       '& > div': {
@@ -44,8 +75,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   backButtonContainer: {
     paddingLeft: 48,
     alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
+
+    [theme.breakpoints.between(769, 880)]: {
       paddingLeft: 0,
+      alignItems: "flex-start",
+    },
+    [theme.breakpoints.down(768)]: {
+      paddingLeft: 0,
+      alignItems: "flex-start",
     },
   },
   "@keyframes gradientmove": {
@@ -90,7 +127,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       },
     },
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.between(769, 880)]: {
+      "& > div": {
+        padding: 0,
+        justifyContent: 'center',
+        height: '100%',
+      },
+    },
+    [theme.breakpoints.down(768)]: {
       "& > div": {
         padding: 0,
         justifyContent: 'center',
@@ -119,6 +163,10 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       color: "white",
     },
   },
+  mobileEthContainer: {
+    marginLeft: 'auto',
+
+  },
   collectionMainContent: {
     position: "relative",
     background: "linear-gradient(118.22deg, #431AB7 42.55%, #9EACF2 114.51%)",
@@ -128,7 +176,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     height: "auto",
     minHeight: 320,
     padding: "30px 27px 42px 480px",
-    marginTop: 32,
+    marginTop: 44,
     color: "#ffffff",
     display: "flex",
     flexDirection: "column",
@@ -229,9 +277,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     paddingLeft: 24,
     paddingRight: 30,
     cursor: "pointer",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down(768)]: {
       marginLeft: 15,
       marginRight: 15,
+      paddingLeft: 0,
+      paddingRight: 0,
     },
   },
   plusSection: {

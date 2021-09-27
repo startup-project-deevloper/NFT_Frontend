@@ -303,7 +303,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             value: +txn.Amount * (+nft.Price || 1),
             account:
               txn.To
-              ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
+              ? isMobileScreen
+                ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
+                : txn.To
               : '',
             time: txn.Date,
             hash: txn.Id,

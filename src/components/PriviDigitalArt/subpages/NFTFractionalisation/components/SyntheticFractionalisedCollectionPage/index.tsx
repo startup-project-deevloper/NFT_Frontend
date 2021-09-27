@@ -107,8 +107,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     (async () => {
       const response = await getSyntheticCollection(params.id);
       if (response.success) {
-        console.log(params);
-        console.log(response.data);
         setCollection(response.data);
       }
     })();

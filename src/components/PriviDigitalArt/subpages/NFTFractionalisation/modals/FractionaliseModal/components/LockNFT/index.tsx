@@ -70,13 +70,16 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
           onCompleted();
           setIsLoading(false);
         })
+        .on("transactionHash", hash => {
+          setHash(hash);
+          setIsLoading(false);
+        })
         .on("error", error => {
           console.log("error", error);
           showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
           setIsProceeding(false);
           setIsLoading(false);
         });
-      setHash(response.transactionHash);
       await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
         collectionAddress: selectedNFT.tokenAddress,
         syntheticID,
@@ -102,32 +105,30 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       <div className={classes.container}>
         {isProceeding ? (
           <>
-            <LoadingWrapper loading={isLoading} theme="blue" iconWidth="80px" iconHeight="80px" />
-            {isLoading ? (
-              <>
-                <h1 className={classes.title}>Locking in progress</h1>
-                <p className={classes.description}>
-                  Transaction is proceeding on Ethereum. <br />
-                  This can take a moment, please be patient...
-                </p>
-              </>
-            ) : (
-              <Box className={classes.result}>
-                <h1 className={classes.title}>Lock NFT on Ethereum</h1>
-                <CopyToClipboard text={hash}>
-                  <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
-                    Hash:
-                    <Box color="#4218B5" mr={1} ml={1}>
-                      {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+            <LoadingWrapper loading={true} theme="blue" iconWidth="80px" iconHeight="80px" />
+            <Box className={classes.result}>
+              <h1 className={classes.title}>Locking in progress</h1>
+              <p className={classes.description}>
+                Transaction is proceeding on Ethereum. <br />
+                This can take a moment, please be patient...
+              </p>
+              {!isLoading && (
+                <>
+                  <CopyToClipboard text={hash}>
+                    <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
+                      Hash:
+                      <Box color="#4218B5" mr={1} ml={1}>
+                        {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                      </Box>
+                      <CopyIcon />
                     </Box>
-                    <CopyIcon />
-                  </Box>
-                </CopyToClipboard>
-                <button className={classes.checkBtn} onClick={handleEtherScan}>
-                  Check on Ethereum Scan
-                </button>
-              </Box>
-            )}
+                  </CopyToClipboard>
+                  <button className={classes.checkBtn} onClick={handleEtherScan}>
+                    Check on Ethereum Scan
+                  </button>
+                </>
+              )}
+            </Box>
           </>
         ) : (
           <>

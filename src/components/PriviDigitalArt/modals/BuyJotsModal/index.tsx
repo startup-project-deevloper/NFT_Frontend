@@ -121,6 +121,7 @@ export default function BuyJotsModal({
       {
         tokenId: +nft.SyntheticID,
         amount: +jots,
+        setHash,
       }
     );
     if (!contractResponse.success) {
@@ -131,7 +132,6 @@ export default function BuyJotsModal({
     }
 
     setLoading(false);
-    setHash(contractResponse.data.hash);
     const response = await buyJots({
       collectionId,
       syntheticId: nft.SyntheticID,
@@ -176,7 +176,7 @@ export default function BuyJotsModal({
               <p>
                 {`Transaction is proceeding on ${selectedChain.value}.\nThis can take a moment, please be patient...`}
               </p>
-              {!loading && (
+              {hash && (
                 <Box display="flex" flexDirection="column" alignItems="center">
                   <CopyToClipboard text={hash}>
                     <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>

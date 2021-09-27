@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
+import USDC from "shared/services/API/web3/contracts/ERC20Tokens/USDC";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 
@@ -54,6 +55,59 @@ const syntheticCollectionManager = (network: string) => {
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
         contract.methods.getOwnerSupply(tokenId).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const getContractJotsBalance = (web3: Web3, collection: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getContractJotsBalance().call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const getJotFractionPrice = (web3: Web3, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const USDCAPI = USDC(network);
+
+        const decimals = await USDCAPI.decimals(web3);
+
+        contract.methods.getJotFractionPrice(tokenId).call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
@@ -278,6 +332,8 @@ const syntheticCollectionManager = (network: string) => {
     flipJot,
     getSellingSupply,
     getOwnerSupply,
+    getContractJotsBalance,
+    getJotFractionPrice,
   };
 };
 

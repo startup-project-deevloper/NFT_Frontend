@@ -390,6 +390,15 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             >
               Ownership management
             </Box>
+            <Box className={classes.progressContainer}>
+              <Box className={classes.progressBar}>
+                <Box className={classes.progressed} style={{ width: "35%" }} />
+              </Box>
+              <Box className={classes.progressTitle} display="flex" alignItems="center" justifyContent="space-between">
+                <span>Margin left before Liquidation</span>
+                <span>100 / <b>2455 JOTs</b></span>
+              </Box>
+            </Box>
             <Box className={classes.boxBody}>
               <Box
                 className={classes.col_half}

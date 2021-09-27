@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-elastic-carousel";
 import { useHistory } from "react-router";
 
@@ -28,6 +28,8 @@ const SyntheticFractionalisePage = ({
   const isNarrow = useMediaQuery(theme.breakpoints.down(860));
 
   const itemsToShow = isNarrow ? 1 : isTablet ? 2 : 3;
+
+  const carouselRef = useRef<any>();
 
   const [collections, setCollections] = useState([]);
 
@@ -72,7 +74,7 @@ const SyntheticFractionalisePage = ({
                   >
                     Synthetic Fractionalise NFT
                   </div>
-                  <div className={classes.tradeNFTBtnWrapper} onClick={() => {}}>
+                  <div className={classes.tradeNFTBtnWrapper} onClick={() => { }}>
                     <div className={classes.tradeNFTBtn}>Trade NFT Derivatives</div>
                   </div>
                 </Grid>
@@ -89,11 +91,41 @@ const SyntheticFractionalisePage = ({
 
         <div className={classes.NFTSection}>
           <div className={classes.topNFTWrapper}>
-            <div className={classes.topNFTTitle}>
+            <Box className={classes.topNFTTitle} justifyContent="space-between">
               <span>Featured NFT Collections</span>
-            </div>
+              <Box display="flex" alignItems="center">
+                <Box
+                  className={classes.carouselNav}
+                  onClick={() => {
+                    carouselRef.current.slidePrev();
+                  }}
+                >
+                  <svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#431AB7" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.14546 14.6185L1.29284 7.98003M1.29284 7.98003L8.14546 1.34155M1.29284 7.98003H18.707" strokeWidth="1.5122" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Box>
+                <Box
+                  ml={3}
+                  className={classes.carouselNav}
+                  onClick={() => {
+                    carouselRef.current.slideNext();
+                  }}
+                >
+                  <svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#431AB7" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.8545 14.6185L18.7072 7.98003M18.7072 7.98003L11.8545 1.34155M18.7072 7.98003H1.29297" strokeWidth="1.5122" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Box>
+              </Box>
+            </Box>
             <div className={classes.topNFTContent}>
-              <Carousel isRTL={false} itemsToShow={itemsToShow} pagination={false}>
+              <Carousel
+                isRTL={false}
+                itemsToShow={itemsToShow}
+                pagination={false}
+                showArrows={false}
+                ref={carouselRef}
+                itemPadding={[0, 12]}
+              >
                 {collections.map((item: any) => (
                   <SyntheticCollectionCard item={item} key={item.id} />
                 ))}

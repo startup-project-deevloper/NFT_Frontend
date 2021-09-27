@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/polygon/functions";
-import config from "shared/connectors/polygon/config";
+import config from "shared/connectors/web3/config";
 import { BigNumber } from "ethers";
 import { toNDecimals } from "shared/functions/web3";
 

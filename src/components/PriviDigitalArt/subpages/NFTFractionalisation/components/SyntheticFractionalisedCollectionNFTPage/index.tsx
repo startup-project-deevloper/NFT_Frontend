@@ -323,35 +323,20 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   }
 
   const handleGiveFruit = type => {
-    let body = {};
-    if (
-      (nft.BlockchainNetwork && nft.BlockchainNetwork.toLowerCase().includes("privi")) ||
-      (nft.blockchain && nft.blockchain.toLowerCase().includes("privi"))
-    ) {
-      body = {
-        userId: nft.priviUser.id,
-        fruitId: type,
-        mediaAddress: nft.NftId,
-        mediaType: nft.Type,
-        tag: "privi",
-      };
-    } else {
-      body = {
-        userId: nft.priviUser.id,
-        fruitId: type,
-        mediaAddress: nft.NftId,
-        mediaType: nft.Type || nft.type,
-        tag: nft.JotSymbol,
-        subCollection: match.params.collectionId,
-      };
-    }
+    const body = {
+      userId: nft.priviUser.id,
+      fruitId: type,
+      collectionId: match.params.collectionId,
+      syntheticId: match.params.nftId,
+    };
 
-    Axios.post(`${URL()}/media/fruit`, body).then(res => {
+    Axios.post(`${URL()}/syntheticFractionalize/fruit`, body).then(res => {
       const resp = res.data;
       if (resp.success) {
-        const itemCopy = { ...nft };
-        itemCopy.fruits = resp.fruitsArray;
-
+        const itemCopy = {
+          ...nft,
+          fruits: [...resp.fruits],
+        };
         setNft(itemCopy);
       }
     });

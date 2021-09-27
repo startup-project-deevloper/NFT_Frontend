@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery } from "@material-ui/core";
+import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -12,6 +12,7 @@ import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
 import { getSyntheticNFTTransactions } from "shared/services/API/SyntheticFractionalizeAPI";
 import AddJOTsModal from "components/PriviDigitalArt/modals/AddJOTsModal";
+import { styled } from "@material-ui/styles";
 
 const FreeHoursChartConfig = {
   config: {
@@ -405,16 +406,17 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 <Box className={classes.ownerInfo}>
                   <Box className={classes.h4} pb={1} sx={{ justifyContent: "center", alignItems: "center" }}>
                     Your current ownership
-                    <Tooltip
+                    <HtmlTooltip
                       title="If your ownership reaches 0, you will loose your NFT"
                       TransitionComponent={Fade}
                       TransitionProps={{ timeout: 600 }}
+                      placement="bottom-start"
                       arrow
                     >
                       <IconButton>
                         <InfoIcon />
                       </IconButton>
-                    </Tooltip>
+                    </HtmlTooltip>
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                     100 JOTs
@@ -830,3 +832,21 @@ const InfoIcon = () => (
     />
   </svg>
 );
+
+const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  "& .MuiTooltip-tooltip": {
+    color: "#431AB7",
+    fontSize: "13px",
+    lineHeight: "130%",
+    background: "#EFF2FD",
+    boxShadow: "0px 2px 5px rgba(97, 67, 181, 0.15), 0px 10px 14px rgba(97, 67, 181, 0.21)",
+    borderRadius: "16px",
+    maxWidth: 250,
+    padding: "14px 20px",
+  },
+  "& .MuiTooltip-arrow": {
+    color: "#EFF2FD",
+  }
+}));

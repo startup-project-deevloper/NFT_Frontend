@@ -15,6 +15,7 @@ import { buyJots } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
+import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
@@ -39,6 +40,14 @@ export default function BuyJotsModal({
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
   const [maxJot, setMaxJot] = React.useState<number>(0);
   const [hash, setHash] = React.useState<string>("");
+  const [openLoading, setOpenLoading] = React.useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setLoading(false);
+      setOpenLoading(false);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
@@ -75,6 +84,7 @@ export default function BuyJotsModal({
     }
 
     setLoading(true);
+    setOpenLoading(true);
     // For polygon chain
     const targetChain = BlockchainNets[1];
     if (chainId && chainId !== targetChain?.chainId) {
@@ -99,6 +109,7 @@ export default function BuyJotsModal({
 
     if (!approveResponse) {
       setLoading(false);
+      setOpenLoading(false);
       showAlertMessage("Failed to approve. Please try again", { variant: "error" });
       return;
     }
@@ -110,15 +121,17 @@ export default function BuyJotsModal({
       {
         tokenId: +nft.SyntheticID,
         amount: +jots,
+        setHash,
       }
     );
     if (!contractResponse.success) {
       setLoading(false);
+      setOpenLoading(false);
       showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
       return;
     }
 
-    setHash(contractResponse.data.hash);
+    setLoading(false);
     const response = await buyJots({
       collectionId,
       syntheticId: nft.SyntheticID,
@@ -127,8 +140,6 @@ export default function BuyJotsModal({
       hash: contractResponse.data.hash,
     });
 
-    setLoading(false);
-
     if (!response.success) {
       showAlertMessage("Failed to save transactions.", { variant: "error" });
       return;
@@ -136,100 +147,116 @@ export default function BuyJotsModal({
 
     showAlertMessage("You bought JOTs successuflly", { variant: "success" });
     handleRefresh();
-    handleClose();
   };
 
   const handlePolygonScan = () => {
     window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
   };
 
-  return (
-    <LoadingScreen
-      loading={loading}
-      title={`Transaction \nin progress`}
-      subTitle={
-        <>
-          <p>
-            Transaction is proceeding on ${selectedChain.value}.\nThis can take a moment, please be patient...
-          </p>
-          {!loading && (
-            <Box display="flex" flexDirection="column" alignItems="center">
-              <CopyToClipboard text={hash}>
-                <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
-                  Hash:
-                  <Box color="#4218B5" mr={1} ml={1}>
-                    {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
-                  </Box>
-                  <CopyIcon />
-                </Box>
-              </CopyToClipboard>
-              <button className={classes.checkBtn} onClick={handlePolygonScan}>
-                Check on Polygon Scan
-              </button>
-            </Box>
-          )}
-        </>
-      }
-      handleClose={handleClose}
-    >
+  if (openLoading) {
+    return (
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>
-        <Box>
-          <Header3>Buy JOTs</Header3>
-          <InputWithLabelAndTooltip
-            inputValue={jots}
-            onInputValueChange={e => setJOTs(e.target.value)}
-            overriedClasses={classes.inputJOTs}
-            maxValue={maxJot}
-            required
-            type="number"
-            theme="light"
-            endAdornment={<div className={classes.purpleText}>JOTS</div>}
-          />
-          <Grid container>
-            <Grid item md={7} xs={12}>
-              <Box className={classes.leftBalance} display="flex" alignItems="center">
-                <Header5 style={{ marginBottom: 0 }}>Wallet Balance</Header5>
-                <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
-                  <Box className={classes.point}></Box>
-                  <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
-                    {usdtBalance.toFixed(2)} USDT
-                  </Header5>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item md={5} xs={12}>
-              <Box
-                className={classes.rightBalance}
-                flexGrow={1}
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-end"
-              >
-                <Box>MAX: {maxJot.toFixed(2)}</Box>
-                <Box color="rgba(67,26, 183, 0.4)" paddingX="15px" onClick={() => setJOTs(maxJot)}>
-                  Buy Max
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-          <Box display="flex" alignItems="center" mt={6} justifyContent="space-between">
-            <SecondaryButton
-              size="medium"
-              style={{ color: Color.Purple, width: "100px", border: "2px solid #151414" }}
-              onClick={handleClose}
+        <Box style={{ textAlign: "center", paddingTop: "50px", paddingBottom: "50px" }}>
+          {loading && (
+            <LoadingWrapper loading theme="purple" iconWidth="80px" iconHeight="80px"></LoadingWrapper>
+          )}
+          <Box>
+            <h3
+              style={{
+                fontSize: "27px",
+                marginTop: "10px",
+                whiteSpace: "pre-wrap",
+                fontWeight: "bold",
+                color: "#431AB7",
+              }}
             >
-              Cancel
-            </SecondaryButton>
-            <PrimaryButton
-              size="medium"
-              style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
-              onClick={handleBuyJots}
-            >
-              Confirm
-            </PrimaryButton>
+              {"Transaction \nin progress".toUpperCase()}
+            </h3>
+            <p style={{ fontSize: "18px", marginTop: "20px", whiteSpace: "pre-wrap" }}>
+              <p>
+                {`Transaction is proceeding on ${selectedChain.value}.\nThis can take a moment, please be patient...`}
+              </p>
+              {hash && (
+                <Box display="flex" flexDirection="column" alignItems="center">
+                  <CopyToClipboard text={hash}>
+                    <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
+                      Hash:
+                      <Box color="#4218B5" mr={1} ml={1}>
+                        {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                      </Box>
+                      <CopyIcon />
+                    </Box>
+                  </CopyToClipboard>
+                  <button className={classes.checkBtn} onClick={handlePolygonScan}>
+                    Check on Polygon Scan
+                  </button>
+                </Box>
+              )}
+            </p>
           </Box>
         </Box>
       </Modal>
-    </LoadingScreen>
+    );
+  }
+
+  return (
+    <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>
+      <Box>
+        <Header3>Buy JOTs</Header3>
+        <InputWithLabelAndTooltip
+          inputValue={jots}
+          onInputValueChange={e => setJOTs(e.target.value)}
+          overriedClasses={classes.inputJOTs}
+          maxValue={maxJot}
+          required
+          type="number"
+          theme="light"
+          endAdornment={<div className={classes.purpleText}>JOTS</div>}
+        />
+        <Grid container>
+          <Grid item md={7} xs={12}>
+            <Box className={classes.leftBalance} display="flex" alignItems="center">
+              <Header5 style={{ marginBottom: 0 }}>Wallet Balance</Header5>
+              <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
+                <Box className={classes.point}></Box>
+                <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
+                  {usdtBalance.toFixed(2)} USDT
+                </Header5>
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item md={5} xs={12}>
+            <Box
+              className={classes.rightBalance}
+              flexGrow={1}
+              display="flex"
+              alignItems="center"
+              justifyContent="flex-end"
+            >
+              <Box>MAX: {maxJot.toFixed(2)}</Box>
+              <Box color="rgba(67,26, 183, 0.4)" paddingX="15px" onClick={() => setJOTs(maxJot)}>
+                Buy Max
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
+        <Box display="flex" alignItems="center" mt={6} justifyContent="space-between">
+          <SecondaryButton
+            size="medium"
+            style={{ color: Color.Purple, width: "100px", border: "2px solid #151414" }}
+            onClick={handleClose}
+          >
+            Cancel
+          </SecondaryButton>
+          <PrimaryButton
+            size="medium"
+            style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
+            onClick={handleBuyJots}
+          >
+            Confirm
+          </PrimaryButton>
+        </Box>
+      </Box>
+    </Modal>
   );
 }

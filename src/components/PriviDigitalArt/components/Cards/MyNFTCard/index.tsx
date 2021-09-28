@@ -63,7 +63,7 @@ export default function MyNFTCard({ item, onLockCompleted }: IProps) {
         />
       )}
       {openVerifyLockNFT && (
-        <VerifyLockNFTModal open={openVerifyLockNFT} onClose={() => setOpenVerifyLockNFT(false)} />
+        <VerifyLockNFTModal open={openVerifyLockNFT} onClose={() => setOpenVerifyLockNFT(false)} nft={item} />
       )}
     </Box>
   );

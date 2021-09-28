@@ -4,16 +4,13 @@ import Box from "shared/ui-kit/Box";
 import VerifyNFTLock from "../FractionaliseModal/components/VerifyNFTLock";
 import { lockNFTModalStyles } from "./index.styles";
 
-export const VerifyLockNFTModal = ({ open, onClose }) => {
+export const VerifyLockNFTModal = ({ open, onClose, nft }) => {
   const classes = lockNFTModalStyles();
 
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
       <Box display="flex" flexDirection="column">
-        <VerifyNFTLock
-          onClose={onClose}
-          onCompleted={() => {}}
-        />
+        <VerifyNFTLock onClose={onClose} onCompleted={() => {}} nft={nft} />
       </Box>
     </Modal>
   );

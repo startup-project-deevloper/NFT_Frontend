@@ -334,19 +334,16 @@ const syntheticCollectionManager = (network: string) => {
       try {
         const { tokenId, setHash } = payload;
         const { SyntheticCollectionManagerAddress } = collection;
-
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
         const gas = await contract.methods.verify(tokenId).estimateGas({ from: account });
-        const response = contract.methods
+        const response = await contract.methods
           .verify(tokenId)
           .send({ from: account, gas: gas })
           .on("transactionHash", function (hash) {
             setHash(hash);
           });
-        console.log("verify token response", response);
         resolve({
-          success: true,
-          response,
+          success: !!response.status,
         });
       } catch (e) {
         console.log(e);
@@ -369,7 +366,7 @@ const syntheticCollectionManager = (network: string) => {
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         const gas = await contract.methods.isVerified(tokenId).estimateGas({ from: account });
-        const response = contract.methods.isVerified(tokenId).send({ from: account, gas: gas });
+        const response = await contract.methods.isVerified(tokenId).send({ from: account, gas: gas });
         console.log("is verified token response", response);
         resolve({
           success: true,

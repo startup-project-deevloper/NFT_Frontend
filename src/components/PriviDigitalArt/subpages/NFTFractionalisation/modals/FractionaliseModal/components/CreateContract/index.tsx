@@ -198,7 +198,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         }
         const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
         if (data.success) {
-          onCompleted(params);
+          onCompleted(data.nft);
         } else {
           showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
         }

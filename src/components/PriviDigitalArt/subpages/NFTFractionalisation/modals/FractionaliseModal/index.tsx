@@ -42,8 +42,8 @@ export const FractionaliseModal = ({
           <CreateContract
             onClose={onClose}
             onCompleted={nft => {
-              handleCompleteStep(0);
               setSyntheticNFT(nft);
+              handleCompleteStep(0);
             }}
             selectedNFT={selectedNFT}
             supplyToKeep={supplyToKeep}
@@ -55,7 +55,7 @@ export const FractionaliseModal = ({
             onCompleted={() => handleCompleteStep(1)}
             needLockLaterBtn={false}
             selectedNFT={selectedNFT}
-            syntheticID={syntheticNFT.SyntheticID}
+            syntheticID={syntheticNFT?.SyntheticID}
           />
         ) : (
           <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} nft={syntheticNFT} />

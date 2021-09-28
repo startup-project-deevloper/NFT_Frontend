@@ -6,6 +6,9 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { useVerifyNFTLockStyles } from "./index.styles";
 
+import axios from "axios";
+import URL from "shared/functions/getURL";
+
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
@@ -48,8 +51,18 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
         tokenId: nft.SyntheticID,
         setHash: setHash_,
       });
-      if (response) {
-        onCompleted();
+      if (response.success) {
+        const params = {
+          collectionAddress: nft.collection_id,
+          syntheticID: nft.SyntheticID,
+        };
+        const { data } = await axios.post(`${URL()}/syntheticFractionalize/verifyNFT`, params);
+        if (data.success) {
+          onCompleted();
+          setVerified(true);
+        } else {
+          showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
+        }
       }
       setIsLoading(false);
       setIsProceeding(false);
@@ -62,6 +75,10 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
 
   const handleLater = () => {
     onClose();
+  };
+
+  const handlePolygonScan = () => {
+    window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
   };
 
   return (
@@ -104,7 +121,9 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
                 </Box>
               </CopyToClipboard>
             )}
-            <button className={classes.checkBtn}>Check on Polygon Scan</button>
+            <button className={classes.checkBtn} onClick={handlePolygonScan}>
+              Check on Polygon Scan
+            </button>
           </>
         ) : (
           <>

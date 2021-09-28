@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
 import Web3 from "web3";
@@ -19,6 +19,8 @@ import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 import { SharePopup } from "shared/ui-kit/SharePopup";
+import axios from "axios";
+import URL from "shared/functions/getURL";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -32,11 +34,16 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [selectedTab, setSelectedTab] = useState<"nft" | "jots_pool" | "trade_jots" | "auctions">("nft");
 
   const [collection, setCollection] = useState<any>({});
+  const [syntheticNFTs, setSyntheticNFTs] = useState<any>([]);
+  const lastIdRef = useRef<string>("");
+  const hasMoreRef = useRef<boolean>(true);
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
 
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width:599px)");
+
+  const [loadingNFTs, setLoadingNFTs] = useState<boolean>(false);
 
   useEffect(() => {
     if (!params.id) return;
@@ -47,6 +54,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         setCollection(response.data);
       }
     })();
+    loadNFTs(params.id);
   }, [params.id]);
 
   useEffect(() => {
@@ -59,6 +67,65 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
       })();
     }
   }, [chainId, selectedChain]);
+
+  const loadNFTs = (id) => {
+    if (!id) return;
+    setLoadingNFTs(true);
+
+    const config = {
+      lastId: lastIdRef.current,
+    };
+
+    axios.post(`${URL()}/syntheticFractionalize/getSyntheticCollectionNFTs/${id}`, config)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          const newNFTs = data.data;
+          const newData = [...newNFTs];
+          setSyntheticNFTs(newData);
+          lastIdRef.current = data.lastId;
+          hasMoreRef.current = data.hasMore;
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingNFTs(false);
+      });
+  };
+
+  const loadMore = (id, syntheticNFTs) => {
+    if (!hasMoreRef.current || !id) return;
+    setLoadingNFTs(true);
+
+    const config = {
+      lastId: lastIdRef.current,
+    };
+
+    axios.post(`${URL()}/syntheticFractionalize/getSyntheticCollectionNFTs/${id}`, config)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          const newNFTs = data.data;
+          const newData = [...syntheticNFTs, ...newNFTs];
+          setSyntheticNFTs(newData);
+          lastIdRef.current = data.lastId;
+          hasMoreRef.current = data.hasMore;
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingNFTs(false);
+      });
+  };
+
+  const handleScroll = React.useCallback(
+    async e => {
+      if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
+        if (hasMoreRef.current) loadMore(params.id, syntheticNFTs);
+      }
+    },
+    [hasMoreRef.current, syntheticNFTs]
+  );
 
   const handleAddToMetamask = async () => {
     const targetChain = BlockchainNets[1];
@@ -94,13 +161,13 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
 
   /// Circulating Supply = Locked NFTs * 10000
   const circulatingSupply = useMemo(() => {
-    const lockedCount = collection.SyntheticNFT?.filter(nft => nft.isLocked).length || 0;
+    const lockedCount = syntheticNFTs?.filter(nft => nft.isLocked).length || 0;
     if (lockedCount >= 100) return `$${lockedCount / 100}M`;
     return `$${lockedCount * 10}K`;
   }, [collection]);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} onScroll={handleScroll}>
       <div className={classes.collectionInfoSection}>
         <Box display="flex" justifyContent="space-between" className={classes.backButtonContainer}>
           <BackButton
@@ -191,7 +258,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             </Box>
             <Box display="flex" flexDirection="column">
               <div className={classes.typo3}>
-                {collection.SyntheticNFT?.filter(nft => nft.isLocked).length}
+                {syntheticNFTs?.filter(nft => nft.isLocked).length}
               </div>
               <div className={classes.typo4}>locked NFTs in</div>
             </Box>
@@ -246,22 +313,21 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         </Box>
         {selectedTab === "nft" ? (
           <div className={classes.allNFTSection}>
-            {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
-              <Grid container spacing={2}>
-                {collection.SyntheticNFT.map((item, idx) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <CollectionNFTCard
-                      item={item}
-                      handleSelect={() => {
-                        history.push(
-                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`
-                        );
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            ) : (
+            <Grid container spacing={2}>
+              {syntheticNFTs.map((item, idx) => (
+                <Grid item xs={12} sm={6} md={4} lg={3}>
+                  <CollectionNFTCard
+                    item={item}
+                    handleSelect={() => {
+                      history.push(
+                        `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`
+                      );
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            {hasMoreRef.current && (
               <div
                 style={{
                   width: "100%",
@@ -287,9 +353,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         ) : selectedTab === "auctions" ? (
           <div className={classes.allNFTSection}>
-            {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
+            {syntheticNFTs && syntheticNFTs.length ? (
               <Grid container spacing={2}>
-                {collection.SyntheticNFT.map((item, idx) => (
+                {syntheticNFTs.map((item, idx) => (
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <AuctionCard
                       auction={item}
@@ -303,7 +369,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 ))}
               </Grid>
             ) : (
-              collection.SyntheticNFT && collection.SyntheticNFT.length === 0 ? (
+              syntheticNFTs && syntheticNFTs.length === 0 ? (
                 <Box className={classes.noAuction}>
                   <img src={require("assets/icons/no_auctions.png")}/>
                   <span>No active auctions right now.</span>

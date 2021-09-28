@@ -398,7 +398,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               <div className={classes.plusSection} onClick={handleFollow}>
                 {nft &&
                 nft.follows &&
-                nft.follows.filter(item => item.userId === nft.priviUser.id).length > 0 ? (
+                nft.follows.filter(item => item.userId === nft.priviUser?.id).length > 0 ? (
                   <span>Following</span>
                 ) : (
                   <>

@@ -11,15 +11,13 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import Box from "shared/ui-kit/Box";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "../ExplorePage";
 import DigitalArtCard from "../../components/Cards/DigitalArtCard";
-// import CollectionCard from "../../components/Cards/CollectionCard";
-// import ArtistCard from "../../components/Cards/ArtistCard";
 import { subPageStyles } from "../index.styles";
 import { likedPageStyles } from "./index.styles";
 import PodCard from "components/PriviDigitalArt/components/Cards/PodCard";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { getPixProfileItems } from "shared/services/API";
 
-const Tabs = ["Art", "Pods", ""];
+const Tabs = ["Art", "Pods", "Synthetic Collections", ""];
 const sortOptions = ["Most Relevant", "Recently Added", "Alphabetical Order"];
 
 export default function LikedPage() {
@@ -254,7 +252,11 @@ export default function LikedPage() {
 
         {
           selectedTab === 0 ? (
-            <LoadingWrapper loading={loadingDigitalArts /*&& !sortedLikedMedias.length*/} theme={"blue"} height="calc(100vh - 250px)">
+            <LoadingWrapper
+              loading={loadingDigitalArts /*&& !sortedLikedMedias.length*/}
+              theme={"blue"}
+              height="calc(100vh - 250px)"
+            >
               <div className={cls(classes.artCards)}>
                 {sortedLikedMedias && sortedLikedMedias.length ? (
                   <MasonryGrid

@@ -41,7 +41,6 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     fontWeight: 800,
     fontFamily: "Agrandir",
     color: "#431AB7",
-    textTransform: "uppercase",
     [theme.breakpoints.down(950)]: {
       fontSize: 28,
     },
@@ -476,8 +475,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   topNFTTitle: {
     display: "flex",
     alignItems: "center",
-    padding: "0 25px",
+    padding: "0 40px",
     paddingBottom: "25px",
+    [theme.breakpoints.down(769)]: {
+      padding: "0 25px 25px 25px",
+    },
     "& span": {
       fontSize: 32,
       fontWeight: 800,
@@ -519,8 +521,10 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     display: "flex",
     background: "transparent",
     marginBottom: 50,
+    padding: "0px 16px",
     position: "relative",
     [theme.breakpoints.down(769)]: {
+      padding: 0,
       marginBottom: 0,
     },
     "& button.rec-arrow-left": {

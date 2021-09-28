@@ -102,13 +102,11 @@ const MyNFT = () => {
                 <Box className={classes.sectionTitle} color="#431AB7">
                   NFT To Lock
                 </Box>
-                <Grid container spacing={2}>
+                <div className={classes.cardsGrid}>
                   {myNFTs.map((item, index) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                      <MyNFTCard item={item} onLockCompleted={() => onMyNFTLocked(index)} />
-                    </Grid>
+                    <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} />
                   ))}
-                </Grid>
+                </div>
               </Box>
               <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
                 <Box className={classes.sectionTitle} color="#F2604C">

@@ -1,5 +1,5 @@
 {
-  "address": "0xE318aa31069B85b52e9DaEfCaf9eE2c1e3aB14f8",
+  "address": "0xD967Cc5ceD6BD7D5e47afA1645773f3B9Ae20Bb3",
   "abi": [
     {
       "inputs": [
@@ -600,63 +600,63 @@
       "type": "function"
     }
   ],
-  "transactionHash": "0xec253bb8817a37582e159d9a3fbc4a7e26f51651847ffa67e1fc6ae83915d3e4",
+  "transactionHash": "0xcdc020b2d5f5a8abc03cafc44842aae667781b3511ce9a71ecdb178df527093e",
   "receipt": {
     "to": null,
     "from": "0x7d994063E2C98b2F49b13418Fc3FE58c45DdcC0D",
-    "contractAddress": "0xE318aa31069B85b52e9DaEfCaf9eE2c1e3aB14f8",
-    "transactionIndex": 2,
+    "contractAddress": "0xD967Cc5ceD6BD7D5e47afA1645773f3B9Ae20Bb3",
+    "transactionIndex": 1,
     "gasUsed": "898958",
-    "logsBloom": "0x00000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000018020000000000000000000000000000000000000000000000000000000800001000000000000000100000000000000000000020000000000000000000800000000000000000080000000000000400000008000000000000000000000000000000000000000000000000000000000200000000000000000000000000000200000020000000000000000000000024000000000000000000001000000000000000000000000000000100000100020000000000000000000000000000000000000100010000000000000000000100000",
-    "blockHash": "0x678568c1b5dd45464b1e653b1ed951c31b74d022dd13d77113a00b9d8cc53f56",
-    "transactionHash": "0xec253bb8817a37582e159d9a3fbc4a7e26f51651847ffa67e1fc6ae83915d3e4",
+    "logsBloom": "0x00000000000000020000000000000000000000000000000000800000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000800001000000000000000100000000000000000000020000000000000000000a00000000000000000080000000000000400000000000000000000000000000000000000000000000000000000000000000200000000000000020000000000000200001000000000000000000000000004000000000000000000001000000000000000000000000000000100000000020000000000000000000200000000000000000100010080000000000000000100000",
+    "blockHash": "0x077e0a182c073ece3c98352686100a2fd86d0e7a94fbef324e202f551e0e3760",
+    "transactionHash": "0xcdc020b2d5f5a8abc03cafc44842aae667781b3511ce9a71ecdb178df527093e",
     "logs": [
       {
-        "transactionIndex": 2,
-        "blockNumber": 19386397,
-        "transactionHash": "0xec253bb8817a37582e159d9a3fbc4a7e26f51651847ffa67e1fc6ae83915d3e4",
-        "address": "0xE318aa31069B85b52e9DaEfCaf9eE2c1e3aB14f8",
+        "transactionIndex": 1,
+        "blockNumber": 19436882,
+        "transactionHash": "0xcdc020b2d5f5a8abc03cafc44842aae667781b3511ce9a71ecdb178df527093e",
+        "address": "0xD967Cc5ceD6BD7D5e47afA1645773f3B9Ae20Bb3",
         "topics": [
           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           "0x0000000000000000000000007d994063e2c98b2f49b13418fc3fe58c45ddcc0d"
         ],
         "data": "0x",
-        "logIndex": 8,
-        "blockHash": "0x678568c1b5dd45464b1e653b1ed951c31b74d022dd13d77113a00b9d8cc53f56"
+        "logIndex": 2,
+        "blockHash": "0x077e0a182c073ece3c98352686100a2fd86d0e7a94fbef324e202f551e0e3760"
       },
       {
-        "transactionIndex": 2,
-        "blockNumber": 19386397,
-        "transactionHash": "0xec253bb8817a37582e159d9a3fbc4a7e26f51651847ffa67e1fc6ae83915d3e4",
-        "address": "0xE318aa31069B85b52e9DaEfCaf9eE2c1e3aB14f8",
+        "transactionIndex": 1,
+        "blockNumber": 19436882,
+        "transactionHash": "0xcdc020b2d5f5a8abc03cafc44842aae667781b3511ce9a71ecdb178df527093e",
+        "address": "0xD967Cc5ceD6BD7D5e47afA1645773f3B9Ae20Bb3",
         "topics": [
           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
           "0x0000000000000000000000007d994063e2c98b2f49b13418fc3fe58c45ddcc0d",
           "0x0000000000000000000000007d994063e2c98b2f49b13418fc3fe58c45ddcc0d"
         ],
         "data": "0x",
-        "logIndex": 9,
-        "blockHash": "0x678568c1b5dd45464b1e653b1ed951c31b74d022dd13d77113a00b9d8cc53f56"
+        "logIndex": 3,
+        "blockHash": "0x077e0a182c073ece3c98352686100a2fd86d0e7a94fbef324e202f551e0e3760"
       },
       {
-        "transactionIndex": 2,
-        "blockNumber": 19386397,
-        "transactionHash": "0xec253bb8817a37582e159d9a3fbc4a7e26f51651847ffa67e1fc6ae83915d3e4",
+        "transactionIndex": 1,
+        "blockNumber": 19436882,
+        "transactionHash": "0xcdc020b2d5f5a8abc03cafc44842aae667781b3511ce9a71ecdb178df527093e",
         "address": "0x0000000000000000000000000000000000001010",
         "topics": [
           "0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63",
           "0x0000000000000000000000000000000000000000000000000000000000001010",
           "0x0000000000000000000000007d994063e2c98b2f49b13418fc3fe58c45ddcc0d",
-          "0x000000000000000000000000e4b8e9222704401ad16d4d826732953daf07c7e2"
+          "0x000000000000000000000000c26880a0af2ea0c7e8130e6ec47af756465452e8"
         ],
-        "data": "0x000000000000000000000000000000000000000000000000000994cae8c62400000000000000000000000000000000000000000000000000716ffc8046a6274c0000000000000000000000000000000000000000000000000058cc732d120a00000000000000000000000000000000000000000000000000716667b55de0034c0000000000000000000000000000000000000000000000000062613e15d82e00",
-        "logIndex": 10,
-        "blockHash": "0x678568c1b5dd45464b1e653b1ed951c31b74d022dd13d77113a00b9d8cc53f56"
+        "data": "0x000000000000000000000000000000000000000000000000000994cae8c6240000000000000000000000000000000000000000000000000084007563124e704c00000000000000000000000000000000000000000000017b37aa07d8bea30c5900000000000000000000000000000000000000000000000083f6e09829884c4c00000000000000000000000000000000000000000000017b37b39ca3a7693059",
+        "logIndex": 4,
+        "blockHash": "0x077e0a182c073ece3c98352686100a2fd86d0e7a94fbef324e202f551e0e3760"
       }
     ],
-    "blockNumber": 19386397,
-    "cumulativeGasUsed": "2078567",
+    "blockNumber": 19436882,
+    "cumulativeGasUsed": "919958",
     "status": 1,
     "byzantium": true
   },
@@ -670,14 +670,14 @@
       "liquidationCutRatio": "500000000000000000",
       "protocolFeeCollectRatio": "200000000000000000"
     },
-    "0xae77d079a7d0a7420b070643b53F8CC1bfb074Ea",
+    "0x19af7960Acb93da3C299aB3396289C8701acE0AD",
     1,
     1,
     1,
     6000,
     "0x7d994063E2C98b2F49b13418Fc3FE58c45DdcC0D"
   ],
-  "solcInputHash": "9631ee2e88a0c516d11e20450e96dfe6",
+  "solcInputHash": "96faf7f33423971e1ada8916603345ab",
   "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"components\":[{\"internalType\":\"int256\",\"name\":\"minPoolMarginRatio\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"minInitialMarginRatio\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"minMaintenanceMarginRatio\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"minLiquidationReward\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"maxLiquidationReward\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"liquidationCutRatio\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"protocolFeeCollectRatio\",\"type\":\"int256\"}],\"internalType\":\"struct MainParams\",\"name\":\"mainParams\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"_futuresOracleAddress\",\"type\":\"address\"},{\"internalType\":\"int256\",\"name\":\"_futuresMultiplier\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"_futuresFeeRatio\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"_futuresFundingRateCoefficient\",\"type\":\"int256\"},{\"internalType\":\"uint256\",\"name\":\"_oracleDelay\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_governanceContractAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"int256\",\"name\":\"value\",\"type\":\"int256\"}],\"name\":\"FuturesFeeRatioUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"int256\",\"name\":\"value\",\"type\":\"int256\"}],\"name\":\"FuturesFundingRateCoefficientUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"int256\",\"name\":\"value\",\"type\":\"int256\"}],\"name\":\"FuturesMultiplierUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"FuturesOracleAddressUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"LiquidationCutRatioUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"MaxLiquidationRewardUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"MinInitialMarginRatioUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"MinLiquidationRewardUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"MinMaintenanceMarginRatioUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"MinPoolMarginRatioUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"OracleDelayUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"value\",\"type\":\"address\"}],\"name\":\"ProtocolFeeCollectRatioUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"futuresFeeRatio\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"futuresFundingRateCoefficient\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"futuresMultiplier\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"futuresOracleAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"liquidationCutRatio\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"maxLiquidationReward\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"minInitialMarginRatio\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"minLiquidationReward\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"minMaintenanceMarginRatio\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"minPoolMarginRatio\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"oracleDelay\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"protocolFeeCollectRatio\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"futuresFeeRatio_\",\"type\":\"int256\"}],\"name\":\"setFuturesFeeRatio\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"futuresFundingRateCoefficient_\",\"type\":\"int256\"}],\"name\":\"setFuturesFundingRateCoefficient\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"futuresMultiplier_\",\"type\":\"int256\"}],\"name\":\"setFuturesMultiplier\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"futuresOracleAddress_\",\"type\":\"address\"}],\"name\":\"setFuturesOracleAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"_liquidationCutRatio\",\"type\":\"int256\"}],\"name\":\"setLiquidationCutRatio\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"_maxLiquidationReward\",\"type\":\"int256\"}],\"name\":\"setMaxLiquidationReward\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"_minInitialMarginRatio\",\"type\":\"int256\"}],\"name\":\"setMinInitialMarginRatio\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"_minLiquidationReward\",\"type\":\"int256\"}],\"name\":\"setMinLiquidationReward\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"_minMaintenanceMarginRatio\",\"type\":\"int256\"}],\"name\":\"setMinMaintenanceMarginRatio\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"_minPoolMarginRatio\",\"type\":\"int256\"}],\"name\":\"setMinPoolMarginRatio\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_oracleDelay\",\"type\":\"uint256\"}],\"name\":\"setOracleDelay\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"_protocolFeeCollectRatio\",\"type\":\"int256\"}],\"name\":\"setProtocolFeeCollectRatio\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"set initial state of the data\"},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"future parameters controlled by governance\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"the owner of this contract is the timelock controller of the governance feature\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/polygon/governance/FuturesProtocolParameters.sol\":\"FuturesProtocolParameters\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\nimport \\\"../utils/Context.sol\\\";\\n\\n/**\\n * @dev Contract module which provides a basic access control mechanism, where\\n * there is an account (an owner) that can be granted exclusive access to\\n * specific functions.\\n *\\n * By default, the owner account will be the one that deploys the contract. This\\n * can later be changed with {transferOwnership}.\\n *\\n * This module is used through inheritance. It will make available the modifier\\n * `onlyOwner`, which can be applied to your functions to restrict their use to\\n * the owner.\\n */\\nabstract contract Ownable is Context {\\n    address private _owner;\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    /**\\n     * @dev Initializes the contract setting the deployer as the initial owner.\\n     */\\n    constructor() {\\n        _setOwner(_msgSender());\\n    }\\n\\n    /**\\n     * @dev Returns the address of the current owner.\\n     */\\n    function owner() public view virtual returns (address) {\\n        return _owner;\\n    }\\n\\n    /**\\n     * @dev Throws if called by any account other than the owner.\\n     */\\n    modifier onlyOwner() {\\n        require(owner() == _msgSender(), \\\"Ownable: caller is not the owner\\\");\\n        _;\\n    }\\n\\n    /**\\n     * @dev Leaves the contract without owner. It will not be possible to call\\n     * `onlyOwner` functions anymore. Can only be called by the current owner.\\n     *\\n     * NOTE: Renouncing ownership will leave the contract without an owner,\\n     * thereby removing any functionality that is only available to the owner.\\n     */\\n    function renounceOwnership() public virtual onlyOwner {\\n        _setOwner(address(0));\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Can only be called by the current owner.\\n     */\\n    function transferOwnership(address newOwner) public virtual onlyOwner {\\n        require(newOwner != address(0), \\\"Ownable: new owner is the zero address\\\");\\n        _setOwner(newOwner);\\n    }\\n\\n    function _setOwner(address newOwner) private {\\n        address oldOwner = _owner;\\n        _owner = newOwner;\\n        emit OwnershipTransferred(oldOwner, newOwner);\\n    }\\n}\\n\",\"keccak256\":\"0x6bb804a310218875e89d12c053e94a13a4607cdf7cc2052f3e52bd32a0dc50a1\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n}\\n\",\"keccak256\":\"0x90565a39ae45c80f0468dc96c7b20d0afc3055f344c8203a0c9258239f350b9f\",\"license\":\"MIT\"},\"contracts/polygon/governance/FuturesProtocolParameters.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.2;\\n\\nimport \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\nimport \\\"./Structs.sol\\\";\\n\\n// ! TODO: EMIT THE EVENTS AND ADD VALIDATIONS\\n\\n/**\\n * @title future parameters controlled by governance\\n * @notice the owner of this contract is the timelock controller of the governance feature\\n */\\ncontract FuturesProtocolParameters is Ownable {\\n    int256 public minPoolMarginRatio;\\n    int256 public minInitialMarginRatio;\\n    int256 public minMaintenanceMarginRatio;\\n    int256 public minLiquidationReward;\\n    int256 public maxLiquidationReward;\\n    int256 public liquidationCutRatio;\\n    int256 public protocolFeeCollectRatio;\\n    address public futuresOracleAddress;\\n    int256 public futuresMultiplier;\\n    int256 public futuresFeeRatio;\\n    int256 public futuresFundingRateCoefficient;\\n    uint256 public oracleDelay;\\n\\n    event MinPoolMarginRatioUpdated(address value);\\n    event MinInitialMarginRatioUpdated(address value);\\n    event MinMaintenanceMarginRatioUpdated(address value);\\n    event MinLiquidationRewardUpdated(address value);\\n    event MaxLiquidationRewardUpdated(address value);\\n    event LiquidationCutRatioUpdated(address value);\\n    event ProtocolFeeCollectRatioUpdated(address value);\\n    event OracleDelayUpdated(address value);\\n    event FuturesOracleAddressUpdated(address value);\\n    event FuturesMultiplierUpdated(int256 value);\\n    event FuturesFeeRatioUpdated(int256 value);\\n    event FuturesFundingRateCoefficientUpdated(int256 value);\\n\\n    /**\\n     * @dev set initial state of the data\\n     */\\n    constructor(\\n        MainParams memory mainParams,\\n        address _futuresOracleAddress,\\n        int256 _futuresMultiplier,\\n        int256 _futuresFeeRatio,\\n        int256 _futuresFundingRateCoefficient,\\n        uint256 _oracleDelay,\\n        address _governanceContractAddress\\n    ) {\\n        require(_futuresOracleAddress != address(0), \\\"Oracle address can't be zero\\\");\\n        require(_futuresMultiplier > 0, \\\"Invalid futures multiplier\\\");\\n        require(_futuresFeeRatio > 0, \\\"Invalid futures fee ratio\\\");\\n        require(_futuresFundingRateCoefficient > 0, \\\"Invalid futures funding rate coefficient\\\");\\n\\n        minPoolMarginRatio = mainParams.minPoolMarginRatio;\\n        minInitialMarginRatio = mainParams.minInitialMarginRatio;\\n        minMaintenanceMarginRatio = mainParams.minMaintenanceMarginRatio;\\n        minLiquidationReward = mainParams.minLiquidationReward;\\n        maxLiquidationReward = mainParams.maxLiquidationReward;\\n        liquidationCutRatio = mainParams.liquidationCutRatio;\\n        protocolFeeCollectRatio = mainParams.protocolFeeCollectRatio;\\n        futuresOracleAddress = _futuresOracleAddress;\\n        futuresMultiplier = _futuresMultiplier;\\n        futuresFeeRatio = _futuresFeeRatio;\\n        futuresFundingRateCoefficient = _futuresFundingRateCoefficient;\\n        oracleDelay = _oracleDelay;\\n\\n        // transfer ownership\\n        transferOwnership(_governanceContractAddress);\\n    }\\n\\n    function setMinPoolMarginRatio(int256 _minPoolMarginRatio) external onlyOwner {\\n        minPoolMarginRatio = _minPoolMarginRatio;\\n    }\\n\\n    function setMinInitialMarginRatio(int256 _minInitialMarginRatio) external onlyOwner {\\n        minInitialMarginRatio = _minInitialMarginRatio;\\n    }\\n\\n    function setMinMaintenanceMarginRatio(int256 _minMaintenanceMarginRatio) external onlyOwner {\\n        minMaintenanceMarginRatio = _minMaintenanceMarginRatio;\\n    }\\n\\n    function setMinLiquidationReward(int256 _minLiquidationReward) external onlyOwner {\\n        minLiquidationReward = _minLiquidationReward;\\n    }\\n\\n    function setMaxLiquidationReward(int256 _maxLiquidationReward) external onlyOwner {\\n        maxLiquidationReward = _maxLiquidationReward;\\n    }\\n\\n    function setLiquidationCutRatio(int256 _liquidationCutRatio) external onlyOwner {\\n        liquidationCutRatio = _liquidationCutRatio;\\n    }\\n\\n    function setProtocolFeeCollectRatio(int256 _protocolFeeCollectRatio) external onlyOwner {\\n        protocolFeeCollectRatio = _protocolFeeCollectRatio;\\n    }\\n\\n    function setFuturesOracleAddress(address futuresOracleAddress_) external onlyOwner {\\n        require(futuresOracleAddress_ != address(0), \\\"Oracle address can't be zero\\\");\\n        futuresOracleAddress = futuresOracleAddress_;\\n        emit FuturesOracleAddressUpdated(futuresOracleAddress_);\\n    }\\n\\n    function setFuturesMultiplier(int256 futuresMultiplier_) external onlyOwner {\\n        require(futuresMultiplier_ > 1 hours, \\\"Invalid futures multiplier\\\");\\n        futuresMultiplier = futuresMultiplier_;\\n        emit FuturesMultiplierUpdated(futuresMultiplier_);\\n    }\\n\\n    function setFuturesFeeRatio(int256 futuresFeeRatio_) external onlyOwner {\\n        require(futuresFeeRatio_ > 1 hours, \\\"Invalid futures fee ratio\\\");\\n        futuresFeeRatio = futuresFeeRatio_;\\n        emit FuturesFeeRatioUpdated(futuresFeeRatio_);\\n    }\\n\\n    function setFuturesFundingRateCoefficient(int256 futuresFundingRateCoefficient_) external onlyOwner {\\n        require(futuresFundingRateCoefficient_ > 1 hours, \\\"Invalid futures funding rate coefficient\\\");\\n        futuresFundingRateCoefficient = futuresFundingRateCoefficient_;\\n        emit FuturesFundingRateCoefficientUpdated(futuresFundingRateCoefficient_);\\n    }\\n\\n    function setOracleDelay(uint256 _oracleDelay) external onlyOwner {\\n        oracleDelay = _oracleDelay;\\n    }\\n}\\n\",\"keccak256\":\"0xd3f796ece8ad60835d27c94ea9e048c7b2351ab3e89f4cbd761ebfb7cd672996\",\"license\":\"MIT\"},\"contracts/polygon/governance/Structs.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.4;\\n\\nstruct MainParams {\\n    int256 minPoolMarginRatio;\\n    int256 minInitialMarginRatio;\\n    int256 minMaintenanceMarginRatio;\\n    int256 minLiquidationReward;\\n    int256 maxLiquidationReward;\\n    int256 liquidationCutRatio;\\n    int256 protocolFeeCollectRatio;\\n}\\n\",\"keccak256\":\"0x8121a2f034679ec2a98fe3d5906979582191b29ce6f15343e3096591cb06bb69\",\"license\":\"MIT\"}},\"version\":1}",
   "bytecode": "0x60806040523480156200001157600080fd5b5060405162000e0738038062000e0783398101604081905262000034916200035c565b6200003f336200021e565b6001600160a01b0386166200009b5760405162461bcd60e51b815260206004820152601c60248201527f4f7261636c6520616464726573732063616e2774206265207a65726f0000000060448201526064015b60405180910390fd5b60008513620000ed5760405162461bcd60e51b815260206004820152601a60248201527f496e76616c69642066757475726573206d756c7469706c696572000000000000604482015260640162000092565b600084136200013f5760405162461bcd60e51b815260206004820152601960248201527f496e76616c696420667574757265732066656520726174696f00000000000000604482015260640162000092565b60008313620001a25760405162461bcd60e51b815260206004820152602860248201527f496e76616c696420667574757265732066756e64696e67207261746520636f6560448201526719999a58da595b9d60c21b606482015260840162000092565b8651600155602087015160025560408701516003556060870151600455608087015160055560a087015160065560c0870151600755600880546001600160a01b0319166001600160a01b0388161790556009859055600a849055600b839055600c82905562000211816200026e565b505050505050506200044d565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b6000546001600160a01b03163314620002ca5760405162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015260640162000092565b6001600160a01b038116620003315760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b606482015260840162000092565b6200033c816200021e565b50565b80516001600160a01b03811681146200035757600080fd5b919050565b60008060008060008060008789036101a081121562000379578384fd5b60e081121562000387578384fd5b5060405160e081016001600160401b0381118282101715620003b757634e487b7160e01b85526041600452602485fd5b8060405250885181526020890151602082015260408901516040820152606089015160608201526080890151608082015260a089015160a082015260c089015160c0820152809750506200040e60e089016200033f565b955061010088015194506101208801519350610140880151925061016088015191506200043f61018089016200033f565b905092959891949750929550565b6109aa806200045d6000396000f3fe608060405234801561001057600080fd5b50600436106101a95760003560e01c80638b3415b9116100f9578063c42243c111610097578063ddd18d3011610071578063ddd18d3014610333578063e7a06ffe1461033c578063f2fde38b14610345578063f94835641461035857600080fd5b8063c42243c11461030e578063c48edf8e14610317578063cfcd67441461032a57600080fd5b8063a15373b6116100d3578063a15373b6146102d6578063aa8f881f146102e9578063ab78ace4146102f2578063bcce87e0146102fb57600080fd5b80638b3415b9146102a95780638da5cb5b146102b25780639c85877c146102c357600080fd5b80634644448b11610166578063622dcd7911610140578063622dcd791461025a5780636bb9e4cb1461026d578063715018a6146102985780638ac848ca146102a057600080fd5b80634644448b1461022b57806346d2d2d81461023e5780635921cf0b1461024757600080fd5b806305986e82146101ae5780630adf8e92146101c35780630ebf1624146101df5780632773e34c146101f257806338012a3f146102055780634135881d14610218575b600080fd5b6101c16101bc366004610927565b610361565b005b6101cc60035481565b6040519081526020015b60405180910390f35b6101c16101ed366004610927565b610399565b6101c1610200366004610927565b6103c8565b6101c1610213366004610927565b610490565b6101c1610226366004610927565b6104bf565b6101c1610239366004610927565b6104ee565b6101cc60065481565b6101c1610255366004610927565b61059e565b6101c1610268366004610927565b6105cd565b600854610280906001600160a01b031681565b6040516001600160a01b0390911681526020016101d6565b6101c16105fc565b6101cc60025481565b6101cc600a5481565b6000546001600160a01b0316610280565b6101c16102d1366004610927565b610632565b6101c16102e4366004610927565b6106e2565b6101cc600c5481565b6101cc60055481565b6101c16103093660046108f9565b610711565b6101cc60015481565b6101c1610325366004610927565b6107df565b6101cc60095481565b6101cc60045481565b6101cc600b5481565b6101c16103533660046108f9565b61080e565b6101cc60075481565b6000546001600160a01b031633146103945760405162461bcd60e51b815260040161038b9061093f565b60405180910390fd5b600555565b6000546001600160a01b031633146103c35760405162461bcd60e51b815260040161038b9061093f565b600755565b6000546001600160a01b031633146103f25760405162461bcd60e51b815260040161038b9061093f565b610e1081136104545760405162461bcd60e51b815260206004820152602860248201527f496e76616c696420667574757265732066756e64696e67207261746520636f6560448201526719999a58da595b9d60c21b606482015260840161038b565b600b8190556040518181527f88c6424c518970400c5285117618e56cc59b38fe883bef89c87ffb3c38310fa2906020015b60405180910390a150565b6000546001600160a01b031633146104ba5760405162461bcd60e51b815260040161038b9061093f565b600455565b6000546001600160a01b031633146104e95760405162461bcd60e51b815260040161038b9061093f565b600255565b6000546001600160a01b031633146105185760405162461bcd60e51b815260040161038b9061093f565b610e1081136105695760405162461bcd60e51b815260206004820152601960248201527f496e76616c696420667574757265732066656520726174696f00000000000000604482015260640161038b565b600a8190556040518181527f04f611cbb2e551d248240be357349dc58c7313e8c1a0e8af340980f5d686767590602001610485565b6000546001600160a01b031633146105c85760405162461bcd60e51b815260040161038b9061093f565b600355565b6000546001600160a01b031633146105f75760405162461bcd60e51b815260040161038b9061093f565b600655565b6000546001600160a01b031633146106265760405162461bcd60e51b815260040161038b9061093f565b61063060006108a9565b565b6000546001600160a01b0316331461065c5760405162461bcd60e51b815260040161038b9061093f565b610e1081136106ad5760405162461bcd60e51b815260206004820152601a60248201527f496e76616c69642066757475726573206d756c7469706c696572000000000000604482015260640161038b565b60098190556040518181527f745b589a3499028212692842cb886bdc5f6f681615066c793693722c48c52c1190602001610485565b6000546001600160a01b0316331461070c5760405162461bcd60e51b815260040161038b9061093f565b600155565b6000546001600160a01b0316331461073b5760405162461bcd60e51b815260040161038b9061093f565b6001600160a01b0381166107915760405162461bcd60e51b815260206004820152601c60248201527f4f7261636c6520616464726573732063616e2774206265207a65726f00000000604482015260640161038b565b600880546001600160a01b0319166001600160a01b0383169081179091556040519081527f7855e0c0a9fb9b75af12c184ecbe7d67b7be41eb42c0857e8c7a2d7b216bc83a90602001610485565b6000546001600160a01b031633146108095760405162461bcd60e51b815260040161038b9061093f565b600c55565b6000546001600160a01b031633146108385760405162461bcd60e51b815260040161038b9061093f565b6001600160a01b03811661089d5760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b606482015260840161038b565b6108a6816108a9565b50565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b60006020828403121561090a578081fd5b81356001600160a01b0381168114610920578182fd5b9392505050565b600060208284031215610938578081fd5b5035919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e657260408201526060019056fea26469706673582212206cd2c3d03800bf5294c8f428f661f65d172ea7bde6855765cbc4e9dc5a87809a64736f6c63430008040033",
   "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106101a95760003560e01c80638b3415b9116100f9578063c42243c111610097578063ddd18d3011610071578063ddd18d3014610333578063e7a06ffe1461033c578063f2fde38b14610345578063f94835641461035857600080fd5b8063c42243c11461030e578063c48edf8e14610317578063cfcd67441461032a57600080fd5b8063a15373b6116100d3578063a15373b6146102d6578063aa8f881f146102e9578063ab78ace4146102f2578063bcce87e0146102fb57600080fd5b80638b3415b9146102a95780638da5cb5b146102b25780639c85877c146102c357600080fd5b80634644448b11610166578063622dcd7911610140578063622dcd791461025a5780636bb9e4cb1461026d578063715018a6146102985780638ac848ca146102a057600080fd5b80634644448b1461022b57806346d2d2d81461023e5780635921cf0b1461024757600080fd5b806305986e82146101ae5780630adf8e92146101c35780630ebf1624146101df5780632773e34c146101f257806338012a3f146102055780634135881d14610218575b600080fd5b6101c16101bc366004610927565b610361565b005b6101cc60035481565b6040519081526020015b60405180910390f35b6101c16101ed366004610927565b610399565b6101c1610200366004610927565b6103c8565b6101c1610213366004610927565b610490565b6101c1610226366004610927565b6104bf565b6101c1610239366004610927565b6104ee565b6101cc60065481565b6101c1610255366004610927565b61059e565b6101c1610268366004610927565b6105cd565b600854610280906001600160a01b031681565b6040516001600160a01b0390911681526020016101d6565b6101c16105fc565b6101cc60025481565b6101cc600a5481565b6000546001600160a01b0316610280565b6101c16102d1366004610927565b610632565b6101c16102e4366004610927565b6106e2565b6101cc600c5481565b6101cc60055481565b6101c16103093660046108f9565b610711565b6101cc60015481565b6101c1610325366004610927565b6107df565b6101cc60095481565b6101cc60045481565b6101cc600b5481565b6101c16103533660046108f9565b61080e565b6101cc60075481565b6000546001600160a01b031633146103945760405162461bcd60e51b815260040161038b9061093f565b60405180910390fd5b600555565b6000546001600160a01b031633146103c35760405162461bcd60e51b815260040161038b9061093f565b600755565b6000546001600160a01b031633146103f25760405162461bcd60e51b815260040161038b9061093f565b610e1081136104545760405162461bcd60e51b815260206004820152602860248201527f496e76616c696420667574757265732066756e64696e67207261746520636f6560448201526719999a58da595b9d60c21b606482015260840161038b565b600b8190556040518181527f88c6424c518970400c5285117618e56cc59b38fe883bef89c87ffb3c38310fa2906020015b60405180910390a150565b6000546001600160a01b031633146104ba5760405162461bcd60e51b815260040161038b9061093f565b600455565b6000546001600160a01b031633146104e95760405162461bcd60e51b815260040161038b9061093f565b600255565b6000546001600160a01b031633146105185760405162461bcd60e51b815260040161038b9061093f565b610e1081136105695760405162461bcd60e51b815260206004820152601960248201527f496e76616c696420667574757265732066656520726174696f00000000000000604482015260640161038b565b600a8190556040518181527f04f611cbb2e551d248240be357349dc58c7313e8c1a0e8af340980f5d686767590602001610485565b6000546001600160a01b031633146105c85760405162461bcd60e51b815260040161038b9061093f565b600355565b6000546001600160a01b031633146105f75760405162461bcd60e51b815260040161038b9061093f565b600655565b6000546001600160a01b031633146106265760405162461bcd60e51b815260040161038b9061093f565b61063060006108a9565b565b6000546001600160a01b0316331461065c5760405162461bcd60e51b815260040161038b9061093f565b610e1081136106ad5760405162461bcd60e51b815260206004820152601a60248201527f496e76616c69642066757475726573206d756c7469706c696572000000000000604482015260640161038b565b60098190556040518181527f745b589a3499028212692842cb886bdc5f6f681615066c793693722c48c52c1190602001610485565b6000546001600160a01b0316331461070c5760405162461bcd60e51b815260040161038b9061093f565b600155565b6000546001600160a01b0316331461073b5760405162461bcd60e51b815260040161038b9061093f565b6001600160a01b0381166107915760405162461bcd60e51b815260206004820152601c60248201527f4f7261636c6520616464726573732063616e2774206265207a65726f00000000604482015260640161038b565b600880546001600160a01b0319166001600160a01b0383169081179091556040519081527f7855e0c0a9fb9b75af12c184ecbe7d67b7be41eb42c0857e8c7a2d7b216bc83a90602001610485565b6000546001600160a01b031633146108095760405162461bcd60e51b815260040161038b9061093f565b600c55565b6000546001600160a01b031633146108385760405162461bcd60e51b815260040161038b9061093f565b6001600160a01b03811661089d5760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b606482015260840161038b565b6108a6816108a9565b50565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b60006020828403121561090a578081fd5b81356001600160a01b0381168114610920578182fd5b9392505050565b600060208284031215610938578081fd5b5035919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e657260408201526060019056fea26469706673582212206cd2c3d03800bf5294c8f428f661f65d172ea7bde6855765cbc4e9dc5a87809a64736f6c63430008040033",
@@ -717,7 +717,7 @@
         "type": "t_address"
       },
       {
-        "astId": 13338,
+        "astId": 17560,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "minPoolMarginRatio",
         "offset": 0,
@@ -725,7 +725,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13340,
+        "astId": 17562,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "minInitialMarginRatio",
         "offset": 0,
@@ -733,7 +733,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13342,
+        "astId": 17564,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "minMaintenanceMarginRatio",
         "offset": 0,
@@ -741,7 +741,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13344,
+        "astId": 17566,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "minLiquidationReward",
         "offset": 0,
@@ -749,7 +749,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13346,
+        "astId": 17568,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "maxLiquidationReward",
         "offset": 0,
@@ -757,7 +757,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13348,
+        "astId": 17570,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "liquidationCutRatio",
         "offset": 0,
@@ -765,7 +765,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13350,
+        "astId": 17572,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "protocolFeeCollectRatio",
         "offset": 0,
@@ -773,7 +773,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13352,
+        "astId": 17574,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "futuresOracleAddress",
         "offset": 0,
@@ -781,7 +781,7 @@
         "type": "t_address"
       },
       {
-        "astId": 13354,
+        "astId": 17576,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "futuresMultiplier",
         "offset": 0,
@@ -789,7 +789,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13356,
+        "astId": 17578,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "futuresFeeRatio",
         "offset": 0,
@@ -797,7 +797,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13358,
+        "astId": 17580,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "futuresFundingRateCoefficient",
         "offset": 0,
@@ -805,7 +805,7 @@
         "type": "t_int256"
       },
       {
-        "astId": 13360,
+        "astId": 17582,
         "contract": "contracts/polygon/governance/FuturesProtocolParameters.sol:FuturesProtocolParameters",
         "label": "oracleDelay",
         "offset": 0,

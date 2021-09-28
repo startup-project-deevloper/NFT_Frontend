@@ -1,90 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
 
-import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
+import { Grid, useMediaQuery } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
-import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
 import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork, addJotAddress } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
+import { SharePopup } from "shared/ui-kit/SharePopup";
 
-const NFTList = [
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: false,
-    started_at: null,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: false,
-    started_at: null,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: false,
-    started_at: null,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: true,
-    started_at: 1631747005555,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: true,
-    started_at: 1631747005555,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isVerified: true,
-    owner: 80,
-    available: 10,
-    price: 1,
-    isLive: true,
-    started_at: 1631747005555,
-  },
-];
+const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
 const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const classes = fractionalisedCollectionStyles();
   const history = useHistory();
   const params: { id?: string } = useParams();
+  const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
 
   const [selectedTab, setSelectedTab] = useState<"nft" | "jots_pool" | "trade_jots" | "auctions">("nft");
 
   const [collection, setCollection] = useState<any>({});
+  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+
+  const [openShareMenu, setOpenShareMenu] = React.useState(false);
+  const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery("(max-width:599px)");
 
   useEffect(() => {
     if (!params.id) return;
@@ -97,6 +49,56 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     })();
   }, [params.id]);
 
+  useEffect(() => {
+    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
+      (async () => {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) {
+          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
+        }
+      })();
+    }
+  }, [chainId, selectedChain]);
+
+  const handleAddToMetamask = async () => {
+    const targetChain = BlockchainNets[1];
+    const web3 = new Web3(library.provider);
+    const web3APIHandler = targetChain.apiHandler;
+
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+
+    const { JotAddress, JotSymbol } = collection;
+
+    const decimals = await web3APIHandler.Erc20["JOT"].decimals(web3, JotAddress);
+
+    await addJotAddress({
+      address: JotAddress,
+      symbol: JotSymbol,
+      decimals,
+    });
+  };
+
+  const handleOpenShareMenu = () => {
+    setOpenShareMenu(!openShareMenu);
+  };
+
+  const handleCloseShareMenu = () => {
+    setOpenShareMenu(false);
+  };
+
+  /// Circulating Supply = Locked NFTs * 10000
+  const circulatingSupply = useMemo(() => {
+    const lockedCount = collection.SyntheticNFT?.filter(nft => nft.isLocked).length || 0;
+    if (lockedCount >= 100) return `$${lockedCount / 100}M`;
+    return `$${lockedCount * 10}K`;
+  }, [collection]);
+
   return (
     <div className={classes.root}>
       <div className={classes.collectionInfoSection}>
@@ -105,11 +107,27 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             purple
             overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
           />
-          <div className={classes.tradeDerivativeButton} onClick={() => {}}>
-            <div>
-              <span>TRADE DERIVATIVES</span>
+          <Box display="flex" className={classes.buttonWrapper}>
+            <div className={classes.tradeDerivativeButton} onClick={() => { }}>
+              <div>
+                <span>TRADE DERIVATIVES</span>
+              </div>
             </div>
-          </div>
+            <Box
+              onClick={handleAddToMetamask}
+              className={classes.metaMaskBtn}
+              display="flex"
+              alignItems="center"
+              marginLeft={1}
+            >
+              <img
+                src={require("assets/walletImages/metamask.svg")}
+                alt=""
+                style={{ marginRight: "8px", height: "24px", width: "24px" }}
+              />
+              Add to Metamask
+            </Box>
+          </Box>
         </Box>
         <div className={classes.collectionMainContent}>
           <img
@@ -118,27 +136,51 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           />
           <Box
             display="flex"
-            alignItems="center"
+            flexDirection={isMobile ? 'column' : 'row'}
+            alignItems={isMobile ? "flex-start" : "center"}
             justifyContent="space-between"
             gridColumnGap="20px"
             flexWrap="wrap"
             gridRowGap="30px"
           >
-            <div className={classes.typo1}>✨ Collection</div>
-            <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Box display="flex" mr={"10px"}>
-                <EthIcon />
+            {isMobile && (
+              <Box className={classes.mobileEthContainer} display="flex" alignItems="center" justifyContent="space-between">
+                <Box display="flex" mr={"10px"}>
+                  <EthIcon />
+                </Box>
+                <div className={classes.typo2}>Ethereum</div>
+                <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
+                  <ShareIcon />
+                </div>
+                <div className={classes.plusSection}>
+                  <PlusIcon />
+                </div>
+                <div className={classes.typo2}>Follow</div>
               </Box>
-              <div className={classes.typo2}>Ethereum</div>
-              <div className={classes.shareSection}>
-                <ShareIcon />
-              </div>
-              <div className={classes.plusSection}>
-                <PlusIcon />
-              </div>
-              <div className={classes.typo2}>Follow</div>
-            </Box>
+            )}
+            <div className={classes.typo1}>✨ Collection</div>
+            {!isMobile && (
+              <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Box display="flex" mr={"10px"}>
+                  <EthIcon />
+                </Box>
+                <div className={classes.typo2}>Ethereum</div>
+                <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
+                  <ShareIcon />
+                </div>
+                <div className={classes.plusSection}>
+                  <PlusIcon />
+                </div>
+                <div className={classes.typo2}>Follow</div>
+              </Box>
+            )}
           </Box>
+          <SharePopup
+            item={{ ...collection, Type: "SYNTHETIC_COLLECTION", CollectionId: params.id }}
+            openMenu={openShareMenu}
+            anchorRef={anchorShareMenuRef}
+            handleCloseMenu={handleCloseShareMenu}
+          />
           <div className={classes.mainTitleSection}>
             <span>{collection.collectionName}</span>
           </div>
@@ -158,7 +200,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo4}>ACRRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>$12K</div>
+              <div className={classes.typo3}>{circulatingSupply}</div>
               <div className={classes.typo4}>Circulating Supply</div>
             </Box>
           </Box>
@@ -207,7 +249,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
                 {collection.SyntheticNFT.map((item, idx) => (
-                  <Grid item xs={12} sm={4} md={3}>
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
                     <CollectionNFTCard
                       item={item}
                       handleSelect={() => {
@@ -245,32 +287,41 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         ) : selectedTab === "auctions" ? (
           <div className={classes.allNFTSection}>
-            {NFTList && NFTList.length ? (
+            {collection.SyntheticNFT && collection.SyntheticNFT.length ? (
               <Grid container spacing={2}>
-                {NFTList.map((item, idx) => (
+                {collection.SyntheticNFT.map((item, idx) => (
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <AuctionCard
                       auction={item}
                       onClick={() => {
-                        history.push(`/pix/fractionalisation/collection/${match.params.id}/nft/:nftId/1`);
+                        history.push(
+                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}/1`
+                        );
                       }}
                     />
                   </Grid>
                 ))}
               </Grid>
             ) : (
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  paddingTop: 16,
-                  paddingBottom: 16,
-                }}
-              >
-                <CircularLoadingIndicator theme="blue" />
-              </div>
+              collection.SyntheticNFT && collection.SyntheticNFT.length === 0 ? (
+                <Box className={classes.noAuction}>
+                  <img src={require("assets/icons/no_auctions.png")}/>
+                  <span>No active auctions right now.</span>
+                </Box>
+              ) : (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                  }}
+                >
+                  <CircularLoadingIndicator theme="blue" />
+                </div>
+              )
             )}
           </div>
         ) : (

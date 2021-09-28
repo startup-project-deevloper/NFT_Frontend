@@ -63,6 +63,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const [symbol, setSymbol] = useState<string>("");
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
   const [openFractionaliseModal, setOpenFractionaliseModal] = useState<boolean>(false);
+  const [fractionaliseSuccessed, setFractionaliseSuccessed] = useState<boolean>(false);
 
   useEffect(() => {
     loadNFT();
@@ -124,20 +125,13 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   };
 
   const validate = () => {
-    // if (!name) {
-    //   showAlertMessage("Please enter a valid name", { variant: "error" });
-    //   return false;
-    // } else if (!symbol) {
-    //   showAlertMessage("Please enter a valid symbol", { variant: "error" });
-    //   return false;
-    // } else
     if (!selectedNFT) {
       showAlertMessage("Please select a NFT", { variant: "error" });
       return false;
-    } else if (!initialPrice || !Number(initialPrice)) {
+    } else if (!initialPrice || Number(initialPrice) <= 0) {
       showAlertMessage("Please enter a valid initial fraction price", { variant: "error" });
       return false;
-    } else if (!supply || !Number(supply)) {
+    } else if (!supply || Number(supply) <= 0) {
       showAlertMessage("Please enter a valid supply", { variant: "error" });
       return false;
     }
@@ -160,11 +154,15 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 
   const fractionaliseSuccess = () => {
     setUserNFTs(userNFTs.filter((_, index) => index !== selectedNFT.index));
-    setSelectedNFT(null);
+    setFractionaliseSuccessed(true);
   };
 
   const fractionaliseClose = () => {
     setOpenFractionaliseModal(false);
+    if (fractionaliseSuccessed) {
+      setSelectedNFT(null);
+      setFractionaliseSuccessed(false);
+    }
   };
 
   return (
@@ -470,9 +468,10 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 
 const COLUMNS_COUNT_BREAK_POINTS_TWO = {
   400: 1,
-  600: 2,
-  900: 3,
-  1440: 3,
+  490: 2,
+  959: 1,
+  1180: 2,
+  1500: 3,
 };
 
 export default SyntheticFractionalise;

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
-import Carousel from "react-elastic-carousel";
 
-import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
-import { CircularLoadingIndicator } from "shared/ui-kit";
+import Box from "shared/ui-kit/Box";
+import { CircularLoadingIndicator, SecondaryButton } from "shared/ui-kit";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
-// import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
 import FractionalizedNFTCard from "components/PriviDigitalArt/components/Cards/FractionalizedNFTCard";
 import {
   nftFractionalisationStyles,
@@ -20,6 +19,7 @@ import SyntheticFractionalise from "./components/SyntheticFractionalise";
 import { getFractionalizeVaults } from "shared/services/API/FractionalizeAPI";
 import PriviPixSyntheticRouter from "./PriviPixSyntheticRouter";
 import { useHistory } from "react-router";
+import { useLocation } from "react-router-dom";
 
 const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
   400: 1,
@@ -43,6 +43,7 @@ const NFTFractionalisation = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const history = useHistory();
+  const location = useLocation();
 
   useEffect(() => {
     if (selectedTab === "pure") {
@@ -56,6 +57,12 @@ const NFTFractionalisation = () => {
       });
     }
   }, [openFractionalize]);
+
+  useEffect(() => {
+    if (!location.pathname.includes('synthetic-derivative')) {
+      setSelectedTab("pure");
+    }
+  }, [location]);
 
   const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
@@ -74,13 +81,13 @@ const NFTFractionalisation = () => {
 
   const handleSyntheticClick = () => {
     setSelectedTab("synthetic");
-    history.push('/pix/fractionalise/synthetic-derivative');
-  }
+    history.push("/pix/fractionalise/synthetic-derivative");
+  };
 
   const handlePureClick = () => {
     setSelectedTab("pure");
-    history.push('/pix/fractionalise/');
-  }
+    history.push("/pix/fractionalise/");
+  };
 
   return (
     <>
@@ -92,28 +99,63 @@ const NFTFractionalisation = () => {
         )
       ) : (
         <div className={classes.content} onScroll={handleScroll}>
-          <div className={classes.title}>✨ NFT Fractionalisation ✨</div>
-          <div className={classes.subTitleSection}>
-            <div
-              className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
-              onClick={handlePureClick}
+          <div className={classes.titleBar}>
+            <div className={classes.title}>NFT Fractionalisation</div>
+            <SecondaryButton size="medium"
+              style={!isMobile ? ({
+                height: "50px",
+                fontSize: "18px",
+                padding: "0 50px",
+                position: "relative",
+                background: "#431AB7",
+                borderRadius: "8px",
+                color: "#fff",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+              }) : ({
+                height: "30px",
+                fontSize: "14px",
+                padding: "0 30px",
+                position: "relative",
+                background: "#431AB7",
+                borderRadius: "8px",
+                color: "#fff",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+              })}
+              onClick={() => {
+                history.push("/pix/mynft");
+              }}
             >
-              <span>Pure Fractionalisation</span>
-            </div>
-            <div
-              className={cls(
-                { [classes.selectedTabSection]: selectedTab === "synthetic" },
-                classes.tabSection
-              )}
-              onClick={handleSyntheticClick}
-            >
-              <span>
-                {isMobile ? "Synthetic Fractionalisation" : "Synthetic Derivative Fractionalisation"}
-              </span>
-            </div>
+              Manage  Portfolio
+              <Box className={classes.countCircle}>5</Box>
+            </SecondaryButton>
           </div>
+          <Box width="100%" borderBottom="2px solid rgba(196,196,196,0.4)">
+            <div className={classes.subTitleSection}>
+              <div
+                className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
+                onClick={handlePureClick}
+              >
+                <span>Pure Fractionalisation</span>
+              </div>
+              <div
+                className={cls(
+                  { [classes.selectedTabSection]: selectedTab === "synthetic" },
+                  classes.tabSection
+                )}
+                onClick={handleSyntheticClick}
+              >
+                <span>
+                  {isMobile ? "Synthetic Fractionalisation" : "Synthetic Derivative Fractionalisation"}
+                </span>
+              </div>
+            </div>
+          </Box>
           {selectedTab === "pure" && (
-            <>
+            <Box width="100%" paddingX={isMobile ? "20px" : "35px"}>
               <div className={classes.headerButtonGroup}>
                 {/* fractionalize button */}
                 {!isMobile && (
@@ -191,7 +233,7 @@ const NFTFractionalisation = () => {
                   <div></div>
                 )}
               </div>
-            </>
+            </Box>
           )}
           <PriviPixSyntheticRouter
             openFractionalize={openFractionalize}

@@ -24,12 +24,66 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       padding: "39px 15px",
     },
   },
+  noAuction: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 28,
+    color: "#431AB7",
+
+    "& img": {
+      width: '100%',
+      height: '100%',
+      maxWidth: 430,
+      marginBottom: 35,
+    },
+
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 18,
+    },
+  },
+  buttonWrapper: {
+    display: 'flex',
+    [theme.breakpoints.between(769, 880) ]: {
+      flexDirection: 'column',
+
+      '& > div': {
+        width: '100%',
+        height: 47,
+        margin: 0,
+      },
+
+      '& > div:nth-child(1)': {
+        marginBottom: 10,
+      },
+    },
+    [theme.breakpoints.down(768)]: {
+      flexDirection: 'column',
+
+      '& > div': {
+        width: '100%',
+        height: 47,
+        margin: 0,
+      },
+
+      '& > div:nth-child(1)': {
+        marginBottom: 10,
+      },
+    },
+  },
   backButtonContainer: {
     paddingLeft: 48,
     alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
+
+    [theme.breakpoints.between(769, 880)]: {
       paddingLeft: 0,
-    }
+      alignItems: "flex-start",
+    },
+    [theme.breakpoints.down(768)]: {
+      paddingLeft: 0,
+      alignItems: "flex-start",
+    },
   },
   "@keyframes gradientmove": {
     "0%": { backgroundPosition: "100% 50%" },
@@ -72,6 +126,46 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         WebkitTextFillColor: "transparent",
       },
     },
+
+    [theme.breakpoints.between(769, 880)]: {
+      "& > div": {
+        padding: 0,
+        justifyContent: 'center',
+        height: '100%',
+      },
+    },
+    [theme.breakpoints.down(768)]: {
+      "& > div": {
+        padding: 0,
+        justifyContent: 'center',
+        height: '100%',
+      },
+    },
+  },
+  metaMaskButton: {
+    display: "flex",
+    alignItems: "center",
+    background: "#431AB7",
+    padding: "10px 32px",
+    borderRadius: 7,
+    cursor: "pointer",
+    marginLeft: 24,
+    "& img": {
+      width: 32,
+    },
+    "& span": {
+      marginLeft: "10px",
+      fontSize: 18,
+      fontWeight: 800,
+      textTransform: "uppercase",
+      lineHeight: "120%",
+      fontFamily: "Agrandir",
+      color: "white",
+    },
+  },
+  mobileEthContainer: {
+    marginLeft: 'auto',
+
   },
   collectionMainContent: {
     position: "relative",
@@ -80,12 +174,13 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     borderRadius: 20,
     width: "100%",
     height: "auto",
+    minHeight: 320,
     padding: "30px 27px 42px 480px",
-    marginTop: 32,
+    marginTop: 44,
     color: "#ffffff",
     display: "flex",
     flexDirection: "column",
-    "& img": {
+    "& > img": {
       width: 436,
       height: "calc(100% + 14px)",
       borderRadius: 30,
@@ -114,7 +209,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       padding: "30px 15px 42px 260px",
     },
     [theme.breakpoints.down(600)]: {
-      padding: "350px 15px 30px"
+      padding: "350px 15px 30px",
     },
   },
   collectionInfos: {
@@ -129,14 +224,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       columnGap: 0,
       "& > div": {
         width: "50%",
-      }
+      },
     },
     [theme.breakpoints.down("sm")]: {
       marginTop: 24,
       "& > div": {
         width: "50%",
         paddingRight: 8,
-      }
+      },
     },
   },
   typo1: {
@@ -179,12 +274,14 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   },
   shareSection: {
     display: "flex",
-    marginLeft: 24,
-    marginRight: 30,
+    paddingLeft: 24,
+    paddingRight: 30,
     cursor: "pointer",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down(768)]: {
       marginLeft: 15,
       marginRight: 15,
+      paddingLeft: 0,
+      paddingRight: 0,
     },
   },
   plusSection: {
@@ -202,7 +299,6 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     paddingBottom: 31,
     borderBottom: "1px solid #FFFFFF22",
-    maxWidth: 300,
     [theme.breakpoints.down("sm")]: {
       fontSize: 30,
     },
@@ -263,7 +359,15 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   jotPoolSection: {
     width: "100%",
     marginBottom: 50,
-  } ,
+  },
+  metaMaskBtn: {
+    cursor: "pointer",
+    backgroundColor: "#431AB7",
+    borderRadius: 4,
+    padding: "9px 32px",
+    color: "white",
+    fontWeight: 800,
+  },
 }));
 
 export const EthIcon = () => (

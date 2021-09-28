@@ -7,7 +7,7 @@ import { Modal } from "shared/ui-kit/Modal";
 interface ILoadingScreenProps {
   loading: boolean;
   title: string;
-  subTitle?: string;
+  subTitle?: string | React.ReactNode;
   handleClose: () => void;
 }
 

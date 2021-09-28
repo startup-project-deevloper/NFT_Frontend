@@ -14,6 +14,11 @@ import { toNDecimals } from "shared/functions/web3";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
+import { ContractInstance } from "shared/connectors/web3/functions";
+import config from "shared/connectors/web3/config";
+import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
+import SyntheticProtocolRouter from "shared/connectors/web3/contracts/SyntheticProtocolRouter.json";
+
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
@@ -113,27 +118,49 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const web3 = new Web3(library.provider);
       const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
       const web3APIHandler = targetChain.apiHandler;
+      const network = "Polygon";
+      const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_PROTOCOL_ROUTER;
+      const jotContractAddress = config[network].CONTRACT_ADDRESSES.JOT;
 
-      const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
-      const price = toNDecimals(priceFraction, decimals);
+      const decimalsUSDT = await web3APIHandler.Erc20["USDT"].decimals(web3);
+      const price = toNDecimals(priceFraction, decimalsUSDT);
+      const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
+      const jotAPI = JOT(network);
+      const decimals = await jotAPI.decimals(web3, jotContractAddress);
+      const tSupply = toNDecimals(+supplyToKeep, decimals);
 
-      const response = await web3APIHandler.SyntheticProtocolRouter.registerNFT(web3, account!, {
-        tokenAddress: selectedNFT.tokenAddress,
-        chainId: selectedNFT.BlockchainId,
-        supply: supplyToKeep,
-        price,
-        name: collectionInfo.data.name,
-        symbol: collectionInfo.data.symbol,
-      });
+      const gas = await contract.methods
+        .registerNFT(
+          selectedNFT.tokenAddress,
+          selectedNFT.BlockchainId,
+          tSupply,
+          price,
+          collectionInfo.data.name,
+          collectionInfo.data.symbol
+        )
+        .estimateGas({ from: account });
+      const response = await contract.methods
+        .registerNFT(
+          selectedNFT.tokenAddress,
+          selectedNFT.BlockchainId,
+          tSupply,
+          price,
+          collectionInfo.data.name,
+          collectionInfo.data.symbol
+        )
+        .send({ from: account, gas })
+        .on("transactionHash", hash => {
+          setHash(hash);
+          setIsLoading(false);
+        });
 
       if (!response) {
         setIsProceeding(false);
         setIsLoading(false);
       } else {
         setIsLoading(false);
-
-        const { hash, collection, nftInfo } = response;
-        setHash(hash);
+        const collection = response.events?.CollectionManagerRegistered?.returnValues;
+        const nftInfo = response.events?.TokenRegistered?.returnValues;
 
         let params = {};
         if (collection) {
@@ -155,6 +182,9 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             quickSwapAddress: collection.quickSwapAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
+            lTokenLite: collection.lTokenLite_,
+            pTokenLite: collection.pTokenLite_,
+            perpetualPoolLiteAddress: collection.perpetualPoolLiteAddress_,
             isAddCollection: true,
           };
         } else {
@@ -166,8 +196,12 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             isAddCollection: false,
           };
         }
-        await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
-        onCompleted(nftInfo.syntheticTokenId);
+        const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
+        if (data.success) {
+          onCompleted(nftInfo.syntheticTokenId);
+        } else {
+          showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
+        }
       }
     } catch (err) {
       console.log("error", err);
@@ -190,34 +224,35 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         {isProceeding ? (
           <>
             <LoadingWrapper
-              loading={isLoading}
+              loading={true}
               theme="blue"
               iconWidth="80px"
               iconHeight="80px"
             ></LoadingWrapper>
             <h1 className={classes.title}>Create contract on Polygon</h1>
-            {isLoading ? (
+            <Box className={classes.result}>
               <p className={classes.description}>
                 Transaction is proceeding on Polygon Chain.
                 <br />
                 This can take a moment, please be patient...
               </p>
-            ) : (
-              <Box className={classes.result}>
-                <CopyToClipboard text={hash}>
-                  <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
-                    Hash:
-                    <Box color="#4218B5" mr={1} ml={1}>
-                      {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+              {!isLoading && (
+                <>
+                  <CopyToClipboard text={hash}>
+                    <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
+                      Hash:
+                      <Box color="#4218B5" mr={1} ml={1}>
+                        {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                      </Box>
+                      <CopyIcon />
                     </Box>
-                    <CopyIcon />
-                  </Box>
-                </CopyToClipboard>
-                <button className={classes.checkBtn} onClick={handlePolygonScan}>
-                  Check on Polygon Scan
-                </button>
-              </Box>
-            )}
+                  </CopyToClipboard>
+                  <button className={classes.checkBtn} onClick={handlePolygonScan}>
+                    Check on Polygon Scan
+                  </button>
+                </>
+              )}
+            </Box>
           </>
         ) : (
           <>

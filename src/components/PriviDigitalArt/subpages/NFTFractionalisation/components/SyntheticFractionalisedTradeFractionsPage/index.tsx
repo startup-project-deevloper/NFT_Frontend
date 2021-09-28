@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery } from "@material-ui/core";
+import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -12,6 +12,7 @@ import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
 import { getSyntheticNFTTransactions } from "shared/services/API/SyntheticFractionalizeAPI";
 import AddJOTsModal from "components/PriviDigitalArt/modals/AddJOTsModal";
+import { styled } from "@material-ui/styles";
 
 const FreeHoursChartConfig = {
   config: {
@@ -170,6 +171,7 @@ const tempHistory = [
 
 export const TransactionTable = ({ datas }) => {
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
+  const isMobile = useMediaQuery("(max-width:1080px)");
   // const usersList = useSelector((state: RootState) => state.usersInfoList);
   // const getUserInfo = (address: string) => usersList.find(u => u.address === address);
 
@@ -210,7 +212,9 @@ export const TransactionTable = ({ datas }) => {
             cell: `${row.value || "0"} USDT`,
           },
           {
-            cell: <Box color="rgba(67, 26, 183, 1)">{row.account || ""}</Box>,
+            cell: <Box color="rgba(67, 26, 183, 1)">{
+              row.account || ""
+            }</Box>,
           },
           {
             cell: row.time || "",
@@ -298,7 +302,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             type: "Buy",
             tokenAmount: txn.Amount,
             value: +txn.Amount * (+nft.Price || 1),
-            account: txn.To,
+            account:
+              txn.To
+              ? isMobileScreen
+                ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
+                : txn.To
+              : '',
             time: txn.Date,
             hash: txn.Id,
           }))
@@ -382,6 +391,15 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             >
               Ownership management
             </Box>
+            <Box className={classes.progressContainer}>
+              <Box className={classes.progressBar}>
+                <Box className={classes.progressed} style={{ width: "35%" }} />
+              </Box>
+              <Box className={classes.progressTitle} display="flex" alignItems="center" justifyContent="space-between">
+                <span>Margin left before Liquidation</span>
+                <span>100 / <b>2455 JOTs</b></span>
+              </Box>
+            </Box>
             <Box className={classes.boxBody}>
               <Box
                 className={classes.col_half}
@@ -390,16 +408,17 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 <Box className={classes.ownerInfo}>
                   <Box className={classes.h4} pb={1} sx={{ justifyContent: "center", alignItems: "center" }}>
                     Your current ownership
-                    <Tooltip
+                    <HtmlTooltip
                       title="If your ownership reaches 0, you will loose your NFT"
                       TransitionComponent={Fade}
                       TransitionProps={{ timeout: 600 }}
+                      placement="bottom-start"
                       arrow
                     >
                       <IconButton>
                         <InfoIcon />
                       </IconButton>
-                    </Tooltip>
+                    </HtmlTooltip>
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                     100 JOTs
@@ -815,3 +834,21 @@ const InfoIcon = () => (
     />
   </svg>
 );
+
+const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  "& .MuiTooltip-tooltip": {
+    color: "#431AB7",
+    fontSize: "13px",
+    lineHeight: "130%",
+    background: "#EFF2FD",
+    boxShadow: "0px 2px 5px rgba(97, 67, 181, 0.15), 0px 10px 14px rgba(97, 67, 181, 0.21)",
+    borderRadius: "16px",
+    maxWidth: 250,
+    padding: "14px 20px",
+  },
+  "& .MuiTooltip-arrow": {
+    color: "#EFF2FD",
+  }
+}));

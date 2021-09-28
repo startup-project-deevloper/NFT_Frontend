@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
+import USDC from "shared/services/API/web3/contracts/ERC20Tokens/USDC";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 
@@ -9,7 +10,7 @@ const syntheticCollectionManager = (network: string) => {
   const buyJotTokens = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { tokenId, amount } = payload;
+        const { tokenId, amount, setHash } = payload;
         const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
@@ -23,18 +24,103 @@ const syntheticCollectionManager = (network: string) => {
           .buyJotTokens(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
-        const response = await contract.methods
+        const response = contract.methods
           .buyJotTokens(tokenId, toNDecimals(amount, decimals))
-          .send({ from: account, gas: gas });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            setHash(hash);
+          })
+          .on("receipt", function (receipt) {
+            resolve({
+              success: true,
+              data: {
+                hash: receipt.transactionHash,
+              },
+            });
+          });
         console.log("transaction succeed");
-        resolve({
-          success: true,
-          data: {
-            hash: response.transactionHash,
-          },
-        });
       } catch (e) {
         console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const getOwnerSupply = (web3: Web3, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getOwnerSupply(tokenId).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const getContractJotsBalance = (web3: Web3, collection: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getContractJotsBalance().call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const getJotFractionPrice = (web3: Web3, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const USDCAPI = USDC(network);
+
+        const decimals = await USDCAPI.decimals(web3);
+
+        contract.methods.getJotFractionPrice(tokenId).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
         resolve({ success: false });
       }
     });
@@ -43,9 +129,8 @@ const syntheticCollectionManager = (network: string) => {
   const flipJot = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { tokenId, prediction } = payload;
-        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
-
+        const { tokenId, prediction, setFlippingHash } = payload;
+        const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         console.log("Getting gas....");
@@ -65,21 +150,43 @@ const syntheticCollectionManager = (network: string) => {
           resolve(null);
         }
 
-        const jotAPI = JOT(network);
+        console.log("Getting gas... ", prediction, tokenId);
 
-        const decimals = await jotAPI.decimals(web3, JotAddress);
-        const tPrediction = toNDecimals(prediction, decimals);
-
-        console.log("Getting gas... ", tPrediction, tokenId);
-
-        const gas = await contract.methods.flipJot(tokenId, tPrediction).estimateGas({ from: account });
+        const gas = await contract.methods.flipJot(tokenId, prediction).estimateGas({ from: account });
         console.log("polygon gas...", gas);
 
         const response = await contract.methods
-          .flipJot(tokenId, parseInt(tPrediction))
+          .flipJot(tokenId, parseInt(prediction))
           .send({ from: account, gas });
 
-        resolve(response);
+        console.log("coinFlipped... ", response);
+        setFlippingHash(response.transactionHash);
+
+        const {
+          events: {
+            CoinFlipped: {
+              blockNumber,
+              returnValues: { requestId },
+            },
+          },
+        } = response;
+
+        await new Promise(resolve => setTimeout(resolve, 35000));
+
+        await contract.getPastEvents(
+          "FlipProcessed",
+          {
+            fromBlock: blockNumber,
+            toBlock: "latest",
+          },
+          (error, events) => {
+            console.log(events);
+            const event = events
+              .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
+              .find(res => res.requestId === requestId);
+            resolve(event);
+          }
+        );
       } catch (e) {
         console.log(e);
         resolve(null);
@@ -228,6 +335,9 @@ const syntheticCollectionManager = (network: string) => {
     decreaseSellingSupply,
     flipJot,
     getSellingSupply,
+    getOwnerSupply,
+    getContractJotsBalance,
+    getJotFractionPrice,
   };
 };
 

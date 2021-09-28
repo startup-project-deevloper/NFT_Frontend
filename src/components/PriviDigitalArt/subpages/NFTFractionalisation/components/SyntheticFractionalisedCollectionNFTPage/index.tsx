@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
-import { useMediaQuery, useTheme } from "@material-ui/core";
 import { useParams } from "react-router";
+import { useSelector } from "react-redux";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import Axios from "axios";
+
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
 import { PrimaryButton, Avatar, Text } from "shared/ui-kit";
-import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
+import { CustomTable, CustomTableHeaderInfo, CustomTableCellInfo } from "shared/ui-kit/Table";
 import SyntheticFractionalisedTradeFractionsPage from "../SyntheticFractionalisedTradeFractionsPage";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
-import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
 import AuctionDetail from "./components/AuctionDetail";
 import OfferList from "./components/OfferList";
 import ChangeLockedNFT from "../../modals/ChangeLockedNFT";
@@ -18,16 +22,23 @@ import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
 import { Modal } from "shared/ui-kit";
 import { getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import FlipCoinModal from "../../modals/FlipCoinModal";
-import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { SharePopup } from "shared/ui-kit/SharePopup";
+import URL from "shared/functions/getURL";
+import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
+import FlipCoinInputGuessModal from "../../modals/FlipCoinInputGuessModal";
+import * as API from "shared/services/API/FractionalizeAPI";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
   isFlipped = false,
   match,
   withDrawn = false,
-  selectedNFT,
 }) => {
   const params: { collectionId?: string; nftId?: string } = useParams();
 
@@ -45,15 +56,25 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
+  const [ownershipJot, setOwnershipJot] = useState<number>(0);
+  const [isFlipping, setIsFlipping] = useState<boolean>(false);
+  const [flipResult, setFlipResult] = useState<boolean>(false);
+  const [flipGuess, setFlipGuess] = useState<number>(0);
+  const [flippingHash, setFlippingHash] = useState<string>("");
 
   const [nft, setNft] = useState<any>({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-
+  const { account, library, chainId } = useWeb3React();
+  const { showAlertMessage } = useAlertMessage();
+  const [openShareMenu, setOpenShareMenu] = React.useState(false);
+  const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
   const [loadingData, setLoadingData] = useState<boolean>(true);
+  const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
+  const [resultState, setResultState] = useState<number>(0);
 
   const isOwner = React.useMemo(
-    () => nft && userSelector && nft.priviUser && nft.priviUser.id === userSelector.id,
+    () => nft && userSelector && nft.user === userSelector.id,
     [nft, userSelector]
   );
 
@@ -69,6 +90,32 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response.success) {
         setNft(response.data);
         setLoadingData(false);
+
+        const targetChain = BlockchainNets[1];
+
+        if (chainId && chainId !== targetChain?.chainId) {
+          const isHere = await switchNetwork(targetChain?.chainId || 0);
+          if (!isHere) {
+            showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+            return;
+          }
+        }
+
+        const web3APIHandler = targetChain.apiHandler;
+        const web3Config = targetChain.config;
+        const web3 = new Web3(library?.provider);
+
+        const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
+          web3,
+          response.data,
+          {
+            tokenId: +response.data.SyntheticID,
+          }
+        );
+
+        if (contractResponse) {
+          setOwnershipJot(contractResponse);
+        }
       }
     })();
   }, [params]);
@@ -93,11 +140,59 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     setOpenWithdrawNFTModal(false);
   };
 
-  const handleFlipCoin = () => {
+  const handleSetFlipGuess = async value => {
+    const targetChain = BlockchainNets[1];
+    setFlipGuess(value);
+    setOpenFlipCoinGuessModal(false);
     setOpenFlipCoinModal(true);
+    setIsFlipping(true);
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+
+    try {
+      const web3APIHandler = targetChain.apiHandler;
+      const web3Config = targetChain.config;
+      const web3 = new Web3(library.provider);
+
+      const contractResponse = await web3APIHandler.SyntheticCollectionManager.flipJot(web3, account!, nft, {
+        tokenId: +nft.SyntheticID,
+        prediction: flipGuess,
+        setFlippingHash: setFlippingHash,
+      });
+
+      if (!contractResponse) {
+        setOpenFlipCoinModal(false);
+        setIsFlipping(false);
+        showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
+        return;
+      }
+
+      console.log("contractResponse... ", contractResponse);
+      const { prediction, tokenId, requestId, randomResult } = contractResponse;
+
+      await API.addFlipHistory({
+        collectionAddress: params.collectionId,
+        syntheticID: nft.SyntheticID,
+        winnerAddress: requestId,
+        prediction: prediction,
+        randomResult,
+        tokenId,
+      });
+
+      setIsFlipping(false);
+      setResultState(+randomResult);
+      setFlipResult(prediction === randomResult);
+    } catch (err) {
+      console.log("error", err);
+    }
   };
 
-  const dummyTableData = [
+  const dummyTableData: Array<Array<CustomTableCellInfo>> = [
     [
       {
         cell: "JOT Pool",
@@ -109,12 +204,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "False",
       },
       {
-        cell: "12:09pm April 23, 2021",
+        cellAlign: "center",
+        cell: "12:22, 21.09 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -136,12 +233,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "Correct",
       },
       {
-        cell: "12:09pm April 23, 2021",
+        cellAlign: "center",
+        cell: "12:22, 21.09 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -163,12 +262,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "Correct",
       },
       {
-        cell: "12:09pm April 23, 2021",
+        cellAlign: "center",
+        cell: "12:22, 21.09 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -190,12 +291,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         cell: "Correct",
       },
       {
-        cell: "12:09pm April 23, 2021",
+        cellAlign: "center",
+        cell: "12:22, 21.09 2021",
       },
       {
+        cellAlign: "center",
         cell: (
           <div className={classes.explorerImg}>
-            <img src={require("assets/pixImages/EthScanIcon.png")} />
+            <img src={require("assets/icons/polygon_scan.png")} />
           </div>
         ),
       },
@@ -213,9 +316,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     },
     {
       headerName: "DATE",
+      headerAlign: "center",
     },
     {
       headerName: "EXPLORER",
+      headerAlign: "center",
     },
   ];
   const dummyAuction = {
@@ -234,6 +339,53 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       </div>
     );
   }
+
+  const handleGiveFruit = type => {
+    const body = {
+      userId: nft.priviUser.id,
+      fruitId: type,
+      collectionId: match.params.collectionId,
+      syntheticId: match.params.nftId,
+    };
+
+    Axios.post(`${URL()}/syntheticFractionalize/fruit`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = {
+          ...nft,
+          fruits: [...resp.fruits],
+        };
+        setNft(itemCopy);
+      }
+    });
+  };
+
+  const handleOpenShareMenu = () => {
+    setOpenShareMenu(!openShareMenu);
+  };
+
+  const handleCloseShareMenu = () => {
+    setOpenShareMenu(false);
+  };
+
+  const handleFollow = () => {
+    const body = {
+      userId: nft.priviUser.id,
+      collectionId: match.params.collectionId,
+      syntheticId: match.params.nftId,
+    };
+
+    Axios.post(`${URL()}/syntheticFractionalize/follow`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = {
+          ...nft,
+          follows: [...resp.follows],
+        };
+        setNft(itemCopy);
+      }
+    });
+  };
 
   return (
     <LoadingWrapper loading={loadingData}>
@@ -293,16 +445,24 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             <Box
               display="flex"
               alignItems="center"
-              justifyContent="space-between"
               flexWrap="wrap"
               mt={"30px"}
               pr="10%"
               gridColumnGap="24px"
               gridRowGap="24px"
             >
-              <Box display="flex" flexDirection="column">
+              <Box display="flex" flexDirection="column" mr={"87px"}>
                 <div className={classes.typo1}>Ownership</div>
-                <div className={classes.typo2}>1 JOTs</div>
+                <div className={classes.typo2}>{ownershipJot} JOTs</div>
+              </Box>
+              <Box display="flex" flexDirection="column" mr={"75px"}>
+                <div className={classes.typo1}>Owner</div>
+                <Box display="flex" alignItems="center">
+                  <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
+                  <Box ml={1}>
+                    <div className={classes.typo2}>User name</div>
+                  </Box>
+                </Box>
               </Box>
               <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => {}}>
                 <img src={require("assets/priviIcons/polygon.png")} />
@@ -310,17 +470,31 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               </PrimaryButton>
             </Box>
             <Box className={classes.socialIcons}>
-              <div className={classes.shareSection}>
+              <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
                 <ShareIcon />
               </div>
               <div className={classes.socialSection}>
-                <img src={require("assets/icons/social.png")} />
+                {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
-              <div className={classes.plusSection}>
-                <PlusIcon />
-                <span>Follow</span>
+              <div className={classes.plusSection} onClick={handleFollow}>
+                {nft &&
+                nft.follows &&
+                nft.follows.filter(item => item.userId === nft.priviUser.id).length > 0 ? (
+                  <span>Following</span>
+                ) : (
+                  <>
+                    <PlusIcon />
+                    <span>Follow</span>
+                  </>
+                )}
               </div>
             </Box>
+            <SharePopup
+              item={{ ...nft, Type: "SYNTHETIC_FRACTIONALISATION", CollectionId: params.collectionId }}
+              openMenu={openShareMenu}
+              anchorRef={anchorShareMenuRef}
+              handleCloseMenu={handleCloseShareMenu}
+            />
             <div className={classes.nftCard}>
               <CollectionNFTCard
                 handleSelect={() => {}}
@@ -430,7 +604,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 {isFlipped ? (
                   <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>
                 ) : (
-                  <div className={classes.flipCoinButton} onClick={handleFlipCoin}>
+                  <div className={classes.flipCoinButton} onClick={() => setOpenFlipCoinGuessModal(true)}>
                     Flip The Coin
                   </div>
                 )}
@@ -477,15 +651,18 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             This NFT is beeing withdrawn
           </Box>
         </Modal>
+        <FlipCoinInputGuessModal
+          open={OpenFlipCoinGuessModal}
+          onClose={() => setOpenFlipCoinGuessModal(false)}
+          setResult={handleSetFlipGuess}
+        />
         <FlipCoinModal
           open={openFlipCoinModal}
           onClose={() => setOpenFlipCoinModal(false)}
-          onCompleted={() => {}}
-          pred={0.1}
-          selectedNFT={{
-            ...nft,
-            collectionAddress: params.collectionId,
-          }}
+          isFlipping={isFlipping}
+          flipResult={flipResult}
+          resultState={resultState}
+          hash={flippingHash}
         />
       </div>
     </LoadingWrapper>

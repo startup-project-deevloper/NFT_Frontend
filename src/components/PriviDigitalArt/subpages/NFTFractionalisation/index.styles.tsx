@@ -2,6 +2,12 @@ import React from "react";
 import { makeStyles } from "@material-ui/core";
 
 export const nftFractionalisationStyles = makeStyles(theme => ({
+  ksUFlT: {
+    color: "#fff !important"
+  },
+  dwCxzp: {
+    color: "#fff !important"
+  },
   content: {
     width: "100%",
     height: "100%",
@@ -12,12 +18,22 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     minHeight: "calc(100vh - 80px)",
     maxHeight: "calc(100vh - 80px)",
     overflowX: "hidden",
-    padding: "50px 16px 0px 16px",
+    padding: "50px 0px 0px 0px",
     backgroundImage: `url(${require("assets/pixImages/fractionalise_background.png")})`,
     backgroundRepeat: "inherit",
     backgroundSize: "100% 100%",
+    // [theme.breakpoints.down("xs")]: {
+    //   padding: "50px 0px 0px",
+    // },
+  },
+  titleBar: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "0 35px",
     [theme.breakpoints.down("xs")]: {
-      padding: "50px 12px 0px",
+      flexDirection: "column",
     },
   },
   title: {
@@ -25,29 +41,47 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     fontWeight: 800,
     fontFamily: "Agrandir",
     color: "#431AB7",
-    lineHeight: "104.5%",
     textTransform: "uppercase",
-    display: "flex",
-    width: "100%",
-    justifyContent: "center",
     [theme.breakpoints.down(950)]: {
       fontSize: 28,
     },
     [theme.breakpoints.down("xs")]: {
       fontSize: 18,
+      paddingBottom: 15
     },
+  },
+  countCircle: {
+    width: "20px",
+    height: "20px",
+    fontSize: "10px",
+    background: "#9EACF2",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "50%",
+    lineHeight: "9px",
+    position: "absolute",
+    top: "14px",
+    right: "15px",
+    [theme.breakpoints.down("xs")]: {
+      width: "15px",
+      height: "15px",
+      fontSize: "8px",
+      lineHeight: "8px",
+      top: 6,
+      right: 10,
+    }
   },
   subTitleSection: {
     display: "flex",
     width: "100%",
-    justifyContent: "center",
     fontSize: 18,
     fontWeight: 800,
     fontFamily: "Agrandir",
     color: "#431AB7",
-    textTransform: "uppercase",
     lineHeight: "23px",
     marginTop: 32,
+    padding: "0 20px",
     cursor: "pointer",
     [theme.breakpoints.down(1110)]: {
       fontSize: 15,
@@ -55,19 +89,17 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     [theme.breakpoints.down(950)]: {
       fontSize: 12,
     },
-    [theme.breakpoints.down(950)]: {
-      fontSize: 11,
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 0"
     },
   },
   tabSection: {
-    minWidth: 482,
     height: 55,
-    background: "#EFF2FD",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    padding: "0 15px",
+    margin: "0 40px",
     [theme.breakpoints.down(1250)]: {
       minWidth: 420,
     },
@@ -79,9 +111,12 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       fontSize: 14,
     },
     [theme.breakpoints.down(580)]: {
-      minWidth: 190,
+      minWidth: 165,
       fontSize: 14,
+      margin: "0 0",
+      padding: "0 0"
     },
+    borderBottom: "4px solid transparent",
   },
   selectedTabSection: {
     borderBottom: "4px solid #431AB7",
@@ -122,7 +157,6 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     alignItems: "flex-end",
     columnGap: 10,
     [theme.breakpoints.down(750)]: {
-      // marginBottom: 30,
     },
   },
   liveSaleBtn: {
@@ -227,28 +261,19 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
     flexDirection: "column",
   },
   rewardsWrapper: {
     backgroundImage: "linear-gradient(151.11deg, #AA26C2 6.74%, #4BA7F8 90.8%)",
     padding: 2,
     borderRadius: 9,
-    marginTop: 64,
-    maxWidth: 1200,
-    [theme.breakpoints.down(1300)]: {
-      marginLeft: 40,
-      marginRight: 40
-    },
-    [theme.breakpoints.down(790)]: {
-      marginLeft: 20,
-      marginRight: 20,
-    },
+    marginTop: 49,
+    width: "100%",
   },
   rewardsContent: {
     display: "flex",
     flexDirection: "column",
-    padding: "45px 45px 64px 64px",
+    padding: "45px 45px 80px 64px",
     color: "#DDFF57",
     fontFamily: "Agrandir",
     background: "#FFF",
@@ -268,40 +293,47 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
   },
   rewardsTitle: {
-    background: "linear-gradient(274.54deg, #418DFF -30.42%, #4541FF 23.19%, #4541FF 39.93%, #EF41CB 114.31%, #EF41CB 122.04%, #EFA941 130.17%)",
+    background:
+      "linear-gradient(274.54deg, #418DFF -30.42%, #4541FF 23.19%, #4541FF 39.93%, #EF41CB 114.31%, #EF41CB 122.04%, #EFA941 130.17%)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
-    fontSize: 31,
+    fontSize: 22,
     fontWeight: 800,
     maxWidth: 600,
-    lineHeight: "104.5%",
+    lineHeight: "150%",
+    textTransform: "capitalize",
     [theme.breakpoints.down(1200)]: {
       fontSize: 24,
     },
     [theme.breakpoints.down(900)]: {
       fontSize: 20,
-      lineHeight: '150%',
+      lineHeight: "150%",
     },
   },
   rewardsDes: {
-    fontSize: 16,
-    fontWeight: 800,
-    lineHeight: "24px",
-    marginTop: 14,
-    color: '#431AB7',
+    fontSize: 18,
+    fontWeight: 400,
+    lineHeight: "150%",
+    marginTop: 10,
+    color: "#431AB7",
+    paddingRight: 150,
+    [theme.breakpoints.down(1300)]: {
+      paddingRight: 100,
+    },
     [theme.breakpoints.down(1200)]: {
-      fontWeight: 400,
+      paddingRight: 0,
     },
   },
   tradeNFTBtnWrapper: {
     marginTop: 25,
-    background: "linear-gradient(275.7deg, #418DFF -22.23%, #4541FF 30.2%, #4541FF 46.57%, #EF41CB 94.97%, #EF41CB 102.17%, #EFA941 128.81%), linear-gradient(0deg, #DDFF57, #DDFF57)",
+    background:
+      "linear-gradient(275.7deg, #418DFF -22.23%, #4541FF 30.2%, #4541FF 46.57%, #EF41CB 94.97%, #EF41CB 102.17%, #EFA941 128.81%), linear-gradient(0deg, #DDFF57, #DDFF57)",
     padding: 2,
     borderRadius: 8,
     minWidth: 300,
     [theme.breakpoints.down(1200)]: {
       minWidth: 284,
-      width: '100%',
+      width: "100%",
     },
     [theme.breakpoints.down("xs")]: {
       minWidth: 240,
@@ -343,21 +375,22 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   },
   "@keyframes color-animation": {
     "0%": {
-      backgroundPosition: "200% 50%"
+      backgroundPosition: "200% 50%",
     },
     "50%": {
-      backgroundPosition: "0% 50%"
+      backgroundPosition: "0% 50%",
     },
     "100%": {
-      backgroundPosition: "-200% 50%"
-    }
+      backgroundPosition: "-200% 50%",
+    },
   },
   syntheticFractionaliseBtn: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     height: 49,
-    background: "linear-gradient(269.4deg, #418DFF -70.41%, #4541FF -24.89%, #4541FF 4.73%, #EF41CB 53.19%, #EF41CB 77.33%, #4541FF 95.86%, #418DFF 171.08%), linear-gradient(0deg, #C4C4C4, #C4C4C4)",
+    background:
+      "linear-gradient(269.4deg, #418DFF -70.41%, #4541FF -24.89%, #4541FF 4.73%, #EF41CB 53.19%, #EF41CB 77.33%, #4541FF 95.86%, #418DFF 171.08%), linear-gradient(0deg, #C4C4C4, #C4C4C4)",
     backgroundSize: "200% 200%",
     boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
     borderRadius: 8,
@@ -372,7 +405,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     [theme.breakpoints.down(1200)]: {
       fontSize: 16,
       padding: 0,
-      width: '100%',
+      width: "100%",
       minWidth: 284,
     },
     [theme.breakpoints.down(960)]: {
@@ -395,23 +428,23 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
   },
   heartEyeImg: {
-    width: 198,
-    height: 184,
+    width: 107,
+    height: 99,
     position: "absolute",
-    bottom: -125,
-    left: -80,
+    bottom: -20,
+    left: -50,
     transform: "rotate(-12.57deg)",
-    [theme.breakpoints.down(1200)]: {
-      width: 108,
+    [theme.breakpoints.down(860)]: {
+      width: 107,
       height: 99,
-      bottom: -40,
-      left: -50,
+      bottom: -30,
+      left: -40,
     },
     [theme.breakpoints.down(658)]: {
       width: 89,
       height: 82,
-      bottom: -40,
-      left: -40,
+      bottom: -30,
+      left: -35,
     },
   },
   buttons: {
@@ -424,48 +457,43 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   },
   NFTSection: {
     width: "100%",
-    marginTop: 160,
-    [theme.breakpoints.down(1200)]: {
-      marginTop: 80,
-    },
-    [theme.breakpoints.down(658)]: {
-      marginTop: 50,
-    },
+    marginTop: 46,
   },
   topNFTWrapper: {
-    backgroundColor: '#F6F5F8',
-    padding: '50px 40px',
+    backgroundColor: "#F6F5F8",
+    padding: "50px 0",
     [theme.breakpoints.down(1200)]: {
-      padding: '50px 20px',
+      padding: "30px 0",
     },
   },
   allNFTWrapper: {
-    backgroundColor: '#FFF',
-    padding: '50px 40px',
-    [theme.breakpoints.down(658)]: {
-      padding: '50px 15px',
+    backgroundColor: "#FFF",
+    padding: "50px 40px",
+    [theme.breakpoints.down(860)]: {
+      padding: "50px 25px",
     },
   },
   topNFTTitle: {
     display: "flex",
     alignItems: "center",
-    fontSize: 32,
-    fontWeight: 800,
-    marginBottom: 30,
-    background: "linear-gradient(274.54deg, #418DFF -30.42%, #4541FF 23.19%, #4541FF 39.93%, #EF41CB 114.31%, #EF41CB 122.04%, #EFA941 130.17%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    fontFamily: "Agrandir",
-    lineHeight: "130%",
+    padding: "0 25px",
+    paddingBottom: "25px",
     "& span": {
-      paddingBottom: 16,
+      fontSize: 32,
+      fontWeight: 800,
+      background:
+        "linear-gradient(274.54deg, #418DFF -30.42%, #4541FF 23.19%, #4541FF 39.93%, #EF41CB 114.31%, #EF41CB 122.04%, #EFA941 130.17%)",
+      WebkitBackgroundClip: "text",
+      WebkitTextFillColor: "transparent",
+      fontFamily: "Agrandir",
+      lineHeight: "130%",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 25,
+      },
     },
     "& img": {
       width: 80,
       height: 80,
-    },
-    [theme.breakpoints.down("xs")]: {
-      fontSize: 25,
     },
   },
   allNFTTitle: {
@@ -473,11 +501,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     alignItems: "center",
     fontSize: 32,
     fontWeight: 800,
-    color: '#431AB7',
+    color: "#431AB7",
     fontFamily: "Agrandir",
     lineHeight: "130%",
     "& span": {
-      paddingBottom: 16,
+      paddingBottom: 25,
     },
     "& img": {
       width: 80,
@@ -504,7 +532,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
         right: 60,
       },
       [theme.breakpoints.down(769)]: {
-        display: "none",
+        // display: "none",
       },
     },
     "& button.rec-arrow-right": {
@@ -519,11 +547,40 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
         display: "none",
       },
     },
+    "& .rec-slider-container": {
+      "& .rec-carousel-item": {
+        "& > .rec-item-wrapper": {
+          minWidth: 330,
+          maxWidth: 370,
+          width: "unset",
+          "& > div": {
+            boxShadow: "none",
+          }
+        }
+      }
+    },
   },
   allNFTSection: {
     width: "100%",
     marginBottom: 40,
   },
+  carouselNav: {
+    cursor: "pointer",
+    border: "1px solid #431AB7",
+    borderRadius: "100%",
+    width: 42,
+    height: 42,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "&:hover": {
+      border: "none",
+      background: "#431AB7",
+      "& svg": {
+        stroke: "#DDFF57",
+      }
+    }
+  }
 }));
 
 export const LiveSaleIcon = () => (

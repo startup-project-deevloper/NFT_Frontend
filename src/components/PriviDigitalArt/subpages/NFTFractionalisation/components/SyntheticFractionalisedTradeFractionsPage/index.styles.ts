@@ -329,4 +329,29 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
       width: "calc(100% + 32px)",
     },
   },
+  progressBar: {
+    width: "100%",
+    height: 6.5,
+    background: "#9EACF233",
+    borderRadius: 35,
+    position: "relative",
+  },
+  progressed: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    background: "linear-gradient(91.54deg, #431AB7 11.26%, #AA26C2 119.42%, #F84B4B 203.57%)",
+    borderRadius: 35,
+  },
+  progressTitle: {
+    color: "#431AB7",
+    fontSize: 20,
+    lineHeight: "104.5%",
+    marginTop: 16,
+  },
+  progressContainer: {
+    padding: "10px 0 30px",
+    borderBottom: "1px solid #E6E6E8"
+  }
 }));

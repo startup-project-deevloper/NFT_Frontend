@@ -58,6 +58,10 @@ export const ShareMediaContextProvider: React.FunctionComponent<ShareMediaContex
           setShareLink(`https://www.privi.store/#/pix/${id}`);
         } else if (subType === "DIGITAL_ART_TYPE_LOAN") {
           setShareLink(`https://www.privi.store/#/pix/loan/${id}`);
+        } else if (subType === "SYNTHETIC_FRACTIONALISATION") {
+          setShareLink(`${getPrefixURL()}/${link}`);
+        } else if (subType === "SYNTHETIC_COLLECTION") {
+          setShareLink(`${getPrefixURL()}/${link}`);
         } else if (subType === "PIX-PODS") {
           setShareLink(`${getPrefixURL()}/${link}`);
         } else if (subType === "NEW-PRIVI-PODS") {

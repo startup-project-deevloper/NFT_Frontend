@@ -20,6 +20,7 @@ import Fractionalize from "./components/Fractionalise";
 import SyntheticFractionalise from "./components/SyntheticFractionalise";
 import { getFractionalizeVaults } from "shared/services/API/FractionalizeAPI";
 import PriviPixSyntheticRouter from "./PriviPixSyntheticRouter";
+import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 
 const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
   400: 1,
@@ -41,6 +42,7 @@ const NFTFractionalisation = () => {
 
   const [openFractionalize, setOpenFractionalize] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [portofolioCount, setPortofolioCount] = useState<number>(0);
 
   const [hasScrollOnSynthetic, setHasScrollOnSynthetic] = useState<boolean>(false);
 
@@ -50,6 +52,9 @@ const NFTFractionalisation = () => {
   useEffect(() => {
     if (selectedTab === "pure") {
       setLoading(true);
+      getMySyntheticFractionalisedNFT().then(res => {
+        setPortofolioCount(res?.nfts?.length);
+      });
       getFractionalizeVaults("").then(resp => {
         const data = resp.data;
         setMedias(data.data);
@@ -141,7 +146,7 @@ const NFTFractionalisation = () => {
               }}
             >
               Manage Portfolio
-              <Box className={classes.countCircle}>5</Box>
+              <Box className={classes.countCircle}>{portofolioCount}</Box>
             </SecondaryButton>
           </div>
           <Box width="100%" borderBottom="2px solid rgba(196,196,196,0.4)">

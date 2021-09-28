@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { format } from "date-fns";
+import Moment from "react-moment";
 import { Grid } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -13,6 +13,7 @@ import RemoveLiquidityModal from "components/PriviDigitalArt/modals/RemoveLiquid
 import { ReactComponent as ArrowUp } from "assets/icons/arrow_up.svg";
 import { ReactComponent as ArrowDown } from "assets/icons/arrow_down.svg";
 import LiquidityModal from "../../modals/LiquidityModal";
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 const FreeHoursChartConfig = {
   config: {
@@ -199,7 +200,7 @@ const tempHistory = [
   },
 ];
 
-export const CoinFlipHistoryTable = ({ datas }) => {
+export const CoinFlipHistoryTable = ({ datas, nfts }) => {
   const classes = SyntheticFractionalisedJotPoolsPageStyles();
   // const usersList = useSelector((state: RootState) => state.usersInfoList);
   // const getUserInfo = (address: string) => usersList.find(u => u.address === address);
@@ -230,11 +231,11 @@ export const CoinFlipHistoryTable = ({ datas }) => {
   React.useEffect(() => {
     let data: Array<Array<CustomTableCellInfo>> = [];
     if (datas && datas.length) {
-      data = datas.map(row => {
-        const user = row.user;
+      data = datas.map(item => {
+        const nft = nfts.find(n => n.SyntheticID === item.tokenId) ?? {};
         return [
           {
-            cell: row.nft || "",
+            cell: nft.NftId,
             cellAlign: "center",
           },
           {
@@ -247,18 +248,18 @@ export const CoinFlipHistoryTable = ({ datas }) => {
                 className={classes.userField}
               >
                 {/* <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl: user?.anonAvatar ? require(`assets/anonAvatars/${user.anonAvatar}`) : "none"} /> */}
-                <Avatar size="tiny" url={user?.imageUrl ? user?.imageUrl : "none"} />
-                <Text>{user?.name}</Text>
+                <Avatar size="tiny" url={"none"} />
+                <Text>{item.winnerAddress === nft.JotPoolAddress ? "Jot Pool" : nft.user}</Text>
               </Box>
             ),
             cellAlign: "center",
           },
           {
-            cell: row.amount || "",
+            cell: "0.1 Jots",
             cellAlign: "center",
           },
           {
-            cell: format(new Date(row.date), "hh:kk, dd.MM.yyyy"),
+            cell: <Moment format="hh:kk, DD.MM.yyyy">{item.date}</Moment>,
             cellAlign: "center",
           },
           {
@@ -275,6 +276,9 @@ export const CoinFlipHistoryTable = ({ datas }) => {
                   borderRadius: "4px",
                   margin: "auto",
                 }}
+                onClick={() =>
+                  window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${item.txn}`, "_blank")
+                }
               >
                 <img src={require(`assets/icons/explorer.png`)} style={{ width: "24px", height: "24px" }} />
               </SecondaryButton>
@@ -289,7 +293,7 @@ export const CoinFlipHistoryTable = ({ datas }) => {
 
   return (
     <div className={classes.table}>
-      <CustomTable headers={tableHeaders} rows={tableData} placeholderText="No auctions" />
+      <CustomTable headers={tableHeaders} rows={tableData} placeholderText="No history" />
     </div>
   );
 };
@@ -311,7 +315,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   // todo: Remove code
   const [liquidity, setLiquidity] = useState<number>(0);
 
-  const isProduction = process.env.REACT_APP_ENV === "Prod";
+  const isProduction = process.env.REACT_APP_ENV === "prod";
 
   React.useEffect(() => {
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
@@ -548,7 +552,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
 
       <Box className={classes.outBox} style={{ paddingBottom: 20 }}>
         <Box className={classes.sectionTitle}>Coin flip history</Box>
-        <CoinFlipHistoryTable datas={flipHistory} />
+        <CoinFlipHistoryTable datas={collection.flipHistory ?? []} nfts={collection.SyntheticNFT} />
       </Box>
       {openLiquidityModal && (
         <AddLiquidityModal

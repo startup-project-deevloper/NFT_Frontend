@@ -22,8 +22,8 @@ import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import URL from "shared/functions/getURL";
+import OrderBookModal from "../../modals/OrderBookModal";
 import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
-import { discoverStyles } from "components/PriviSocial/subpages/Discover/index.styles";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -48,6 +48,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const isMobile = useMediaQuery("(max-width:599px)");
 
   const [loadingNFTs, setLoadingNFTs] = useState<boolean>(false);
+  const [showOrderBookModal, setShowOrderBookModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (!params.id) return;
@@ -190,6 +191,14 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     });
   };
 
+  const handleOrderBook = () => {
+    setShowOrderBookModal(true);
+  };
+
+  const hideOrderBookModal = () => {
+    setShowOrderBookModal(false);
+  };
+
   return (
     <div className={classes.root} onScroll={handleScroll}>
       <div className={classes.collectionInfoSection}>
@@ -199,6 +208,19 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
           />
           <Box display="flex" className={classes.buttonWrapper}>
+            <Box
+              onClick={handleOrderBook}
+              className={classes.orderBookBtn}
+              display="flex"
+              alignItems="center"
+            >
+              <img
+                src={require("assets/icons/order-book.svg")}
+                alt=""
+                style={{ marginRight: "8px", height: "24px", width: "24px" }}
+              />
+              Order Book
+            </Box>
             <div className={classes.tradeDerivativeButton} onClick={() => {}}>
               <div>
                 <span>TRADE DERIVATIVES</span>
@@ -222,7 +244,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         </Box>
         <div className={classes.collectionMainContent}>
           <img
-            src={collection.imageUrl ?? require("assets/backgrounds/digital_art_1.png")}
+            src={collection?.imageUrl ?? require("assets/backgrounds/digital_art_1.png")}
             alt="collction image"
           />
           <Box
@@ -302,7 +324,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             handleCloseMenu={handleCloseShareMenu}
           />
           <div className={classes.mainTitleSection}>
-            <span>{collection.collectionName}</span>
+            <span>{collection?.collectionName}</span>
           </div>
           <Box className={classes.collectionInfos}>
             <Box display="flex" flexDirection="column">
@@ -443,6 +465,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         )}
       </div>
+      {showOrderBookModal && <OrderBookModal open={showOrderBookModal} onClose={hideOrderBookModal} />}
     </div>
   );
 };

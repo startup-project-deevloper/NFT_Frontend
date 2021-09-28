@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Divider, Grid } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -10,6 +11,7 @@ import Axios from "axios";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import moment from "moment";
+
 
 const FreeHoursChartConfig = {
   config: {
@@ -158,6 +160,7 @@ const MONTHLABELS = [
 ];
 
 export default function SyntheticFractionalisedTradeJotPage(props: any) {
+  const history = useHistory();
   const classes = syntheticFractionalisedTradeJotPageStyles();
   const [rewardConfig, setRewardConfig] = useState<any>();
   const PERIODS = ["1h", "1D", "7D"];
@@ -394,6 +397,9 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+            }}
+            onClick={()=>{
+              history.push(`/pix/fractionalisation/collection/quick_swap/id`)
             }}
           >
             Trade on <QuickSwapIcon className={classes.swapIcon} /> Quickswap

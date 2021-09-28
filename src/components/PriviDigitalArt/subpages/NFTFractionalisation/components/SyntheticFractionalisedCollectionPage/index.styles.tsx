@@ -66,10 +66,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         width: '100%',
         height: 47,
         margin: 0,
+        marginBottom: 10,
       },
 
-      '& > div:nth-child(1)': {
-        marginBottom: 10,
+      '& > div:last-child': {
+        marginBottom: 0,
       },
     },
   },

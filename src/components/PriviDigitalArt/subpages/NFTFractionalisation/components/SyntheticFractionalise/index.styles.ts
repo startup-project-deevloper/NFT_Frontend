@@ -18,11 +18,15 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     overflowX: "hidden",
     position: "relative",
 
+    [theme.breakpoints.down("md")]: {
+      padding: "42px 24px 38px",
+    },
+
     [theme.breakpoints.down("sm")]: {
       padding: "42px 24px 38px",
 
       "@media (max-width: 768px)": {
-        padding: "42px 24px 38px",
+        padding: "42px 20px 38px",
 
         minHeight: "calc(100vh - 80px - 65px)",
         maxHeight: "calc(100vh - 80px - 65px)",
@@ -284,10 +288,10 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     background: "#431AB7",
     backdropFilter: "blur(4.82073px)",
     borderRadius: 11.3,
-    height: 360,
+    height: 340,
     width: "100%",
     maxWidth: '230px',
-    minWidth: '200px',
+    minWidth: '150px',
     cursor: "pointer",
   },
   selectedCard: {
@@ -302,7 +306,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 79%,  50% 90%, 0% 79%, 0% 0%)",
     padding: "20px 8px",
-    height: 343,
+    height: 325,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

@@ -52,10 +52,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         width: '100%',
         height: 47,
         margin: 0,
+        marginBottom: 10,
       },
 
-      '& > div:nth-child(1)': {
-        marginBottom: 10,
+      '& > div:last-child': {
+        marginBottom: 0,
       },
     },
     [theme.breakpoints.down(768)]: {
@@ -65,10 +66,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         width: '100%',
         height: 47,
         margin: 0,
+        marginBottom: 10,
       },
 
-      '& > div:nth-child(1)': {
-        marginBottom: 10,
+      '& > div:last-child': {
+        marginBottom: 0,
       },
     },
   },
@@ -141,6 +143,16 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         height: '100%',
       },
     },
+  },
+  orderBookBtn: {
+    background: "#431AB7",
+    padding: "10px 28px",
+    borderRadius: 8,
+    fontSize: 18,
+    fontWeight: 800,
+    marginRight: 8,
+    cursor: "pointer",
+    color: "#FFF",
   },
   metaMaskButton: {
     display: "flex",

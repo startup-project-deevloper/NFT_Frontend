@@ -167,6 +167,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       });
 
       if (!contractResponse) {
+        setOpenFlipCoinModal(false);
+        setIsFlipping(false);
         showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
         return;
       }
@@ -175,7 +177,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       const { prediction, tokenId, requestId, randomResult } = contractResponse;
 
       await API.addFlipHistory({
-        collectionAddress: nft.collectionAddress,
+        collectionAddress: params.collectionId,
         syntheticID: nft.SyntheticID,
         winnerAddress: requestId,
         prediction: prediction,

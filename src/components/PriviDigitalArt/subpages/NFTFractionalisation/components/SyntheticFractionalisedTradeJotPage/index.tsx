@@ -160,9 +160,9 @@ const MONTHLABELS = [
 export default function SyntheticFractionalisedTradeJotPage(props: any) {
   const classes = syntheticFractionalisedTradeJotPageStyles();
   const [rewardConfig, setRewardConfig] = useState<any>();
-  const PERIODS = ["1D", "6D", "YTD"];
+  const PERIODS = ["1h", "1D", "7D"];
   const [period, setPeriod] = useState<string>(PERIODS[0]);
-  const UNITS = ["BTC", "USDC"];
+  const UNITS = ["JOTs", "USDT"];
   const [unit, setUnit] = useState<string>(UNITS[0]);
   const [tvl, setTvl] = useState(0);
   const [volume7h, setVolume7h] = useState(0);

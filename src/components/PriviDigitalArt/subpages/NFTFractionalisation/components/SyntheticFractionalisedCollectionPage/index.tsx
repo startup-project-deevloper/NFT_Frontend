@@ -3,9 +3,12 @@ import cls from "classnames";
 import { useHistory, useParams } from "react-router-dom";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 import { Grid, useMediaQuery } from "@material-ui/core";
 
+import { RootState } from "store/reducers/Reducer";
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
@@ -17,11 +20,10 @@ import { getSyntheticCollection } from "shared/services/API/SyntheticFractionali
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 import { SharePopup } from "shared/ui-kit/SharePopup";
-import axios from "axios";
 import URL from "shared/functions/getURL";
 import OrderBookModal from "../../modals/OrderBookModal";
+import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -31,6 +33,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const params: { id?: string } = useParams();
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
+  const userSelector = useSelector((state: RootState) => state.user);
 
   const [selectedTab, setSelectedTab] = useState<"nft" | "jots_pool" | "trade_jots" | "auctions">("nft");
 
@@ -70,7 +73,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     }
   }, [chainId, selectedChain]);
 
-  const loadNFTs = (id) => {
+  const loadNFTs = id => {
     if (!id) return;
     setLoadingNFTs(true);
 
@@ -78,7 +81,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
       lastId: lastIdRef.current,
     };
 
-    axios.post(`${URL()}/syntheticFractionalize/getSyntheticCollectionNFTs/${id}`, config)
+    axios
+      .post(`${URL()}/syntheticFractionalize/getSyntheticCollectionNFTs/${id}`, config)
       .then(res => {
         const data = res.data;
         if (data.success) {
@@ -103,7 +107,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
       lastId: lastIdRef.current,
     };
 
-    axios.post(`${URL()}/syntheticFractionalize/getSyntheticCollectionNFTs/${id}`, config)
+    axios
+      .post(`${URL()}/syntheticFractionalize/getSyntheticCollectionNFTs/${id}`, config)
       .then(res => {
         const data = res.data;
         if (data.success) {
@@ -168,13 +173,31 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     return `$${lockedCount * 10}K`;
   }, [collection]);
 
+  const handleFollow = () => {
+    const body = {
+      userId: userSelector.id,
+      collectionId: params.id,
+    };
+
+    axios.post(`${URL()}/syntheticFractionalize/followSyntheticCollection`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = {
+          ...collection,
+          follows: [...resp.follows],
+        };
+        setCollection(itemCopy);
+      }
+    });
+  };
+
   const handleOrderBook = () => {
     setShowOrderBookModal(true);
-  }
+  };
 
   const hideOrderBookModal = () => {
     setShowOrderBookModal(false);
-  }
+  };
 
   return (
     <div className={classes.root} onScroll={handleScroll}>
@@ -198,7 +221,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               />
               Order Book
             </Box>
-            <div className={classes.tradeDerivativeButton} onClick={() => { }}>
+            <div className={classes.tradeDerivativeButton} onClick={() => {}}>
               <div>
                 <span>TRADE DERIVATIVES</span>
               </div>
@@ -226,7 +249,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           />
           <Box
             display="flex"
-            flexDirection={isMobile ? 'column' : 'row'}
+            flexDirection={isMobile ? "column" : "row"}
             alignItems={isMobile ? "flex-start" : "center"}
             justifyContent="space-between"
             gridColumnGap="20px"
@@ -234,7 +257,12 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             gridRowGap="30px"
           >
             {isMobile && (
-              <Box className={classes.mobileEthContainer} display="flex" alignItems="center" justifyContent="space-between">
+              <Box
+                className={classes.mobileEthContainer}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
                 <Box display="flex" mr={"10px"}>
                   <EthIcon />
                 </Box>
@@ -242,10 +270,22 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
                   <ShareIcon />
                 </div>
-                <div className={classes.plusSection}>
-                  <PlusIcon />
+                <div>
+                  {collection &&
+                  collection.follows &&
+                  collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+                    <div className={classes.typo2}>Following</div>
+                  ) : (
+                    <div className={classes.plusSection} onClick={handleFollow}>
+                      <div className={classes.plusIcon}>
+                        <PlusIcon />
+                      </div>
+                      <div style={{ marginTop: 4 }} className={classes.typo2}>
+                        Follow
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className={classes.typo2}>Follow</div>
               </Box>
             )}
             <div className={classes.typo1}>✨ Collection</div>
@@ -258,10 +298,22 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 <div className={classes.shareSection} onClick={handleOpenShareMenu} ref={anchorShareMenuRef}>
                   <ShareIcon />
                 </div>
-                <div className={classes.plusSection}>
-                  <PlusIcon />
+                <div>
+                  {collection &&
+                  collection.follows &&
+                  collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+                    <div className={classes.typo2}>Following</div>
+                  ) : (
+                    <div onClick={handleFollow} className={classes.plusSection}>
+                      <div className={classes.plusIcon}>
+                        <PlusIcon />
+                      </div>
+                      <div style={{ marginTop: 2 }} className={classes.typo2}>
+                        Follow
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className={classes.typo2}>Follow</div>
               </Box>
             )}
           </Box>
@@ -280,9 +332,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo4}>fraction Price</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>
-                {syntheticNFTs?.filter(nft => nft.isLocked).length}
-              </div>
+              <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
               <div className={classes.typo4}>locked NFTs in</div>
             </Box>
             <Box display="flex" flexDirection="column">
@@ -342,9 +392,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                   <CollectionNFTCard
                     item={item}
                     handleSelect={() => {
-                      history.push(
-                        `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`
-                      );
+                      history.push(`/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`);
                     }}
                   />
                 </Grid>
@@ -391,26 +439,24 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                   </Grid>
                 ))}
               </Grid>
+            ) : syntheticNFTs && syntheticNFTs.length === 0 ? (
+              <Box className={classes.noAuction}>
+                <img src={require("assets/icons/no_auctions.png")} />
+                <span>No active auctions right now.</span>
+              </Box>
             ) : (
-              syntheticNFTs && syntheticNFTs.length === 0 ? (
-                <Box className={classes.noAuction}>
-                  <img src={require("assets/icons/no_auctions.png")}/>
-                  <span>No active auctions right now.</span>
-                </Box>
-              ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    paddingTop: 16,
-                    paddingBottom: 16,
-                  }}
-                >
-                  <CircularLoadingIndicator theme="blue" />
-                </div>
-              )
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                }}
+              >
+                <CircularLoadingIndicator theme="blue" />
+              </div>
             )}
           </div>
         ) : (
@@ -419,12 +465,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         )}
       </div>
-      {showOrderBookModal && (
-        <OrderBookModal
-          open={showOrderBookModal}
-          onClose={hideOrderBookModal}
-        />
-      )}
+      {showOrderBookModal && <OrderBookModal open={showOrderBookModal} onClose={hideOrderBookModal} />}
     </div>
   );
 };

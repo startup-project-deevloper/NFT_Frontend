@@ -469,9 +469,6 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 };
 
 const COLUMNS_COUNT_BREAK_POINTS_TWO = {
-  400: 2,
-  490: 2,
-  959: 2,
   1180: 2,
   1500: 3,
 };

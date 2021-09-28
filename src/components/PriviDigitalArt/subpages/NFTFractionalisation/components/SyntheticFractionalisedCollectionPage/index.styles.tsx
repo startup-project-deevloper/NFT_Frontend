@@ -25,16 +25,16 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     },
   },
   noAuction: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     fontSize: 28,
     color: "#431AB7",
 
     "& img": {
-      width: '100%',
-      height: '100%',
+      width: "100%",
+      height: "100%",
       maxWidth: 430,
       marginBottom: 35,
     },
@@ -44,32 +44,32 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     },
   },
   buttonWrapper: {
-    display: 'flex',
-    [theme.breakpoints.between(769, 880) ]: {
-      flexDirection: 'column',
+    display: "flex",
+    [theme.breakpoints.between(769, 880)]: {
+      flexDirection: "column",
 
-      '& > div': {
-        width: '100%',
+      "& > div": {
+        width: "100%",
         height: 47,
         margin: 0,
         marginBottom: 10,
       },
 
-      '& > div:last-child': {
+      "& > div:last-child": {
         marginBottom: 0,
       },
     },
     [theme.breakpoints.down(768)]: {
-      flexDirection: 'column',
+      flexDirection: "column",
 
-      '& > div': {
-        width: '100%',
+      "& > div": {
+        width: "100%",
         height: 47,
         margin: 0,
         marginBottom: 10,
       },
 
-      '& > div:last-child': {
+      "& > div:last-child": {
         marginBottom: 0,
       },
     },
@@ -132,15 +132,15 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     [theme.breakpoints.between(769, 880)]: {
       "& > div": {
         padding: 0,
-        justifyContent: 'center',
-        height: '100%',
+        justifyContent: "center",
+        height: "100%",
       },
     },
     [theme.breakpoints.down(768)]: {
       "& > div": {
         padding: 0,
-        justifyContent: 'center',
-        height: '100%',
+        justifyContent: "center",
+        height: "100%",
       },
     },
   },
@@ -176,8 +176,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     },
   },
   mobileEthContainer: {
-    marginLeft: 'auto',
-
+    marginLeft: "auto",
   },
   collectionMainContent: {
     position: "relative",
@@ -296,9 +295,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       paddingRight: 0,
     },
   },
+  plusIcon: {
+    marginRight: 9,
+  },
   plusSection: {
     display: "flex",
-    marginRight: 9,
     cursor: "pointer",
   },
   mainTitleSection: {

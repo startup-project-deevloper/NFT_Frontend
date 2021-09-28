@@ -90,13 +90,11 @@ const MyNFT = () => {
         </div>
         <div className={classes.cardsGroup}>
           {selectedTab === "owned" && (
-            <Grid container spacing={2}>
+            <div className={classes.cardsGrid}>
               {TopNFTList.map((item, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3}>
-                  <MyNFTCard item={item} />
-                </Grid>
+                <MyNFTCard key={index} item={item} />
               ))}
-            </Grid>
+            </div>
           )}
           {selectedTab === "synthetic" && (
             <Box display="flex" flexDirection="column" gridRowGap={50}>

@@ -22,6 +22,8 @@ import SyntheticFractionalisedCollectionNFTPage from "./subpages/NFTFractionalis
 import NFTPositionManagerPage from "./subpages/NFTPositionManagerPage";
 import MyNFTPage from "./subpages/MyNFTPage";
 
+import TradeOnQuickSwap from "./subpages/NFTFractionalisation/components/SyntheticFractionalisedTradeJotPage/TradeOnQuickSwap";
+
 export const useStyles = makeStyles(theme => ({
   container: {
     width: "100%",
@@ -56,6 +58,12 @@ export default function PriviPixRouter(props) {
         exact
         path="/pix/fractionalisation/collection/:collectionId/nft/:nftId"
         component={SyntheticFractionalisedCollectionNFTPage}
+      />
+
+      <Route
+        exact
+        path="/pix/fractionalisation/collection/quick_swap/:id"
+        component={TradeOnQuickSwap}
       />
 
       <Route path="/pix/fractionalise" component={NFTFractionalisation} />

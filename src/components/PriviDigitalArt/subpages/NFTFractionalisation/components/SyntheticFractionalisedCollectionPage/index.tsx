@@ -17,7 +17,7 @@ import { getSyntheticCollection } from "shared/services/API/SyntheticFractionali
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon } from "./index.styles";
+import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon, MetamaskPlusIcon } from "./index.styles";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import axios from "axios";
 import URL from "shared/functions/getURL";
@@ -208,14 +208,18 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               className={classes.metaMaskBtn}
               display="flex"
               alignItems="center"
+              justifyContent={isMobile ? "center" : "flex-start"}
               marginLeft={1}
             >
+              {
+                !isMobile && (<MetamaskPlusIcon/>)
+              }
               <img
                 src={require("assets/walletImages/metamask.svg")}
                 alt=""
-                style={{ marginRight: "8px", height: "24px", width: "24px" }}
+                style={{ marginRight: isMobile ? "8px" : "0", height: "24px", width: "24px" }}
               />
-              Add to Metamask
+              {isMobile && 'Add to Metamask'}
             </Box>
           </Box>
         </Box>

@@ -45,7 +45,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   },
   buttonWrapper: {
     display: 'flex',
-    [theme.breakpoints.between(769, 880) ]: {
+    [theme.breakpoints.between(769, 880)]: {
       flexDirection: 'column',
 
       '& > div': {
@@ -375,8 +375,11 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   metaMaskBtn: {
     cursor: "pointer",
     backgroundColor: "#431AB7",
-    borderRadius: 4,
-    padding: "9px 32px",
+    borderRadius: 8,
+    padding: "9px 18px 9px 6px",
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 0",
+    },
     color: "white",
     fontWeight: 800,
   },
@@ -416,5 +419,10 @@ export const PlusIcon = () => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+  </svg>
+);
+export const MetamaskPlusIcon = () => (
+  <svg width="10" height="11" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8.43344 5.41567V0.877441H5.08511V5.41567H0.546875V8.764H5.08511V13.3299H8.43344V8.764H12.9993V5.41567H8.43344Z" fill="white" />
   </svg>
 );

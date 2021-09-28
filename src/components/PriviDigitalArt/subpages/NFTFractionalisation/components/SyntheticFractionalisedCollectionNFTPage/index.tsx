@@ -370,12 +370,12 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 
   const handleFollow = () => {
     const body = {
-      userId: nft.priviUser.id,
+      userId: userSelector.id,
       collectionId: match.params.collectionId,
       syntheticId: match.params.nftId,
     };
 
-    Axios.post(`${URL()}/syntheticFractionalize/follow`, body).then(res => {
+    Axios.post(`${URL()}/syntheticFractionalize/followSyntheticNft`, body).then(res => {
       const resp = res.data;
       if (resp.success) {
         const itemCopy = {
@@ -479,7 +479,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               <div className={classes.plusSection} onClick={handleFollow}>
                 {nft &&
                 nft.follows &&
-                nft.follows.filter(item => item.userId === nft.priviUser.id).length > 0 ? (
+                nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
                   <span>Following</span>
                 ) : (
                   <>

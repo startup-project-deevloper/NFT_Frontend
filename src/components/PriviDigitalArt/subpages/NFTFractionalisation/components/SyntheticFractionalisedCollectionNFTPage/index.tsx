@@ -216,6 +216,13 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     }
   };
 
+  const viewOnPolygonscan = () => {
+    window.open(
+      `https://${!isProd ? "mumbai." : ""}polygonscan.com/address/${nft.SyntheticCollectionManagerAddress}`,
+      "_blank"
+    );
+  };
+
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "WINNER",
@@ -376,7 +383,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   </Box>
                 </Box>
               </Box>
-              <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={() => {}}>
+              <PrimaryButton size="medium" className={classes.polygonscanBtn} onClick={viewOnPolygonscan}>
                 <img src={require("assets/priviIcons/polygon.png")} />
                 View on Polygonscan
               </PrimaryButton>

@@ -71,12 +71,18 @@ export default function SyntheticCollectionCard({ item }) {
       />
       <div className={classes.info}>
         <Box className={classes.infoWrapper}>
-          <Box className={classes.title}>{item.collectionName}</Box>
+          <Box className={classes.titleContainer}>
+            <Box className={classes.title}>{item.collectionName}</Box>
+            <Box className={classes.detailLabel} flexDirection="row">
+              Locked NFTs
+              <Box className={classes.detailInfo} display="inline-flex" ml={1}>{item.nfts?.filter(nft => nft.isLocked).length}</Box>
+            </Box>
+          </Box>
           <Divider light />
           <Box className={classes.details}>
             <Box className={classes.detailWrapper}>
-              <Box className={classes.detailLabel}>Locked NFTs</Box>
-              <Box className={classes.detailInfo}>{item.nfts?.filter(nft => nft.isLocked).length}</Box>
+              <Box className={classes.detailLabel}>Staking Rewards</Box>
+              <Box className={classes.detailInfo}>5% APR</Box>
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Fraction Price</Box>

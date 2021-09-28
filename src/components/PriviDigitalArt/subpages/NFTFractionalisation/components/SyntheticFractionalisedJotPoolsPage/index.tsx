@@ -315,7 +315,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   // todo: Remove code
   const [liquidity, setLiquidity] = useState<number>(0);
 
-  const isProduction = process.env.REACT_APP_ENV === "Prod";
+  const isProduction = process.env.REACT_APP_ENV === "prod";
 
   React.useEffect(() => {
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));

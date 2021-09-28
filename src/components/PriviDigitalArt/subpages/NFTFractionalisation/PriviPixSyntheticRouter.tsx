@@ -21,6 +21,7 @@ export default function PriviPixSyntheticRouter(props) {
           setSelectedTab={props.setSelectedTab}
           selectedTab={props.selectedTab}
           setOpenFractionalize={props.setOpenFractionalize}
+          hasScrollOnSynthetic={props.hasScrollOnSynthetic}
         />
       </Route>
     </Switch>

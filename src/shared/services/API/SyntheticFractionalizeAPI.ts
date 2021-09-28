@@ -3,11 +3,9 @@ import URL from "shared/functions/getURL";
 
 /////////////////////////// GET //////////////////////////
 
-export async function getSyntheticCollections(): Promise<any> {
+export async function getSyntheticCollections(pagination): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticCollections`, {
-      params: {},
-    });
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticCollections`, { params: { pagination } });
     return response.data;
   } catch (e) {
     console.log(e.message);

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
 import { Grid, useTheme } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 import Box from "shared/ui-kit/Box";
+import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import MyNFTCard from "components/PriviDigitalArt/components/Cards/MyNFTCard";
 import { myNFTStyles } from "./index.styles";
 import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
@@ -33,6 +35,7 @@ const TopNFTList = [
 const MyNFT = () => {
   const classes = myNFTStyles();
   const [myNFTs, setMyNFTs] = useState<any[]>([]);
+  const history = useHistory();
 
   const theme = useTheme();
   const [selectedTab, setSelectedTab] = useState<"owned" | "synthetic">("synthetic");
@@ -73,6 +76,12 @@ const MyNFT = () => {
   return (
     <>
       <div className={classes.content}>
+        <BackButton
+          purple
+          overrideFunction={() => {
+            history.push("/pix/fractionalise/");
+          }}
+        />
         <div className={classes.title}>Manage your NFT</div>
         <div className={classes.subTitleSection}>
           <div

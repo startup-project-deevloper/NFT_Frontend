@@ -31,6 +31,7 @@ export const myNFTStyles = makeStyles(theme => ({
     display: "flex",
     width: "100%",
     justifyContent: "center",
+    marginTop: 20,
     [theme.breakpoints.down(950)]: {
       fontSize: 35,
     },

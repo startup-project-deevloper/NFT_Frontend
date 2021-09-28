@@ -261,6 +261,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
+    width: "100%"
   },
   rewardsWrapper: {
     backgroundImage: "linear-gradient(151.11deg, #AA26C2 6.74%, #4BA7F8 90.8%)",

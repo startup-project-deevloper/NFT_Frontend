@@ -20,40 +20,41 @@ export default function SyntheticCollectionCard({ item }) {
   const [balance, setBalance] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
 
-  useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
+  /// TODO: we will move this to cron microservice
+  // useEffect(() => {
+  //   (async () => {
+  //     const targetChain = BlockchainNets[1];
 
-      if (chainId && chainId !== targetChain?.chainId) {
-        const isHere = await switchNetwork(targetChain?.chainId || 0);
-        if (!isHere) {
-          showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
-          return;
-        }
-      }
+  //     if (chainId && chainId !== targetChain?.chainId) {
+  //       const isHere = await switchNetwork(targetChain?.chainId || 0);
+  //       if (!isHere) {
+  //         showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+  //         return;
+  //       }
+  //     }
 
-      const web3APIHandler = targetChain.apiHandler;
-      const web3Config = targetChain.config;
-      const web3 = new Web3(library.provider);
+  //     const web3APIHandler = targetChain.apiHandler;
+  //     const web3Config = targetChain.config;
+  //     const web3 = new Web3(library.provider);
 
-      const balanceResponse = await web3APIHandler.SyntheticCollectionManager.getContractJotsBalance(
-        web3,
-        item
-      );
+  //     const balanceResponse = await web3APIHandler.SyntheticCollectionManager.getContractJotsBalance(
+  //       web3,
+  //       item
+  //     );
 
-      if (balanceResponse) {
-        setBalance(balanceResponse);
-      }
+  //     if (balanceResponse) {
+  //       setBalance(balanceResponse);
+  //     }
 
-      // const priceResponse = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, item, {
-      //   tokenId: +item.SyntheticID,
-      // });
+  //     // const priceResponse = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, item, {
+  //     //   tokenId: +item.SyntheticID,
+  //     // });
 
-      // if (priceResponse) {
-      //   setPrice(priceResponse);
-      // }
-    })();
-  }, []);
+  //     // if (priceResponse) {
+  //     //   setPrice(priceResponse);
+  //     // }
+  //   })();
+  // }, []);
 
   return (
     <div
@@ -83,7 +84,7 @@ export default function SyntheticCollectionCard({ item }) {
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Implied Valuation</Box>
-              <Box className={classes.detailInfo}>${balance}</Box>
+              <Box className={classes.detailInfo}>$XXXX</Box>
             </Box>
           </Box>
         </Box>

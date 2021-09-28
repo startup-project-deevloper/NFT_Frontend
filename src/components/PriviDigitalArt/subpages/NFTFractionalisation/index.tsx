@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
+import { useHistory } from "react-router";
+import { useLocation } from "react-router-dom";
 
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
@@ -18,8 +20,6 @@ import Fractionalize from "./components/Fractionalise";
 import SyntheticFractionalise from "./components/SyntheticFractionalise";
 import { getFractionalizeVaults } from "shared/services/API/FractionalizeAPI";
 import PriviPixSyntheticRouter from "./PriviPixSyntheticRouter";
-import { useHistory } from "react-router";
-import { useLocation } from "react-router-dom";
 
 const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
   400: 1,
@@ -42,6 +42,8 @@ const NFTFractionalisation = () => {
   const [openFractionalize, setOpenFractionalize] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [hasScrollOnSynthetic, setHasScrollOnSynthetic] = useState<boolean>(false);
+
   const history = useHistory();
   const location = useLocation();
 
@@ -59,7 +61,7 @@ const NFTFractionalisation = () => {
   }, [openFractionalize]);
 
   useEffect(() => {
-    if (!location.pathname.includes('synthetic-derivative')) {
+    if (!location.pathname.includes("synthetic-derivative")) {
       setSelectedTab("pure");
     }
   }, [location]);
@@ -75,6 +77,10 @@ const NFTFractionalisation = () => {
           setLastIdx(data.data && data.data.length ? data.data[data.data.length - 1].MediaSymbol : "");
           setLoading(false);
         });
+      }
+      if (selectedTab === "synthetic") {
+        console.log(`hasScrollOnSynthetic`, hasScrollOnSynthetic);
+        setHasScrollOnSynthetic(true);
       }
     }
   };
@@ -101,35 +107,40 @@ const NFTFractionalisation = () => {
         <div className={classes.content} onScroll={handleScroll}>
           <div className={classes.titleBar}>
             <div className={classes.title}>NFT Fractionalisation</div>
-            <SecondaryButton size="medium"
-              style={!isMobile ? ({
-                height: "50px",
-                fontSize: "18px",
-                padding: "0 50px",
-                position: "relative",
-                background: "#431AB7",
-                borderRadius: "8px",
-                color: "#fff",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-              }) : ({
-                height: "30px",
-                fontSize: "14px",
-                padding: "0 30px",
-                position: "relative",
-                background: "#431AB7",
-                borderRadius: "8px",
-                color: "#fff",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-              })}
+            <SecondaryButton
+              size="medium"
+              style={
+                !isMobile
+                  ? {
+                      height: "50px",
+                      fontSize: "18px",
+                      padding: "0 50px",
+                      position: "relative",
+                      background: "#431AB7",
+                      borderRadius: "8px",
+                      color: "#fff",
+                      border: "none",
+                      display: "flex",
+                      alignItems: "center",
+                    }
+                  : {
+                      height: "30px",
+                      fontSize: "14px",
+                      padding: "0 30px",
+                      position: "relative",
+                      background: "#431AB7",
+                      borderRadius: "8px",
+                      color: "#fff",
+                      border: "none",
+                      display: "flex",
+                      alignItems: "center",
+                    }
+              }
               onClick={() => {
                 history.push("/pix/mynft");
               }}
             >
-              Manage  Portfolio
+              Manage Portfolio
               <Box className={classes.countCircle}>5</Box>
             </SecondaryButton>
           </div>
@@ -240,6 +251,7 @@ const NFTFractionalisation = () => {
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
             setOpenFractionalize={setOpenFractionalize}
+            hasScrollOnSynthetic={hasScrollOnSynthetic}
           />
         </div>
       )}

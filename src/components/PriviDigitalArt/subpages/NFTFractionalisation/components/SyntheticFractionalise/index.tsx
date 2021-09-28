@@ -47,7 +47,9 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const { showAlertMessage } = useAlertMessage();
 
   const theme = useTheme();
-  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between(769, 960));
+  const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
+  const isMobile = useMediaQuery(theme.breakpoints.down(700));
 
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
@@ -173,8 +175,8 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           <div className={classes.title}>Synthetic Fractionalise your NFT</div>
         </Grid>
       </Grid>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={isTablet ? 12 : 7}>
+      <Grid container spacing={isTablet || isMobile || isMiniTablet ? 1 : 3}>
+        <Grid item xs={12} sm={isTablet || isMobile ? 12 : isMiniTablet ? 6 : 7}>
           <Box display="flex" flexDirection="column" height="100%">
             <div className={classes.text}>
               {walletConnected
@@ -190,7 +192,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                     bgcolor="#EFF2FD"
                     border="1px solid rgba(67, 26, 183, 0.24)"
                     boxSizing="border-box"
-                    padding="41px 29px"
+                    padding={isTablet || isMiniTablet || isMobile ? "41px 12px" : "41px 29px"}
                   >
                     <MasonryGrid
                       gutter={"12px"}
@@ -246,7 +248,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
               </Grid>
             )}
 
-            {isTablet && (
+            {(isTablet || isMobile) && (
               <Grid item xs={12} sm={12} style={{ marginTop: 24 }}>
                 <div className={classes.nftsBox}>
                   <div className={classes.nftsTitle}>
@@ -351,8 +353,8 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
             )}
           </Box>
         </Grid>
-        {!isTablet && (
-          <Grid item xs={12} sm={5}>
+        {!isTablet && !isMobile && (
+          <Grid item xs={12} sm={isMiniTablet ? 6 : 5}>
             <div className={classes.nftsBox}>
               <div className={classes.nftsTitle}>
                 {isSynthetic ? "SELECTED NFT" : "SELECTED NFTS"}{" "}
@@ -467,9 +469,9 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
 };
 
 const COLUMNS_COUNT_BREAK_POINTS_TWO = {
-  400: 1,
+  400: 2,
   490: 2,
-  959: 1,
+  959: 2,
   1180: 2,
   1500: 3,
 };

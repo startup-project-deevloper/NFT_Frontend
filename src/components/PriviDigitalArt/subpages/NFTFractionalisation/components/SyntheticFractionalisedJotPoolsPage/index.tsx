@@ -293,7 +293,7 @@ export const CoinFlipHistoryTable = ({ datas, nfts }) => {
 
   return (
     <div className={classes.table}>
-      <CustomTable headers={tableHeaders} rows={tableData} placeholderText="No auctions" />
+      <CustomTable headers={tableHeaders} rows={tableData} placeholderText="No history" />
     </div>
   );
 };

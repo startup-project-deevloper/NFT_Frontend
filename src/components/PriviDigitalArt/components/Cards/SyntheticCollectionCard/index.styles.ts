@@ -43,12 +43,17 @@ export const syntheticCollectionCardStyles = makeStyles(theme => ({
     flexDirection: 'column',
     width: '100%',
   },
+  titleContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: 10,
+  },
   title: {
     color: '#431AB7',
     fontWeight: 800,
-    fontSize: 20,
+    fontSize: 18,
     margin: 0,
-    marginBottom: 16,
+    marginBottom: 6,
   },
   details: {
     marginTop: 16,
@@ -65,10 +70,10 @@ export const syntheticCollectionCardStyles = makeStyles(theme => ({
   },
   detailInfo: {
     color: '#431AB7',
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: 800,
     [theme.breakpoints.down(1200)]: {
-      fontSize: 15,
+      fontSize: 13,
     },
   },
   avatar: {

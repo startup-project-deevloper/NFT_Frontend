@@ -1,16 +1,8 @@
 import React, { useState } from "react";
-import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
-import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { useWithdrawNFTModelStyles } from "./index.style"
-import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import EthBase from "shared/contracts/EthBase.sol/EthBase.json";
-import config from "shared/connectors/web3/config";
-import { ContractInstance } from "shared/connectors/web3/functions";
-import { BlockchainNets } from "shared/constants/constants";
 
 export default function WithdrawNFTModel({ open, onClose }) {
   const classes = useWithdrawNFTModelStyles();

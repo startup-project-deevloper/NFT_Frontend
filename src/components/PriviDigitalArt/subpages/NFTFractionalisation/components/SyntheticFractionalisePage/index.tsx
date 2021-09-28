@@ -2,19 +2,28 @@ import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-elastic-carousel";
 import { useHistory } from "react-router";
 
-import { createTheme, Grid, MuiThemeProvider, useMediaQuery } from "@material-ui/core";
+import { createTheme, Grid, useMediaQuery } from "@material-ui/core";
 
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
-import { nftFractionalisationStyles } from "../../index.styles";
 import SyntheticCollectionCard from "components/PriviDigitalArt/components/Cards/SyntheticCollectionCard";
 import { getSyntheticCollections } from "shared/services/API/SyntheticFractionalizeAPI";
+import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
+import { nftFractionalisationStyles } from "../../index.styles";
+
+const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
+  400: 1,
+  650: 2,
+  1200: 3,
+  1440: 4,
+};
 
 const SyntheticFractionalisePage = ({
   selectedTab,
   openFractionalize,
   setSelectedTab,
   setOpenFractionalize,
+  hasScrollOnSynthetic,
 }) => {
   const theme = createTheme({
     breakpoints: {
@@ -31,7 +40,11 @@ const SyntheticFractionalisePage = ({
 
   const carouselRef = useRef<any>();
 
-  const [collections, setCollections] = useState([]);
+  const [collections, setCollections] = useState<any[]>([]);
+  const [hasMoreCollections, setHasMoreCollections] = useState<boolean>(true);
+  const [pagination, setPagination] = useState<number>(0);
+  const [lastIdx, setLastIdx] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedTab !== "synthetic" || openFractionalize) {
@@ -41,13 +54,30 @@ const SyntheticFractionalisePage = ({
   }, [selectedTab, openFractionalize]);
 
   useEffect(() => {
-    (async () => {
-      const response = await getSyntheticCollections();
-      if (response.success) {
-        setCollections(response.data);
+    setLoading(true);
+    getSyntheticCollections(0).then(resp => {
+      if (resp && resp.success) {
+        setCollections(resp.data);
+        setHasMoreCollections(resp.hasMore);
+        setPagination(pagination => pagination + 1);
       }
-    })();
+      setLoading(false);
+    });
   }, []);
+
+  useEffect(() => {
+    if (hasScrollOnSynthetic && hasMoreCollections) {
+      setLoading(true);
+      getSyntheticCollections(pagination).then(resp => {
+        if (resp && resp.success) {
+          setCollections([...collections, ...(resp.data ?? [])]);
+          setHasMoreCollections(resp.hasMore);
+          setPagination(pagination => pagination + 1);
+        }
+        setLoading(false);
+      });
+    }
+  }, [hasScrollOnSynthetic]);
 
   return (
     <>
@@ -74,7 +104,7 @@ const SyntheticFractionalisePage = ({
                   >
                     Synthetic Fractionalise NFT
                   </div>
-                  <div className={classes.tradeNFTBtnWrapper} onClick={() => { }}>
+                  <div className={classes.tradeNFTBtnWrapper} onClick={() => {}}>
                     <div className={classes.tradeNFTBtn}>Trade NFT Derivatives</div>
                   </div>
                 </Grid>
@@ -100,8 +130,20 @@ const SyntheticFractionalisePage = ({
                     carouselRef.current.slidePrev();
                   }}
                 >
-                  <svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#431AB7" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.14546 14.6185L1.29284 7.98003M1.29284 7.98003L8.14546 1.34155M1.29284 7.98003H18.707" strokeWidth="1.5122" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg
+                    width="20"
+                    height="16"
+                    viewBox="0 0 20 16"
+                    fill="none"
+                    stroke="#431AB7"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8.14546 14.6185L1.29284 7.98003M1.29284 7.98003L8.14546 1.34155M1.29284 7.98003H18.707"
+                      strokeWidth="1.5122"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </Box>
                 <Box
@@ -111,14 +153,26 @@ const SyntheticFractionalisePage = ({
                     carouselRef.current.slideNext();
                   }}
                 >
-                  <svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#431AB7" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11.8545 14.6185L18.7072 7.98003M18.7072 7.98003L11.8545 1.34155M18.7072 7.98003H1.29297" strokeWidth="1.5122" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg
+                    width="20"
+                    height="16"
+                    viewBox="0 0 20 16"
+                    fill="none"
+                    stroke="#431AB7"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.8545 14.6185L18.7072 7.98003M18.7072 7.98003L11.8545 1.34155M18.7072 7.98003H1.29297"
+                      strokeWidth="1.5122"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </Box>
               </Box>
             </Box>
             <div className={classes.topNFTContent}>
-              {collections.length ? (
+              {collections && collections.length ? (
                 <Carousel
                   isRTL={false}
                   itemsToShow={itemsToShow}
@@ -152,17 +206,30 @@ const SyntheticFractionalisePage = ({
               <span>View all Synthetic NFTs</span>
             </div>
             <div className={classes.allNFTSection}>
-              {collections.length ? (
-                <MuiThemeProvider theme={theme}>
-                  <Grid container spacing={3} wrap="wrap">
-                    {collections.map((item: any) => (
-                      <Grid item xs={12} sm={6} md={12} lg={6} xl={4} key={item.id}>
-                        <SyntheticCollectionCard item={item} />
-                      </Grid>
-                    ))}
-                  </Grid>
-                </MuiThemeProvider>
-              ) : (
+              {collections && collections.length ? (
+                <>
+                  <MasonryGrid
+                    gutter={"24px"}
+                    data={collections}
+                    renderItem={(item, index) => <SyntheticCollectionCard item={item} />}
+                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                  />
+                  {hasMoreCollections && (
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingTop: 16,
+                        paddingBottom: 16,
+                      }}
+                    >
+                      <CircularLoadingIndicator theme="blue" />
+                    </div>
+                  )}
+                </>
+              ) : loading ? (
                 <div
                   style={{
                     width: "100%",
@@ -175,6 +242,8 @@ const SyntheticFractionalisePage = ({
                 >
                   <CircularLoadingIndicator theme="blue" />
                 </div>
+              ) : (
+                <div></div>
               )}
             </div>
           </div>

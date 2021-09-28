@@ -75,9 +75,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
   const [resultState, setResultState] = useState<number>(0);
 
-  /// TODO This is wrong
   const isOwner = React.useMemo(
-    () => nft && userSelector && nft.priviUser && nft.priviUser.id === userSelector.id,
+    () => nft && userSelector && nft.user === userSelector.id,
     [nft, userSelector]
   );
 
@@ -169,6 +168,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       });
 
       if (!contractResponse) {
+        setOpenFlipCoinModal(false);
+        setIsFlipping(false);
         showAlertMessage(`Got failed while flipping the JOT`, { variant: "error" });
         return;
       }

@@ -6,7 +6,7 @@ import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { useLockNFTStyles } from "./index.styles";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import EthBase from "shared/contracts/EthBase.sol/EthBase.json";
+import NFTVaultManager from "shared/connectors/ethereum/contracts/NFTVaultManager.json";
 import config from "shared/connectors/ethereum/config";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
@@ -43,7 +43,13 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       const web3APIHandler = targetChain.apiHandler;
 
       const web3 = new Web3(library.provider);
-      const contractAddress = config.CONTRACT_ADDRESSES.ETH_BASE;
+      const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
+      console.log(
+        "contractAddress selectedNFT.tokenAddress, selectedNFT.BlockchainId",
+        contractAddress,
+        selectedNFT.tokenAddress,
+        selectedNFT.BlockchainId
+      );
       let response = await web3APIHandler.Erc721.setApprovalForToken(
         web3,
         account!,
@@ -59,12 +65,12 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         setIsLoading(false);
         return;
       }
-      const contract = ContractInstance(web3, EthBase.abi, contractAddress);
+      const contract = ContractInstance(web3, NFTVaultManager.abi, contractAddress);
       const gas = await contract.methods
-        .depositNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId)
+        .lockNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId)
         .estimateGas({ from: account });
       response = await contract.methods
-        .depositNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId)
+        .lockNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId)
         .send({ from: account, gas })
         .on("receipt", receipt => {
           onCompleted();

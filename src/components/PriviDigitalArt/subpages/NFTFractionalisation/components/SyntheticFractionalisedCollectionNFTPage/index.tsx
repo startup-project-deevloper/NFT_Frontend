@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import Axios from "axios";
+import Moment from "react-moment";
 
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
@@ -33,6 +34,7 @@ import URL from "shared/functions/getURL";
 import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
 import FlipCoinInputGuessModal from "../../modals/FlipCoinInputGuessModal";
 import * as API from "shared/services/API/FractionalizeAPI";
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
   goBack,
@@ -173,15 +175,37 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       }
 
       console.log("contractResponse... ", contractResponse);
-      const { prediction, tokenId, requestId, randomResult } = contractResponse;
+      const { prediction, tokenId, randomResult, hash } = contractResponse;
 
       await API.addFlipHistory({
         collectionAddress: params.collectionId,
         syntheticID: nft.SyntheticID,
-        winnerAddress: requestId,
+        winnerAddress: randomResult === "0" ? nft.JotPoolAddress : nft.user,
         prediction: prediction,
         randomResult,
         tokenId,
+        guess: randomResult === prediction ? "correct" : "false",
+        txn: hash,
+        player: account,
+        id: new Date().getTime().toString(),
+      });
+      const histories = [...nft.flipHistory];
+      histories.concat({
+        collectionAddress: params.collectionId,
+        syntheticID: nft.SyntheticID,
+        winnerAddress: randomResult === "0" ? nft.JotPoolAddress : nft.user,
+        prediction: prediction,
+        randomResult,
+        tokenId,
+        guess: randomResult === prediction ? "correct" : "false",
+        txn: hash,
+        player: account,
+        id: new Date().getTime().toString(),
+      });
+
+      setNft({
+        ...nft,
+        flipHistory: histories,
       });
 
       setIsFlipping(false);
@@ -192,118 +216,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     }
   };
 
-  const dummyTableData: Array<Array<CustomTableCellInfo>> = [
-    [
-      {
-        cell: "JOT Pool",
-      },
-      {
-        cell: "",
-      },
-      {
-        cell: "False",
-      },
-      {
-        cellAlign: "center",
-        cell: "12:22, 21.09 2021",
-      },
-      {
-        cellAlign: "center",
-        cell: (
-          <div className={classes.explorerImg}>
-            <img src={require("assets/icons/polygon_scan.png")} />
-          </div>
-        ),
-      },
-    ],
-
-    [
-      {
-        cell: (
-          <Box className={classes.userField} display="flex" flexDirection="row" alignItems="center">
-            <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
-            <Text>@user_name</Text>
-          </Box>
-        ),
-      },
-      {
-        cell: "0xas3....1231s",
-      },
-      {
-        cell: "Correct",
-      },
-      {
-        cellAlign: "center",
-        cell: "12:22, 21.09 2021",
-      },
-      {
-        cellAlign: "center",
-        cell: (
-          <div className={classes.explorerImg}>
-            <img src={require("assets/icons/polygon_scan.png")} />
-          </div>
-        ),
-      },
-    ],
-
-    [
-      {
-        cell: (
-          <Box className={classes.userField} display="flex" flexDirection="row" alignItems="center">
-            <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
-            <Text>@user_name</Text>
-          </Box>
-        ),
-      },
-      {
-        cell: "0xas3....1231s",
-      },
-      {
-        cell: "Correct",
-      },
-      {
-        cellAlign: "center",
-        cell: "12:22, 21.09 2021",
-      },
-      {
-        cellAlign: "center",
-        cell: (
-          <div className={classes.explorerImg}>
-            <img src={require("assets/icons/polygon_scan.png")} />
-          </div>
-        ),
-      },
-    ],
-
-    [
-      {
-        cell: (
-          <Box className={classes.userField} display="flex" flexDirection="row" alignItems="center">
-            <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
-            <Text>@user_name</Text>
-          </Box>
-        ),
-      },
-      {
-        cell: "0xas3....1231s",
-      },
-      {
-        cell: "Correct",
-      },
-      {
-        cellAlign: "center",
-        cell: "12:22, 21.09 2021",
-      },
-      {
-        cellAlign: "center",
-        cell: (
-          <div className={classes.explorerImg}>
-            <img src={require("assets/icons/polygon_scan.png")} />
-          </div>
-        ),
-      },
-    ],
-  ];
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "WINNER",
@@ -614,7 +526,44 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               <div className={classes.coinFlipHistorySection}>
                 <div className={classes.typo8}>Coin flip history</div>
                 <div className={classes.table}>
-                  <CustomTable headers={tableHeaders} rows={dummyTableData} placeholderText="No history" />
+                  <CustomTable
+                    headers={tableHeaders}
+                    rows={(nft.flipHistory ?? []).map(item => [
+                      {
+                        cell: item.winnerAddress === nft.JotPoolAddress ? "Jot Pool" : nft.user,
+                      },
+                      {
+                        cell:
+                          (item.player ?? "").substr(0, 5) +
+                          "..." +
+                          (item.player ?? "").substr((item.player ?? "").length - 5, 5),
+                      },
+                      {
+                        cell: (item.guess ?? "").toUpperCase(),
+                      },
+                      {
+                        cellAlign: "center",
+                        cell: <Moment format="hh:kk, DD.MM.yyyy">{item.date}</Moment>,
+                      },
+                      {
+                        cellAlign: "center",
+                        cell: (
+                          <div
+                            className={classes.explorerImg}
+                            onClick={() =>
+                              window.open(
+                                `https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${item.txn}`,
+                                "_blank"
+                              )
+                            }
+                          >
+                            <img src={require("assets/icons/polygon_scan.png")} />
+                          </div>
+                        ),
+                      },
+                    ])}
+                    placeholderText="No history"
+                  />
                 </div>
               </div>
             </>

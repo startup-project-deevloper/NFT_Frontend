@@ -212,9 +212,7 @@ export const TransactionTable = ({ datas }) => {
             cell: `${row.value || "0"} USDT`,
           },
           {
-            cell: <Box color="rgba(67, 26, 183, 1)">{
-              row.account || ""
-            }</Box>,
+            cell: <Box color="rgba(67, 26, 183, 1)">{row.account || ""}</Box>,
           },
           {
             cell: row.time || "",
@@ -302,12 +300,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             type: "Buy",
             tokenAmount: txn.Amount,
             value: +txn.Amount * (+nft.Price || 1),
-            account:
-              txn.To
+            account: txn.To
               ? isMobileScreen
                 ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
                 : txn.To
-              : '',
+              : "",
             time: txn.Date,
             hash: txn.Id,
           }))
@@ -395,9 +392,16 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               <Box className={classes.progressBar}>
                 <Box className={classes.progressed} style={{ width: "35%" }} />
               </Box>
-              <Box className={classes.progressTitle} display="flex" alignItems="center" justifyContent="space-between">
+              <Box
+                className={classes.progressTitle}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
                 <span>Margin left before Liquidation</span>
-                <span>100 / <b>2455 JOTs</b></span>
+                <span>
+                  100 / <b>2455 JOTs</b>
+                </span>
               </Box>
             </Box>
             <Box className={classes.boxBody}>
@@ -850,5 +854,5 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   },
   "& .MuiTooltip-arrow": {
     color: "#EFF2FD",
-  }
+  },
 }));

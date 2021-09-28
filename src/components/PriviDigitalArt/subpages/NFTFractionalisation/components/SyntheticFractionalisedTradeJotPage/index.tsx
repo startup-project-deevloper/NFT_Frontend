@@ -4,8 +4,12 @@ import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
 import PrintChart from "shared/ui-kit/Chart/Chart";
 import { syntheticFractionalisedTradeJotPageStyles } from "./index.styles";
-import { ReactComponent as ArrowUp } from 'assets/icons/arrow_up.svg';
-import { ReactComponent as QuickSwapIcon } from 'assets/icons/quick-swap-icon.svg';
+import { ReactComponent as ArrowUp } from "assets/icons/arrow_up.svg";
+import { ReactComponent as QuickSwapIcon } from "assets/icons/quick-swap-icon.svg";
+import Axios from "axios";
+import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import moment from "moment";
 
 const FreeHoursChartConfig = {
   config: {
@@ -44,7 +48,7 @@ const FreeHoursChartConfig = {
         },
         line: {
           tension: 0,
-        }
+        },
       },
 
       legend: {
@@ -98,7 +102,7 @@ const FreeHoursChartConfig = {
         intersect: false,
         callbacks: {
           //This removes the tooltip title
-          title: function () { },
+          title: function () {},
           label: function (tooltipItem, data) {
             return `$${tooltipItem.yLabel.toFixed(4)}`;
           },
@@ -155,12 +159,22 @@ const MONTHLABELS = [
 
 export default function SyntheticFractionalisedTradeJotPage(props: any) {
   const classes = syntheticFractionalisedTradeJotPageStyles();
-  const [rewardConfig, setRewardConfig] = React.useState<any>();
+  const [rewardConfig, setRewardConfig] = useState<any>();
   const PERIODS = ["1h", "1D", "7D"];
-  const [period, setPeriod] = React.useState<string>(PERIODS[0]);
+  const [period, setPeriod] = useState<string>(PERIODS[0]);
   const UNITS = ["JOTs", "USDT"];
-  const [unit, setUnit] = React.useState<string>(UNITS[0]);
-
+  const [unit, setUnit] = useState<string>(UNITS[0]);
+  const [tvl, setTvl] = useState(0);
+  const [volume7h, setVolume7h] = useState(0);
+  const [volume24h, setVolume24h] = useState(0);
+  const [token0Price, setToken0Price] = useState(0);
+  const [token1Price, setToken1Price] = useState(0);
+  const [loadingTradingInfo, setLoadingTradingInfo] = useState(false);
+  // const [rewardConfig, setRewardConfig] = React.useState<any>();
+  // const PERIODS = ["1h", "1D", "7D"];
+  // const [period, setPeriod] = React.useState<string>(PERIODS[0]);
+  // const UNITS = ["JOTs", "USDT"];
+  // const [unit, setUnit] = React.useState<string>(UNITS[0]);
 
   React.useEffect(() => {
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
@@ -169,14 +183,14 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
       period === PERIODS[0]
         ? getAllMinues()
         : period === PERIODS[1]
-          ? getAllHours()
-          : DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
+        ? getAllHours()
+        : DAYLABELS.map(item => item.slice(0, 3).toUpperCase());
     newRewardConfig.config.data.datasets[0].data =
       period === PERIODS[0]
         ? getAllValues(unit)
         : period === PERIODS[1]
-          ? getAllValues(unit)
-          : getAllValuesInWeek(unit);
+        ? getAllValues(unit)
+        : getAllValuesInWeek(unit);
     newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
     newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
@@ -185,8 +199,37 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
 
     setRewardConfig(newRewardConfig);
+    fetchPairData();
   }, [period, unit]);
 
+  const fetchPairData = async () => {
+    try {
+      setLoadingTradingInfo(true);
+      const token0Addr = "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6"; // WBTC
+      const token1Addr = "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"; // USDC
+      const resp = await Axios.get(`${PriceFeed_URL()}/quickswap/trading_info`, {
+        headers: {
+          Authorization: `Basic ${PriceFeed_Token()}`,
+        },
+        params: {
+          token0: token0Addr,
+          token1: token1Addr,
+        },
+      });
+
+      if (!resp.data.success) return;
+      const tradingInfo = Array.isArray(resp.data.data) ? resp.data.data[0] : resp.data.data;
+      setTvl(tradingInfo.tvl || 0);
+      setVolume7h(tradingInfo.volume7h || 0);
+      setVolume24h(tradingInfo.volume24h || 0);
+      setToken0Price(tradingInfo.token0Price || 0);
+      setToken1Price(tradingInfo.token1Price || 0);
+      setLoadingTradingInfo(false);
+    } catch (e) {
+      // throw new Error(e.message)
+      setLoadingTradingInfo(false);
+    }
+  };
   const getAllMinues = React.useCallback(() => {
     const result: any[] = [];
     for (let index = 0; index <= 11; index++) {
@@ -205,8 +248,8 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     return result;
   }, []);
 
-  const getAllValues = React.useCallback((unit) => {
-    const maxVal = unit==='JOTs' ? 500 : 1000
+  const getAllValues = React.useCallback(unit => {
+    const maxVal = unit === "JOTs" ? 500 : 1000;
     const result: number[] = [];
     for (let index = 1; index <= 23; index++) {
       result.push(Math.floor(Math.random() * maxVal));
@@ -215,8 +258,8 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     return result;
   }, []);
 
-  const getAllValuesInWeek = React.useCallback((unit) => {
-    const maxVal = unit==='JOTs' ? 500 : 1000
+  const getAllValuesInWeek = React.useCallback(unit => {
+    const maxVal = unit === "JOTs" ? 500 : 1000;
     const result: number[] = [];
     for (let index = 0; index < DAYLABELS.length; index++) {
       result.push(Math.floor(Math.random() * maxVal));
@@ -225,8 +268,8 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     return result;
   }, []);
 
-  const getAllValuesInYear = React.useCallback((unit) => {
-    const maxVal = unit==='JOTs' ? 500 : 1000
+  const getAllValuesInYear = React.useCallback(unit => {
+    const maxVal = unit === "JOTs" ? 500 : 1000;
     const result: number[] = [];
     for (let index = 0; index < MONTHLABELS.length; index++) {
       result.push(Math.floor(Math.random() * maxVal));
@@ -242,35 +285,47 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     setUnit(unit);
   };
 
+  const formatNumber = (num: number, fractionDigits = 5) => {
+    return num.toLocaleString(undefined, { minimumFractionDigits: fractionDigits });
+  };
+
   return (
     <Box className={classes.root}>
       <Box className={classes.infoWrap}>
         <Grid container spacing={2}>
           <Grid item md={5} xs={12}>
-            <Box className={classes.leftJots}>
-              <Box className={classes.jotWrapper}>
-                <Box className={classes.jotLabel}>TVL</Box>
-                <Box className={classes.jotTitle}>$245,522.21</Box>
+            <LoadingWrapper loading={loadingTradingInfo}>
+              <Box className={classes.leftJots}>
+                <Box className={classes.jotWrapper}>
+                  <Box className={classes.jotLabel}>TVL</Box>
+                  <Box className={classes.jotTitle}>${formatNumber(tvl)}</Box>
+                </Box>
+                <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
+                <Box className={classes.jotWrapper}>
+                  <Box className={classes.jotLabel}>24h Trading Vol</Box>
+                  <Box className={classes.jotTitle}>${formatNumber(volume24h)}</Box>
+                  <Box className={classes.jotPercent}>
+                    <ArrowUp /> 0.32%
+                  </Box>
+                </Box>
+                <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
+                <Box className={classes.jotWrapper}>
+                  <Box className={classes.jotLabel}>7d Trading Vol</Box>
+                  <Box className={classes.jotTitle}>${formatNumber(volume7h)}</Box>
+                  <Box className={classes.jotPercent}>
+                    <ArrowUp /> 0.32%
+                  </Box>
+                </Box>
+                <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
+                <Box className={classes.jotWrapper}>
+                  <Box className={classes.jotLabel}>24h Fees</Box>
+                  <Box className={classes.jotTitle}>$245,522.21</Box>
+                  <Box className={classes.jotPercent}>
+                    <ArrowUp /> 0.32%
+                  </Box>
+                </Box>
               </Box>
-              <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
-              <Box className={classes.jotWrapper}>
-                <Box className={classes.jotLabel}>24h Trading Vol</Box>
-                <Box className={classes.jotTitle}>$245,522.21</Box>
-                <Box className={classes.jotPercent}><ArrowUp /> 0.32%</Box>
-              </Box>
-              <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
-              <Box className={classes.jotWrapper}>
-                <Box className={classes.jotLabel}>7d Trading Vol</Box>
-                <Box className={classes.jotTitle}>$245,522.21</Box>
-                <Box className={classes.jotPercent}><ArrowUp /> 0.32%</Box>
-              </Box>
-              <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
-              <Box className={classes.jotWrapper}>
-                <Box className={classes.jotLabel}>24h Fees</Box>
-                <Box className={classes.jotTitle}>$245,522.21</Box>
-                <Box className={classes.jotPercent}><ArrowUp /> 0.32%</Box>
-              </Box>
-            </Box>
+            </LoadingWrapper>
           </Grid>
           {/* chart gird */}
           <Grid item md={7} xs={12}>
@@ -282,17 +337,18 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
                   {/* left coin value and date */}
                   <Box display="flex" flexDirection="column">
                     <h2 className={classes.graphTitle}>
-                      4245,24 USDT
+                      {unit === "BTC" ? formatNumber(token1Price) : formatNumber(token0Price, 8)}{" "}
+                      {unit === "BTC" ? "USDC" : "BTC"}
                     </h2>
-                    <p className={classes.graphDesc}>12 Sep 2021</p>
+                    <p className={classes.graphDesc}>{moment().format("YYYY MMM DD")}</p>
                   </Box>
                   {/* right unit switch */}
                   <Box className={classes.unitsBox}>
                     <Box className={classes.unitButton}>
-                      {UNITS.map((item, index)=>(
+                      {UNITS.map((item, index) => (
                         <button
                           key={`unit-button-${index}`}
-                          className={`${classes.switchButton} ${item===unit && classes.activeSwitchButton}`}
+                          className={`${classes.switchButton} ${item === unit && classes.activeSwitchButton}`}
                           onClick={handleChangeUnit(item)}
                         >
                           {item}
@@ -307,8 +363,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
                     {PERIODS.map((item, index) => (
                       <button
                         key={`period-button-${index}`}
-                        className={`${classes.groupButton} ${item === period && classes.selectedGroupButton
-                          }`}
+                        className={`${classes.groupButton} ${item === period && classes.selectedGroupButton}`}
                         onClick={handleChangePeriod(item)}
                         style={{ marginLeft: index > 0 ? "8px" : 0 }}
                       >
@@ -338,7 +393,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
               height: 60,
               display: "flex",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             Trade on <QuickSwapIcon className={classes.swapIcon} /> Quickswap

@@ -31,6 +31,7 @@ export const myNFTStyles = makeStyles(theme => ({
     display: "flex",
     width: "100%",
     justifyContent: "center",
+    marginTop: 20,
     [theme.breakpoints.down(950)]: {
       fontSize: 35,
     },
@@ -88,7 +89,6 @@ export const myNFTStyles = makeStyles(theme => ({
   cardsGroup: {
     marginTop: 64,
     width: "100%",
-    maxWidth: 1400,
     [theme.breakpoints.down("sm")]: {
       marginBottom: 50
     },
@@ -100,5 +100,31 @@ export const myNFTStyles = makeStyles(theme => ({
   },
   syntheticContent: {
     minHeight: 200,
+  },
+  cardsGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    columnGap: 16,
+    rowGap: 16,
+    [theme.breakpoints.down(700)]: {
+      justifyContent: "center",
+    },
+    "& > div": {
+      minWidth: 250,
+      maxWidth: 325,
+      [theme.breakpoints.down(950)]: {
+        maxWidth: 300,
+      },
+      [theme.breakpoints.down(880)]: {
+        maxWidth: 265,
+      },
+      [theme.breakpoints.down(769)]: {
+        maxWidth: 300,
+      },
+      [theme.breakpoints.down(700)]: {
+        maxWidth: 325,
+      },
+    }
   }
 }));

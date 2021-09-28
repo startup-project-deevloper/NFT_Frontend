@@ -10,7 +10,7 @@ import { SyntheticFractionalisedTradeFractionsPageStyles } from "./index.styles"
 import BuyJotsModal from "../../../../modals/BuyJotsModal";
 import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
-import { getSyntheticNFTTransactions } from "shared/services/API/SyntheticFractionalizeAPI";
+import { getSyntheticNFTTransactions, getSyntheticNFTOwnerHistory } from "shared/services/API/SyntheticFractionalizeAPI";
 import AddJOTsModal from "components/PriviDigitalArt/modals/AddJOTsModal";
 import { styled } from "@material-ui/styles";
 
@@ -251,8 +251,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 }: any) {
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
-  const PERIODS = ["1D", "6D", "YTD"];
-  const [period, setPeriod] = React.useState<string>(PERIODS[0]);
+  const [ownerHistory, setOwnerHistory] = React.useState<any[]>([]);
 
   const [transList, setTransList] = React.useState<any[]>(tempHistory);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
@@ -263,20 +262,18 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
 
   React.useEffect(() => {
+    let labels: any[] = [];
+    let data: any[] = [];
+    if (ownerHistory && ownerHistory.length) {
+      ownerHistory.map((item, index) => {
+        labels.push(index + 1);
+        data.push(item.supply);
+      })
+    }
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
     newRewardConfig.configurer = configurer;
-    newRewardConfig.config.data.labels =
-      period === PERIODS[0]
-        ? getAllHours()
-        : period === PERIODS[1]
-        ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
-        : MONTHLABELS.map(item => item.slice(0, 3).toUpperCase());
-    newRewardConfig.config.data.datasets[0].data =
-      period === PERIODS[0]
-        ? getAllValues()
-        : period === PERIODS[1]
-        ? getAllValuesInWeek()
-        : getAllValuesInYear();
+    newRewardConfig.config.data.labels = labels;
+    newRewardConfig.config.data.datasets[0].data = data;
     newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
     newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
@@ -285,7 +282,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
 
     setRewardConfig(newRewardConfig);
-  }, [period]);
+  }, [ownerHistory]);
 
   React.useEffect(() => {
     handleRefresh();
@@ -310,48 +307,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           }))
         );
       }
+      const ownerHisotryResponse = await getSyntheticNFTOwnerHistory(collectionId, nft.SyntheticID);
+      if (ownerHisotryResponse.success) {
+        setOwnerHistory(ownerHisotryResponse.data.reverse());
+      }
     })();
   }, [collectionId, nft]);
-
-  const getAllHours = React.useCallback(() => {
-    const result: string[] = [];
-    for (let index = 1; index <= 23; index++) {
-      result.push(index < 10 ? `0${index}` : `${index}`);
-    }
-
-    return result;
-  }, []);
-
-  const getAllValues = React.useCallback(() => {
-    const result: number[] = [];
-    for (let index = 1; index <= 23; index++) {
-      result.push(Math.floor(Math.random() * 10000));
-    }
-
-    return result;
-  }, []);
-
-  const getAllValuesInWeek = React.useCallback(() => {
-    const result: number[] = [];
-    for (let index = 0; index < DAYLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * 10000));
-    }
-
-    return result;
-  }, []);
-
-  const getAllValuesInYear = React.useCallback(() => {
-    const result: number[] = [];
-    for (let index = 0; index < MONTHLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * 10000));
-    }
-
-    return result;
-  }, []);
-
-  const handleChangePeriod = (period: string) => () => {
-    setPeriod(period);
-  };
 
   const handleOpenBuyJotsModal = () => {
     setOpenBuyJotsModal(true);
@@ -765,20 +726,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               <Box display="flex" flexDirection="column">
                 <h2 className={classes.graphTitle}>4245,24 USDC</h2>
                 <p className={classes.graphDesc}>12 Sep 2021</p>
-              </Box>
-              <Box className={classes.controlBox}>
-                <Box className={classes.liquidityBox}>
-                  {PERIODS.map((item, index) => (
-                    <button
-                      key={`period-button-${index}`}
-                      className={`${classes.groupButton} ${item === period && classes.selectedGroupButton}`}
-                      onClick={handleChangePeriod(item)}
-                      style={{ marginLeft: index > 0 ? "8px" : 0 }}
-                    >
-                      {item}
-                    </button>
-                  ))}
-                </Box>
               </Box>
             </Box>
             <Box height={300} width={1} mt={3}>

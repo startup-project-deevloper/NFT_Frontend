@@ -218,7 +218,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 
   const viewOnPolygonscan = () => {
     window.open(
-      `https://${!isProd ? "mumbai." : ""}polygonscan.com/address/${nft.SyntheticCollectionManagerAddress}`,
+      `https://${!isProd ? "mumbai." : ""}polygonscan.com/address/${nft.SyntheticNFTAddress}`,
       "_blank"
     );
   };

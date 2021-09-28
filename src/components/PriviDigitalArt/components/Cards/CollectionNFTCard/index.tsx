@@ -17,22 +17,22 @@ export default function CollectionNFTCard({
       <div className={classes.card}>
         <div className={classes.innerBox}>
           {!hiddenHeader && (
-            <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={"10px"}>
+            <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={"8px"}>
               <div className={classes.ntfName}>{item.name || item.NftId}</div>
               <div className={classes.verifiedSection}>{item.isVerified ? "Verified" : "Unverified"}</div>
             </Box>
           )}
           <img src={require(`assets/backgrounds/digital_art_1.png`)} alt={item.MediaName} />
-          <Box display="flex" flexDirection="column" width={"90%"} mt={"4px"}>
-            <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
+          <Box display="flex" flexDirection="column" width={"90%"} mt={"3px"}>
+            <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"3px"}>
               <div className={classes.typo1}>Owner</div>
               <div className={classes.typo2}>{`${item.owner || 0} JOTS`}</div>
             </Box>
-            <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
+            <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"3px"}>
               <div className={classes.typo1}>Available</div>
               <div className={classes.typo2}>{`${item.available || 0} JOTS`}</div>
             </Box>
-            <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
+            <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"3px"}>
               <div className={classes.typo1}>Price</div>
               <div className={classes.typo2}>{`${item.price || 0} USDT/JOT`}</div>
             </Box>

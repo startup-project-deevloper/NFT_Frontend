@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
+import Moment from "react-moment";
 
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -105,7 +106,7 @@ const FreeHoursChartConfig = {
         intersect: false,
         callbacks: {
           //This removes the tooltip title
-          title: function () {},
+          title: function () { },
           label: function (tooltipItem, data) {
             return `$${tooltipItem.yLabel.toFixed(4)}`;
           },
@@ -252,6 +253,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
   const [ownerHistory, setOwnerHistory] = React.useState<any[]>([]);
+  const [currentSupply, setCurrentSupply] = React.useState<any>({
+    price: 0,
+    date: new Date().getTime()
+  });
 
   const [transList, setTransList] = React.useState<any[]>(tempHistory);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
@@ -268,6 +273,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       ownerHistory.map((item, index) => {
         labels.push(index);
         data.push(item.supply);
+      });
+
+      setCurrentSupply({
+        price: ownerHistory[0].supply,
+        date: ownerHistory[0].timestamp,
       })
     } else {
       labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -730,12 +740,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               </div>
             )}
             <Box className={classes.controlParentBox}>
-              <Box className={classes.ownershipTitle}>
-                Ownership over time
-              </Box>
-              <Box display="flex" flexDirection="column" alignItems="flex-end">
-                <h2 className={classes.graphTitle}>424 JOTS</h2>
-                <p className={classes.graphDesc}>12 Sep 2021</p>
+              <Box fontSize={16} fontWeight={700} color="white">Ownership over time</Box>
+              <Box display="flex" flexDirection="column">
+                <h2 className={classes.graphTitle}>{currentSupply.price} USDC</h2>
+                <Moment format="DD MMM YYYY" className={classes.graphDesc}>
+                  {currentSupply.date}
+                </Moment>
               </Box>
             </Box>
             <Box height={300} width={1}>

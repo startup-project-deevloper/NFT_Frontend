@@ -48,7 +48,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const isMobile = useMediaQuery("(max-width:599px)");
 
   const [loadingNFTs, setLoadingNFTs] = useState<boolean>(false);
-  const [showOrderBookModal, setShowOrderBookModal] = useState<boolean>(false);
+  const [showOrderBookModal, setShowOrderBookModal] = useState<boolean>(true);
 
   useEffect(() => {
     if (!params.id) return;

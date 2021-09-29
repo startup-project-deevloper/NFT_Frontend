@@ -165,6 +165,7 @@ export const fractionalizedNFTCardStyles = makeStyles(theme => ({
     right: 7,
     "& span": {
       marginLeft: 5.7,
+      whiteSpace: "nowrap"
     },
   },
   liveAuctionBtn: {
@@ -185,6 +186,7 @@ export const fractionalizedNFTCardStyles = makeStyles(theme => ({
     right: 7,
     "& span": {
       marginLeft: 5.7,
+      whiteSpace: "nowrap"
     },
   },
   closedBtn: {
@@ -206,6 +208,7 @@ export const fractionalizedNFTCardStyles = makeStyles(theme => ({
     right: 7,
     "& span": {
       marginLeft: 5.7,
+      whiteSpace: "nowrap"
     },
   },
   auctionSection: {

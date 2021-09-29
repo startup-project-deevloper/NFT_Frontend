@@ -152,9 +152,6 @@ const SyntheticFractionalisePage = ({
                   ml={3}
                   className={classes.carouselNav}
                   onClick={() => {
-                    console.log(carouselRef.current)
-                    console.log(carouselRef.current.getNextItemIndex())
-                    console.log(carouselRef.current.state)
                     carouselRef.current.slideNext();
                   }}
                 >

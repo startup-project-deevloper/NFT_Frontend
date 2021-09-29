@@ -633,7 +633,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               <Box className={classes.ownerPrice} position="relative">
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
-                    <Box className={`${classes.priceContent} ${classes.priceSecondaryContent}`}>
+                    <Box className={`${classes.priceContent}`}>
                       <Box display="flex" justifyContent="center" gridColumnGap={24}>
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Owner Price</Box>

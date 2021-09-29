@@ -159,15 +159,33 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     borderRadius: theme.spacing(2),
     boxShadow: "0px 3.40102px 6.80203px #9EACF2",
     background: Color.Purple,
+    overflow: "hidden",
+    position: 'relative',
+    "& .no-data": {
+      position: 'absolute',
+      left: '50%',
+      top: '55%',
+      transform: 'translate(-50%, 0)',
+      fontSize: 16,
+      color: '#ffffff'
+    }
   },
   controlParentBox: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    padding: 35,
+    paddingBottom: 0,
     [theme.breakpoints.down("sm")]: {
       alignItems: "flex-start",
     },
     width: "100%",
+  },
+  ownershipTitle: {
+    fontWeight: 800,
+    fontSize: 18,
+    lineHeight: '120%',
+    color: '#FFFFFF',
   },
   controlBox: {
     display: "flex",

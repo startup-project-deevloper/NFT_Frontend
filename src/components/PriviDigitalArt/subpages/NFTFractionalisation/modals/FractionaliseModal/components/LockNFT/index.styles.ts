@@ -5,6 +5,9 @@ export const useLockNFTStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       padding: 50,
+      [theme.breakpoints.down("xs")]: {
+        padding: "30px 0"
+      },
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

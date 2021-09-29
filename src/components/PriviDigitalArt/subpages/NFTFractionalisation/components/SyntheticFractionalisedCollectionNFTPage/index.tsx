@@ -426,7 +426,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   price: 1,
                 }}
                 hiddenHeader
-                customHeight="100%"
               />
             </div>
           </div>

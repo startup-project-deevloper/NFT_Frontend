@@ -18,7 +18,7 @@ export const MessageList = (props: any) => {
   const { newChatInList } = useSelector(getMessageBox);
 
   let pathName = window.location.href;
-  let idUrl = pathName.split("/")[5] ? pathName.split("/")[5] : "" + sessionStorage.getItem("userId");
+  let idUrl = pathName.split("/")[5] ? pathName.split("/")[5] : "" + localStorage.getItem("userId");
 
   const isPix = useMemo(() => {
     return props.type === "pix";

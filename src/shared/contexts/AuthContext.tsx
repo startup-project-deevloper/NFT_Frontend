@@ -15,7 +15,7 @@ export const AuthContextProvider: React.FunctionComponent = ({ children }) => {
   };
 
   useEffect(() => {
-    setIsSignedin(!!sessionStorage.getItem("token"));
+    setIsSignedin(!!localStorage.getItem("token"));
   }, []);
 
   const context = useMemo<AuthContextType>(

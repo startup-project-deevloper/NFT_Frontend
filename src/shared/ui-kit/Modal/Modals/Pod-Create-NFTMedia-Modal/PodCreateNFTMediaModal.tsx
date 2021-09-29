@@ -84,7 +84,7 @@ const PodCreateNFTMediaModal = (props: any) => {
   const { api, apiState, keyring, keyringState } = useSubstrate();
 
   const isSignedIn = () => {
-    return !!sessionStorage.getItem("token");
+    return !!localStorage.getItem("token");
   };
 
   useEffect(() => {

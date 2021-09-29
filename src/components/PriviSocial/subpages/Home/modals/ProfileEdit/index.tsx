@@ -138,7 +138,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
           if (response.data.success) {
             showAlertMessage("Profile updated successfully!", {variant: "success"});
             setEditionProgress(false);
-            sessionStorage.setItem("urlSlug", user.urlSlug);
+            localStorage.setItem("urlSlug", user.urlSlug);
             dispatch(editUser(response.data.data));
 
             getBasicInfo(user.id, true);

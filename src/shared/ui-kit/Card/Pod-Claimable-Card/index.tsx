@@ -279,7 +279,7 @@ export default function ClaimablePodCard({ media, trending }) {
   };
 
   const isSignedIn = () => {
-    return !!sessionStorage.getItem("token");
+    return !!localStorage.getItem("token");
   };
 
   useEffect(() => {

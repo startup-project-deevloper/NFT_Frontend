@@ -82,7 +82,7 @@ export const HeaderTitle: React.FC<HeaderTitleProps> = ({
   const [marginLeft, setMarginLeft] = useState<number>(0);
 
   const isSignedIn = () => {
-    return !!sessionStorage.getItem("token");
+    return !!localStorage.getItem("token");
   };
 
   useEffect(() => {

@@ -30,7 +30,7 @@ export default function ClaimPodModal(props) {
   };
 
   const isSignedIn = () => {
-    return !!sessionStorage.getItem("token");
+    return !!localStorage.getItem("token");
   };
 
   useEffect(() => {

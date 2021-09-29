@@ -402,7 +402,6 @@ export const getMediaWithType = async (mediaSymbol, platform, type) => {
     }
   } catch (e) {
     console.log(e);
-    throw new Error(e.message);
   }
 };
 

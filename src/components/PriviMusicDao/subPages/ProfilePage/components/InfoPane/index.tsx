@@ -216,7 +216,7 @@ const InfoPane = React.memo(
     const handleFiles = (files: any) => {
       if (validateFile(files[0])) {
         const formData = new FormData();
-        formData.append("image", files[0], sessionStorage.getItem("userId") ?? "");
+        formData.append("image", files[0], localStorage.getItem("userId") ?? "");
         const config = {
           headers: {
             "content-type": "multipart/form-data",
@@ -351,7 +351,7 @@ const InfoPane = React.memo(
                   <>
                     <div
                       onClick={showFollowersList}
-                      style={{ cursor: !sessionStorage.getItem("userId") ? "auto" : "pointer" }}
+                      style={{ cursor: !localStorage.getItem("userId") ? "auto" : "pointer" }}
                     >
                       <Box fontSize={14} fontWeight={400} color={"#2D3047"} mb={1} whiteSpace="nowrap">
                         🌟 Followers
@@ -362,7 +362,7 @@ const InfoPane = React.memo(
                     </div>
                     <div
                       onClick={showFollowingList}
-                      style={{ cursor: !sessionStorage.getItem("userId") ? "auto" : "pointer" }}
+                      style={{ cursor: !localStorage.getItem("userId") ? "auto" : "pointer" }}
                     >
                       <Box fontSize={14} fontWeight={400} color={"#2D3047"} mb={1} whiteSpace="nowrap">
                         💫 Following

@@ -7,17 +7,17 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     borderRadius: 8.4,
     clipPath: "polygon(100% 0%, 100% 85%,  50% 100%, 0% 85%, 0% 0%)",
     padding: 9,
-    height:  ({ customHeight }: any) => customHeight ? customHeight : 410,
+    height:  ({ hiddenHeader }: any) => hiddenHeader ? 400 : 410,
     width: "100%",
     minWidth: 165,
     maxWidth: 300,
     cursor: "pointer",
     [theme.breakpoints.down("sm")]: {
-      height: ({ customHeight }: any) => customHeight ? customHeight : 350,
+      height: ({ hiddenHeader }: any) => hiddenHeader ? 385 : 350,
     },
     [theme.breakpoints.down("xs")]: {
       padding: 7,
-      height: ({ customHeight }: any) => customHeight ? customHeight : 250,
+      height: ({ hiddenHeader }: any) => hiddenHeader ? 350 : 250,
     },
   },
   innerBox: {
@@ -45,11 +45,11 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
       border: "0.710107px solid rgba(0, 0, 0, 0.09)",
       boxShadow: "0px 25.5639px 19.883px -19.1729px rgba(63, 83, 183, 0.22)",
       [theme.breakpoints.down("sm")]: {
-        height: ({ hiddenHeader }: any) => hiddenHeader ? "170px" : "180px",
+        height: 190,
         borderRadius: 13,
       },
       [theme.breakpoints.down("xs")]: {
-        height: ({ hiddenHeader }: any) => hiddenHeader ? "110px" : "130px",
+        height: ({ hiddenHeader }: any) => hiddenHeader ? "190px" : "130px",
         borderRadius: 10,
       },
     },

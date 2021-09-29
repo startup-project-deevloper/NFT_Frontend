@@ -89,7 +89,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       }
 
       const response = await getSyntheticNFT(params.collectionId, params.nftId);
-      if (response.success) {
+      if (response?.success) {
         setNft(response.data);
         setLoadingData(false);
 
@@ -364,17 +364,19 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             <Box
               display="flex"
               alignItems="center"
+              justifyContent="space-between"
               flexWrap="wrap"
               mt={"30px"}
-              pr="10%"
               gridColumnGap="24px"
               gridRowGap="24px"
+              width="100%"
+              maxWidth="800px"
             >
-              <Box display="flex" flexDirection="column" mr={"87px"}>
+              <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Ownership</div>
                 <div className={classes.typo2}>{ownershipJot} JOTs</div>
               </Box>
-              <Box display="flex" flexDirection="column" mr={"75px"}>
+              <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Owner</div>
                 <Box display="flex" alignItems="center">
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
@@ -426,7 +428,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   price: 1,
                 }}
                 hiddenHeader
-                customHeight="100%"
               />
             </div>
           </div>

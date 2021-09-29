@@ -104,26 +104,25 @@ export const myNFTStyles = makeStyles(theme => ({
   cardsGrid: {
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     columnGap: 16,
     rowGap: 16,
-    [theme.breakpoints.down(700)]: {
+    [theme.breakpoints.down(768)]: {
       justifyContent: "center",
     },
     "& > div": {
-      minWidth: 250,
-      maxWidth: 325,
+      width: 325,
       [theme.breakpoints.down(950)]: {
-        maxWidth: 300,
+        width: 300,
       },
       [theme.breakpoints.down(880)]: {
-        maxWidth: 265,
+        width: 230,
       },
-      [theme.breakpoints.down(769)]: {
-        maxWidth: 300,
+      [theme.breakpoints.down(768)]: {
+        width: 180,
       },
       [theme.breakpoints.down(700)]: {
-        maxWidth: 325,
+        width: 160,
       },
     }
   }

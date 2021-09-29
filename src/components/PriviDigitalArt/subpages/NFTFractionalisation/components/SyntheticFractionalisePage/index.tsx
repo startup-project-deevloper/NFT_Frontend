@@ -33,10 +33,12 @@ const SyntheticFractionalisePage = ({
   });
   const classes = nftFractionalisationStyles();
   const history = useHistory();
+  const isNormalScreen = useMediaQuery(theme.breakpoints.down(1800));
   const isTablet = useMediaQuery(theme.breakpoints.down(1200));
   const isNarrow = useMediaQuery(theme.breakpoints.down(860));
+  const isMobile = useMediaQuery(theme.breakpoints.down(658));
 
-  const itemsToShow = isNarrow ? 1 : isTablet ? 2 : 3;
+  const itemsToShow = isMobile ? 1 : isNarrow ? 2 : isTablet ? 3 : isNormalScreen ? 4 : 5;
 
   const carouselRef = useRef<any>();
 
@@ -182,7 +184,9 @@ const SyntheticFractionalisePage = ({
                   itemPadding={[0, 12]}
                 >
                   {collections.map((item: any) => (
+                    <div style={{width:"100%", paddingBottom:"15px"}}>
                     <SyntheticCollectionCard item={item} key={item.id} />
+                    </div>
                   ))}
                 </Carousel>
               ) : (

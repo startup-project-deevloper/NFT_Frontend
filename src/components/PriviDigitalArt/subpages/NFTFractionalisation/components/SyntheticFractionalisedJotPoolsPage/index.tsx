@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Moment from "react-moment";
+import Web3 from "web3";
 import { Grid } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -13,6 +14,9 @@ import RemoveLiquidityModal from "components/PriviDigitalArt/modals/RemoveLiquid
 import { ReactComponent as ArrowUp } from "assets/icons/arrow_up.svg";
 import { ReactComponent as ArrowDown } from "assets/icons/arrow_down.svg";
 import LiquidityModal from "../../modals/LiquidityModal";
+import { BlockchainNets } from "shared/constants/constants";
+import { useWeb3React } from "@web3-react/core";
+
 const isProd = process.env.REACT_APP_ENV === "prod";
 
 const FreeHoursChartConfig = {
@@ -312,8 +316,12 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const [isAdd, setIsAdd] = useState<boolean>(false);
   const [openProceedModal, setOpenProceedModal] = useState<boolean>(false);
 
-  // todo: Remove code
-  const [liquidity, setLiquidity] = useState<number>(0);
+  const { account, library, chainId } = useWeb3React();
+
+  const [shareAmount, setShareAmount] = React.useState(0);
+  const [poolOwnership, setPoolOwnership] = React.useState(0);
+  const [liquidityValue, setLiquidityValue] = React.useState(0);
+  const [rewardValue, setRewardValue] = React.useState(0);
 
   const isProduction = process.env.REACT_APP_ENV === "prod";
 
@@ -341,6 +349,46 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
 
     setRewardConfig(newRewardConfig);
   }, [period]);
+
+  React.useEffect(() => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+
+      const position = await web3APIHandler.JotPool.getPosition(web3, collection);
+      if (position) {
+        setShareAmount(position.shareAmount);
+        setPoolOwnership(position.poolOwnership);
+      }
+    })();
+  }, [library]);
+
+  React.useEffect(() => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+
+      const liquidity = await web3APIHandler.JotPool.getLiquidityValue(web3, account, collection);
+      if (liquidity) {
+        setLiquidityValue(liquidity);
+      }
+    })();
+  }, [library]);
+
+  React.useEffect(() => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+
+      const reward = await web3APIHandler.JotPool.getReward(web3, collection);
+      if (reward) {
+        setRewardValue(reward);
+      }
+    })();
+  }, [library]);
 
   const getAllHours = React.useCallback(() => {
     const result: string[] = [];
@@ -383,8 +431,6 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   };
 
   const handleConfirmAddLiquidity = async (amount: string) => {
-    // todo: Remove code
-    setLiquidity(prev => prev + 1);
     setIsAdd(true);
     setAmount(Number(amount));
     setOpenProceedModal(true);
@@ -393,13 +439,18 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   };
 
   const handleConfirmRemoveLiquidity = async (amount: string) => {
-    // todo: Remove code
-    setLiquidity(prev => prev - 1);
     setIsAdd(false);
     setAmount(Number(amount));
     setOpenProceedModal(true);
 
     setOpenRemoveLiquidityModal(false);
+  };
+
+  const handleClaimRewards = async () => {
+    const targetChain = BlockchainNets[1];
+    const web3 = new Web3(library.provider);
+    const web3APIHandler = targetChain.apiHandler;
+    // WIP: Claim Rewards
   };
 
   return (
@@ -472,7 +523,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 </Box>
               </Grid>
             </Grid>
-            {liquidity === 0 && (
+            {shareAmount === 0 && (
               <Box className={classes.addButtonWrapper}>
                 <PrimaryButton
                   size="large"
@@ -492,7 +543,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
           </Box>
         </Box>
       </Box>
-      {liquidity !== 0 && (
+      {shareAmount !== 0 && (
         <Box className={classes.outBox}>
           <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
             MY STAKING
@@ -504,7 +555,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                   SHARE AMOUNT
                 </Box>
                 <Box className={classes.h3} mt={1}>
-                  11 SHARES
+                  {shareAmount} SHARES
                 </Box>
               </Box>
             </Grid>
@@ -514,7 +565,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                   POOL OWNERSHIP
                 </Box>
                 <Box className={classes.h3} mt={1}>
-                  20%
+                  {poolOwnership}%
                 </Box>
               </Box>
             </Grid>
@@ -524,7 +575,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                   MY LIQUIDITY VALUE
                 </Box>
                 <Box className={classes.h3} mt={1}>
-                  1000 USD
+                  {liquidityValue} USD
                 </Box>
               </Box>
             </Grid>
@@ -544,6 +595,39 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 >
                   ADD MORE
                 </PrimaryButton>
+              </Box>
+            </Grid>
+          </Grid>
+          <Grid container className={classes.botRow} style={{ padding: "0 50px 30px 50px" }}>
+            <Grid item md={4} xs={12}>
+              <Box className={classes.infoItem}>
+                <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                  YIELD FROM TRADING FEES
+                </Box>
+                <Box className={classes.h3} mt={1}>
+                  5%
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item md={4} xs={12}>
+              <Box className={classes.infoItem}>
+                <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                  ACCUMULATED YEIDL REWARDS
+                </Box>
+                <Box className={classes.h3} mt={1}>
+                  {rewardValue} USDT
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item md={4} xs={12}>
+              <Box display="flex" alignItems="center">
+                <SecondaryButton
+                  size="medium"
+                  style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2", height: 60 }}
+                  onClick={() => handleClaimRewards()}
+                >
+                  CLAIM REWARDS
+                </SecondaryButton>
               </Box>
             </Grid>
           </Grid>

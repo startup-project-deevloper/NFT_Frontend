@@ -1181,7 +1181,7 @@ const SwapModal = React.memo((props: any) => {
   }, [account]);
 
   const handleWallet = async (address: any) => {
-    const userId = sessionStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
     if (address) {
       axios
         .post(`${URL()}/wallet/registerUserEthAccount`, {

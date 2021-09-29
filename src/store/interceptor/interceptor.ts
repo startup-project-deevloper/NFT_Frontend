@@ -11,7 +11,7 @@ const interceptor = (store) => {
         if (state.user.jwt) {
           config.headers["Authorization"] = "Bearer " + state.user.jwt;
         } else {
-          let token: string = sessionStorage.getItem("token") || "";
+          let token: string = localStorage.getItem("token") || "";
           if (token) {
             config.headers["Authorization"] = "Bearer " + token;
           }

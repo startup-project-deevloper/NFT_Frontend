@@ -20,7 +20,13 @@ import { getSyntheticCollection } from "shared/services/API/SyntheticFractionali
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { fractionalisedCollectionStyles, EthIcon, ShareIcon, PlusIcon, MetamaskPlusIcon } from "./index.styles";
+import {
+  fractionalisedCollectionStyles,
+  EthIcon,
+  ShareIcon,
+  PlusIcon,
+  MetamaskPlusIcon,
+} from "./index.styles";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import URL from "shared/functions/getURL";
 import OrderBookModal from "../../modals/OrderBookModal";
@@ -41,7 +47,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [syntheticNFTs, setSyntheticNFTs] = useState<any>([]);
   const lastIdRef = useRef<string>("");
   const hasMoreRef = useRef<boolean>(true);
-  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
 
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
@@ -61,17 +66,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     })();
     loadNFTs(params.id);
   }, [params.id]);
-
-  useEffect(() => {
-    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
-      (async () => {
-        const changed = await switchNetwork(selectedChain.chainId);
-        if (!changed) {
-          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
-        }
-      })();
-    }
-  }, [chainId, selectedChain]);
 
   const loadNFTs = id => {
     if (!id) return;
@@ -171,7 +165,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     const lockedCount = syntheticNFTs?.filter(nft => nft.isLocked).length || 0;
     if (lockedCount >= 100) return `$${lockedCount / 100}M`;
     return `$${lockedCount * 10}K`;
-  }, [collection]);
+  }, [syntheticNFTs]);
 
   const handleFollow = () => {
     const body = {
@@ -234,15 +228,13 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               justifyContent={isMobile ? "center" : "flex-start"}
               marginLeft={1}
             >
-              {
-                !isMobile && (<MetamaskPlusIcon/>)
-              }
+              {!isMobile && <MetamaskPlusIcon />}
               <img
                 src={require("assets/walletImages/metamask.svg")}
                 alt=""
                 style={{ marginRight: isMobile ? "8px" : "0", height: "24px", width: "24px" }}
               />
-              {isMobile && 'Add to Metamask'}
+              {isMobile && "Add to Metamask"}
             </Box>
           </Box>
         </Box>
@@ -431,12 +423,12 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {syntheticNFTs && syntheticNFTs.length ? (
               <Grid container spacing={2}>
                 {syntheticNFTs.map((item, idx) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
+                  <Grid item xs={6} sm={4} md={4} lg={3}>
                     <AuctionCard
                       auction={item}
                       onClick={() => {
                         history.push(
-                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}/1`
+                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`
                         );
                       }}
                     />
@@ -465,7 +457,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         ) : (
           <div>
-            <SyntheticFractionalisedTradeJotPage />
+            <SyntheticFractionalisedTradeJotPage collection={collection} />
           </div>
         )}
       </div>

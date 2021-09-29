@@ -112,9 +112,9 @@ const SignUpWallet: React.FC<ISignUpWalletProps> = ({ handleCloseModal }) => {
                 const data = res.userData;
                 socket.emit("add user", data.id);
                 dispatch(setUser(data));
-                sessionStorage.setItem("token", res.accessToken);
-                sessionStorage.setItem("userId", data.id);
-                sessionStorage.setItem("userSlug", data.urlSlug ?? data.id);
+                localStorage.setItem("token", res.accessToken);
+                localStorage.setItem("userId", data.id);
+                localStorage.setItem("userSlug", data.urlSlug ?? data.id);
 
                 axios.defaults.headers.common["Authorization"] = "Bearer " + res.accessToken;
                 dispatch(setLoginBool(true));
@@ -152,9 +152,9 @@ const SignUpWallet: React.FC<ISignUpWalletProps> = ({ handleCloseModal }) => {
           socket.emit("add user", data.id);
 
           dispatch(setUser(data));
-          sessionStorage.setItem("token", respSignIn.accessToken);
-          sessionStorage.setItem("userId", data.id);
-          sessionStorage.setItem("userSlug", data.urlSlug ?? data.id);
+          localStorage.setItem("token", respSignIn.accessToken);
+          localStorage.setItem("userId", data.id);
+          localStorage.setItem("userSlug", data.urlSlug ?? data.id);
 
           axios.defaults.headers.common["Authorization"] = "Bearer " + respSignIn.accessToken;
           dispatch(setLoginBool(true));

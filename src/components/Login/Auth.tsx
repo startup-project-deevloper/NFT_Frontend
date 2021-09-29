@@ -170,8 +170,8 @@ const Auth = () => {
   };
 
   const startFunctions = () => {
-    let token: string = sessionStorage.getItem("token") || "";
-    let userId: string = sessionStorage.getItem("userId") || "";
+    let token: string = localStorage.getItem("token") || "";
+    let userId: string = localStorage.getItem("userId") || "";
     if (
       !token ||
       token === "" ||

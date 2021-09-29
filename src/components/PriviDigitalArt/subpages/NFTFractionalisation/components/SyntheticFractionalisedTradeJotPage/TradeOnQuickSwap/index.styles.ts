@@ -137,4 +137,9 @@ export const TradeOnQuickSwapStyles = makeStyles(theme => ({
       outline: "none",
     }
   },
+  jotLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: "50%",
+  }
 }));

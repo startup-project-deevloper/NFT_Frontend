@@ -16,7 +16,7 @@ export default function PriviData() {
 
   useEffect(() => {
     const checkStatus = async () => {
-      const address = sessionStorage.getItem("address");
+      const address = localStorage.getItem("address");
       if ((account && account.length > 0) || address) {
         const res = await Axios.post(`${URL()}/wallet/getEthAddressStatus`, {
           address: account ?? address,

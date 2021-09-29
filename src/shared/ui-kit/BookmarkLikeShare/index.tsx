@@ -138,7 +138,7 @@ export const BookmarkLikeShare: React.FunctionComponent<BookmarkLikeShareProps> 
   }, [selectedMedia?.Bookmarks, user.id]);
 
   const isSignedIn = () => {
-    return !!sessionStorage.getItem("token");
+    return !!localStorage.getItem("token");
   };
 
   const handleToggleShareMenu = e => {

@@ -24,7 +24,7 @@ enum WALLET {
 }
 
 const CreatePriviWallet: FC<ICreateWallet> = props => {
-  const userId = sessionStorage.getItem("userId");
+  const userId = localStorage.getItem("userId");
   const { onClose } = props;
   const [step, setStep] = useState(WALLET.INIT);
   const [phrases, setPhrases] = useState<string[]>([]);

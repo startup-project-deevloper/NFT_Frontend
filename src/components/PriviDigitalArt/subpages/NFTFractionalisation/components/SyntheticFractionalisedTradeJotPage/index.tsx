@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { Divider, Grid } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -11,7 +11,6 @@ import Axios from "axios";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import moment from "moment";
-
 
 const FreeHoursChartConfig = {
   config: {
@@ -159,9 +158,10 @@ const MONTHLABELS = [
   "December",
 ];
 
-export default function SyntheticFractionalisedTradeJotPage(props: any) {
+export default function SyntheticFractionalisedTradeJotPage({ collection }) {
   const history = useHistory();
   const classes = syntheticFractionalisedTradeJotPageStyles();
+  const { id } = useParams();
   const [rewardConfig, setRewardConfig] = useState<any>();
   const PERIODS = ["1h", "1D", "7D"];
   const [period, setPeriod] = useState<string>(PERIODS[0]);
@@ -179,7 +179,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
   // const UNITS = ["JOTs", "USDT"];
   // const [unit, setUnit] = React.useState<string>(UNITS[0]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
     newRewardConfig.configurer = configurer;
     newRewardConfig.config.data.labels =
@@ -202,34 +202,48 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
     newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
 
     setRewardConfig(newRewardConfig);
-    fetchPairData();
+    fetchTradingInfo();
   }, [period, unit]);
 
-  const fetchPairData = async () => {
+  const fetchPairData = async (token0, token1) => {
     try {
-      setLoadingTradingInfo(true);
-      const token0Addr = "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6"; // WBTC
-      const token1Addr = "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"; // USDC
       const resp = await Axios.get(`${PriceFeed_URL()}/quickswap/trading_info`, {
         headers: {
           Authorization: `Basic ${PriceFeed_Token()}`,
         },
         params: {
-          token0: token0Addr,
-          token1: token1Addr,
+          token0,
+          token1,
         },
       });
-
-      if (!resp.data.success) return;
+      if (!resp.data.success) {
+        return null;
+      }
       const tradingInfo = Array.isArray(resp.data.data) ? resp.data.data[0] : resp.data.data;
-      setTvl(tradingInfo.tvl || 0);
-      setVolume7h(tradingInfo.volume7h || 0);
-      setVolume24h(tradingInfo.volume24h || 0);
-      setToken0Price(tradingInfo.token0Price || 0);
-      setToken1Price(tradingInfo.token1Price || 0);
-      setLoadingTradingInfo(false);
+      return tradingInfo;
     } catch (e) {
-      // throw new Error(e.message)
+      return null;
+    }
+  };
+  const fetchTradingInfo = async () => {
+    try {
+      setLoadingTradingInfo(true);
+      const FUNDING_TOKEN = "0x2cA48b8c2d574b282FDAB69545646983A94a3286";
+      const token0 = collection.JotAddress.toLowerCase();
+      const token1 = FUNDING_TOKEN.toLowerCase(); // USDC
+      let tradingInfo = await fetchPairData(token0, token1);
+      if (!tradingInfo || !tradingInfo.pairAddress) {
+        tradingInfo = await fetchPairData(token1, token0);
+      }
+      if (tradingInfo?.pairAddress) {
+        setTvl(tradingInfo.tvl)
+        setVolume7h(tradingInfo.volume7h || 0);
+        setVolume24h(tradingInfo.volume24h || 0);
+        setToken0Price(tradingInfo.token0Price || 0);
+        setToken1Price(tradingInfo.token1Price || 0);
+      }
+    } catch (err) {
+    } finally {
       setLoadingTradingInfo(false);
     }
   };
@@ -319,14 +333,6 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
                     <ArrowUp /> 0.32%
                   </Box>
                 </Box>
-                <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
-                <Box className={classes.jotWrapper}>
-                  <Box className={classes.jotLabel}>24h Fees</Box>
-                  <Box className={classes.jotTitle}>$245,522.21</Box>
-                  <Box className={classes.jotPercent}>
-                    <ArrowUp /> 0.32%
-                  </Box>
-                </Box>
               </Box>
             </LoadingWrapper>
           </Grid>
@@ -399,7 +405,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
               justifyContent: "center",
             }}
             onClick={()=>{
-              history.push(`/pix/fractionalisation/collection/quick_swap/id`)
+              history.push(`/pix/fractionalisation/collection/quick_swap/${id}`)
             }}
           >
             Trade on <QuickSwapIcon className={classes.swapIcon} /> Quickswap

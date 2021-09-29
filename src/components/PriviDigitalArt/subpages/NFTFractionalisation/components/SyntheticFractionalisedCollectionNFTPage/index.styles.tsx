@@ -67,16 +67,13 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     width: "100%",
     height: "auto",
     minHeight: "310",
-    padding: "32px 32px 29px",
+    padding: "30px 300px 29px 32px",
     marginTop: 62,
     color: "#ffffff",
     display: "flex",
     flexDirection: "column",
     position: "relative",
 
-    [theme.breakpoints.down("md")]: {
-      padding: "30px 300px 29px 32px",
-    },
     [theme.breakpoints.down(600)]: {
       padding: "310px 20px 29px",
     },

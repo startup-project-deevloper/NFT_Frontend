@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactPlayer from "react-player";
 
 import "./FileUpload.css";
@@ -46,6 +46,7 @@ const FileUpload = ({
   isReverse = false,
 }) => {
   const randomId = uuidv4();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const dragOver = e => {
     e.preventDefault();
@@ -73,6 +74,10 @@ const FileUpload = ({
       handleFiles(files);
     }
     e.preventDefault();
+
+    if (fileInputRef !== null && fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleFiles = (files: any) => {
@@ -389,6 +394,7 @@ const FileUpload = ({
         </div>
       )}
       <input
+        ref={fileInputRef}
         id={`selectPhoto-${type}-${randomId}`}
         hidden
         type="file"

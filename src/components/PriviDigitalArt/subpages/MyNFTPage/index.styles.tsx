@@ -111,22 +111,18 @@ export const myNFTStyles = makeStyles(theme => ({
       justifyContent: "center",
     },
     "& > div": {
-      minWidth: 250,
-      maxWidth: 325,
+      width: 325,
       [theme.breakpoints.down(950)]: {
-        maxWidth: 300,
+        width: 300,
       },
       [theme.breakpoints.down(880)]: {
-        maxWidth: 230,
-        minWidth: 200,
+        width: 230,
       },
       [theme.breakpoints.down(768)]: {
-        maxWidth: 180,
-        minWidth: 160,
+        width: 180,
       },
       [theme.breakpoints.down(700)]: {
-        maxWidth: 160,
-        minWidth: 160,
+        width: 160,
       },
     }
   }

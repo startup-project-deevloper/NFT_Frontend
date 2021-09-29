@@ -13,10 +13,11 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     maxWidth: 300,
     cursor: "pointer",
     [theme.breakpoints.down("sm")]: {
-      height: ({ customHeight }: any) => customHeight ? customHeight : 410,
+      height: ({ customHeight }: any) => customHeight ? customHeight : 350,
     },
     [theme.breakpoints.down("xs")]: {
-      height: ({ customHeight }: any) => customHeight ? customHeight : 350,
+      padding: 7,
+      height: ({ customHeight }: any) => customHeight ? customHeight : 250,
     },
   },
   innerBox: {
@@ -43,6 +44,14 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
       borderRadius: 16.5,
       border: "0.710107px solid rgba(0, 0, 0, 0.09)",
       boxShadow: "0px 25.5639px 19.883px -19.1729px rgba(63, 83, 183, 0.22)",
+      [theme.breakpoints.down("sm")]: {
+        height: ({ hiddenHeader }: any) => hiddenHeader ? "170px" : "180px",
+        borderRadius: 13,
+      },
+      [theme.breakpoints.down("xs")]: {
+        height: ({ hiddenHeader }: any) => hiddenHeader ? "110px" : "130px",
+        borderRadius: 10,
+      },
     },
   },
   starGroup: {

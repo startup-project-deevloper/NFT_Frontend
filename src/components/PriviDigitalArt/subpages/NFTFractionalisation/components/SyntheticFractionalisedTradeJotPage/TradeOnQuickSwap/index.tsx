@@ -1,28 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMediaQuery, useTheme } from "@material-ui/core";
-import { Divider, Grid } from "@material-ui/core";
+import { useParams } from "react-router-dom";
+
 import Box from "shared/ui-kit/Box";
-import { Color, PrimaryButton } from "shared/ui-kit";
-import PrintChart from "shared/ui-kit/Chart/Chart";
 import { TradeOnQuickSwapStyles } from "./index.styles";
-import { ReactComponent as ArrowUp } from 'assets/icons/arrow_up.svg';
 import { ReactComponent as QuickSwapIcon } from 'assets/icons/quick-swap-icon.svg';
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
-import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import Web3Config from "shared/connectors/web3/config";
+import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
 
 const ethereumTokenList = Object.keys(Web3Config.Ethereum.TOKEN_ADDRESSES);
 
 export default function TradeOnQuickSwap(props: any) {
   const classes = TradeOnQuickSwapStyles();
-  const [tokens, setTokens] = useState<string[]>(ethereumTokenList);
-  const [token, setToken] = useState<string>(tokens[0]);
-
+  const [collection, setCollection] = useState<any>(null);
+  const params: { id?: string } = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
-  console.log(isMobile)
+
+  useEffect(() => {
+    if (!params.id) return;
+    (async () => {
+      const response = await getSyntheticCollection(params.id);
+      if (response.success) {
+        setCollection(response.data);
+      }
+    })();
+  }, [params.id]);
+
   return (
     <Box className={classes.root}>
       {/* back button and title */}
@@ -48,14 +54,12 @@ export default function TradeOnQuickSwap(props: any) {
           </Box>
           {/* second row - value */}
           <Box className={classes.valueRow}>
-            <Box className={classes.inputBox}><input style={{ color: "#1A1B1C", fontSize: isMobile ? "18px" : "24px", maxWidth: isMobile ? "120px" : "200px" }} /></Box>
-            <Box>
-              <TokenSelect
-                tokens={tokens}
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                className={classes.token}
-              />
+            <Box className={classes.inputBox}>
+              <input placeholder="0.0" style={{ color: "#1A1B1C", fontSize: isMobile ? "18px" : "24px", maxWidth: isMobile ? "120px" : "200px" }} />
+            </Box>
+            <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
+              <img src={(collection && collection.imageUrl) ? collection.imageUrl : require(`assets/logos/JOT_default.png`)} alt="JOT Logo" className={classes.jotLogo} />
+              <span style={{ paddingLeft: "10px" }}>{collection?.JotSymbol}</span>
             </Box>
           </Box>
           {/* third row - $ */}
@@ -77,8 +81,8 @@ export default function TradeOnQuickSwap(props: any) {
           {/* second row - value */}
           <Box className={classes.valueRow}>
             <Box color="#C3C5CA">0.0</Box>
-            <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16} pr={4}>
-              <IconUSDC /><span style={{ paddingLeft: "15px" }}>USDC</span>
+            <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
+              <IconUSDC /><span style={{ paddingLeft: "15px" }}>USDT</span>
             </Box>
           </Box>
           {/* third row - $ */}
@@ -89,7 +93,7 @@ export default function TradeOnQuickSwap(props: any) {
         {/* price row */}
         <Box color="#1A1B1C" fontWeight={500} display="flex" alignItems="center" justifyContent="space-between" mx={2} mt={2}>
           <Box>Price</Box>
-          <Box>1 JOT = 224 USDC</Box>
+          <Box>1 JOT = 224 USDT</Box>
         </Box>
         {/* swap button */}
         <Box className={classes.swapBtn}>Swap</Box>

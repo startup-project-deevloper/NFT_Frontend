@@ -104,7 +104,7 @@ export const myNFTStyles = makeStyles(theme => ({
   cardsGrid: {
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     columnGap: 16,
     rowGap: 16,
     [theme.breakpoints.down(700)]: {

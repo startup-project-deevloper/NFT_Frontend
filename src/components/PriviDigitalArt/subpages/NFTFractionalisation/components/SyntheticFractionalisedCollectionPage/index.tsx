@@ -436,7 +436,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                       auction={item}
                       onClick={() => {
                         history.push(
-                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}/1`
+                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`
                         );
                       }}
                     />

@@ -182,7 +182,7 @@ const OrderBookModal = ({ open, onClose }) => {
       {
         cell: (
           <Box color={'#4A94E2'} display="flex" alignItems="center">
-            <OpenseaIcon width={24} height={24} style={{ marginRight: 10 }} />
+            <OpenseaIcon className={classes.tableIcon} width={24} height={24} style={{ marginRight: 10 }} />
             <span>Opensea</span>
           </Box>
         ),
@@ -207,7 +207,7 @@ const OrderBookModal = ({ open, onClose }) => {
       {
         cell: (
           <Box color={'#4A94E2'} display="flex" alignItems="center">
-            <OpenseaIcon width={24} height={24} style={{ marginRight: 10 }} />
+            <OpenseaIcon className={classes.tableIcon} width={24} height={24} style={{ marginRight: 10 }} />
             <span>Opensea</span>
           </Box>
         ),
@@ -264,9 +264,10 @@ const OrderBookModal = ({ open, onClose }) => {
       },
       {
         cell: (
-          <Box color={'#4A94E2'} display="flex" alignItems="center">
-            <OpenseaIcon width={24} height={24} style={{ marginRight: 10 }} />
+          <Box className={classes.saleTableLinkWithIcon} color={'#4A94E2'} display="flex" alignItems="center">
+            <OpenseaIcon className={classes.tableIcon} width={24} height={24} style={{ marginRight: 10 }} />
             <span>Go to Opensea</span>
+            <Box> {">"}</Box>
           </Box>
         ),
         cellAlign: "center",
@@ -295,9 +296,10 @@ const OrderBookModal = ({ open, onClose }) => {
       },
       {
         cell: (
-          <Box color={'#4A94E2'} display="flex" alignItems="center">
-            <OpenseaIcon width={24} height={24} style={{ marginRight: 10 }} />
+          <Box className={classes.saleTableLinkWithIcon} color={'#4A94E2'} display="flex" alignItems="center">
+            <OpenseaIcon className={classes.tableIcon} width={24} height={24} style={{ marginRight: 10 }} />
             <span>Go to Opensea</span>
+            <Box> {">"}</Box>
           </Box>
         ),
         cellAlign: "center",
@@ -326,9 +328,10 @@ const OrderBookModal = ({ open, onClose }) => {
       },
       {
         cell: (
-          <Box color={'#4A94E2'} display="flex" alignItems="center">
-            <OpenseaIcon width={24} height={24} style={{ marginRight: 10 }} />
+          <Box className={classes.saleTableLinkWithIcon} color={'#4A94E2'} display="flex" alignItems="center">
+            <OpenseaIcon className={classes.tableIcon} width={24} height={24} style={{ marginRight: 10 }} />
             <span>Go to Opensea</span>
+            <Box> {">"}</Box>
           </Box>
         ),
         cellAlign: "center",

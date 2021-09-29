@@ -4,12 +4,20 @@ import { Color } from "shared/ui-kit";
 export const useOrderBookModalStyles = makeStyles(theme => ({
   root: {
     maxWidth: "1024px !important",
+
+    [theme.breakpoints.down(768)]: {
+      padding: "32px 1px !important",
+    },
   },
   container: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     padding: "20px 10px",
+
+    [theme.breakpoints.down(768)]: {
+      padding: 0,
+    },
   },
   title: {
     fontSize: 32,
@@ -17,7 +25,7 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     color: "#431AB7",
     margin: '0px 0px 30px 0',
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down(768)]: {
       fontSize: 18,
     },
   },
@@ -39,13 +47,42 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
         padding: '8px',
         background: '#FFF',
         borderTop: '1px solid rgba(224, 224, 224, 1)',
+
+        [theme.breakpoints.down(768)]: {
+          fontSize: 8,
+          padding: '4px 0',
+        },
+      },
+
+      "& .MuiTableCell-head:first-child": {
+        [theme.breakpoints.down(768)]: {
+          paddingLeft: 8,
+        },
       },
 
       "& .MuiTableCell-body": {
         color: '#1A1B1C',
         fontWeight: 500,
         padding: '8px',
-      }
+
+        [theme.breakpoints.down(768)]: {
+          fontSize: 8,
+          padding: '8px 0',
+        },
+      },
+
+      "& .MuiTableCell-body:first-child": {
+        [theme.breakpoints.down(768)]: {
+          paddingLeft: 8,
+        },
+      },
+    },
+  },
+  tableIcon: {
+    [theme.breakpoints.down(768)]: {
+      width: 12,
+      height: 12,
+      marginRight: "4px !important",
     },
   },
   chartContainer: {
@@ -64,9 +101,6 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "space-between",
     padding: "30px 40px",
-    [theme.breakpoints.down("sm")]: {
-      alignItems: "flex-start",
-    },
     [theme.breakpoints.down("xs")]: {
       padding: 12,
     },
@@ -77,6 +111,9 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
     fontWeight: 400,
     color: "#FFF",
     margin: 0,
+    [theme.breakpoints.down(768)]: {
+      fontSize: 12,
+    },
   },
   controlBox: {
     display: "flex",
@@ -94,8 +131,9 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
     borderRadius: 28,
     padding: 5,
     marginLeft: theme.spacing(1),
-    [theme.breakpoints.down("xs")]: {
-      marginTop: theme.spacing(1),
+    [theme.breakpoints.down(768)]: {
+      marginTop: 0,
+      marginLeft: 0,
     },
     "& button": {
       paddingLeft: theme.spacing(2),
@@ -114,7 +152,8 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
       marginLeft: 4,
     },
     [theme.breakpoints.down("xs")]: {
-      fontSize: 12,
+      fontSize: 8,
+      height: 16,
     },
   },
   selectedGroupButton: {
@@ -125,8 +164,9 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
     padding: "30px 20px 30px 20px",
     minHeight: "400px",
 
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down(768)]: {
       padding: 0,
+      minHeight: "200px",
       "& canvas": {
         width: "100%"
       }
@@ -153,13 +193,47 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
         padding: '8px',
         background: '#EFF2FD',
         borderTop: '1px solid rgba(224, 224, 224, 1)',
+
+        [theme.breakpoints.down(768)]: {
+          fontSize: 8,
+          padding: '4px 0',
+        },
+      },
+
+      "& .MuiTableCell-head:first-child": {
+        [theme.breakpoints.down(768)]: {
+          paddingLeft: 8,
+        },
       },
 
       "& .MuiTableCell-body": {
         color: '#1A1B1C',
         padding: '8px',
         fontWeight: 500,
-      }
+
+        [theme.breakpoints.down(768)]: {
+          fontSize: 8,
+          padding: '8px 0',
+        },
+      },
+
+      "& .MuiTableCell-body:first-child": {
+        [theme.breakpoints.down(768)]: {
+          paddingLeft: 8,
+        },
+      },
+    },
+  },
+  saleTableLinkWithIcon: {
+    "& div": {
+      fontWeight: 800,
+      marginLeft: 4,
+    },
+
+    [theme.breakpoints.down(768)]: {
+      "& span": {
+        display: "none",
+      },
     },
   },
   subTitle: {
@@ -172,13 +246,22 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
 
     "& svg": {
       marginRight: 10,
-    }
+    },
+
+    [theme.breakpoints.down(768)]: {
+      fontSize: 16,
+      justifyContent: 'center',
+    },
   },
   listingTabs: {
     display: 'flex',
     justifyContent: 'center',
     paddingTop: 32,
     borderBottom: '1px solid rgba(158, 172, 242, 0.5)',
+
+    [theme.breakpoints.down(768)]: {
+      paddingTop: 16,
+    },
   },
   listingTab: {
     fontSize: 18,
@@ -192,6 +275,11 @@ export const useOrderBookModalStyles = makeStyles(theme => ({
     '&.selected': {
       borderBottom: '3px solid #431AB7',
       color: '#431AB7',
+    },
+
+    [theme.breakpoints.down(768)]: {
+      fontSize: 12,
+      paddingBottom: 8,
     },
   },
 }));

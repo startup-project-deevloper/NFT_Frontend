@@ -41,7 +41,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [syntheticNFTs, setSyntheticNFTs] = useState<any>([]);
   const lastIdRef = useRef<string>("");
   const hasMoreRef = useRef<boolean>(true);
-  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
 
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
@@ -61,17 +60,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     })();
     loadNFTs(params.id);
   }, [params.id]);
-
-  useEffect(() => {
-    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
-      (async () => {
-        const changed = await switchNetwork(selectedChain.chainId);
-        if (!changed) {
-          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
-        }
-      })();
-    }
-  }, [chainId, selectedChain]);
 
   const loadNFTs = id => {
     if (!id) return;
@@ -171,7 +159,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     const lockedCount = syntheticNFTs?.filter(nft => nft.isLocked).length || 0;
     if (lockedCount >= 100) return `$${lockedCount / 100}M`;
     return `$${lockedCount * 10}K`;
-  }, [collection]);
+  }, [syntheticNFTs]);
 
   const handleFollow = () => {
     const body = {

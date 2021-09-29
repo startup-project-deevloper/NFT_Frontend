@@ -24,10 +24,10 @@ const syntheticProtocolRouter = (network: string) => {
         const tSupply = toNDecimals(+supply, decimals);
 
         const gas = await contract.methods
-          .registerNFT(tokenAddress, chainId, tSupply, price, name, symbol)
+          .registerNFT(tokenAddress, chainId, tSupply, price, name, symbol, "")
           .estimateGas({ from: account });
         const response = await contract.methods
-          .registerNFT(tokenAddress, chainId, tSupply, price, name, symbol)
+          .registerNFT(tokenAddress, chainId, tSupply, price, name, symbol, "")
           .send({ from: account, gas });
 
         resolve({

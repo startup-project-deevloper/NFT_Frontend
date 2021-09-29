@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Divider, Grid } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -162,6 +162,7 @@ const MONTHLABELS = [
 export default function SyntheticFractionalisedTradeJotPage(props: any) {
   const history = useHistory();
   const classes = syntheticFractionalisedTradeJotPageStyles();
+  const { id } = useParams();
   const [rewardConfig, setRewardConfig] = useState<any>();
   const PERIODS = ["1h", "1D", "7D"];
   const [period, setPeriod] = useState<string>(PERIODS[0]);
@@ -399,7 +400,7 @@ export default function SyntheticFractionalisedTradeJotPage(props: any) {
               justifyContent: "center",
             }}
             onClick={()=>{
-              history.push(`/pix/fractionalisation/collection/quick_swap/id`)
+              history.push(`/pix/fractionalisation/collection/quick_swap/${id}`)
             }}
           >
             Trade on <QuickSwapIcon className={classes.swapIcon} /> Quickswap

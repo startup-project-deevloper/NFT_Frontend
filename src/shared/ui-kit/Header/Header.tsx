@@ -76,7 +76,7 @@ const Header = props => {
   const isTablet = useMediaQuery(theme.breakpoints.down(769));
 
   const pathName = window.location.href;
-  const idUrl = pathName.split("/")[5] ? pathName.split("/")[5] : "" + sessionStorage.getItem("userId");
+  const idUrl = pathName.split("/")[5] ? pathName.split("/")[5] : "" + localStorage.getItem("userId");
 
   const { setSignedin } = useAuth();
   const history = useHistory();
@@ -98,7 +98,7 @@ const Header = props => {
   const { activate, account } = useWeb3React();
 
   const [userId, setUserId] = useState<string>("");
-  const [ownUser, setOwnUser] = useState<boolean>(idUrl === sessionStorage.getItem("userId"));
+  const [ownUser, setOwnUser] = useState<boolean>(idUrl === localStorage.getItem("userId"));
   const [userProfile, setUserProfile] = useState<any>({});
   const [openSignInModal, setOpenSignInModal] = useState<boolean>(false);
   const [openMediaModal, setOpenMediaModal] = useState<boolean>(false);
@@ -180,7 +180,7 @@ const Header = props => {
     setSignedin(false);
     dispatch(signOut());
     localStorage.clear();
-    sessionStorage.clear();
+    localStorage.clear();
     if (pathName.includes("/pix")) {
       history.push("/pix-connect");
     } else {
@@ -458,7 +458,7 @@ const Header = props => {
   }, [account]);
 
   const handleWallet = async (address: string) => {
-    const userId = sessionStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
 
     if (address) {
       axios
@@ -624,7 +624,7 @@ const Header = props => {
   };
 
   const isSignedIn = () => {
-    return !!sessionStorage.getItem("token");
+    return !!localStorage.getItem("token");
   };
 
   const handleProfile = e => {

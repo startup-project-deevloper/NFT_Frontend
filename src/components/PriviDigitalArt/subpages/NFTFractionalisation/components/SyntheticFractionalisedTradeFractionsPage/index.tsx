@@ -78,7 +78,7 @@ const FreeHoursChartConfig = {
               lineWidth: 50,
             },
             ticks: {
-              beginAtZero: false,
+              beginAtZero: true,
               fontColor: "#FFF",
               fontFamily: "Agrandir",
             },
@@ -86,7 +86,7 @@ const FreeHoursChartConfig = {
         ],
         yAxes: [
           {
-            display: true,
+            display: false,
             position: "right",
             gridLines: {
               color: "#431AB7",
@@ -139,7 +139,7 @@ const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
     gradient.addColorStop(0, config.data.datasets[index].backgroundColor);
     // gradient.addColorStop(0.6, config.data.datasets[index].backgroundColor);
     // gradient.addColorStop(1, `${config.data.datasets[index].backgroundColor}33`);
-    gradient.addColorStop(1, Color.Purple);
+    gradient.addColorStop(0.5, Color.Purple);
     config.data.datasets[0].backgroundColor = gradient;
   }
 
@@ -271,7 +271,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     let data: any[] = [];
     if (ownerHistory && ownerHistory.length) {
       ownerHistory.map((item, index) => {
-        labels.push(index + 1);
+        labels.push(index);
         data.push(item.supply);
       });
 
@@ -279,6 +279,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         price: ownerHistory[0].supply,
         date: ownerHistory[0].timestamp,
       })
+    } else {
+      labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     }
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
     newRewardConfig.configurer = configurer;
@@ -732,6 +734,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       <Box className={classes.outBox}>
         <Box className={classes.boxBody}>
           <Box className={classes.chart}>
+            {(!ownerHistory || !ownerHistory.length) && (
+              <div className="no-data">
+                There are no data yet.
+              </div>
+            )}
             <Box className={classes.controlParentBox}>
               <Box fontSize={16} fontWeight={700} color="white">Ownership over time</Box>
               <Box display="flex" flexDirection="column">
@@ -741,7 +748,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 </Moment>
               </Box>
             </Box>
-            <Box height={300} width={1} mt={3}>
+            <Box height={300} width={1}>
               {rewardConfig && <PrintChart config={rewardConfig} />}
             </Box>
           </Box>

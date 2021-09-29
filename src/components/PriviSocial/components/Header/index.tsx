@@ -45,7 +45,7 @@ const routesOnMobile = {
 };
 
 const isSignedIn = () => {
-  return !!sessionStorage.getItem("token");
+  return !!localStorage.getItem("token");
 };
 
 export default function Header({ id }) {
@@ -57,7 +57,7 @@ export default function Header({ id }) {
   let pathName = window.location.href; // If routing changes, change to pathname
   let idUrl = pathName.split("/")[5];
   const userSelector = useSelector(getUser);
-  const authUserSlug = sessionStorage.getItem("userSlug");
+  const authUserSlug = localStorage.getItem("userSlug");
   const {
     unreadNotifications,
     notifications,
@@ -125,7 +125,7 @@ export default function Header({ id }) {
     setSignedin(false);
     dispatch(signOut());
     localStorage.clear();
-    sessionStorage.clear();
+    localStorage.clear();
     history.push("/social-connect");
     window.location.reload();
   };

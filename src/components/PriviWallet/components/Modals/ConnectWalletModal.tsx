@@ -28,7 +28,7 @@ export default function ConnectWalletModal(props) {
 
   const handleWallet = async (address: string) => {
     try {
-      const userId = sessionStorage.getItem("userId");
+      const userId = localStorage.getItem("userId");
       if (address && activeWallet) {
         handleClose();
         const res = await WalletAPIProvider.registerUserEthAccount({
@@ -55,7 +55,7 @@ export default function ConnectWalletModal(props) {
     try {
       const userAccount = await wax.login();
       const pubKeys = (wax as any).pubKeys;
-      const userId = sessionStorage.getItem("userId");
+      const userId = localStorage.getItem("userId");
 
       axios
         .post(`${URL()}/wallet/registerWaxWallet`, {
@@ -149,7 +149,7 @@ export default function ConnectWalletModal(props) {
           });
           // const { nonce, data: balance } = await api.query.system.account(addresss);
 
-          const userId = sessionStorage.getItem("userId");
+          const userId = localStorage.getItem("userId");
           let walletsListCopy = [...walletsList];
           const findIndex = walletsList.findIndex(wallet => wallet.address === address);
           if (findIndex < 0) {

@@ -133,7 +133,7 @@ const WallItem = React.memo((props: any) => {
   useEffect(() => {
     if (props.type && props.type === "UserPost") {
       let pathName = window.location.href;
-      let idUrl = pathName.split("/")[5] ? pathName.split("/")[5] : "" + sessionStorage.getItem("userId");
+      let idUrl = pathName.split("/")[5] ? pathName.split("/")[5] : "" + localStorage.getItem("userId");
       if (idUrl) {
         axios
           .get(`${URL()}/user/getIdFromSlug/${idUrl}/user`)

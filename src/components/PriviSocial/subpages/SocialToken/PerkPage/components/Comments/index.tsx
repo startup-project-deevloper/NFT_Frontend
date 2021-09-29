@@ -139,7 +139,7 @@ export default function PerkComments() {
   };
 
   const isSignedIn = () => {
-    return !!sessionStorage.getItem("token");
+    return !!localStorage.getItem("token");
   };
 
   const addComment = () => {

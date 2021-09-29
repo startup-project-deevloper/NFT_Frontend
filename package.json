@@ -43,6 +43,7 @@
     "@types/wavesurfer.js": "^3.3.1",
     "@types/webpack-env": "^1.16.0",
     "@uniswap/sdk": "^3.0.3",
+    "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@walletconnect/qrcode-modal": "^1.6.5",
     "@walletconnect/web3-provider": "^1.6.5",
     "@waxio/waxjs": "^0.0.14",

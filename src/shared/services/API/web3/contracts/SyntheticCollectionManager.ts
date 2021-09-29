@@ -73,6 +73,33 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const getSoldSupply = (web3: Web3, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getSoldSupply(tokenId).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+
   const getContractJotsBalance = (web3: Web3, collection: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
@@ -418,6 +445,7 @@ const syntheticCollectionManager = (network: string) => {
     verifyToken,
     isVerifiedToken,
     addLiquidityToPool,
+    getSoldSupply,
   };
 };
 

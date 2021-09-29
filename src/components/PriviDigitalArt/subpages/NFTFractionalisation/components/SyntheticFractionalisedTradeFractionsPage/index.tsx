@@ -1,6 +1,7 @@
 import React from "react";
 import Web3 from "web3";
 import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -255,6 +256,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   collectionId,
   nft,
 }: any) {
+  const history = useHistory();
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
   const [ownerHistory, setOwnerHistory] = React.useState<any[]>([]);
@@ -269,6 +271,39 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
+
+  const [soldJOTs, setSoldJOTs] = React.useState<number>(0);
+  const [ownerSupply, setOwnerSupply] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+
+      const response = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
+        tokenId: nft.SyntheticID,
+      });
+      if (response) {
+        setSoldJOTs(response);
+      }
+    })();
+  }, [library]);
+
+  React.useEffect(() => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+
+      const response = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(web3, nft, {
+        tokenId: nft.SyntheticID,
+      });
+      if (response) {
+        setOwnerSupply(response);
+      }
+    })();
+  }, [library]);
 
   React.useEffect(() => {
     let labels: any[] = [];
@@ -354,12 +389,15 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     const web3 = new Web3(library.provider);
     const web3APIHandler = targetChain.apiHandler;
 
-    console.log(nft);
     const response = await web3APIHandler.SyntheticCollectionManager.addLiquidityToPool(web3, account!, nft);
     if (response.success) {
     } else {
     }
     setLoading(false);
+  };
+
+  const handleBuyOnQuickSwap = () => {
+    history.push(`/pix/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
   return (
@@ -499,7 +537,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Jots SOLD
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    2455 JOTs
+                    {soldJOTs} JOTs
                   </Box>
                 </Box>
               </Box>
@@ -548,7 +586,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             </td>
                             <td>
                               <Box ml={3} className={classes.h1} fontWeight={800}>
-                                2455 JOTs
+                                {ownerSupply} JOTs
                               </Box>
                             </td>
                           </tr>
@@ -666,7 +704,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Supply</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            2455 JOTs
+                            {ownerSupply} JOTs
                           </Box>
                         </Box>
                       </Box>
@@ -721,6 +759,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.priceButton}
                           size="medium"
                           style={{ background: "#431AB7", color: Color.White }}
+                          onClick={handleBuyOnQuickSwap}
                         >
                           Buy on Quickswap
                         </PrimaryButton>

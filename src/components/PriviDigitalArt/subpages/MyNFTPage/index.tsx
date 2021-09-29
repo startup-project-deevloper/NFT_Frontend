@@ -9,6 +9,7 @@ import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import MyNFTCard from "components/PriviDigitalArt/components/Cards/MyNFTCard";
 import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import { myNFTStyles } from "./index.styles";
+import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
 const MyNFT = () => {
   const classes = myNFTStyles();
@@ -17,9 +18,11 @@ const MyNFT = () => {
 
   const theme = useTheme();
   const [selectedTab, setSelectedTab] = useState<"owned" | "synthetic">("synthetic");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     try {
+      setLoading(true);
       getMySyntheticFractionalisedNFT().then(res => {
         if (res.success) {
           setMyNFTs(
@@ -32,9 +35,11 @@ const MyNFT = () => {
             }) ?? []
           );
         }
+        setLoading(false);
       });
     } catch (err) {
       console.log(err);
+      setLoading(false);
     }
   }, []);
 
@@ -77,13 +82,15 @@ const MyNFT = () => {
         </div>
         <div className={classes.cardsGroup}>
           {selectedTab === "owned" && (
-            <div className={classes.cardsGrid}>
-              {myNFTs
-                .filter(nft => nft.isVerified)
-                .map((item, index) => (
-                  <MyNFTCard key={index} item={item} />
-                ))}
-            </div>
+            <LoadingWrapper theme={"blue"} loading={loading}>
+              <div className={classes.cardsGrid}>
+                {myNFTs
+                  .filter(nft => nft.isVerified)
+                  .map((item, index) => (
+                    <MyNFTCard key={index} item={item} />
+                  ))}
+              </div>
+            </LoadingWrapper>
           )}
           {selectedTab === "synthetic" && (
             <Box display="flex" flexDirection="column" gridRowGap={50}>
@@ -91,25 +98,29 @@ const MyNFT = () => {
                 <Box className={classes.sectionTitle} color="#431AB7">
                   NFT To Lock
                 </Box>
-                <div className={classes.cardsGrid}>
-                  {myNFTs
-                    .filter(nft => !nft.isLocked)
-                    .map((item, index) => (
-                      <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} />
-                    ))}
-                </div>
+                <LoadingWrapper theme={"blue"} loading={loading}>
+                  <div className={classes.cardsGrid}>
+                    {myNFTs
+                      .filter(nft => !nft.isLocked)
+                      .map((item, index) => (
+                        <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} />
+                      ))}
+                  </div>
+                </LoadingWrapper>
               </Box>
               <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
                 <Box className={classes.sectionTitle} color="#F2604C">
                   NFT To Verify
                 </Box>
-                <div className={classes.cardsGrid}>
-                  {myNFTs
-                    .filter(nft => nft.isLocked && !nft.isVerified)
-                    .map((item, index) => (
-                      <MyNFTCard key={index} item={item} />
-                    ))}
-                </div>
+                <LoadingWrapper theme={"blue"} loading={loading}>
+                  <div className={classes.cardsGrid}>
+                    {myNFTs
+                      .filter(nft => nft.isLocked && !nft.isVerified)
+                      .map((item, index) => (
+                        <MyNFTCard key={index} item={item} />
+                      ))}
+                  </div>
+                </LoadingWrapper>
               </Box>
             </Box>
           )}

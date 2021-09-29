@@ -1,58 +1,22 @@
 import React, { useEffect, useState } from "react";
 import cls from "classnames";
-import Web3 from "web3";
-import { useWeb3React } from "@web3-react/core";
 import { useHistory } from "react-router-dom";
-import { BlockchainNets } from "shared/constants/constants";
-import { switchNetwork } from "shared/functions/metamask";
-import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 import { Divider } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
 import { syntheticCollectionCardStyles } from "./index.styles";
+import { getCollectionCardInfo } from "shared/services/API/SyntheticFractionalizeAPI";
 
 export default function SyntheticCollectionCard({ item }) {
   const classes = syntheticCollectionCardStyles();
   const history = useHistory();
-  const { account, library, chainId } = useWeb3React();
-  const { showAlertMessage } = useAlertMessage();
   const [balance, setBalance] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
 
-  /// TODO: we will move this to cron microservice
   // useEffect(() => {
   //   (async () => {
-  //     const targetChain = BlockchainNets[1];
-
-  //     if (chainId && chainId !== targetChain?.chainId) {
-  //       const isHere = await switchNetwork(targetChain?.chainId || 0);
-  //       if (!isHere) {
-  //         showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
-  //         return;
-  //       }
-  //     }
-
-  //     const web3APIHandler = targetChain.apiHandler;
-  //     const web3Config = targetChain.config;
-  //     const web3 = new Web3(library.provider);
-
-  //     const balanceResponse = await web3APIHandler.SyntheticCollectionManager.getContractJotsBalance(
-  //       web3,
-  //       item
-  //     );
-
-  //     if (balanceResponse) {
-  //       setBalance(balanceResponse);
-  //     }
-
-  //     // const priceResponse = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, item, {
-  //     //   tokenId: +item.SyntheticID,
-  //     // });
-
-  //     // if (priceResponse) {
-  //     //   setPrice(priceResponse);
-  //     // }
+  //     const response = await getCollectionCardInfo(item.id);
   //   })();
   // }, []);
 
@@ -75,7 +39,9 @@ export default function SyntheticCollectionCard({ item }) {
             <Box className={classes.title}>{item.collectionName}</Box>
             <Box className={classes.detailLabel} flexDirection="row">
               Locked NFTs
-              <Box className={classes.detailInfo} display="inline-flex" ml={1}>{item.nfts?.filter(nft => nft.isLocked).length}</Box>
+              <Box className={classes.detailInfo} display="inline-flex" ml={1}>
+                {item.nfts?.filter(nft => nft.isLocked).length}
+              </Box>
             </Box>
           </Box>
           <Divider light />

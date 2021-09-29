@@ -5,7 +5,9 @@ import URL from "shared/functions/getURL";
 
 export async function getSyntheticCollections(pagination): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticCollections`, { params: { pagination } });
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticCollections`, {
+      params: { pagination },
+    });
     return response.data;
   } catch (e) {
     console.log(e.message);
@@ -57,6 +59,19 @@ export async function getSyntheticNFTOwnerHistory(collectionId, syntheticId): Pr
       params: {
         collectionId,
         syntheticId,
+      },
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+export async function getCollectionCardInfo(collectionId): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getCollectionCardInfo`, {
+      params: {
+        collectionId,
       },
     });
     return response.data;

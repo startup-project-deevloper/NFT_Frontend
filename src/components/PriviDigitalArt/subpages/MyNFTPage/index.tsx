@@ -1,36 +1,14 @@
 import React, { useState, useEffect } from "react";
 import cls from "classnames";
-import { Grid, useTheme } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+
+import { useTheme } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import MyNFTCard from "components/PriviDigitalArt/components/Cards/MyNFTCard";
-import { myNFTStyles } from "./index.styles";
 import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
-
-const TopNFTList = [
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    lock: true,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    lock: false,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    lock: false,
-  },
-  {
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    lock: true,
-  },
-];
+import { myNFTStyles } from "./index.styles";
 
 const MyNFT = () => {
   const classes = myNFTStyles();
@@ -88,7 +66,7 @@ const MyNFT = () => {
             className={cls({ [classes.selectedTabSection]: selectedTab === "owned" }, classes.tabSection)}
             onClick={() => setSelectedTab("owned")}
           >
-            <span>Owned NFT</span>
+            <span>Synthetic NFT Owned</span>
           </div>
           <div
             className={cls({ [classes.selectedTabSection]: selectedTab === "synthetic" }, classes.tabSection)}
@@ -100,9 +78,11 @@ const MyNFT = () => {
         <div className={classes.cardsGroup}>
           {selectedTab === "owned" && (
             <div className={classes.cardsGrid}>
-              {TopNFTList.map((item, index) => (
-                <MyNFTCard key={index} item={item} />
-              ))}
+              {myNFTs
+                .filter(nft => nft.isVerified)
+                .map((item, index) => (
+                  <MyNFTCard key={index} item={item} />
+                ))}
             </div>
           )}
           {selectedTab === "synthetic" && (
@@ -112,15 +92,24 @@ const MyNFT = () => {
                   NFT To Lock
                 </Box>
                 <div className={classes.cardsGrid}>
-                  {myNFTs.map((item, index) => (
-                    <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} />
-                  ))}
+                  {myNFTs
+                    .filter(nft => !nft.isLocked)
+                    .map((item, index) => (
+                      <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} />
+                    ))}
                 </div>
               </Box>
               <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
                 <Box className={classes.sectionTitle} color="#F2604C">
                   NFT To Verify
                 </Box>
+                <div className={classes.cardsGrid}>
+                  {myNFTs
+                    .filter(nft => nft.isLocked && !nft.isVerified)
+                    .map((item, index) => (
+                      <MyNFTCard key={index} item={item} />
+                    ))}
+                </div>
               </Box>
             </Box>
           )}

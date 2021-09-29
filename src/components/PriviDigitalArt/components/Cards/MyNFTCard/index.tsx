@@ -32,8 +32,12 @@ export default function MyNFTCard({ item, onLockCompleted }: IProps) {
       <div className={classes.card}>
         <div className={classes.innerBox}>
           <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={1}>
-            <div className={classes.ntfName}>{item.name}</div>
-            {item?.isLocked ? (
+            <div className={classes.nftName}>{item.NftId}</div>
+            {item?.isVerified ? (
+              <div className={classes.lockLabel}>
+                <span>Verified</span>
+              </div>
+            ) : item?.isLocked ? (
               <div className={classes.lockLabel}>
                 <span>Locked</span>
               </div>
@@ -43,14 +47,24 @@ export default function MyNFTCard({ item, onLockCompleted }: IProps) {
               </div>
             )}
           </Box>
-          <img src={item.image || require("assets/backgrounds/digital_art_1.png")} alt="nft image" />
-          <div
-            className={classes.nftModalButton}
-            style={item?.isLocked ? { background: "#F2C94C" } : { background: "#DDFF57" }}
-            onClick={handleNFT}
-          >
-            {item?.isLocked ? "Verify NFT" : "Lock NFT"}
-          </div>
+          <img
+            src={item.image || require("assets/backgrounds/digital_art_1.png")}
+            alt="nft image"
+            style={{ borderRadius: 16 }}
+          />
+          {!item?.isVerified && (
+            <div
+              className={classes.nftModalButton}
+              style={
+                item?.isLocked
+                  ? { background: "#431AB7", color: "#ffffff" }
+                  : { background: "#DDFF57", color: "#431AB7" }
+              }
+              onClick={handleNFT}
+            >
+              {item?.isLocked ? "Verify NFT" : "Lock NFT"}
+            </div>
+          )}
         </div>
       </div>
       <div className={classes.shadow} />

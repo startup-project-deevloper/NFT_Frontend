@@ -53,7 +53,6 @@ export const FractionaliseModal = ({
           <LockNFT
             onClose={onClose}
             onCompleted={() => handleCompleteStep(1)}
-            needLockLaterBtn={false}
             selectedNFT={selectedNFT}
             syntheticID={syntheticNFT?.SyntheticID}
           />

@@ -31,8 +31,8 @@ export default function MyNFTCard({ item, onLockCompleted }: IProps) {
     <Box display="flex" flexDirection="column" alignItems="center">
       <div className={classes.card}>
         <div className={classes.innerBox}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={1}>
-            <div className={classes.nftName}>{item.NftId}</div>
+          <Box display="flex" justifyContent="space-between" alignItems="center" width={1} mb={1}>
+            <div className={classes.nftName}>{`${item.collectionName} #${item.NftId}`}</div>
             {item?.isVerified ? (
               <div className={classes.lockLabel}>
                 <span>Verified</span>
@@ -48,7 +48,7 @@ export default function MyNFTCard({ item, onLockCompleted }: IProps) {
             )}
           </Box>
           <img
-            src={item.image || require("assets/backgrounds/digital_art_1.png")}
+            src={item.imageUrl || require("assets/backgrounds/digital_art_1.png")}
             alt="nft image"
             style={{ borderRadius: 16 }}
           />

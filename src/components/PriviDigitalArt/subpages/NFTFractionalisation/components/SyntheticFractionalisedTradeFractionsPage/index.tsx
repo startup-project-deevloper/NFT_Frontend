@@ -1,5 +1,5 @@
 import React from "react";
-
+import Web3 from "web3";
 import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
@@ -10,9 +10,15 @@ import { SyntheticFractionalisedTradeFractionsPageStyles } from "./index.styles"
 import BuyJotsModal from "../../../../modals/BuyJotsModal";
 import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
-import { getSyntheticNFTTransactions, getSyntheticNFTOwnerHistory } from "shared/services/API/SyntheticFractionalizeAPI";
+import {
+  getSyntheticNFTTransactions,
+  getSyntheticNFTOwnerHistory,
+} from "shared/services/API/SyntheticFractionalizeAPI";
 import AddJOTsModal from "components/PriviDigitalArt/modals/AddJOTsModal";
 import { styled } from "@material-ui/styles";
+import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
 
 const FreeHoursChartConfig = {
   config: {
@@ -259,6 +265,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
   const [openAddJOTsModal, setOpenAddJOTsModal] = React.useState<boolean>(false);
 
+  const { account, library, chainId } = useWeb3React();
+  const [loading, setLoading] = React.useState<boolean>(false);
+
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
 
   React.useEffect(() => {
@@ -268,7 +277,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       ownerHistory.map((item, index) => {
         labels.push(index + 1);
         data.push(item.supply);
-      })
+      });
     }
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
     newRewardConfig.configurer = configurer;
@@ -336,6 +345,21 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const handleOpenAddJOTsModal = () => {
     setOpenAddJOTsModal(true);
+  };
+
+  const handleAddLiquidity = async () => {
+    setLoading(true);
+
+    const targetChain = BlockchainNets[1];
+    const web3 = new Web3(library.provider);
+    const web3APIHandler = targetChain.apiHandler;
+
+    console.log(nft);
+    const response = await web3APIHandler.SyntheticCollectionManager.addLiquidityToPool(web3, account!, nft);
+    if (response.success) {
+    } else {
+    }
+    setLoading(false);
   };
 
   return (
@@ -705,6 +729,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.priceButton}
                           size="medium"
                           style={{ background: "#DDFF57", color: Color.Purple }}
+                          onClick={handleAddLiquidity}
                         >
                           Add liquidity on Quickswap
                         </PrimaryButton>
@@ -767,6 +792,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
       />
+      <LoadingScreen
+        loading={loading}
+        title={`Transaction \nin progress`}
+        subTitle={`Transaction is proceeding on ${BlockchainNets[1].value}.\nThis can take a moment, please be patient...`}
+        handleClose={() => {}}
+      ></LoadingScreen>
     </Box>
   );
 }

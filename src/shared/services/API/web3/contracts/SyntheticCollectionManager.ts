@@ -380,6 +380,31 @@ const syntheticCollectionManager = (network: string) => {
       }
     });
   };
+
+  const addLiquidityToPool = async (web3: Web3, account: string, nft: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { SyntheticCollectionManagerAddress, SyntheticID: tokenId } = nft;
+
+        console.log(tokenId);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const gas = await contract.methods.addLiquidityToPool(tokenId).estimateGas({ from: account });
+        const response = await contract.methods.addLiquidityToPool(tokenId).send({ from: account, gas: gas });
+
+        if (response) {
+          console.log(response);
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     updatePriceFraction,
@@ -392,6 +417,7 @@ const syntheticCollectionManager = (network: string) => {
     getJotFractionPrice,
     verifyToken,
     isVerifiedToken,
+    addLiquidityToPool,
   };
 };
 

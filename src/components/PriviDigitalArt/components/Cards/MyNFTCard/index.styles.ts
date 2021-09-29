@@ -10,7 +10,18 @@ export const myNFTCardStyles = makeStyles(theme => ({
     height: 516,
     width: "100%",
     cursor: "pointer",
-    minWidth: 250
+    minWidth: 250,
+
+    [theme.breakpoints.down(880)]: {
+      minWidth: 230,
+      height: 340,
+      padding: 10,
+    },
+    [theme.breakpoints.down(768)]: {
+      minWidth: 160,
+      height: 245,
+      padding: 7,
+    },
   },
   innerBox: {
     background: "#9EACF2",
@@ -30,6 +41,22 @@ export const myNFTCardStyles = makeStyles(theme => ({
     [theme.breakpoints.between(960, 980)]: {
       padding: 12,
     },
+    [theme.breakpoints.down(880)]: {
+      padding: 10,
+
+      "& img": {
+        width: "100%",
+        height: 180,
+      },
+    },
+    [theme.breakpoints.down(768)]: {
+      padding: 7,
+
+      "& img": {
+        width: "100%",
+        height: 130,
+      },
+    },
   },
   nftName: {
     fontSize: 14,
@@ -38,6 +65,16 @@ export const myNFTCardStyles = makeStyles(theme => ({
     lineHeight: "16px",
     textTransform: "capitalize",
     color: '#1A1B1C',
+    marginBottom: 8,
+
+    [theme.breakpoints.down(880)]: {
+      fontSize: 10,
+      marginBottom: 0,
+    },
+    [theme.breakpoints.down(768)]: {
+      fontSize: 7,
+      marginBottom: 0,
+    },
   },
   shadow: {
     width: 40,
@@ -45,7 +82,18 @@ export const myNFTCardStyles = makeStyles(theme => ({
     background: "#431AB7",
     opacity: 0.2,
     filter: "blur(2.9269px)",
-    marginTop: -24,
+    position: "absolute",
+    bottom: 100,
+
+    [theme.breakpoints.down(880)]: {
+      bottom: 60,
+      width: 30,
+    },
+
+    [theme.breakpoints.down(768)]: {
+      bottom: 40,
+      width: 25,
+    },
   },
   unLockLabel: {
     height: 20,
@@ -63,6 +111,16 @@ export const myNFTCardStyles = makeStyles(theme => ({
     textTransform: 'uppercase',
     "& span": {
       textAlign: "center"
+    },
+    [theme.breakpoints.down(880)]: {
+      fontSize: 7,
+      height: 16,
+      borderRadius: 4,
+    },
+    [theme.breakpoints.down(768)]: {
+      fontSize: 5,
+      height: 11,
+      borderRadius: 3.5,
     },
   },
   lockLabel: {
@@ -82,6 +140,16 @@ export const myNFTCardStyles = makeStyles(theme => ({
     "& span": {
       textAlign: "center"
     },
+    [theme.breakpoints.down(880)]: {
+      fontSize: 7,
+      height: 16,
+      borderRadius: 4,
+    },
+    [theme.breakpoints.down(768)]: {
+      fontSize: 5,
+      height: 11,
+      borderRadius: 3.5,
+    },
   },
   nftModalButton: {
     cursor: "pointer",
@@ -97,5 +165,16 @@ export const myNFTCardStyles = makeStyles(theme => ({
     width: "100%",
     height: 46,
     marginTop: 12,
+
+    [theme.breakpoints.down(880)]: {
+      marginTop: 10,
+      height: 20,
+      fontSize: 12,
+    },
+    [theme.breakpoints.down(768)]: {
+      marginTop: 4,
+      height: 16,
+      fontSize: 8,
+    }
   }
 }));

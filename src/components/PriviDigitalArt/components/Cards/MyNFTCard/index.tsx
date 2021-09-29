@@ -28,7 +28,7 @@ export default function MyNFTCard({ item, onLockCompleted }: IProps) {
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
+    <Box display="flex" flexDirection="column" alignItems="center" position="relative">
       <div className={classes.card}>
         <div className={classes.innerBox}>
           <Box display="flex" justifyContent="space-between" alignItems="center" width={1} mb={1}>

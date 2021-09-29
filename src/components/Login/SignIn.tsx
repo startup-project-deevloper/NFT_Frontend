@@ -150,9 +150,9 @@ const SignIn: React.FC<SignInProps> = ({ handleGoSignUp, handleClose }) => {
           if (res.data.isSignedIn) {
             setSignedin(true);
             const data = res.data.userData;
-            sessionStorage.setItem("token", res.data.accessToken);
-            sessionStorage.setItem("userId", data.id);
-            sessionStorage.setItem("userSlug", data.urlSlug ?? data.id);
+            localStorage.setItem("token", res.data.accessToken);
+            localStorage.setItem("userId", data.id);
+            localStorage.setItem("userSlug", data.urlSlug ?? data.id);
 
             axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.accessToken;
             dispatch(setLoginBool(true));

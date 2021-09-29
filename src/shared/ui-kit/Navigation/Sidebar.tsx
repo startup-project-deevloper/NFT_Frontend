@@ -125,7 +125,7 @@ export default function Sidebar() {
                         component={RouterLink}
                         onClick={() => {
                           if (item.id === "profile") {
-                            let userId: any = sessionStorage.getItem("userId");
+                            let userId: any = localStorage.getItem("userId");
                             dispatch(setSelectedUser(userId));
                             dispatch(closeMessageBox());
                           }

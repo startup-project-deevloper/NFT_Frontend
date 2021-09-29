@@ -6,7 +6,7 @@ import SocialTokenContext from "components/PriviSocial/subpages/SocialToken/cont
 import { Gradient } from "shared/ui-kit";
 
 const isSignedIn = () => {
-  return !!sessionStorage.getItem("token");
+  return !!localStorage.getItem("token");
 };
 
 const useStyles = makeStyles(theme => ({

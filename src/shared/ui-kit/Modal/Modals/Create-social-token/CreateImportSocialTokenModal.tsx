@@ -734,7 +734,7 @@ const CreateImportTokenModal = React.memo((props: any) => {
   };
 
   const handleWallet = async (address: string) => {
-    const userId = sessionStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
 
     if (address && activeWallet) {
       axios

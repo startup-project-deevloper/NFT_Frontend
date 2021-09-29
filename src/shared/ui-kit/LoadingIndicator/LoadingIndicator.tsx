@@ -4,11 +4,11 @@ import { usePromiseTracker } from "react-promise-tracker";
 
 const LoadingIndicator = (): React.ReactElement => {
     const { promiseInProgress } = usePromiseTracker();
-  
+
     const isSignedIn = (): boolean => {
-      return !!sessionStorage.getItem("token");
+      return !!localStorage.getItem("token");
     };
-  
+
     return (
       <div>
         {promiseInProgress ? (
@@ -26,5 +26,5 @@ const LoadingIndicator = (): React.ReactElement => {
       </div>
     );
   };
-  
+
   export default LoadingIndicator;

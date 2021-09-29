@@ -555,9 +555,9 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     "& .rec-slider-container": {
       "& .rec-carousel-item": {
         "& > .rec-item-wrapper": {
-          minWidth: 330,
-          maxWidth: 370,
-          width: "unset",
+          // minWidth: 330,
+          // maxWidth: 370,
+          // width: "unset",
           "& > div": {
             boxShadow: "none",
           }

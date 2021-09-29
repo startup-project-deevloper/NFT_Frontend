@@ -18,7 +18,7 @@ import { useHistory } from "react-router-dom";
 export default function PriviSocial({ id }) {
   let pathName = window.location.href; // If routing changes, change to pathname
   let idUrl = pathName.split("/")[5];
-  const ownUser = idUrl === sessionStorage.getItem("userSlug");
+  const ownUser = idUrl === localStorage.getItem("userSlug");
   const classes = priviSocialPageStyles();
   const { account } = useWeb3React();
   const history = useHistory();
@@ -35,7 +35,7 @@ export default function PriviSocial({ id }) {
 
   useEffect(() => {
     const checkStatus = async () => {
-      const address = sessionStorage.getItem("address");
+      const address = localStorage.getItem("address");
       if ((account && account.length > 0) || address) {
         const res = await Axios.post(`${URL()}/wallet/getEthAddressStatus`, {
           address: account ?? address,

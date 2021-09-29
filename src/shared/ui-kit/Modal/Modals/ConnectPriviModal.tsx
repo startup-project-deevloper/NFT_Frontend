@@ -16,7 +16,7 @@ enum CONNECTSTEP {
 }
 
 const ConnectPriviWallet: FC<IConnectPriviWallet> = props => {
-  const userId = sessionStorage.getItem("userId");
+  const userId = localStorage.getItem("userId");
   const [step, setStep] = useState(CONNECTSTEP.INIT);
   const { walletList, setWalletList } = props;
   const { onClose } = props;

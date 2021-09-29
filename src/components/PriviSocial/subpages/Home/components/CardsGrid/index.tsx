@@ -29,7 +29,7 @@ const CardsGrid = React.memo(
     const { width } = UseWindowDimensions();
 
     const isSignedIn = () => {
-      return !!sessionStorage.getItem("token");
+      return !!localStorage.getItem("token");
     };
 
     React.useEffect(() => {

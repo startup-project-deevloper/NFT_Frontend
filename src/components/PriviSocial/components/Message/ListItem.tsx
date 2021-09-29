@@ -24,7 +24,7 @@ export const ListItem: React.FunctionComponent<any> = ({
   let idUrl =
     userSelector && userSelector.urlSlug && userSelector.urlSlug.length > 0
       ? userSelector.urlSlug
-      : sessionStorage.getItem("userSlug");
+      : localStorage.getItem("userSlug");
 
   const usersInfo = useSelector((state: RootState) => state.usersInfoList);
 

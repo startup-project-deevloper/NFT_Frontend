@@ -103,11 +103,11 @@ const Discord = React.memo((props: any) => {
   const inputRef: any = useRef([]);
 
   useEffect(() => {
-    if (!socket && sessionStorage.getItem("userId")) {
-      const sock = io(URL(), { query: { token: sessionStorage.getItem("token")?.toString() || "" } });
+    if (!socket && localStorage.getItem("userId")) {
+      const sock = io(URL(), { query: { token: localStorage.getItem("token")?.toString() || "" } });
       sock.connect();
       setSocket(sock);
-      sock.emit("add user", sessionStorage.getItem("userId")?.toString() || "");
+      sock.emit("add user", localStorage.getItem("userId")?.toString() || "");
     }
   }, []);
 

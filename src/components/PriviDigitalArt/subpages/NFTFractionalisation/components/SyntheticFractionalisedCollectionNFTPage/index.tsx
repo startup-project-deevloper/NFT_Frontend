@@ -89,7 +89,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       }
 
       const response = await getSyntheticNFT(params.collectionId, params.nftId);
-      if (response.success) {
+      if (response?.success) {
         setNft(response.data);
         setLoadingData(false);
 

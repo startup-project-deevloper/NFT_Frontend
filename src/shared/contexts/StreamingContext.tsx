@@ -23,7 +23,7 @@ import {
   StreamingPricingMethod,
   StreamingType,
 } from "shared/services/API/StreamingAPI";
-import { loadJwtToken } from "shared/services/sessionStorage";
+import { loadJwtToken } from "shared/services/localStorage";
 import ConnectModal from "shared/ui-kit/Modal/Modals/ConnectModal";
 import socketIoClient from "socket.io-client";
 import { useDebouncedCallback } from "use-debounce";

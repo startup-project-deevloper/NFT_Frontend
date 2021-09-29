@@ -73,11 +73,11 @@ export default function Claim() {
   }, [currentChain]);
 
   useEffect(() => {
-    const sessionAddress = sessionStorage.getItem("address");
+    const sessionAddress = localStorage.getItem("address");
 
     if (account) {
       if (!sessionAddress) {
-        sessionStorage.setItem("address", account);
+        localStorage.setItem("address", account);
       }
       setStartConnect(true);
       axios
@@ -94,7 +94,7 @@ export default function Claim() {
   }, [account]);
 
   useEffect(() => {
-    const sessionAddress = sessionStorage.getItem("address");
+    const sessionAddress = localStorage.getItem("address");
 
     if (!account && sessionAddress) {
       injected.isAuthorized().then(isAuthorized => {
@@ -164,7 +164,7 @@ export default function Claim() {
       });
     } else {
       if (account) {
-        sessionStorage.setItem("address", account);
+        localStorage.setItem("address", account);
         setStartConnect(true);
       }
     }
@@ -193,7 +193,7 @@ export default function Claim() {
         }
       });
     } else {
-      sessionStorage.setItem("address", account);
+      localStorage.setItem("address", account);
       setStartConnect(true);
     }
   };

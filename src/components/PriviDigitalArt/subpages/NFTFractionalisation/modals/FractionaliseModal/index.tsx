@@ -17,7 +17,7 @@ export const FractionaliseModal = ({
 }) => {
   const classes = fractionaliseModalStyles();
   const [step, setStep] = useState<number>(0);
-  const [syntheticID, setSyntheticID] = useState<string>("");
+  const [syntheticNFT, setSyntheticNFT] = useState<any>();
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   const handleCompleteStep = stepIndex => {
@@ -34,18 +34,16 @@ export const FractionaliseModal = ({
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
       <Box display="flex" flexDirection="column">
-        {step < 3 && (
-          <ProgressBar step={step} setStep={setStep} completedSteps={completedSteps} />
-        )}
+        {step < 3 && <ProgressBar step={step} setStep={setStep} completedSteps={completedSteps} />}
         <Box className={classes.divider}>
           <StyledDivider type="solid" color="#DAE6E5" />
         </Box>
         {step === 0 ? (
           <CreateContract
             onClose={onClose}
-            onCompleted={id => {
+            onCompleted={nft => {
+              setSyntheticNFT(nft);
               handleCompleteStep(0);
-              setSyntheticID(id);
             }}
             selectedNFT={selectedNFT}
             supplyToKeep={supplyToKeep}
@@ -57,10 +55,10 @@ export const FractionaliseModal = ({
             onCompleted={() => handleCompleteStep(1)}
             needLockLaterBtn={false}
             selectedNFT={selectedNFT}
-            syntheticID={syntheticID}
+            syntheticID={syntheticNFT?.SyntheticID}
           />
         ) : (
-          <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} />
+          <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} nft={syntheticNFT} />
         )}
       </Box>
     </Modal>

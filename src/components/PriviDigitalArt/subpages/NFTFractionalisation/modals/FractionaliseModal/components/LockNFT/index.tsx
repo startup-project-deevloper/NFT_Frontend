@@ -44,12 +44,6 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
 
       const web3 = new Web3(library.provider);
       const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
-      console.log(
-        "contractAddress selectedNFT.tokenAddress, selectedNFT.BlockchainId",
-        contractAddress,
-        selectedNFT.tokenAddress,
-        selectedNFT.BlockchainId
-      );
       let response = await web3APIHandler.Erc721.setApprovalForToken(
         web3,
         account!,

@@ -39,7 +39,7 @@ export default function TradeOnQuickSwap(props: any) {
   const params: { id?: string } = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-  const [swapButtonName, setSwapButtonName] = useState<string>('Swap');
+  const [swapButtonName, setSwapButtonName] = useState<string>("Swap");
   const { account, library, chainId } = useWeb3React();
 
   const [tokenFrom, setTokenFrom] = useState<any>({
@@ -47,13 +47,13 @@ export default function TradeOnQuickSwap(props: any) {
     price: 1,
     symbol: "JOT",
     decimals: 18,
-  })
+  });
   const [tokenTo, setTokenTo] = useState<any>({
     balance: 0,
     price: 1,
     symbol: "USDT",
     decimals: 6,
-  })
+  });
 
   const [fromBalance, setFromBalance] = useState<number>(0);
   const [toBalance, setToBalance] = useState<number>(0);
@@ -103,7 +103,7 @@ export default function TradeOnQuickSwap(props: any) {
       const web3APIHandler = targetChain.apiHandler;
 
       const decimals = await web3APIHandler.Erc20.USDT.decimals(web3);
-      console.log(decimals)
+      console.log(decimals);
       const balance = await web3APIHandler.Erc20.USDT.balanceOf(web3, {
         account: account!,
       });
@@ -124,15 +124,14 @@ export default function TradeOnQuickSwap(props: any) {
       ...tokenTo,
     });
     setTokenTo({
-      ..._tokenFrom
-    })
+      ..._tokenFrom,
+    });
     setFromBalance(JSON.parse(JSON.stringify(toBalance)));
     setToBalance(JSON.parse(JSON.stringify(fromBalance)));
   };
 
   const handleSwap = async () => {
-    if (!collection || swapButtonName != 'Swap')
-      return;
+    if (!collection || swapButtonName != "Swap") return;
     const targetChain = BlockchainNets[1];
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
@@ -140,55 +139,73 @@ export default function TradeOnQuickSwap(props: any) {
 
     const amountOut = toNDecimals(toBalance, tokenTo.decimals);
     const amountInMax = toNDecimals(fromBalance, tokenFrom.decimals);
-    const path = tokenTo.symbol === "USDT" ? [collection.JotAddress, web3Config.TOKEN_ADDRESSES["USDT"]] : [web3Config.TOKEN_ADDRESSES["USDT"], collection.JotAddress];
+    const path =
+      tokenTo.symbol === "USDT"
+        ? [collection.JotAddress, web3Config.TOKEN_ADDRESSES["USDT"]]
+        : [web3Config.TOKEN_ADDRESSES["USDT"], collection.JotAddress];
 
     const deadline = Math.floor(Date.now() / 1000 + 3600);
 
     if (tokenTo.symbol === "USDT")
-      await web3APIHandler.Erc20.JOT.approve(web3, account, collection.JotAddress, web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"], amountInMax)
+      await web3APIHandler.Erc20.JOT.approve(
+        web3,
+        account,
+        collection.JotAddress,
+        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"],
+        amountInMax
+      );
     else
-      await web3APIHandler.Erc20.USDT.approve(web3, account, web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"], amountInMax)
+      await web3APIHandler.Erc20.USDT.approve(
+        web3,
+        account,
+        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"],
+        amountInMax
+      );
 
-    const response = await web3APIHandler.QuickSwap.swapTokensForExactTokens(web3, amountOut, amountInMax, path, account, deadline, account)
+    const response = await web3APIHandler.QuickSwap.swapTokensForExactTokens(
+      web3,
+      amountOut,
+      amountInMax,
+      path,
+      account,
+      deadline,
+      account
+    );
 
     if (response.status) {
-      
     } else {
-      setSwapButtonName('Insufficient Amount');
+      setSwapButtonName("Insufficient Amount");
     }
 
     console.log(response);
   };
 
-  const handleChangeFromBalance = async (value) => {
-    if (!collection)
-      return;
+  const handleChangeFromBalance = async value => {
+    if (!collection) return;
     const _value = !isNaN(Number(value)) && Number(value) != 0 ? Number(value) : 0;
-    setFromBalance(_value)
+    setFromBalance(_value);
     const targetChain = BlockchainNets[1];
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
     const web3APIHandler = targetChain.apiHandler;
     const amountIn = toNDecimals(_value, tokenFrom.decimals);
-    const path = tokenTo.symbol === "USDT" 
-                ? 
-                  [collection.JotAddress, web3Config.TOKEN_ADDRESSES["USDT"]] 
-                : 
-                  [web3Config.TOKEN_ADDRESSES["USDT"], collection.JotAddress]
+    const path =
+      tokenTo.symbol === "USDT"
+        ? [collection.JotAddress, web3Config.TOKEN_ADDRESSES["USDT"]]
+        : [web3Config.TOKEN_ADDRESSES["USDT"], collection.JotAddress];
 
     if (_value != 0) {
-      const response = await web3APIHandler.QuickSwap.getAmountsOut(web3, amountIn, path)
+      const response = await web3APIHandler.QuickSwap.getAmountsOut(web3, amountIn, path);
       if (!response.status) {
-          setSwapButtonName('INSUFFICIENT INPUT AMOUNT');
+        setSwapButtonName("INSUFFICIENT INPUT AMOUNT");
       } else {
-        setToBalance(Number(toDecimals(response.result[1], tokenTo.decimals)))
-        setSwapButtonName('Swap');
+        setToBalance(Number(toDecimals(response.result[1], tokenTo.decimals)));
+        setSwapButtonName("Swap");
       }
     } else {
-      setToBalance(0)
+      setToBalance(0);
     }
-
-  }
+  };
 
   return (
     <Box className={classes.root}>
@@ -227,7 +244,7 @@ export default function TradeOnQuickSwap(props: any) {
                 }}
                 value={fromBalance}
                 onChange={({ target: { value } }) => {
-                  handleChangeFromBalance(value)
+                  handleChangeFromBalance(value);
                 }}
               />
             </Box>
@@ -242,8 +259,6 @@ export default function TradeOnQuickSwap(props: any) {
               </span>
             </Box>
           </Box>
-          {/* third row - $ */}
-          <Box color="#1A1B1C">~$ {}</Box>
         </Box>
         {/* arrow down */}
         <Box display="flex" alignItems="center" justifyContent="center" py={2} onClick={handleSwapToken}>
@@ -270,8 +285,6 @@ export default function TradeOnQuickSwap(props: any) {
               </span>
             </Box>
           </Box>
-          {/* third row - $ */}
-          <Box color="#C3C5CA">~$ {}</Box>
         </Box>
         {/* price row */}
         <Box
@@ -290,7 +303,7 @@ export default function TradeOnQuickSwap(props: any) {
           </Box>
         </Box>
         {/* swap button */}
-        <Box className={swapButtonName != 'Swap' ? classes.disable : classes.swapBtn} onClick={handleSwap}>
+        <Box className={swapButtonName != "Swap" ? classes.disable : classes.swapBtn} onClick={handleSwap}>
           {swapButtonName}
         </Box>
       </Box>

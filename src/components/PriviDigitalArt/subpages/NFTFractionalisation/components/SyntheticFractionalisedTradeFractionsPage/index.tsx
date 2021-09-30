@@ -12,6 +12,7 @@ import { SyntheticFractionalisedTradeFractionsPageStyles } from "./index.styles"
 import BuyJotsModal from "../../../../modals/BuyJotsModal";
 import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
+import QuickSwapModal from "../../../../modals/QuickSwapModal";
 import {
   getSyntheticNFTTransactions,
   getSyntheticNFTOwnerHistory,
@@ -271,6 +272,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
   const [openAddJOTsModal, setOpenAddJOTsModal] = React.useState<boolean>(false);
+  const [openQuickSwapModal, setOpenQuickSwapModal] = React.useState<boolean>(false);
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -521,6 +523,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       alignItems: "center",
                       borderRadius: 4,
                     }}
+                    onClick={() => setOpenQuickSwapModal(true)}
                   >
                     Swap on <img src={require("assets/pixImages/swap_icon.png")} alt="quick swap" /> Quickswap
                   </PrimaryButton>
@@ -845,6 +848,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
       />
+      <QuickSwapModal open={openQuickSwapModal} handleClose={() => setOpenQuickSwapModal(false)} />
       <LoadingScreen
         loading={loading}
         title={`Transaction \nin progress`}

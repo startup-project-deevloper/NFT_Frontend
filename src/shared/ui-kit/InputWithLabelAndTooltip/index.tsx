@@ -27,6 +27,7 @@ type TooltipWithInputProps = {
   endAdornment?: any;
   transparent?: boolean;
   minDate?: number;
+  startAdornment?: any;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -221,6 +222,7 @@ export default function InputWithLabelAndTooltip({
   accept,
   theme = "light",
   endAdornment,
+  startAdornment,
   transparent,
   minDate = 0,
 }: TooltipWithInputProps) {
@@ -255,6 +257,7 @@ export default function InputWithLabelAndTooltip({
         <Input
           disableUnderline
           endAdornment={endAdornment}
+          startAdornment={startAdornment}
           className={`${
             overriedClasses
               ? overriedClasses

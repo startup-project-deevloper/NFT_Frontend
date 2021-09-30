@@ -2,6 +2,7 @@ import React from "react";
 import Web3 from "web3";
 import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import Moment from "react-moment";
 
 import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton } from "shared/ui-kit";
@@ -260,6 +261,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
   const [ownerHistory, setOwnerHistory] = React.useState<any[]>([]);
+  const [currentSupply, setCurrentSupply] = React.useState<any>({
+    price: 0,
+    date: new Date().getTime(),
+  });
 
   const [transList, setTransList] = React.useState<any[]>(tempHistory);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
@@ -274,6 +279,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const [soldJOTs, setSoldJOTs] = React.useState<number>(0);
   const [ownerSupply, setOwnerSupply] = React.useState<number>(0);
+  const [price, setPrice] = React.useState<number>(0);
 
   React.useEffect(() => {
     (async () => {
@@ -306,13 +312,33 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   }, [library]);
 
   React.useEffect(() => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+
+      const response = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, nft, {
+        tokenId: nft.SyntheticID,
+      });
+      if (response) {
+        setPrice(response);
+      }
+    })();
+  }, [library]);
+
+  React.useEffect(() => {
     let labels: any[] = [];
     let data: any[] = [];
     if (ownerHistory && ownerHistory.length) {
       ownerHistory.map((item, index) => {
         labels.push(index);
         data.push(item.supply);
-      })
+      });
+
+      setCurrentSupply({
+        price: ownerHistory[0].supply,
+        date: ownerHistory[0].timestamp,
+      });
     } else {
       labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     }
@@ -546,7 +572,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               <Box></Box>
               <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
                 <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                  ACCURED INTEREST
+                  ACCRUED INTEREST
                 </Box>
                 <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                   0.55 USDT
@@ -583,7 +609,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           <tr>
                             <td>
                               <Box className={classes.h1} fontWeight={800}>
-                                $0.28
+                                ${price}
                               </Box>
                             </td>
                             <td>
@@ -641,49 +667,52 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Box
-                      borderRadius={16}
-                      p={4}
-                      height="100%"
-                      bgcolor="#431AB71A"
-                      display="flex"
-                      justifyContent="center"
-                    >
-                      <table width="100%">
-                        <tbody>
-                          <tr>
-                            <td>
-                              <Box justifyContent="center" className={classes.h3}>
-                                Quickswap Price
-                              </Box>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Box justifyContent="center" className={classes.h1} fontWeight={800}>
-                                $0.29
-                              </Box>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <PrimaryButton
-                                className={`${classes.h4} ${classes.ownerPriceBtn}`}
-                                size="medium"
-                                style={{
-                                  background: "#DDFF57",
-                                  color: Color.Purple,
-                                  width: "100%",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                Edit Price
-                              </PrimaryButton>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <Box className={classes.priceContent}>
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        width={1}
+                        justifyContent="center"
+                        gridRowGap={8}
+                      >
+                        <Box width={1} display="flex" justifyContent="center" className={classes.h3}>
+                          Quickswap Price
+                        </Box>
+                        <Box
+                          width={1}
+                          display="flex"
+                          justifyContent="center"
+                          className={classes.h1}
+                          fontWeight={800}
+                        >
+                          $0.28
+                        </Box>
+                      </Box>
+                      <Box
+                        display="flex"
+                        flexWrap="wrap"
+                        justifyContent="center"
+                        gridColumnGap={8}
+                        gridRowGap={8}
+                      >
+                        <PrimaryButton
+                          className={classes.priceButton}
+                          size="medium"
+                          style={{ background: "#431AB7", color: Color.White }}
+                          onClick={handleBuyOnQuickSwap}
+                        >
+                          Buy on Quickswap
+                        </PrimaryButton>
+
+                        <PrimaryButton
+                          className={classes.priceButton}
+                          size="medium"
+                          style={{ background: "#DDFF57", color: Color.Purple }}
+                          onClick={handleAddLiquidity}
+                        >
+                          Add liquidity on Quickswap
+                        </PrimaryButton>
+                      </Box>
                     </Box>
                   </Grid>
                 </Grid>
@@ -700,7 +729,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Owner Price</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            $0.28
+                            ${price}
                           </Box>
                         </Box>
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
@@ -788,18 +817,16 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       <Box className={classes.outBox}>
         <Box className={classes.boxBody}>
           <Box className={classes.chart}>
-            {(!ownerHistory || !ownerHistory.length) && (
-              <div className="no-data">
-                There are no data yet.
-              </div>
-            )}
+            {(!ownerHistory || !ownerHistory.length) && <div className="no-data">There are no data yet.</div>}
             <Box className={classes.controlParentBox}>
-              <Box className={classes.ownershipTitle}>
+              <Box fontSize={16} fontWeight={700} color="white">
                 Ownership over time
               </Box>
-              <Box display="flex" flexDirection="column" alignItems="flex-end">
-                <h2 className={classes.graphTitle}>424 JOTS</h2>
-                <p className={classes.graphDesc}>12 Sep 2021</p>
+              <Box display="flex" flexDirection="column">
+                <h2 className={classes.graphTitle}>{currentSupply.price} USDC</h2>
+                <Moment format="DD MMM YYYY" className={classes.graphDesc}>
+                  {currentSupply.date}
+                </Moment>
               </Box>
             </Box>
             <Box height={300} width={1}>

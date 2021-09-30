@@ -38,7 +38,7 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     background: "#DDFF57",
     boxShadow: "0px 25px 36px -11px rgba(0, 0, 0, 0.02)",
     borderRadius: 20,
-    padding: "48px 44px",
+    padding: "97px 44px",
   },
   jotWrapper: {
     display: "flex",

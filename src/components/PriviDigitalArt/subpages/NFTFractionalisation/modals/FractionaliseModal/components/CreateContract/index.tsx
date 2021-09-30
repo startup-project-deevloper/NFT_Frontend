@@ -136,7 +136,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           tSupply,
           price,
           collectionInfo.data.name,
-          collectionInfo.data.symbol
+          collectionInfo.data.symbol,
+          ""
         )
         .estimateGas({ from: account });
       const response = await contract.methods
@@ -146,7 +147,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           tSupply,
           price,
           collectionInfo.data.name,
-          collectionInfo.data.symbol
+          collectionInfo.data.symbol,
+          ""
         )
         .send({ from: account, gas })
         .on("transactionHash", hash => {
@@ -223,12 +225,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       <div className={classes.container}>
         {isProceeding ? (
           <>
-            <LoadingWrapper
-              loading={true}
-              theme="blue"
-              iconWidth="80px"
-              iconHeight="80px"
-            ></LoadingWrapper>
+            <LoadingWrapper loading={true} theme="blue" iconWidth="80px" iconHeight="80px"></LoadingWrapper>
             <h1 className={classes.title}>Create contract on Polygon</h1>
             <Box className={classes.result}>
               <p className={classes.description}>

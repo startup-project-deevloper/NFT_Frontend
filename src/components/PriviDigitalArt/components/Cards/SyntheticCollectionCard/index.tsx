@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import cls from "classnames";
 import { useHistory } from "react-router-dom";
 
@@ -6,19 +6,10 @@ import { Divider } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
 import { syntheticCollectionCardStyles } from "./index.styles";
-import { getCollectionCardInfo } from "shared/services/API/SyntheticFractionalizeAPI";
 
 export default function SyntheticCollectionCard({ item }) {
   const classes = syntheticCollectionCardStyles();
   const history = useHistory();
-  const [balance, setBalance] = useState<number>(0);
-  const [price, setPrice] = useState<number>(0);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const response = await getCollectionCardInfo(item.id);
-  //   })();
-  // }, []);
 
   return (
     <div
@@ -56,7 +47,7 @@ export default function SyntheticCollectionCard({ item }) {
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Implied Valuation</Box>
-              <Box className={classes.detailInfo}>$XXXX</Box>
+              <Box className={classes.detailInfo}>${item.impliedValuation}</Box>
             </Box>
           </Box>
         </Box>

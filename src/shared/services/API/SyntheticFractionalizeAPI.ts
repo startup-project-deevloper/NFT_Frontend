@@ -67,19 +67,6 @@ export async function getSyntheticNFTOwnerHistory(collectionId, syntheticId): Pr
   }
 }
 
-export async function getCollectionCardInfo(collectionId): Promise<any> {
-  try {
-    const response = await axios.get(`${URL()}/syntheticFractionalize/getCollectionCardInfo`, {
-      params: {
-        collectionId,
-      },
-    });
-    return response.data;
-  } catch (e) {
-    console.log(e.message);
-  }
-}
-
 /////////////////////////// POST /////////////////////////
 
 export async function buyJots(payload): Promise<any> {

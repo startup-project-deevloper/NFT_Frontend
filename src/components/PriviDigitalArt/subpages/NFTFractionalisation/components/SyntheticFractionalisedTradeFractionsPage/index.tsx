@@ -78,11 +78,11 @@ const FreeHoursChartConfig = {
       scales: {
         xAxes: [
           {
-            offset: true,
+            offset: false,
             display: true,
             gridLines: {
               color: "#431AB7",
-              lineWidth: 50,
+              offsetGridLines: true,
             },
             ticks: {
               beginAtZero: true,
@@ -282,9 +282,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   React.useEffect(() => {
     let labels: any[] = [];
     let data: any[] = [];
+    const curDate = new Date().getDate();
     if (ownerHistory && ownerHistory.length) {
-      ownerHistory.map((item, index) => {
-        labels.push(index);
+      ownerHistory.filter((item, index)=>{
+        return index < curDate
+      })
+      .map((item, index) => {
+        labels.push(index+1);
         data.push(item.supply);
       });
 
@@ -303,7 +307,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
-    newRewardConfig.config.options.scales.xAxes[0].offset = true;
+    newRewardConfig.config.options.scales.xAxes[0].offset = false;
     newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
 
     setRewardConfig(newRewardConfig);

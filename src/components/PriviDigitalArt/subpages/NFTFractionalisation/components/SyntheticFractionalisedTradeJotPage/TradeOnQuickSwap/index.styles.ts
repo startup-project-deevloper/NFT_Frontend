@@ -110,6 +110,24 @@ export const TradeOnQuickSwapStyles = makeStyles(theme => ({
       height: 43,
     },
   },
+
+  disable: {
+    width: "100%",
+    height: "64px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "#4991F1CC",
+    borderRadius: "14px",
+    marginTop: "30px",
+    color: "#fff",
+    fontSize: 18,
+    cursor: "pointer",
+    [theme.breakpoints.down("xs")]: {
+      height: 43,
+    },
+  },
+
   token: {
     background: "transparent !important",
     border: "none !important",

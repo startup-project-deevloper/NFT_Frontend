@@ -229,7 +229,7 @@ const syntheticCollectionManager = (network: string) => {
   ): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { tokenId, price } = payload;
+        const { tokenId, price, setHash } = payload;
         const { SyntheticCollectionManagerAddress } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
@@ -237,18 +237,25 @@ const syntheticCollectionManager = (network: string) => {
         console.log("Getting gas....");
         const gas = await contract.methods.updatePriceFraction(tokenId, price).estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
-        const response = await contract.methods
+
+        contract.methods
           .updatePriceFraction(tokenId, price)
-          .send({ from: account, gas: gas });
-        console.log("transaction succeed");
-        resolve({
-          data: {
-            hash: response.transactionHash,
-          },
-        });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            setHash(hash);
+          })
+          .on("receipt", function (receipt) {
+            console.log("transaction succeed");
+            resolve({
+              success: true,
+              data: {
+                hash: receipt.transactionHash,
+              },
+            });
+          });
       } catch (e) {
         console.log(e);
-        resolve(null);
+        resolve({ success: false });
       }
     });
   };
@@ -261,7 +268,7 @@ const syntheticCollectionManager = (network: string) => {
   ): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { tokenId, amount } = payload;
+        const { tokenId, amount, setHash } = payload;
         const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
@@ -275,18 +282,24 @@ const syntheticCollectionManager = (network: string) => {
           .increaseSellingSupply(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
-        const response = await contract.methods
+        await contract.methods
           .increaseSellingSupply(tokenId, toNDecimals(amount, decimals))
-          .send({ from: account, gas: gas });
-        console.log("transaction succeed");
-        resolve({
-          data: {
-            hash: response.transactionHash,
-          },
-        });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            setHash(hash);
+          })
+          .on("receipt", function (receipt) {
+            console.log("transaction succeed");
+            resolve({
+              success: true,
+              data: {
+                hash: receipt.transactionHash,
+              },
+            });
+          });
       } catch (e) {
         console.log(e);
-        resolve(null);
+        resolve({ success: false });
       }
     });
   };
@@ -299,7 +312,7 @@ const syntheticCollectionManager = (network: string) => {
   ): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { tokenId, amount } = payload;
+        const { tokenId, amount, setHash } = payload;
         const { SyntheticCollectionManagerAddress, JotAddress } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
@@ -313,19 +326,24 @@ const syntheticCollectionManager = (network: string) => {
           .decreaseSellingSupply(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
-        const response = await contract.methods
+        await contract.methods
           .decreaseSellingSupply(tokenId, toNDecimals(amount, decimals))
-          .send({ from: account, gas: gas });
-        console.log(response);
-        console.log("transaction succeed");
-        resolve({
-          data: {
-            hash: response.transactionHash,
-          },
-        });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            setHash(hash);
+          })
+          .on("receipt", function (receipt) {
+            console.log("transaction succeed");
+            resolve({
+              success: true,
+              data: {
+                hash: receipt.transactionHash,
+              },
+            });
+          });
       } catch (e) {
         console.log(e);
-        resolve(null);
+        resolve({ success: false });
       }
     });
   };

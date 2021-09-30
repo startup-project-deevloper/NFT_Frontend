@@ -181,7 +181,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             collectionSymbol: collectionInfo.data.symbol,
             description: collectionInfo.data.description,
             imageUrl: collectionInfo.data.imageUrl,
-            quickSwapAddress: collection.quickSwapAddress,
+            quickSwapAddress: collection.jotPairAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
             lTokenLite: collection.lTokenLite_,

@@ -58,7 +58,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
-  const [ownershipJot, setOwnershipJot] = useState<number>(0);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [flipResult, setFlipResult] = useState<boolean>(false);
   const [flipGuess, setFlipGuess] = useState<number>(0);
@@ -92,32 +91,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response?.success) {
         setNft(response.data);
         setLoadingData(false);
-
-        const targetChain = BlockchainNets[1];
-
-        if (chainId && chainId !== targetChain?.chainId) {
-          const isHere = await switchNetwork(targetChain?.chainId || 0);
-          if (!isHere) {
-            showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
-            return;
-          }
-        }
-
-        const web3APIHandler = targetChain.apiHandler;
-        const web3Config = targetChain.config;
-        const web3 = new Web3(library?.provider);
-
-        const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
-          web3,
-          response.data,
-          {
-            tokenId: +response.data.SyntheticID,
-          }
-        );
-
-        if (contractResponse) {
-          setOwnershipJot(contractResponse);
-        }
       }
     })();
   }, [params]);
@@ -374,14 +347,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             >
               <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Ownership</div>
-                <div className={classes.typo2}>{ownershipJot} JOTs</div>
+                <div className={classes.typo2}>{nft.OwnerSupply ?? 0} JOTs</div>
               </Box>
               <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Owner</div>
                 <Box display="flex" alignItems="center">
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
-                    <div className={classes.typo2}>User name</div>
+                    <div className={classes.typo2}>{nft.OwnerName ?? ""}</div>
                   </Box>
                 </Box>
               </Box>

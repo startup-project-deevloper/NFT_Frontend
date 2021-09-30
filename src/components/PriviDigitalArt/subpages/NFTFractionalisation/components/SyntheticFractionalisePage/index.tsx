@@ -70,8 +70,7 @@ const SyntheticFractionalisePage = ({
     setLoadingFeaturedCollections(true);
     getSyntheticFeaturedCollections().then(resp => {
       if (resp && resp.success) {
-        const list = resp.data.slice(0,2);
-        setFeaturedCollections(list);
+        setFeaturedCollections(resp.data);
       }
       setLoadingFeaturedCollections(false);
     });

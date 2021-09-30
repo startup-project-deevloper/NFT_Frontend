@@ -5,7 +5,17 @@ import URL from "shared/functions/getURL";
 
 export async function getSyntheticCollections(pagination): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticCollections`, { params: { pagination } });
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticCollections`, {
+      params: { pagination },
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+export async function getSyntheticFeaturedCollections(): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticFeaturedCollections`, { params: {} });
     return response.data;
   } catch (e) {
     console.log(e.message);

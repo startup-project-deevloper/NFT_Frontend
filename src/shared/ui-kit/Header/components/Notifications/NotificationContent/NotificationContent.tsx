@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Notification } from "shared/services/API/NotificationsAPI";
 import { setSelectedUser } from "store/actions/SelectedUser";
 import { TransferNotificationContent } from "./TransferNotificationContent";
-import {useTypedSelector} from "../../../../../../store/reducers/Reducer";
+import { useTypedSelector } from "../../../../../../store/reducers/Reducer";
 
 type NotificationContentProps = {
   notification: Notification;
@@ -21,7 +21,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
   const allUsers = useTypedSelector(state => state.usersInfoList);
 
   const returnNameUserFromId = (userId: string) => {
-    let user : any = allUsers.find(user => user.address === userId);
+    let user: any = allUsers.find(user => user.address === userId);
 
     return user.urlSlug;
   }
@@ -813,7 +813,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             {follower}
           </b>{" "}
-          created <b onClick={() => {}}>{pod}</b> Commuity and want you to join as <em>{comment}</em>.
+          created <b onClick={() => { }}>{pod}</b> Commuity and want you to join as <em>{comment}</em>.
         </div>
       ) : type === 87 ? (
         <div>
@@ -825,7 +825,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             {follower}
           </b>{" "}
-          accepts your invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
+          accepts your invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 88 ? (
@@ -838,17 +838,17 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             {follower}
           </b>{" "}
-          declines your invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
+          declines your invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 89 ? (
         <div>
-          You have accepted the invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
+          You have accepted the invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 90 ? (
         <div>
-          You have declined the invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
+          You have declined the invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 91 ? (
@@ -1838,12 +1838,23 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           <b>{`Congratulation! Your NFT has been deposited successfully.`}</b>
         </div>
       ) : type === 216 ? (
-          <div>
-            <b>{`@${returnNameUserFromId(follower)}`}</b>{`, just created `}<b>{pod}</b>{` and invited you.`}
-          </div>
+        <div>
+          <b>{`@${returnNameUserFromId(follower)}`}</b>{`, just created `}<b>{pod}</b>{` and invited you.`}
+        </div>
       ) : type === 217 ? (
         <div>
           <b>{`@${returnNameUserFromId(follower)}`}</b>{`, just created a Pod Proposal in `}<b>{pod}</b>{` pod.`}
+        </div>
+      ) : type === 218 ? (
+        <div>
+          Your JOT margin on <b>[{token}]</b> level is at <b>{amount * 100}%</b>. To avoid being liquidated, please add more JOTs to your position.<br />
+          <b
+            onClick={() => {
+              history.push(`/pix/fractionalisation/collection/${pod}/nft/${itemId}`)
+            }}
+          >
+            Go to NFT
+          </b>
         </div>
       ) : null}
     </>

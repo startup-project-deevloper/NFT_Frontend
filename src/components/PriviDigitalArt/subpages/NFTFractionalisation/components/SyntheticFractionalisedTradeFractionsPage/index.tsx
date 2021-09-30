@@ -223,7 +223,7 @@ export const TransactionTable = ({ datas }) => {
             cell: <Box color="rgba(67, 26, 183, 1)">{row.account || ""}</Box>,
           },
           {
-            cell: row.time ? <Moment toNow>{row.time * 1000}</Moment> : "",
+            cell: row.time ? <Moment fromNow>{row.time * 1000}</Moment> : "",
           },
           {
             cell: (

@@ -362,7 +362,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
                     <div className={classes.typo2}>
-                      {(isOwner ? getUserInfo(nft.OwnerAddress)?.id : nft.OwnerAddress) ?? ""}
+                      {(isOwner ? getUserInfo(nft.OwnerAddress)?.name : nft.OwnerAddress) ?? ""}
                     </div>
                   </Box>
                 </Box>

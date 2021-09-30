@@ -1,4 +1,5 @@
 import exchange from "./contracts/Exchange";
+import quickswap from "./contracts/Quickswap";
 import auction from "./contracts/Auction";
 import loan from "./contracts/Loan";
 import erc721 from "./contracts/PriviERC721";
@@ -25,6 +26,7 @@ const api = network => {
     SyntheticCollectionManager: syntheticCollectionManager(network),
     SyntheticProtocolRouter: syntheticProtocolRouter(network),
     JotPool: jotPool(network),
+    QuickSwap: quickswap(network),
   };
 };
 

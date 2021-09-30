@@ -70,7 +70,6 @@ const SyntheticFractionalisePage = ({
     setLoadingFeaturedCollections(true);
     getSyntheticFeaturedCollections().then(resp => {
       if (resp && resp.success) {
-        console.log(resp.data)
         setFeaturedCollections(resp.data);
       }
       setLoadingFeaturedCollections(false);
@@ -195,8 +194,14 @@ const SyntheticFractionalisePage = ({
                   ref={carouselRef}
                   itemPadding={[0, 12]}
                 >
-                  {featuredCollections.map((item: any) => (
-                    <div style={{ width: "100%", paddingBottom: "15px" }}>
+                  {featuredCollections.map((item: any, i: Number) => (
+                    <div style={{ 
+                      width: "100%", 
+                      paddingBottom: "15px", 
+                      display: "flex",
+                      justifyContent: isMobile ? "center" : featuredCollections.length===2 && i===1 ? "flex-end"
+                       : featuredCollections.length===3 && i===1 ? "center" : featuredCollections.length===3 && i===2 ? "flex-end" : "flex-start"
+                    }}>
                       <SyntheticCollectionCard item={item} key={item.id} />
                     </div>
                   ))}

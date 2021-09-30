@@ -69,7 +69,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
       showAlertMessage("Failed to update price fraction", { variant: "error" });
     }
 
-    showAlertMessage("Successfully updated price fraction", { variant: "error" });
+    showAlertMessage("Successfully updated price fraction", { variant: "success" });
     onClose();
   };
 

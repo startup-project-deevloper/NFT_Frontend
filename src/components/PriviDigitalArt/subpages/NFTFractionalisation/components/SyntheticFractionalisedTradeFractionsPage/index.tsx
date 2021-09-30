@@ -256,7 +256,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   isOwnerShipTab = false,
   collectionId,
   nft,
-  maxSupplyJot,
 }: any) {
   const history = useHistory();
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
@@ -277,6 +276,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
+  const ownershipJot = +nft.OwnerSupply;
+  const maxSupplyJot = +nft.SellingSupply;
 
   const [soldJOTs, setSoldJOTs] = React.useState<number>(0);
   const [ownerSupply, setOwnerSupply] = React.useState<number>(0);
@@ -432,7 +433,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const totalJot = 10000;
-  const ownershipJot = +nft.OwnerSupply;
 
   const progressStyle = useMemo(() => {
     const percent = ownershipJot / totalJot;

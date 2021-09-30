@@ -35,7 +35,7 @@ export const getNFTBalanceFromMoralis = async (address: string, chainId: number)
           'X-API-Key': 'TWEH1PU0NfqKyNP57Nr5wuZuTrquVMpUF31SQG43erSrMapsXiA18tbfwsAtyhyM'
         },
       }
-      const response = await axios.get(`https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chainNameMap[chainId]}&order=name.DESC`, config);
+      const response = await axios.get(`https://deep-index.moralis.io/api/v2/${address}/nft?chain=${chainNameMap[chainId]}&limit=1000`, config);
       return response.data;
     } catch (err) {
       console.log("fetching balance error: " + err.message);

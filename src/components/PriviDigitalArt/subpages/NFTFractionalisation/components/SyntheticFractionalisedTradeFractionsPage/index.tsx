@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Web3 from "web3";
 import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -256,6 +256,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   isOwnerShipTab = false,
   collectionId,
   nft,
+  ownershipJot,
+  maxSupplyJot,
 }: any) {
   const history = useHistory();
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
@@ -430,6 +432,24 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     history.push(`/pix/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
+  const totalJot = 10000;
+
+  const progressStyle = useMemo(() => {
+    const percent = ownershipJot / totalJot;
+    let background;
+    if (percent < 1 / 3) {
+      background = "linear-gradient(91.51deg, #C00000 4.49%, #F00404 57.49%, #FF6969 98.72%)";
+    } else if (percent < 2 / 3) {
+      background = "linear-gradient(91.51deg, #FB6900 4.49%, #FF6231 57.49%, #F8B34B 98.72%)";
+    } else {
+      background = "linear-gradient(91.51deg, #0FBD89 4.49%, #26C25B 57.49%, #4BF89B 98.72%)";
+    }
+    return {
+      background,
+      width: `${percent * 100}%`,
+    };
+  }, [ownershipJot, totalJot]);
+
   return (
     <Box className={classes.root}>
       {isOwnerShipTab ? (
@@ -443,7 +463,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             </Box>
             <Box className={classes.progressContainer}>
               <Box className={classes.progressBar}>
-                <Box className={classes.progressed} style={{ width: "35%" }} />
+                <Box className={classes.progressed} style={progressStyle} />
               </Box>
               <Box
                 className={classes.progressTitle}
@@ -453,7 +473,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               >
                 <span>Margin left before Liquidation</span>
                 <span>
-                  100 / <b>2455 JOTs</b>
+                  {ownershipJot} / <b>{totalJot} JOTs</b>
                 </span>
               </Box>
             </Box>
@@ -478,7 +498,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     </HtmlTooltip>
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    100 JOTs
+                    {ownershipJot} JOTs
                   </Box>
                   <PrimaryButton
                     className={classes.h4}
@@ -506,7 +526,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Current supply
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    10240 JOTs
+                    {maxSupplyJot} JOTs
                   </Box>
                   <PrimaryButton
                     className={classes.h4}
@@ -531,7 +551,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Current supply
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    10240 JOTs
+                    {maxSupplyJot} JOTs
                   </Box>
                   <PrimaryButton
                     className={classes.h4}

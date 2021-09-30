@@ -59,6 +59,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
   const [ownershipJot, setOwnershipJot] = useState<number>(0);
+  const [maxSupplyJot, setMaxSupplyJot] = useState<number>(0);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [flipResult, setFlipResult] = useState<boolean>(false);
   const [flipGuess, setFlipGuess] = useState<number>(0);
@@ -75,10 +76,15 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
   const [resultState, setResultState] = useState<number>(0);
 
-  const isOwner = React.useMemo(
-    () => nft && userSelector && nft.user === userSelector.id,
-    [nft, userSelector]
-  );
+  const isOwner = React.useMemo(() => nft && userSelector && nft.user === userSelector.id, [
+    nft,
+    userSelector,
+  ]);
+
+  useEffect(() => {
+    const owner = nft && userSelector && nft.user === userSelector.id;
+    setSelectedTab(owner ? "ownership" : "flip_coin");
+  }, [nft, userSelector]);
 
   useEffect(() => {
     (async () => {
@@ -118,6 +124,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         if (contractResponse) {
           setOwnershipJot(contractResponse);
         }
+        const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, response.data);
+        setMaxSupplyJot(+sellingSupply);
       }
     })();
   }, [params]);
@@ -590,6 +598,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwnerShipTab={true}
                 collectionId={params.collectionId}
                 nft={nft}
+                ownershipJot={ownershipJot}
+                maxSupplyJot={maxSupplyJot}
               />
             </div>
           ) : (

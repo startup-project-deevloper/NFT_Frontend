@@ -61,7 +61,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
     const response = await updatePriceFraction({
       collectionId,
       syntheticId: nft.SyntheticID,
-      price: nftPrice,
+      price: price,
     });
 
     setLoading(false);
@@ -69,7 +69,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
       showAlertMessage("Failed to update price fraction", { variant: "error" });
     }
 
-    showAlertMessage("Successfully updated price fraction", { variant: "error" });
+    showAlertMessage("Successfully updated price fraction", { variant: "success" });
     onClose();
   };
 
@@ -82,7 +82,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
     >
       <Modal size="medium" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
         <div className={classes.title}>Edit NFT Price</div>
-        <div className={classes.subtitle}>Set a new price fr your NFT</div>
+        <div className={classes.subtitle}>Set a new price for your NFT</div>
 
         <Grid container spacing={1}>
           <Grid item xs={12} md={7}>

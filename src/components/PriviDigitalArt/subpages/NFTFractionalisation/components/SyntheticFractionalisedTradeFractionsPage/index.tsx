@@ -256,8 +256,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   isOwnerShipTab = false,
   collectionId,
   nft,
-  ownershipJot,
-  maxSupplyJot,
 }: any) {
   const history = useHistory();
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
@@ -278,6 +276,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
+  const ownershipJot = +nft.OwnerSupply;
+  const maxSupplyJot = +nft.SellingSupply;
 
   React.useEffect(() => {
     let labels: any[] = [];

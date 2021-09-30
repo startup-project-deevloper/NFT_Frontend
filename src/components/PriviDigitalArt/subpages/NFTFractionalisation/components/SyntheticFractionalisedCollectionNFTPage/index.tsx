@@ -58,8 +58,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
-  const [ownershipJot, setOwnershipJot] = useState<number>(0);
-  const [maxSupplyJot, setMaxSupplyJot] = useState<number>(0);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [flipResult, setFlipResult] = useState<boolean>(false);
   const [flipGuess, setFlipGuess] = useState<number>(0);
@@ -76,15 +74,17 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
   const [resultState, setResultState] = useState<number>(0);
 
-  const isOwner = React.useMemo(() => nft && userSelector && nft.user === userSelector.id, [
-    nft,
-    userSelector,
-  ]);
+  const usersList = useSelector((state: RootState) => state.usersInfoList);
+  const getUserInfo = (address: string) => usersList.find(u => u.address === address);
+
+  const isOwner = React.useMemo(
+    () => nft && userSelector && nft.OwnerAddress === userSelector.address,
+    [nft, userSelector]
+  );
 
   useEffect(() => {
-    const owner = nft && userSelector && nft.user === userSelector.id;
-    setSelectedTab(owner ? "ownership" : "flip_coin");
-  }, [nft, userSelector]);
+    setSelectedTab(isOwner ? "ownership" : "flip_coin");
+  }, [isOwner]);
 
   useEffect(() => {
     (async () => {
@@ -98,34 +98,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response?.success) {
         setNft(response.data);
         setLoadingData(false);
-
-        const targetChain = BlockchainNets[1];
-
-        if (chainId && chainId !== targetChain?.chainId) {
-          const isHere = await switchNetwork(targetChain?.chainId || 0);
-          if (!isHere) {
-            showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
-            return;
-          }
-        }
-
-        const web3APIHandler = targetChain.apiHandler;
-        const web3Config = targetChain.config;
-        const web3 = new Web3(library?.provider);
-
-        const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
-          web3,
-          response.data,
-          {
-            tokenId: +response.data.SyntheticID,
-          }
-        );
-
-        if (contractResponse) {
-          setOwnershipJot(contractResponse);
-        }
-        const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, response.data);
-        setMaxSupplyJot(+sellingSupply);
       }
     })();
   }, [params]);
@@ -401,14 +373,16 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             >
               <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Ownership</div>
-                <div className={classes.typo2}>{ownershipJot} JOTs</div>
+                <div className={classes.typo2}>{nft.OwnerSupply ?? 0} JOTs</div>
               </Box>
               <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Owner</div>
                 <Box display="flex" alignItems="center">
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
-                    <div className={classes.typo2}>User name</div>
+                    <div className={classes.typo2}>
+                      {(isOwner ? getUserInfo(nft.OwnerAddress)?.name : nft.OwnerAddress) ?? ""}
+                    </div>
                   </Box>
                 </Box>
               </Box>
@@ -617,8 +591,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwnerShipTab={true}
                 collectionId={params.collectionId}
                 nft={nft}
-                ownershipJot={ownershipJot}
-                maxSupplyJot={maxSupplyJot}
               />
             </div>
           ) : (

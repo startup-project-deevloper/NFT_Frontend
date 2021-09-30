@@ -70,7 +70,8 @@ const SyntheticFractionalisePage = ({
     setLoadingFeaturedCollections(true);
     getSyntheticFeaturedCollections().then(resp => {
       if (resp && resp.success) {
-        setFeaturedCollections(resp.data);
+        const list = resp.data.slice(0,2);
+        setFeaturedCollections(list);
       }
       setLoadingFeaturedCollections(false);
     });
@@ -134,7 +135,12 @@ const SyntheticFractionalisePage = ({
           <div className={classes.topNFTWrapper}>
             <Box className={classes.topNFTTitle} justifyContent="space-between">
               <span>Featured NFT Collections</span>
-              {featuredCollections && featuredCollections.length ? (
+              {featuredCollections && featuredCollections.length && 
+              ((isMobile && featuredCollections.length>1) || 
+               (isTablet && featuredCollections.length>2) || 
+               (isNormalScreen && featuredCollections.length>3) ||
+               featuredCollections.length > 4)
+              ? (
                 <Box display="flex" alignItems="center">
                   <Box
                     className={classes.carouselNav}
@@ -186,26 +192,40 @@ const SyntheticFractionalisePage = ({
             </Box>
             <div className={classes.topNFTContent}>
               {featuredCollections && featuredCollections.length ? (
-                <Carousel
-                  isRTL={false}
-                  itemsToShow={itemsToShow}
-                  pagination={false}
-                  showArrows={false}
-                  ref={carouselRef}
-                  itemPadding={[0, 12]}
-                >
-                  {featuredCollections.map((item: any, i: Number) => (
-                    <div style={{ 
-                      width: "100%", 
-                      paddingBottom: "15px", 
-                      display: "flex",
-                      justifyContent: isMobile ? "center" : featuredCollections.length===2 && i===1 ? "flex-end"
-                       : featuredCollections.length===3 && i===1 ? "center" : featuredCollections.length===3 && i===2 ? "flex-end" : "flex-start"
-                    }}>
-                      <SyntheticCollectionCard item={item} key={item.id} />
-                    </div>
-                  ))}
-                </Carousel>
+                !isMobile && featuredCollections.length === 2 ? (
+                  <Box display="flex" alignItems="center">
+                    {featuredCollections.map((item: any, i: Number) => (
+                      <div style={{
+                        width: "100%",
+                        paddingBottom: "15px",
+                        margin: "0 20px",
+                      }}>
+                        <SyntheticCollectionCard item={item} key={item.id} />
+                      </div>
+                    ))}
+                  </Box>
+                ) : (
+                  <Carousel
+                    isRTL={false}
+                    itemsToShow={itemsToShow}
+                    pagination={false}
+                    showArrows={false}
+                    ref={carouselRef}
+                    itemPadding={[0, 12]}
+                  >
+                    {featuredCollections.map((item: any, i: Number) => (
+                      <div style={{
+                        width: "100%",
+                        paddingBottom: "15px",
+                        display: "flex",
+                        justifyContent: isMobile ? "center" : featuredCollections.length === 2 && i === 1 ? "flex-end"
+                          : featuredCollections.length === 3 && i === 1 ? "center" : featuredCollections.length === 3 && i === 2 ? "flex-end" : "flex-start"
+                      }}>
+                        <SyntheticCollectionCard item={item} key={item.id} />
+                      </div>
+                    ))}
+                  </Carousel>
+                )
               ) : loadingFeaturedCollections ? (
                 <div
                   style={{

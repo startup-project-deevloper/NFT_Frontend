@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core";
 export const syntheticCollectionCardStyles = makeStyles(theme => ({
   card: {
     minWidth: 276,
+    maxWidth: 370,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',

@@ -73,6 +73,33 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const getSoldSupply = (web3: Web3, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getSoldSupply(tokenId).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+
   const getContractJotsBalance = (web3: Web3, collection: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
@@ -380,6 +407,31 @@ const syntheticCollectionManager = (network: string) => {
       }
     });
   };
+
+  const addLiquidityToPool = async (web3: Web3, account: string, nft: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { SyntheticCollectionManagerAddress, SyntheticID: tokenId } = nft;
+
+        console.log(tokenId);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const gas = await contract.methods.addLiquidityToPool(tokenId).estimateGas({ from: account });
+        const response = await contract.methods.addLiquidityToPool(tokenId).send({ from: account, gas: gas });
+
+        if (response) {
+          console.log(response);
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     updatePriceFraction,
@@ -392,6 +444,8 @@ const syntheticCollectionManager = (network: string) => {
     getJotFractionPrice,
     verifyToken,
     isVerifiedToken,
+    addLiquidityToPool,
+    getSoldSupply,
   };
 };
 

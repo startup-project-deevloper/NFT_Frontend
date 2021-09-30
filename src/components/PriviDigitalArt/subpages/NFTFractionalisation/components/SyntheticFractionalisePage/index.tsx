@@ -7,7 +7,7 @@ import { createTheme, Grid, useMediaQuery } from "@material-ui/core";
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import SyntheticCollectionCard from "components/PriviDigitalArt/components/Cards/SyntheticCollectionCard";
-import { getSyntheticCollections } from "shared/services/API/SyntheticFractionalizeAPI";
+import { getSyntheticCollections, getSyntheticFeaturedCollections } from "shared/services/API/SyntheticFractionalizeAPI";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { nftFractionalisationStyles } from "../../index.styles";
 
@@ -42,11 +42,13 @@ const SyntheticFractionalisePage = ({
 
   const carouselRef = useRef<any>();
 
+  const [featuredCollections, setFeaturedCollections] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
   const [hasMoreCollections, setHasMoreCollections] = useState<boolean>(true);
   const [pagination, setPagination] = useState<number>(0);
   const [lastIdx, setLastIdx] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingFeaturedCollections, setLoadingFeaturedCollections] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedTab !== "synthetic" || openFractionalize) {
@@ -64,6 +66,13 @@ const SyntheticFractionalisePage = ({
         setPagination(pagination => pagination + 1);
       }
       setLoading(false);
+    });
+    setLoadingFeaturedCollections(true);
+    getSyntheticFeaturedCollections().then(resp => {
+      if (resp && resp.success) {
+        setFeaturedCollections(resp.data);
+      }
+      setLoadingFeaturedCollections(false);
     });
   }, []);
 
@@ -106,7 +115,7 @@ const SyntheticFractionalisePage = ({
                   >
                     Synthetic Fractionalise NFT
                   </div>
-                  <div className={classes.tradeNFTBtnWrapper} onClick={() => {}}>
+                  <div className={classes.tradeNFTBtnWrapper} onClick={() => { }}>
                     <div className={classes.tradeNFTBtn}>Trade NFT Derivatives</div>
                   </div>
                 </Grid>
@@ -125,56 +134,58 @@ const SyntheticFractionalisePage = ({
           <div className={classes.topNFTWrapper}>
             <Box className={classes.topNFTTitle} justifyContent="space-between">
               <span>Featured NFT Collections</span>
-              <Box display="flex" alignItems="center">
-                <Box
-                  className={classes.carouselNav}
-                  onClick={() => {
-                    carouselRef.current.slidePrev();
-                  }}
-                >
-                  <svg
-                    width="20"
-                    height="16"
-                    viewBox="0 0 20 16"
-                    fill="none"
-                    stroke="#431AB7"
-                    xmlns="http://www.w3.org/2000/svg"
+              {featuredCollections && featuredCollections.length ? (
+                <Box display="flex" alignItems="center">
+                  <Box
+                    className={classes.carouselNav}
+                    onClick={() => {
+                      carouselRef.current.slidePrev();
+                    }}
                   >
-                    <path
-                      d="M8.14546 14.6185L1.29284 7.98003M1.29284 7.98003L8.14546 1.34155M1.29284 7.98003H18.707"
-                      strokeWidth="1.5122"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </Box>
-                <Box
-                  ml={3}
-                  className={classes.carouselNav}
-                  onClick={() => {
-                    carouselRef.current.slideNext();
-                  }}
-                >
-                  <svg
-                    width="20"
-                    height="16"
-                    viewBox="0 0 20 16"
-                    fill="none"
-                    stroke="#431AB7"
-                    xmlns="http://www.w3.org/2000/svg"
+                    <svg
+                      width="20"
+                      height="16"
+                      viewBox="0 0 20 16"
+                      fill="none"
+                      stroke="#431AB7"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M8.14546 14.6185L1.29284 7.98003M1.29284 7.98003L8.14546 1.34155M1.29284 7.98003H18.707"
+                        strokeWidth="1.5122"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Box>
+                  <Box
+                    ml={3}
+                    className={classes.carouselNav}
+                    onClick={() => {
+                      carouselRef.current.slideNext();
+                    }}
                   >
-                    <path
-                      d="M11.8545 14.6185L18.7072 7.98003M18.7072 7.98003L11.8545 1.34155M18.7072 7.98003H1.29297"
-                      strokeWidth="1.5122"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                    <svg
+                      width="20"
+                      height="16"
+                      viewBox="0 0 20 16"
+                      fill="none"
+                      stroke="#431AB7"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M11.8545 14.6185L18.7072 7.98003M18.7072 7.98003L11.8545 1.34155M18.7072 7.98003H1.29297"
+                        strokeWidth="1.5122"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Box>
                 </Box>
-              </Box>
+              ) : (<></>)}
             </Box>
             <div className={classes.topNFTContent}>
-              {collections && collections.length ? (
+              {featuredCollections && featuredCollections.length ? (
                 <Carousel
                   isRTL={false}
                   itemsToShow={itemsToShow}
@@ -183,13 +194,19 @@ const SyntheticFractionalisePage = ({
                   ref={carouselRef}
                   itemPadding={[0, 12]}
                 >
-                  {collections.map((item: any) => (
-                    <div style={{width:"100%", paddingBottom:"15px"}}>
-                    <SyntheticCollectionCard item={item} key={item.id} />
+                  {featuredCollections.map((item: any, i: Number) => (
+                    <div style={{ 
+                      width: "100%", 
+                      paddingBottom: "15px", 
+                      display: "flex",
+                      justifyContent: isMobile ? "center" : featuredCollections.length===2 && i===1 ? "flex-end"
+                       : featuredCollections.length===3 && i===1 ? "center" : featuredCollections.length===3 && i===2 ? "flex-end" : "flex-start"
+                    }}>
+                      <SyntheticCollectionCard item={item} key={item.id} />
                     </div>
                   ))}
                 </Carousel>
-              ) : (
+              ) : loadingFeaturedCollections ? (
                 <div
                   style={{
                     width: "100%",
@@ -202,6 +219,8 @@ const SyntheticFractionalisePage = ({
                 >
                   <CircularLoadingIndicator theme="blue" />
                 </div>
+              ) : (
+                <div></div>
               )}
             </div>
           </div>

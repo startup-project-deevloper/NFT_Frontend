@@ -359,7 +359,6 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     left: 0,
     top: 0,
     bottom: 0,
-    background: "linear-gradient(91.54deg, #431AB7 11.26%, #AA26C2 119.42%, #F84B4B 203.57%)",
     borderRadius: 35,
   },
   progressTitle: {

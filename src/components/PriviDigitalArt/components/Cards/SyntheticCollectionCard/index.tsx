@@ -39,7 +39,7 @@ export default function SyntheticCollectionCard({ item }) {
           <Box className={classes.details}>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Staking Rewards</Box>
-              <Box className={classes.detailInfo}>{item.stakingReward}USDT/JOT APR</Box>
+              <Box className={classes.detailInfo}>{item.stakingReward ?? 0} USDT/JOT APR</Box>
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Fraction Price</Box>
@@ -47,7 +47,7 @@ export default function SyntheticCollectionCard({ item }) {
             </Box>
             <Box className={classes.detailWrapper}>
               <Box className={classes.detailLabel}>Implied Valuation</Box>
-              <Box className={classes.detailInfo}>${item.impliedValuation}</Box>
+              <Box className={classes.detailInfo}>${item.impliedValuation ?? 0}</Box>
             </Box>
           </Box>
         </Box>

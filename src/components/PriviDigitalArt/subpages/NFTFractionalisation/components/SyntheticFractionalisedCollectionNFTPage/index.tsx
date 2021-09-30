@@ -58,6 +58,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
+  const [maxSupplyJot, setMaxSupplyJot] = useState<number>(0);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [flipResult, setFlipResult] = useState<boolean>(false);
   const [flipGuess, setFlipGuess] = useState<number>(0);
@@ -80,6 +81,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   );
 
   useEffect(() => {
+    const owner = nft && userSelector && nft.user === userSelector.id;
+    setSelectedTab(owner ? "ownership" : "flip_coin");
+  }, [nft, userSelector]);
+
+  useEffect(() => {
     (async () => {
       setLoadingData(true);
 
@@ -91,6 +97,26 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response?.success) {
         setNft(response.data);
         setLoadingData(false);
+
+        const targetChain = BlockchainNets[1];
+
+        if (chainId && chainId !== targetChain?.chainId) {
+          const isHere = await switchNetwork(targetChain?.chainId || 0);
+          if (!isHere) {
+            showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+            return;
+          }
+        }
+
+        const web3APIHandler = targetChain.apiHandler;
+        const web3Config = targetChain.config;
+        const web3 = new Web3(library?.provider);
+
+        const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(
+          web3,
+          response.data
+        );
+        setMaxSupplyJot(+sellingSupply);
       }
     })();
   }, [params]);
@@ -563,6 +589,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwnerShipTab={true}
                 collectionId={params.collectionId}
                 nft={nft}
+                maxSupplyJot={maxSupplyJot}
               />
             </div>
           ) : (

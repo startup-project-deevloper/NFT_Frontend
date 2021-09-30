@@ -185,6 +185,24 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     });
   };
 
+  const handleUnfollow = () => {
+    const body = {
+      userId: userSelector.id,
+      collectionId: params.id,
+    };
+
+    axios.post(`${URL()}/syntheticFractionalize/unfollowSyntheticCollection`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = {
+          ...collection,
+          follows: [...resp.follows],
+        };
+        setCollection(itemCopy);
+      }
+    });
+  };
+
   const handleOrderBook = () => {
     setShowOrderBookModal(true);
   };
@@ -215,7 +233,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               />
               Order Book
             </Box>
-            <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+            <div className={classes.tradeDerivativeButton} onClick={() => { }}>
               <div>
                 <span>TRADE DERIVATIVES</span>
               </div>
@@ -268,8 +286,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 </div>
                 <div>
                   {collection &&
-                  collection.follows &&
-                  collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+                    collection.follows &&
+                    collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
                     <div className={classes.typo2}>Following</div>
                   ) : (
                     <div className={classes.plusSection} onClick={handleFollow}>
@@ -296,9 +314,15 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 </div>
                 <div>
                   {collection &&
-                  collection.follows &&
-                  collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
-                    <div className={classes.typo2}>Following</div>
+                    collection.follows &&
+                    collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+                    <div
+                      className={classes.typo2}
+                      style={{ cursor: "pointer" }}
+                      onClick={handleUnfollow}
+                    >
+                      Following
+                    </div>
                   ) : (
                     <div onClick={handleFollow} className={classes.plusSection}>
                       <div className={classes.plusIcon}>

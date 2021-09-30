@@ -306,6 +306,25 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     });
   };
 
+  const handleUnfollow = () => {
+    const body = {
+      userId: userSelector.id,
+      collectionId: match.params.collectionId,
+      syntheticId: match.params.nftId,
+    };
+
+    Axios.post(`${URL()}/syntheticFractionalize/unfollowSyntheticNft`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = {
+          ...nft,
+          follows: [...resp.follows],
+        };
+        setNft(itemCopy);
+      }
+    });
+  };
+
   return (
     <LoadingWrapper loading={loadingData}>
       <div className={classes.root}>
@@ -397,18 +416,18 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               <div className={classes.socialSection}>
                 {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
-              <div className={classes.plusSection} onClick={handleFollow}>
-                {nft &&
+              {nft &&
                 nft.follows &&
                 nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+                <div className={classes.plusSection} style={{ cursor: "pointer" }} onClick={handleUnfollow}>
                   <span>Following</span>
-                ) : (
-                  <>
-                    <PlusIcon />
-                    <span>Follow</span>
-                  </>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className={classes.plusSection} onClick={handleFollow}>
+                  <PlusIcon />
+                  <span>Follow</span>
+                </div>
+              )}
             </Box>
             <SharePopup
               item={{ ...nft, Type: "SYNTHETIC_FRACTIONALISATION", CollectionId: params.collectionId }}
@@ -418,7 +437,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             />
             <div className={classes.nftCard}>
               <CollectionNFTCard
-                handleSelect={() => {}}
+                handleSelect={() => { }}
                 item={{
                   image: require("assets/backgrounds/digital_art_1.png"),
                   name: "NFT NAME",
@@ -602,7 +621,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           onProceed={handleProceedChangeLockedNFT}
         />
         <WithdrawNFTModel open={openWithdrawNFTModal} onClose={handleCloseWithdrawNFTModal} />
-        <Modal size="small" isOpen={withDrawn} onClose={() => {}} className={classes.withDrawnModal}>
+        <Modal size="small" isOpen={withDrawn} onClose={() => { }} className={classes.withDrawnModal}>
           <img src={require("assets/icons/crystal_camera.png")} alt="" />
           <Box color={"#431AB7"} paddingLeft={1}>
             This NFT is beeing withdrawn

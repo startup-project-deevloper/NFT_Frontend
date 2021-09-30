@@ -223,7 +223,7 @@ export const TransactionTable = ({ datas }) => {
             cell: <Box color="rgba(67, 26, 183, 1)">{row.account || ""}</Box>,
           },
           {
-            cell: row.time || "",
+            cell: row.time ? <Moment toNow>{row.time * 1000}</Moment> : "",
           },
           {
             cell: (
@@ -365,18 +365,20 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       const response = await getSyntheticNFTTransactions(collectionId, nft.SyntheticID);
       if (response.success) {
         setTransList(
-          response.data.map(txn => ({
-            type: "Buy",
-            tokenAmount: txn.Amount,
-            value: +txn.Amount * (+nft.Price || 1),
-            account: txn.To
-              ? isMobileScreen
-                ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
-                : txn.To
-              : "",
-            time: txn.Date,
-            hash: txn.Id,
-          }))
+          response.data
+            .map(txn => ({
+              type: "Buy",
+              tokenAmount: txn.Amount,
+              value: +txn.Amount * (+nft.Price || 1),
+              account: txn.To
+                ? isMobileScreen
+                  ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
+                  : txn.To
+                : "",
+              time: txn.Date,
+              hash: txn.Id,
+            }))
+            .reverse()
         );
       }
       const ownerHisotryResponse = await getSyntheticNFTOwnerHistory(collectionId, nft.SyntheticID);

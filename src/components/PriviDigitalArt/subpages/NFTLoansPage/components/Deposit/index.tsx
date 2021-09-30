@@ -84,8 +84,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
   const getImageIPFS = async (cid: string) => {
     let files = await onGetNonDecrypt(cid, async (fileCID, download) => {
       return await downloadWithNonDecryption(fileCID, download);
-    }
-    );
+    });
     if (files) {
       let base64String = _arrayBufferToBase64(files.content);
       setImageIPFS("data:image/png;base64," + base64String);
@@ -111,7 +110,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
     (async () => {
       let changed = true;
       if (prevSelectedChain.chainId !== selectedChain.chainId) {
-        changed = await handleSyncChain()
+        changed = await handleSyncChain();
       }
       if (changed) {
         setLoadingnNFTS(true);
@@ -132,7 +131,13 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
             .filter((id, index, ids) => ids.indexOf(id) == index);
           const resp = await getPixUserMediasByBlockchainIds(priviNFTIds, selectedChain.value);
           if (resp && resp.success) {
-            priviNFTData = resp.data.filter((nftData) => !nftData.HasNFTLoan);
+            priviNFTData = resp.data.filter(
+              nftData =>
+                !nftData.HasNFTLoan &&
+                nftData.NftConditions &&
+                nftData.NftConditions.Price !== 0 &&
+                nftData.NftConditions.Price !== "0"
+            );
           } else {
             priviNFTData = [];
           }
@@ -143,7 +148,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
 
           priviNFTData = await Promise.all(
             priviNFTData.map(async nft => {
-              let cidUrl = '';
+              let cidUrl = "";
               if (nft.cid) {
                 cidUrl = await getImageIPFS(nft.cid);
               }
@@ -200,14 +205,16 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
 
   useEffect(() => {
     (async () => {
-      const newNFTs = await Promise.all(userNFTs.map(async (nft) => {
-        if (nft.cid) {
-          const cidUrl = nft.cid ? await getImageIPFS(nft.cid) : "";
-          return { ...nft, cidUrl };
-        }
-      }));
+      const newNFTs = await Promise.all(
+        userNFTs.map(async nft => {
+          if (nft.cid) {
+            const cidUrl = nft.cid ? await getImageIPFS(nft.cid) : "";
+            return { ...nft, cidUrl };
+          }
+        })
+      );
       setUserNFTs(newNFTs);
-    })()
+    })();
   }, [ipfs]);
 
   useEffect(() => {
@@ -284,69 +291,71 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
           approve: true,
         },
         tokenContractAddress
-      ).then(resp => {
-        if (resp.success) {
-          const createAuctionRequest = {
-            tokenContractAddress: tokenContractAddress,
-            tokenId: tokenId,
-            startPrice: startPrice,
-            startTimestamp: startTimestamp,
-            endTimestamp: endTimestamp,
-            fee: Number(interest),
-            fundTokenAddress: web3Config.TOKEN_ADDRESSES[token],
-          };
-          web3APIHandler.Loan.createAuction(web3, account!, createAuctionRequest).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { UpdateNftCollaterals: {}, Transactions: {} } };
-              blockchainRes.output.UpdateNftCollaterals[mediaSymbol] = {
-                Available: 0,
-                Debt: 0,
-                TokenSymbol: mediaSymbol,
-                FundingToken: token,
-                Duration: endTimestamp - startTimestamp,
-                FeePct: Number(interest),
-                Bid: Number(reservePrice),
-                BidderAddress: "",
-                PodAddress: "",
-                Chain: selectedChain.name,
-                CreatorAddress: user.address,
-                docType: "NftCollateral",
-                CreationDate: startTimestamp,
-              };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  MediaSymbol: mediaSymbol,
-                  Address: user.address,
-                },
-              };
-              setHash(tx.Id);
-              const response = await axios.post(`${URL()}/nftloan/collateralizeNFT/v2_p`, body);
-              if (response.data.success) {
-                showAlertMessage("NFT deposited successfully: ", { variant: "success" });
-                setUserNFTs(userNFTs.filter(media => media.MediaSymbol !== selectedMedia?.MediaSymbol));
-                setSelectedMedia(null);
+      )
+        .then(resp => {
+          if (resp.success) {
+            const createAuctionRequest = {
+              tokenContractAddress: tokenContractAddress,
+              tokenId: tokenId,
+              startPrice: startPrice,
+              startTimestamp: startTimestamp,
+              endTimestamp: endTimestamp,
+              fee: Number(interest),
+              fundTokenAddress: web3Config.TOKEN_ADDRESSES[token],
+            };
+            web3APIHandler.Loan.createAuction(web3, account!, createAuctionRequest).then(async res => {
+              if (res) {
+                const tx = res.transaction;
+                const blockchainRes = { output: { UpdateNftCollaterals: {}, Transactions: {} } };
+                blockchainRes.output.UpdateNftCollaterals[mediaSymbol] = {
+                  Available: 0,
+                  Debt: 0,
+                  TokenSymbol: mediaSymbol,
+                  FundingToken: token,
+                  Duration: endTimestamp - startTimestamp,
+                  FeePct: Number(interest),
+                  Bid: Number(reservePrice),
+                  BidderAddress: "",
+                  PodAddress: "",
+                  Chain: selectedChain.name,
+                  CreatorAddress: user.address,
+                  docType: "NftCollateral",
+                  CreationDate: startTimestamp,
+                };
+                blockchainRes.output.Transactions[tx.Id] = [tx];
+                const body = {
+                  BlockchainRes: blockchainRes,
+                  AdditionalData: {
+                    MediaSymbol: mediaSymbol,
+                    Address: user.address,
+                  },
+                };
+                setHash(tx.Id);
+                const response = await axios.post(`${URL()}/nftloan/collateralizeNFT/v2_p`, body);
+                if (response.data.success) {
+                  showAlertMessage("NFT deposited successfully: ", { variant: "success" });
+                  setUserNFTs(userNFTs.filter(media => media.MediaSymbol !== selectedMedia?.MediaSymbol));
+                  setSelectedMedia(null);
+                } else {
+                  showAlertMessage("NFT deposition failed: ", { variant: "error" });
+                }
+                setTransactionInProgress(false);
+                setTransactionSuccess(true);
               } else {
-                showAlertMessage("NFT deposition failed: ", { variant: "error" });
+                setTransactionInProgress(false);
+                setTransactionSuccess(false);
               }
-              setTransactionInProgress(false);
-              setTransactionSuccess(true);
-            } else {
-              setTransactionInProgress(false);
-              setTransactionSuccess(false);
-            }
+              setDisableButton(false);
+            });
+          } else {
+            setTransactionInProgress(false);
+            setTransactionSuccess(false);
             setDisableButton(false);
-          });
-        } else {
-          setTransactionInProgress(false);
-          setTransactionSuccess(false);
+          }
+        })
+        .catch(e => {
           setDisableButton(false);
-        }
-      }).catch(e => {
-        setDisableButton(false);
-      });
+        });
     }
   };
 
@@ -360,8 +369,8 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
     setOpenTransactionModal(false);
     setTransactionInProgress(false);
     setTransactionSuccess(false);
-    setHash('');
-    setNetwork('');
+    setHash("");
+    setNetwork("");
   };
 
   const [inputDate, setInputDate] = useState(expirationDate.getTime());
@@ -388,7 +397,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
   const handleNFTSelect = (mediaSymbol: string) => {
     if (userNFTs) {
       let nftsCopy = [...userNFTs];
-      const index = userNFTs.findIndex((nft) => nft.MediaSymbol === mediaSymbol);
+      const index = userNFTs.findIndex(nft => nft.MediaSymbol === mediaSymbol);
       const selected = !userNFTs[index].selected;
       nftsCopy[index] = {
         ...userNFTs[index],
@@ -405,7 +414,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
       }
       setUserNFTs(nftsCopy);
     }
-  }
+  };
   return (
     <div className={classes.root}>
       <BackButton purple overrideFunction={() => setOpenDepositPage(false)} />
@@ -419,11 +428,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
               gutter={"24px"}
               data={userNFTs}
               renderItem={(item, index) => (
-                <NFTSelectCard
-                  item={item}
-                  key={`item-${index}`}
-                  handleSelect={handleNFTSelect}
-                />
+                <NFTSelectCard item={item} key={`item-${index}`} handleSelect={handleNFTSelect} />
               )}
               columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
             />
@@ -438,12 +443,16 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
                     <div
                       className={classes.mediaImage}
                       style={{
-                        backgroundImage: `url(${selectedMedia.cid
-                          ? imageIPFS
-                          : selectedMedia.Type && selectedMedia.Type !== "DIGITAL_ART_TYPE"
-                          ? selectedMedia.UrlMainPhoto
-                          : selectedMedia.UrlMainPhoto ?? selectedMedia.Url ?? selectedMedia.url ?? getRandomImageUrl()
-                          })`,
+                        backgroundImage: `url(${
+                          selectedMedia.cid
+                            ? imageIPFS
+                            : selectedMedia.Type && selectedMedia.Type !== "DIGITAL_ART_TYPE"
+                            ? selectedMedia.UrlMainPhoto
+                            : selectedMedia.UrlMainPhoto ??
+                              selectedMedia.Url ??
+                              selectedMedia.url ??
+                              getRandomImageUrl()
+                        })`,
                       }}
                     />
                     {selectedMedia.MediaName ?? selectedMedia.name ?? selectedMedia.MediaSymbol}
@@ -538,7 +547,12 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
             </Grid>
 
             <Box display="flex" justifyContent="flex-end" mt="40px">
-              <PrimaryButton className={classes.primaryBtn} disabled={disableButton} onClick={handleDeposit} size="medium">
+              <PrimaryButton
+                className={classes.primaryBtn}
+                disabled={disableButton}
+                onClick={handleDeposit}
+                size="medium"
+              >
                 Deposit now
               </PrimaryButton>
             </Box>

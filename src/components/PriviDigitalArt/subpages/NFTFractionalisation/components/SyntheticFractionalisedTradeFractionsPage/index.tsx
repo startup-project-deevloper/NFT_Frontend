@@ -279,55 +279,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
 
-  const [soldJOTs, setSoldJOTs] = React.useState<number>(0);
-  const [ownerSupply, setOwnerSupply] = React.useState<number>(0);
-  const [price, setPrice] = React.useState<number>(0);
-
-  React.useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
-      const web3 = new Web3(library.provider);
-      const web3APIHandler = targetChain.apiHandler;
-
-      const response = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
-        tokenId: nft.SyntheticID,
-      });
-      if (response) {
-        setSoldJOTs(response);
-      }
-    })();
-  }, [library]);
-
-  React.useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
-      const web3 = new Web3(library.provider);
-      const web3APIHandler = targetChain.apiHandler;
-
-      const response = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(web3, nft, {
-        tokenId: nft.SyntheticID,
-      });
-      if (response) {
-        setOwnerSupply(response);
-      }
-    })();
-  }, [library]);
-
-  React.useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
-      const web3 = new Web3(library.provider);
-      const web3APIHandler = targetChain.apiHandler;
-
-      const response = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, nft, {
-        tokenId: nft.SyntheticID,
-      });
-      if (response) {
-        setPrice(response);
-      }
-    })();
-  }, [library]);
-
   React.useEffect(() => {
     let labels: any[] = [];
     let data: any[] = [];
@@ -587,7 +538,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Jots SOLD
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    {soldJOTs} JOTs
+                    {nft.SoldSupply} JOTs
                   </Box>
                 </Box>
               </Box>
@@ -631,12 +582,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           <tr>
                             <td>
                               <Box className={classes.h1} fontWeight={800}>
-                                ${price}
+                                ${nft.Price}
                               </Box>
                             </td>
                             <td>
                               <Box ml={3} className={classes.h1} fontWeight={800}>
-                                {ownerSupply} JOTs
+                                {nft.OwnerSupply} JOTs
                               </Box>
                             </td>
                           </tr>
@@ -751,13 +702,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Owner Price</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            ${price}
+                            ${nft.Price}
                           </Box>
                         </Box>
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Supply</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            {ownerSupply} JOTs
+                            {nft.OwnerSupply} JOTs
                           </Box>
                         </Box>
                       </Box>

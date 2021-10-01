@@ -55,13 +55,15 @@ const NFTFractionalisation = () => {
       getMySyntheticFractionalisedNFT().then(res => {
         setPortofolioCount(res?.nfts?.length);
       });
-      getFractionalizeVaults("").then(resp => {
-        const data = resp.data;
-        setMedias(data.data);
-        setHasMoreMedias(data.hasMore);
-        setLastIdx(data.data && data.data.length ? data.data[data.data.length - 1].MediaSymbol : "");
-        setLoading(false);
-      });
+      getFractionalizeVaults("")
+        .then(resp => {
+          const data = resp.data;
+          setMedias(data.data);
+          setHasMoreMedias(data.hasMore);
+          setLastIdx(data.data && data.data.length ? data.data[data.data.length - 1].MediaSymbol : "");
+          setLoading(false);
+        })
+        .catch(console.log);
     }
   }, [openFractionalize]);
 

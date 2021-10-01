@@ -23,20 +23,22 @@ const MyNFT = () => {
   useEffect(() => {
     try {
       setLoading(true);
-      getMySyntheticFractionalisedNFT().then(res => {
-        if (res.success) {
-          setMyNFTs(
-            res.nfts.map(nft => {
-              return {
-                ...nft,
-                BlockchainId: nft.NftId,
-                tokenAddress: nft.collection_id,
-              };
-            }) ?? []
-          );
-        }
-        setLoading(false);
-      });
+      getMySyntheticFractionalisedNFT()
+        .then(res => {
+          if (res.success) {
+            setMyNFTs(
+              res.nfts.map(nft => {
+                return {
+                  ...nft,
+                  BlockchainId: nft.NftId,
+                  tokenAddress: nft.collection_id,
+                };
+              }) ?? []
+            );
+          }
+          setLoading(false);
+        })
+        .catch(console.log);
     } catch (err) {
       console.log(err);
       setLoading(false);

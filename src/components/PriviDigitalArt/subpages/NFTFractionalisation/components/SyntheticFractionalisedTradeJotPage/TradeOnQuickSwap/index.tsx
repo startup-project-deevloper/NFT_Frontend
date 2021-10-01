@@ -15,14 +15,6 @@ import Web3Config from "shared/connectors/web3/config";
 import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 
-import { ContractInstance } from "shared/connectors/web3/functions";
-import IUniswapV2Router02 from "@uniswap/v2-periphery/build/IUniswapV2Router02.json";
-import { isNumber } from "lodash";
-
-const uniswapV2Router02ContractAddress = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
-
-const ethereumTokenList = Object.keys(Web3Config.Ethereum.TOKEN_ADDRESSES);
-
 const IconJOT = (collection, classes) => {
   return (
     <img

@@ -532,6 +532,32 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const getAccruedReward = async (web3: Web3, collection: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { SyntheticCollectionManagerAddress, JotAddress, SyntheticID } = collection;
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getAccruedReward(SyntheticID).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            console.log("transaction succeed ", result);
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (e) {
+        console.log(e);
+        resolve(null);
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     depositJots,
@@ -548,6 +574,7 @@ const syntheticCollectionManager = (network: string) => {
     isVerifiedToken,
     addLiquidityToPool,
     getSoldSupply,
+    getAccruedReward,
   };
 };
 

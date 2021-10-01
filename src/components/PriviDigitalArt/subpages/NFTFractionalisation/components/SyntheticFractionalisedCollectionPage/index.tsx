@@ -356,7 +356,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo4}>locked NFTs in</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>$12 456.54</div>
+              <div className={classes.typo3}>${collection.CumulativeRevenue ?? 0}</div>
               <div className={classes.typo4}>ACCRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">

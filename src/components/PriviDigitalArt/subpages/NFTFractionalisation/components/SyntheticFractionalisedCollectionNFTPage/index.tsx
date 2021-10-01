@@ -424,18 +424,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               handleCloseMenu={handleCloseShareMenu}
             />
             <div className={classes.nftCard}>
-              <CollectionNFTCard
-                handleSelect={() => { }}
-                item={{
-                  image: require("assets/backgrounds/digital_art_1.png"),
-                  name: "NFT NAME",
-                  isVerified: true,
-                  owner: 80,
-                  available: 10,
-                  price: 1,
-                }}
-                hiddenHeader
-              />
+              <CollectionNFTCard handleSelect={() => {}} item={nft} hiddenHeader />
             </div>
           </div>
         </div>

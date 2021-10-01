@@ -114,7 +114,7 @@ const FreeHoursChartConfig = {
         intersect: false,
         callbacks: {
           //This removes the tooltip title
-          title: function () {},
+          title: function () { },
           label: function (tooltipItem, data) {
             return `$${tooltipItem.yLabel.toFixed(4)}`;
           },
@@ -390,22 +390,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const totalJot = 10000;
-
-  const progressStyle = useMemo(() => {
-    const percent = ownershipJot / totalJot;
-    let background;
-    if (percent < 1 / 3) {
-      background = "linear-gradient(91.51deg, #C00000 4.49%, #F00404 57.49%, #FF6969 98.72%)";
-    } else if (percent < 2 / 3) {
-      background = "linear-gradient(91.51deg, #FB6900 4.49%, #FF6231 57.49%, #F8B34B 98.72%)";
-    } else {
-      background = "linear-gradient(91.51deg, #0FBD89 4.49%, #26C25B 57.49%, #4BF89B 98.72%)";
-    }
-    return {
-      background,
-      width: `${percent * 100}%`,
-    };
-  }, [ownershipJot, totalJot]);
+  const percentage = useMemo(() => Number((ownershipJot / totalJot).toFixed(2)) * 100, [ownershipJot, totalJot]);
 
   return (
     <Box className={classes.root}>
@@ -418,20 +403,59 @@ export default function SyntheticFractionalisedTradeFractionsPage({
             >
               Ownership management
             </Box>
-            <Box className={classes.progressContainer}>
-              <Box className={classes.progressBar}>
-                <Box className={classes.progressed} style={progressStyle} />
+            <Box
+              className={classes.progressContainer}
+              style={{
+                background: percentage < 33 ? "#FFE8E1" : percentage < 66 ? "#FFF8E1" : "#E1FFEA"
+              }}
+            >
+              <Box display="flex" alignItems="center" justifyContent="space-between" mt={2} mb={1.5}>
+                <Box
+                  className={classes.progressTitle}
+                  display="flex"
+                  alignItems="center"
+                >
+                  <span>Margin left before Liquidation</span>
+                  <span>
+                    100 / <b>2455 JOTs</b>
+                  </span>
+                </Box>
+                <Box
+                  color={percentage < 33 ? "#FF1F00" : percentage < 66 ? "#FF7C02" : "#2D4236"}
+                  fontSize={13}
+                >
+                  {percentage < 33 ? "Add more JOTs to  your margin , or  you will loose your NFT" :
+                    percentage < 66 ? "Please monitor closely your your margin, you will loose your NFT if it reaches 0" :
+                      "If your margin reaches 0, you will loose your NFT"
+                  }
+                </Box>
               </Box>
               <Box
-                className={classes.progressTitle}
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
+                className={classes.progressBar}
+                style={{
+                  border: percentage < 33 ? "1px solid rgba(189, 92, 38, 0.5)" :
+                    percentage < 66 ? "1px solid rgba(189, 92, 38, 0.5)" :
+                      "1px solid rgba(38, 189, 139, 0.5)"
+                }}
               >
-                <span>Margin left before Liquidation</span>
-                <span>
-                  {ownershipJot} / <b>{totalJot} JOTs</b>
-                </span>
+                <Box
+                  className={classes.progressed}
+                  style={{
+                    width: `${percentage}%`,
+                    background: percentage < 33 ? "linear-gradient(100.71deg, #E80000 2.8%, #FF4438 74.66%)" :
+                      percentage < 66 ? "linear-gradient(96.92deg, #FF7A00 19.32%, #FFC46A 143.47%)" :
+                        "linear-gradient(94.62deg, #1AB791 13.81%, #97F84B 196.55%)"
+                  }}
+                />
+              </Box>
+              <Box display="flex" className={classes.progressGrid} padding="0 12px" height={5}>
+                {Array(100).fill(1).map((_, index) => <Box flex={1} key={`grid-${index}`} borderLeft="1px solid #717171" />)}
+              </Box>
+              <Box display="flex" className={classes.progressLabel}>
+                <Box flex={1} style={{ textAlign: "left" }}>Liquidation</Box>
+                <Box flex={1} style={{ textAlign: "center" }}>High Risk</Box>
+                <Box flex={1} style={{ textAlign: "center" }}>Medium Risk</Box>
+                <Box flex={1} style={{ textAlign: "right" }}>Low Risk</Box>
               </Box>
             </Box>
             <Box className={classes.boxBody}>
@@ -853,7 +877,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         loading={loading}
         title={`Transaction \nin progress`}
         subTitle={`Transaction is proceeding on ${BlockchainNets[1].value}.\nThis can take a moment, please be patient...`}
-        handleClose={() => {}}
+        handleClose={() => { }}
       ></LoadingScreen>
     </Box>
   );

@@ -1,15 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Web3 from "web3";
 import { Box, Grid } from "@material-ui/core";
 import { PrimaryButton, Modal, SecondaryButton, Color } from "shared/ui-kit";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { QuickSwapModalStyles } from "./index.style";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
+import { BlockchainNets } from "shared/constants/constants";
+import { useWeb3React } from "@web3-react/core";
+import { toDecimals, toNDecimals } from "shared/functions/web3";
 
-export default function QuickSwapModal({ open, handleClose }) {
+export default function QuickSwapModal({ open, handleClose, nft, collectionId }) {
   const classes = QuickSwapModalStyles();
   const [swapAmount, setSwapAmount] = useState<number>(0);
   const [receive, setReceive] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
+  const [maxBalance, setMaxBalance] = useState<any>({balance: 0, decimals: 18});
+  const { account, library, chainId } = useWeb3React();
+
+  useEffect(() => {
+    if (nft) {
+      getJotBalance();
+    }
+  }, [nft]);
+
+  const getJotBalance = async () => {
+    (async () => {
+      const targetChain = BlockchainNets[1];
+      const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+
+      const decimals = await web3APIHandler.Erc20.JOT.decimals(web3, nft.JotAddress, account!);
+      const balance = await web3APIHandler.Erc20.JOT.balanceOf(web3, nft.JotAddress, {
+        account: account!,
+      });
+
+      console.log(decimals, balance)
+
+      if (balance && decimals) {
+        setMaxBalance({
+          balance: toDecimals(balance, decimals),
+          decimals: decimals,
+        });
+      }
+    })();
+  };
+
+  const handleSwap = async () => {
+    const targetChain = BlockchainNets[1];
+    const web3 = new Web3(library.provider);
+    const web3APIHandler = targetChain.apiHandler;
+    const response = await web3APIHandler.SyntheticCollectionManager.exchangeOwnerJot(web3, account, nft, toNDecimals(swapAmount, maxBalance.decimals))
+    console.log(response)
+    handleClose()
+  }
 
   return (
     <LoadingScreen
@@ -38,14 +81,14 @@ export default function QuickSwapModal({ open, handleClose }) {
               type="number"
               theme="light"
               endAdornment={
-                <div className={classes.purpleText} onClick={() => {}}>
+                <div className={classes.purpleText} onClick={() => {setSwapAmount(maxBalance.balance)}}>
                   USE MAX
                 </div>
               }
             />
           </Grid>
           <Grid item xs={12} md={5} className={classes.unitInput}>
-            <div className={classes.label}>Balance: 0.0428 JOTS</div>
+            <div className={classes.label}>Balance: {Number(maxBalance.balance).toFixed(3)} JOTS</div>
             <InputWithLabelAndTooltip type="text" inputValue={"USDT/JOT"} theme="privi-pix" />
           </Grid>
         </Grid>
@@ -93,7 +136,7 @@ export default function QuickSwapModal({ open, handleClose }) {
           </SecondaryButton>
           <PrimaryButton
             size="medium"
-            onClick={handleClose}
+            onClick={handleSwap}
             style={{
               borderColor: Color.Purple,
               background: Color.Purple,

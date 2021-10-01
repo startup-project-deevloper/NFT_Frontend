@@ -942,10 +942,16 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
       />
-      <QuickSwapModal open={openQuickSwapModal} handleClose={() => setOpenQuickSwapModal(false)} />
+
       <WithdrawJOTsModal
         open={openWithdrawJOTsModal}
         handleClose={() => setOpenWithdrawJOTsModal(false)}
+        collectionId={collectionId}
+        nft={nft}
+      />
+      <QuickSwapModal 
+        open={openQuickSwapModal} 
+        handleClose={() => setOpenQuickSwapModal(false)} 
         collectionId={collectionId}
         nft={nft}
       />

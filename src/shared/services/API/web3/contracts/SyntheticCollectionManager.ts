@@ -574,6 +574,30 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const exchangeOwnerJot = async (web3: Web3, account: string, nft: any, amount: number): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { SyntheticCollectionManagerAddress, JotAddress, SyntheticID: tokenId } = nft;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        console.log(SyntheticCollectionManagerAddress)
+        const gas = await contract.methods.exchangeOwnerJot(tokenId, amount).estimateGas({ from: account });
+        console.log(gas)
+        const response = await contract.methods.exchangeOwnerJot(tokenId, amount).send({ from: account, gas: gas });
+
+        if (response) {
+          console.log(response);
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  }
+
   return {
     buyJotTokens,
     depositJots,
@@ -591,6 +615,7 @@ const syntheticCollectionManager = (network: string) => {
     addLiquidityToPool,
     getSoldSupply,
     getAccruedReward,
+    exchangeOwnerJot
   };
 };
 

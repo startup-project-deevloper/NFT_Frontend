@@ -184,16 +184,16 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
     newRewardConfig.configurer = configurer;
     newRewardConfig.config.data.labels =
       period === PERIODS[0]
-        ? getAllMinues()
-        : period === PERIODS[1]
         ? getAllHours()
-        : DAYLABELS.map(item => item.slice(0, 3).toUpperCase());
+        : period === PERIODS[1]
+        ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
+        : MONTHLABELS.map(item => item.slice(0, 3).toUpperCase());
     newRewardConfig.config.data.datasets[0].data =
       period === PERIODS[0]
-        ? getAllValues(unit)
+        ? getAllValues("hours")
         : period === PERIODS[1]
-        ? getAllValues(unit)
-        : getAllValuesInWeek(unit);
+        ? getAllValues("days")
+        : getAllValues("weeks");
     newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
     newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
@@ -236,7 +236,7 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
         tradingInfo = await fetchPairData(token1, token0);
       }
       if (tradingInfo?.pairAddress) {
-        setTvl(tradingInfo.tvl)
+        setTvl(tradingInfo.tvl);
         setVolume7h(tradingInfo.volume7h || 0);
         setVolume24h(tradingInfo.volume24h || 0);
         setToken0Price(tradingInfo.token0Price || 0);
@@ -265,35 +265,28 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
     return result;
   }, []);
 
-  const getAllValues = React.useCallback(unit => {
-    const maxVal = unit === "JOTs" ? 500 : 1000;
-    const result: number[] = [];
-    for (let index = 1; index <= 23; index++) {
-      result.push(Math.floor(Math.random() * maxVal));
-    }
-
-    return result;
-  }, []);
-
-  const getAllValuesInWeek = React.useCallback(unit => {
-    const maxVal = unit === "JOTs" ? 500 : 1000;
-    const result: number[] = [];
-    for (let index = 0; index < DAYLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * maxVal));
-    }
-
-    return result;
-  }, []);
-
-  const getAllValuesInYear = React.useCallback(unit => {
-    const maxVal = unit === "JOTs" ? 500 : 1000;
-    const result: number[] = [];
-    for (let index = 0; index < MONTHLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * maxVal));
-    }
-
-    return result;
-  }, []);
+  const getAllValues = React.useCallback(
+    async period => {
+      try {
+        const resp = await Axios.get(
+          `${PriceFeed_URL()}/jot/price/${period}?jotAddress=${collection.JotAddress}`,
+          {
+            headers: {
+              Authorization: `Basic ${PriceFeed_Token()}`,
+            },
+          }
+        );
+        if (!resp.data.success) {
+          return [];
+        }
+        const data = resp.data.data ?? [];
+        return data.map(item => item.price);
+      } catch (e) {
+        return [];
+      }
+    },
+    [collection.JotAddress]
+  );
 
   const handleChangePeriod = (period: string) => () => {
     setPeriod(period);
@@ -351,20 +344,6 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
                     </h2>
                     <p className={classes.graphDesc}>{moment().format("YYYY MMM DD")}</p>
                   </Box>
-                  {/* right unit switch */}
-                  <Box className={classes.unitsBox}>
-                    <Box className={classes.unitButton}>
-                      {UNITS.map((item, index) => (
-                        <button
-                          key={`unit-button-${index}`}
-                          className={`${classes.switchButton} ${item === unit && classes.activeSwitchButton}`}
-                          onClick={handleChangeUnit(item)}
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </Box>
-                  </Box>
                 </Box>
                 {/* right period selector box */}
                 <Box className={classes.periodBox}>
@@ -404,8 +383,8 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
               alignItems: "center",
               justifyContent: "center",
             }}
-            onClick={()=>{
-              history.push(`/pix/fractionalisation/collection/quick_swap/${id}`)
+            onClick={() => {
+              history.push(`/pix/fractionalisation/collection/quick_swap/${id}`);
             }}
           >
             Trade on <QuickSwapIcon className={classes.swapIcon} /> Quickswap

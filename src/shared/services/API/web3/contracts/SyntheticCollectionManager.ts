@@ -58,11 +58,9 @@ const syntheticCollectionManager = (network: string) => {
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
-        console.log("Getting gas....", tokenId, toNDecimals(amount, decimals));
         const gas = await contract.methods
           .depositJots(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
         const response = contract.methods
           .depositJots(tokenId, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas })
@@ -79,7 +77,6 @@ const syntheticCollectionManager = (network: string) => {
               },
             });
           });
-        console.log("transaction succeed");
       } catch (e) {
         console.log(e);
         resolve({ success: false });
@@ -99,11 +96,9 @@ const syntheticCollectionManager = (network: string) => {
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
-        console.log("Getting gas....", tokenId, toNDecimals(amount, decimals));
         const gas = await contract.methods
           .withdrawJots(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
         const response = contract.methods
           .withdrawJots(tokenId, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas })
@@ -120,7 +115,6 @@ const syntheticCollectionManager = (network: string) => {
               },
             });
           });
-        console.log("transaction succeed");
       } catch (e) {
         console.log(e);
         resolve({ success: false });
@@ -469,9 +463,31 @@ const syntheticCollectionManager = (network: string) => {
           .on("transactionHash", function (hash) {
             setHash(hash);
           });
-        resolve({
-          success: !!response.status,
-        });
+
+        const {
+          events: {
+            VerificationRequested: {
+              blockNumber,
+              returnValues: { requestId },
+            },
+          },
+        } = response;
+
+        await new Promise(resolve => setTimeout(resolve, 20000));
+
+        await contract.getPastEvents(
+          "VerifyResponseReceived",
+          {
+            fromBlock: blockNumber,
+            toBlock: "latest",
+          },
+          (error, events) => {
+            const event = events
+              .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
+              .find(res => res.requestId === requestId);
+            resolve({ success: event?.verified ?? false });
+          }
+        );
       } catch (e) {
         console.log(e);
         resolve({ success: false });

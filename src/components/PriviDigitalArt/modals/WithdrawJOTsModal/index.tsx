@@ -58,11 +58,7 @@ export default function WithdrawJotsModal({
       setDisabled(true);
       const web3APIHandler = selectedChain.apiHandler;
       const web3 = new Web3(library.provider);
-
-      const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
-      const balance = await web3APIHandler.Erc20["USDT"].balanceOf(web3, { account });
-      const usdt = parseInt(toDecimals(balance || 0, decimals));
-      setMaxJot(usdt / (+nft.Price || 1));
+      setMaxJot(nft.OwnerSupply);
 
       const jotDecimals = await web3APIHandler.Erc20["JOT"].decimals(web3, nft.JotAddress);
       const jotBalance = await web3APIHandler.Erc20["JOT"].balanceOf(web3, nft.JotAddress, { account });

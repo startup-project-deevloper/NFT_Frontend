@@ -16,8 +16,10 @@ import { likedPageStyles } from "./index.styles";
 import PodCard from "components/PriviDigitalArt/components/Cards/PodCard";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { getPixProfileItems } from "shared/services/API";
+import SyntheticCollectionCard from "components/PriviDigitalArt/components/Cards/SyntheticCollectionCard";
+import { getLikedSyntheticCollections } from "shared/services/API/SyntheticFractionalizeAPI";
 
-const Tabs = ["Art", "Pods", "Synthetic Collections", ""];
+const Tabs = ["Art", "Synthetic Collections", ""];
 const sortOptions = ["Most Relevant", "Recently Added", "Alphabetical Order"];
 
 export default function LikedPage() {
@@ -31,9 +33,14 @@ export default function LikedPage() {
   const [mediaPods, setMediaPods] = useState<any[]>([]);
   const [sortedLikedMedias, setSortedLikedMedias] = useState<any[]>([]);
   const [sortedLikedMediaPods, setSortedLikedMediaPods] = useState<any[]>([]);
+  const [sortedLikedSynthetics, setSortedLikedSynthetics] = useState<any[]>([]);
+
   const [digitalArts, setDigitalArts] = useState<any[]>([]);
+  const [syntheticCollections, setSyntheticCollections] = useState<any[]>([]);
+
   // const [artists, setArtists] = useState<any[]>([]);
   const [loadingMediaPods, setLoadingMediaPods] = useState<boolean>(true);
+  const [loadingCollections, setLoadingCollections] = useState<boolean>(true);
   const [loadingDigitalArts, setLoadingDigitalArts] = useState<boolean>(true);
   // const [loadingArtists, setLoadingArtists] = useState<boolean>(false);
 
@@ -83,17 +90,29 @@ export default function LikedPage() {
         setLoadingDigitalArts(false);
       });
 
-    setLoadingMediaPods(true);
-    axios
-      .get(`${URL()}/mediaPod/getMyLikedPods/${userId}`)
-      .then(res => {
-        if (res.data.success) {
-          setMediaPods(res.data.data);
+    // setLoadingMediaPods(true);
+    // axios
+    //   .get(`${URL()}/mediaPod/getMyLikedPods/${userId}`)
+    //   .then(res => {
+    //     if (res.data.success) {
+    //       setMediaPods(res.data.data);
+    //     }
+    //   })
+    //   .catch(err => console.log(err))
+    //   .finally(() => {
+    //     setLoadingMediaPods(false);
+    //   });
+
+    setLoadingCollections(true);
+    getLikedSyntheticCollections(userId)
+      .then(resp => {
+        if (resp?.success) {
+          setSyntheticCollections(resp.data);
         }
       })
       .catch(err => console.log(err))
       .finally(() => {
-        setLoadingMediaPods(false);
+        setLoadingCollections(false);
       });
   }, [userId]);
 
@@ -172,7 +191,7 @@ export default function LikedPage() {
   return (
     <div className={classes.page}>
       <div className={classes.content}>
-        <div className={likedClasses.headerTitle}>✨ Liked Content</div>
+        <div className={likedClasses.headerTitle}>✨ Saved Content</div>
         <Box display="flex" marginBottom="16px">
           {Tabs.map((tab, index) =>
             index !== Tabs.length - 1 ? (
@@ -274,13 +293,13 @@ export default function LikedPage() {
             </LoadingWrapper>
           ) : (
             selectedTab === 1 && (
-              <LoadingWrapper loading={loadingMediaPods /*&& !sortedLikedMediaPods.length*/} theme={"blue"}>
+              <LoadingWrapper loading={loadingCollections /*&& !sortedLikedMediaPods.length*/} theme={"blue"}>
                 <div className={cls(classes.artCards)}>
-                  {sortedLikedMediaPods && sortedLikedMediaPods.length ? (
+                  {syntheticCollections && syntheticCollections.length ? (
                     <MasonryGrid
                       gutter={"24px"}
-                      data={sortedLikedMediaPods}
-                      renderItem={(item, index) => <PodCard heightFixed item={item} key={`item-${index}`} />}
+                      data={syntheticCollections}
+                      renderItem={(item, index) => <SyntheticCollectionCard item={item} />}
                       columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
                     />
                   ) : (

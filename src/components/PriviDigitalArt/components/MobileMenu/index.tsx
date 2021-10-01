@@ -13,7 +13,7 @@ const TABS = [
   "MARKETPLACE",
   // "PODS",
   "NFT LOANS",
-  "LIKED CONTENT",
+  "SAVED CONTENT",
   "NFT FRACTIONALISATION",
 ];
 

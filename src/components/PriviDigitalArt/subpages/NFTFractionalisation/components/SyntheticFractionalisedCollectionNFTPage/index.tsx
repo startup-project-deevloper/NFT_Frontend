@@ -580,6 +580,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             <div>
               <SyntheticFractionalisedTradeFractionsPage
                 isOwner={isOwner}
+                isOwnerShipTab={true}
                 collectionId={params.collectionId}
                 nft={nft}
               />

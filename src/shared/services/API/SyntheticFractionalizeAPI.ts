@@ -112,3 +112,14 @@ export async function getMySyntheticFractionalisedNFT(): Promise<any> {
     console.log(e.message);
   }
 }
+
+export async function getLikedSyntheticCollections(userId): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/likedSyntheticCollection`, {
+      params: { userId },
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}

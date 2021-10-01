@@ -86,6 +86,24 @@ export async function buyJots(payload): Promise<any> {
   }
 }
 
+export async function addJots(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/addJots`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+export async function withdrawJots(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/withdrawJots`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
 export async function updatePriceFraction(payload): Promise<any> {
   try {
     const response = await axios.post(`${URL()}/syntheticFractionalize/updatePriceFraction`, payload);

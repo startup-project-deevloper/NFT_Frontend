@@ -81,7 +81,6 @@ const jot = network => {
   const decimals = async (web3: Web3, contractAddress: string): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        console.log(contractAddress);
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
         contract.methods.decimals().call((err, result) => {
           if (err) {

@@ -539,7 +539,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                     headers={tableHeaders}
                     rows={(nft.flipHistory ?? []).map(item => [
                       {
-                        cell: item.winnerAddress === nft.JotPoolAddress ? "Jot Pool" : nft.user,
+                        cell:
+                          item.winnerAddress === nft.JotPoolAddress
+                            ? "Jot Pool"
+                            : nft.userData.name || nft.userData.address,
                       },
                       {
                         cell:

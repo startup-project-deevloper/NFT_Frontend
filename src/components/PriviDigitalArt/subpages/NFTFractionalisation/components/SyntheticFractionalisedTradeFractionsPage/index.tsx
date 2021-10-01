@@ -23,6 +23,8 @@ import { styled } from "@material-ui/styles";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
+import Axios from "axios";
+import {PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 
 const FreeHoursChartConfig = {
   config: {
@@ -268,6 +270,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     date: new Date().getTime(),
   });
 
+  const [jotPrice, setJotPrice] = React.useState<number>(0);
   const [transList, setTransList] = React.useState<any[]>(tempHistory);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
@@ -320,7 +323,30 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   React.useEffect(() => {
     handleRefresh();
+    getJotPrice()
   }, [collectionId, nft]);
+
+  const getJotPrice = async () => {
+    const targetChain = BlockchainNets[1];
+    const web3Config = targetChain.config;
+    Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
+      headers: {
+        Authorization: `Basic ${PriceFeed_Token()}`
+      },
+      params: {
+        token0: web3Config.TOKEN_ADDRESSES["USDT"],
+        token1: nft.JotAddress,
+      },
+    }).then(res => {
+      const resp = res.data;
+
+      if (resp.success) {
+        const data = resp.data;
+        setJotPrice(data.token0Price)
+      }
+    });
+      nft.JotAddress
+  }
 
   const handleRefresh = React.useCallback(() => {
     (async () => {
@@ -733,7 +759,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          $0.28
+                          ${jotPrice}
                         </Box>
                       </Box>
                       <Box
@@ -824,7 +850,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          $0.28
+                          ${jotPrice}
                         </Box>
                       </Box>
                       <Box

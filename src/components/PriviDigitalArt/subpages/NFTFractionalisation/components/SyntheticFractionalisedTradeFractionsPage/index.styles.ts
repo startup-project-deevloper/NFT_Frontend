@@ -349,27 +349,40 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   },
   progressBar: {
     width: "100%",
-    height: 6.5,
-    background: "#9EACF233",
+    height: 27,
+    padding: 5,
     borderRadius: 35,
+    border: "1px solid rgba(38, 189, 139, 0.5)",
+    background: "rgba(38, 189, 139, 0.05)",
     position: "relative",
   },
   progressed: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    background: "linear-gradient(91.54deg, #431AB7 11.26%, #AA26C2 119.42%, #F84B4B 203.57%)",
+    width: "100%",
+    height: "100%",
+    background: "linear-gradient(91.51deg, #C00000 4.49%, #F00404 57.49%, #FF6969 98.72%)",
     borderRadius: 35,
+    clipPath: "polygon(100% 1%,100% 50%,100% 99%,0% 100%,0% 100%,50% 50%)",
   },
   progressTitle: {
-    color: "#431AB7",
-    fontSize: 20,
-    lineHeight: "104.5%",
-    marginTop: 16,
+    color: "#1A1B1C",
+    fontSize: 18,
+    "& span + span": {
+      marginLeft: 6,
+    }
   },
   progressContainer: {
-    padding: "10px 0 30px",
-    borderBottom: "1px solid #E6E6E8"
-  }
+    padding: "25px 25px 16px 20px",
+    borderRadius: 14,
+    background: "#E1FFEA",
+  },
+  progressLabel: {
+    fontSize: 12,
+    color: "#1A1B1C",
+    marginTop: 6,
+  },
+  progressGrid: {
+    "& div:last-child": {
+      borderRight: "1px solid #717171",
+    }
+  },
 }));

@@ -16,6 +16,7 @@ import { toDecimals, toNDecimals } from "shared/functions/web3";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import TransactionResultModal from "../TransactionResultModal";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
@@ -24,8 +25,8 @@ export default function BuyJotsModal({
   open,
   collectionId,
   nft,
-  handleRefresh = () => {},
-  handleClose = () => {},
+  handleRefresh = () => { },
+  handleClose = () => { },
 }) {
   const classes = BuyJotsModalStyles();
 
@@ -41,6 +42,8 @@ export default function BuyJotsModal({
   const [maxJot, setMaxJot] = React.useState<number>(0);
   const [hash, setHash] = React.useState<string>("");
   const [openLoading, setOpenLoading] = React.useState(false);
+
+  const [openTransactionResultModal, setOpenTransactionResultModal] = React.useState<boolean>(false);
 
   useEffect(() => {
     if (!open) {
@@ -146,6 +149,7 @@ export default function BuyJotsModal({
     }
 
     showAlertMessage("You bought JOTs successuflly", { variant: "success" });
+    setOpenTransactionResultModal(true);
     handleRefresh();
   };
 
@@ -197,6 +201,18 @@ export default function BuyJotsModal({
         </Box>
       </Modal>
     );
+  }
+
+  if (openTransactionResultModal) {
+    return <TransactionResultModal
+      open={openTransactionResultModal}
+      onClose={() => {
+        setOpenTransactionResultModal(false);
+        handleClose();
+      }}
+      isSuccess={true}
+      hash={hash}
+    />
   }
 
   return (

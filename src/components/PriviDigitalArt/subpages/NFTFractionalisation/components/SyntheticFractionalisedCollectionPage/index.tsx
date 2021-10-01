@@ -357,7 +357,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             </Box>
             <Box display="flex" flexDirection="column">
               <div className={classes.typo3}>$12 456.54</div>
-              <div className={classes.typo4}>ACRRUED REWARD</div>
+              <div className={classes.typo4}>ACCRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
               <div className={classes.typo3}>{circulatingSupply}</div>

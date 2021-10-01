@@ -22,19 +22,22 @@ export default function CollectionNFTCard({
               <div className={classes.verifiedSection}>{item.isVerified ? "Verified" : "Unverified"}</div>
             </Box>
           )}
-          <img src={item?.image? item.image : require(`assets/backgrounds/digital_art_1.png`)} alt={item.MediaName} />
+          <img
+            src={item?.image ? item.image : require(`assets/backgrounds/digital_art_1.png`)}
+            alt={item.MediaName}
+          />
           <Box display="flex" flexDirection="column" width={"90%"} mt={"8px"}>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Owner</div>
-              <div className={classes.typo2}>{`${item.owner || 0} JOTS`}</div>
+              <div className={classes.typo2}>{`${item.OwnerSupply || 0} JOTS`}</div>
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Available</div>
-              <div className={classes.typo2}>{`${item.available || 0} JOTS`}</div>
+              <div className={classes.typo2}>{`${item.SellingSupply || 0} JOTS`}</div>
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Price</div>
-              <div className={classes.typo2}>{`${item.price || 0} USDT/JOT`}</div>
+              <div className={classes.typo2}>{`${item.Price || 0} USDT/JOT`}</div>
             </Box>
           </Box>
           <div className={classes.starGroup}>

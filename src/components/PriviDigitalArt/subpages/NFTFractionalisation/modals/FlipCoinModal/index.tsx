@@ -5,13 +5,14 @@ import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { FlipCoinModalStyles } from "./index.styles";
 import { Modal } from "shared/ui-kit";
 
+const isProd = process.env.REACT_APP_ENV === "prod";
 // true - flipping dialog, false - result dialog (finished flipping)
 // true - won, false - lost
 export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, hash, resultState }) {
   const classes = FlipCoinModalStyles();
 
-  const handleLater = () => {
-    onClose();
+  const handleCheckPolygonScan = () => {
+    window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
   };
 
   return (
@@ -27,18 +28,22 @@ export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, h
                   The coin is beeing flipped, it may take a moment to process the results of your flip. Please
                   be patient as it can last up to 30 seconds.
                 </p>
-                <CopyToClipboard text={hash}>
-                  <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
-                    Hash:
-                    <Box color="#4218B5" mr={1} ml={1}>
-                      {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
-                    </Box>
-                    <CopyIcon />
-                  </Box>
-                </CopyToClipboard>
-                <button className={classes.checkBtn} onClick={handleLater}>
-                  Check on Polygon Scan
-                </button>
+                {hash && (
+                  <>
+                    <CopyToClipboard text={hash}>
+                      <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
+                        Hash:
+                        <Box color="#4218B5" mr={1} ml={1}>
+                          {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                        </Box>
+                        <CopyIcon />
+                      </Box>
+                    </CopyToClipboard>
+                    <button className={classes.checkBtn} onClick={handleCheckPolygonScan}>
+                      Check on Polygon Scan
+                    </button>
+                  </>
+                )}
               </Box>
             ) : (
               <>
@@ -58,8 +63,12 @@ export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, h
                       Congrats! You have guessed correctly and <br />
                       <span className={classes.result}>you have won 0.1 JOTS</span>
                     </p>
-                    <button className={classes.checkBtn} onClick={handleLater} style={{ width: "70%" }}>
-                      Claim Reward
+                    <button
+                      className={classes.checkBtn}
+                      onClick={handleCheckPolygonScan}
+                      style={{ width: "70%" }}
+                    >
+                      Check on Polygon Scan
                     </button>
                   </Box>
                 ) : (

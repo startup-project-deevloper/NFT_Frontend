@@ -15,7 +15,9 @@ export async function getSyntheticCollections(pagination): Promise<any> {
 }
 export async function getSyntheticFeaturedCollections(): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticFeaturedCollections`, { params: {} });
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticFeaturedCollections`, {
+      params: {},
+    });
     return response.data;
   } catch (e) {
     console.log(e.message);
@@ -64,6 +66,20 @@ export async function getSyntheticNFTTransactions(collectionId, syntheticId): Pr
 export async function getSyntheticNFTOwnerHistory(collectionId, syntheticId): Promise<any> {
   try {
     const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticNFTOwnerHistory`, {
+      params: {
+        collectionId,
+        syntheticId,
+      },
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+export async function getSyntheticNFTFlipHistory(collectionId, syntheticId): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticNFTFlipHistory`, {
       params: {
         collectionId,
         syntheticId,

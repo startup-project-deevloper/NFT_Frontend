@@ -59,9 +59,13 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     if (!params.id) return;
 
     (async () => {
-      const response = await getSyntheticCollection(params.id);
-      if (response.success) {
-        setCollection(response.data);
+      try {
+        const response = await getSyntheticCollection(params.id);
+        if (response.success) {
+          setCollection(response.data);
+        }
+      } catch (err) {
+        console.log(err);
       }
     })();
     loadNFTs(params.id);
@@ -233,7 +237,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               />
               Order Book
             </Box>
-            <div className={classes.tradeDerivativeButton} onClick={() => { }}>
+            <div className={classes.tradeDerivativeButton} onClick={() => {}}>
               <div>
                 <span>TRADE DERIVATIVES</span>
               </div>
@@ -286,8 +290,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 </div>
                 <div>
                   {collection &&
-                    collection.follows &&
-                    collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+                  collection.follows &&
+                  collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
                     <div className={classes.typo2}>Following</div>
                   ) : (
                     <div className={classes.plusSection} onClick={handleFollow}>
@@ -314,13 +318,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 </div>
                 <div>
                   {collection &&
-                    collection.follows &&
-                    collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
-                    <div
-                      className={classes.typo2}
-                      style={{ cursor: "pointer" }}
-                      onClick={handleUnfollow}
-                    >
+                  collection.follows &&
+                  collection.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+                    <div className={classes.typo2} style={{ cursor: "pointer" }} onClick={handleUnfollow}>
                       Following
                     </div>
                   ) : (

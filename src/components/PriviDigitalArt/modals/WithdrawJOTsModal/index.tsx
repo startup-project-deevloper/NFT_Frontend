@@ -5,26 +5,26 @@ import { Header3, Header5, Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
-import { AddJotsModalStyles } from "./index.styles";
+import { WithdrawJotsModalStyles } from "./index.styles";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
-import { addJots } from "shared/services/API/SyntheticFractionalizeAPI";
+import { withdrawJots } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import TransactionResultModal from "../TransactionResultModal";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
-export default function AddJotsModal({
+export default function WithdrawJotsModal({
   open,
   collectionId,
   nft,
   handleRefresh = () => {},
   handleClose = () => {},
 }) {
-  const classes = AddJotsModalStyles();
+  const classes = WithdrawJotsModalStyles();
 
   const { showAlertMessage } = useAlertMessage();
 
@@ -73,7 +73,7 @@ export default function AddJotsModal({
     })();
   }, [open, nft, selectedChain]);
 
-  const handleAddJots = async () => {
+  const handleWithdrawJots = async () => {
     if (+jots > maxJot) {
       showAlertMessage(`Can't be exceed the max JOTs.`, { variant: "error" });
       return;
@@ -99,8 +99,8 @@ export default function AddJotsModal({
     const approveResponse = await web3APIHandler.Erc20["JOT"].approve(
       web3,
       account!,
-      nft.JotAddress,
       nft.SyntheticCollectionManagerAddress,
+      nft.JotAddress,
       amount
     );
 
@@ -111,7 +111,7 @@ export default function AddJotsModal({
       return;
     }
 
-    const contractResponse = await web3APIHandler.SyntheticCollectionManager.depositJots(
+    const contractResponse = await web3APIHandler.SyntheticCollectionManager.withdrawJots(
       web3,
       account!,
       nft,
@@ -123,13 +123,13 @@ export default function AddJotsModal({
     if (!contractResponse.success) {
       setLoading(false);
       setResult(-1);
-      showAlertMessage("Failed to add Jots. Please try again", { variant: "error" });
+      showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
       return;
     }
 
     setHash(contractResponse.data.hash);
 
-    // const response = await addJots({
+    // const response = await withdrawJots({
     //   collectionId,
     //   syntheticId: nft.SyntheticID,
     //   amount: jots,
@@ -164,7 +164,7 @@ export default function AddJotsModal({
     >
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>
         <Box>
-          <Header3>Add JOTs</Header3>
+          <Header3>Withdraw JOTs</Header3>
           <InputWithLabelAndTooltip
             inputValue={jots}
             onInputValueChange={e => setJOTs(e.target.value)}
@@ -211,7 +211,7 @@ export default function AddJotsModal({
             <PrimaryButton
               size="medium"
               style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
-              onClick={handleAddJots}
+              onClick={handleWithdrawJots}
             >
               Confirm
             </PrimaryButton>

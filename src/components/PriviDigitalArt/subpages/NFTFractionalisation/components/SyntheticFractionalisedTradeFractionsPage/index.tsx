@@ -18,6 +18,7 @@ import {
   getSyntheticNFTOwnerHistory,
 } from "shared/services/API/SyntheticFractionalizeAPI";
 import AddJOTsModal from "components/PriviDigitalArt/modals/AddJOTsModal";
+import WithdrawJOTsModal from "components/PriviDigitalArt/modals/WithdrawJOTsModal";
 import { styled } from "@material-ui/styles";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { useWeb3React } from "@web3-react/core";
@@ -273,6 +274,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
   const [openAddJOTsModal, setOpenAddJOTsModal] = React.useState<boolean>(false);
   const [openQuickSwapModal, setOpenQuickSwapModal] = React.useState<boolean>(false);
+  const [openWithdrawJOTsModal, setOpenWithdrawJOTsModal] = React.useState<boolean>(false);
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -369,6 +371,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const handleOpenAddJOTsModal = () => {
     setOpenAddJOTsModal(true);
+  };
+
+  const handleOpenWithdrawJOTsModal = () => {
+    setOpenWithdrawJOTsModal(true);
   };
 
   const handleAddLiquidity = async () => {
@@ -481,21 +487,40 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                     {ownershipJot} JOTs
                   </Box>
-                  <PrimaryButton
-                    className={classes.h4}
-                    size="medium"
-                    style={{
-                      background: "#DDFF57",
-                      color: Color.Purple,
-                      padding: "0px 25px",
-                      maxWidth: 170,
-                      marginTop: 28,
-                      borderRadius: 4,
-                    }}
-                    onClick={handleOpenAddJOTsModal}
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 28 }}
                   >
-                    Add more JOTS
-                  </PrimaryButton>
+                    <PrimaryButton
+                      className={classes.h4}
+                      size="medium"
+                      style={{
+                        background: Color.White,
+                        color: Color.Purple,
+                        border: "solid 0.7px",
+                        borderColor: Color.Purple,
+                        padding: "0px 25px",
+                        maxWidth: 170,
+                        borderRadius: 4,
+                      }}
+                      onClick={handleOpenWithdrawJOTsModal}
+                    >
+                      Withdraw JOTs
+                    </PrimaryButton>
+                    <PrimaryButton
+                      className={classes.h4}
+                      size="medium"
+                      style={{
+                        background: Color.Purple,
+                        color: Color.White,
+                        padding: "0px 25px",
+                        maxWidth: 170,
+                        borderRadius: 4,
+                      }}
+                      onClick={handleOpenAddJOTsModal}
+                    >
+                      Add more JOTS
+                    </PrimaryButton>
+                  </Box>
                 </Box>
               </Box>
               <Box
@@ -873,6 +898,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         nft={nft}
       />
       <QuickSwapModal open={openQuickSwapModal} handleClose={() => setOpenQuickSwapModal(false)} />
+      <WithdrawJOTsModal
+        open={openWithdrawJOTsModal}
+        handleClose={() => setOpenWithdrawJOTsModal(false)}
+        collectionId={collectionId}
+        nft={nft}
+      />
       <LoadingScreen
         loading={loading}
         title={`Transaction \nin progress`}

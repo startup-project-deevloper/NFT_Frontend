@@ -46,6 +46,88 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const depositJots = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        console.log("Getting gas....", tokenId, toNDecimals(amount, decimals));
+        const gas = await contract.methods
+          .depositJots(tokenId, toNDecimals(amount, decimals))
+          .estimateGas({ from: account });
+        console.log("calced gas price is.... ", gas);
+        const response = contract.methods
+          .depositJots(tokenId, toNDecimals(amount, decimals))
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          })
+          .on("receipt", function (receipt) {
+            resolve({
+              success: true,
+              data: {
+                hash: receipt.transactionHash,
+              },
+            });
+          });
+        console.log("transaction succeed");
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const withdrawJots = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        console.log("Getting gas....", tokenId, toNDecimals(amount, decimals));
+        const gas = await contract.methods
+          .withdrawJots(tokenId, toNDecimals(amount, decimals))
+          .estimateGas({ from: account });
+        console.log("calced gas price is.... ", gas);
+        const response = contract.methods
+          .withdrawJots(tokenId, toNDecimals(amount, decimals))
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          })
+          .on("receipt", function (receipt) {
+            resolve({
+              success: true,
+              data: {
+                hash: receipt.transactionHash,
+              },
+            });
+          });
+        console.log("transaction succeed");
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
   const getOwnerSupply = (web3: Web3, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
@@ -452,6 +534,8 @@ const syntheticCollectionManager = (network: string) => {
 
   return {
     buyJotTokens,
+    depositJots,
+    withdrawJots,
     updatePriceFraction,
     increaseSellingSupply,
     decreaseSellingSupply,

@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import { Color } from "shared/ui-kit";
 
-export const EditNFTPriceModalStyles = makeStyles(theme => ({
+export const QuickSwapModalStyles = makeStyles(theme => ({
   root: {
     width: "508px !important",
     display: "flex",
@@ -31,23 +31,37 @@ export const EditNFTPriceModalStyles = makeStyles(theme => ({
       width: "fit-content",
     },
   },
-  title: {
-    fontFamily: "Agrandir",
-    fontStyle: "normal",
-    fontWeight: "normal",
-    fontSize: "22px",
-    lineHeight: "104.5%",
-    color: "#1A1B1C",
-    marginBottom: "12px",
+  inputContainer: {
+    marginTop: "37px",
+    alignItems: "flex-end",
   },
-  subtitle: {
+  title: {
+    fontStyle: "normal",
+    fontWeight: 800,
+    fontSize: "20px",
+    lineHeight: "27px",
+    color: Color.Purple,
+    marginBottom: "12px",
+    textAlign: "center",
+
+    "& span": {
+      fontSize: "17px",
+      letterSpacing: "0.02em",
+      color: "#1A1B1C",
+    },
+
+    "& img": {
+      marginBottom: "-4px",
+      marginRight: "3px",
+    },
+  },
+  label: {
     fontFamily: "Agrandir",
     fontStyle: "normal",
     fontWeight: "normal",
     fontSize: "14px",
     lineHeight: "21px",
     color: "#1A1B1C",
-    marginBottom: "24px",
   },
   buttonPurple: {
     alignSelf: "flex-end",
@@ -80,6 +94,11 @@ export const EditNFTPriceModalStyles = makeStyles(theme => ({
       height: "24px",
     },
   },
+  unitInput: {
+    "& input": {
+      color: Color.Purple,
+    },
+  },
   purpleText: {
     cursor: "pointer",
     color: Color.Purple,
@@ -89,18 +108,5 @@ export const EditNFTPriceModalStyles = makeStyles(theme => ({
   smallText: {
     color: "#ABB3C3",
     fontSize: "12px",
-  },
-  checkBtn: {
-    height: 40,
-    backgroundColor: "#431AB7",
-    color: "white",
-    marginTop: 30,
-    padding: "11px 32px",
-    fontSize: 14,
-    fontWeight: 700,
-    borderRadius: 4,
-  },
-  hash: {
-    cursor: "pointer",
   },
 }));

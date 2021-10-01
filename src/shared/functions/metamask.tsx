@@ -62,7 +62,7 @@ export const switchNetwork = (chainId: number): Promise<any> => {
       });
       resolve(true);
     } catch (error) {
-      if (error.code === 4092) {
+      if (error.code === 4902) {
         try {
           await (window as any).ethereum.request({
             method: "wallet_addEthereumChain",

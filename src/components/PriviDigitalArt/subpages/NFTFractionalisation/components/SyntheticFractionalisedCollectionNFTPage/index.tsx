@@ -58,7 +58,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [openChangeNFTToSynthetic, setOpenChangeNFTToSynthetic] = useState<boolean>(false);
   const [openWithdrawNFTModal, setOpenWithdrawNFTModal] = useState<boolean>(false);
   const [openFlipCoinModal, setOpenFlipCoinModal] = useState<boolean>(false);
-  const [ownershipJot, setOwnershipJot] = useState<number>(0);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [flipResult, setFlipResult] = useState<boolean>(false);
   const [flipGuess, setFlipGuess] = useState<number>(0);
@@ -75,10 +74,17 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
   const [resultState, setResultState] = useState<number>(0);
 
+  const usersList = useSelector((state: RootState) => state.usersInfoList);
+  const getUserInfo = (address: string) => usersList.find(u => u.address === address);
+
   const isOwner = React.useMemo(
-    () => nft && userSelector && nft.user === userSelector.id,
+    () => nft && userSelector && (nft.OwnerAddress === userSelector.address || nft.user === userSelector.id),
     [nft, userSelector]
   );
+
+  useEffect(() => {
+    setSelectedTab(isOwner ? "ownership" : "flip_coin");
+  }, [isOwner]);
 
   useEffect(() => {
     (async () => {
@@ -92,32 +98,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response?.success) {
         setNft(response.data);
         setLoadingData(false);
-
-        const targetChain = BlockchainNets[1];
-
-        if (chainId && chainId !== targetChain?.chainId) {
-          const isHere = await switchNetwork(targetChain?.chainId || 0);
-          if (!isHere) {
-            showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
-            return;
-          }
-        }
-
-        const web3APIHandler = targetChain.apiHandler;
-        const web3Config = targetChain.config;
-        const web3 = new Web3(library?.provider);
-
-        const contractResponse = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(
-          web3,
-          response.data,
-          {
-            tokenId: +response.data.SyntheticID,
-          }
-        );
-
-        if (contractResponse) {
-          setOwnershipJot(contractResponse);
-        }
       }
     })();
   }, [params]);
@@ -393,14 +373,16 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             >
               <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Ownership</div>
-                <div className={classes.typo2}>{ownershipJot} JOTs</div>
+                <div className={classes.typo2}>{nft.OwnerSupply ?? 0} JOTs</div>
               </Box>
               <Box display="flex" flexDirection="column">
                 <div className={classes.typo1}>Owner</div>
                 <Box display="flex" alignItems="center">
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
-                    <div className={classes.typo2}>User name</div>
+                    <div className={classes.typo2}>
+                      {(isOwner ? getUserInfo(nft.OwnerAddress)?.name : nft.OwnerAddress) ?? ""}
+                    </div>
                   </Box>
                 </Box>
               </Box>
@@ -417,8 +399,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
               {nft &&
-                nft.follows &&
-                nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+              nft.follows &&
+              nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
                 <div className={classes.plusSection} style={{ cursor: "pointer" }} onClick={handleUnfollow}>
                   <span>Following</span>
                 </div>
@@ -437,7 +419,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             />
             <div className={classes.nftCard}>
               <CollectionNFTCard
-                handleSelect={() => { }}
+                handleSelect={() => {}}
                 item={{
                   image: require("assets/backgrounds/digital_art_1.png"),
                   name: "NFT NAME",
@@ -621,7 +603,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           onProceed={handleProceedChangeLockedNFT}
         />
         <WithdrawNFTModel open={openWithdrawNFTModal} onClose={handleCloseWithdrawNFTModal} />
-        <Modal size="small" isOpen={withDrawn} onClose={() => { }} className={classes.withDrawnModal}>
+        <Modal size="small" isOpen={withDrawn} onClose={() => {}} className={classes.withDrawnModal}>
           <img src={require("assets/icons/crystal_camera.png")} alt="" />
           <Box color={"#431AB7"} paddingLeft={1}>
             This NFT is beeing withdrawn

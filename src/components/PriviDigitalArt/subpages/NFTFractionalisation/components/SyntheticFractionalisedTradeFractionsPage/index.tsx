@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Web3 from "web3";
 import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -12,6 +12,7 @@ import { SyntheticFractionalisedTradeFractionsPageStyles } from "./index.styles"
 import BuyJotsModal from "../../../../modals/BuyJotsModal";
 import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
+import QuickSwapModal from "../../../../modals/QuickSwapModal";
 import {
   getSyntheticNFTTransactions,
   getSyntheticNFTOwnerHistory,
@@ -78,11 +79,11 @@ const FreeHoursChartConfig = {
       scales: {
         xAxes: [
           {
-            offset: true,
+            offset: false,
             display: true,
             gridLines: {
               color: "#431AB7",
-              lineWidth: 50,
+              offsetGridLines: true,
             },
             ticks: {
               beginAtZero: true,
@@ -223,7 +224,7 @@ export const TransactionTable = ({ datas }) => {
             cell: <Box color="rgba(67, 26, 183, 1)">{row.account || ""}</Box>,
           },
           {
-            cell: row.time ? <Moment toNow>{row.time * 1000}</Moment> : "",
+            cell: row.time ? <Moment fromNow>{row.time * 1000}</Moment> : "",
           },
           {
             cell: (
@@ -265,74 +266,31 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     price: 0,
     date: new Date().getTime(),
   });
-  const [ownership, setOwnerShip] = React.useState<number>(1000);
 
   const [transList, setTransList] = React.useState<any[]>(tempHistory);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
   const [openAddJOTsModal, setOpenAddJOTsModal] = React.useState<boolean>(false);
+  const [openQuickSwapModal, setOpenQuickSwapModal] = React.useState<boolean>(false);
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
-
-  const [soldJOTs, setSoldJOTs] = React.useState<number>(0);
-  const [ownerSupply, setOwnerSupply] = React.useState<number>(0);
-  const [price, setPrice] = React.useState<number>(0);
-
-  React.useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
-      const web3 = new Web3(library.provider);
-      const web3APIHandler = targetChain.apiHandler;
-
-      const response = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
-        tokenId: nft.SyntheticID,
-      });
-      if (response) {
-        setSoldJOTs(response);
-      }
-    })();
-  }, [library]);
-
-  React.useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
-      const web3 = new Web3(library.provider);
-      const web3APIHandler = targetChain.apiHandler;
-
-      const response = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(web3, nft, {
-        tokenId: nft.SyntheticID,
-      });
-      if (response) {
-        setOwnerSupply(response);
-      }
-    })();
-  }, [library]);
-
-  React.useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
-      const web3 = new Web3(library.provider);
-      const web3APIHandler = targetChain.apiHandler;
-
-      const response = await web3APIHandler.SyntheticCollectionManager.getJotFractionPrice(web3, nft, {
-        tokenId: nft.SyntheticID,
-      });
-      if (response) {
-        setPrice(response);
-      }
-    })();
-  }, [library]);
+  const ownershipJot = +nft.OwnerSupply;
+  const maxSupplyJot = +nft.SellingSupply;
 
   React.useEffect(() => {
     let labels: any[] = [];
     let data: any[] = [];
+    const curDate = new Date().getDate();
     if (ownerHistory && ownerHistory.length) {
-      ownerHistory.map((item, index) => {
-        labels.push(index);
+      ownerHistory.filter((item, index)=>{
+        return index < curDate
+      })
+      .map((item, index) => {
+        labels.push(index+1);
         data.push(item.supply);
       });
 
@@ -351,7 +309,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
     newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
-    newRewardConfig.config.options.scales.xAxes[0].offset = true;
+    newRewardConfig.config.options.scales.xAxes[0].offset = false;
     newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
 
     setRewardConfig(newRewardConfig);
@@ -431,7 +389,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     history.push(`/pix/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
-  const percentage = Number((ownership / 2455).toFixed(2)) * 100;
+  const totalJot = 10000;
+  const percentage = useMemo(() => Number((ownershipJot / totalJot).toFixed(2)) * 100, [ownershipJot, totalJot]);
 
   return (
     <Box className={classes.root}>
@@ -520,7 +479,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     </HtmlTooltip>
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    100 JOTs
+                    {ownershipJot} JOTs
                   </Box>
                   <PrimaryButton
                     className={classes.h4}
@@ -548,7 +507,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Current supply
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    10240 JOTs
+                    {maxSupplyJot} JOTs
                   </Box>
                   <PrimaryButton
                     className={classes.h4}
@@ -573,7 +532,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Current supply
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    10240 JOTs
+                    {maxSupplyJot} JOTs
                   </Box>
                   <PrimaryButton
                     className={classes.h4}
@@ -588,6 +547,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       alignItems: "center",
                       borderRadius: 4,
                     }}
+                    onClick={() => setOpenQuickSwapModal(true)}
                   >
                     Swap on <img src={require("assets/pixImages/swap_icon.png")} alt="quick swap" /> Quickswap
                   </PrimaryButton>
@@ -609,7 +569,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Jots SOLD
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    {soldJOTs} JOTs
+                    {nft.SoldSupply} JOTs
                   </Box>
                 </Box>
               </Box>
@@ -653,12 +613,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           <tr>
                             <td>
                               <Box className={classes.h1} fontWeight={800}>
-                                ${price}
+                                ${nft.Price}
                               </Box>
                             </td>
                             <td>
                               <Box ml={3} className={classes.h1} fontWeight={800}>
-                                {ownerSupply} JOTs
+                                {nft.OwnerSupply} JOTs
                               </Box>
                             </td>
                           </tr>
@@ -773,13 +733,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Owner Price</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            ${price}
+                            ${nft.Price}
                           </Box>
                         </Box>
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Supply</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            {ownerSupply} JOTs
+                            {nft.OwnerSupply} JOTs
                           </Box>
                         </Box>
                       </Box>
@@ -912,6 +872,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
       />
+      <QuickSwapModal open={openQuickSwapModal} handleClose={() => setOpenQuickSwapModal(false)} />
       <LoadingScreen
         loading={loading}
         title={`Transaction \nin progress`}

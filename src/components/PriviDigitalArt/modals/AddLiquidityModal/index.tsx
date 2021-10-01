@@ -1,15 +1,69 @@
-import React from "react";
+import React, { useEffect } from "react";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
 
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
+import { BlockchainNets } from "shared/constants/constants";
+import { toDecimals } from "shared/functions/web3";
+import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { AddLiquidityModalStyles } from "./index.style";
 
-export default function AddLiquidityModal({ open, handleClose = () => {}, onConfirm }) {
+const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
+
+export default function AddLiquidityModal({ open, handleClose = () => {}, JotAddress, onConfirm }) {
   const classes = AddLiquidityModalStyles();
+  const { account, library, chainId } = useWeb3React();
 
   const [liquidity, setLiquidity] = React.useState<number>(0);
+  const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
+  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+  const [jotsBalance, setJotsBalance] = React.useState<number>(0);
+
+  useEffect(() => {
+    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
+      (async () => {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) {
+          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
+        }
+      })();
+    }
+  }, [chainId, selectedChain]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    (async () => {
+      const web3APIHandler = selectedChain.apiHandler;
+      const web3 = new Web3(library.provider);
+      let promises = [
+        web3APIHandler.Erc20["USDT"].decimals(web3),
+        web3APIHandler.Erc20["USDT"].balanceOf(web3, { account }),
+      ];
+
+      if (JotAddress) {
+        promises = promises.concat([
+          web3APIHandler.Erc20["JOT"].decimals(web3, JotAddress),
+          web3APIHandler.Erc20["JOT"].balanceOf(web3, JotAddress, { account }),
+        ]);
+      }
+
+      const response = await Promise.all(promises);
+
+      if (response[1]) {
+        const usdt = parseInt(toDecimals(response[1], response[0]));
+        setUsdtBalance(usdt);
+      }
+
+      if (JotAddress && response[3]) {
+        const jots = parseInt(toDecimals(response[3], response[2]));
+        setJotsBalance(jots);
+      }
+    })();
+  }, [open, selectedChain]);
 
   return (
     <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.container}>
@@ -35,14 +89,16 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, onConf
             <span>Wallet Balance</span>
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
-              <Box fontWeight="700">0.00 BUSD</Box>
+              <Box fontWeight="700">{usdtBalance} USDT</Box>
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">
             <span>
-              MAX: <b>0</b>
+              MAX: <b>{jotsBalance}</b>
             </span>
-            <Box paddingLeft="12px">Add All</Box>
+            <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => setLiquidity(jotsBalance)}>
+              Add All
+            </Box>
           </Box>
         </Box>
         <Box display="flex" alignItems="center" justifyContent="space-between" mt={5}>

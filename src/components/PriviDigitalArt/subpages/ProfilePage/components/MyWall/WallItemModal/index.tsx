@@ -371,7 +371,7 @@ export const WallPostModalContent = ({
         </Box>
       ) : null}
 
-      <Box display="flex" alignItems="flex-end" justifyContent="space-between" mb={"48px"}>
+      <Box className={styles.userPane} mb={"48px"}>
         <Box className={styles.userInfo} onClick={() => history.push(`/pix/${item.createdBy}/profile`)}>
           <Avatar
             url={
@@ -386,19 +386,21 @@ export const WallPostModalContent = ({
               {users.find(u => u.id === item?.createdBy)?.name ||
                 users.find(u => u.id === item?.createdBy)?.urlSlug}
             </Box>
-            <Box display="flex" alignItems="center">
-              <GreenText fontSize="14px">
-                @{users.find(u => u.id === item?.createdBy)?.urlSlug ?? "Username"}
-              </GreenText>
-              {users.find(u => u.id === item?.createdBy)?.verified && (
-                <img
-                  src={require("assets/icons/verified_gray.png")}
-                  alt="verified"
-                  width="16.5px"
-                  height="16.5px"
-                  style={{ marginLeft: "4.5px" }}
-                />
-              )}
+            <Box className={styles.userDetail}>
+              <Box display="flex" alignItems="center">
+                <GreenText fontSize="14px">
+                  @{users.find(u => u.id === item?.createdBy)?.urlSlug ?? "Username"}
+                </GreenText>
+                {users.find(u => u.id === item?.createdBy)?.verified && (
+                  <img
+                    src={require("assets/icons/verified_gray.png")}
+                    alt="verified"
+                    width="16.5px"
+                    height="16.5px"
+                    style={{ marginLeft: "4.5px" }}
+                  />
+                )}
+              </Box>
               <div className={styles.levelLabel}>{`level ${
                 users.find(u => u.id === item?.createdBy)?.level ?? 1
               }`}</div>

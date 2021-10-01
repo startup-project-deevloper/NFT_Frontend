@@ -282,6 +282,17 @@
   max-width: 100px;
 }
 
+.userPane {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.userDetail {
+  display: flex;
+  align-items: center;
+}
+
 @media screen and (max-width: 500px) {
   .userCardImageWallPost {
     width: 60px;
@@ -289,5 +300,26 @@
 
   .commentUserInfo {
     display: none;
+  }
+
+  .userPane {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .userInfo {
+    width: 100%;
+  }
+
+  .userDetail {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .levelLabel {
+    margin-left: 0;
+    margin-top: 5px;
   }
 }

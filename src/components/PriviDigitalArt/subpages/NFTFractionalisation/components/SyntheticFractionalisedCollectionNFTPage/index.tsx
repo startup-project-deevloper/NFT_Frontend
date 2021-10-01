@@ -21,7 +21,7 @@ import ChangeLockedNFT from "../../modals/ChangeLockedNFT";
 import ChangeNFTToSynthetic from "../../components/ChangeNFTToSynthetic";
 import WithdrawNFTModel from "../../modals/WithdrawNFTModal";
 import { Modal } from "shared/ui-kit";
-import { getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
+import { getSyntheticNFT, getSyntheticNFTFlipHistory } from "shared/services/API/SyntheticFractionalizeAPI";
 import FlipCoinModal from "../../modals/FlipCoinModal";
 import { RootState } from "store/reducers/Reducer";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
@@ -64,6 +64,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [flippingHash, setFlippingHash] = useState<string>("");
 
   const [nft, setNft] = useState<any>({});
+  const [flipHistory, setFlipHistory] = useState<any>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
   const { account, library, chainId } = useWeb3React();
@@ -98,6 +99,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       if (response?.success) {
         setNft(response.data);
         setLoadingData(false);
+      }
+
+      const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
+      if (flipResp?.success) {
+        setFlipHistory(flipResp.data);
       }
     })();
   }, [params]);
@@ -537,9 +543,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 <div className={classes.table}>
                   <CustomTable
                     headers={tableHeaders}
-                    rows={(nft.flipHistory ?? []).map(item => [
+                    rows={flipHistory.map(item => [
                       {
-                        cell: item.winnerAddress === nft.JotPoolAddress ? "Jot Pool" : nft.user,
+                        cell: item.winnerInfo.name || item.winnerAddress,
                       },
                       {
                         cell:

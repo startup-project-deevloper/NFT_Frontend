@@ -93,7 +93,7 @@ const SyntheticFractionalisePage = ({
   return (
     <>
       <div className={classes.syntheticSection}>
-        <Box pl={isNarrow ? 3 : 5} pr={isNarrow ? 3 : 3}>
+        <Box pl={isNarrow ? 3 : 5} pr={isNarrow ? 3 : 3} width="100%">
           <div className={classes.rewardsWrapper}>
             <div className={classes.rewardsContent}>
               <Grid container spacing={3}>

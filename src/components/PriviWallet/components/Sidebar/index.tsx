@@ -21,7 +21,7 @@ const TABS = {
   Priviscan: "Priviscan",
   Swap: "Privi Bridge",
   Send: "Send Tokens",
-  PolygonBridge: "Polygon Bridge",
+  // PolygonBridge: "Polygon Bridge",
 };
 
 const POLYGON_BRIDGE_URL = process.env.NODE_ENV === 'development' ? 'https://wallet.matic.today/bridge/' : 'https://wallet.matic.network/bridge/';

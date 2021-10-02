@@ -581,6 +581,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwner={isOwner}
                 collectionId={params.collectionId}
                 nft={nft}
+                setNft={setNft}
               />
             </div>
           ) : selectedTab === "ownership" ? (
@@ -590,6 +591,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwnerShipTab={true}
                 collectionId={params.collectionId}
                 nft={nft}
+                setNft={setNft}
               />
             </div>
           ) : (

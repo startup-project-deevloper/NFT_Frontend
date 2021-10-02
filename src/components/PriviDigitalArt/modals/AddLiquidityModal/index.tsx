@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
+import Axios from "axios";
 
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -10,6 +11,7 @@ import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { AddLiquidityModalStyles } from "./index.style";
+import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -18,9 +20,9 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
   const { account, library, chainId } = useWeb3React();
 
   const [liquidity, setLiquidity] = React.useState<number>(0);
-  const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
   const [jotsBalance, setJotsBalance] = React.useState<number>(0);
+  const [maxJots, setMaxJots] = React.useState<number>(0);
 
   useEffect(() => {
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
@@ -38,29 +40,44 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
 
     (async () => {
       const web3APIHandler = selectedChain.apiHandler;
+      const web3Config = selectedChain.config;
       const web3 = new Web3(library.provider);
-      let promises = [
-        web3APIHandler.Erc20["USDT"].decimals(web3),
-        web3APIHandler.Erc20["USDT"].balanceOf(web3, { account }),
-      ];
+
+      let promises: any = [];
 
       if (JotAddress) {
-        promises = promises.concat([
+        promises = [
+          Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
+            headers: {
+              Authorization: `Basic ${PriceFeed_Token()}`,
+            },
+            params: {
+              token1: JotAddress.toLowerCase(),
+              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
+            },
+          }),
           web3APIHandler.Erc20["JOT"].decimals(web3, JotAddress),
           web3APIHandler.Erc20["JOT"].balanceOf(web3, JotAddress, { account }),
-        ]);
+          web3APIHandler.Erc20["USDT"].decimals(web3),
+          web3APIHandler.Erc20["USDT"].balanceOf(web3, { account }),
+        ];
       }
 
-      const response = await Promise.all(promises);
+      const response: any = await Promise.all(promises);
+      const data = response[0].data ?? {};
 
-      if (response[1]) {
-        const usdt = parseInt(toDecimals(response[1], response[0]));
-        setUsdtBalance(usdt);
+      if (data.success) {
+        const JotPrice = +data.data?.[0]?.token1Price;
+        if (JotPrice !== 0) {
+          const usdt = parseInt(toDecimals(response[4], response[3]));
+
+          setJotsBalance(Math.floor(usdt / JotPrice));
+        }
       }
 
-      if (JotAddress && response[3]) {
-        const jots = parseInt(toDecimals(response[3], response[2]));
-        setJotsBalance(jots);
+      if (JotAddress && response[2]) {
+        const jots = parseInt(toDecimals(response[2], response[1]));
+        setMaxJots(jots);
       }
     })();
   }, [open, selectedChain]);
@@ -89,12 +106,12 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
             <span>Wallet Balance</span>
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
-              <Box fontWeight="700">{usdtBalance} USDT</Box>
+              <Box fontWeight="700">{jotsBalance} JOTS</Box>
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">
             <span>
-              MAX: <b>{jotsBalance}</b>
+              MAX: <b>{maxJots}</b>
             </span>
             <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => setLiquidity(jotsBalance)}>
               Add All

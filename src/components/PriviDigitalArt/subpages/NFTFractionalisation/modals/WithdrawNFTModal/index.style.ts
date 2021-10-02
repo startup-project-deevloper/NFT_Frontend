@@ -48,5 +48,9 @@ export const useWithdrawNFTModelStyles = makeStyles((theme: Theme) =>
         textAlign: 'center',
       },
     },
+    divider: {
+      marginLeft: -32,
+      marginRight: -32,
+    },
   }),
 );

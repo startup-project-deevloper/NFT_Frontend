@@ -7,9 +7,13 @@ import { createTheme, Grid, useMediaQuery } from "@material-ui/core";
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import SyntheticCollectionCard from "components/PriviDigitalArt/components/Cards/SyntheticCollectionCard";
-import { getSyntheticCollections, getSyntheticFeaturedCollections } from "shared/services/API/SyntheticFractionalizeAPI";
+import {
+  getSyntheticCollections,
+  getSyntheticFeaturedCollections,
+} from "shared/services/API/SyntheticFractionalizeAPI";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { nftFractionalisationStyles } from "../../index.styles";
+import { AnyARecord } from "dns";
 
 const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
   400: 1,
@@ -115,7 +119,7 @@ const SyntheticFractionalisePage = ({
                   >
                     Synthetic Fractionalise NFT
                   </div>
-                  <div className={classes.tradeNFTBtnWrapper} onClick={() => { }}>
+                  <div className={classes.tradeNFTBtnWrapper} onClick={() => {}}>
                     <div className={classes.tradeNFTBtn}>Trade NFT Derivatives</div>
                   </div>
                 </Grid>
@@ -134,12 +138,12 @@ const SyntheticFractionalisePage = ({
           <div className={classes.topNFTWrapper}>
             <Box className={classes.topNFTTitle} justifyContent="space-between">
               <span>Featured NFT Collections</span>
-              {featuredCollections && featuredCollections.length && 
-              ((isMobile && featuredCollections.length>1) || 
-               (isTablet && featuredCollections.length>2) || 
-               (isNormalScreen && featuredCollections.length>3) ||
-               featuredCollections.length > 4)
-              ? (
+              {featuredCollections &&
+              featuredCollections.length &&
+              ((isMobile && featuredCollections.length > 1) ||
+                (isTablet && featuredCollections.length > 2) ||
+                (isNormalScreen && featuredCollections.length > 3) ||
+                featuredCollections.length > 4) ? (
                 <Box display="flex" alignItems="center">
                   <Box
                     className={classes.carouselNav}
@@ -187,19 +191,24 @@ const SyntheticFractionalisePage = ({
                     </svg>
                   </Box>
                 </Box>
-              ) : (<></>)}
+              ) : (
+                <></>
+              )}
             </Box>
             <div className={classes.topNFTContent}>
               {featuredCollections && featuredCollections.length ? (
                 !isMobile && featuredCollections.length === 2 ? (
                   <Box display="flex" alignItems="center">
-                    {featuredCollections.map((item: any, i: Number) => (
-                      <div style={{
-                        width: "100%",
-                        paddingBottom: "15px",
-                        margin: "0 20px",
-                      }}>
-                        <SyntheticCollectionCard item={item} key={item.id} />
+                    {featuredCollections.map((item: any) => (
+                      <div
+                        key={item.id}
+                        style={{
+                          width: "100%",
+                          paddingBottom: "15px",
+                          margin: "0 20px",
+                        }}
+                      >
+                        <SyntheticCollectionCard item={item} />
                       </div>
                     ))}
                   </Box>
@@ -213,14 +222,24 @@ const SyntheticFractionalisePage = ({
                     itemPadding={[0, 12]}
                   >
                     {featuredCollections.map((item: any, i: Number) => (
-                      <div style={{
-                        width: "100%",
-                        paddingBottom: "15px",
-                        display: "flex",
-                        justifyContent: isMobile ? "center" : featuredCollections.length === 2 && i === 1 ? "flex-end"
-                          : featuredCollections.length === 3 && i === 1 ? "center" : featuredCollections.length === 3 && i === 2 ? "flex-end" : "flex-start"
-                      }}>
-                        <SyntheticCollectionCard item={item} key={item.id} />
+                      <div
+                        key={item.id}
+                        style={{
+                          width: "100%",
+                          paddingBottom: "15px",
+                          display: "flex",
+                          justifyContent: isMobile
+                            ? "center"
+                            : featuredCollections.length === 2 && i === 1
+                            ? "flex-end"
+                            : featuredCollections.length === 3 && i === 1
+                            ? "center"
+                            : featuredCollections.length === 3 && i === 2
+                            ? "flex-end"
+                            : "flex-start",
+                        }}
+                      >
+                        <SyntheticCollectionCard item={item} />
                       </div>
                     ))}
                   </Carousel>

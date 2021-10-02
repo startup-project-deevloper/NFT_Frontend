@@ -24,7 +24,7 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import Axios from "axios";
-import {PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 
 const FreeHoursChartConfig = {
   config: {
@@ -117,7 +117,7 @@ const FreeHoursChartConfig = {
         intersect: false,
         callbacks: {
           //This removes the tooltip title
-          title: function () {},
+          title: function () { },
           label: function (tooltipItem, data) {
             return `$${tooltipItem.yLabel.toFixed(4)}`;
           },
@@ -278,6 +278,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openAddJOTsModal, setOpenAddJOTsModal] = React.useState<boolean>(false);
   const [openQuickSwapModal, setOpenQuickSwapModal] = React.useState<boolean>(false);
   const [openWithdrawJOTsModal, setOpenWithdrawJOTsModal] = React.useState<boolean>(false);
+  const [remainingTime, setRemainingTime] = React.useState<any>({ day: 0, hour: 0, min: 0, sec: 0 });
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -323,8 +324,26 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   React.useEffect(() => {
     handleRefresh();
-    getJotPrice()
+    getJotPrice();
   }, [collectionId, nft]);
+
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      const currTimeInSec = Math.floor(Date.now() / 1000);
+      const timeDiff = 1633730874 - currTimeInSec;
+      const day = timeDiff >= 0 ? Math.floor(timeDiff / (3600 * 24)) : 0;
+      const hour = timeDiff >= 0 ? Math.floor((timeDiff % (3600 * 24)) / 3600) : 0;
+      const min = timeDiff >= 0 ? Math.floor((timeDiff % 3600) / 60) : 0;
+      const sec = timeDiff >= 0 ? Math.floor(timeDiff % 60) : 0;
+      setRemainingTime({
+        day,
+        hour,
+        min,
+        sec,
+      });
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
 
   const getJotPrice = async () => {
     const targetChain = BlockchainNets[1];
@@ -345,7 +364,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setJotPrice(data.token0Price)
       }
     });
-      nft.JotAddress
+    nft.JotAddress
   }
 
   const handleRefresh = React.useCallback(() => {
@@ -433,13 +452,27 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       {isOwnerShipTab ? (
         <Box className={classes.outBox}>
           <Box display="flex" flexDirection="column">
-            <Box
-              className={`${classes.h1} ${classes.ownerTitle}`}
-              sx={{ fontWeight: 800, fontFamily: "Agrandir" }}
-            >
-              Ownership management
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Box
+                className={`${classes.h1} ${classes.ownerTitle}`}
+                sx={{ fontWeight: 800, fontFamily: "Agrandir" }}
+              >
+                Ownership management
+              </Box>
+              <Box className={classes.jotButton}>
+                Buy Back for 10k Jots
+              </Box>
             </Box>
-            <Box
+            <Box display="flex" alignItems="center">
+              <Box className={classes.dayBox} mr={0.5}>{remainingTime.day} Days</Box>
+              <Box className={classes.timeBox} mr={0.5}>{remainingTime.hour}h</Box>
+              <Box className={classes.timeBox} mr={0.5}>{remainingTime.min}min</Box>
+              <Box className={classes.timeBox}>{remainingTime.sec}s</Box>
+            </Box>
+            <Box className={classes.descBox} mt={4.5}>
+              Your position has been liquidated, you can buy back your NFT at 10k JOTS for next 7 days. After that time the NFT will go for an auction.
+            </Box>
+            {/* <Box
               className={classes.progressContainer}
               style={{
                 background: percentage < 33 ? "#FFE8E1" : percentage < 66 ? "#FFF8E1" : "#E1FFEA",
@@ -623,7 +656,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                   </PrimaryButton>
                 </Box>
               </Box>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       ) : (
@@ -949,9 +982,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
       />
-      <QuickSwapModal 
-        open={openQuickSwapModal} 
-        handleClose={() => setOpenQuickSwapModal(false)} 
+      <QuickSwapModal
+        open={openQuickSwapModal}
+        handleClose={() => setOpenQuickSwapModal(false)}
         collectionId={collectionId}
         nft={nft}
       />
@@ -959,7 +992,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         loading={loading}
         title={`Transaction \nin progress`}
         subTitle={`Transaction is proceeding on ${BlockchainNets[1].value}.\nThis can take a moment, please be patient...`}
-        handleClose={() => {}}
+        handleClose={() => { }}
       ></LoadingScreen>
     </Box>
   );

@@ -449,7 +449,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 <Box className={classes.progressTitle} display="flex" alignItems="center">
                   <span>Margin left before Liquidation</span>
                   <span>
-                    100 / <b>2455 JOTs</b>
+                    {ownershipJot} / <b>{totalJot} JOTs</b>
                   </span>
                 </Box>
                 <Box

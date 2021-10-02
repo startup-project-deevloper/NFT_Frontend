@@ -473,7 +473,7 @@ const syntheticCollectionManager = (network: string) => {
           },
         } = response;
 
-        await new Promise(resolve => setTimeout(resolve, 20000));
+        await new Promise(resolve => setTimeout(resolve, 10000));
 
         await contract.getPastEvents(
           "VerifyResponseReceived",
@@ -580,10 +580,12 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, JotAddress, SyntheticID: tokenId } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        console.log(SyntheticCollectionManagerAddress)
+        console.log(SyntheticCollectionManagerAddress);
         const gas = await contract.methods.exchangeOwnerJot(tokenId, amount).estimateGas({ from: account });
-        console.log(gas)
-        const response = await contract.methods.exchangeOwnerJot(tokenId, amount).send({ from: account, gas: gas });
+        console.log(gas);
+        const response = await contract.methods
+          .exchangeOwnerJot(tokenId, amount)
+          .send({ from: account, gas: gas });
 
         if (response) {
           console.log(response);
@@ -596,7 +598,7 @@ const syntheticCollectionManager = (network: string) => {
         resolve({ success: false });
       }
     });
-  }
+  };
 
   return {
     buyJotTokens,
@@ -615,7 +617,7 @@ const syntheticCollectionManager = (network: string) => {
     addLiquidityToPool,
     getSoldSupply,
     getAccruedReward,
-    exchangeOwnerJot
+    exchangeOwnerJot,
   };
 };
 

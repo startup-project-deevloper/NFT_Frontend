@@ -387,7 +387,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
                     <div className={classes.typo2}>
-                      {(isOwner ? getUserInfo(nft.OwnerAddress)?.name : nft.OwnerAddress) ?? ""}
+                      {(isOwner
+                        ? getUserInfo(nft.OwnerAddress)?.name
+                        : (nft.OwnerAddress ?? "").substr(0, 5) +
+                          "..." +
+                          (nft.OwnerAddress ?? "").substr((nft.OwnerAddress ?? "").length - 5, 5)) ?? ""}
                     </div>
                   </Box>
                 </Box>
@@ -405,8 +409,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
               {nft &&
-                nft.follows &&
-                nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+              nft.follows &&
+              nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
                 <div className={classes.plusSection} style={{ cursor: "pointer" }} onClick={handleUnfollow}>
                   <span>Following</span>
                 </div>
@@ -598,7 +602,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           onProceed={handleProceedChangeLockedNFT}
         />
         <WithdrawNFTModel open={openWithdrawNFTModal} onClose={handleCloseWithdrawNFTModal} />
-        <Modal size="small" isOpen={withDrawn} onClose={() => { }} className={classes.withDrawnModal}>
+        <Modal size="small" isOpen={withDrawn} onClose={() => {}} className={classes.withDrawnModal}>
           <img src={require("assets/icons/crystal_camera.png")} alt="" />
           <Box color={"#431AB7"} paddingLeft={1}>
             This NFT is beeing withdrawn

@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
+import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import Moment from "react-moment";
 
@@ -44,6 +45,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 }) => {
   const params: { collectionId?: string; nftId?: string } = useParams();
 
+  const history = useHistory();
   const userSelector = useSelector((state: RootState) => state.user);
   const classes = fractionalisedCollectionStyles();
 
@@ -386,10 +388,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 <Box display="flex" alignItems="center">
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
-                    <div className={classes.typo2}>
-                      {(isOwner
-                        ? getUserInfo(nft.OwnerAddress)?.name
-                        : (nft.OwnerAddress ?? "").substr(0, 5) +
+                    <div className={classes.typo2} onClick={() => history.push(`/pix/${getUserInfo(nft.OwnerAddress)?.urlSlug}/profile`)}>
+                      {(getUserInfo(nft.OwnerAddress)?.name ?? (nft.OwnerAddress ?? "").substr(0, 5) +
                           "..." +
                           (nft.OwnerAddress ?? "").substr((nft.OwnerAddress ?? "").length - 5, 5)) ?? ""}
                     </div>

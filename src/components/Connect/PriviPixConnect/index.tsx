@@ -87,8 +87,6 @@ const PriviPixConnect = () => {
 
   useEffect(() => {
     if (account && account.length > 0) {
-      console.log(account, "account");
-
       axios
         .post(`${URL()}/wallet/getEthAddressStatus`, {
           address: account,
@@ -105,9 +103,6 @@ const PriviPixConnect = () => {
                 if (res.isSignedIn) {
                   setSignedin(true);
                   const data = res.userData;
-
-                  console.log(data, "userdata", res, "res");
-
                   if (!socket) {
                     const sock = io(URL(), { query: { token: res.accessToken } });
                     sock.connect();

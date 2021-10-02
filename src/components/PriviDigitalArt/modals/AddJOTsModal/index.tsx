@@ -21,6 +21,7 @@ export default function AddJotsModal({
   open,
   collectionId,
   nft,
+  setNft,
   handleRefresh = () => {},
   handleClose = () => {},
 }) {
@@ -138,7 +139,11 @@ export default function AddJotsModal({
       return;
     }
 
-    showAlertMessage("You bought JOTs successuflly", { variant: "success" });
+    setNft({
+      ...nft,
+      OwnerSupply: (+nft.OwnerSupply + +jots).toString(),
+    });
+    showAlertMessage("You added JOTs successuflly", { variant: "success" });
     handleRefresh();
     handleClose();
   };

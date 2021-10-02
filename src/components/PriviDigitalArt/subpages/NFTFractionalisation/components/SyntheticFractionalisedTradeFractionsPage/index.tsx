@@ -260,6 +260,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   isOwnerShipTab = false,
   collectionId,
   nft,
+  setNft
 }: any) {
   const history = useHistory();
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
@@ -941,6 +942,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         handleClose={() => setOpenAddJOTsModal(false)}
         collectionId={collectionId}
         nft={nft}
+        setNft={setNft}
       />
 
       <WithdrawJOTsModal
@@ -948,6 +950,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         handleClose={() => setOpenWithdrawJOTsModal(false)}
         collectionId={collectionId}
         nft={nft}
+        setNft={setNft}
       />
       <QuickSwapModal 
         open={openQuickSwapModal} 

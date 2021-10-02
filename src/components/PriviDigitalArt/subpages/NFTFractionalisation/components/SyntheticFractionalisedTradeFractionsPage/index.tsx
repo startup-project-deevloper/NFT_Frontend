@@ -920,25 +920,22 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           )}
         </>
       )}
-
-      <Box className={classes.outBox}>
-        <Box className={classes.boxBody}>
-          <Box className={classes.chart}>
-            {(!ownerHistory || !ownerHistory.length) && <div className="no-data">There are no data yet.</div>}
-            <Box className={classes.controlParentBox}>
-              <Box fontSize={16} fontWeight={700} color="white">
-                Ownership over time
-              </Box>
-              <Box display="flex" flexDirection="column">
-                <h2 className={classes.graphTitle}>{currentSupply.price} USDC</h2>
-                <Moment format="DD MMM YYYY" className={classes.graphDesc}>
-                  {currentSupply.date}
-                </Moment>
-              </Box>
+      <Box className={classes.boxBody} width={1} mb="10px">
+        <Box className={classes.chart}>
+          {(!ownerHistory || !ownerHistory.length) && <div className="no-data">There are no data yet.</div>}
+          <Box className={classes.controlParentBox}>
+            <Box fontSize={16} fontWeight={700} color="white">
+              Ownership over time
             </Box>
-            <Box height={300} width={1}>
-              {rewardConfig && <PrintChart config={rewardConfig} />}
+            <Box display="flex" flexDirection="column">
+              <h2 className={classes.graphTitle}>{currentSupply.price} USDC</h2>
+              <Moment format="DD MMM YYYY" className={classes.graphDesc}>
+                {currentSupply.date}
+              </Moment>
             </Box>
+          </Box>
+          <Box height={300} width={1}>
+            {rewardConfig && <PrintChart config={rewardConfig} />}
           </Box>
         </Box>
       </Box>

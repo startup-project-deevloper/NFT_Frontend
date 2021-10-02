@@ -83,6 +83,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     [nft, userSelector]
   );
 
+  const isOver10K = React.useMemo(
+    () => nft && (nft.OwnerSupply >= 10000),
+    [nft]
+  );
+
   useEffect(() => {
     setSelectedTab(isOwner ? "ownership" : "flip_coin");
   }, [isOwner]);
@@ -325,7 +330,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           >
             <BackButton purple overrideFunction={goBack} />
             <Box display="flex" alignItems="center" className={classes.topButtonContainer}>
-              {isOwner ? (
+              {isOwner && isOver10K ? (
                 <PrimaryButton
                   size="medium"
                   onClick={() => handleOpenWithdrawNFTModal()}
@@ -597,7 +602,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           onClose={handleCloseChangeLockedNFTModal}
           onProceed={handleProceedChangeLockedNFT}
         />
-        <WithdrawNFTModel open={openWithdrawNFTModal} onClose={handleCloseWithdrawNFTModal} />
+        <WithdrawNFTModel open={openWithdrawNFTModal} onClose={handleCloseWithdrawNFTModal} nft={nft}/>
         <Modal size="small" isOpen={withDrawn} onClose={() => { }} className={classes.withDrawnModal}>
           <img src={require("assets/icons/crystal_camera.png")} alt="" />
           <Box color={"#431AB7"} paddingLeft={1}>

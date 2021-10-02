@@ -598,6 +598,29 @@ const syntheticCollectionManager = (network: string) => {
     });
   }
 
+  const exitProtocol = async (web3: Web3, account: string, nft: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { SyntheticCollectionManagerAddress, syntheticId } = nft;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const gas = await contract.methods.exitProtocol(syntheticId).estimateGas({ from: account });
+        console.log(gas)
+        const response = await contract.methods.exitProtocol(syntheticId).send({ from: account, gas: gas });
+
+        if (response) {
+          console.log(response);
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  }
+
   return {
     buyJotTokens,
     depositJots,
@@ -615,7 +638,8 @@ const syntheticCollectionManager = (network: string) => {
     addLiquidityToPool,
     getSoldSupply,
     getAccruedReward,
-    exchangeOwnerJot
+    exchangeOwnerJot,
+    exitProtocol
   };
 };
 

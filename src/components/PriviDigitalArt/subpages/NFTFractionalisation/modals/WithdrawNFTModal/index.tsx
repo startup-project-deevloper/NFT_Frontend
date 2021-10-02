@@ -3,8 +3,10 @@ import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { useWithdrawNFTModelStyles } from "./index.style"
 import { useWeb3React } from "@web3-react/core";
+import Web3 from "web3";
+import { BlockchainNets } from "shared/constants/constants";
 
-export default function WithdrawNFTModel({ open, onClose }) {
+export default function WithdrawNFTModel({ open, onClose, nft }) {
   const classes = useWithdrawNFTModelStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,14 +22,18 @@ export default function WithdrawNFTModel({ open, onClose }) {
     setIsLoading(true);
     setIsProceeding(true);
 
-    try {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-    } catch (err) {
-      console.log("error", err);
+    const targetChain = BlockchainNets[1];
+    const web3 = new Web3(library.provider);
+    const web3APIHandler = targetChain.apiHandler;
+    await web3APIHandler.SyntheticCollectionManager.exitProtocol(web3, account, nft)
+    .then((response) => {
       setIsLoading(false);
-    }
+      console.log(response)
+    })
+    .catch(err => {
+      console.log("error", err);      
+      setIsLoading(false);
+    })
   };
 
   return (

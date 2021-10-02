@@ -137,6 +137,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       },
     },
     [theme.breakpoints.down(768)]: {
+      width: "calc(50% - 8px)",
       "& > div": {
         padding: 0,
         justifyContent: "center",
@@ -146,7 +147,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   },
   orderBookBtn: {
     background: "#431AB7",
-    padding: "10px 28px",
+    padding: "12px 28px",
     borderRadius: 8,
     fontSize: 18,
     fontWeight: 800,
@@ -158,7 +159,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     background: "#431AB7",
-    padding: "10px 32px",
+    padding: "12px 32px",
     borderRadius: 7,
     cursor: "pointer",
     marginLeft: 24,
@@ -283,6 +284,27 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     color: "#ffffff66",
     marginTop: 4,
   },
+  typo5: {
+    fontSize: 18,
+    fontWeight: 800,
+    lineHeight: "104.5%",
+    fontFamily: "Agrandir",
+    textTransform: "uppercase",
+    color: "#DDFF57",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 16,
+    },
+  },
+  typo6: {
+    fontSize: 14,
+    fontWeight: 800,
+    lineHeight: "104.5%",
+    fontFamily: "Agrandir",
+    textTransform: "uppercase",
+    color: "#DDFF57",
+    opacity: 0.6,
+    marginTop: 4,
+  },
   shareSection: {
     display: "flex",
     paddingLeft: 24,
@@ -379,7 +401,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     borderRadius: 8,
     padding: "9px 18px 9px 6px",
     [theme.breakpoints.down("xs")]: {
-      padding: "0 0",
+      padding: "13px 11px",
     },
     color: "white",
     fontWeight: 800,

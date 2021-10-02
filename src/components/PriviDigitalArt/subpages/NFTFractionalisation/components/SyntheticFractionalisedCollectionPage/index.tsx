@@ -6,7 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-import { Grid, useMediaQuery } from "@material-ui/core";
+import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
 
 import { RootState } from "store/reducers/Reducer";
 import { CircularLoadingIndicator } from "shared/ui-kit";
@@ -20,6 +20,7 @@ import { getSyntheticCollection } from "shared/services/API/SyntheticFractionali
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import {
   fractionalisedCollectionStyles,
   EthIcon,
@@ -50,19 +51,54 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
 
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
-  const isMobile = useMediaQuery("(max-width:599px)");
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.between(769, 960));
+  const isMobile = useMediaQuery(theme.breakpoints.down(700));
 
   const [loadingNFTs, setLoadingNFTs] = useState<boolean>(false);
   const [showOrderBookModal, setShowOrderBookModal] = useState<boolean>(false);
+  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+  const [jotPrice, setJotPrice] = React.useState<number>(0);
+
+  useEffect(() => {
+    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
+      (async () => {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) {
+          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
+        }
+      })();
+    }
+  }, [chainId, selectedChain]);
 
   useEffect(() => {
     if (!params.id) return;
+    const web3Config = selectedChain.config;
 
     (async () => {
       try {
         const response = await getSyntheticCollection(params.id);
         if (response.success) {
           setCollection(response.data);
+          axios.get(`${PriceFeed_URL()}/quickswap/pairs`, {
+            headers: {
+              Authorization: `Basic ${PriceFeed_Token()}`,
+            }
+          })
+          const JotPriceResponse = await axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
+            headers: {
+              Authorization: `Basic ${PriceFeed_Token()}`,
+            },
+            params: {
+              token1: response.data.JotAddress.toLowerCase(),
+              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
+            },
+          })
+
+          if (JotPriceResponse.data?.success) {
+            const jotPrice = +JotPriceResponse.data?.data?.[0]?.token1Price ?? 0;
+            setJotPrice(Math.floor(jotPrice * 10000) / 10000)
+          }
         }
       } catch (err) {
         console.log(err);
@@ -219,46 +255,96 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     <div className={classes.root} onScroll={handleScroll}>
       <div className={classes.collectionInfoSection}>
         <Box display="flex" justifyContent="space-between" className={classes.backButtonContainer}>
-          <BackButton
-            purple
-            overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
-          />
-          <Box display="flex" className={classes.buttonWrapper}>
-            <Box
-              onClick={handleOrderBook}
-              className={classes.orderBookBtn}
-              display="flex"
-              alignItems="center"
-            >
-              <img
-                src={require("assets/icons/order-book.svg")}
-                alt=""
-                style={{ marginRight: "8px", height: "24px", width: "24px" }}
-              />
-              Order Book
+          {!isMobile && (
+            <BackButton
+              purple
+              overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
+            />
+          )}
+          {isMobile && (
+            <Box display="flex" flexDirection="column" alignItems="end" width="100%">
+              <Box display="flex" justifyContent="space-between" width="100%" marginBottom="16px">
+                <BackButton
+                  purple
+                  overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
+                />
+                <Box
+                  onClick={handleAddToMetamask}
+                  className={classes.metaMaskBtn}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  marginLeft={1}
+                  width="fit-content"
+                >
+                  <MetamaskPlusIcon />
+                  <img
+                    src={require("assets/walletImages/metamask.svg")}
+                    alt=""
+                    style={{ marginLeft: "5px", width: "22px" }}
+                  />
+                </Box>
+              </Box>
+              <Box display="flex" width="100%" justifyContent="space-between">
+                <Box
+                  onClick={handleOrderBook}
+                  className={classes.orderBookBtn}
+                  display="flex"
+                  alignItems="center"
+                  width="calc(50% - 8px)"
+                >
+                  <img
+                    src={require("assets/icons/order-book.svg")}
+                    alt=""
+                    style={{ marginRight: "8px", height: "24px", width: "24px" }}
+                  />
+                  Order Book
+                </Box>
+                <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+                  <div>
+                    <span>TRADE DERIVATIVES</span>
+                  </div>
+                </div>
+              </Box>
             </Box>
-            <div className={classes.tradeDerivativeButton} onClick={() => {}}>
-              <div>
-                <span>TRADE DERIVATIVES</span>
+          )}
+          {!isMobile && (
+            <Box display="flex" className={classes.buttonWrapper}>
+              <Box
+                onClick={handleOrderBook}
+                className={classes.orderBookBtn}
+                display="flex"
+                alignItems="center"
+              >
+                <img
+                  src={require("assets/icons/order-book.svg")}
+                  alt=""
+                  style={{ marginRight: "8px", height: "24px", width: "24px" }}
+                />
+                Order Book
+              </Box>
+              <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+                <div>
+                  <span>TRADE DERIVATIVES</span>
+                </div>
               </div>
-            </div>
-            <Box
-              onClick={handleAddToMetamask}
-              className={classes.metaMaskBtn}
-              display="flex"
-              alignItems="center"
-              justifyContent={isMobile ? "center" : "flex-start"}
-              marginLeft={1}
-            >
-              {!isMobile && <MetamaskPlusIcon />}
-              <img
-                src={require("assets/walletImages/metamask.svg")}
-                alt=""
-                style={{ marginRight: isMobile ? "8px" : "0", height: "24px", width: "24px" }}
-              />
-              {isMobile && "Add to Metamask"}
+              <Box
+                onClick={handleAddToMetamask}
+                className={classes.metaMaskBtn}
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-start"
+                marginLeft={1}
+              >
+                <img
+                  src={require("assets/walletImages/metamask.svg")}
+                  alt=""
+                  style={{ marginRight: "0", height: "24px", width: "24px" }}
+                />
+                Add to Metamask
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
         <div className={classes.collectionMainContent}>
           <img
@@ -348,21 +434,45 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
           <Box className={classes.collectionInfos}>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>1.827 ETH</div>
-              <div className={classes.typo4}>fraction Price</div>
+              <div className={classes.typo5}>{collection.stakingReward ?? 0}</div>
+              <div className={classes.typo6}>STAKING APR</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
-              <div className={classes.typo4}>locked NFTs in</div>
+              <div className={classes.typo5}>${collection.CumulativeRevenue ?? 0}</div>
+              <div className={classes.typo6}>ACCRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>${collection.CumulativeRevenue ?? 0}</div>
-              <div className={classes.typo4}>ACCRUED REWARD</div>
+              <div className={classes.typo3}>{jotPrice} </div>
+              <div className={classes.typo4}>JOT PRICE</div>
             </Box>
-            <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>{circulatingSupply}</div>
-              <div className={classes.typo4}>Circulating Supply</div>
-            </Box>
+            {
+              (isMobile || isTablet) && (
+                <Box display="flex">
+                  <Box display="flex" flexDirection="column">
+                    <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
+                    <div className={classes.typo4}>locked NFTs in</div>
+                  </Box>
+                  <Box display="flex" flexDirection="column">
+                    <div className={classes.typo3}>{circulatingSupply}</div>
+                    <div className={classes.typo4}>Circulating Supply</div>
+                  </Box>
+                </Box>
+              )
+            }
+            {
+              !isMobile && !isTablet && (
+                <>
+                  <Box display="flex" flexDirection="column">
+                    <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
+                    <div className={classes.typo4}>locked NFTs in</div>
+                  </Box>
+                  <Box display="flex" flexDirection="column">
+                    <div className={classes.typo3}>{circulatingSupply}</div>
+                    <div className={classes.typo4}>Circulating Supply</div>
+                  </Box>
+                </>
+              )
+            }
           </Box>
         </div>
       </div>

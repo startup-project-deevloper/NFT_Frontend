@@ -464,6 +464,13 @@ const syntheticCollectionManager = (network: string) => {
             setHash(hash);
           });
 
+        // Temporaily purpose due to oracle issue
+        if (response) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+        /*
         const {
           events: {
             VerificationRequested: {
@@ -473,7 +480,7 @@ const syntheticCollectionManager = (network: string) => {
           },
         } = response;
 
-        await new Promise(resolve => setTimeout(resolve, 20000));
+        await new Promise(resolve => setTimeout(resolve, 10000));
 
         await contract.getPastEvents(
           "VerifyResponseReceived",
@@ -488,6 +495,7 @@ const syntheticCollectionManager = (network: string) => {
             resolve({ success: event?.verified ?? false });
           }
         );
+        */
       } catch (e) {
         console.log(e);
         resolve({ success: false });
@@ -580,10 +588,12 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, JotAddress, SyntheticID: tokenId } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        console.log(SyntheticCollectionManagerAddress)
+        console.log(SyntheticCollectionManagerAddress);
         const gas = await contract.methods.exchangeOwnerJot(tokenId, amount).estimateGas({ from: account });
-        console.log(gas)
-        const response = await contract.methods.exchangeOwnerJot(tokenId, amount).send({ from: account, gas: gas });
+        console.log(gas);
+        const response = await contract.methods
+          .exchangeOwnerJot(tokenId, amount)
+          .send({ from: account, gas: gas });
 
         if (response) {
           console.log(response);
@@ -596,7 +606,7 @@ const syntheticCollectionManager = (network: string) => {
         resolve({ success: false });
       }
     });
-  }
+  };
 
   const exitProtocol = async (web3: Web3, account: string, nft: any): Promise<any> => {
     return new Promise(async resolve => {

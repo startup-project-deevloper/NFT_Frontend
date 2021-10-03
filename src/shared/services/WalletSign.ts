@@ -49,7 +49,6 @@ export async function signWithMetamask(address: string, web3: Web3, domain: stri
         from: address,
       },
       function (err, result) {
-        console.log('err', err)
         if (err) reject("error occurred");
         if (result.error) reject("error occurred");
         resolve(result.result);

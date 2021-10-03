@@ -643,6 +643,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
           open={openLiquidityModal}
           handleClose={() => setOpenLiquidityModal(false)}
           onConfirm={handleConfirmAddLiquidity}
+          JotAddress={collection.JotAddress}
         />
       )}
       <RemoveLiquidityModal

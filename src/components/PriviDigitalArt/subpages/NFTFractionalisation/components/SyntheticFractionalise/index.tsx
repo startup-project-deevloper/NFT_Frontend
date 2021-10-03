@@ -30,7 +30,7 @@ const parseMoralisData = (data, address, selectedChain) => {
     HasPhoto: metadata.image != undefined,
     Hashtags: [],
     MediaDescription: metadata.description,
-    MediaName: data.name ? data.name : data.symbol,
+    MediaName: metadata.name ? metadata.name : data.name ? data.name : data.symbol,
     MediaSymbol: data.symbol ? data.symbol : data.name,
     Type: "DIGITAL_ART_TYPE",
     Url: metadata.image,

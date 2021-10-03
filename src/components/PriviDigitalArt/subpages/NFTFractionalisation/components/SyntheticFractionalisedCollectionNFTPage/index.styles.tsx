@@ -127,6 +127,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     color: Color.White,
     marginTop: 6,
+    cursor: 'pointer'
   },
   typo3: {
     fontSize: 38,

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import cls from "classnames";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
+import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import Moment from "react-moment";
 
@@ -44,6 +45,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 }) => {
   const params: { collectionId?: string; nftId?: string } = useParams();
 
+  const history = useHistory();
   const userSelector = useSelector((state: RootState) => state.user);
   const classes = fractionalisedCollectionStyles();
 
@@ -87,6 +89,19 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     () => nft && (nft.OwnerSupply >= 10000),
     [nft]
   );
+
+  const userName = React.useMemo(() => {
+    let name: string = "";
+    const ownerAddress: string = nft.OwnerAddress ?? ""
+
+    if (ownerAddress) {
+      name = getUserInfo(ownerAddress)?.name ?? 
+        ownerAddress.substr(0, 5) + "..." + ownerAddress.substr(ownerAddress.length - 5, 5) ?? ""
+    }
+
+    return name;
+  }, [nft])
+
 
   useEffect(() => {
     setSelectedTab(isOwner ? "ownership" : "flip_coin");
@@ -391,8 +406,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 <Box display="flex" alignItems="center">
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
-                    <div className={classes.typo2}>
-                      {(isOwner ? getUserInfo(nft.OwnerAddress)?.name : nft.OwnerAddress) ?? ""}
+                    <div className={classes.typo2} onClick={() => history.push(`/pix/${getUserInfo(nft.OwnerAddress)?.urlSlug}/profile`)}>
+                      {userName}
                     </div>
                   </Box>
                 </Box>
@@ -410,8 +425,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 {!isOwner && <FruitSelect fruitObject={nft} onGiveFruit={handleGiveFruit} />}
               </div>
               {nft &&
-                nft.follows &&
-                nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
+              nft.follows &&
+              nft.follows.filter(item => item.userId === userSelector.id).length > 0 ? (
                 <div className={classes.plusSection} style={{ cursor: "pointer" }} onClick={handleUnfollow}>
                   <span>Following</span>
                 </div>
@@ -582,6 +597,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwner={isOwner}
                 collectionId={params.collectionId}
                 nft={nft}
+                setNft={setNft}
               />
             </div>
           ) : selectedTab === "ownership" ? (
@@ -591,6 +607,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwnerShipTab={true}
                 collectionId={params.collectionId}
                 nft={nft}
+                setNft={setNft}
               />
             </div>
           ) : (
@@ -602,8 +619,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           onClose={handleCloseChangeLockedNFTModal}
           onProceed={handleProceedChangeLockedNFT}
         />
+
         <WithdrawNFTModel open={openWithdrawNFTModal} onClose={handleCloseWithdrawNFTModal} nft={nft}/>
-        <Modal size="small" isOpen={withDrawn} onClose={() => { }} className={classes.withDrawnModal}>
+        <Modal size="small" isOpen={withDrawn} onClose={() => {}} className={classes.withDrawnModal}>
           <img src={require("assets/icons/crystal_camera.png")} alt="" />
           <Box color={"#431AB7"} paddingLeft={1}>
             This NFT is beeing withdrawn

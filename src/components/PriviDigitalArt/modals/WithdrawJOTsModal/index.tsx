@@ -21,6 +21,7 @@ export default function WithdrawJotsModal({
   open,
   collectionId,
   nft,
+  setNft,
   handleRefresh = () => {},
   handleClose = () => {},
 }) {
@@ -58,12 +59,11 @@ export default function WithdrawJotsModal({
       setDisabled(true);
       const web3APIHandler = selectedChain.apiHandler;
       const web3 = new Web3(library.provider);
-      setMaxJot(nft.OwnerSupply);
+      setMaxJot(+nft.OwnerSupply);
 
       const jotDecimals = await web3APIHandler.Erc20["JOT"].decimals(web3, nft.JotAddress);
       const jotBalance = await web3APIHandler.Erc20["JOT"].balanceOf(web3, nft.JotAddress, { account });
       const jot = parseInt(toDecimals(jotBalance || 0, jotDecimals));
-
       setJotBalance(jot);
       setDisabled(false);
     })();
@@ -90,23 +90,6 @@ export default function WithdrawJotsModal({
     const web3APIHandler = targetChain.apiHandler;
     const web3 = new Web3(library.provider);
 
-    const decimals = await web3APIHandler.Erc20["JOT"].decimals(web3, nft.JotAddress);
-    const amount = toNDecimals(+jots * (+nft.Price || 1), decimals);
-    const approveResponse = await web3APIHandler.Erc20["JOT"].approve(
-      web3,
-      account!,
-      nft.SyntheticCollectionManagerAddress,
-      nft.JotAddress,
-      amount
-    );
-
-    if (!approveResponse) {
-      setLoading(false);
-      setResult(-1);
-      showAlertMessage("Failed to approve. Please try again", { variant: "error" });
-      return;
-    }
-
     const contractResponse = await web3APIHandler.SyntheticCollectionManager.withdrawJots(
       web3,
       account!,
@@ -119,28 +102,30 @@ export default function WithdrawJotsModal({
     if (!contractResponse.success) {
       setLoading(false);
       setResult(-1);
-      showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
+      showAlertMessage("Failed to Withdraw Jots. Please try again", { variant: "error" });
       return;
     }
 
     setHash(contractResponse.data.hash);
 
-    // const response = await withdrawJots({
-    //   collectionId,
-    //   syntheticId: nft.SyntheticID,
-    //   amount: jots,
-    //   investor: account!,
-    //   hash: contractResponse.data.hash,
-    // });
+    const response = await withdrawJots({
+      collectionId,
+      syntheticId: nft.SyntheticID,
+      amount: +jots,
+    });
 
     setResult(1);
     setLoading(false);
-    // if (!response.success) {
-    //   showAlertMessage("Failed to save transactions.", { variant: "error" });
-    //   return;
-    // }
+    if (!response.success) {
+      showAlertMessage("Failed to save transactions.", { variant: "error" });
+      return;
+    }
 
-    showAlertMessage("You bought JOTs successuflly", { variant: "success" });
+    setNft({
+      ...nft,
+      OwnerSupply: (+nft.OwnerSupply - +jots).toString(),
+    });
+    showAlertMessage("You Withdraw JOTs successuflly", { variant: "success" });
     handleRefresh();
     handleClose();
   };

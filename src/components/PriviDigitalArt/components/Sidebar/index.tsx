@@ -127,7 +127,7 @@ const SidebarContent = ({ handleRefresh }) => {
               Create Content
             </span>
           </li>
-          <PrimaryButton
+          {/* <PrimaryButton
             size="medium"
             onClick={() => setBridgeWidget()}
             style={{
@@ -150,7 +150,7 @@ const SidebarContent = ({ handleRefresh }) => {
               }}
             />
             Polygon bridge
-          </PrimaryButton>
+          </PrimaryButton> */}
         </ul>
       </div>
 

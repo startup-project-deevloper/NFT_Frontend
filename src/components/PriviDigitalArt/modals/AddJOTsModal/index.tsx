@@ -21,6 +21,7 @@ export default function AddJotsModal({
   open,
   collectionId,
   nft,
+  setNft,
   handleRefresh = () => {},
   handleClose = () => {},
 }) {
@@ -59,15 +60,11 @@ export default function AddJotsModal({
       const web3APIHandler = selectedChain.apiHandler;
       const web3 = new Web3(library.provider);
 
-      const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
-      const balance = await web3APIHandler.Erc20["USDT"].balanceOf(web3, { account });
-      const usdt = parseInt(toDecimals(balance || 0, decimals));
-      setMaxJot(usdt / (+nft.Price || 1));
-
       const jotDecimals = await web3APIHandler.Erc20["JOT"].decimals(web3, nft.JotAddress);
       const jotBalance = await web3APIHandler.Erc20["JOT"].balanceOf(web3, nft.JotAddress, { account });
       const jot = parseInt(toDecimals(jotBalance || 0, jotDecimals));
 
+      setMaxJot(jot);
       setJotBalance(jot);
       setDisabled(false);
     })();
@@ -129,22 +126,24 @@ export default function AddJotsModal({
 
     setHash(contractResponse.data.hash);
 
-    // const response = await addJots({
-    //   collectionId,
-    //   syntheticId: nft.SyntheticID,
-    //   amount: jots,
-    //   investor: account!,
-    //   hash: contractResponse.data.hash,
-    // });
+    const response = await addJots({
+      collectionId,
+      syntheticId: nft.SyntheticID,
+      amount: +jots,
+    });
 
     setResult(1);
     setLoading(false);
-    // if (!response.success) {
-    //   showAlertMessage("Failed to save transactions.", { variant: "error" });
-    //   return;
-    // }
+    if (!response.success) {
+      showAlertMessage("Failed to save transactions.", { variant: "error" });
+      return;
+    }
 
-    showAlertMessage("You bought JOTs successuflly", { variant: "success" });
+    setNft({
+      ...nft,
+      OwnerSupply: (+nft.OwnerSupply + +jots).toString(),
+    });
+    showAlertMessage("You added JOTs successuflly", { variant: "success" });
     handleRefresh();
     handleClose();
   };

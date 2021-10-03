@@ -801,7 +801,7 @@ const Header = props => {
                       </ToolbarButtonWithPopper>
                     )}
                   </MenuItem>
-                  <MenuItem>
+                  {/* <MenuItem>
                     <PrimaryButton
                       size="medium"
                       onClick={() => { }}
@@ -825,7 +825,7 @@ const Header = props => {
                       />
                       Polygon bridge
                     </PrimaryButton>
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem>
                     <PrimaryButton
                       className={classes.createPix}

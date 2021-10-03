@@ -456,6 +456,7 @@ const syntheticCollectionManager = (network: string) => {
         const { tokenId, setHash } = payload;
         const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        resolve({success: true})
         const gas = await contract.methods.verify(tokenId).estimateGas({ from: account });
         const response = await contract.methods
           .verify(tokenId)
@@ -601,12 +602,12 @@ const syntheticCollectionManager = (network: string) => {
   const exitProtocol = async (web3: Web3, account: string, nft: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { SyntheticCollectionManagerAddress, syntheticId } = nft;
-
+        const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
+        console.log(SyntheticID)
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        const gas = await contract.methods.exitProtocol(syntheticId).estimateGas({ from: account });
+        const gas = await contract.methods.exitProtocol(SyntheticID).estimateGas({ from: account });
         console.log(gas)
-        const response = await contract.methods.exitProtocol(syntheticId).send({ from: account, gas: gas });
+        const response = await contract.methods.exitProtocol(SyntheticID).send({ from: account, gas: gas });
 
         if (response) {
           console.log(response);

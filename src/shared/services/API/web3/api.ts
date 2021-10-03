@@ -11,6 +11,7 @@ import podManager from "./contracts/PodManager";
 import syntheticCollectionManager from "./contracts/SyntheticCollectionManager";
 import syntheticProtocolRouter from "./contracts/SyntheticProtocolRouter";
 import jotPool from "./contracts/JotPool";
+import syntheticFractionalisationAuctionsManager from "./contracts/SyntheticFractionalisationAuctionsManager";
 
 const api = network => {
   return {
@@ -25,6 +26,7 @@ const api = network => {
     PodManager: podManager(network),
     SyntheticCollectionManager: syntheticCollectionManager(network),
     SyntheticProtocolRouter: syntheticProtocolRouter(network),
+    SyntheticFractionalisationAuctionsManager: syntheticFractionalisationAuctionsManager(network),
     JotPool: jotPool(network),
     QuickSwap: quickswap(network),
   };

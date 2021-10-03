@@ -456,7 +456,6 @@ const syntheticCollectionManager = (network: string) => {
         const { tokenId, setHash } = payload;
         const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        resolve({success: true})
         const gas = await contract.methods.verify(tokenId).estimateGas({ from: account });
         const response = await contract.methods
           .verify(tokenId)

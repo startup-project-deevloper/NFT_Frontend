@@ -133,9 +133,9 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
     } else if (!initialPrice || Number(initialPrice) <= 0) {
       showAlertMessage("Please enter a valid initial fraction price", { variant: "error" });
       return false;
-    } else if (!supply || Number(supply) <= 0) {
-      showAlertMessage("Please enter a valid supply", { variant: "error" });
-      return false;
+    // } else if (!supply || Number(supply) <= 0) {
+    //   showAlertMessage("Please enter a valid supply", { variant: "error" });
+    //   return false;
     }
     //  else if (!minUnlockingDate) {
     //   showAlertMessage("Please set Minimum Unlocking Date", { variant: "error" });

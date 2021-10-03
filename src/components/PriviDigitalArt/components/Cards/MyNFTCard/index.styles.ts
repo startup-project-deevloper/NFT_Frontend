@@ -176,5 +176,10 @@ export const myNFTCardStyles = makeStyles(theme => ({
       height: 16,
       fontSize: 8,
     }
-  }
+  },
+  starGroup: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: 10,
+  },
 }));

@@ -84,7 +84,6 @@ export const myNFTStyles = makeStyles(theme => ({
   },
   selectedTabSection: {
     color: "#431AB7",
-    borderBottom: "4px solid #431AB7",
   },
   cardsGroup: {
     marginTop: 64,

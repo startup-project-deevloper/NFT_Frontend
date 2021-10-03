@@ -65,9 +65,17 @@ export default function MyNFTCard({ item, onLockCompleted }: IProps) {
               {item?.isLocked ? "Verify NFT" : "Lock NFT"}
             </div>
           )}
+          <div className={classes.starGroup} style={{ marginTop: item?.isVerified ? "10px" : 0 }}>
+            <Box fontSize={5} mr={"2px"}>
+              🌟{" "}
+            </Box>
+            <Box fontSize={7} mr={"2px"} pt={1}>
+              🌟{" "}
+            </Box>
+            <Box fontSize={5}>🌟 </Box>
+          </div>
         </div>
       </div>
-      <div className={classes.shadow} />
       {openLockNFT && (
         <LockNFTModal
           open={openLockNFT}

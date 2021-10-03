@@ -306,7 +306,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const { collection } = props;
   const classes = SyntheticFractionalisedJotPoolsPageStyles();
   const [rewardConfig, setRewardConfig] = React.useState<any>();
-  const PERIODS = ["1D", "6D", "YTD"];
+  const PERIODS = ["1D", "7D", "1M", "YTD"];
   const [period, setPeriod] = React.useState<string>(PERIODS[0]);
 
   const [flipHistory, setFlipHistory] = React.useState<any[]>(tempHistory);

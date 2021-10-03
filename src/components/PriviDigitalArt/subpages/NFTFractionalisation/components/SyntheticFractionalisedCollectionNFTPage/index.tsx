@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import cls from "classnames";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
@@ -84,6 +84,18 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     () => nft && userSelector && (nft.OwnerAddress === userSelector.address || nft.user === userSelector.id),
     [nft, userSelector]
   );
+
+  const userName = React.useMemo(() => {
+    let name: string = "";
+    const ownerAddress: string = nft.OwnerAddress ?? ""
+
+    if (ownerAddress) {
+      name = getUserInfo(ownerAddress)?.name ?? 
+        ownerAddress.substr(0, 5) + "..." + ownerAddress.substr(ownerAddress.length - 5, 5) ?? ""
+    }
+
+    return name;
+  }, [nft])
 
   useEffect(() => {
     setSelectedTab(isOwner ? "ownership" : "flip_coin");
@@ -389,9 +401,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
                     <div className={classes.typo2} onClick={() => history.push(`/pix/${getUserInfo(nft.OwnerAddress)?.urlSlug}/profile`)}>
-                      {(getUserInfo(nft.OwnerAddress)?.name ?? (nft.OwnerAddress ?? "").substr(0, 5) +
-                          "..." +
-                          (nft.OwnerAddress ?? "").substr((nft.OwnerAddress ?? "").length - 5, 5)) ?? ""}
+                      {userName}
                     </div>
                   </Box>
                 </Box>
@@ -581,6 +591,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwner={isOwner}
                 collectionId={params.collectionId}
                 nft={nft}
+                setNft={setNft}
               />
             </div>
           ) : selectedTab === "ownership" ? (
@@ -590,6 +601,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 isOwnerShipTab={true}
                 collectionId={params.collectionId}
                 nft={nft}
+                setNft={setNft}
               />
             </div>
           ) : (

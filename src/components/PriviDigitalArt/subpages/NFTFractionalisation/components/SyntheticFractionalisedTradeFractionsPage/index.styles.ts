@@ -385,4 +385,37 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
       borderRight: "1px solid #717171",
     }
   },
+  jotButton: {
+    background: "linear-gradient(91.78deg, #AA26C2 11.04%, #F84B4B 74.92%)",
+    boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
+    borderRadius: 25,
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+    padding: "12px 40px",
+    cursor: "pointer",
+  },
+  dayBox: {
+    background: "linear-gradient(91.78deg, #AA26C2 11.04%, #F84B4B 74.92%)",
+    borderRadius: 6,
+    padding: "8px 12px",
+    fontSize: 16,
+    color: "white",
+  },
+  timeBox: {
+    background: "rgba(67, 26, 183, 0.63)",
+    borderRadius: 6,
+    padding: "8px 12px",
+    fontSize: 16,
+    color: "white",
+  },
+  descBox: {
+    fontSize: "18px",
+    lineHeight: "150%",
+    fontWeight: 800,
+    background: "linear-gradient(91.78deg, #AA26C2 11.04%, #F84B4B 74.92%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    width: "60%",
+  }
 }));

@@ -21,6 +21,7 @@ export default function WithdrawJotsModal({
   open,
   collectionId,
   nft,
+  setNft,
   handleRefresh = () => {},
   handleClose = () => {},
 }) {
@@ -101,7 +102,7 @@ export default function WithdrawJotsModal({
     if (!contractResponse.success) {
       setLoading(false);
       setResult(-1);
-      showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
+      showAlertMessage("Failed to Withdraw Jots. Please try again", { variant: "error" });
       return;
     }
 
@@ -120,7 +121,11 @@ export default function WithdrawJotsModal({
       return;
     }
 
-    showAlertMessage("You bought JOTs successuflly", { variant: "success" });
+    setNft({
+      ...nft,
+      OwnerSupply: (+nft.OwnerSupply - +jots).toString(),
+    });
+    showAlertMessage("You Withdraw JOTs successuflly", { variant: "success" });
     handleRefresh();
     handleClose();
   };

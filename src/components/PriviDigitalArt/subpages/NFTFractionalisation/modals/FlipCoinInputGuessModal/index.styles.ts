@@ -35,6 +35,10 @@ export const FlipCoinInputGuessModalStyles = makeStyles((theme: Theme) =>
       padding: "17px 32px",
       fontSize: 20,
       fontWeight: 700,
+      [theme.breakpoints.down("xs")]: {
+        padding: "10px 20px",
+        fontSize: 16,
+      },
     },
     guessOneBtn: {
       height: "auto",
@@ -43,6 +47,10 @@ export const FlipCoinInputGuessModalStyles = makeStyles((theme: Theme) =>
       padding: "17px 32px",
       fontSize: 20,
       fontWeight: 700,
+      [theme.breakpoints.down("xs")]: {
+        padding: "10px 20px",
+        fontSize: 16,
+      },
     },
     closeBtn: {
       padding: "10px 32px",

@@ -464,6 +464,13 @@ const syntheticCollectionManager = (network: string) => {
             setHash(hash);
           });
 
+        // Temporaily purpose due to oracle issue
+        if (response) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+        /*
         const {
           events: {
             VerificationRequested: {
@@ -488,6 +495,7 @@ const syntheticCollectionManager = (network: string) => {
             resolve({ success: event?.verified ?? false });
           }
         );
+        */
       } catch (e) {
         console.log(e);
         resolve({ success: false });

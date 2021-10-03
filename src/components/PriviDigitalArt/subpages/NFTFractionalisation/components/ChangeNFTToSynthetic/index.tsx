@@ -58,6 +58,8 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
   const [walletConnected, setWalletConnected] = useState<boolean>(!!account);
   const [openChangeToSyntheticModal, setOpenChangeToSyntheticModal] = useState<boolean>(false);
   const isMobileScreen = useMediaQuery("(max-width:586px)");
+  const [supply, setSupply] = useState<string>("");
+  const [initialPrice, setInitialPrice] = useState<string>("");
 
   const handleConnectWallet = () => {
     setWalletConnected(true);
@@ -66,6 +68,8 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
   const handleProceed = () => {
     setOpenChangeToSyntheticModal(true);
   };
+  
+  const fractionaliseSuccess = () => { };
 
   return (
     <div className={classes.root}>
@@ -128,6 +132,9 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
           open={openChangeToSyntheticModal}
           onClose={() => setOpenChangeToSyntheticModal(false)}
           selectedNFT={selectedNFT}
+          supplyToKeep={supply}
+          priceFraction={initialPrice}
+          onSuccess={fractionaliseSuccess}
         />
       )}
     </div>

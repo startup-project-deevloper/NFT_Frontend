@@ -31,6 +31,8 @@ import {
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import URL from "shared/functions/getURL";
 import OrderBookModal from "../../modals/OrderBookModal";
+import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
+import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -70,6 +72,10 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
       })();
     }
   }, [chainId, selectedChain]);
+
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [result, setResult] = React.useState<number>(0);
+  const [hash, setHash] = useState<string>("");
 
   useEffect(() => {
     if (!params.id) return;
@@ -249,6 +255,50 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
 
   const hideOrderBookModal = () => {
     setShowOrderBookModal(false);
+  };
+
+  const handleStartAuction = async nft => {
+    setLoading(true);
+    try {
+      const targetChain = BlockchainNets[1];
+
+      if (chainId && chainId !== targetChain?.chainId) {
+        const isHere = await switchNetwork(targetChain?.chainId || 0);
+        if (!isHere) {
+          showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+          return;
+        }
+      }
+      const web3APIHandler = targetChain.apiHandler;
+      const web3Config = targetChain.config;
+      const web3 = new Web3(library.provider);
+
+      const contractResponse = await web3APIHandler.SyntheticFractionalisationAuctionsManager.startAuction(
+        web3,
+        account!,
+        collection,
+        {
+          tokenId: +nft.SyntheticID,
+          price: +nft.Price,
+          setHash: setHash,
+        }
+      );
+
+      if (contractResponse.success) {
+        setHash(contractResponse.data.hash);
+        setResult(1);
+        setLoading(false);
+
+        history.push(`/pix/fractionalisation/collection/${params.id}/nft/${nft.SyntheticID}`);
+      } else {
+        setLoading(false);
+        setResult(-1);
+        showAlertMessage("Failed to start auction", { variant: "error" });
+        return;
+      }
+    } catch (err) {
+      console.log("error", err);
+    }
   };
 
   return (
@@ -558,14 +608,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <Grid container spacing={2}>
                 {syntheticNFTs.map((item, idx) => (
                   <Grid item xs={6} sm={4} md={4} lg={3}>
-                    <AuctionCard
-                      auction={item}
-                      onClick={() => {
-                        history.push(
-                          `/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`
-                        );
-                      }}
-                    />
+                    <AuctionCard auction={item} onClick={() => handleStartAuction(item)} />
                   </Grid>
                 ))}
               </Grid>
@@ -596,6 +639,18 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         )}
       </div>
       {showOrderBookModal && <OrderBookModal open={showOrderBookModal} onClose={hideOrderBookModal} />}
+      <LoadingScreen
+        loading={loading}
+        title={`Transaction \nin progress`}
+        subTitle={`Transaction is proceeding on ${BlockchainNets[1].value}.\nThis can take a moment, please be patient...`}
+        handleClose={() => setLoading(false)}
+      />
+      <TransactionResultModal
+        open={result !== 0}
+        onClose={() => setResult(0)}
+        isSuccess={result === 1}
+        hash={hash}
+      />
     </div>
   );
 };

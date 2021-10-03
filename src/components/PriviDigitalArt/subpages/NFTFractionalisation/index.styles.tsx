@@ -34,6 +34,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     padding: "0 35px",
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
+      alignItems: 'flex-start'
     },
   },
   title: {
@@ -45,8 +46,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       fontSize: 28,
     },
     [theme.breakpoints.down("xs")]: {
-      fontSize: 18,
-      paddingBottom: 15
+      paddingBottom: 8
     },
   },
   countCircle: {
@@ -59,9 +59,9 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     alignItems: "center",
     borderRadius: "50%",
     lineHeight: "9px",
-    position: "absolute",
     top: "14px",
     right: "15px",
+    marginLeft: "8px",
     [theme.breakpoints.down("xs")]: {
       width: "15px",
       height: "15px",
@@ -111,9 +111,11 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down(580)]: {
       minWidth: 165,
-      fontSize: 14,
+      fontSize: 16,
       margin: "0 0",
-      padding: "0 0"
+      padding: "0 24px",
+      height: '84px',
+      width: '50%'
     },
     borderBottom: "4px solid transparent",
   },

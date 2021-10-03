@@ -6,7 +6,7 @@ import { PrimaryButton } from "shared/ui-kit";
 import { getDuration } from "shared/helpers";
 
 export default function AuctionCard({ auction, onClick }) {
-  const { isLive, name, owner, MediaName, image, started_at } = auction;
+  const { isLive, NftId: name, owner, MediaName, image, started_at } = auction;
   const classes = AuctionCardStyles({ isLive: isLive });
 
   return (
@@ -17,7 +17,7 @@ export default function AuctionCard({ auction, onClick }) {
             <div className={classes.ntfName}>{name}</div>
             <div className={classes.verifiedSection}>{isLive ? "Live auction" : "Auction not started"}</div>
           </Box>
-          <img src={image? image : require(`assets/backgrounds/digital_art_1.png`)} alt={MediaName} />
+          <img src={image ? image : require(`assets/backgrounds/digital_art_1.png`)} alt={MediaName} />
           <Box display="flex" flexDirection="column" width={"90%"} mt={1}>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
               <div className={classes.typo1}>Reserve Price</div>

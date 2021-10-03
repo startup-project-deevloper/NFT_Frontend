@@ -98,6 +98,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down("xs")]: {
       padding: 12,
+      flexDirection: 'column-reverse'
     },
     width: "100%",
   },
@@ -107,6 +108,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
       alignItems: "flex-end",
+      width: '100%'
     },
   },
   liquidityBox: {
@@ -117,7 +119,8 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     borderRadius: 8,
     marginLeft: theme.spacing(1),
     [theme.breakpoints.down("xs")]: {
-      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+      marginLeft: 'auto'
     },
     "& button": {
       paddingLeft: theme.spacing(2),

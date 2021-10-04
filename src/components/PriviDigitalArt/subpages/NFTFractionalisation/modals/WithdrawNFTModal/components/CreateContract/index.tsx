@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function CreateContract({ onClose, onCompleted }) {
+export default function CreateContract({ onClose, onCompleted, nft }) {
   const classes = useStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -93,12 +93,32 @@ export default function CreateContract({ onClose, onCompleted }) {
 
   const handleProceed = async () => {
     console.log("chainId", chainId);
-
-    setIsLoading(true);
-    setIsProceeding(true);
-
+    if (chainId !== 80001 && chainId !== 137) {
+      let changed = await switchNetwork(isProd ? 137 : 80001);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+    const selectedChain = BlockchainNets.find(b => b.name === "POLYGON");
+    if (!selectedChain) return;
     try {
-
+      const web3APIHandler = selectedChain.apiHandler;
+      const web3 = new Web3(library.provider);
+      const setHash_ = hash => {
+        setIsLoading(false);
+        setHash(hash);
+      };
+      const response = await web3APIHandler.SyntheticCollectionManager.exitProtocol(web3, account!, nft, {
+        setHash: setHash_,
+      });
+      if (response.success) {
+        onCompleted();
+      } else {
+        showAlertMessage(`Got failed withdrawing `, { variant: "error" });
+      }
+      setIsLoading(true);
+      setIsProceeding(true);
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);

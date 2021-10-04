@@ -27,13 +27,6 @@ export default function WithdrawNFTModel({ open, onClose, nft }) {
     }
   };
 
-  const withdrawNft = async () => {
-    const targetChain = BlockchainNets[1];
-    const web3 = new Web3(library.provider);
-    const web3APIHandler = targetChain.apiHandler;
-    await web3APIHandler.SyntheticCollectionManager.exitProtocol(web3, account, nft)
-  }
-
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
       <Box display="flex" flexDirection="column">
@@ -44,7 +37,8 @@ export default function WithdrawNFTModel({ open, onClose, nft }) {
         {step === 0 ? (
           <CreateContract
             onClose={onClose}
-            onCompleted={nft => {}}
+            onCompleted={() => handleCompleteStep(0)}
+            nft={nft}
           />
         ) : (
           <LockNFT onClose={onClose} onCompleted={() => handleCompleteStep(1)} />

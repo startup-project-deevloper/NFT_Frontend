@@ -422,5 +422,13 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
     width: "60%",
+  },
+  descMobileBox: {
+    fontSize: "14px",
+    lineHeight: "17px",
+    fontWeight: 800,
+    background: "linear-gradient(91.78deg, #AA26C2 11.04%, #F84B4B 74.92%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent"
   }
 }));

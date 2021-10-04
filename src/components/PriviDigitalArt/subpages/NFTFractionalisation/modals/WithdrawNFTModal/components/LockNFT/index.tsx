@@ -18,7 +18,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
-export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true }) {
+export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, nft }) {
   const classes = useLockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -27,11 +27,50 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true 
   const { showAlertMessage } = useAlertMessage();
 
   const handleProceed = async () => {
+    console.log("chainId", chainId);
+    if (chainId !== 1 && chainId !== 4) {
+      let changed = await switchNetwork(isProd ? 1 : 4);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to ethereum network`, { variant: "error" });
+        return;
+      }
+    }
     setIsLoading(true);
     setIsProceeding(true);
 
     try {
-      
+      const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
+      const web3APIHandler = targetChain.apiHandler;
+
+      const web3 = new Web3(library.provider);
+      const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
+
+      const contract = ContractInstance(web3, NFTVaultManager.abi, contractAddress);
+      console.log(nft);
+      const gas = await contract.methods
+        .withdraw(nft.collection_id, nft.SyntheticID)
+        .estimateGas({ from: account });
+      const response = await contract.methods
+        .withdraw(nft.collection_id, nft.SyntheticID)
+        .send({ from: account, gas })
+        .on("receipt", receipt => {
+          onCompleted();
+          setIsLoading(false);
+        })
+        .on("transactionHash", hash => {
+          setHash(hash);
+          setIsLoading(false);
+        })
+        .on("error", error => {
+          console.log("error", error);
+          showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+          setIsProceeding(false);
+          setIsLoading(false);
+        });
+      // await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
+      //   collectionAddress: selectedNFT.tokenAddress,
+      //   syntheticID,
+      // });
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);

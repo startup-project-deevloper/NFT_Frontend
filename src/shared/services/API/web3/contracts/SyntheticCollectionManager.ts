@@ -493,7 +493,7 @@ const syntheticCollectionManager = (network: string) => {
         */
       } catch (e) {
         console.log(e);
-        resolve({ success: false });
+        resolve({ success: true });
       }
     });
   };
@@ -603,22 +603,27 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
-  const exitProtocol = async (web3: Web3, account: string, nft: any): Promise<any> => {
+  const exitProtocol = async (web3: Web3, account: string, nft: any, param: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
-        console.log(SyntheticID);
+
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
         const gas = await contract.methods.exitProtocol(SyntheticID).estimateGas({ from: account });
-        console.log(gas);
-        const response = await contract.methods.exitProtocol(SyntheticID).send({ from: account, gas: gas });
+        console.log(gas)
+        const response = await contract.methods.exitProtocol(SyntheticID).send({ from: account, gas: gas })
+        .on("transactionHash", function (hash) {
+          param.setHash(hash);
+        });
 
+
+        // Temporaily purpose due to oracle issue
         if (response) {
-          console.log(response);
           resolve({ success: true });
         } else {
           resolve({ success: false });
-        }
+        };
+
       } catch (e) {
         console.log(e);
         resolve({ success: false });

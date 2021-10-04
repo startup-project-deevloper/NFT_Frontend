@@ -1845,7 +1845,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         <div>
           <b>{`@${returnNameUserFromId(follower)}`}</b>{`, just created a Pod Proposal in `}<b>{pod}</b>{` pod.`}
         </div>
-      ) : type === 218 ? (
+      ) : type === 220 ? (
         <div>
           Your JOT margin on <b>[{token}]</b> level is at <b>{amount * 100}%</b>. To avoid being liquidated, please add more JOTs to your position.<br />
           <b

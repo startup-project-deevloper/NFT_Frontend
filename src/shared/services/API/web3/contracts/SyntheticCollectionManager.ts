@@ -453,6 +453,8 @@ const syntheticCollectionManager = (network: string) => {
   const verifyToken = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
+        resolve({ success: true });
+        /*
         const { tokenId, setHash } = payload;
         const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
@@ -464,13 +466,6 @@ const syntheticCollectionManager = (network: string) => {
             setHash(hash);
           });
 
-        // Temporaily purpose due to oracle issue
-        if (response) {
-          resolve({ success: true });
-        } else {
-          resolve({ success: false });
-        }
-        /*
         const {
           events: {
             VerificationRequested: {
@@ -612,10 +607,10 @@ const syntheticCollectionManager = (network: string) => {
     return new Promise(async resolve => {
       try {
         const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
-        console.log(SyntheticID)
+        console.log(SyntheticID);
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
         const gas = await contract.methods.exitProtocol(SyntheticID).estimateGas({ from: account });
-        console.log(gas)
+        console.log(gas);
         const response = await contract.methods.exitProtocol(SyntheticID).send({ from: account, gas: gas });
 
         if (response) {
@@ -629,7 +624,7 @@ const syntheticCollectionManager = (network: string) => {
         resolve({ success: false });
       }
     });
-  }
+  };
 
   return {
     buyJotTokens,
@@ -649,7 +644,7 @@ const syntheticCollectionManager = (network: string) => {
     getSoldSupply,
     getAccruedReward,
     exchangeOwnerJot,
-    exitProtocol
+    exitProtocol,
   };
 };
 

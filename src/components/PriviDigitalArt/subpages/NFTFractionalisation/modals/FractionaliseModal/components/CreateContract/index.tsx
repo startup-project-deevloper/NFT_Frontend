@@ -177,6 +177,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
             SyntheticNFTAddress: collection.syntheticNFTAddress,
             Price: priceFraction,
+            OwnerSupply: supplyToKeep,
             collectionName: collectionInfo.data.name,
             collectionSymbol: collectionInfo.data.symbol,
             description: collectionInfo.data.description,
@@ -195,6 +196,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticID: nftInfo.syntheticTokenId,
             NftId: selectedNFT.BlockchainId,
             Price: priceFraction,
+            OwnerSupply: supplyToKeep,
             isAddCollection: false,
           };
         }

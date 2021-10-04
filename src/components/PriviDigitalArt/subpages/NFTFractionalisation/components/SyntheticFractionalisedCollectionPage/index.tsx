@@ -89,8 +89,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           axios.get(`${PriceFeed_URL()}/quickswap/pairs`, {
             headers: {
               Authorization: `Basic ${PriceFeed_Token()}`,
-            }
-          })
+            },
+          });
           const JotPriceResponse = await axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
             headers: {
               Authorization: `Basic ${PriceFeed_Token()}`,
@@ -99,11 +99,11 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               token1: response.data.JotAddress.toLowerCase(),
               token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
             },
-          })
+          });
 
           if (JotPriceResponse.data?.success) {
             const jotPrice = +JotPriceResponse.data?.data?.[0]?.token1Price ?? 0;
-            setJotPrice(Math.floor(jotPrice * 10000) / 10000)
+            setJotPrice(Math.floor(jotPrice * 10000) / 10000);
           }
         }
       } catch (err) {
@@ -301,6 +301,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     }
   };
 
+  const auctionNFTs = React.useMemo(() => syntheticNFTs.filter(nft => nft.isAuction === true), syntheticNFTs);
+
   return (
     <div className={classes.root} onScroll={handleScroll}>
       <div className={classes.collectionInfoSection}>
@@ -495,34 +497,30 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo3}>{jotPrice} </div>
               <div className={classes.typo4}>JOT PRICE</div>
             </Box>
-            {
-              (isMobile || isTablet) && (
-                <Box display="flex">
-                  <Box display="flex" flexDirection="column">
-                    <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
-                    <div className={classes.typo4}>locked NFTs in</div>
-                  </Box>
-                  <Box display="flex" flexDirection="column">
-                    <div className={classes.typo3}>{circulatingSupply}</div>
-                    <div className={classes.typo4}>Circulating Supply</div>
-                  </Box>
+            {(isMobile || isTablet) && (
+              <Box display="flex">
+                <Box display="flex" flexDirection="column">
+                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
+                  <div className={classes.typo4}>locked NFTs in</div>
                 </Box>
-              )
-            }
-            {
-              !isMobile && !isTablet && (
-                <>
-                  <Box display="flex" flexDirection="column">
-                    <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
-                    <div className={classes.typo4}>locked NFTs in</div>
-                  </Box>
-                  <Box display="flex" flexDirection="column">
-                    <div className={classes.typo3}>{circulatingSupply}</div>
-                    <div className={classes.typo4}>Circulating Supply</div>
-                  </Box>
-                </>
-              )
-            }
+                <Box display="flex" flexDirection="column">
+                  <div className={classes.typo3}>{circulatingSupply}</div>
+                  <div className={classes.typo4}>Circulating Supply</div>
+                </Box>
+              </Box>
+            )}
+            {!isMobile && !isTablet && (
+              <>
+                <Box display="flex" flexDirection="column">
+                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
+                  <div className={classes.typo4}>locked NFTs in</div>
+                </Box>
+                <Box display="flex" flexDirection="column">
+                  <div className={classes.typo3}>{circulatingSupply}</div>
+                  <div className={classes.typo4}>Circulating Supply</div>
+                </Box>
+              </>
+            )}
           </Box>
         </div>
       </div>
@@ -604,15 +602,15 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         ) : selectedTab === "auctions" ? (
           <div className={classes.allNFTSection}>
-            {syntheticNFTs && syntheticNFTs.length ? (
+            {auctionNFTs && auctionNFTs.length ? (
               <Grid container spacing={2}>
-                {syntheticNFTs.map((item, idx) => (
+                {auctionNFTs.map((item, idx) => (
                   <Grid item xs={6} sm={4} md={4} lg={3}>
                     <AuctionCard auction={item} onClick={() => handleStartAuction(item)} />
                   </Grid>
                 ))}
               </Grid>
-            ) : syntheticNFTs && syntheticNFTs.length === 0 ? (
+            ) : auctionNFTs && auctionNFTs.length === 0 ? (
               <Box className={classes.noAuction}>
                 <img src={require("assets/icons/no_auctions.png")} />
                 <span>No active auctions right now.</span>

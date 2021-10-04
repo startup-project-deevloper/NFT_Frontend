@@ -157,3 +157,12 @@ export async function getLikedSyntheticCollections(userId): Promise<any> {
     console.log(e.message);
   }
 }
+
+export async function setSyntheticNFTAuction(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/setSyntheticNFTAuction`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}

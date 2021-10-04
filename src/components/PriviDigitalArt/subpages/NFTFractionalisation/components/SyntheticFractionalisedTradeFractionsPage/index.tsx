@@ -16,6 +16,7 @@ import QuickSwapModal from "../../../../modals/QuickSwapModal";
 import {
   getSyntheticNFTTransactions,
   getSyntheticNFTOwnerHistory,
+  setSyntheticNFTAuction,
 } from "shared/services/API/SyntheticFractionalizeAPI";
 import AddJOTsModal from "components/PriviDigitalArt/modals/AddJOTsModal";
 import WithdrawJOTsModal from "components/PriviDigitalArt/modals/WithdrawJOTsModal";
@@ -281,7 +282,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openWithdrawJOTsModal, setOpenWithdrawJOTsModal] = React.useState<boolean>(false);
   const [remainingTime, setRemainingTime] = React.useState<number>(-1);
   const [intervalId, setIntervalId] = React.useState<any>(null);
-  
+
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -426,10 +427,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const totalJot = 10000;
-  const percentage = useMemo(() => Number((ownershipJot / totalJot).toFixed(2)) * 100, [
-    ownershipJot,
-    totalJot,
-  ]);
+  const percentage = useMemo(
+    () => Number((ownershipJot / totalJot).toFixed(2)) * 100,
+    [ownershipJot, totalJot]
+  );
 
   React.useEffect(() => {
     if (ownershipJot === 0) {
@@ -467,6 +468,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       clearInterval(intervalId);
       setIntervalId(null);
       setRemainingTime(-1);
+
+      (async () => {
+        await setSyntheticNFTAuction({ collectionId, syntheticId: nft.SyntheticID });
+      })();
     }
   }, [intervalId, remainingTime]);
 
@@ -507,8 +512,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     Your position has been liquidated, you can buy back your NFT at 10k JOTS for next 7 days.
                     After that time the NFT will go for an auction.
                   </Box>
-                  
-                  <Box className={classes.jotButton} mt={2} padding="11px 25px" width="fit-content">Buy Back for 10k Jots</Box>
+
+                  <Box className={classes.jotButton} mt={2} padding="11px 25px" width="fit-content">
+                    Buy Back for 10k Jots
+                  </Box>
                 </>
               ) : (
                 <>
@@ -845,7 +852,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           <PrimaryButton
                             className={`${classes.h4} ${classes.ownerPriceBtn}`}
                             size="medium"
-                            style={{ marginLeft: 24, background: "#DDFF57", color: Color.Purple, width: "220px" }}
+                            style={{
+                              marginLeft: 24,
+                              background: "#DDFF57",
+                              color: Color.Purple,
+                              width: "220px",
+                            }}
                             onClick={handleOpenEditSupplyModal}
                           >
                             Edit Supply
@@ -904,7 +916,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <Box className={`${classes.priceContent}`}>
-                      <Box display="flex" justifyContent="center" gridColumnGap={24} className={classes.priceInnerContent}>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        gridColumnGap={24}
+                        className={classes.priceInnerContent}
+                      >
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Owner Price</Box>
                           <Box className={classes.h1} fontWeight={800}>

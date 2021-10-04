@@ -92,6 +92,7 @@ export default function CreateContract({ onClose, onCompleted, nft }) {
   const { showAlertMessage } = useAlertMessage();
 
   const handleProceed = async () => {
+    
     console.log("chainId", chainId);
     if (chainId !== 80001 && chainId !== 137) {
       let changed = await switchNetwork(isProd ? 137 : 80001);
@@ -100,6 +101,8 @@ export default function CreateContract({ onClose, onCompleted, nft }) {
         return;
       }
     }
+    setIsLoading(true);
+    setIsProceeding(true);
     const selectedChain = BlockchainNets.find(b => b.name === "POLYGON");
     if (!selectedChain) return;
     try {
@@ -112,13 +115,14 @@ export default function CreateContract({ onClose, onCompleted, nft }) {
       const response = await web3APIHandler.SyntheticCollectionManager.exitProtocol(web3, account!, nft, {
         setHash: setHash_,
       });
+      console.log(response)
       if (response.success) {
         onCompleted();
       } else {
         showAlertMessage(`Got failed withdrawing `, { variant: "error" });
+        // onCompleted();
       }
-      setIsLoading(true);
-      setIsProceeding(true);
+
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);

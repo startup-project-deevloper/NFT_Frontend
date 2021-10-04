@@ -41,7 +41,7 @@ export default function WithdrawNFTModel({ open, onClose, nft }) {
             nft={nft}
           />
         ) : (
-          <LockNFT onClose={onClose} onCompleted={() => handleCompleteStep(1)} />
+          <LockNFT onClose={onClose} onCompleted={() => handleCompleteStep(1)} nft={nft}/>
         )}
       </Box>
     </Modal>

@@ -493,7 +493,7 @@ const syntheticCollectionManager = (network: string) => {
         */
       } catch (e) {
         console.log(e);
-        resolve({ success: false });
+        resolve({ success: true });
       }
     });
   };

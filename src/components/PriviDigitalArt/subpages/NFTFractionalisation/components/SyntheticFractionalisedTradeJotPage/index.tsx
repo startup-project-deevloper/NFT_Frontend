@@ -143,20 +143,6 @@ const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
   return config;
 };
 const DAYLABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const MONTHLABELS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 export default function SyntheticFractionalisedTradeJotPage({ collection }) {
   const history = useHistory();
@@ -173,36 +159,33 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
   const [token0Price, setToken0Price] = useState(0);
   const [token1Price, setToken1Price] = useState(0);
   const [loadingTradingInfo, setLoadingTradingInfo] = useState(false);
-  // const [rewardConfig, setRewardConfig] = React.useState<any>();
-  // const PERIODS = ["1h", "1D", "7D"];
-  // const [period, setPeriod] = React.useState<string>(PERIODS[0]);
-  // const UNITS = ["JOTs", "USDT"];
-  // const [unit, setUnit] = React.useState<string>(UNITS[0]);
 
   useEffect(() => {
-    const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
-    newRewardConfig.configurer = configurer;
-    newRewardConfig.config.data.labels =
-      period === PERIODS[0]
-        ? getAllHours()
-        : period === PERIODS[1]
-        ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
-        : MONTHLABELS.map(item => item.slice(0, 3).toUpperCase());
-    newRewardConfig.config.data.datasets[0].data =
-      period === PERIODS[0]
-        ? getAllValues("hours")
-        : period === PERIODS[1]
-        ? getAllValues("days")
-        : getAllValues("weeks");
-    newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
-    newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
-    newRewardConfig.config.options.scales.xAxes[0].offset = true;
-    newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
+    (async () => {
+      const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
+      newRewardConfig.configurer = configurer;
+      newRewardConfig.config.data.labels =
+        period === PERIODS[0]
+          ? getAllHours()
+          : period === PERIODS[1]
+          ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
+          : getAllWeeks();
+      newRewardConfig.config.data.datasets[0].data =
+        period === PERIODS[0]
+          ? await getAllValues("hours")
+          : period === PERIODS[1]
+          ? await getAllValues("days")
+          : await getAllValues("weeks");
+      newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
+      newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
+      newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
+      newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
+      newRewardConfig.config.options.scales.xAxes[0].offset = true;
+      newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
 
-    setRewardConfig(newRewardConfig);
-    fetchTradingInfo();
+      setRewardConfig(newRewardConfig);
+      fetchTradingInfo();
+    })();
   }, [period, unit]);
 
   const fetchPairData = async (token0, token1) => {
@@ -265,6 +248,15 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
     return result;
   }, []);
 
+  const getAllWeeks = React.useCallback(() => {
+    const result: string[] = [];
+    for (let index = 1; index <= 53; index++) {
+      result.push(index < 10 ? `0${index}` : `${index}`);
+    }
+
+    return result;
+  }, []);
+
   const getAllValues = React.useCallback(
     async period => {
       try {
@@ -280,7 +272,14 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
           return [];
         }
         const data = resp.data.data ?? [];
-        return data.map(item => item.price);
+        // return data.map(item => item.price);
+
+        // Todo: remove dummy data
+        return period === PERIODS[0]
+          ? getAllHours().map(item => Math.floor(Math.random() * 10000))
+          : period === PERIODS[2]
+            ? DAYLABELS.map(item => Math.floor(Math.random() * 10000))
+            : getAllWeeks().map(item => Math.floor(Math.random() * 10000))
       } catch (e) {
         return [];
       }

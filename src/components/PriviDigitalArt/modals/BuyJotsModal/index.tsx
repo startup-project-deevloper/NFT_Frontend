@@ -230,7 +230,7 @@ export default function BuyJotsModal({
           endAdornment={<div className={classes.purpleText}>JOTS</div>}
         />
         <Grid container>
-          <Grid item md={7} xs={12}>
+          <Grid item md={7} xs={5}>
             <Box className={classes.leftBalance} display="flex" alignItems="center">
               <Header5 style={{ marginBottom: 0 }}>Wallet Balance</Header5>
               <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
@@ -241,7 +241,7 @@ export default function BuyJotsModal({
               </Box>
             </Box>
           </Grid>
-          <Grid item md={5} xs={12}>
+          <Grid item md={5} xs={7}>
             <Box
               className={classes.rightBalance}
               flexGrow={1}

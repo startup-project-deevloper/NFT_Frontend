@@ -32,7 +32,8 @@ export const BuyJotsModalStyles = makeStyles(theme => ({
       color: Color.Purple,
     },
     [theme.breakpoints.down("sm")]: {
-      paddingTop: "40px",
+      flexDirection: "column",
+      alignItems: "flex-start"
     },
   },
   rightBalance: {
@@ -45,13 +46,14 @@ export const BuyJotsModalStyles = makeStyles(theme => ({
     alignItems: "center",
     [theme.breakpoints.down("sm")]: {
       paddingTop: "0",
+      marginLeft: "0"
     },
   },
   point: {
     background: "#D9F66F",
-    width: "24px",
-    height: "24px",
-    borderRadius: "12px",
+    width: "13px",
+    height: "13px",
+    borderRadius: "13px",
   },
 
   checkBtn: {

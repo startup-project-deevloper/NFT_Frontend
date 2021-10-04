@@ -2,7 +2,7 @@ import exchange from "./contracts/Exchange";
 import quickswap from "./contracts/Quickswap";
 import auction from "./contracts/Auction";
 import loan from "./contracts/Loan";
-import erc721 from "./contracts/PriviERC721";
+import erc721 from "./contracts/ERC721WithRoyalty";
 import erc20 from "./contracts/ERC20Tokens";
 import vaultFactory from "./contracts/VaultFactory";
 import tokenVault from "./contracts/TokenVault";

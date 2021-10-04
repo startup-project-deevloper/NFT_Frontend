@@ -481,33 +481,64 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         <Box className={classes.outBox}>
           <Box display="flex" flexDirection="column">
             {ownershipJot === 0 ? (
-              <>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
-                  <Box
-                    className={`${classes.h1} ${classes.ownerTitle}`}
-                    sx={{ fontWeight: 800, fontFamily: "Agrandir" }}
-                  >
-                    Ownership management
+              isMobileScreen ? (
+                <>
+                  <Box display="flex" alignItems="center" justifyContent="space-between">
+                    <Box
+                      className={`${classes.h1} ${classes.ownerTitle}`}
+                      sx={{ fontWeight: 800, fontFamily: "Agrandir" }}
+                    >
+                      Ownership management
+                    </Box>
                   </Box>
-                  <Box className={classes.jotButton}>Buy Back for 10k Jots</Box>
-                </Box>
-                <Box display="flex" alignItems="center">
-                  <Box className={classes.dayBox} mr={0.5}>
-                    {remainingDay} Days
+                  <Box display="flex" alignItems="center" mt={2.75}>
+                    <Box className={classes.dayBox} mr={0.5}>
+                      {remainingDay} Days
+                    </Box>
+                    <Box className={classes.timeBox} mr={0.5}>
+                      {remainingHour}h
+                    </Box>
+                    <Box className={classes.timeBox} mr={0.5}>
+                      {remainingMin}min
+                    </Box>
+                    <Box className={classes.timeBox}>{remainingSec}s</Box>
                   </Box>
-                  <Box className={classes.timeBox} mr={0.5}>
-                    {remainingHour}h
+                  <Box className={classes.descMobileBox} mt={3} width="100%">
+                    Your position has been liquidated, you can buy back your NFT at 10k JOTS for next 7 days.
+                    After that time the NFT will go for an auction.
                   </Box>
-                  <Box className={classes.timeBox} mr={0.5}>
-                    {remainingMin}min
+                  
+                  <Box className={classes.jotButton} mt={2} padding="11px 25px" width="fit-content">Buy Back for 10k Jots</Box>
+                </>
+              ) : (
+                <>
+                  <Box display="flex" alignItems="center" justifyContent="space-between">
+                    <Box
+                      className={`${classes.h1} ${classes.ownerTitle}`}
+                      sx={{ fontWeight: 800, fontFamily: "Agrandir" }}
+                    >
+                      Ownership management
+                    </Box>
+                    <Box className={classes.jotButton}>Buy Back for 10k Jots</Box>
                   </Box>
-                  <Box className={classes.timeBox}>{remainingSec}s</Box>
-                </Box>
-                <Box className={classes.descBox} mt={4.5}>
-                  Your position has been liquidated, you can buy back your NFT at 10k JOTS for next 7 days.
-                  After that time the NFT will go for an auction.
-                </Box>
-              </>
+                  <Box display="flex" alignItems="center">
+                    <Box className={classes.dayBox} mr={0.5}>
+                      {remainingDay} Days
+                    </Box>
+                    <Box className={classes.timeBox} mr={0.5}>
+                      {remainingHour}h
+                    </Box>
+                    <Box className={classes.timeBox} mr={0.5}>
+                      {remainingMin}min
+                    </Box>
+                    <Box className={classes.timeBox}>{remainingSec}s</Box>
+                  </Box>
+                  <Box className={classes.descBox} mt={4.5}>
+                    Your position has been liquidated, you can buy back your NFT at 10k JOTS for next 7 days.
+                    After that time the NFT will go for an auction.
+                  </Box>
+                </>
+              )
             ) : (
               <>
                 <Box

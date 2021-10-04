@@ -670,7 +670,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               >
                 <Box>
                   <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                    Jots SOLD
+                    JOTs SOLD
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                     {nft.SoldSupply} JOTs
@@ -753,11 +753,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         </tbody>
                       </table>
                       {isMobileScreen && (
-                        <Box display="flex" flexDirection="column">
+                        <Box display="flex" flexDirection="column" alignItems="center">
                           <PrimaryButton
                             className={`${classes.h4} ${classes.ownerPriceBtn}`}
                             size="medium"
-                            style={{ background: "#DDFF57", color: Color.Purple }}
+                            style={{ background: "#DDFF57", color: Color.Purple, width: "220px" }}
                             onClick={handleOpenEditPriceModal}
                           >
                             Edit Price
@@ -765,7 +765,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           <PrimaryButton
                             className={`${classes.h4} ${classes.ownerPriceBtn}`}
                             size="medium"
-                            style={{ marginLeft: 24, background: "#DDFF57", color: Color.Purple }}
+                            style={{ marginLeft: 24, background: "#DDFF57", color: Color.Purple, width: "220px" }}
                             onClick={handleOpenEditSupplyModal}
                           >
                             Edit Supply
@@ -806,16 +806,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <PrimaryButton
                           className={classes.priceButton}
                           size="medium"
-                          style={{ background: "#431AB7", color: Color.White }}
-                          onClick={handleBuyOnQuickSwap}
-                        >
-                          Buy on Quickswap
-                        </PrimaryButton>
-
-                        <PrimaryButton
-                          className={classes.priceButton}
-                          size="medium"
-                          style={{ background: "#DDFF57", color: Color.Purple }}
+                          style={{ background: "#DDFF57", color: Color.Purple, maxWidth: "220px" }}
                           onClick={handleAddLiquidity}
                         >
                           Add liquidity on Quickswap
@@ -833,7 +824,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <Box className={`${classes.priceContent}`}>
-                      <Box display="flex" justifyContent="center" gridColumnGap={24}>
+                      <Box display="flex" justifyContent="center" gridColumnGap={24} className={classes.priceInnerContent}>
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Owner Price</Box>
                           <Box className={classes.h1} fontWeight={800}>
@@ -925,7 +916,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         <Box className={classes.chart}>
           {(!ownerHistory || !ownerHistory.length) && <div className="no-data">There are no data yet.</div>}
           <Box className={classes.controlParentBox}>
-            <Box fontSize={16} fontWeight={700} color="white">
+            <Box fontSize={18} fontWeight={700} color="white" width="120px">
               Ownership over time
             </Box>
             <Box display="flex" flexDirection="column">

@@ -35,7 +35,8 @@ import { CloseIcon } from "shared/ui-kit/Icons";
 import { priviTokenList } from "shared/constants/constants";
 import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
-
+import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2IPFS";
+import getIPFSURL from "shared/functions/getIPFSURL";
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
 const audioIcon = require("assets/mediaIcons/small/audio.png");
@@ -79,6 +80,8 @@ const PRICING = [
   { value: "PricePerPage", name: "Price per Page" },
 ];
 
+const multiAddr = getIPFSURL();
+
 const polygonTokenList = Object.keys(Web3Config.Polygon.TOKEN_ADDRESSES);
 const ethereumTokenList = Object.keys(Web3Config.Ethereum.TOKEN_ADDRESSES);
 
@@ -89,9 +92,8 @@ const CreateMediaModal = (props: any) => {
   const allUsers = useSelector(getUsersInfoList);
 
   const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
-
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+    setMultiAddr(multiAddr);
   }, []);
 
   const [page, setPage] = useState(0);
@@ -278,7 +280,7 @@ const CreateMediaModal = (props: any) => {
       if (chainName === "PRIVI") {
         createMediaOnPrivi(metadataID.newFileCID || "");
       } else if (chainName === "POLYGON" || chainName === "ETHEREUM") {
-        createMediaOnEth(metadataID.newFileCID || "", chainName);
+        createMediaOnEth(metadataID.newFileCID || "", chainName, metadataID.metadata.properties.name);
       }
     } catch (e) {
       setLoading(false);
@@ -301,7 +303,7 @@ const CreateMediaModal = (props: any) => {
     setDisableButton(false);
   };
 
-  const createMediaOnEth = async (metadataID: any, chain: string) => {
+  const createMediaOnEth = async (metadataID: any, chain: string, imageName: string) => {
     setDisableButton(true);
     const targetChain = BlockchainNets.find(net => net.value === mediaData.blockchainNet);
     if (chainId && chainId !== targetChain?.chainId) {
@@ -318,17 +320,34 @@ const CreateMediaModal = (props: any) => {
     const web3APIHandler = targetChain.apiHandler;
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
+    // upload metadata to ipfs
+    let uri;
+    const tokenId = random();
+    try {
+      console.log({ mediaData });
+      const { MediaName, MediaDescription } = mediaData;
+      const external_url = `https://${window.location.hostname}/#/pix/${MediaName}`;
+      const image = `${getURLfromCID(metadataID)}/${imageName}`;
+      const metaData = { name: MediaName, description: MediaDescription, external_url, image };
+      console.log({ metaData });
+      uri = getURLfromCID((await uploadNFTMetaData(metaData)).cid);
+      console.log({ uri });
+    } catch (err) {
+      console.error('Error-UploadNFTMetaData', { err });
+    }
     const payload = {
       to: account!,
-      tokenId: random(),
+      tokenId: tokenId,
+      uri: uri
     };
-    web3APIHandler.Erc721.mint(web3, account!, payload).then(async tokenId => {
+    console.log('CreateMediaModal', { payload });
+    web3APIHandler.Erc721.mint(web3, account!, payload).then(async () => {
       if (tokenId) {
         const body = {
           main: {
             ...mediaPayloadRef.current,
             BlockchainId: tokenId,
-            TokenContractAddress: web3Config.CONTRACT_ADDRESSES.PRIVIERC721,
+            TokenContractAddress: web3Config.CONTRACT_ADDRESSES.ERC721WithRoyalty,
             cid: metadataID,
           },
           extra: mediaAdditionalDataRef.current,
@@ -585,8 +604,8 @@ const CreateMediaModal = (props: any) => {
             {mediaData.type === "DIGITAL_ART_TYPE"
               ? "Image"
               : mediaData.type === "VIDEO_TYPE"
-              ? "Video File"
-              : "Cover Image"}
+                ? "Video File"
+                : "Cover Image"}
           </h5>
           <Box width={1} style={{ position: "relative" }}>
             <FileUpload

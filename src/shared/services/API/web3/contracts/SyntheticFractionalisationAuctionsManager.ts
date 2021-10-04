@@ -40,7 +40,24 @@ const syntheticFractionalisationAuctionsManager = (network: string) => {
     });
   };
 
-  return { startAuction };
+  const getRecoverableTill = (web3: Web3, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId } = payload;
+        const { SyntheticCollectionManagerAddress, auctionAddress } = collection;
+        const contract = ContractInstance(web3, metadata.abi, auctionAddress);
+
+        const result = await contract.methods
+          .isRecoverableTill(SyntheticCollectionManagerAddress, tokenId)
+          .call();
+        resolve({ success: true, endTime: result });
+      } catch (err) {
+        console.log(err);
+        resolve({ success: false });
+      }
+    });
+  };
+  return { startAuction, getRecoverableTill };
 };
 
 export default syntheticFractionalisationAuctionsManager;

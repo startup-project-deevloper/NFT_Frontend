@@ -323,5 +323,10 @@ export const uploadNFTMetaData = async obj => {
   const result = await upload(doc);
   const cid = result.cid.toString();
   const host = multiAddr.replace("5001", "8080");
-  return `${host}/ipfs/${cid}`;
+  return {uri: getURLfromCID(cid), cid};
 };
+
+export const getURLfromCID = (cid) => {
+  const host = multiAddr.replace("5001", "8080");
+  return `${host}/ipfs/${cid}`;
+}

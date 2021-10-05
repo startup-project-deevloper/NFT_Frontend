@@ -453,8 +453,6 @@ const syntheticCollectionManager = (network: string) => {
   const verifyToken = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        resolve({ success: true });
-        /*
         const { tokenId, setHash } = payload;
         const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
@@ -490,7 +488,6 @@ const syntheticCollectionManager = (network: string) => {
             resolve({ success: event?.verified ?? false });
           }
         );
-        */
       } catch (e) {
         console.log(e);
         resolve({ success: true });

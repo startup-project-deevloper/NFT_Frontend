@@ -317,5 +317,5 @@ export const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
   400: 1,
   800: 2,
   1200: 3,
-  1440: 4,
+  1420: 4,
 };

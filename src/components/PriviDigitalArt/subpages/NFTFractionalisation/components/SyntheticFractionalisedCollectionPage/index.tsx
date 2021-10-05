@@ -16,7 +16,10 @@ import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
-import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
+import {
+  getSyntheticCollection,
+  startSyntheticNFTAuction,
+} from "shared/services/API/SyntheticFractionalizeAPI";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
@@ -289,7 +292,14 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         setResult(1);
         setLoading(false);
 
-        history.push(`/pix/fractionalisation/collection/${params.id}/nft/${nft.SyntheticID}`);
+        await startSyntheticNFTAuction({
+          collectionId: collection.id,
+          syntheticId: +nft.SyntheticID,
+          auctionAddress: contractResponse.data.auction,
+          amount: contractResponse.data.amount,
+        });
+
+        // history.push(`/pix/fractionalisation/collection/${params.id}/nft/${nft.SyntheticID}`);
       } else {
         setLoading(false);
         setResult(-1);

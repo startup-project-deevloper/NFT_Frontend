@@ -166,3 +166,21 @@ export async function setSyntheticNFTAuction(payload): Promise<any> {
     console.log(e.message);
   }
 }
+
+export async function startSyntheticNFTAuction(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/startSyntheticNFTAuction`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+export async function bidSyntheticNFTAuction(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/bidSyntheticNFTAuction`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}

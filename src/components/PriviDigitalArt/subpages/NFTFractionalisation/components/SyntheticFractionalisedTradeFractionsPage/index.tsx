@@ -586,7 +586,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     <Box
                       className={classes.progressed}
                       style={{
-                        width: `${percentage}%`,
+                        width: `${Math.min(percentage, 100)}%`,
                         background:
                           percentage < 33
                             ? "linear-gradient(100.71deg, #E80000 2.8%, #FF4438 74.66%)"

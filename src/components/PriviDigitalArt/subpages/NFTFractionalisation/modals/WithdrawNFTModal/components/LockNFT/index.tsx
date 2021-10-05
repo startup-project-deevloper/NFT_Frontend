@@ -39,21 +39,19 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
     setIsProceeding(true);
 
     try {
-      const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
-      const web3APIHandler = targetChain.apiHandler;
-
       const web3 = new Web3(library.provider);
       const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
 
       const contract = ContractInstance(web3, NFTVaultManager.abi, contractAddress);
       console.log(nft);
       const gas = await contract.methods
-        .withdraw(nft.collection_id, nft.SyntheticID)
+        .withdraw(nft.SyntheticCollectionManagerAddress, nft.SyntheticID)
         .estimateGas({ from: account });
       const response = await contract.methods
-        .withdraw(nft.collection_id, nft.SyntheticID)
+        .withdraw(nft.SyntheticCollectionManagerAddress, nft.SyntheticID)
         .send({ from: account, gas })
         .on("receipt", receipt => {
+          console.log('receipt... ', receipt)
           onCompleted();
           setIsLoading(false);
         })
@@ -62,7 +60,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
           setIsLoading(false);
         })
         .on("error", error => {
-          console.log("error", error);
+          console.log("error... ", error);
           showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
           setIsProceeding(false);
           setIsLoading(false);

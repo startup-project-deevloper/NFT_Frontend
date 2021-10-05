@@ -17,12 +17,12 @@ const syntheticFractionalisationAuctionsManager = (network: string) => {
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
         const contract = ContractInstance(web3, metadata.abi, auctionAddress);
-        // const gas = await contract.methods
-        //   .startAuction(SyntheticCollectionManagerAddress, tokenId, toNDecimals(price, decimals))
-        //   .estimateGas({ from: account });
+        const gas = await contract.methods
+          .startAuction(SyntheticCollectionManagerAddress, tokenId, toNDecimals(price, decimals))
+          .estimateGas({ from: account });
         contract.methods
           .startAuction(SyntheticCollectionManagerAddress, tokenId, toNDecimals(price, decimals))
-          .send({ from: account, gas: 210000 })
+          .send({ from: account, gas })
           .on("transactionHash", function (hash) {
             setHash(hash);
           })

@@ -142,6 +142,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   };
 
   const handleOpenWithdrawNFTModal = () => {
+    if (!nft.isVerified) {
+      showAlertMessage(`NFT is not verified!`, { variant: "error" });
+      return;
+    }
     setOpenWithdrawNFTModal(true);
   };
   const handleCloseWithdrawNFTModal = () => {

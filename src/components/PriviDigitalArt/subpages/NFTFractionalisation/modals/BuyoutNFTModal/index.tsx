@@ -101,6 +101,8 @@ export default function BuyoutNFTModal({ open, onClose, media, handleRefresh }) 
   const { showAlertMessage } = useAlertMessage();
 
   useEffect(() => {
+    if (!open) return;
+
     if (selectedChain.chainId !== chainId) {
       (async () => {
         const changed = await switchNetwork(selectedChain.chainId);

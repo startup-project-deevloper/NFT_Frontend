@@ -25,6 +25,8 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
   const [maxJots, setMaxJots] = React.useState<number>(0);
 
   useEffect(() => {
+    if (!open) return;
+
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
       (async () => {
         const changed = await switchNetwork(selectedChain.chainId);

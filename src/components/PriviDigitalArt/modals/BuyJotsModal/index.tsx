@@ -53,6 +53,8 @@ export default function BuyJotsModal({
   }, [open]);
 
   useEffect(() => {
+    if (!open) return;
+
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
       (async () => {
         const changed = await switchNetwork(selectedChain.chainId);

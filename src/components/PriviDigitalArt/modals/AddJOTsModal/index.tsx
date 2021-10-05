@@ -42,6 +42,8 @@ export default function AddJotsModal({
   const [hash, setHash] = React.useState<string>("");
 
   useEffect(() => {
+    if (!open) return;
+
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
       (async () => {
         const changed = await switchNetwork(selectedChain.chainId);

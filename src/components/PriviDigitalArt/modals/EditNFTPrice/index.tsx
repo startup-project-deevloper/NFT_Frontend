@@ -34,6 +34,8 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
 
   React.useEffect(() => {
+    if (!open) return;
+
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
       (async () => {
         const changed = await switchNetwork(selectedChain.chainId);

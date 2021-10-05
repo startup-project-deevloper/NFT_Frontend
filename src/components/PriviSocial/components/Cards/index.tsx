@@ -93,7 +93,7 @@ const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
   400: 1,
   750: 2,
   1100: 3,
-  1440: 4,
+  1420: 4,
 };
 
 const COLUMNS_COUNT_BREAK_POINTS_THREE = {

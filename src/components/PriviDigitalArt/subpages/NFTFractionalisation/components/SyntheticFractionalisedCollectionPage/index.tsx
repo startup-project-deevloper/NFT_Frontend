@@ -279,7 +279,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         collection,
         {
           tokenId: +nft.SyntheticID,
-          price: +nft.Price,
+          price: 100000,
           setHash: setHash,
         }
       );

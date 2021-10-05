@@ -136,6 +136,9 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
     // } else if (!supply || Number(supply) <= 0) {
     //   showAlertMessage("Please enter a valid supply", { variant: "error" });
     //   return false;
+    } else if (+supply > 10000) {
+      showAlertMessage("Please enter a valid JOTs number(< 10000)", { variant: "error" });
+      return false;
     }
     //  else if (!minUnlockingDate) {
     //   showAlertMessage("Please set Minimum Unlocking Date", { variant: "error" });
@@ -299,7 +302,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                   </Grid> */}
                     <Grid item xs={12} md={12}>
                       <InputWithLabelAndTooltip
-                        labelName="Initial Fraction Price"
+                        labelName="Initial Fraction Price (USD)"
                         inputValue={!initialPrice ? "" : initialPrice.toString()}
                         minValue={0}
                         required
@@ -404,7 +407,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                 </Grid>*/}
                 <Grid item xs={12} md={12}>
                   <InputWithLabelAndTooltip
-                    labelName="Initial Fraction Price"
+                    labelName="Initial Fraction Price (USD)"
                     inputValue={!initialPrice ? "" : initialPrice.toString()}
                     minValue={0}
                     required

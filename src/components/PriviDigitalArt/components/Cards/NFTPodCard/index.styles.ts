@@ -112,9 +112,23 @@ export const podCardStyles = makeStyles(theme => ({
     fontSize: 12,
     fontWeight: 800,
   },
+  redBox: {
+    background: "rgba(255,0,0,0.2)",
+    color: "rgba(255,0,0)",
+    borderRadius: theme.spacing(1),
+    fontSize: 12,
+    fontWeight: 800,
+  },
   greenBox: {
     background: "#DDFF57",
     color: "#431AB7",
+    borderRadius: theme.spacing(1),
+    fontSize: 12,
+    fontWeight: 800,
+  },
+  orangeBox: {
+    background: "rgba(255, 142, 60, 0.2)",
+    color: "rgba(255, 142, 60, 1)",
     borderRadius: theme.spacing(1),
     fontSize: 12,
     fontWeight: 800,

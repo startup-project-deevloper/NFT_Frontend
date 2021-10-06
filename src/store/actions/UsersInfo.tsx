@@ -34,6 +34,7 @@ export interface UserInfo {
   wallets: any[];
   email?: string;
   whitelisted?: boolean;
+  infoImage: any,
 }
 
 export const createUserInfo = (
@@ -69,7 +70,8 @@ export const createUserInfo = (
   url: string,
   wallets: [] = [],
   email: string,
-  whitelisted: boolean = false,
+  infoImage: any,
+  whitelisted: boolean = false
 ): UserInfo => {
   return {
     id,
@@ -104,6 +106,7 @@ export const createUserInfo = (
     url,
     wallets,
     email,
+    infoImage,
     whitelisted
   };
 };

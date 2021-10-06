@@ -62,8 +62,11 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
   img1: {
     width: "198px",
     height: "183px",
-    marginBottom: "24px",
-    marginLeft: "16px",
+    position: "absolute",
+    top: "10%",
+    left: "5%",
+    // marginBottom: "24px",
+    // marginLeft: "16px",
     transform: "rotate(-12.57deg)",
     "& svg": {
       width: '100%',

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { collabsTabStyles } from "./CollabsTab.styles";
+import { collabsTabStyles, useAutocompleteStyles } from "./CollabsTab.styles";
 import { Autocomplete } from "@material-ui/lab";
 import { InputBase } from "@material-ui/core";
 import { RootState } from "store/reducers/Reducer";
@@ -15,6 +15,7 @@ const CollabsTab = ({ pod, setPod }) => {
   const classes = collabsTabStyles();
   const user = useSelector((state: RootState) => state.user);
 
+  const autocompleteStyle = useAutocompleteStyles();
   const [autocompleteKey, setAutocompleteKey] = useState<number>(new Date().getTime());
 
   const [searchValue, setSearchValue] = useState<string>("");
@@ -36,15 +37,13 @@ const CollabsTab = ({ pod, setPod }) => {
     setPod({ ...pod, Collabs: newCollabs });
   };
 
-  console.log(autocompleteUsers);
-
   return (
     <>
       <div className={classes.inputContainer}>
         <Autocomplete
           freeSolo
           key={autocompleteKey}
-          className={classes.autocomplete}
+          classes={autocompleteStyle}
           onChange={(event: any, user: any | null) => {
             if (user && typeof user !== "string") {
               addAddressToSelectedList(user);
@@ -58,30 +57,41 @@ const CollabsTab = ({ pod, setPod }) => {
               display="flex"
               alignItems="center"
               justifyContent="space-between"
-              className={classes.itemContainer}
+              padding="14px 26px"
+              width="100%"
+              style={{
+                borderBottom: "1px solid #00000021",
+              }}
             >
               <Box display="flex" alignItems="center">
-                <Avatar noBorder url={option.imageUrl ? option.imageUrl : option.anonAvatar? require("assets/anonAvatars/" + option.anonAvatar) : getRandomAvatar()} size="medium" />
-                <Box className={classes.itemUsername}>
+                <Avatar noBorder
+                        url={option.imageUrl ? option.imageUrl : getRandomAvatar()}
+                        size="medium" />
+                <Box ml="11px" fontFamily="Montserrat" color="#404658" fontSize="16px">
                   @
                   {option.urlSlug && !option.urlSlug.startsWith("Px")
                     ? option.urlSlug
-                    : option?.name ?? ""}
+                    : option?.name ?? "User name"}
                 </Box>
               </Box>
-              <Box display="flex" flexDirection="row" alignItems="center">
-                <span className={classes.itemDescription}>Request Support</span>
+              <Box
+                display="flex"
+                color="#65CB63"
+                fontFamily="Montserrat"
+                fontWeight={600}
+                alignItems="center"
+              >
+                Invite Artist
                 <div className={classes.addRound}>
                   <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
+                    width="10"
+                    height="10"
+                    viewBox="0 0 13 13"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <rect width="24" height="24" rx="12" fill="#431AB7" />
                     <path
-                      d="M12.0007 16.668V7.33464M7.33398 12.0013L16.6673 12.0013"
+                      d="M6.5 11.5V1.5M1.5 6.5L11.5 6.5"
                       stroke="white"
                       strokeWidth="2"
                       strokeLinecap="round"
@@ -106,6 +116,13 @@ const CollabsTab = ({ pod, setPod }) => {
               }}
               ref={params.InputProps.ref}
               inputProps={params.inputProps}
+              style={{
+                width: "100%",
+                fontFamily: "Montserrat",
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "#2D3047",
+              }}
               autoFocus
               placeholder="Type User"
             />
@@ -113,69 +130,68 @@ const CollabsTab = ({ pod, setPod }) => {
         />
         <img src={searchIcon} alt={"search"} />
       </div>
-      {pod.Collabs && (
-        <Box className={classes.artists} mt={3} mb={3}>
+      {pod.Collabs && pod.Collabs.filter(u => u.address !== user.address).length > 0 && (
+        <>
           <Box
+            mt="22px"
             display="flex"
             alignItems="center"
+            color="#2D3047"
+            fontFamily="Montserrat"
+            fontSize="14px"
+            mb="14px"
             justifyContent="space-between"
-            bgcolor="#431AB7"
-            padding={1}
-            fontSize={12}
-            color={"white"}
           >
             <div>Artist</div>
             <div>Status</div>
           </Box>
           {pod.Collabs.map((u, index) =>
-            u.address != user.address ? <UserTile key={`user-${index}-tile`} user={u} /> : null
+            u.address !== user.address ? <UserTile key={`user-${index}-tile`} user={u} /> : null
           )}
-        </Box>
+        </>
       )}
-      {/* <Box
+      <button
         className={classes.addButton}
         onClick={() => {
           if (searchValue !== "" && !pod.Collabs.includes(searchValue))
             addAddressToSelectedList({ address: searchValue });
         }}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="24" height="24" rx="12" fill="#431AB7" />
+        <svg width="10" height="10" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
-            d="M12.0007 16.668V7.33464M7.33398 12.0013L16.6673 12.0013"
-            stroke="white"
-            strokeWidth="2"
+            d="M6.5 11.5V1.5M1.5 6.5L11.5 6.5"
+            stroke="#2D3047"
+            strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
         Add Wallet Address
-      </Box> */}
+      </button>
     </>
   );
 };
 
 const UserTile = ({ user }) => {
+  const classes = collabsTabStyles();
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between" padding={1} fontSize={12}>
-      {user.imageUrl || user.anonAvatar ? (
+    <Box display="flex" alignItems="center" justifyContent="space-between" className={classes.userTile}>
+      {user.name && user.imageUrl ? (
         <Box display="flex" alignItems="center">
           <Avatar
             noBorder
-            url={typeof user !== "string" && user.imageUrl ? user.imageUrl : require("assets/anonAvatars/" + user.anonAvatar)}
+            url={typeof user !== "string" && user.imageUrl ? user.imageUrl : getRandomAvatar()}
             size="medium"
           />
-          <Box ml="11px" color="#1A1B1C" fontSize="12px">
-            @{user.urlSlug && !user.urlSlug.startsWith("Px") ? user.urlSlug : user.name ?? ""}
+          <Box ml="11px" color="#404658" fontSize="16px">
+            @{user.urlSlug && !user.urlSlug.startsWith("Px") ? user.urlSlug : user.name ?? "User name"}
           </Box>
         </Box>
       ) : (
         user.address ?? ""
       )}
-      <Box color="#431AB7" fontSize="12px">
-        Invitation sent
-      </Box>
+      <div className={classes.invitationSentBtn}>Invitation sent</div>
     </Box>
   );
 };

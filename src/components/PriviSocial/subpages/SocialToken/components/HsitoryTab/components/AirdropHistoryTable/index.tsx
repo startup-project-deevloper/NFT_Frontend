@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { Gradient } from "shared/ui-kit";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";

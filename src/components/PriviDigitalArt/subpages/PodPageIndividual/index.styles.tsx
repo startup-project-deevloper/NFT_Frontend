@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { BorderRadius, Color } from "shared/ui-kit";
 
 export const usePodPageStyles = makeStyles(theme => ({

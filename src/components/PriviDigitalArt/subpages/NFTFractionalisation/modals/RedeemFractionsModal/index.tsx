@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { Modal } from "shared/ui-kit";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 const useRedeemModalStyles = makeStyles(theme => ({

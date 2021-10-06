@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Accordion, AccordionSummary, AccordionDetails } from "shared/ui-kit";
 import SocialTokenContext from "components/PriviSocial/subpages/SocialToken/context";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";

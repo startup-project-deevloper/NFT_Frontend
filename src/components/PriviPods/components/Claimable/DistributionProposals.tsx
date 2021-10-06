@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/styles";
 import { Gradient, SecondaryButton, PrimaryButton } from "shared/ui-kit";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";

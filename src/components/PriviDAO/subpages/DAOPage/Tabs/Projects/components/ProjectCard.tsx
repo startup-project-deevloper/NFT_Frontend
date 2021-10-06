@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import ProjectModal from "../modals/Project/Project";
 import { Color, StyledDivider } from "shared/ui-kit";

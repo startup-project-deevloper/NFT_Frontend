@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useTypedSelector } from "store/reducers/Reducer";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import Moment from "react-moment";
 import SocialTokenContext from "components/PriviSocial/subpages/SocialToken/context";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "shared/ui-kit";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { BlockchainNets } from "shared/constants/constants";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { switchNetwork } from "shared/functions/metamask";

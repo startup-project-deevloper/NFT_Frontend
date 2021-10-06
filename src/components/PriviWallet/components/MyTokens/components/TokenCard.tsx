@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { limitOfDecimals, randomNumber } from "shared/helpers/utils";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import Box from "shared/ui-kit/Box";
 import { Color } from "shared/ui-kit";
 

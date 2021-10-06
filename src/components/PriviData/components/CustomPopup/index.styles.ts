@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 export const voteSortStyles = makeStyles(theme => ({
   content: {

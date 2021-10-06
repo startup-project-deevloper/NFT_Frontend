@@ -1,7 +1,7 @@
 import Messenger from "components/PriviSocial/subpages/Messenger";
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import HomePage from "./subpages/HomePage";
 import LikedPage from "./subpages/LikedPage";
 import MarketplacePage from "./subpages/MarketplacePage";

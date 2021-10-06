@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 const drawerWidth = 35;
 export const priviZooSubPageStyles = makeStyles(theme => ({

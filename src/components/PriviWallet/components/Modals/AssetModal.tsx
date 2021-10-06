@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
 import URL from "shared/functions/getURL";
 import { Color, Modal } from "shared/ui-kit";

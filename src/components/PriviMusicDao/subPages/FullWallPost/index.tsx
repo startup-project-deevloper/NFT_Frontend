@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Box from "shared/ui-kit/Box";
 import { Text } from "components/PriviMusicDao/components/ui-kit";

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { PrimaryButton } from "shared/ui-kit";

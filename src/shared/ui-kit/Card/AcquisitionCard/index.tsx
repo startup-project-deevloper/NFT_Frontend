@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Badge, MasnoryCard, Text } from "./AcquisitionCard.styles";
 import Box from "shared/ui-kit/Box";
 import { Avatar, Color, FontSize, Gradient, Header5, HeaderBold5, StyledDivider } from "shared/ui-kit";

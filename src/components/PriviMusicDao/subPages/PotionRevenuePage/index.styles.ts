@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Color } from "shared/ui-kit";
 
 export const potionRevenuePageStyle = makeStyles(theme => ({

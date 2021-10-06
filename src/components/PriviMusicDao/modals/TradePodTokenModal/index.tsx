@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import Web3 from "web3";
 import axios from "axios";
 import { useWeb3React } from "@web3-react/core";

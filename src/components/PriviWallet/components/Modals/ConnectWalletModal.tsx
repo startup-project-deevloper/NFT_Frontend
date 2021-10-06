@@ -7,7 +7,7 @@ import { Modal } from "shared/ui-kit";
 import { WalletInfo, WALLETS } from "shared/constants/constants";
 import URL from "shared/functions/getURL";
 import { getWaxNFTs, getNewWaxInstance } from "shared/connectors/bridge/wax";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import ConnectPriviWallet from "./ConnectPriviWallet";
 import * as WalletAPIProvider from "shared/services/API/WalletAPI";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";

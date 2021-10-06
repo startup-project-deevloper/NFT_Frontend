@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import cls from "classnames";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Gradient, SecondaryButton } from "shared/ui-kit";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { FruitCounters } from "components/PriviDAO/components/Cards/DAOCard";

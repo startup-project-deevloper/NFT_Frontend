@@ -1,7 +1,7 @@
 import React from "react";
 import URL from "shared/functions/getURL";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import Carousel from "react-elastic-carousel";
 import { Modal } from "shared/ui-kit";
 

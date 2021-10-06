@@ -1,7 +1,7 @@
 import React from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Box from "shared/ui-kit/Box";
 import { MediaSimpleCard } from "components/PriviMusicDao/components/Cards/MediaSimpleCard";

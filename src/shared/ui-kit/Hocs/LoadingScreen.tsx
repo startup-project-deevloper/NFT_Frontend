@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Modal } from "shared/ui-kit/Modal";
 
 interface ILoadingScreenProps {

@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 
 import { useTypedSelector } from "store/reducers/Reducer";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import Axios from "axios";
 import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import URL from "shared/functions/getURL";

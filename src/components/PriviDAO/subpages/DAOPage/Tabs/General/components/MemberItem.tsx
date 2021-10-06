@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import AvatarImage from "assets/anonAvatars/ToyFaces_Colored_BG_111.jpg";
 import { useSelector } from "react-redux";

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import {Theme} from '@material-ui/core';
 import Box from "shared/ui-kit/Box";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as SpeakerIcon } from "assets/icons/speaker.svg";
 import { ReactComponent as SpeakerWhiteIcon } from "assets/icons/speaker_white.svg";
 import { RecordingBox } from "shared/ui-kit/RecordingBox";

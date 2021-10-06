@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Color, Gradient } from "shared/ui-kit";
 
 export const multiArtistPageStyles = makeStyles(theme => ({

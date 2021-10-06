@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from 'classnames';
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Box from "shared/ui-kit/Box";
 import { Color, FontSize, PrimaryButton, StyledDivider } from "shared/ui-kit";

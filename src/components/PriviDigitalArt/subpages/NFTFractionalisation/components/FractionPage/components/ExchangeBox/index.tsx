@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useState } from "react";
 import PriviExchange from "./PriviExchange";
 import UniswapPool from "./UniswapPool";

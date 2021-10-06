@@ -44,7 +44,7 @@ const PodPage = () => {
   const [lastIdx, setLastIdx] = useState<string>("null");
   const [pagination, setPagination] = useState<number>(1);
 
-  const [openNewNFTModal, setOpenNewNFTModal] = useState<boolean>(false);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   useEffect(() => {
     setOpenFilters(false);
@@ -135,6 +135,8 @@ const PodPage = () => {
     }
   };
 
+  const handleRefresh = React.useCallback(() => {}, []);
+
   return (
     <>
       <Ellipse />
@@ -156,7 +158,7 @@ const PodPage = () => {
           <PrimaryButton
             size="medium"
             className={classes.greenButton}
-            onClick={() => setOpenNewNFTModal(true)}
+            onClick={() => setOpenCreateModal(true)}
           >
             Create new Pod
           </PrimaryButton>
@@ -201,20 +203,12 @@ const PodPage = () => {
           )}
         </div>
       </div>
-      {openNewNFTModal && (
+      {openCreateModal && (
         <CreatePodModal
-          open={openNewNFTModal}
-          handleClose={() => setOpenNewNFTModal(false)}
-          handleRefresh={() => {
-            setOpenFilters(false);
-            setPods([]);
-            setTrendingPods([]);
-            setLastIdx("null");
-            setPagination(1);
-            setHasMorePods(true);
-            getMediaTrendingPods(false);
-          }}
+          onClose={() => setOpenCreateModal(false)}
           type={"Digital NFT"}
+          handleRefresh={handleRefresh}
+          open={openCreateModal}
         />
       )}
     </>

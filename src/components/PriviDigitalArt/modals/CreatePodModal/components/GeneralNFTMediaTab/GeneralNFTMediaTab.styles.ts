@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const generalNFTMediaTabStyles = makeStyles(theme => ({
+export const generalNFTMediaTabStyles = makeStyles(() => ({
   generalNftMediaTab: {},
   flexRowInputs: {
     display: "flex",
@@ -9,10 +9,11 @@ export const generalNFTMediaTabStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    color: "#1A1B1C",
+    color: "#2D3047",
     opacity: 0.9,
-    fontSize: "14px",
-    fontWeight: 400,
+    fontFamily: "Montserrat",
+    fontSize: "16px",
+    fontWeight: 600,
     marginBottom: "8px",
   },
   tooltipHeaderInfo: {
@@ -20,6 +21,7 @@ export const generalNFTMediaTabStyles = makeStyles(theme => ({
     marginLeft: 2,
     width: 14,
     height: 14,
+    transform: "translateY(-5px)",
   },
   infoHeaderCreatePod: {
     fontSize: 18,
@@ -54,27 +56,15 @@ export const generalNFTMediaTabStyles = makeStyles(theme => ({
       border: 0,
     },
   },
-  hashTagBox: {
-    marginRight: theme.spacing(1),
-    border: `1px solid #888`,
-    borderRadius: theme.spacing(2),
-    padding: `5px ${theme.spacing(1)}px`,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: theme.typography.subtitle2.fontSize,
-    position: "relative",
-  },
   hashtagInput: {
-    background: "transparent",
-    border: "1px solid #A4A4A4",
+    background: "#f7f9fe",
+    border: "1px solid #e0e4f3",
     borderRadius: 10,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 15,
-    height: 37,
-    marginTop: theme.spacing(1),
+    height: 46,
     width: "100%",
     "& .MuiFormControl-root": {
       width: "100%",
@@ -93,20 +83,6 @@ export const generalNFTMediaTabStyles = makeStyles(theme => ({
     background: "transparent",
     borderRadius: 0,
     height: "auto",
-  },
-  controlBox: {
-    paddingRight: 0,
-  },
-  controlLabel: {
-    color: "#1A1B1C",
-    display: "flex",
-    fontSize: "14px",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  infoIcon: {
-    width: theme.spacing(2),
-    height: theme.spacing(2),
   },
   hashtagPillFilled: {
     color: "white",

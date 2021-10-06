@@ -1,13 +1,13 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const createPodModalStyles = makeStyles(theme => ({
-  root: {},
+export const createPodModalStyles = makeStyles((theme) => ({
   headerCreatePod: {
+    fontFamily: "Agrandir GrandLight",
     fontStyle: "normal",
     fontWeight: 800,
-    fontSize: "14px",
+    fontSize: "22px",
     lineHeight: "130%",
-    color: "#181818",
+    color: "#2D3047",
     marginBottom: "35px",
     textAlign: "center",
     "& span": {
@@ -19,38 +19,46 @@ export const createPodModalStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: '0px 32px',
     "& img:first-child": {
       marginTop: 20,
     },
     "& h3": {
-      marginTop: 24,
-      marginBottom: 24,
+      marginTop: 23,
+      marginBottom: 14,
       fontStyle: "normal",
       fontWeight: 800,
-      fontSize: 14,
+      fontSize: 22,
       textAlign: "center",
-      color: "#181818",
+      color: "#2D3047",
+      fontFamily: "Agrandir",
+      lineHeight: "130%"
     },
     "& p": {
       fontStyle: "normal",
-      fontSize: 14,
-      fontWeight: 400,
-      lineHeight: "120%",
+      fontFamily: "Montserrat",
+      fontSize: 16,
+      fontWeight: 500,
+      lineHeight: "160%",
       textAlign: "center",
-      color: "rgba(24, 24, 24, 70%)",
+      color: "#54658F",
       marginTop: 0,
-      marginBottom: "24px",
-      width: "80%",
+      marginBottom: "19px",
     },
-    "& path:first-child": {
-      fill: "#FF8E3C",
-    },
-    "& path:nth-child(2)": {
-      stroke: "#FF8E3C",
+    "& b": {
+      fontWeight: 600
     },
     "& button": {
-      width: "80%"
+      height: 45,
+      width: 250,
+      marginTop: 53,
+      borderRadius: "48px",
+      fontFamily: "Montserrat",
+      fontSize: 16,
+      fontWeight: 600,
+      lineHeight: "18px",
+      border: "none",
+      color: "#ffffff",
+      background: "#2D3047",
     },
   },
   warningContainer: {
@@ -61,43 +69,48 @@ export const createPodModalStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: "24px",
+    marginBottom: "11px",
   },
   modalContent: {
     display: "flex",
     flexDirection: "column",
   },
   cardsOptions: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     height: "48px",
-    padding: "0 16px",
+    padding: "16.5px 14px",
     alignSelf: "center",
+    display: "flex",
+    alignItems: "center",
     marginBottom: 40,
-    border: "2px solid #EBEBEB",
-    borderRadius: "24px",
-    width: "80%",
-    [theme.breakpoints.down("xs")]: {
-      width: "100%",
-      marginTop: 20,
+    background: "#F0F5F8",
+    borderRadius: "68px",
+    [theme.breakpoints.down('xs')]: {
+      marginTop: 24,
+      marginBottom: 32,
     }
   },
 
   tabHeaderPodMedia: {
     fontStyle: "normal",
     fontWeight: 500,
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: "Montserrat",
     cursor: "pointer",
-    color: "#A4A4A4",
+    marginRight: "25px",
+    color: "#181818",
+    padding: "10px 17px",
     "&:last-child": {
       marginRight: 0,
     },
+    [theme.breakpoints.down('xs')]: {
+      padding: 9,
+      marginRight: 5,
+    }
   },
   tabHeaderPodMediaSelected: {
-    color: "#431AB7",
+    color: "#FFFFFF",
+    background: "#2D3047",
+    borderRadius: "77px",
   },
   tooltipHeaderInfo: {
     width: 14,
@@ -133,20 +146,25 @@ export const createPodModalStyles = makeStyles(theme => ({
   buttons: {
     justifyContent: "space-between",
     width: "100%",
-    marginTop: "24px",
+    marginTop: "32px",
     "& button": {
-      width: "100%",
+      height: "59px",
+      borderRadius: "48px",
+      fontFamily: "Montserrat",
+      fontWeight: 800,
+      lineHeight: "20px",
+      border: "none",
+      maxWidth: "auto",
       "&:first-child": {
-        background: "#FFFFFF !important",
-        color: "#000000",
-        border: "1px solid #CBCBCB",
-      }
+        background: "#FFFFFF",
+        color: "#2D3047",
+        border: "1px solid #2D3047",
+      },
+      "&:last-child": {
+        color: "#FFFFFF",
+        background: "#2D3047",
+        width: 295
+      },
     },
   },
-  modalButton: {
-    background: "#431AB7 !important",
-    height: "38px !important",
-    borderRadius: "4px !important",
-    fontSize: "14px !important"
-  }
 }));

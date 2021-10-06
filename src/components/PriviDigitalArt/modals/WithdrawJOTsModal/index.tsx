@@ -42,6 +42,8 @@ export default function WithdrawJotsModal({
   const [hash, setHash] = React.useState<string>("");
 
   useEffect(() => {
+    if (!open) return;
+
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
       (async () => {
         const changed = await switchNetwork(selectedChain.chainId);
@@ -50,7 +52,7 @@ export default function WithdrawJotsModal({
         }
       })();
     }
-  }, [chainId, selectedChain]);
+  }, [chainId, selectedChain, open]);
 
   useEffect(() => {
     if (!open) return;

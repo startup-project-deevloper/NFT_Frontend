@@ -35,7 +35,7 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
         }
       })();
     }
-  }, [chainId, selectedChain]);
+  }, [chainId, selectedChain, open]);
 
   useEffect(() => {
     if (!open) return;

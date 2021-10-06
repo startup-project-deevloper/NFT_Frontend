@@ -14,7 +14,7 @@ import {
   MenuItem,
   Hidden,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@material-ui/core";
 
 import { socket } from "components/Login/Auth";
@@ -181,11 +181,7 @@ const Header = props => {
     dispatch(signOut());
     localStorage.clear();
     localStorage.clear();
-    if (pathName.includes("/pix")) {
-      history.push("/pix-connect");
-    } else {
-      history.push("/");
-    }
+    history.push("/");
     window.location.reload();
   };
 
@@ -310,7 +306,7 @@ const Header = props => {
                   user.creds.length ?? 0,
                   user.badges ?? [],
                   user.urlSlug ??
-                  `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
+                    `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
                   user.twitter ?? "",
                   user.anon ?? false,
                   user.verified ?? false,
@@ -372,83 +368,19 @@ const Header = props => {
   }, [usersInfoList, userSelector.id]);
 
   useEffect(() => {
-    if (
-      pathName.toLowerCase().includes("privi-music") ||
-      pathName.toLowerCase().includes("pods") ||
-      pathName.toLowerCase().includes("pix") ||
-      pathName.toLowerCase().includes("data") ||
-      pathName.toLowerCase().includes("wallet") ||
-      pathName.toLowerCase().includes("daos") ||
-      pathName.toLowerCase().includes("social") ||
-      pathName.toLowerCase().includes("collabs") ||
-      pathName.toLowerCase().includes("trax") ||
-      pathName.toLowerCase().includes("zoo") ||
-      pathName.toLowerCase().includes("privi-home") ||
-      pathName.toLowerCase().includes("pix-connect") ||
-      pathName.toLowerCase().includes("social-connect") ||
-      pathName.toLowerCase().includes("flix-connect") ||
-      pathName.toLowerCase().includes("flix") ||
-      pathName.toLowerCase().includes("exchange") ||
-      pathName.toLowerCase().includes("exchange-connect") ||
-      pathName.toLowerCase().includes("metaverse") ||
-      pathName.toLowerCase().includes("metaverse-connect")
-    ) {
-      setIsHideHeader(true);
-    } else {
-      setIsHideHeader(false);
-    }
+    setIsHideHeader(true);
 
     const pathPrefixList = pathName.split("/");
     let pathPrefix = pathPrefixList.length > 4 ? pathPrefixList[4] : "zoo";
 
-    if (pathPrefix !== "zoo" && (pathPrefix === "daos" || pathPrefix === "data")) {
-      setIsTransparent(true);
-    } else {
-      setIsTransparent(false);
-    }
+    setIsTransparent(false);
+    setIsPriviData(false);
+    setIsPriviMusicDao(false);
+    setIsWallet(false);
+    setIsZoo(false);
+    setIsPriviPix(true);
 
-    if (pathPrefix !== "zoo" && pathPrefix === "data") {
-      setIsPriviData(true);
-    } else {
-      setIsPriviData(false);
-    }
-
-    if (pathPrefix !== "zoo" && pathPrefix === "trax") {
-      setIsPriviMusicDao(true);
-    } else {
-      setIsPriviMusicDao(false);
-    }
-
-    if (pathPrefix !== "zoo" && pathPrefix === "wallet") {
-      setIsWallet(true);
-    } else {
-      setIsWallet(false);
-    }
-
-    if (pathPrefix === "zoo") {
-      setIsZoo(true);
-    } else {
-      setIsZoo(false);
-    }
-
-    if (pathPrefix !== "zoo" && pathPrefix === "pix") {
-      setIsPriviPix(true);
-    } else {
-      setIsPriviPix(false);
-    }
-
-    let className = "privi-app-header";
-    if (pathPrefix !== "zoo" && pathPrefix === "daos") {
-      className += " daos";
-    } else if (pathPrefix === "data") {
-      className += " data";
-    } else if (pathPrefix !== "zoo" && pathPrefix === "pix") {
-      className += " pix";
-    } else if (pathPrefix !== "zoo" && pathPrefix === "trax") {
-      className += " trax";
-    } else if (pathPrefix !== "zoo" && pathPrefix === "flix") {
-      className += " flix";
-    }
+    let className = "privi-app-header pix";
 
     setAppHeaderBackgroundColor(className);
   }, [pathName, width]);
@@ -522,10 +454,10 @@ const Header = props => {
             >
               <div>My apps</div>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <PrimaryButton size="small" onClick={() => { }}>
+                <PrimaryButton size="small" onClick={() => {}}>
                   See All
                 </PrimaryButton>
-                <SecondaryButton size="small" onClick={() => { }}>
+                <SecondaryButton size="small" onClick={() => {}}>
                   Edit
                 </SecondaryButton>
               </div>
@@ -613,7 +545,7 @@ const Header = props => {
                 justifyContent: "center",
               }}
             >
-              <SecondaryButton size="medium" onClick={() => { }} style={{ marginTop: "16px" }}>
+              <SecondaryButton size="medium" onClick={() => {}} style={{ marginTop: "16px" }}>
                 Discover More Apps
               </SecondaryButton>
             </div>
@@ -629,33 +561,18 @@ const Header = props => {
 
   const handleProfile = e => {
     handleCloseMobileMenu(e);
-    if (!pathName.toLowerCase().includes("zoo") && pathName.toLowerCase().includes("pix")) {
-      history.push(`/pix/${userSelector.id}/profile`);
-    } else {
-      history.push(`/social/${userSelector.id}`);
-    }
+    history.push(`/${userSelector.id}/profile`);
     setAnchorEl(null);
   };
 
   const handleSearch = e => {
     handleCloseMobileMenu(e);
-    if (pathName.toLowerCase().includes("pix")) {
-      history.push(`/pix/explorer`);
-    } else {
-    }
+    history.push(`/explorer`);
   };
 
   const handleMessage = e => {
     handleCloseMobileMenu(e);
-    if (pathName.includes("/pix")) {
-      history.push(`/pix/${userSelector.urlSlug}/messages`);
-    } else if (pathName.includes("/trax")) {
-      history.push(`/trax/${userSelector.urlSlug}/messages`);
-    } else if (pathName.includes("/flix")) {
-      history.push(`/flix/${userSelector.urlSlug}/messages`);
-    } else {
-      history.push(`/social/${userSelector.urlSlug}/messages`);
-    }
+    history.push(`/${userSelector.urlSlug}/messages`);
   };
 
   const userAvatar = useMemo(() => {
@@ -697,12 +614,12 @@ const Header = props => {
                         style={{
                           backgroundImage: userSelector.id
                             ? `url(${getUserAvatar({
-                              id: userSelector.id,
-                              anon: userSelector.anon,
-                              hasPhoto: userSelector.hasPhoto,
-                              anonAvatar: userSelector.anonAvatar,
-                              url: userSelector.url,
-                            })})`
+                                id: userSelector.id,
+                                anon: userSelector.anon,
+                                hasPhoto: userSelector.hasPhoto,
+                                anonAvatar: userSelector.anonAvatar,
+                                url: userSelector.url,
+                              })})`
                             : "none",
                           cursor: ownUser ? "pointer" : "auto",
                           backgroundRepeat: "no-repeat",
@@ -719,7 +636,7 @@ const Header = props => {
                     isRounded
                     onClick={e => {
                       handleCloseMobileMenu(e);
-                      history.push("/pix");
+                      history.push("/");
                     }}
                   >
                     Privi Pix
@@ -764,17 +681,14 @@ const Header = props => {
                         tooltip="Notifications"
                         icon={
                           !props.openTab ||
-                            !pathName.toLowerCase().includes("privi-music") ||
-                            !pathName.toLowerCase().includes("pods") ||
-                            (props.openTab &&
-                              (props.openTab.type === OpenType.Search ||
-                                props.openTab.type === OpenType.Home))
+                          !pathName.toLowerCase().includes("privi-music") ||
+                          !pathName.toLowerCase().includes("pods") ||
+                          (props.openTab &&
+                            (props.openTab.type === OpenType.Search || props.openTab.type === OpenType.Home))
                             ? IconNotifications
                             : IconNotificationsWhite
                         }
-                        badge={
-                          unreadNotifications > 0 ? unreadNotifications.toString() : undefined
-                        }
+                        badge={unreadNotifications > 0 ? unreadNotifications.toString() : undefined}
                         onIconClick={markAllNotificationsAsRead}
                         openToolbar={openNotificationModal}
                         handleOpenToolbar={setOpenNotificationModal}
@@ -878,30 +792,29 @@ const Header = props => {
         }}
       >
         <div className="header-left">
-          <div className={classes.mobileMenu}>
-            {mobileMenu}
-          </div>
+          <div className={classes.mobileMenu}>{mobileMenu}</div>
           {isHideHeader ? (
-            pathName.includes("/zoo/page") ?
+            pathName.includes("/zoo/page") ? (
               <div className={classes.pixLogoZoo}>
                 <img
                   onClick={() => {
-                    history.push("/pix/");
+                    history.push("/");
                   }}
-                  src={require('assets/logos/privi_color_log.png')}
+                  src={require("assets/logos/privi_color_log.png")}
                   alt="privi"
                 />
               </div>
-              :
+            ) : (
               <div className={classes.pixLogo}>
                 <img
                   onClick={() => {
-                    history.push("/pix/");
+                    history.push("/");
                   }}
-                  src={require('assets/logos/privi_pix_alpha.svg')}
+                  src={require("assets/logos/privi_pix_alpha.svg")}
                   alt="privi"
                 />
               </div>
+            )
           ) : (
             <>
               <div className="header-title">PRIVI</div>
@@ -910,25 +823,15 @@ const Header = props => {
           )}
         </div>
         <div className="header-right">
-          {openPriviWalletDialog && (
-            <CreatePriviWalletModal
-              open={openPriviWalletDialog}
-              handleClose={handleCloseWalletDialog}
-              handleOk={() => {
-                setOpenPriviWalletDialog(false);
-                history.push("/create-wallet");
-              }}
-            />
-          )}
           {isSignedIn() ? (
             <>
               <div className="header-icons">
-                {!isZoo && (
-                  isTablet ? (
+                {!isZoo &&
+                  (isTablet ? (
                     <div
                       className={classes.iconMenu}
                       onClick={() => {
-                        history.push(`/pix/${userSelector.urlSlug}/messages`);
+                        history.push(`/${userSelector.urlSlug}/messages`);
                       }}
                     >
                       <IconMessagesWhite />
@@ -944,8 +847,7 @@ const Header = props => {
                     >
                       <MessageNotifications handleClosePopper={() => showMessagesModal(false)} />
                     </ToolbarButtonWithPopper>
-                  )
-                )}
+                  ))}
                 {!isZoo && (
                   <ToolbarButtonWithPopper
                     theme={isTransparent ? "dark" : "light"}
@@ -977,7 +879,7 @@ const Header = props => {
                   </ToolbarButtonWithPopper>
                 )}
               </div>
-              <Hidden mdDown={(width <= 768 && isPriviPix)}>
+              <Hidden mdDown={width <= 768 && isPriviPix}>
                 <Hidden mdDown>
                   {userSelector.address ? (
                     <div className="header-buttons">
@@ -1035,12 +937,12 @@ const Header = props => {
               </Hidden>
             </>
           ) : // <div className="header-buttons">
-            //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
-            //     Get Privi Wallet
-            //   </button>
-            //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
-            // </div>
-            null}
+          //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
+          //     Get Privi Wallet
+          //   </button>
+          //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
+          // </div>
+          null}
         </div>
         <SignInModal open={openSignInModal} handleClose={() => setOpenSignInModal(false)} />
         <Popper
@@ -1113,20 +1015,6 @@ const Header = props => {
                   <div className={classes.header_popup_back_item} onClick={handleProfile}>
                     Profile
                   </div>
-                  {!pathName.includes("/pix") && (
-                    <>
-                      <div className={classes.header_popup_back_item}>Settings</div>
-                      <div
-                        className={classes.header_popup_back_item}
-                        onClick={() => {
-                          history.push("/wallet");
-                          setAnchorEl(null);
-                        }}
-                      >
-                        My Wallets Section
-                      </div>
-                    </>
-                  )}
                   <div
                     className={classes.header_popup_back_item}
                     onClick={() => {
@@ -1183,7 +1071,7 @@ const Header = props => {
             user={userSelector}
             handleClose={handleCloseSocialTokenModal}
             type={"FT"}
-            handleRefresh={() => { }}
+            handleRefresh={() => {}}
             open={openCreateSocialTokenModal}
           />
         )}

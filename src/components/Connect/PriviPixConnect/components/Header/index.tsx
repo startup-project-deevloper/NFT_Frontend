@@ -12,17 +12,6 @@ const Header = ({ cardHidden }) => {
     <Box width={1}>
       <Box className={`headerBox ${classes.headerBox}`} zIndex={1}>
         <img src={require("assets/logos/privi_pix_alpha.png")} className={`logo ${classes.logo}`} />
-        <Box
-          className={`backBox ${classes.backBox}`}
-          onClick={() => {
-            history.goBack();
-          }}
-        >
-          <Box mr={3}>
-            <ChevronIconLeft />
-          </Box>
-          <span className={classes.backButton}>Back</span>
-        </Box>
         {!cardHidden && (
           <img src={require("assets/pixImages/PixCards.png")} className={`card ${classes.card}`} />
         )}

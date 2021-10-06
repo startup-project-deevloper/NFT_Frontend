@@ -64,7 +64,7 @@ const MyNFT = () => {
         <BackButton
           purple
           overrideFunction={() => {
-            history.push("/pix/fractionalise/");
+            history.push("/fractionalise/");
           }}
         />
         <div className={classes.title}>Manage your NFT</div>

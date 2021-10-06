@@ -383,7 +383,7 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
               justifyContent: "center",
             }}
             onClick={() => {
-              history.push(`/pix/fractionalisation/collection/quick_swap/${id}`);
+              history.push(`/fractionalisation/collection/quick_swap/${id}`);
             }}
           >
             Trade on <QuickSwapIcon className={classes.swapIcon} /> Quickswap

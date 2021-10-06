@@ -324,9 +324,8 @@ const CreateMediaModal = (props: any) => {
     let uri;
     const tokenId = random();
     try {
-      console.log({ mediaData });
       const { MediaName, MediaDescription } = mediaData;
-      const external_url = `https://${window.location.hostname}/#/pix/${MediaName}`;
+      const external_url = `https://${window.location.hostname}/#/nft/${MediaName}`;
       const image = `${getURLfromCID(metadataID)}/${imageName}`;
       const metaData = { name: MediaName, description: MediaDescription, external_url, image };
       console.log({ metaData });
@@ -378,7 +377,7 @@ const CreateMediaModal = (props: any) => {
       }*/
 
       if (props.updateMedia) props.updateMedia();
-      showAlertMessage("Media Created!", { variant: "success" });
+      showAlertMessage("NFT created!", { variant: "success" });
       reloadMediaPage();
 
       setTimeout(() => {

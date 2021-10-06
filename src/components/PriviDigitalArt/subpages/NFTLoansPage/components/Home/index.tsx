@@ -190,7 +190,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
           <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>
             Deposit your NFT
           </button>
-          <button className={classes.greenButton} onClick={() => history.push("/pix/loan/positions")}>
+          <button className={classes.greenButton} onClick={() => history.push("/loan/positions")}>
             Manage your positions
           </button>
         </div>

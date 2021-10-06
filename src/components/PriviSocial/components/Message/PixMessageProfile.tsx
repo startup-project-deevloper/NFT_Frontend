@@ -261,7 +261,7 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
           <PrimaryButton
             size="medium"
             onClick={() => {
-              history.push(`/pix/${userInfo.id}/profile`);
+              history.push(`/${userInfo.id}/profile`);
               dispatch(setSelectedUser(userInfo.id));
             }}
             style={type === "trax" ? { background: Color.MusicDAOGreen } : {}}

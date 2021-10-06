@@ -433,7 +433,7 @@ const MediaDetailsModal = (props: any) => {
                 if (media.tag) queryParam += (queryParam ? "" : "&") + `blockchainTag=${media.tag}`;
                 if (media.collection)
                   queryParam += (queryParam ? "" : "&") + `collectionTag=${media.collection}`;
-                history.push(`/pix/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
+                history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
               }}
               style={{
                 background: "#DDFF57",

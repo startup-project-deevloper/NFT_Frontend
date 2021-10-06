@@ -384,7 +384,7 @@ const FractionPage = () => {
                   <div
                     className={classes.avatarImg}
                     onClick={() => {
-                      history.push(`/pix/${media?.FractionalizeData?.ownerAddress}/profile`);
+                      history.push(`/${media?.FractionalizeData?.ownerAddress}/profile`);
                     }}
                   >
                     <Avatar

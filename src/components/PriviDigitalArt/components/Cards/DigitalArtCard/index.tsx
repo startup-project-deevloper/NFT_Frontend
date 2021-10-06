@@ -36,7 +36,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
-  const [imageIPFS, setImageIPFS] = useState('');
+  const [imageIPFS, setImageIPFS] = useState("");
 
   const fixedUrlItem = useMemo(() => {
     const GENERATOR_ARTBLOCK_URL = "https://generator.artblocks.io/";
@@ -64,7 +64,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   useEffect(() => {
     if (media && user) {
       if (media.CreatorId || media.CreatorAddress) {
-        const getCreatorData = async (creatorId) => {
+        const getCreatorData = async creatorId => {
           try {
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
@@ -78,7 +78,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           } catch (error) {
             console.log(error);
             return false;
-          };
+          }
         };
         // Try to get creator data with address
         getCreatorData(media.CreatorAddress).then(result => {
@@ -173,7 +173,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
       let queryParam = "";
       if (media.tag) queryParam += (queryParam ? "&" : "") + `blockchainTag=${media.tag}`;
       if (media.collection) queryParam += (queryParam ? "&" : "") + `collectionTag=${media.collection}`;
-      history.push(`/pix/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
+      history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
     }
   };
 
@@ -243,8 +243,8 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               alt={creator.id}
               title={`${creator.name}`}
               onClick={() => {
-                if (creator.id) {
-                  history.push(`/pix/${creator.id}/profile`);
+                if (creator.id ?? creator.urlSlug) {
+                  history.push(`/${creator.urlSlug}/profile`);
                 }
               }}
             />
@@ -252,7 +252,14 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             <StyledSkeleton width={40} height={40} animation="wave" variant="circle" />
           )}
           <Box display="flex" flexDirection="column" ml={1}>
-            <div className={cls(classes.black, classes.creatorName)}>
+            <div
+              className={cls(classes.black, classes.creatorName)}
+              onClick={() => {
+                if (creator.id ?? creator.urlSlug) {
+                  history.push(`/${creator.urlSlug}/profile`);
+                }
+              }}
+            >
               {creator?.name ?? <StyledSkeleton width={120} animation="wave" />}
             </div>
             {creator?.urlSlug ? (
@@ -289,49 +296,48 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             />
           </Box>
         </div>
-      ) : (
-        heightFixed ? (
-          media?.cid && !imageIPFS ? (
-            <Box my={1}>
-              <StyledSkeleton width="100%" height={226} variant="rect" />
-            </Box>
-          ) : (
-            <div
-              className={cls(classes.media, classes.fixed)}
-              style={{
-                backgroundImage: `url(${
-                  media.cid
-                    ? imageIPFS
-                    : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                    ? media.UrlMainPhoto
-                    : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-                })`,
-              }}
-              onClick={handleOpenDigitalArtModal}
-            />
-          )
+      ) : heightFixed ? (
+        media?.cid && !imageIPFS ? (
+          <Box my={1}>
+            <StyledSkeleton width="100%" height={226} variant="rect" />
+          </Box>
         ) : (
-          <div style={{ borderRadius: "16px", position: "relative", overflow: "hidden" }}>
-            {!imageLoaded && (
-              <Box my={1} position="absolute" top="0" left="0" width={1}>
-                <StyledSkeleton width="100%" height={226} variant="rect" />
-              </Box>
-            )}
-            <img
-              src={`${
+          <div
+            className={cls(classes.media, classes.fixed)}
+            style={{
+              backgroundImage: `url(${
                 media.cid
                   ? imageIPFS
                   : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                    ? media.UrlMainPhoto
-                    : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-              }`}
-              onLoad={() => setImageLoaded(true)}
-              alt={media.MediaSymbol ?? media.id}
-              onClick={handleOpenDigitalArtModal}
-              className={classes.media}
-            />
-          </div>
-        ))}
+                  ? media.UrlMainPhoto
+                  : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
+              })`,
+            }}
+            onClick={handleOpenDigitalArtModal}
+          />
+        )
+      ) : (
+        <div style={{ borderRadius: "16px", position: "relative", overflow: "hidden" }}>
+          {!imageLoaded && (
+            <Box my={1} position="absolute" top="0" left="0" width={1}>
+              <StyledSkeleton width="100%" height={226} variant="rect" />
+            </Box>
+          )}
+          <img
+            src={`${
+              media.cid
+                ? imageIPFS
+                : media.Type && media.Type !== "DIGITAL_ART_TYPE"
+                ? media.UrlMainPhoto
+                : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
+            }`}
+            onLoad={() => setImageLoaded(true)}
+            alt={media.MediaSymbol ?? media.id}
+            onClick={handleOpenDigitalArtModal}
+            className={classes.media}
+          />
+        </div>
+      )}
 
       <div className={classes.info} onClick={handleOpenDigitalArtModal}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px">
@@ -351,7 +357,9 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         {!media.tag || media.blockchain?.toLowerCase().includes("privi") ? (
           media.Auctions ? (
             <div className={classes.gray}>
-              {(media.Auctions.Gathered  ?? 0) > (media.Auctions.ReservePrice ?? 0) ? "Current bid" : "Reserve price"}
+              {(media.Auctions.Gathered ?? 0) > (media.Auctions.ReservePrice ?? 0)
+                ? "Current bid"
+                : "Reserve price"}
               <span>{`${Math.max(media.Auctions.Gathered ?? 0, media.Auctions.ReservePrice ?? 0) || ""} ${
                 media.Auctions.TokenSymbol
               }`}</span>

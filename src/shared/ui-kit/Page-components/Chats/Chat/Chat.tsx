@@ -23,10 +23,6 @@ import { ReactComponent as PlaySolid } from "assets/icons/play-solid.svg";
 import { ReactComponent as DownloadSolid } from "assets/icons/download-solid.svg";
 
 export default function Chat(props) {
-  const location = useLocation();
-  const isPix = useMemo(() => {
-    return location.pathname.includes("/pix");
-  }, [location]);
   const userSelector = useSelector((state: RootState) => state.user);
   const [mediaBlobUrl, setMediaBlobUrl] = useState<any>();
   const [message, setMessage] = useState<string>("");
@@ -859,22 +855,14 @@ export default function Chat(props) {
       <div className="message-footer-wip">
         {!audioMessage ? (
           <>
-            {!isPix && (
-              <img
-                src={require("assets/mediaIcons/old/audio_live.png")}
-                alt={"Record your voice"}
-                onClick={startAudioRecording}
-                className="audio-icon"
-              />
-            )}
             <img
               className="attachment-icon"
-              src={require(isPix ? "assets/icons/pix_attachment_icon.svg" : "assets/icons/attachment_icon.svg")}
+              src={require("assets/icons/pix_attachment_icon.svg")}
               alt="Attachment"
               onClick={uploadAttachment}
             />
             <img
-              src={require(isPix ? "assets/icons/pix_emoji_icon.svg" : "assets/icons/emoji_icon.svg")}
+              src={require("assets/icons/pix_emoji_icon.svg")}
               className="emoji-icon"
               onClick={toggleEmojiPicker}
               ref={emojiRef}

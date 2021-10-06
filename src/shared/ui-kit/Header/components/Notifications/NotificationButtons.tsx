@@ -29,9 +29,6 @@ import {
 } from "shared/services/API";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { handleSetStatus } from "shared/functions/commonFunctions";
-import ReviewDAOTokenProposalModal from "components/PriviDAO/subpages/DAOPage/modals/ReviewDAOTokenProposal";
-import ReviewDAOProposalModal from "components/PriviDAO/modals/ReviewDAOProposal";
-import RequestedJoinDAOModal from "components/PriviDAO/modals/RequestedJoinDAO";
 import { notificationButtonStyles } from "./NotificationButtons.styles";
 
 type NotificationButtonsProps = {
@@ -864,7 +861,7 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
               size="small"
               onClick={async () => {
                 await getPostById(notification.otherItemId, "pod");
-                history.push(`/pix/pod_post/${notification.otherItemId}`);
+                history.push(`/pod_post/${notification.otherItemId}`);
                 handleClosePopper();
               }}
             >
@@ -1497,14 +1494,6 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
           </>
         ) : null}
       </ButtonContainer>
-      {openModalAcceptJoiningRequest && (
-        <RequestedJoinDAOModal
-          open={openModalAcceptJoiningRequest}
-          userId={notification.itemId}
-          CommunityAddress={notification.pod}
-          onCloseDialog={setOpenModalAcceptJoiningRequest(false)}
-        />
-      )}
 
       <SignatureRequestModal
         theme={theme}
@@ -1522,21 +1511,7 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
         isCreator={community.Creator === userSelector.id}
         refreshCommunity={() => getWIPCommunity(community.id, null)}
         refreshAllProfile={() => refreshAllProfile(userSelector.id)}
-      />
-      {notification.type === 118 && (
-        <ReviewDAOProposalModal
-          open={openReviewCommunityProposal}
-          handleClose={handleCloseReviewCommunityProposal}
-          proposalId={notification.itemId}
-        />
-      )}
-      {notification.type === 123 && (
-        <ReviewDAOTokenProposalModal
-          open={openReviewCommunityProposal}
-          handleClose={handleCloseReviewCommunityProposal}
-          proposalId={notification.itemId}
-        />
-      )}
+      />      
       {(proposalType == "airdrop" || proposalType == "allocation") && (
         <ReviewCommunityAirdropProposalModal
           open={openReviewCommunityProposal}

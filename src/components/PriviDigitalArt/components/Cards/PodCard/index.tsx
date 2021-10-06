@@ -77,7 +77,7 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
 
   const handleOpenDigitalArtModal = () => {
     if (media && creator) {
-      history.push(`/pix/pods/${media.PodAddress ?? media.id}`);
+      history.push(`/pods/${media.PodAddress ?? media.id}`);
     }
   };
 
@@ -131,7 +131,7 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
                     })})`
                   : "none",
               }}
-              onClick={() => creator.urlSlug && history.push(`/pix/${creator.urlSlug}/profile`)}
+              onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
             />
           ) : (
             <StyledSkeleton width={40} height={40} animation="wave" variant="circle" />
@@ -179,8 +179,11 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
           onClick={handleOpenDigitalArtModal}
         />
       ) : (
-        <div style={{ borderRadius: "16px", position: "relative", cursor: "pointer" }} onClick={handleOpenDigitalArtModal}>
-           {!imageLoaded && (
+        <div
+          style={{ borderRadius: "16px", position: "relative", cursor: "pointer" }}
+          onClick={handleOpenDigitalArtModal}
+        >
+          {!imageLoaded && (
             <Box my={1} position="absolute" top="0" left="0" width={1}>
               <StyledSkeleton width="100%" height={226} variant="rect" />
             </Box>

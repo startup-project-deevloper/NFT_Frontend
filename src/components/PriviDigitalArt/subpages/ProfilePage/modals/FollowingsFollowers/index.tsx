@@ -147,7 +147,7 @@ const ProfileFollowsModal = React.memo(
     };
 
     const goToProfile = (id: any) => {
-      history.push(`/pix/${id}/profile`);
+      history.push(`/${id}/profile`);
       onClose();
     };
 

@@ -12,8 +12,18 @@ type NotificationContentProps = {
 
 // TODO: Please refactor me to something shorter and configurable :""""(
 export const NotificationContent: React.FunctionComponent<NotificationContentProps> = ({ notification }) => {
-  const { type, typeItemId, itemId, follower, pod, comment, token, amount, onlyInformation, otherItemId } =
-    notification;
+  const {
+    type,
+    typeItemId,
+    itemId,
+    follower,
+    pod,
+    comment,
+    token,
+    amount,
+    onlyInformation,
+    otherItemId,
+  } = notification;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -24,7 +34,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
     let user: any = allUsers.find(user => user.address === userId);
 
     return user.urlSlug;
-  }
+  };
 
   return (
     <>
@@ -813,7 +823,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             {follower}
           </b>{" "}
-          created <b onClick={() => { }}>{pod}</b> Commuity and want you to join as <em>{comment}</em>.
+          created <b onClick={() => {}}>{pod}</b> Commuity and want you to join as <em>{comment}</em>.
         </div>
       ) : type === 87 ? (
         <div>
@@ -825,7 +835,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             {follower}
           </b>{" "}
-          accepts your invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
+          accepts your invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 88 ? (
@@ -838,17 +848,17 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             {follower}
           </b>{" "}
-          declines your invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
+          declines your invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 89 ? (
         <div>
-          You have accepted the invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
+          You have accepted the invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 90 ? (
         <div>
-          You have declined the invitation to join as a <em>{comment}</em> of <b onClick={() => { }}>{pod}</b>{" "}
+          You have declined the invitation to join as a <em>{comment}</em> of <b onClick={() => {}}>{pod}</b>{" "}
           Community.
         </div>
       ) : type === 91 ? (
@@ -1117,7 +1127,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         <div>
           <b
             onClick={() => {
-              history.push(`/pix/${itemId}/profile`);
+              history.push(`/${itemId}/profile`);
               dispatch(setSelectedUser(itemId));
             }}
           >
@@ -1127,9 +1137,9 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           <b
             onClick={() => {
               if (pod) {
-                history.push(`/pix/pods/${token.replace(/\s/g, "")}`); // pod
+                history.push(`/pods/${token.replace(/\s/g, "")}`); // pod
               } else {
-                history.push(`/pix/${token.replace(/\s/g, "")}`); // digital art
+                history.push(`/${token.replace(/\s/g, "")}`); // digital art
               }
             }}
           >
@@ -1141,7 +1151,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         <div>
           <b
             onClick={() => {
-              history.push(`/pix/${itemId}/profile`);
+              history.push(`/${itemId}/profile`);
               dispatch(setSelectedUser(itemId));
             }}
           >
@@ -1151,9 +1161,9 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           <b
             onClick={() => {
               if (pod) {
-                history.push(`/pix/pods/${token.replace(/\s/g, "")}`); // pod
+                history.push(`/pods/${token.replace(/\s/g, "")}`); // pod
               } else {
-                history.push(`/pix/${token.replace(/\s/g, "")}`); // digital art
+                history.push(`/${token.replace(/\s/g, "")}`); // digital art
               }
             }}
           >
@@ -1839,18 +1849,26 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         </div>
       ) : type === 216 ? (
         <div>
-          <b>{`@${returnNameUserFromId(follower)}`}</b>{`, just created `}<b>{pod}</b>{` and invited you.`}
+          <b>{`@${returnNameUserFromId(follower)}`}</b>
+          {`, just created `}
+          <b>{pod}</b>
+          {` and invited you.`}
         </div>
       ) : type === 217 ? (
         <div>
-          <b>{`@${returnNameUserFromId(follower)}`}</b>{`, just created a Pod Proposal in `}<b>{pod}</b>{` pod.`}
+          <b>{`@${returnNameUserFromId(follower)}`}</b>
+          {`, just created a Pod Proposal in `}
+          <b>{pod}</b>
+          {` pod.`}
         </div>
       ) : type === 220 ? (
         <div>
-          Your JOT margin on <b>[{token}]</b> level is at <b>{amount * 100}%</b>. To avoid being liquidated, please add more JOTs to your position.<br />
+          Your JOT margin on <b>[{token}]</b> level is at <b>{amount * 100}%</b>. To avoid being liquidated,
+          please add more JOTs to your position.
+          <br />
           <b
             onClick={() => {
-              history.push(`/pix/fractionalisation/collection/${pod}/nft/${itemId}`)
+              history.push(`/fractionalisation/collection/${pod}/nft/${itemId}`);
             }}
           >
             Go to NFT

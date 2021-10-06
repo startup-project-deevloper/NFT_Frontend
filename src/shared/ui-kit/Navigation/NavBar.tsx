@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import ScrollToTop from "../../functions/ScrollToTop";
-import Sidebar from "./Sidebar";
 import Routes from "shared/routes/Routes";
 import { useLogin } from "shared/hooks/useLogin";
 import Header from "shared/ui-kit/Header/Header";
@@ -13,45 +13,13 @@ import "./NavBar.css";
 const NavBar = () => {
   const isLogin = useLogin();
   const messageBoxInfo = useSelector(getMessageBox);
-
-  const pathName = window.location.href;
-
+  const location = useLocation();
   const { activeChats } = messageBoxInfo;
-
-  const [isHideSidebar, setIsHideSidebar] = useState<boolean>(false);
   const [isHideHeader, setIsHideHeader] = useState<boolean>(false);
 
   useEffect(() => {
-    if (
-      pathName.toLowerCase().includes("privi-music") ||
-      pathName.toLowerCase().includes("pix") ||
-      pathName.toLowerCase().includes("data") ||
-      pathName.toLowerCase().includes("daos") ||
-      pathName.toLowerCase().includes("wallet") ||
-      pathName.toLowerCase().includes("zoo") ||
-      pathName.toLowerCase().includes("pods") ||
-      pathName.toLowerCase().includes("social") ||
-      pathName.toLowerCase().includes("collabs") ||
-      pathName.toLowerCase().includes("trax") ||
-      pathName.toLowerCase().includes("privi-home") ||
-      pathName.toLowerCase().includes("pix-connect") ||
-      pathName.toLowerCase().includes("privi-home") ||
-      pathName.toLocaleLowerCase().includes("privi-land") ||
-      pathName.toLowerCase().includes("social-connect") ||
-      pathName.toLowerCase().includes("flix-connect") ||
-      pathName.toLowerCase().includes("flix") ||
-      pathName.toLowerCase().includes("governance-connect") ||
-      pathName.toLowerCase().includes("exchange") ||
-      pathName.toLowerCase().includes("exchange-connect") ||
-      pathName.toLowerCase().includes("metaverse-connect")
-    ) {
-      setIsHideSidebar(true);
-      setIsHideHeader(true);
-    } else {
-      setIsHideHeader(false);
-      setIsHideSidebar(false);
-    }
-  }, [pathName]);
+    setIsHideHeader(location.pathname.toLowerCase().includes("/connect"));
+  }, [location]);
 
   return (
     <div
@@ -76,9 +44,7 @@ const NavBar = () => {
         <ScrollToTop />
         <div id="app-container" className="containerClassnames">
           <div className="fullPageView">
-            {isLogin && !isHideSidebar && <Sidebar />}
-            <main className={isLogin && !isHideSidebar ? "fullPageView-main" : ""}>
-              {!isHideHeader && <Header />}
+            <main className={isLogin ? "fullPageView-main" : ""}>
               <div className="container-fluid">
                 <Routes />
                 <div className="chat-modal-container">

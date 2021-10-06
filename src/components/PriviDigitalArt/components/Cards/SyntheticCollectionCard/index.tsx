@@ -36,7 +36,7 @@ export default function SyntheticCollectionCard({ item }) {
     <div
       className={classes.card}
       onClick={() => {
-        history.push(`/pix/fractionalisation/collection/${item.id}`);
+        history.push(`/fractionalisation/collection/${item.id}`);
       }}
     >
       <div

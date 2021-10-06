@@ -10,7 +10,6 @@ import { Accordion, AccordionDetails, AccordionSummary, PrimaryButton } from "sh
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { mediaCardStyles } from "./index.styles";
-import GetFeedbackModal from "components/PriviPods/modals/GetFeedbackModal/GetFeedbackModal";
 import { useHistory } from "react-router-dom";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
@@ -251,7 +250,7 @@ export const MediaCard = ({ media, pod, handleRefresh, creator }) => {
           style={{
             backgroundImage: creator.imageUrl ? `url(${creator.imageUrl})` : "none",
           }}
-          onClick={() => creator.id && history.push(`/pix/${creator.id}/profile`)}
+          onClick={() => creator.id && history.push(`/${creator.id}/profile`)}
         />
       </Box>
 
@@ -374,9 +373,6 @@ export const MediaCard = ({ media, pod, handleRefresh, creator }) => {
           </PrimaryButton>
         )}
       </Box>
-      {openFeedbackModal && (
-        <GetFeedbackModal openFeedback={openFeedbackModal} handleClose={handleCloseFeedbackModal} />
-      )}
       {openMediaTermsModal && (
         <MediaTermsModal
           open={openMediaTermsModal}

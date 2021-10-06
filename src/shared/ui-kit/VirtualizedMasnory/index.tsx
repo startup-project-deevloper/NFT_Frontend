@@ -9,7 +9,6 @@ import PodCard from "shared/ui-kit/Card/Pod-Card";
 import ClaimablePodCard from "shared/ui-kit/Card/Pod-Claimable-Card";
 import CommunityCard from "shared/ui-kit/Card/CommunityCard";
 import AcquisitionCard from "shared/ui-kit/Card/AcquisitionCard";
-import DAOCard from "components/PriviDAO/components/Cards/DAOCard";
 
 export const VirtualizedMasnory = ({
   list,
@@ -106,9 +105,6 @@ export const VirtualizedMasnory = ({
     }
     if (type === "acquisition") {
       return <AcquisitionCard data={datum} key={`${index}-acquisition`} />;
-    }
-    if (type === "DAO") {
-      return <DAOCard item={datum} heightFixed={false} key={`${index}-DAO`} />;
     }
   };
 

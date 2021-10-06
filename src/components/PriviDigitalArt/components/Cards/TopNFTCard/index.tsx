@@ -17,7 +17,7 @@ export default function TopNFTCard({ item }) {
       if (item.tag) queryParam += (queryParam ? "&" : "") + `blockchainTag=${item.tag}`;
       if (item.collection) queryParam += (queryParam ? "&" : "") + `collectionTag=${item.collection}`;
       history.push(
-        `/pix/fractionalisation/synthetic/${encodeURIComponent(item.MediaSymbol ?? item.id)}?${queryParam}`
+        `/fractionalisation/synthetic/${encodeURIComponent(item.MediaSymbol ?? item.id)}?${queryParam}`
       );
     }
   };

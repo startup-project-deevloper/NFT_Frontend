@@ -93,12 +93,12 @@ const NFTFractionalisation = () => {
 
   const handleSyntheticClick = () => {
     setSelectedTab("synthetic");
-    history.push("/pix/fractionalise/synthetic-derivative");
+    history.push("/fractionalise/synthetic-derivative");
   };
 
   const handlePureClick = () => {
     setSelectedTab("pure");
-    history.push("/pix/fractionalise/");
+    history.push("/fractionalise");
   };
 
   return (
@@ -143,7 +143,7 @@ const NFTFractionalisation = () => {
                     }
               }
               onClick={() => {
-                history.push("/pix/mynft");
+                history.push("/mynft");
               }}
             >
               <span>Manage Portfolio</span>

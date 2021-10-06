@@ -618,7 +618,7 @@ const CreateMediaModal = (props: any) => {
 
       if (props.updateMedia) props.updateMedia();
       setStatus({
-        msg: "Media Created!",
+        msg: "New NFT is created",
         key: Math.random(),
         variant: "success",
       });

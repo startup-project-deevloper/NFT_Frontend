@@ -27,11 +27,7 @@ export const MessageProfile = () => {
   const pathName = window.location.href; // If routing changes, change to pathname
 
   const handleViewProfile = () => {
-    if (pathName.includes("/pix/")) {
-      history.push(`/pix/${userInfo.id}/profile`);
-    } else {
-      history.push(`/social/${userInfo.id}`);
-    }
+    history.push(`/${userInfo.id}/profile`);
     dispatch(setSelectedUser(userInfo.id));
   };
 

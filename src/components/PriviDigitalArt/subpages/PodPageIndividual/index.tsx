@@ -281,7 +281,7 @@ const PodPageIndividual = () => {
                           url={creator.imageUrl}
                           alt={creator.id}
                           title={`${creator.name}`}
-                          onClick={() => history.push(`/pix/${creator.id}/profile`)}
+                          onClick={() => history.push(`/${creator.id}/profile`)}
                         />
                       ))}
                     </Box>

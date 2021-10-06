@@ -5,8 +5,8 @@ import { useWeb3React } from "@web3-react/core";
 import Web3 from "web3";
 import { BlockchainNets } from "shared/constants/constants";
 
-import CreateContract from "./components/CreateContract";
-import LockNFT from "./components/LockNFT";
+import WithdrawNFT from "./components/WithdrawNFT";
+import UnlockNFT from "./components/UnlockNFT";
 import ProgressBar from "./components/ProgressBar";
 
 import { useWithdrawNFTModelStyles } from "./index.style";
@@ -35,13 +35,9 @@ export default function WithdrawNFTModel({ open, onClose, nft }) {
           <StyledDivider type="solid" color="#DAE6E5" />
         </Box>
         {step === 0 ? (
-          <CreateContract
-            onClose={onClose}
-            onCompleted={() => handleCompleteStep(0)}
-            nft={nft}
-          />
+          <WithdrawNFT onClose={onClose} onCompleted={() => handleCompleteStep(0)} nft={nft} />
         ) : (
-          <LockNFT onClose={onClose} onCompleted={() => handleCompleteStep(1)} nft={nft}/>
+          <UnlockNFT onClose={onClose} onCompleted={() => handleCompleteStep(1)} nft={nft} />
         )}
       </Box>
     </Modal>

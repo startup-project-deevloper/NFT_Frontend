@@ -101,6 +101,8 @@ export default function BuyoutNFTModal({ open, onClose, media, handleRefresh }) 
   const { showAlertMessage } = useAlertMessage();
 
   useEffect(() => {
+    if (!open) return;
+
     if (selectedChain.chainId !== chainId) {
       (async () => {
         const changed = await switchNetwork(selectedChain.chainId);
@@ -109,7 +111,7 @@ export default function BuyoutNFTModal({ open, onClose, media, handleRefresh }) 
         }
       })();
     }
-  }, [chainId, selectedChain]);
+  }, [chainId, selectedChain, open]);
 
   const buyoutToken = React.useMemo(() => {
     return media?.FractionalizeData?.listToken;

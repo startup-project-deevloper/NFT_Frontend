@@ -3,7 +3,7 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Box from "shared/ui-kit/Box";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
-import { useLockNFTStyles } from "./index.styles";
+import { useUnlockNFTStyles } from "./index.styles";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import NFTVaultManager from "shared/connectors/ethereum/contracts/NFTVaultManager.json";
@@ -18,8 +18,8 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
-export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, nft }) {
-  const classes = useLockNFTStyles();
+export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = true, nft }) {
+  const classes = useUnlockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
@@ -44,27 +44,37 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
 
       const contract = ContractInstance(web3, NFTVaultManager.abi, contractAddress);
       console.log(nft);
-      const gas = await contract.methods
-        .withdraw(nft.SyntheticCollectionManagerAddress, nft.SyntheticID)
+      let gas = await contract.methods
+        .requestUnlock(nft.collection_id, nft.NftId)
         .estimateGas({ from: account });
-      const response = await contract.methods
-        .withdraw(nft.SyntheticCollectionManagerAddress, nft.SyntheticID)
+      let response = await contract.methods
+        .requestUnlock(nft.collection_id, nft.NftId)
         .send({ from: account, gas })
-        .on("receipt", receipt => {
-          console.log('receipt... ', receipt)
-          onCompleted();
-          setIsLoading(false);
-        })
         .on("transactionHash", hash => {
           setHash(hash);
-          setIsLoading(false);
         })
         .on("error", error => {
           console.log("error... ", error);
-          showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+          showAlertMessage(`Request Unlock is failed, please try again later`, { variant: "error" });
           setIsProceeding(false);
           setIsLoading(false);
         });
+      gas = await contract.methods.withdraw(nft.collection_id, nft.NftId).estimateGas({ from: account });
+      response = await contract.methods
+        .withdraw(nft.collection_id, nft.NftId)
+        .send({ from: account, gas })
+        .on("transactionHash", hash => {
+          setHash(hash);
+        })
+        .on("error", error => {
+          console.log("error... ", error);
+          showAlertMessage(`Unlock NFT is failed, please try again later`, { variant: "error" });
+          setIsProceeding(false);
+          setIsLoading(false);
+        });
+      onCompleted();
+      setIsLoading(false);
+
       // await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
       //   collectionAddress: selectedNFT.tokenAddress,
       //   syntheticID,
@@ -73,7 +83,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       console.log("error", err);
       setIsProceeding(false);
       setIsLoading(false);
-      showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+      showAlertMessage(`Unlock NFT is failed, please try again later`, { variant: "error" });
     }
   };
 

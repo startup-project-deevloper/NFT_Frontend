@@ -880,34 +880,7 @@ const Header = props => {
                   </ToolbarButtonWithPopper>
                 )}
               </div>
-              <Hidden mdDown={width <= 768 && isPriviPix}>
-                <Hidden mdDown>
-                  {userSelector.address ? (
-                    <div className="header-buttons">
-                      {(pathName.toLowerCase().includes("zoo") || isPriviData || isWallet) && !isZoo && (
-                        <SecondaryButton
-                          size="medium"
-                          onClick={e => setAppAnchorEl(e.currentTarget)}
-                          style={{ background: "#4218B5", color: "white" }}
-                          isRounded={isPriviMusicDao}
-                        >
-                          <div style={{ display: "flex", alignItems: "center" }}>
-                            <div style={{ marginRight: "8px" }}>Apps</div>
-                            <NavigationIcon />
-                          </div>
-                        </SecondaryButton>
-                      )}
-                      {(pathName.toLowerCase().includes("zoo") || isPriviData || isWallet) &&
-                        getAppsPopover()}
-                    </div>
-                  ) : (
-                    <div className="header-buttons">
-                      <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
-                        Get Privi Wallet
-                      </button>
-                    </div>
-                  )}
-                </Hidden>
+              <Hidden mdDown={width <= 768 && isPriviPix}>                
                 {isPriviPix && account && (
                   <Hidden smDown>
                     <SecondaryButton size="medium" className={classes.accountInfo}>

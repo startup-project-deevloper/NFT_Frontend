@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function CreateContract({ onClose, onCompleted, nft }) {
+export default function WithdrawNFT({ onClose, onCompleted, nft }) {
   const classes = useStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);

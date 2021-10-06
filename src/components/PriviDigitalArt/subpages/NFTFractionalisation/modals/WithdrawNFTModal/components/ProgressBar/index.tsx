@@ -62,9 +62,9 @@ export default function ProgressBar({ step = 0, setStep, completedSteps }: Progr
 
   const handleStep = (index: number) => async () => {
     // If previous step is completed, then selectable.
-    if (completedSteps.includes(index - 1)) {
-      setStep(index);
-    }
+    // if (completedSteps.includes(index - 1)) {
+    setStep(index);
+    // }
   };
 
   const isStepComplete = (index: number) => {

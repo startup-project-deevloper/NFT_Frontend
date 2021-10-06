@@ -15,7 +15,7 @@ export const useStyles = makeStyles(theme => ({
 export default function PriviPixSyntheticRouter(props) {
   return (
     <Switch>
-      <Route exact path="/pix/fractionalise/synthetic-derivative">
+      <Route exact path="/fractionalise/synthetic-derivative">
         <SyntheticFractionalisePage
           openFractionalize={props.openFractionalize}
           setSelectedTab={props.setSelectedTab}

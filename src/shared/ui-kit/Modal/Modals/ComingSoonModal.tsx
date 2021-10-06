@@ -9,7 +9,7 @@ import "./ComingSoonModal.css";
 // const webpageIcon = require('assets/snsIcons/webpage.png');
 const priviLogo = require("assets/logos/PRIVILOGO.png");
 
-const ComingSoon = (props) => {
+const ComingSoon = props => {
   return (
     <Modal
       className="modalCampaign coming-soon-modal"
@@ -27,44 +27,6 @@ const ComingSoon = (props) => {
       <div className="smokescreen-content">
         <img src={priviLogo} width={400} height={400} alt={"privi"} />
         <p>COMING SOON</p>
-        {/* <div style={{display: "inline-flex"}}>
-            <a
-              className="rrssProfileLink"
-              href={'https://twitter.com/priviprotocol?lang=en'}
-              target="_blank"
-            >
-              <img src={twitterHexagon} width={40} height={40} style={{margin: 15, cursor: "pointer"}} />
-            </a>
-            <a
-              className="rrssProfileLink"
-              href={'https://www.instagram.com/priviprotocol/'}
-              target="_blank"
-            >
-             <img src={instagramHexagon} width={40} height={40} style={{margin: 15, cursor: "pointer"}} />
-            </a>
-            <a
-              className="rrssProfileLink"
-              href={'https://t.me/protocolprivi'}
-              target="_blank"
-            >
-              <img src={telegramIcon} width={40} height={40} style={{margin: 15, cursor: "pointer"}} />
-            </a>
-            <a
-              className="rrssProfileLink"
-              href={'https://www.linkedin.com/company/privi-protocol/'}
-              target="_blank"
-            >
-              <img src={linkedinIcon} width={40} height={40} style={{margin: 15, cursor: "pointer"}} />
-            </a>
-            <a
-              className="rrssProfileLink"
-              href={'https://www.privi.store/'}
-              target="_blank"
-            >
-              <img src={webpageIcon} width={40} height={40} style={{margin: 15, cursor: "pointer"}} />
-            </a>
-
-            </div> */}
       </div>
     </Modal>
   );

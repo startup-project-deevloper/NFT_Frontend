@@ -410,7 +410,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 <Box display="flex" alignItems="center">
                   <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
                   <Box ml={1}>
-                    <div className={classes.typo2} onClick={() => history.push(`/pix/${getUserInfo(nft.OwnerAddress)?.urlSlug}/profile`)}>
+                    <div className={classes.typo2} onClick={() => history.push(`/${getUserInfo(nft.OwnerAddress)?.urlSlug}/profile`)}>
                       {userName}
                     </div>
                   </Box>

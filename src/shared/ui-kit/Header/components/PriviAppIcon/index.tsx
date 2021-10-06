@@ -86,157 +86,17 @@ export default function PriviAppIcon(props) {
   }
 
   return (
-    <Wrapper
-      isMusic={pathPrefix !== "trax" && pathPrefix === "privi-music"}
-      isArt={pathPrefix === "pix"}
-      isZoo={pathPrefix === "zoo"}
-      onClick={handleToggleMenu}
-    >
-      {pathPrefix === "pix" && !props.isTransparent ? (
-        <img
-          onClick={() => {
-            let root = pathName.toLowerCase().includes("/zoo/page")
-              ? "/zoo"
-              : pathPrefix === "pix"
-              ? "/pix/"
-              : "/";
-            history.push(root);
-          }}
-          style={{
-            width: 136,
-          }}
-          src={require('assets/logos/privi_pix_alpha.svg')}
-          alt="privi"
-        />
-      ) : (
-        <img
-          onClick={() => {
-            let root = pathName.toLowerCase().includes("/zoo/page")
-              ? "/zoo"
-              : pathPrefix === "pix"
-              ? "/pix/"
-              : "/";
-            history.push(root);
-          }}
-          style={
-            pathPrefix === "social"
-              ? { height: "40px" }
-              : pathName.toLowerCase().includes("/zoo/page")
-              ? { height: "50px" }
-              : undefined
-          }
-          src={require(`assets/logos/${
-            pathName.toLowerCase().includes("zoo/page")
-              ? "privi_zoo_logo_beta"
-              : pathPrefix === "trax"
-              ? menuOptions[7]
-              : pathPrefix === "metaverse"
-              ? menuOptions[10]
-              : pathPrefix === "music"
-              ? menuOptions[0]
-              : pathPrefix === "pix"
-              ? `${menuOptions[1]}`
-              : pathPrefix === "wallet"
-              ? menuOptions[2]
-              : pathPrefix === "data"
-              ? menuOptions[3]
-              : pathPrefix === "daos"
-              ? menuOptions[4]
-              : pathPrefix === "pods"
-              ? menuOptions[5]
-              : pathPrefix === "collabs"
-              ? menuOptions[6]
-              : pathPrefix === "social"
-              ? menuOptions[9]
-              : pathPrefix === "flix"
-              ? menuOptions[11]
-              : menuOptions[8]
-          }${!pathName.toLowerCase().includes("/zoo/page") && props.isTransparent ? "_white" : ""}.png`)}
-          alt="privi"
-        />
-      )}
-      {/* <div ref={anchorMenuRef}>
-        {!pathName.toLowerCase().includes("trax") && (
-          <img
-            src={require(`assets/icons/${
-              props.isTransparent || pathName.toLowerCase().includes("pix")
-                ? "arrow_white_right"
-                : "arrow"
-            }.png`)}
-            alt="arrow"
-            style={{ transform: openMenu ? "rotate(270deg)" : "rotate(90deg)" }}
-          />
-        )}
-        <Popper
-          open={openMenu}
-          anchorEl={anchorMenuRef.current}
-          transition
-          disablePortal
-          style={{ top: pathName.toLowerCase().includes("trax") ? 0 : -10, zIndex: 3 }}
-        >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin: placement === "bottom" ? "center top" : "center bottom",
-                position: "inherit",
-              }}
-            >
-              <Paper className={classes.paper}>
-                <ClickAwayListener onClickAway={handleCloseMenu}>
-                  <MenuList autoFocusItem={openMenu} onKeyDown={handleListKeyDownMenu}>
-                    {menuOptions
-                      .filter(
-                        o =>
-                          (pathName.toLowerCase().includes("pix") &&
-                            !o.toLowerCase().includes("pix")) ||
-                          (pathName.toLowerCase().includes("trax") &&
-                            !o.toLowerCase().includes("privi_music_dao")) ||
-                          (!pathName.toLowerCase().includes("pix") &&
-                            !pathName.toLowerCase().includes("trax") &&
-                            !pathName.toLowerCase().includes(o.replace("_", "-")))
-                      )
-                      .map((option, index) => (
-                        <StyledMenuItem
-                          key={`option-${index}`}
-                          onClick={e => {
-                            handleCloseMenu(e);
-                            history.push(
-                              `/${
-                                option.includes("art")
-                                  ? "pix"
-                                  : option.includes("pods")
-                                  ? "pods"
-                                  : option.includes("music_dao")
-                                  ? "trax"
-                                  : option.replace("_", "-")
-                              }${option.includes("data") ? "-new" : ""}${
-                                option.includes("social") ? `/${props.id ?? user.urlSlug ?? user.id}` : ""
-                              }`
-                            );
-                          }}
-                          style={{
-                            paddingTop: option.includes("music_dao") ? 10 : undefined,
-                            paddingBottom: option.includes("music_dao") ? 10 : undefined,
-                          }}
-                        >
-                          {
-                            <img
-                              src={require(`assets/logos/${option}.png`)}
-                              alt={option}
-                              height={option.includes("music_dao") ? undefined : 40}
-                              width={option.includes("music_dao") ? undefined : 132}
-                            />
-                          }
-                        </StyledMenuItem>
-                      ))}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </div> */}
+    <Wrapper isMusic={false} isArt={true} isZoo={false} onClick={handleToggleMenu}>
+      <img
+        onClick={() => {
+          history.push("/");
+        }}
+        style={{
+          width: 136,
+        }}
+        src={require("assets/logos/privi_pix_alpha.svg")}
+        alt="privi"
+      />
     </Wrapper>
   );
 }

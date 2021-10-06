@@ -16,10 +16,6 @@ interface FileAttachmentProps {
 
 const FileAttachment = ({ setStatus, onFileChange }: FileAttachmentProps) => {
   const classes = useFileAttachmentStyles();
-  const location = useLocation();
-  const isPix = useMemo(() => {
-    return location.pathname.includes("/pix");
-  }, [location]);
   
   const validateFile = file => {
     const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/x-icon"];
@@ -158,7 +154,7 @@ const FileAttachment = ({ setStatus, onFileChange }: FileAttachmentProps) => {
     <div className="file-attachment">
       <img
         className={classes.attachment}
-        src={require(isPix ? "assets/icons/pix_attachment_icon.svg" : "assets/icons/attachment_icon.svg")}
+        src={require("assets/icons/pix_attachment_icon.svg")}
         alt="Attachment"
         onClick={uploadAttachment}
       />

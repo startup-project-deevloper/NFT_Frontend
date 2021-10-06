@@ -42,7 +42,7 @@ export default function ArtistCard({ item, currentIndex }) {
     <div
       className={classes.card}
       onClick={() => {
-        history.push(`/pix/${item.urlSlug}/profile`);
+        history.push(`/${item.urlSlug}/profile`);
       }}
       style={{
         backgroundImage: item.url

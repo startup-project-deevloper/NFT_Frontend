@@ -36,51 +36,46 @@ export const useStyles = makeStyles(theme => ({
 export default function PriviPixRouter(props) {
   const { container } = useStyles();
   return (
-    <Switch>
-      <Route exact path="/pix/" component={HomePage} />
-      <Route exact path="/pix/mynft" component={MyNFTPage} />
-      <Route exact path="/pix/explorer" component={ExplorePage} />
-      <Route exact path="/pix/explorer/:collectionName" component={CollectionPage} />
-      <Route exact path="/pix/like" component={LikedPage} />
-      <Route exact path="/pix/pods" component={PodPage} />
-      <Route exact path="/pix/marketplace" component={MarketplacePage} />
-      <Route exact path="/pix/loan" component={NFTLoansPage} />
-      <Route exact path="/pix/loan/positions" component={NFTPositionManagerPage} />
-      <Route exact path="/pix/loan/:id" component={NFTLoanDetailPage} />
-      <Route exact path="/pix/fractionalisation/:id" component={FractionPage} />
-      <Route exact path="/pix/fractionalisation/synthetic/:id" component={SyntheticFractionPage} />
+    <Switch>      
+      <Route exact path="/mynft" component={MyNFTPage} />
+      <Route exact path="/explorer" component={ExplorePage} />
+      <Route exact path="/explorer/:collectionName" component={CollectionPage} />
+      <Route exact path="/like" component={LikedPage} />
+      <Route exact path="/pods" component={PodPage} />
+      <Route exact path="/marketplace" component={MarketplacePage} />
+      <Route exact path="/loan" component={NFTLoansPage} />
+      <Route exact path="/loan/positions" component={NFTPositionManagerPage} />
+      <Route exact path="/loan/:id" component={NFTLoanDetailPage} />
+      <Route exact path="/fractionalisation/:id" component={FractionPage} />
+      <Route exact path="/fractionalisation/synthetic/:id" component={SyntheticFractionPage} />
       <Route
         exact
-        path="/pix/fractionalisation/collection/:id"
+        path="/fractionalisation/collection/:id"
         component={SyntheticFractionalisedCollectionPage}
       />
       <Route
         exact
-        path="/pix/fractionalisation/collection/:collectionId/nft/:nftId"
+        path="/fractionalisation/collection/:collectionId/nft/:nftId"
         component={SyntheticFractionalisedCollectionNFTPage}
       />
+      <Route exact path="/fractionalisation/collection/quick_swap/:id" component={TradeOnQuickSwap} />
 
+      <Route path="/fractionalise" component={NFTFractionalisation} />
+
+      <Route exact path="/pod_post/:id" component={WallPostPage} />
+      <Route exact path="/:id/profile" component={ProfilePage} />
       <Route
         exact
-        path="/pix/fractionalisation/collection/quick_swap/:id"
-        component={TradeOnQuickSwap}
-      />
-
-      <Route path="/pix/fractionalise" component={NFTFractionalisation} />
-
-      <Route exact path="/pix/pod_post/:id" component={WallPostPage} />
-      <Route exact path="/pix/:id/profile" component={ProfilePage} />
-      <Route
-        exact
-        path="/pix/:userId/messages"
+        path="/:userId/messages"
         render={() => (
           <div className={container}>
             <Messenger type="pix" />
           </div>
         )}
       />
-      <Route exact path="/pix/pods/:id" component={PodPageIndividual} />
-      <Route exact path="/pix/:id" component={MediaPage} />
+      <Route exact path="/pods/:id" component={PodPageIndividual} />
+      <Route exact path="/nft/:id" component={MediaPage} />
+      <Route path="/" component={HomePage} />
     </Switch>
   );
 }

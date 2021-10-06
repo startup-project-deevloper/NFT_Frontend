@@ -70,7 +70,7 @@ export default function FractionalizedNFTCard({ item, heightFixed, index = 0 }) 
       let queryParam = "";
       if (item.tag) queryParam += (queryParam ? "&" : "") + `blockchainTag=${item.tag}`;
       if (item.collection) queryParam += (queryParam ? "&" : "") + `collectionTag=${item.collection}`;
-      history.push(`/pix/fractionalisation/${encodeURIComponent(item.MediaSymbol ?? item.id)}?${queryParam}`);
+      history.push(`/fractionalisation/${encodeURIComponent(item.MediaSymbol ?? item.id)}?${queryParam}`);
     }
   };
 
@@ -100,7 +100,7 @@ export default function FractionalizedNFTCard({ item, heightFixed, index = 0 }) 
                     })})`
                   : "none",
               }}
-              onClick={() => creator.urlSlug && history.push(`/pix/${creator.urlSlug}/profile`)}
+              onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
             />
             <Box display="flex" flexDirection="column">
               <div className={cls(classes.black, classes.creatorName)} style={{ marginBottom: 4 }}>

@@ -70,7 +70,7 @@ const ConfirmPayment: React.FunctionComponent<ConfirmPaymentProps> = ({
   const [communities, setCommunities] = React.useState<any[]>([]);
 
   const goToWalletManager = () => {
-    history.push(`/wallet`);
+    window.location.href = "/";
   };
 
   React.useEffect(() => {

@@ -320,7 +320,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           {!isMobile && (
             <BackButton
               purple
-              overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
+              overrideFunction={() => history.push("/fractionalise/synthetic-derivative")}
             />
           )}
           {isMobile && (
@@ -328,7 +328,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <Box display="flex" justifyContent="space-between" width="100%" marginBottom="16px">
                 <BackButton
                   purple
-                  overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
+                  overrideFunction={() => history.push("/fractionalise/synthetic-derivative")}
                 />
                 <Box
                   onClick={handleAddToMetamask}
@@ -580,7 +580,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                   <CollectionNFTCard
                     item={item}
                     handleSelect={() => {
-                      history.push(`/pix/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`);
+                      history.push(`/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`);
                     }}
                   />
                 </Grid>

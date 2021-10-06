@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const createPodModalStyles = makeStyles((theme) => ({
+export const createPodModalStyles = makeStyles(theme => ({
   headerCreatePod: {
     fontFamily: "Agrandir GrandLight",
     fontStyle: "normal",
@@ -27,11 +27,11 @@ export const createPodModalStyles = makeStyles((theme) => ({
       marginBottom: 14,
       fontStyle: "normal",
       fontWeight: 800,
-      fontSize: 22,
+      fontSize: 24,
       textAlign: "center",
-      color: "#2D3047",
+      color: "black",
       fontFamily: "Agrandir",
-      lineHeight: "130%"
+      lineHeight: "130%",
     },
     "& p": {
       fontStyle: "normal",
@@ -40,25 +40,25 @@ export const createPodModalStyles = makeStyles((theme) => ({
       fontWeight: 500,
       lineHeight: "160%",
       textAlign: "center",
-      color: "#54658F",
+      color: "black",
       marginTop: 0,
       marginBottom: "19px",
     },
     "& b": {
-      fontWeight: 600
+      fontWeight: 600,
     },
     "& button": {
       height: 45,
       width: 250,
       marginTop: 53,
-      borderRadius: "48px",
+      borderRadius: "4px",
       fontFamily: "Montserrat",
       fontSize: 16,
       fontWeight: 600,
       lineHeight: "18px",
       border: "none",
       color: "#ffffff",
-      background: "#2D3047",
+      background: "#431AB7",
     },
   },
   warningContainer: {
@@ -84,10 +84,10 @@ export const createPodModalStyles = makeStyles((theme) => ({
     marginBottom: 40,
     background: "#F0F5F8",
     borderRadius: "68px",
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       marginTop: 24,
       marginBottom: 32,
-    }
+    },
   },
 
   tabHeaderPodMedia: {
@@ -102,10 +102,10 @@ export const createPodModalStyles = makeStyles((theme) => ({
     "&:last-child": {
       marginRight: 0,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       padding: 9,
       marginRight: 5,
-    }
+    },
   },
   tabHeaderPodMediaSelected: {
     color: "#FFFFFF",
@@ -149,7 +149,7 @@ export const createPodModalStyles = makeStyles((theme) => ({
     marginTop: "32px",
     "& button": {
       height: "59px",
-      borderRadius: "48px",
+      borderRadius: "4px",
       fontFamily: "Montserrat",
       fontWeight: 800,
       lineHeight: "20px",
@@ -158,12 +158,12 @@ export const createPodModalStyles = makeStyles((theme) => ({
       "&:first-child": {
         background: "#FFFFFF",
         color: "#2D3047",
-        border: "1px solid #2D3047",
+        border: "1px solid #431AB7",
       },
       "&:last-child": {
         color: "#FFFFFF",
-        background: "#2D3047",
-        width: 295
+        background: "#431AB7",
+        width: 295,
       },
     },
   },

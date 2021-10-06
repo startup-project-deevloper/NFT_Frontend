@@ -7,7 +7,7 @@ import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { RootState } from "store/reducers/Reducer";
 import { updateTask } from "shared/functions/updateTask";
-import { musicDAOInitiatePod } from "shared/services/API";
+import { mediaPodInitiatePod, musicDAOInitiatePod } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { Modal, PrimaryButton, SecondaryButton, CircularLoadingIndicator } from "shared/ui-kit";
@@ -97,7 +97,7 @@ const CreatePodModal = (props: any) => {
         let infoImage = await onUploadNonEncrypt(photo, file => uploadWithNonEncryption(file));
 
         payload.infoImage = infoImage;
-        const initiatePodRes = await musicDAOInitiatePod(payload);
+        const initiatePodRes = await mediaPodInitiatePod(payload);
         await afterCreatePod(initiatePodRes);
         setIsLoading(false);
         // }
@@ -141,11 +141,11 @@ const CreatePodModal = (props: any) => {
       <div>
         {!acceptWarning ? (
           <div className={classes.warningScreen}>
-            <img src={require("assets/musicDAOImages/pod-modal-logo.png")} width="120px" alt={"music pod"} />
-            <h3>Create a Music Pod</h3>
+            <img src={require("assets/pixImages/pod_modal_logo.svg")} width="120px" alt={"video pod"} />
+            <h3>Create a Video Pod</h3>
             <p>
-              A pod is a collection of medias that can can be fundraised and investable. In this process you
-              will create the Pod’s general characteristics and plan all the media it will contain.
+              A pod is a collection of songs that can be fundraised and investable. In this process you will
+              create the Pod’s general characteristics and plan all the media it will contain.
             </p>
             <div className={classes.warningContainer}>
               <WarningIcon />

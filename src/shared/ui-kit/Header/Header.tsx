@@ -331,7 +331,8 @@ const Header = props => {
                   user.myMediasCount ?? 0,
                   user.url ?? "",
                   user.wallets ?? [],
-                  user.email ?? ""
+                  user.email ?? "",
+                  user.infoImage ?? {},
                 )
               );
             });

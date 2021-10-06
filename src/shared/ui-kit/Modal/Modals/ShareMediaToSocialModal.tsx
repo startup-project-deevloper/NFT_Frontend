@@ -95,7 +95,7 @@ type ShareMediaToSocialModalProps = {
 export const ShareMediaToSocialModal: React.FC<ShareMediaToSocialModalProps> = ({
   shareLink,
   open,
-  type = "Media",
+  type = "NFT",
   handleClose,
   shareMedia,
 }) => {

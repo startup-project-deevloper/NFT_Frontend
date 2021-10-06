@@ -14,15 +14,9 @@ import { socket } from "components/Login/Auth";
 import FileAttachment, { FileType } from "shared/ui-kit/FileAttachment";
 import { Gradient } from "shared/ui-kit";
 
-export const MessageFooter = (props) => {
+export const MessageFooter = props => {
   const { chat, messages, setMessages, specialWidthInput, type = "social" } = props;
   const dispatch = useDispatch();
-  const isPix = useMemo(() => {
-    return type === "pix";
-  }, [type]);
-  const isTrax = useMemo(() => {
-    return type === "trax";
-  }, [type]);
   const userSelector = useSelector((state: RootState) => state.user);
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
 
@@ -436,17 +430,9 @@ export const MessageFooter = (props) => {
     >
       {!audioMessage && (
         <>
-          {!isPix && !isTrax && (
-            <img
-              src={require("assets/mediaIcons/old/audio_live.png")}
-              alt={"Record your voice"}
-              onClick={startAudioRecording}
-              className="audio-icon"
-            />
-          )}
           <FileAttachment setStatus={setStatus} onFileChange={onFileChange} />
           <img
-            src={require(isPix ? "assets/icons/pix_emoji_icon.svg" : "assets/icons/emoji_icon.svg")}
+            src={require("assets/icons/pix_emoji_icon.svg")}
             className="emoji-icon"
             onClick={toggleEmojiPicker}
             ref={emojiRef}
@@ -471,16 +457,12 @@ export const MessageFooter = (props) => {
           onKeyDown={e => {
             e.key === "Enter" && sendMessage();
           }}
-          style={isPix ? { border: "1px solid #181818" } : isTrax ? { background: "#F2FBF6" } : {}}
+          style={{ border: "1px solid #181818" }}
         />
       )}
 
       {!audioMessage && (
-        <div
-          className="send-icon"
-          onClick={() => sendMessage()}
-          style={isTrax ? { background: Gradient.Green1 } : {}}
-        >
+        <div className="send-icon" onClick={() => sendMessage()}>
           <img src={require("assets/icons/send_icon.svg")} />
         </div>
       )}

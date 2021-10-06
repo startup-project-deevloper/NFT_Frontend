@@ -39,7 +39,7 @@ const WallItem = React.memo((props: any) => {
         color: props.item.isPinned ? "white" : "black",
       }}
       onClick={() => {
-        history.push(`/pix/pod_post/${props.item.id}`);
+        history.push(`/pod_post/${props.item.id}`);
       }}
     >
       {props.item.Url && props.item.hasPhoto && (

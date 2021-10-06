@@ -11,7 +11,7 @@ const TABS = [
   "HOME",
   "EXPLORE",
   "MARKETPLACE",
-  // "PODS",
+  "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
   "NFT FRACTIONALISATION",
@@ -27,14 +27,14 @@ export default function MobileMenu() {
       return TABS[1];
     } else if (location.pathname.includes("marketplace")) {
       return TABS[2];
-    // } else if (location.pathname.includes("pods")) {
-    //   return TABS[4];
-    } else if (location.pathname.includes("loan")) {
+    } else if (location.pathname.includes("pods")) {
       return TABS[3];
-    } else if (location.pathname.includes("like")) {
+    } else if (location.pathname.includes("loan")) {
       return TABS[4];
-    } else if (location.pathname.includes("fractionalisation") || location.pathname.includes("fractionalise")) {
+    } else if (location.pathname.includes("like")) {
       return TABS[5];
+    } else if (location.pathname.includes("fractionalisation") || location.pathname.includes("fractionalise")) {
+      return TABS[6];
     }
 
     return TABS[0];
@@ -42,19 +42,19 @@ export default function MobileMenu() {
 
   const goToPage = value => {
     if (value === TABS[0]) {
-      history.push("/pix/");
+      history.push("/");
     } else if (value === TABS[1]) {
-      history.push("/pix/explorer");
+      history.push("/explorer");
     } else if (value === TABS[2]) {
-      history.push("/pix/marketplace");
-    // } else if (value === TABS[4]) {
-    //   history.push("/pix/pods");
+      history.push("/marketplace");
     } else if (value === TABS[3]) {
-      history.push("/pix/loan");
+      history.push("/pods");
     } else if (value === TABS[4]) {
-      history.push("/pix/like");
+      history.push("/loan");
     } else if (value === TABS[5]) {
-      history.push("/pix/fractionalise");
+      history.push("/like");
+    } else if (value === TABS[6]) {
+      history.push("/fractionalise");
     }
   };
 

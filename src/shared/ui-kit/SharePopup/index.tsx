@@ -15,22 +15,22 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
   const [openCopyMessage, setOpenCopyMessage] = useState<boolean>(false);
 
   const getPrefixURL = () => {
-    if (process.env.NODE_ENV === "development") return `http://localhost:3001/#/pix`;
-    return `https://www.privi.store/#/pix`;
+    if (process.env.NODE_ENV === "development") return `http://localhost:3001/#/`;
+    return `https://pix.privi.store/#/`;
   };
 
   const handleShareWithQR = () => {
     if(item?.Type === "SYNTHETIC_FRACTIONALISATION") {
-      setShareLink(`${getPrefixURL()}/fractionalisation/collection/${item.collectionId}/nft/${item.SyntheticID}`);
+      setShareLink(`${getPrefixURL()}fractionalisation/collection/${item.collectionId}/nft/${item.SyntheticID}`);
     } else if(item?.Type === "SYNTHETIC_COLLECTION") {
-      setShareLink(`${getPrefixURL()}/fractionalisation/collection/${item.collectionId}`);
+      setShareLink(`${getPrefixURL()}fractionalisation/collection/${item.collectionId}`);
     } else {
       if (item?.MediaSymbol || item.PodAddress) {
         setShareLink(
-          `${getPrefixURL()}/${item.PodAddress ? "pod" : ""}/${item.MediaSymbol || item.PodAddress || item.id}`
+          `${getPrefixURL()}${item.PodAddress ? "pod" : "nft"}/${item.MediaSymbol || item.PodAddress || item.id}`
         );
       } else {
-        setShareLink(`${getPrefixURL()}/pod_post/${item.id}`);
+        setShareLink(`${getPrefixURL()}pod_post/${item.id}`);
       }
     }
     handleCloseMenu();
@@ -44,19 +44,19 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
   const handleOpenShareModal = () => {
     handleCloseMenu();
     if(item?.Type === "SYNTHETIC_FRACTIONALISATION") {
-      shareMediaToSocial('', "SYNTHETIC_FRACTIONALISATION", "SYNTHETIC_FRACTIONALISATION", `pix/fractionalisation/collection/${item.CollectionId}/nft/${item.SyntheticID}`);
+      shareMediaToSocial('', "SYNTHETIC_FRACTIONALISATION", "SYNTHETIC_FRACTIONALISATION", `fractionalisation/collection/${item.CollectionId}/nft/${item.SyntheticID}`);
     } else if(item?.Type === "SYNTHETIC_COLLECTION") {
-      shareMediaToSocial('', "SYNTHETIC_COLLECTION", "SYNTHETIC_COLLECTION", `pix/fractionalisation/collection/${item.CollectionId}`);
+      shareMediaToSocial('', "SYNTHETIC_COLLECTION", "SYNTHETIC_COLLECTION", `fractionalisation/collection/${item.CollectionId}`);
     } else {
       if (item?.MediaSymbol || item.PodAddress) {
         shareMediaToSocial(
           item?.MediaSymbol || item.PodAddress,
-          item.MediaSymbol ? "Media" : "Pod",
+          item.MediaSymbol ? "NFT" : "Pod",
           item.MediaSymbol ? item.Type : "PIX-PODS",
-          item.MediaSymbol ? "" : `pix/pod/${item.PodAddress}`
+          item.MediaSymbol ? "" : `pod/${item.PodAddress}`
         );
       } else {
-        shareMediaToSocial(item.id, "Pod_Post", "PIX-PODS", item.MediaSymbol ? "" : `pix/pod_post/${item.id}`);
+        shareMediaToSocial(item.id, "Pod_Post", "PIX-PODS", item.MediaSymbol ? "" : `pod_post/${item.id}`);
       }
     }
   };

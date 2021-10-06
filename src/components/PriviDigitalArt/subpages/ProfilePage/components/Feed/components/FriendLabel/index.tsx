@@ -15,7 +15,7 @@ export default function FriendLabel({ friend }) {
       alignItems="center"
       mb={4}
       style={{ cursor: "pointer" }}
-      onClick={() => history.push(`/pix/${friend.urlSlug}/profile`)}
+      onClick={() => history.push(`/${friend.urlSlug}/profile`)}
     >
       <Box display="flex" alignItems="flex-start" width="95%">
         <Avatar url={friend.imageURL ?? ""} size="small" />

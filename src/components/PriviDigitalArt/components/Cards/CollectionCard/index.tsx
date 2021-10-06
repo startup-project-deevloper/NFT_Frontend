@@ -12,7 +12,7 @@ export default function CollectionCard({ item, heightFixed }) {
 
   const handleClick = () => {
     history.push({
-      pathname: `/pix/explorer/${item.name}`,
+      pathname: `/explorer/${item.name}`,
       state: {
         blockChain: item.blockChain,
       },

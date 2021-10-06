@@ -44,7 +44,7 @@ const PodPage = () => {
   const [lastIdx, setLastIdx] = useState<string>("null");
   const [pagination, setPagination] = useState<number>(1);
 
-  const [openNewNFTModal, setOpenNewNFTModal] = useState<boolean>(false);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   useEffect(() => {
     setOpenFilters(false);
@@ -60,10 +60,10 @@ const PodPage = () => {
         `${URL()}/mediaPod/getTrendingMediaPods`,
         forceRefreshCache
           ? {
-              params: {
-                forceRefreshCache: true,
-              },
-            }
+            params: {
+              forceRefreshCache: true,
+            },
+          }
           : undefined
       )
       .then(res => {
@@ -113,7 +113,7 @@ const PodPage = () => {
           if (mediaUrl) {
             try {
               dimensions = await preloadImageAndGetDimenstions(mediaUrl);
-            } catch (e) {}
+            } catch (e) { }
           }
           mediaPods[index].dimensions = dimensions;
         }
@@ -135,11 +135,16 @@ const PodPage = () => {
     }
   };
 
+  const handleRefresh = React.useCallback(() => {}, []);
+
   return (
     <>
       <Ellipse />
       <div className={classes.content} onScroll={handleScroll}>
         <img src={require("assets/icons/wallet_simple.svg")} alt="wallet" className={classes.img2} />
+        <div className={classes.img1}>
+          <GovernanceImg />
+        </div>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
           <h2>✨ NFT Pods</h2>
           <h5
@@ -156,16 +161,13 @@ const PodPage = () => {
           <PrimaryButton
             size="medium"
             className={classes.greenButton}
-            onClick={() => setOpenNewNFTModal(true)}
+            onClick={() => setOpenCreateModal(true)}
           >
             Create new Pod
           </PrimaryButton>
         </Box>
         <Box display="flex" alignItems="flex-end">
           <h3>✨ Trending</h3>
-          <div className={classes.img1}>
-            <GovernanceImg />
-          </div>
         </Box>
         <LoadingWrapper loading={loadingTrendingPods} theme={"blue"}>
           <div className={classes.artCards}>
@@ -201,20 +203,12 @@ const PodPage = () => {
           )}
         </div>
       </div>
-      {openNewNFTModal && (
+      {openCreateModal && (
         <CreatePodModal
-          open={openNewNFTModal}
-          handleClose={() => setOpenNewNFTModal(false)}
-          handleRefresh={() => {
-            setOpenFilters(false);
-            setPods([]);
-            setTrendingPods([]);
-            setLastIdx("null");
-            setPagination(1);
-            setHasMorePods(true);
-            getMediaTrendingPods(false);
-          }}
+          onClose={() => setOpenCreateModal(false)}
           type={"Digital NFT"}
+          handleRefresh={handleRefresh}
+          open={openCreateModal}
         />
       )}
     </>

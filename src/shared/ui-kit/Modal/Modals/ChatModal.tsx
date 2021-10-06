@@ -175,10 +175,6 @@ const ChatModal = ({ chat }) => {
     );
   };
 
-  const isPix = useMemo(() => {
-    return location.pathname.includes('/pix');
-  }, [location]);
-
   useEffect(() => {
     setPageIndex(messages.length);
     if (itemListRef && itemListRef.current && !paginationLoading)

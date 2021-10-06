@@ -157,7 +157,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
 
   const handleOpenDigitalArtModal = () => {
     if (isSignedin && media && creator) {
-      history.push(`/pix/loan/${item.id}`);
+      history.push(`/loan/${item.id}`);
     }
   };
 
@@ -216,7 +216,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
                     })})`
                   : "none",
               }}
-              onClick={() => creator.urlSlug && history.push(`/pix/${creator.urlSlug}/profile`)}
+              onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
             />
           ) : (
             <StyledSkeleton width={40} height={40} animation="wave" variant="circle" />

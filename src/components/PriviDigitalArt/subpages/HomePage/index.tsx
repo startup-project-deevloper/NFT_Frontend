@@ -176,11 +176,6 @@ export default function HomePage() {
 
           <div className={classes.headerTitle}>
             ✨ Created
-            {/* {!loadingDigitalArts && digitalArts && digitalArts.length > 0 && (
-              <span onClick={() => history.push("/pix/explorer")} className={classes.viewMore}>
-                VIEW MORE
-              </span>
-            )} */}
           </div>
           {digitalArts && digitalArts.length > 0 ? (
             <div className={classes.artCards}>

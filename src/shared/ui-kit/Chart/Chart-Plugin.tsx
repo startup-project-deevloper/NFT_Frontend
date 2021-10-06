@@ -1,12 +1,12 @@
-import Chart from "chart.js";
+import { Chart } from "chart.js";
 
 Chart.plugins.register({
   afterDatasetsDraw: function (chart) {
     let chart_type = chart.config.type;
-    if (chart.tooltip._active && chart.tooltip._active.length && chart_type === 'line') {
+    if (chart.tooltip._active && chart.tooltip._active.length && chart_type === "line") {
       var activePoint = chart.tooltip._active[0],
         ctx = chart.chart.ctx,
-        y_axis = chart.scales['y-axis-0'],
+        y_axis = chart.scales["y-axis-0"],
         x = activePoint.tooltipPosition().x,
         y = activePoint.tooltipPosition().y,
         bottomY = y_axis.bottom;
@@ -38,5 +38,5 @@ Chart.plugins.register({
     //     }
     //   }
     // }
-  }
+  },
 });

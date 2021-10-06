@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/styles";
 import { Gradient } from "shared/ui-kit";
 import { RootState } from "store/reducers/Reducer";

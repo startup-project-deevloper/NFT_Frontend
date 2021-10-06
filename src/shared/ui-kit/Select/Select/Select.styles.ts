@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { SelectProps } from "./Select.props";
 
 export const SelectStyles = makeStyles<{}, SelectProps>(theme => ({

@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { withStyles, Theme, createStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import { Color } from "shared/ui-kit";

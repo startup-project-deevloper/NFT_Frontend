@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import Moment from "react-moment";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { Text } from "components/PriviMusicDao/components/ui-kit";
 import { Color, FontSize, PrimaryButton, SecondaryButton, StyledDivider } from "shared/ui-kit";

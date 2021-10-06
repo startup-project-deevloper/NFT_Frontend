@@ -2,7 +2,7 @@ import React from "react";
 import Moment from "react-moment";
 import { useHistory } from "react-router-dom";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Avatar from "shared/ui-kit/Avatar";
 import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";

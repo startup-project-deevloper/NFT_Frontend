@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { Modal, PrimaryButton, SecondaryButton, Header3, StyledDivider, Header5, FontSize, Avatar } from "shared/ui-kit";
 import { useTypedSelector } from "store/reducers/Reducer";

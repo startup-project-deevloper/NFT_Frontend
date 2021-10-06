@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { Color, FontSize, Gradient, grid } from "shared/ui-kit";
 

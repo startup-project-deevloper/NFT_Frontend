@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Box from "shared/ui-kit/Box";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Moment from "react-moment";
 import UnstakeRedeemModal from "components/PriviMusicDao/modals/UnstakeRedeemModal";

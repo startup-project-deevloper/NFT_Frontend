@@ -2,13 +2,9 @@
 
 # PRIVI Front-end
 ```
-## Instaling stable node AND NPM VERSIONS on linux ubuntu 20.04 LTS 
-### 2012-04-02 node v14.16.0 - npm 7.8.0
-
 sudo npm cache clean -f
 sudo npm install -g n
 sudo n stable  # this installs the current stable version
-sudo npm install -g npm@latest # this installs the current stable version
 
 ```
 ## Installation and Running
@@ -16,7 +12,7 @@ sudo npm install -g npm@latest # this installs the current stable version
 To install the application, clone the project and install all dependencies:
 
 ```sh
-$ npm install
+$ yarn
 ```
 
 To run the application, there are 4 options depending on the execution environment and target URL to connect to the back-end:
@@ -24,24 +20,24 @@ To run the application, there are 4 options depending on the execution environme
 * Local front-end in https, connecting to local back-end in https:
 
 ```sh
-$ HTTPS=true SSL_CRT_FILE=server.crt SSL_KEY_FILE=server.key REACT_APP_ENV='dev_ssl' npm start
+$ HTTPS=true SSL_CRT_FILE=server.crt SSL_KEY_FILE=server.key REACT_APP_ENV='dev_ssl' yarn start
 ```
 * Local front-end in http, connecting to local back-end in http
 
 ```sh
-$ REACT_APP_ENV='dev' npm start
+$ REACT_APP_ENV='dev' yarn start
 ```
 
 * Local front-end in http, connecting to server back-end in https
 
 ```sh
-$ REACT_APP npm start
+$ REACT_APP yarn start
 ```
 
 * Production front-end in https, connecting to server back-end in https
 
 ```sh
-$ REACT_APP npm build
+$ REACT_APP yarn build
 ```
 
 Please note that the above calling methods might vary depending on the Operating System:
@@ -49,13 +45,13 @@ Please note that the above calling methods might vary depending on the Operating
 For serious OS (Linux, MacOS):
 
 ```sh
-$ REACT_APP_ENV='dev' npm start
+$ REACT_APP_ENV='dev' yarn start
 ```
 
 For non serious OS (Windows):
 
 ```sh
-$ set "REACT_APP_ENV=dev" && npm start
+$ set "REACT_APP_ENV=dev" && yarn start
 ```
 
 ## Versioning
@@ -122,7 +118,7 @@ ATTENTION! 'sergi' is an example. Please use your branch and not Sergi's one ðŸ˜
 Tests TBD
 
 ```sh
-$ npm test
+$ yarn test
 ```
 
 ## Technical Considerations

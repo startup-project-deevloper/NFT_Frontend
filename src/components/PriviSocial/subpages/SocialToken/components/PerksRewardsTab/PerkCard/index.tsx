@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Gradient, SecondaryButton, PrimaryButton } from "shared/ui-kit";
 import SocialTokenContext from "components/PriviSocial/subpages/SocialToken/context";
 import RedeemModal from "components/PriviSocial/subpages/SocialToken/modals/RedeemModal";

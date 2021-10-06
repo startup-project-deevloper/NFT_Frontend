@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "shared/ui-kit";
 //import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStakeModalStyles = makeStyles(theme => ({
   root: {

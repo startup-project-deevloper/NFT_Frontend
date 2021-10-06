@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import SyntheticFractionalisePage from "./components/SyntheticFractionalisePage";
 
 export const useStyles = makeStyles(theme => ({

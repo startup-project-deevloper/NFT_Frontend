@@ -60,10 +60,10 @@ const PodPage = () => {
         `${URL()}/mediaPod/getTrendingMediaPods`,
         forceRefreshCache
           ? {
-              params: {
-                forceRefreshCache: true,
-              },
-            }
+            params: {
+              forceRefreshCache: true,
+            },
+          }
           : undefined
       )
       .then(res => {
@@ -113,7 +113,7 @@ const PodPage = () => {
           if (mediaUrl) {
             try {
               dimensions = await preloadImageAndGetDimenstions(mediaUrl);
-            } catch (e) {}
+            } catch (e) { }
           }
           mediaPods[index].dimensions = dimensions;
         }
@@ -140,6 +140,9 @@ const PodPage = () => {
       <Ellipse />
       <div className={classes.content} onScroll={handleScroll}>
         <img src={require("assets/icons/wallet_simple.svg")} alt="wallet" className={classes.img2} />
+        <div className={classes.img1}>
+          <GovernanceImg />
+        </div>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
           <h2>✨ NFT Pods</h2>
           <h5
@@ -163,9 +166,6 @@ const PodPage = () => {
         </Box>
         <Box display="flex" alignItems="flex-end">
           <h3>✨ Trending</h3>
-          <div className={classes.img1}>
-            <GovernanceImg />
-          </div>
         </Box>
         <LoadingWrapper loading={loadingTrendingPods} theme={"blue"}>
           <div className={classes.artCards}>

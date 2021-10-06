@@ -63,7 +63,7 @@ export default function BuyJotsModal({
         }
       })();
     }
-  }, [chainId, selectedChain]);
+  }, [chainId, selectedChain, open]);
 
   useEffect(() => {
     if (!open) return;

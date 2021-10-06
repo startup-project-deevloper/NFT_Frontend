@@ -52,7 +52,7 @@ export default function WithdrawJotsModal({
         }
       })();
     }
-  }, [chainId, selectedChain]);
+  }, [chainId, selectedChain, open]);
 
   useEffect(() => {
     if (!open) return;

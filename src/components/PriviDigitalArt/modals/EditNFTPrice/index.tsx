@@ -44,7 +44,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
         }
       })();
     }
-  }, [chainId, selectedChain]);
+  }, [chainId, selectedChain, open]);
 
   const handleEditPrice = async () => {
     setLoading(true);

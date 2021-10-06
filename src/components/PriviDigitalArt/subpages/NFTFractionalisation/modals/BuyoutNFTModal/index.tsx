@@ -111,7 +111,7 @@ export default function BuyoutNFTModal({ open, onClose, media, handleRefresh }) 
         }
       })();
     }
-  }, [chainId, selectedChain]);
+  }, [chainId, selectedChain, open]);
 
   const buyoutToken = React.useMemo(() => {
     return media?.FractionalizeData?.listToken;

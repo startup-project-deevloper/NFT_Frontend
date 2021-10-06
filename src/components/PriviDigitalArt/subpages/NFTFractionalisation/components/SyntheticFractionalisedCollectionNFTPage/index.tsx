@@ -336,7 +336,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   };
 
   return (
-    <LoadingWrapper loading={loadingData}>
       <div className={classes.root}>
         <div className={classes.nftInfoSection}>
           <Box
@@ -645,7 +644,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           hash={flippingHash}
         />
       </div>
-    </LoadingWrapper>
   );
 };
 

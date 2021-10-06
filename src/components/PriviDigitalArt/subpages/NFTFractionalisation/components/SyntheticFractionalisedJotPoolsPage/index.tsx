@@ -16,6 +16,7 @@ import { ReactComponent as ArrowDown } from "assets/icons/arrow_down.svg";
 import LiquidityModal from "../../modals/LiquidityModal";
 import { BlockchainNets } from "shared/constants/constants";
 import { useWeb3React } from "@web3-react/core";
+import PriceGraph from "../../../../components/PriceGraph";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 
@@ -494,33 +495,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 </Box>
               </Grid>
               <Grid item md={9} xs={12}>
-                <Box className={classes.rightChart}>
-                  <Box className={classes.controlParentBox}>
-                    <Box display="flex" flexDirection="column">
-                      <h2 className={classes.graphTitle}>4245,24 USDC</h2>
-                      <p className={classes.graphDesc}>12 Sep 2021</p>
-                    </Box>
-                    <Box className={classes.controlBox}>
-                      <Box className={classes.liquidityBox}>
-                        {PERIODS.map((item, index) => (
-                          <button
-                            key={`period-button-${index}`}
-                            className={`${classes.groupButton} ${
-                              item === period && classes.selectedGroupButton
-                            }`}
-                            onClick={handleChangePeriod(item)}
-                            style={{ marginLeft: index > 0 ? "8px" : 0 }}
-                          >
-                            {item}
-                          </button>
-                        ))}
-                      </Box>
-                    </Box>
-                  </Box>
-                  <Box flex={1} width={1} mt={3} className={classes.chartWrapper}>
-                    {rewardConfig && <PrintChart config={rewardConfig} />}
-                  </Box>
-                </Box>
+                <PriceGraph />
               </Grid>
             </Grid>
             {shareAmount === 0 && (

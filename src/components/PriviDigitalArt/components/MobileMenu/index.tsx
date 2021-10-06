@@ -42,19 +42,19 @@ export default function MobileMenu() {
 
   const goToPage = value => {
     if (value === TABS[0]) {
-      history.push("/pix/");
+      history.push("/");
     } else if (value === TABS[1]) {
-      history.push("/pix/explorer");
+      history.push("/explorer");
     } else if (value === TABS[2]) {
-      history.push("/pix/marketplace");
+      history.push("/marketplace");
     // } else if (value === TABS[4]) {
-    //   history.push("/pix/pods");
+    //   history.push("/pods");
     } else if (value === TABS[3]) {
-      history.push("/pix/loan");
+      history.push("/loan");
     } else if (value === TABS[4]) {
-      history.push("/pix/like");
+      history.push("/like");
     } else if (value === TABS[5]) {
-      history.push("/pix/fractionalise");
+      history.push("/fractionalise");
     }
   };
 

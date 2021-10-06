@@ -402,11 +402,11 @@ const MediaDetailsModal = (props: any) => {
               size="medium"
               onClick={() => {
                 props.handleClose();
-                history.push(`/pix/${encodeURIComponent(media?.MediaSymbol ?? media?.id)}`);
+                history.push(`/nft/${encodeURIComponent(media?.MediaSymbol ?? media?.id)}`);
               }}
               style={{ background: Gradient.Green, color: "#707582" }}
             >
-              {pathname.includes("/pix") ? "Go to Digital Art" : "Go to Privi Pix APP"}
+              Go to Digital Art
             </PrimaryButton>
           </Box>
         </Grid>

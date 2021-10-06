@@ -15,10 +15,7 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({ chat, handleC
   const dispatch = useDispatch();
 
   const userSelector = useSelector((state: RootState) => state.user);
-  const usersInfo = useSelector((state: RootState) => state.usersInfoList);
-  const pathName = window.location.href;
-  const isPix = pathName.includes("/pix");
-  const isTrax = pathName.includes("/trax");
+  const usersInfo = useSelector((state: RootState) => state.usersInfoList);  
   const handleClick = () => {
     let user = usersInfo.find(user => user.id === otherUser.userId);
     if (!user) return;
@@ -89,7 +86,7 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({ chat, handleC
       <div className="item-content">
         <div className="name">{otherUser.userName}</div>
         {typeof chat.lastMessage === "string" && (
-          <div className="message" style={{ color: isPix ? "#181818" : "#949BAB" }}>
+          <div className="message" style={{ color: "#181818" }}>
             {chat.lastMessage.includes("data:audio/wav;") ? (
               <div style={{ display: "flex" }}>
                 <img src={require("assets/icons/music-solid.svg")} alt={"music-solid"} />
@@ -101,9 +98,9 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({ chat, handleC
           </div>
         )}
         {chat.lastMessageDate && (
-          <div className="date" style={{ color: isPix ? "#181818" : "#949BAB" }}>
+          <div className="date" style={{ color: "#181818" }}>
             Last message:{" "}
-            <Moment fromNow style={{ color: isPix ? "#431AB7" : isTrax ? Color.MusicDAOGreen : "inherit" }}>
+            <Moment fromNow style={{ color: "#431AB7" }}>
               {chat.lastMessageDate}
             </Moment>
           </div>

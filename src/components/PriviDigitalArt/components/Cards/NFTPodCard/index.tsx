@@ -200,7 +200,7 @@ export default function NFTPodCard({ item }) {
               }}
               onClick={() => {
                 if (podData.CreatorId) {
-                  history.push(`/pix/profile/${podData.CreatorId}`);
+                  history.push(`/profile/${podData.CreatorId}`);
                   dispatch(setSelectedUser(podData.CreatorId));
                 }
               }}
@@ -210,7 +210,7 @@ export default function NFTPodCard({ item }) {
               className={styles.avatar}
               onClick={() => {
                 if (podData.CreatorId) {
-                  history.push(`/pix/profile/${podData.CreatorId}`);
+                  history.push(`/profile/${podData.CreatorId}`);
                   dispatch(setSelectedUser(podData.CreatorId));
                 }
               }}
@@ -229,7 +229,7 @@ export default function NFTPodCard({ item }) {
       <Box
         className={styles.podMainInfo}
         onClick={() => {
-          history.push(`/pix/pods/${podData.PodAddress}`);
+          history.push(`/pods/${podData.PodAddress}`);
         }}
       >
         <Box className={styles.flexBox}>

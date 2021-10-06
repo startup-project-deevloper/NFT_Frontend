@@ -2146,7 +2146,7 @@ const MediaPage = () => {
                       <div
                         className={classes.avatarImg}
                         onClick={() => {
-                          history.push(`/pix/${media?.CreatorUrlSlug || media?.creator}/profile`);
+                          history.push(`/${media?.CreatorUrlSlug || media?.creator}/profile`);
                         }}
                       >
                         <Avatar
@@ -2214,7 +2214,7 @@ const MediaPage = () => {
                         <div
                           className={classes.avatarImg}
                           onClick={() => {
-                            history.push(`/pix/${owner.urlSlug}/profile`);
+                            history.push(`/${owner.urlSlug}/profile`);
                           }}
                         >
                           <Avatar
@@ -3029,7 +3029,7 @@ const MediaPage = () => {
                         <div
                           className={classes.avatarImg}
                           onClick={() => {
-                            history.push(`/pix/${comment.user.urlSlug}/profile`);
+                            history.push(`/${comment.user.urlSlug}/profile`);
                           }}
                         >
                           <Avatar

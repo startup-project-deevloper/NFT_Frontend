@@ -204,10 +204,7 @@ export default function TradeOnQuickSwap(props: any) {
       {/* back button and title */}
       <Box display="flex" justifyContent="space-between" className={classes.backButtonContainer}>
         <Box className={classes.backBtn}>
-          <BackButton
-            purple
-            // overrideFunction={() => history.push("/pix/fractionalise/synthetic-derivative")}
-          />
+          <BackButton purple />
         </Box>
         <Box className={classes.title}>
           <span>Swap on</span>

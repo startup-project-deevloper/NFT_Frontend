@@ -82,25 +82,11 @@ export const MessageNotifications: React.FC<MessageNotificationsProps> = ({ hand
     <div className={classes.message_notifications}>
       <div className={classes.message_notifications_header}>
         <HeaderBold4>Messages</HeaderBold4>
-        {window.location.href.includes("/pix") ? (
-          <img
-            src={require("assets/icons/pix_edit_icon.svg")}
-            className={classes.edit_icon}
-            onClick={handleOpenNewChatModal}
-          />
-        ) : isTrax ? (
-          <img
-            src={require("assets/icons/trax_edit_icon.svg")}
-            className={classes.edit_icon}
-            onClick={handleOpenNewChatModal}
-          />
-        ) : (
-          <img
-            src={require("assets/icons/edit_icon.svg")}
-            className={classes.edit_icon}
-            onClick={handleOpenNewChatModal}
-          />
-        )}
+        <img
+          src={require("assets/icons/pix_edit_icon.svg")}
+          className={classes.edit_icon}
+          onClick={handleOpenNewChatModal}
+        />
       </div>
       <SearchInputBox
         keyword={keyword}
@@ -130,13 +116,7 @@ export const MessageNotifications: React.FC<MessageNotificationsProps> = ({ hand
       <div
         className={classes.message_notifications_footer}
         onClick={() => {
-          if (window.location.href.includes("/pix")) {
-            history.push(`/pix/${userSelector.urlSlug}/messages`);
-          } else if (window.location.href.includes("/trax")) {
-            history.push(`/trax/${userSelector.urlSlug}/messages`);
-          } else {
-            history.push(`/social/${userSelector.urlSlug}/messages`);
-          }
+          history.push(`/${userSelector.urlSlug}/messages`);
           dispatch(openChatModal(false));
           if (handleClosePopper) handleClosePopper();
         }}

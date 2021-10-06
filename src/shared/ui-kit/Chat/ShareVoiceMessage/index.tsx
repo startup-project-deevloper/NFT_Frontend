@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import {Theme} from '@material-ui/core';
+import { Theme } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as SpeakerIcon } from "assets/icons/speaker.svg";
@@ -10,17 +10,16 @@ import { RecordingBox } from "shared/ui-kit/RecordingBox";
 import { default as ServerURL } from "shared/functions/getURL";
 import { RootState } from "store/reducers/Reducer";
 export interface StyleProps {
-    type: any;
+  type: any;
 }
 
 const useStyles = makeStyles<Theme, StyleProps>(theme => ({
   container: {
-    background: ({ type }) =>
-      type === "pix" ? "#DDFF57" : "linear-gradient(225.12deg, #F2A07E -33.5%, #FF5954 71.42%)",
-    boxShadow: ({ type }) => (type === "pix" ? "0px 4px 8px #9EACF2" : "0px 2px 8px rgba(0, 0, 0, 0.12)"),
-    borderRadius: ({ type }) => (type === "pix" ? theme.spacing(2) : 20),
+    background: "#DDFF57",
+    boxShadow: "0px 4px 8px #9EACF2",
+    borderRadius: theme.spacing(2),
     padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
-    color: ({ type }) => (type === "pix" ? "#431AB7" : "#ffffff"),
+    color: "#431AB7",
     marginBottom: theme.spacing(2),
     height: "auto",
     width: "100%",

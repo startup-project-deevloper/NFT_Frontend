@@ -35,7 +35,7 @@ type PaperProps = {
   type?: "primary" | "secondary";
 };
 
-const CustomPaper = styled(Paper) <PaperProps>`
+const CustomPaper = styled(Paper)<PaperProps>`
   && {
     min-width: 200px;
     max-width: 350px;
@@ -65,12 +65,12 @@ export const ActionMenu = ({
   const dispatch = useDispatch();
 
   const getPrefixURL = () => {
-    if (process.env.NODE_ENV === "development") return `http://localhost:3001/#/pix`;
-    return `https://www.privi.store/#/pix`;
+    if (process.env.NODE_ENV === "development") return `http://localhost:3001/#/`;
+    return `https://pix.privi.store/#/`;
   };
 
   const handleShareWithQR = () => {
-    setShareLink(`${getPrefixURL()}/${item.MediaSymbol || item.id}`);
+    setShareLink(`${getPrefixURL()}${item.MediaSymbol || item.id}`);
     handleCloseMenu();
     setOpenQrCodeModal(!openQrCodeModal);
   };

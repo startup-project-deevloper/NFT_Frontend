@@ -15,9 +15,9 @@ enum MediaType {
 }
 
 type SocialMedia = {
-  id: string,
-  type: string,
-  subType?: string,
+  id: string;
+  type: string;
+  subType?: string;
 };
 type ShareMediaContextProviderProps = {};
 
@@ -29,7 +29,9 @@ type ShareMediaContextType = {
 
 const ShareMediaContext = createContext<ShareMediaContextType | null>(null);
 
-export const ShareMediaContextProvider: React.FunctionComponent<ShareMediaContextProviderProps> = ({ children }) => {
+export const ShareMediaContextProvider: React.FunctionComponent<ShareMediaContextProviderProps> = ({
+  children,
+}) => {
   const [openSocialModal, showSocialModal] = useState(false);
   const [openPriviModal, showPriviModal] = useState(false);
   const [openQrCodeModal, showQrCodeModal] = useState(false);
@@ -46,30 +48,27 @@ export const ShareMediaContextProvider: React.FunctionComponent<ShareMediaContex
   }, [socialMedia]);
 
   const getPrefixURL = () => {
-    if (process.env.NODE_ENV === 'development')
-      return `http://localhost:3001/#`;
-    return `https://www.privi.store/#/`;
-  }
+    if (process.env.NODE_ENV === "development") return `http://localhost:3001/#/`;
+    return `https://pix.privi.store/#/`;
+  };
 
   const context = useMemo<ShareMediaContextType>(
     () => ({
-      shareMediaToSocial(id: string, type: string = 'Media', subType?: string, link?: string) {
+      shareMediaToSocial(id: string, type: string = "Media", subType?: string, link?: string) {
         if (subType === "DIGITAL_ART_TYPE") {
-          setShareLink(`https://www.privi.store/#/pix/${id}`);
+          setShareLink(`https://pix.privi.store/#/nft/${id}`);
         } else if (subType === "DIGITAL_ART_TYPE_LOAN") {
-          setShareLink(`https://www.privi.store/#/pix/loan/${id}`);
+          setShareLink(`https://pix.privi.store/#/loan/${id}`);
         } else if (subType === "SYNTHETIC_FRACTIONALISATION") {
-          setShareLink(`${getPrefixURL()}/${link}`);
+          setShareLink(`${getPrefixURL()}${link}`);
         } else if (subType === "SYNTHETIC_COLLECTION") {
-          setShareLink(`${getPrefixURL()}/${link}`);
+          setShareLink(`${getPrefixURL()}${link}`);
         } else if (subType === "PIX-PODS") {
-          setShareLink(`${getPrefixURL()}/${link}`);
+          setShareLink(`${getPrefixURL()}${link}`);
         } else if (subType === "NEW-PRIVI-PODS") {
-          setShareLink(`${getPrefixURL()}/${link}`);
-        } else if (subType === 'SOCIAL_APP') {
-          setShareLink(`${getPrefixURL()}/social/${id}`);
+          setShareLink(`${getPrefixURL()}${link}`);
         } else {
-          setShareLink(`https://www.privi.store/#/media/${id}`);
+          setShareLink(`https://pix.privi.store/#/media/${id}`);
         }
         setSocialMedia({ id, type, subType });
         showSocialModal(true);
@@ -79,8 +78,8 @@ export const ShareMediaContextProvider: React.FunctionComponent<ShareMediaContex
         showPriviModal(true);
       },
       shareMediaWithQrCode(mediaSymbol, link, mediaType) {
-        setShareLink(`${getPrefixURL()}/${link}`);
-        setSocialMedia({ id: mediaSymbol, type: 'Media', subType: mediaType });
+        setShareLink(`${getPrefixURL()}${link}`);
+        setSocialMedia({ id: mediaSymbol, type: "Media", subType: mediaType });
         showQrCodeModal(true);
       },
     }),

@@ -75,7 +75,7 @@ const ResponseWallPost = ({ response }) => {
             cursor: "pointer",
           }}
           onClick={() => {
-            history.push(`/pix/${response.userId}/profile`);
+            history.push(`/${response.userId}/profile`);
             dispatch(setSelectedUser(response.userId));
           }}
         />
@@ -372,7 +372,7 @@ export const WallPostModalContent = ({
       ) : null}
 
       <Box className={styles.userPane} mb={"48px"}>
-        <Box className={styles.userInfo} onClick={() => history.push(`/pix/${item.createdBy}/profile`)}>
+        <Box className={styles.userInfo} onClick={() => history.push(`/${item.createdBy}/profile`)}>
           <Avatar
             url={
               item?.userImageURL ??

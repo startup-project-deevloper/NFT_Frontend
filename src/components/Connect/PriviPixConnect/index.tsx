@@ -123,7 +123,7 @@ const PriviPixConnect = () => {
 
                   //added this last line to refresh the page, it got stuck after loging in. If there's
                   //another way to fix that feel free to change it
-                  history.push("/pix");
+                  history.push("/");
                 } else {
                   if (res.message) {
                     showAlertMessage(res.message, { variant: "error" });
@@ -217,7 +217,7 @@ const PriviPixConnect = () => {
               setTweetWaitlistLoading(false);
               tweetWaitRef.current = false;
             } else if (data.status === "authorized") {
-              history.push("/pix");
+              history.push("/");
             }
           }
         })

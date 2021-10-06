@@ -186,7 +186,7 @@ const PositionsManager = () => {
                   display="flex"
                   alignItems="center"
                   className={classes.tableAvatarField}
-                  onClick={() => history.push(`/pix/loan/${row?.media?.MediaSymbol}`)}
+                  onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
                 >
                   <Box className={classes.mediaImageWrapper}>
                     <div
@@ -284,7 +284,7 @@ const PositionsManager = () => {
     <div className={classes.content}>
       <Ellipse />
 
-      <BackButton dark overrideFunction={() => history.push("/pix/loan")} />
+      <BackButton dark overrideFunction={() => history.push("/loan")} />
 
       <Box className={classes.positionTitle}>✨ Manage your positions</Box>
 

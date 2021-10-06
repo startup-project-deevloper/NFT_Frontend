@@ -47,21 +47,6 @@ export const MessageBox = ({ type = "social" }) => {
   }, []);
 
   useEffect(() => {
-    if (
-      pathName.split("/")[4] !== "pix" &&
-      pathName.split("/")[4] !== "trax" &&
-      !(
-        pathName.split("/")[5] === userSelector.urlSlug ||
-        pathName.split("/")[5] === userSelector.id ||
-        pathName.split("/")[5] === userSelector.firstName
-      )
-    ) {
-      history.push(`/social/${userSelector.id}`);
-      dispatch(setSelectedUser(userSelector.id));
-    }
-  }, [userSelector]);
-
-  useEffect(() => {
     if (chat && chat.room && socket) {
       socket.on("message", message => {
         setMessages(msgs => {
@@ -272,7 +257,7 @@ export const MessageBox = ({ type = "social" }) => {
   };
 
   return (
-    <div className={`message-box ${type !== "social" ? "pix" : ""}`}>
+    <div className={`message-box pix`}>
       <div className={"message-list"}>
         <MessageList
           chats={chats}
@@ -345,11 +330,7 @@ export const MessageBox = ({ type = "social" }) => {
       </div>
       {width >= 1300 && (
         <div className="message-profile">
-          {type === "pix" || type === "trax" ? (
-            <PixMessageProfile chat={chat} type={type} />
-          ) : (
-            <MessageProfile />
-          )}
+          <PixMessageProfile chat={chat} type={type} />
         </div>
       )}
     </div>

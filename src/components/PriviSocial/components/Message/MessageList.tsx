@@ -20,14 +20,6 @@ export const MessageList = (props: any) => {
   let pathName = window.location.href;
   let idUrl = pathName.split("/")[5] ? pathName.split("/")[5] : "" + localStorage.getItem("userId");
 
-  const isPix = useMemo(() => {
-    return props.type === "pix";
-  }, [location]);
-
-  const isTrax = useMemo(() => {
-    return props.type === "trax";
-  }, [location]);
-
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -143,49 +135,14 @@ export const MessageList = (props: any) => {
   return (
     <div className="message-list-items">
       <div className="message-list-header">
-        {pathName.includes("/messages") && !isPix && !isTrax ? (
-          <img
-            src={require("assets/icons/arrow.png")}
-            alt={"back"}
-            onClick={() => {
-              if (window.location.href.includes("/pix")) {
-                history.push(`/pix`);
-              } else if (window.location.href.includes("/trax")) {
-                history.push(`/trax`);
-              } else {
-                history.push(`/social/${idUrl}`);
-              }
-              dispatch(closeMessageBox());
-            }}
-          />
-        ) : null}
         <HeaderBold4>Messages</HeaderBold4>
-        {!isPix && !isTrax ? (
-          <img
-            src={require("assets/icons/edit_icon.svg")}
-            className="edit-icon"
-            onClick={handleOpenNewChatModal}
-          />
-        ) : isPix ? (
-          <img
-            src={require("assets/icons/pix_edit_icon.svg")}
-            className="edit-icon"
-            onClick={handleOpenNewChatModal}
-          />
-        ) : (
-          <img
-            src={require("assets/icons/trax_edit_icon.svg")}
-            className="edit-icon"
-            onClick={handleOpenNewChatModal}
-          />
-        )}
+        <img
+          src={require("assets/icons/pix_edit_icon.svg")}
+          className="edit-icon"
+          onClick={handleOpenNewChatModal}
+        />
       </div>
-      <SearchInputBox
-        keyword={keyword}
-        setKeyword={setKeyword}
-        placeholder={"Search User"}
-        style={isTrax ? { background: "#F2FBF6" } : {}}
-      />
+      <SearchInputBox keyword={keyword} setKeyword={setKeyword} placeholder={"Search User"} />
       <div className="item-list">
         {chats &&
           chats

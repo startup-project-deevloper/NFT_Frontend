@@ -384,7 +384,7 @@ const DiscordSideBar = React.memo((props: any) => {
                   <div
                     className="sideBarSelectedImageImg"
                     onClick={() => {
-                      history.push(`/pix/${usersList[userIndex].id}/profile`);
+                      history.push(`/${usersList[userIndex].id}/profile`);
                     }}
                     style={{
                       backgroundImage: userImage ? `url(${userImage})` : "none",

@@ -423,7 +423,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const handleBuyOnQuickSwap = () => {
-    history.push(`/pix/fractionalisation/collection/quick_swap/${collectionId}`);
+    history.push(`/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
   const totalJot = 10000;

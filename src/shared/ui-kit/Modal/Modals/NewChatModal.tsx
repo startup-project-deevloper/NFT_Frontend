@@ -89,14 +89,6 @@ const NewChatModal = () => {
   const [minimize, setMinimize] = useState<boolean>(true);
   const dispatch = useDispatch();
 
-  const isPix = useMemo(() => {
-    return location.pathname.includes("/pix");
-  }, [location]);
-
-  const isTrax = useMemo(() => {
-    return location.pathname.includes("/trax/");
-  }, [location]);
-
   if (!userSelector) return null;
 
   const handleClose = () => {
@@ -167,7 +159,6 @@ const NewChatModal = () => {
           <SearchInputBox
             keyword={keyword}
             setKeyword={setKeyword}
-            style={isTrax ? { background: "#F2FBF6" } : {}}
           />
           <br />
           <div className={classes.userList}>
@@ -183,10 +174,10 @@ const NewChatModal = () => {
                     <div className={classes.userItem} key={index} onClick={() => handleClick(user)}>
                       <Avatar src={`${user.imageURL}`} alt={user.name} />
                       <div className={classes.userInfo}>
-                        <div className={classes.userName} style={{ fontWeight: isPix ? 800 : "inherit" }}>
+                        <div className={classes.userName} style={{ fontWeight: 800 }}>
                           {user.name}
                         </div>
-                        <div className={classes.userSlug} style={{ color: isPix ? "#000000" : "#707582" }}>
+                        <div className={classes.userSlug} style={{ color: "#000000" }}>
                           @{user.urlSlug}
                         </div>
                       </div>

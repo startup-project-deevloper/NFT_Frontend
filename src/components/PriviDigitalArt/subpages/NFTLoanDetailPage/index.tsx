@@ -567,7 +567,7 @@ const NFTLoanDetailPage = () => {
             key: Math.random(),
             variant: "success",
           });
-          history.push("/pix/loan");
+          history.push("/loan");
         } else {
           setStatus({
             msg: "Failed to complete NFT loan",
@@ -585,7 +585,7 @@ const NFTLoanDetailPage = () => {
   return (
     <Box style={{ position: "relative", width: "100%" }}>
       <div className={classes.content}>
-        <BackButton dark overrideFunction={() => history.push("/pix/loan")} />
+        <BackButton dark overrideFunction={() => history.push("/loan")} />
         {loan && loanMedia ? (
           <LoadingWrapper loading={loadingLoan} theme={"blue"} height="calc(100vh - 100px)">
             <Box
@@ -750,7 +750,7 @@ const NFTLoanDetailPage = () => {
                                 })})`
                               : "none",
                           }}
-                          onClick={() => creator.urlSlug && history.push(`/pix/${creator.urlSlug}/profile`)}
+                          onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
                         />
                       ) : (
                         <StyledSkeleton width={40} height={40} animation="wave" variant="circle" />

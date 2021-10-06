@@ -43,10 +43,10 @@ export default function PriviDigitalArt() {
         });
 
         if (res.data.success === true && res.data.data?.status !== "authorized") {
-          history.push("/pix-connect");
+          history.push("/connect");
         }
       } else {
-        history.push("/pix-connect");
+        history.push("/connect");
       }
     };
 
@@ -67,10 +67,10 @@ export default function PriviDigitalArt() {
       }}
     >
       <Helmet>
-        <title>Privi Beta</title>
+        <title>Privi Pix</title>
       </Helmet>
       <div className={classes.priviDigitalArt}>
-        <Header handleOpenSearcher={() => history.push("/pix/explorer/")} handleRefresh={handleRefresh} />
+        <Header handleOpenSearcher={() => history.push("/explorer/")} handleRefresh={handleRefresh} />
         <div className={classes.mainContainer}>
           <div className={classes.content} style={{ flexDirection: isTableScreen ? "column" : "row" }}>
             {isTableScreen && <MobileMenu />}

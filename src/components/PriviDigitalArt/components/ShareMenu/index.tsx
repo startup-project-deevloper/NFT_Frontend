@@ -120,12 +120,12 @@ export const ShareMenu = ({
   const dispatch = useDispatch();
 
   const getPrefixURL = () => {
-    if (process.env.NODE_ENV === "development") return `http://localhost:3001/#/pix`;
-    return `https://www.privi.store/#/pix`;
+    if (process.env.NODE_ENV === "development") return `http://localhost:3001/#/`;
+    return `https://pix.privi.store/#/`;
   };
 
   const handleShareWithQR = () => {
-    setShareLink(`${getPrefixURL()}/${item.MediaSymbol || item.id}`);
+    setShareLink(`${getPrefixURL()}${item.MediaSymbol || item.id}`);
     handleCloseMenu();
     setOpenQrCodeModal(!openQrCodeModal);
   };
@@ -224,7 +224,7 @@ export const ShareMenu = ({
                   </CustomMenuItem>
                   <CustomMenuItem
                     onClick={() => {
-                      navigator.clipboard.writeText(`${getPrefixURL()}/${item.MediaSymbol || item.id}`);
+                      navigator.clipboard.writeText(`${getPrefixURL()}${item.MediaSymbol || item.id}`);
                       handleClickCopy();
                     }}
                   >

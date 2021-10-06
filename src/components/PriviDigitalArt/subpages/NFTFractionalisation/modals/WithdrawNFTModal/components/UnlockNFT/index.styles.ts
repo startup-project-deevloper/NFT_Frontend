@@ -1,6 +1,6 @@
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
-export const useLockNFTStyles = makeStyles((theme: Theme) =>
+export const useUnlockNFTStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',

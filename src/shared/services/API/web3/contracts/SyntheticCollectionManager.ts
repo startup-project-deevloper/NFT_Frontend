@@ -490,7 +490,7 @@ const syntheticCollectionManager = (network: string) => {
         );
       } catch (e) {
         console.log(e);
-        resolve({ success: true });
+        resolve({ success: false });
       }
     });
   };
@@ -607,20 +607,19 @@ const syntheticCollectionManager = (network: string) => {
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
         const gas = await contract.methods.exitProtocol(SyntheticID).estimateGas({ from: account });
-        console.log(gas)
-        const response = await contract.methods.exitProtocol(SyntheticID).send({ from: account, gas: gas })
-        .on("transactionHash", function (hash) {
-          param.setHash(hash);
-        });
-
+        const response = await contract.methods
+          .exitProtocol(SyntheticID)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            param.setHash(hash);
+          });
 
         // Temporaily purpose due to oracle issue
         if (response) {
           resolve({ success: true });
         } else {
           resolve({ success: false });
-        };
-
+        }
       } catch (e) {
         console.log(e);
         resolve({ success: false });

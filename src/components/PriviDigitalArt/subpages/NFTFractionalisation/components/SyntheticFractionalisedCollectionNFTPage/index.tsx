@@ -345,7 +345,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         >
           <BackButton purple overrideFunction={goBack} />
           <Box display="flex" alignItems="center" className={classes.topButtonContainer}>
-            {isOwner && !isOver10K ? (
+            {isOwner && isOver10K ? (
               <PrimaryButton
                 size="medium"
                 onClick={() => handleOpenWithdrawNFTModal()}

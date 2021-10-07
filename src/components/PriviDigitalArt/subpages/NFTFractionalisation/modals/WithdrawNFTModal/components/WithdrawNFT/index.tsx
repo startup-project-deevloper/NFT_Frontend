@@ -92,7 +92,6 @@ export default function WithdrawNFT({ onClose, onCompleted, nft }) {
   const { showAlertMessage } = useAlertMessage();
 
   const handleProceed = async () => {
-    
     console.log("chainId", chainId);
     if (chainId !== 80001 && chainId !== 137) {
       let changed = await switchNetwork(isProd ? 137 : 80001);
@@ -115,14 +114,13 @@ export default function WithdrawNFT({ onClose, onCompleted, nft }) {
       const response = await web3APIHandler.SyntheticCollectionManager.exitProtocol(web3, account!, nft, {
         setHash: setHash_,
       });
-      console.log(response)
+      setIsLoading(false);
+      setIsProceeding(false);
       if (response.success) {
         onCompleted();
       } else {
         showAlertMessage(`Got failed withdrawing `, { variant: "error" });
-        // onCompleted();
       }
-
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);

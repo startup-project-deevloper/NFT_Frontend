@@ -473,7 +473,7 @@ const syntheticCollectionManager = (network: string) => {
           },
         } = response;
 
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
         await contract.getPastEvents(
           "VerifyResponseReceived",

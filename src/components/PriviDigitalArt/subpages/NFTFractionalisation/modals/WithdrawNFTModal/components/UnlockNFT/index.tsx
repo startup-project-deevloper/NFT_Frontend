@@ -14,6 +14,7 @@ import axios from "axios";
 import URL from "shared/functions/getURL";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { requestUnlockNFT, withdrawNFT } from "shared/services/API/web3/contracts/NFTVaultManager";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -40,39 +41,29 @@ export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = tru
 
     try {
       const web3 = new Web3(library.provider);
-      const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
-
-      const contract = ContractInstance(web3, NFTVaultManager.abi, contractAddress);
       console.log(nft);
-      let gas = await contract.methods
-        .requestUnlock(nft.collection_id, nft.NftId)
-        .estimateGas({ from: account });
-      let response = await contract.methods
-        .requestUnlock(nft.collection_id, nft.NftId)
-        .send({ from: account, gas })
-        .on("transactionHash", hash => {
-          setHash(hash);
-        })
-        .on("error", error => {
-          console.log("error... ", error);
-          showAlertMessage(`Request Unlock is failed, please try again later`, { variant: "error" });
-          setIsProceeding(false);
-          setIsLoading(false);
-        });
-      gas = await contract.methods.withdraw(nft.collection_id, nft.NftId).estimateGas({ from: account });
-      response = await contract.methods
-        .withdraw(nft.collection_id, nft.NftId)
-        .send({ from: account, gas })
-        .on("transactionHash", hash => {
-          setHash(hash);
-        })
-        .on("error", error => {
-          console.log("error... ", error);
-          showAlertMessage(`Unlock NFT is failed, please try again later`, { variant: "error" });
-          setIsProceeding(false);
-          setIsLoading(false);
-        });
+
+      const payload = {
+        tokenAddress: nft.collection_id,
+        tokenId: nft.NftId,
+        setHash,
+      };
+      const requestUnlockResponse = await requestUnlockNFT(web3, account!, payload);
+      if (!requestUnlockResponse.status) {
+        showAlertMessage(`Request Unlock is failed, please try again later`, { variant: "error" });
+        setIsProceeding(false);
+        setIsLoading(false);
+        return;
+      }
+      const withdrawResponse = await withdrawNFT(web3, account!, payload);
+      if (!withdrawResponse.status) {
+        showAlertMessage(`Unlock NFT is failed, please try again later`, { variant: "error" });
+        setIsProceeding(false);
+        setIsLoading(false);
+        return;
+      }
       onCompleted();
+      setIsProceeding(false);
       setIsLoading(false);
 
       // await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {

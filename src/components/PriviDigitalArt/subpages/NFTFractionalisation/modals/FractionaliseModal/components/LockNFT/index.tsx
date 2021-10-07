@@ -6,14 +6,13 @@ import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { useLockNFTStyles } from "./index.styles";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import NFTVaultManager from "shared/connectors/ethereum/contracts/NFTVaultManager.json";
 import config from "shared/connectors/ethereum/config";
-import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { lockNFT } from "shared/services/API/web3/contracts/NFTVaultManager";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -54,36 +53,32 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         selectedNFT.tokenAddress
       );
       if (!response.success) {
-        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
         setIsProceeding(false);
         setIsLoading(false);
+        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
         return;
       }
-      const contract = ContractInstance(web3, NFTVaultManager.abi, contractAddress);
-      const gas = await contract.methods
-        .lockNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId)
-        .estimateGas({ from: account });
-      response = await contract.methods
-        .lockNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId)
-        .send({ from: account, gas })
-        .on("receipt", receipt => {
-          onCompleted();
-          setIsLoading(false);
-        })
-        .on("transactionHash", hash => {
-          setHash(hash);
-          setIsLoading(false);
-        })
-        .on("error", error => {
-          console.log("error", error);
-          showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
-          setIsProceeding(false);
-          setIsLoading(false);
-        });
+
+      const payload = {
+        tokenAddress: selectedNFT.tokenAddress,
+        tokenId: selectedNFT.BlockchainId,
+        setHash,
+      };
+
+      const lockResponse = await lockNFT(web3, account!, payload);
+      if (!lockResponse.status) {
+        setIsProceeding(false);
+        setIsLoading(false);
+        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+        return;
+      }
       await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
         collectionAddress: selectedNFT.tokenAddress,
         syntheticID,
       });
+      onCompleted();
+      setIsProceeding(false);
+      setIsLoading(false);
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);

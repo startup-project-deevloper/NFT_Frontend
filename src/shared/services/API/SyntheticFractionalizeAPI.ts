@@ -91,6 +91,19 @@ export async function getSyntheticNFTFlipHistory(collectionId, syntheticId): Pro
   }
 }
 
+export async function getJotPoolBalanceHistory(collectionId): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getJotPoolBalanceHistory`, {
+      params: {
+        collectionId
+      }
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
 /////////////////////////// POST /////////////////////////
 
 export async function buyJots(payload): Promise<any> {

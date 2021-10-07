@@ -6,8 +6,7 @@ import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { Avatar, Text } from "shared/ui-kit";
-import PrintChart from "shared/ui-kit/Chart/Chart";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import { getJotPoolBalanceHistory } from "shared/services/API/SyntheticFractionalizeAPI";
 import { SyntheticFractionalisedJotPoolsPageStyles } from "./index.styles";
 import AddLiquidityModal from "components/PriviDigitalArt/modals/AddLiquidityModal";
 import RemoveLiquidityModal from "components/PriviDigitalArt/modals/RemoveLiquidityModal";
@@ -16,154 +15,9 @@ import { ReactComponent as ArrowDown } from "assets/icons/arrow_down.svg";
 import LiquidityModal from "../../modals/LiquidityModal";
 import { BlockchainNets } from "shared/constants/constants";
 import { useWeb3React } from "@web3-react/core";
+import PriceGraph from "../../../../components/PriceGraph";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
-
-const FreeHoursChartConfig = {
-  config: {
-    data: {
-      labels: [] as any[],
-      datasets: [
-        {
-          type: "line",
-          label: "",
-          data: [] as any[],
-          pointRadius: 0,
-          // borderJoinStyle: "round",
-          // borderCapStyle: "round",
-          // borderRadius: Number.MAX_VALUE,
-          // lineTension: 0.2,
-          // barPercentage: 0.3,
-          borderColor: "#9EACF2",
-          borderWidth: 2,
-          pointBackgroundColor: "#9EACF2",
-        },
-      ],
-    },
-
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      bezierCurve: false,
-      chartArea: {
-        backgroundColor: "#FFFFFF",
-      },
-      elements: {
-        point: {
-          radius: 0,
-          hitRadius: 5,
-          hoverRadius: 5,
-        },
-        line: {
-          tension: 0,
-        },
-      },
-
-      legend: {
-        display: false,
-      },
-
-      layout: {
-        padding: {
-          left: 0,
-          right: 0,
-          top: 20,
-          bottom: 0,
-        },
-      },
-
-      scales: {
-        xAxes: [
-          {
-            offset: true,
-            display: true,
-            gridLines: {
-              color: "#431AB7",
-              lineWidth: 50,
-            },
-            ticks: {
-              beginAtZero: false,
-              fontColor: "#FFF",
-              fontFamily: "Agrandir",
-            },
-          },
-        ],
-        yAxes: [
-          {
-            display: true,
-            position: "right",
-            gridLines: {
-              color: "#431AB7",
-              drawBorder: false,
-            },
-            ticks: {
-              display: true,
-              fontColor: "#FFF",
-              beginAtZero: true,
-            },
-          },
-        ],
-      },
-
-      tooltips: {
-        mode: "label",
-        intersect: false,
-        callbacks: {
-          //This removes the tooltip title
-          title: function () {},
-          label: function (tooltipItem, data) {
-            return `$${tooltipItem.yLabel.toFixed(4)}`;
-          },
-        },
-        //this removes legend color
-        displayColors: false,
-        yPadding: 10,
-        xPadding: 10,
-        position: "nearest",
-        caretSize: 10,
-        backgroundColor: "rgba(255,255,255,0.9)",
-        bodyFontSize: 15,
-        bodyFontColor: "#303030",
-      },
-
-      plugins: {
-        datalabels: {
-          display: function (context) {
-            return context.dataset.data[context.dataIndex] !== 0;
-          },
-        },
-      },
-    },
-  },
-};
-
-const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
-  for (let index = 0; index < config.data.datasets.length; index++) {
-    let gradient = ref.createLinearGradient(0, 0, 0, ref.canvas.clientHeight + 300);
-    gradient.addColorStop(0, config.data.datasets[index].backgroundColor);
-    // gradient.addColorStop(0.6, config.data.datasets[index].backgroundColor);
-    // gradient.addColorStop(1, `${config.data.datasets[index].backgroundColor}33`);
-    gradient.addColorStop(1, Color.Purple);
-    config.data.datasets[0].backgroundColor = gradient;
-  }
-
-  return config;
-};
-const DAYLABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const MONTHLABELS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 const tempHistory = [
   {
@@ -322,32 +176,15 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const [poolOwnership, setPoolOwnership] = React.useState(0);
   const [liquidityValue, setLiquidityValue] = React.useState(0);
   const [rewardValue, setRewardValue] = React.useState(0);
-
-  const isProduction = process.env.REACT_APP_ENV === "prod";
+  const [jotPoolBalanceHistory, setJotPoolBalanceHistory] = React.useState([]);
 
   React.useEffect(() => {
-    const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
-    newRewardConfig.configurer = configurer;
-    newRewardConfig.config.data.labels =
-      period === PERIODS[0]
-        ? getAllHours()
-        : period === PERIODS[1]
-        ? DAYLABELS.map(item => item.slice(0, 3).toUpperCase())
-        : MONTHLABELS.map(item => item.slice(0, 3).toUpperCase());
-    newRewardConfig.config.data.datasets[0].data =
-      period === PERIODS[0]
-        ? getAllValues()
-        : period === PERIODS[1]
-        ? getAllValuesInWeek()
-        : getAllValuesInYear();
-    newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
-    newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
-    newRewardConfig.config.options.scales.xAxes[0].offset = true;
-    newRewardConfig.config.options.scales.yAxes[0].ticks.display = false;
-
-    setRewardConfig(newRewardConfig);
+    (async () => {
+      const resp = await getJotPoolBalanceHistory(collection.collectionAddress);
+      if (resp?.success) {
+        setJotPoolBalanceHistory(resp.data);
+      }
+    })();
   }, [period]);
 
   React.useEffect(() => {
@@ -389,46 +226,6 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
       }
     })();
   }, [library]);
-
-  const getAllHours = React.useCallback(() => {
-    const result: string[] = [];
-    for (let index = 1; index <= 23; index++) {
-      result.push(index < 10 ? `0${index}` : `${index}`);
-    }
-
-    return result;
-  }, []);
-
-  const getAllValues = React.useCallback(() => {
-    const result: number[] = [];
-    for (let index = 1; index <= 23; index++) {
-      result.push(Math.floor(Math.random() * 10000));
-    }
-
-    return result;
-  }, []);
-
-  const getAllValuesInWeek = React.useCallback(() => {
-    const result: number[] = [];
-    for (let index = 0; index < DAYLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * 10000));
-    }
-
-    return result;
-  }, []);
-
-  const getAllValuesInYear = React.useCallback(() => {
-    const result: number[] = [];
-    for (let index = 0; index < MONTHLABELS.length; index++) {
-      result.push(Math.floor(Math.random() * 10000));
-    }
-
-    return result;
-  }, []);
-
-  const handleChangePeriod = (period: string) => () => {
-    setPeriod(period);
-  };
 
   const handleConfirmAddLiquidity = async (amount: string) => {
     setIsAdd(true);
@@ -494,33 +291,11 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 </Box>
               </Grid>
               <Grid item md={9} xs={12}>
-                <Box className={classes.rightChart}>
-                  <Box className={classes.controlParentBox}>
-                    <Box display="flex" flexDirection="column">
-                      <h2 className={classes.graphTitle}>4245,24 USDC</h2>
-                      <p className={classes.graphDesc}>12 Sep 2021</p>
-                    </Box>
-                    <Box className={classes.controlBox}>
-                      <Box className={classes.liquidityBox}>
-                        {PERIODS.map((item, index) => (
-                          <button
-                            key={`period-button-${index}`}
-                            className={`${classes.groupButton} ${
-                              item === period && classes.selectedGroupButton
-                            }`}
-                            onClick={handleChangePeriod(item)}
-                            style={{ marginLeft: index > 0 ? "8px" : 0 }}
-                          >
-                            {item}
-                          </button>
-                        ))}
-                      </Box>
-                    </Box>
-                  </Box>
-                  <Box flex={1} width={1} mt={3} className={classes.chartWrapper}>
-                    {rewardConfig && <PrintChart config={rewardConfig} />}
-                  </Box>
-                </Box>
+                <PriceGraph
+                  data={jotPoolBalanceHistory}
+                  title="4245,24 USDC"
+                  subTitle="12 Sep 2021"
+                />
               </Grid>
             </Grid>
             {shareAmount === 0 && (

@@ -36,7 +36,7 @@ export const requestUnlockNFT = (web3: Web3, account: string, payload: any): Pro
         .on("transactionHash", hash => {
           setHash(hash);
         });
-      console.log("response", response);
+      console.log("requestUnlockNFT response", response);
       const {
         events: {
           UnlockRequested: {

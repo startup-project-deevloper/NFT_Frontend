@@ -10,7 +10,10 @@ const syntheticNFTAuction = (network: string) => {
     return new Promise(async resolve => {
       try {
         const { amount, setHash } = payload;
-        const { auctionAddress, JotAddress } = collection;
+        const {
+          auctionData: { auctionAddress },
+          JotAddress,
+        } = collection;
 
         const jotAPI = JOT(network);
 

@@ -80,6 +80,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [result, setResult] = React.useState<number>(0);
   const [hash, setHash] = useState<string>("");
 
+  const auctionInitialPrice = 10000;
+
   useEffect(() => {
     if (!params.id) return;
     const web3Config = selectedChain.config;
@@ -282,7 +284,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         collection,
         {
           tokenId: +nft.SyntheticID,
-          price: 10000,
+          price: auctionInitialPrice,
           setHash: setHash,
         }
       );
@@ -292,14 +294,24 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         setResult(1);
         setLoading(false);
 
-        await startSyntheticNFTAuction({
-          collectionId: collection.id,
+        const response = await startSyntheticNFTAuction({
+          collectionId: params.id,
           syntheticId: +nft.SyntheticID,
-          auctionAddress: contractResponse.data.auction,
-          amount: contractResponse.data.amount,
+          auctionAddress: contractResponse.data.auctionContract,
+          buyoutPrice: contractResponse.data.openingBid,
+          auctionLength: 1000000,
+          starterAddress: account,
         });
 
-        // history.push(`/pix/fractionalisation/collection/${params.id}/nft/${nft.SyntheticID}`);
+        if (response.success) {
+          showAlertMessage("Auction started.", { variant: "success" });
+          history.push(`/pix/fractionalisation/collection/${params.id}/nft/${nft.SyntheticID}`);
+        } else {
+          setLoading(false);
+          setResult(-1);
+          showAlertMessage("Failed to start auction", { variant: "error" });
+          return;
+        }
       } else {
         setLoading(false);
         setResult(-1);
@@ -311,17 +323,17 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     }
   };
 
-  const auctionNFTs = React.useMemo(() => syntheticNFTs.filter(nft => nft.isAuction === true), syntheticNFTs);
+  const auctionNFTs = React.useMemo(
+    () => syntheticNFTs.filter(nft => nft.isAuctionable === true && nft.user === userSelector.id),
+    syntheticNFTs
+  );
 
   return (
     <div className={classes.root} onScroll={handleScroll}>
       <div className={classes.collectionInfoSection}>
         <Box display="flex" justifyContent="space-between" className={classes.backButtonContainer}>
           {!isMobile && (
-            <BackButton
-              purple
-              overrideFunction={() => history.push("/fractionalise/synthetic-derivative")}
-            />
+            <BackButton purple overrideFunction={() => history.push("/fractionalise/synthetic-derivative")} />
           )}
           {isMobile && (
             <Box display="flex" flexDirection="column" alignItems="end" width="100%">
@@ -616,7 +628,14 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <Grid container spacing={2}>
                 {auctionNFTs.map((item, idx) => (
                   <Grid item xs={6} sm={4} md={4} lg={3}>
-                    <AuctionCard auction={item} onClick={() => handleStartAuction(item)} />
+                    <AuctionCard
+                      nft={item}
+                      price={auctionInitialPrice}
+                      onStartAuction={() => handleStartAuction(item)}
+                      onClick={() => {
+                        history.push(`/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`);
+                      }}
+                    />
                   </Grid>
                 ))}
               </Grid>

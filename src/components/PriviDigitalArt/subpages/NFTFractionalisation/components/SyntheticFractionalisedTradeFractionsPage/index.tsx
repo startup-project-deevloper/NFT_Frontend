@@ -469,7 +469,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       setIntervalId(null);
       setRemainingTime(-1);
     }
-    if (remainingTime <= 0) {
+    if (remainingTime <= 0 && ownershipJot === 0) {
       (async () => {
         await setSyntheticNFTAuction({ collectionId, syntheticId: nft.SyntheticID });
       })();

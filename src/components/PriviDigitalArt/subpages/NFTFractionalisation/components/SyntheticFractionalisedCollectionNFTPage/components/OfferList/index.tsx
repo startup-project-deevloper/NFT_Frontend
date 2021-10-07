@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "shared/ui-kit/Box";
 
 import { Avatar, PrimaryButton, Text } from "shared/ui-kit";
@@ -6,9 +6,12 @@ import { Avatar, PrimaryButton, Text } from "shared/ui-kit";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 
 import { useStyles } from "./index.styles";
+import SyntheticAuctionBidModal from "components/PriviDigitalArt/subpages/NFTFractionalisation/modals/SyntheticFractionalisationModals/SyntheticAuctionBidModal";
 
-const MarketActivity = () => {
+const MarketActivity = ({ nft }) => {
   const classes = useStyles();
+
+  const [openPlaceBidModal, setOpenPlaceBidModal] = useState<boolean>(false);
 
   const dummyTableData = [
     [
@@ -128,7 +131,19 @@ const MarketActivity = () => {
         <CustomTable headers={tableHeaders} rows={dummyTableData} placeholderText="No offers" />
       </div>
       <a>See All Offers</a>
-      <PrimaryButton size="medium">Place Bid</PrimaryButton>
+      <PrimaryButton size="medium" onClick={() => setOpenPlaceBidModal(true)}>
+        Place Bid
+      </PrimaryButton>
+
+      {openPlaceBidModal && (
+        <SyntheticAuctionBidModal
+          open={openPlaceBidModal}
+          onClose={() => setOpenPlaceBidModal(false)}
+          previousBid={0}
+          nft={nft}
+          handleRefresh={() => {}}
+        />
+      )}
     </div>
   );
 };

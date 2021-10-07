@@ -144,7 +144,7 @@ const syntheticCollectionManager = (network: string) => {
         });
       } catch (err) {
         console.log(err);
-        resolve({ success: false });
+        resolve(null);
       }
     });
   };

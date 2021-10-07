@@ -17,6 +17,19 @@ const syntheticFractionalisationAuctionsManager = (network: string) => {
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
         const contract = ContractInstance(web3, metadata.abi, auctionAddress);
+
+        const approve = await jotAPI.approve(
+          web3,
+          account,
+          JotAddress,
+          auctionAddress,
+          toNDecimals(price, decimals)
+        );
+
+        if (!approve) {
+          resolve({ success: false });
+        }
+
         const gas = await contract.methods
           .startAuction(SyntheticCollectionManagerAddress, tokenId, toNDecimals(price, decimals))
           .estimateGas({ from: account });
@@ -30,7 +43,10 @@ const syntheticFractionalisationAuctionsManager = (network: string) => {
             resolve({
               success: true,
               data: {
-                hash: receipt.transactionHash,
+                auctionContract: receipt.events.AuctionStarted.returnValues.auctionContract,
+                collection: receipt.events.AuctionStarted.returnValues.collection,
+                nftId: receipt.events.AuctionStarted.returnValues.nftId,
+                openingBid: toDecimals(receipt.events.AuctionStarted.returnValues.openingBid, decimals),
               },
             });
           })

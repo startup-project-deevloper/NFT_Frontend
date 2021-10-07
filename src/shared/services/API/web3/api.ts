@@ -12,6 +12,7 @@ import syntheticCollectionManager from "./contracts/SyntheticCollectionManager";
 import syntheticProtocolRouter from "./contracts/SyntheticProtocolRouter";
 import jotPool from "./contracts/JotPool";
 import syntheticFractionalisationAuctionsManager from "./contracts/SyntheticFractionalisationAuctionsManager";
+import syntheticNFTAuction from "./contracts/SyntheticNFTAuction";
 
 const api = network => {
   return {
@@ -27,6 +28,7 @@ const api = network => {
     SyntheticCollectionManager: syntheticCollectionManager(network),
     SyntheticProtocolRouter: syntheticProtocolRouter(network),
     SyntheticFractionalisationAuctionsManager: syntheticFractionalisationAuctionsManager(network),
+    SyntheticNFTAuction: syntheticNFTAuction(network),
     JotPool: jotPool(network),
     QuickSwap: quickswap(network),
   };

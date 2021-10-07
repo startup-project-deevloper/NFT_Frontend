@@ -135,12 +135,13 @@ export default function PriceGraph({ data, title, subTitle }) {
             },
             timeScale: {
 				timeVisible: true,
-                borderVisible: false,
-            },
-            crosshair: {
-                horzLine: {
-                    visible: false,
-                },
+				borderVisible: false,
+				fixLeftEdge: true,
+				fixRightEdge: true,
+				tickMarkFormatter: (time, tickMarkType, locale) => {
+					const t = LightweightCharts.isBusinessDay(time) ? `${time.month}/${time.day}` : format(new Date(time * 1000), "HH:mm");
+					return String(t);
+				}
             },
 		});
 		

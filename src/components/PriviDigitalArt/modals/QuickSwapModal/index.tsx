@@ -18,10 +18,12 @@ export default function QuickSwapModal({ open, handleClose, nft, collectionId })
   const { account, library, chainId } = useWeb3React();
 
   useEffect(() => {
+    if (!open) return;
+
     if (nft) {
       getJotBalance();
     }
-  }, [nft]);
+  }, [nft, open]);
 
   const getJotBalance = async () => {
     (async () => {

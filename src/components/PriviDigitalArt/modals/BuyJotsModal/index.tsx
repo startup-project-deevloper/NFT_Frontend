@@ -25,8 +25,8 @@ export default function BuyJotsModal({
   open,
   collectionId,
   nft,
-  handleRefresh = () => { },
-  handleClose = () => { },
+  handleRefresh = () => {},
+  handleClose = () => {},
 }) {
   const classes = BuyJotsModalStyles();
 
@@ -41,14 +41,13 @@ export default function BuyJotsModal({
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
   const [maxJot, setMaxJot] = React.useState<number>(0);
   const [hash, setHash] = React.useState<string>("");
-  const [openLoading, setOpenLoading] = React.useState(false);
 
-  const [openTransactionResultModal, setOpenTransactionResultModal] = React.useState<boolean>(false);
+  const [result, setResult] = React.useState<number>(0);
 
   useEffect(() => {
     if (!open) {
       setLoading(false);
-      setOpenLoading(false);
+      setResult(0);
     }
   }, [open]);
 
@@ -89,7 +88,6 @@ export default function BuyJotsModal({
     }
 
     setLoading(true);
-    setOpenLoading(true);
     // For polygon chain
     const targetChain = BlockchainNets[1];
     if (chainId && chainId !== targetChain?.chainId) {
@@ -114,8 +112,7 @@ export default function BuyJotsModal({
 
     if (!approveResponse) {
       setLoading(false);
-      setOpenLoading(false);
-      showAlertMessage("Failed to approve. Please try again", { variant: "error" });
+      setResult(-1);
       return;
     }
 
@@ -131,8 +128,7 @@ export default function BuyJotsModal({
     );
     if (!contractResponse.success) {
       setLoading(false);
-      setOpenLoading(false);
-      showAlertMessage("Failed to buy Jots. Please try again", { variant: "error" });
+      setResult(-1);
       return;
     }
 
@@ -146,12 +142,11 @@ export default function BuyJotsModal({
     });
 
     if (!response.success) {
-      showAlertMessage("Failed to save transactions.", { variant: "error" });
+      setResult(-1);
       return;
     }
 
-    showAlertMessage("You bought JOTs successuflly", { variant: "success" });
-    setOpenTransactionResultModal(true);
+    setResult(1);
     handleRefresh();
   };
 
@@ -159,13 +154,11 @@ export default function BuyJotsModal({
     window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
   };
 
-  if (openLoading) {
+  if (loading) {
     return (
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>
         <Box style={{ textAlign: "center", paddingTop: "50px", paddingBottom: "50px" }}>
-          {loading && (
-            <LoadingWrapper loading theme="purple" iconWidth="80px" iconHeight="80px"></LoadingWrapper>
-          )}
+          <LoadingWrapper loading theme="purple" iconWidth="80px" iconHeight="80px"></LoadingWrapper>
           <Box>
             <h3
               style={{
@@ -205,16 +198,18 @@ export default function BuyJotsModal({
     );
   }
 
-  if (openTransactionResultModal) {
-    return <TransactionResultModal
-      open={openTransactionResultModal}
-      onClose={() => {
-        setOpenTransactionResultModal(false);
-        handleClose();
-      }}
-      isSuccess={true}
-      hash={hash}
-    />
+  if (result !== 0) {
+    return (
+      <TransactionResultModal
+        open={true}
+        onClose={() => {
+          setResult(0);
+          handleClose();
+        }}
+        isSuccess={result === 1}
+        hash={hash}
+      />
+    );
   }
 
   return (

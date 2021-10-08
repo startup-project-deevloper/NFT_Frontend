@@ -34,3 +34,7 @@ export const getRandomAvatarForUserIdWithMemoization = (userId: string) => {
 
   return AvatarHashTable[userId];
 };
+
+export const getDefaultAvatar = () => (require("assets/anonAvatars/ToyFaces_Colored_BG_111.jpg"));
+
+export const getDefaultBGImage = () => (require("assets/backgrounds/digital_art_1.png"))

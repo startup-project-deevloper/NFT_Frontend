@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
+import styled from "styled-components";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import clsx from "clsx";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import NFTPodCard from "components/PriviDigitalArt/components/Cards/NFTPodCard";
 import CreatePodModal from "components/PriviDigitalArt/modals/CreatePodModal/CreatePodModal";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
 import URL from "shared/functions/getURL";
-import { PrimaryButton, CircularLoadingIndicator } from "shared/ui-kit";
+import { PrimaryButton, CircularLoadingIndicator, Color } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
@@ -16,6 +19,21 @@ import useWindowDimensions from "../../../../shared/hooks/useWindowDimensions";
 import { useNFTPodsPageStyles } from "./index.styles";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { ReactComponent as GovernanceImg } from "assets/icons/governance.svg";
+import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+import { SearchIcon } from "../../components/Icons/SvgIcons";
+
+import { useTypedSelector } from "store/reducers/Reducer";
+import { getUser } from "store/selectors";
+import { useDebounce } from "use-debounce/lib";
+import PodProposalCard from "components/PriviDigitalArt/components/Cards/PodProposalCard";
+
+const LoadingIndicatorWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+`;
 
 const podStateOptions = ["All", "Formation", "Investment", "Released"];
 const investingOptions = ["Off", "On"];
@@ -26,6 +44,9 @@ const PodPage = () => {
   const classes = useNFTPodsPageStyles();
   const dispatch = useDispatch();
   const width = useWindowDimensions().width;
+
+  const user = useTypedSelector(getUser);
+
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const [loadingTrendingPods, setLoadingTrendingPods] = useState<boolean>(false);
@@ -37,12 +58,20 @@ const PodPage = () => {
   const [sortByPriceSelection, setSortByPriceSelection] = useState<string>(sortByPriceOptions[0]);
   const [podTypeSelection, setPodTypeSelection] = useState<string>(podTypeOptions[0]); // all, media pod, fractionalized
   const [searchValue, setSearchValue] = useState<string>("");
+  const [showSearchBox, setShowSearchBox] = React.useState<boolean>(false);
+
+  const [activeTab, setActiveTab] = useState<number>(0);
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
 
   // pods
   const [pods, setPods] = useState<any[]>([]);
   const [hasMorePods, setHasMorePods] = useState<boolean>(true);
   const [lastIdx, setLastIdx] = useState<string>("null");
   const [pagination, setPagination] = useState<number>(1);
+
+  const [proposals, setProposals] = useState<any[]>([]);
+  const [isLoadingProposals, setIsLoadingProposals] = useState<boolean>(false);
+  const [hasMoreProposals, setHasMoreProposals] = useState<boolean>(true);
 
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
@@ -51,6 +80,31 @@ const PodPage = () => {
     getMediaTrendingPods(true);
     getMediaPodsInformation([]);
   }, []);
+
+  useEffect(() => {
+    setLastIdx("null");
+    if (user?.address && !isLoadingProposals) {
+      loadMoreProposals();
+    }
+  }, [user?.address, debouncedSearchValue]);
+
+  const loadMoreProposals = (isInit = false) => {
+    // setIsLoadingProposals(true);
+    // musicDaoGetPodsProposal(user.address, debouncedSearchValue, isInit ? undefined : lastId)
+    //   .then(resp => {
+    //     if (resp?.success) {
+    //       if (isInit) {
+    //         setProposals(resp.data);
+    //       } else {
+    //         setProposals(prev => [...prev, ...resp.data]);
+    //       }
+    //       setLastId(resp.lastId);
+    //       setHasMoreProposals(resp.data.length === 20);
+    //     } else setProposals([]);
+    //   })
+    //   .catch(_ => setProposals([]))
+    //   .finally(() => setIsLoadingProposals(false));
+  };
 
   const getMediaTrendingPods = (forceRefreshCache?: boolean) => {
     setLoadingTrendingPods(true);
@@ -135,7 +189,7 @@ const PodPage = () => {
     }
   };
 
-  const handleRefresh = React.useCallback(() => {}, []);
+  const handleRefresh = React.useCallback(() => { }, []);
 
   return (
     <>
@@ -166,42 +220,135 @@ const PodPage = () => {
             Create new Pod
           </PrimaryButton>
         </Box>
-        <Box display="flex" alignItems="flex-end">
-          <h3>✨ Trending</h3>
-        </Box>
-        <LoadingWrapper loading={loadingTrendingPods} theme={"blue"}>
-          <div className={classes.artCards}>
-            <MasonryGrid
-              gutter={"24px"}
-              data={trendingPods}
-              renderItem={(item, index) => <NFTPodCard item={item} key={`item-${index}`} />}
-              columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-            />
-          </div>
-        </LoadingWrapper>
-        <h3>✨ All</h3>
-        <div className={classes.artCards}>
-          <MasonryGrid
-            gutter={"24px"}
-            data={pods}
-            renderItem={(item, index) => <NFTPodCard item={item} key={`item-${index}`} />}
-            columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-          />
-          {hasMorePods && (
+        <Box
+          className={classes.flexBox}
+          justifyContent="space-between"
+          width={1}
+          mt={4}
+          zIndex={1}
+          borderBottom="1px solid #00000022"
+        >
+          <div className={classes.flexBox}>
             <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                paddingTop: 16,
-                paddingBottom: 16,
-              }}
+              className={clsx(classes.tabItem, { [classes.tabItemActive]: activeTab === 0 })}
+              onClick={() => setActiveTab(0)}
             >
-              <CircularLoadingIndicator theme="blue" />
+              <div className={classes.header5}>Explore Trending</div>
             </div>
-          )}
-        </div>
+            <Box
+              className={clsx(classes.tabItem, { [classes.tabItemActive]: activeTab === 1 })}
+              ml={2}
+              onClick={() => setActiveTab(1)}
+            >
+              <div className={classes.header5}>Pod Proposals</div>
+            </Box>
+          </div>
+          <div className={classes.optionSection}>
+            <div className={classes.filterButtonBox}>
+              {showSearchBox && (
+                <InputWithLabelAndTooltip
+                  type="text"
+                  inputValue={searchValue}
+                  placeHolder="Search"
+                  onInputValueChange={e => {
+                    setSearchValue(e.target.value);
+                  }}
+                  style={{
+                    background: "transparent",
+                    margin: 0,
+                    marginRight: 8,
+                    padding: 0,
+                    border: "none",
+                    height: "auto",
+                  }}
+                  theme="music dao"
+                />
+              )}
+              <Box
+                onClick={() => setShowSearchBox(prev => !prev)}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                style={{ cursor: "pointer" }}
+              >
+                <SearchIcon color={Color.MusicDAODark} />
+              </Box>
+            </div>
+          </div>
+        </Box>
+        {activeTab === 0 ? (
+          <>
+            <Box display="flex" alignItems="flex-end">
+              <h3>✨ Trending</h3>
+            </Box>
+            <LoadingWrapper loading={loadingTrendingPods} theme={"blue"}>
+              <div className={classes.artCards}>
+                <MasonryGrid
+                  gutter={"24px"}
+                  data={trendingPods}
+                  renderItem={(item, index) => <NFTPodCard item={item} key={`item-${index}`} />}
+                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                />
+              </div>
+            </LoadingWrapper>
+            <h3>✨ All</h3>
+            <div className={classes.artCards}>
+              <MasonryGrid
+                gutter={"24px"}
+                data={pods}
+                renderItem={(item, index) => <NFTPodCard item={item} key={`item-${index}`} />}
+                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+              />
+              {hasMorePods && (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                  }}
+                >
+                  <CircularLoadingIndicator theme="blue" />
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ zIndex: 1 }}>
+              <InfiniteScroll
+                hasChildren={proposals.length > 0}
+                dataLength={proposals.length}
+                scrollableTarget={"scrollContainer"}
+                next={loadMoreProposals}
+                hasMore={hasMoreProposals}
+                loader={
+                  isLoadingProposals && (
+                    <LoadingIndicatorWrapper>
+                      <CircularLoadingIndicator />
+                    </LoadingIndicatorWrapper>
+                  )
+                }
+              >
+                <Box mt={4}>
+                  {proposals.length > 0
+                    ? proposals.map((pod, index) => (
+                      <Box key={index} width={1} mb={2}>
+                        <PodProposalCard pod={pod} />
+                      </Box>
+                    ))
+                    : !isLoadingProposals && (
+                      <Box className={classes.header5} textAlign="center" width={1}>
+                        You are not a collab in any pod.
+                      </Box>
+                    )}
+                </Box>
+              </InfiniteScroll>
+            </div>
+          </>
+        )}
       </div>
       {openCreateModal && (
         <CreatePodModal

@@ -7,7 +7,7 @@ import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { RootState } from "store/reducers/Reducer";
 import { updateTask } from "shared/functions/updateTask";
-import { mediaPodInitiatePod, musicDAOInitiatePod } from "shared/services/API";
+import { priviPodInitiatePod } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { Modal, PrimaryButton, SecondaryButton, CircularLoadingIndicator } from "shared/ui-kit";
@@ -85,19 +85,19 @@ const CreatePodModal = (props: any) => {
         payload.name = pod.Name;
         payload.description = pod.Description;
         payload.imageUrl = "";
-        payload.hashtags = pod.Hashtags;
+        payload.hashtags = [];
         payload.hasPhoto = !!(photo || photoImg);
         payload.collabs = (pod.Collabs ?? []).map(user => ({ userId: user.urlSlug, address: user.address }));
         payload.creatorAddress = userSelector.address;
         payload.creatorId = userSelector.id;
         payload.network =
           (chainId && BlockchainNets.find(net => net.chainId === chainId)?.value) || BlockchainNets[1].value;
-        payload.podType = "TRAX";
+        payload.podType = "PIX";
 
         let infoImage = await onUploadNonEncrypt(photo, file => uploadWithNonEncryption(file));
 
         payload.infoImage = infoImage;
-        const initiatePodRes = await mediaPodInitiatePod(payload);
+        const initiatePodRes = await priviPodInitiatePod(payload);
         await afterCreatePod(initiatePodRes);
         setIsLoading(false);
         // }

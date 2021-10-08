@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
+import { Color } from "shared/ui-kit";
 
 export const useNFTPodsPageStyles = makeStyles(theme => ({
   content: {
@@ -200,4 +201,46 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     height: "187.96px",
     transform: "rotate(3.22deg)",
   },
+
+  flexBox: {
+    display: "flex",
+    alignItems: "center",
+  },
+  tabItem: {
+    color: Color.MusicDAODark,
+    opacity: 0.5,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px ${theme.spacing(2)}px`,
+    cursor: "pointer",
+  },
+  tabItemActive: {
+    borderBottom: "1px solid #000000",
+    opacity: 1,
+  },
+  header5: {
+    fontSize: 16,
+    fontWeight: 800,
+    lineHeight: "130%",
+  },
+  optionSection: {
+    display: "flex",
+    alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      justifyContent: "flex-end",
+    },
+  },
+  filterButtonBox: {
+    background: "rgba(240, 245, 248, 0.7)",
+    display: "flex",
+    alignItems: "center",
+    padding: `${theme.spacing(1)}px ${theme.spacing(1.5)}px`,
+    borderRadius: theme.spacing(4),
+    cursor: "pointer",
+    marginLeft: 8,
+    color: Color.MusicDAODark,
+    [theme.breakpoints.down("xs")]: {
+      padding: "8px 14px",
+    },
+  },
+
 }));

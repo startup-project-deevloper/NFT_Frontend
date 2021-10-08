@@ -1,0 +1,99 @@
+{
+  "address": "0x4f1DFB4894f3fA2A5D3AC2Ce3d013f1188cd6F19",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "symbolId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "oracleAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "multiplier",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeRatio",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "fundingRateCoefficient",
+          "type": "uint256"
+        }
+      ],
+      "name": "addSymbol",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x92a5fee9ae0722c739701b7e43d8a4181f2cc693f4e239b9758f0bbf3d8c0681",
+  "receipt": {
+    "to": null,
+    "from": "0x7d994063E2C98b2F49b13418Fc3FE58c45DdcC0D",
+    "contractAddress": "0x4f1DFB4894f3fA2A5D3AC2Ce3d013f1188cd6F19",
+    "transactionIndex": 3,
+    "gasUsed": "139861",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000002000000000000000000000000000000000000000000000000000800000000000000000040100000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000200000000000000000000040000000004000000000000000000001000000000000000000000000000000100000000000000000000000000000000000000000000000100010000000000000000000100000",
+    "blockHash": "0x10c9dfce10b2bcb8d20523139d864731e7914b41e7c273688b95b8ea043c0b4d",
+    "transactionHash": "0x92a5fee9ae0722c739701b7e43d8a4181f2cc693f4e239b9758f0bbf3d8c0681",
+    "logs": [
+      {
+        "transactionIndex": 3,
+        "blockNumber": 19271067,
+        "transactionHash": "0x92a5fee9ae0722c739701b7e43d8a4181f2cc693f4e239b9758f0bbf3d8c0681",
+        "address": "0x0000000000000000000000000000000000001010",
+        "topics": [
+          "0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63",
+          "0x0000000000000000000000000000000000000000000000000000000000001010",
+          "0x0000000000000000000000007d994063e2c98b2f49b13418fc3fe58c45ddcc0d",
+          "0x000000000000000000000000c275dc8be39f50d12f66b6a63629c39da5bae5bd"
+        ],
+        "data": "0x00000000000000000000000000000000000000000000000000017d9bc7ab3600000000000000000000000000000000000000000000000000144d7cfedffa8d920000000000000000000000000000000000000000000001769dd5f142fd872443000000000000000000000000000000000000000000000000144bff63184f57920000000000000000000000000000000000000000000001769dd76edec5325a43",
+        "logIndex": 10,
+        "blockHash": "0x10c9dfce10b2bcb8d20523139d864731e7914b41e7c273688b95b8ea043c0b4d"
+      }
+    ],
+    "blockNumber": 19271067,
+    "cumulativeGasUsed": "820072",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "709b56931b6595be8ed7baee4515929c",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"symbolId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"symbol\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"oracleAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"multiplier\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"feeRatio\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"fundingRateCoefficient\",\"type\":\"uint256\"}],\"name\":\"addSymbol\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/polygon/mocks/PerpetualPoolLiteMock.sol\":\"PerpetualPoolLiteMock\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/polygon/mocks/PerpetualPoolLiteMock.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\r\\npragma solidity ^0.8.4;\\r\\n\\r\\ncontract PerpetualPoolLiteMock  {\\r\\n\\r\\n\\r\\n    constructor() {} \\r\\n\\r\\n    function addSymbol(\\r\\n        uint256 symbolId,\\r\\n        string memory symbol,\\r\\n        address oracleAddress,\\r\\n        uint256 multiplier,\\r\\n        uint256 feeRatio,\\r\\n        uint256 fundingRateCoefficient\\r\\n    ) public {\\r\\n        uint256 a = 1;\\r\\n    }\\r\\n\\r\\n}\\r\\n\",\"keccak256\":\"0xf196a1dea87cc0018b7788ca8570c97f0041c6c4537244d19e23e069e5345da1\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610191806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063802ec51514610030575b600080fd5b61004661003e366004610064565b505050505050565b005b80356001600160a01b038116811461005f57600080fd5b919050565b60008060008060008060c0878903121561007c578182fd5b86359550602087013567ffffffffffffffff8082111561009a578384fd5b818901915089601f8301126100ad578384fd5b8135818111156100bf576100bf610145565b604051601f8201601f19908116603f011681019083821181831017156100e7576100e7610145565b816040528281528c60208487010111156100ff578687fd5b8260208601602083013791820160200186905250965061012491505060408801610048565b9350606087013592506080870135915060a087013590509295509295509295565b634e487b7160e01b600052604160045260246000fdfea2646970667358221220b071fa7419f067032dbd09597df678780156ae4f7f609a6d0bb2f314e54f09e164736f6c63430008040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063802ec51514610030575b600080fd5b61004661003e366004610064565b505050505050565b005b80356001600160a01b038116811461005f57600080fd5b919050565b60008060008060008060c0878903121561007c578182fd5b86359550602087013567ffffffffffffffff8082111561009a578384fd5b818901915089601f8301126100ad578384fd5b8135818111156100bf576100bf610145565b604051601f8201601f19908116603f011681019083821181831017156100e7576100e7610145565b816040528281528c60208487010111156100ff578687fd5b8260208601602083013791820160200186905250965061012491505060408801610048565b9350606087013592506080870135915060a087013590509295509295509295565b634e487b7160e01b600052604160045260246000fdfea2646970667358221220b071fa7419f067032dbd09597df678780156ae4f7f609a6d0bb2f314e54f09e164736f6c63430008040033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

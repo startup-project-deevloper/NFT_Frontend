@@ -1,0 +1,246 @@
+import { makeStyles } from "@material-ui/core/styles";
+import { Color } from "shared/ui-kit";
+
+export const useNFTPodsPageStyles = makeStyles(theme => ({
+  content: {
+    width: "100%",
+    height: "100%",
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    minHeight: "calc(100vh - 80px)",
+    maxHeight: "calc(100vh - 80px)",
+    overflowX: "hidden",
+    position: "relative",
+    padding: "32px 31px",
+    "& > div > h2": {
+      fontFamily: "Agrandir GrandLight",
+      fontWeight: "800",
+      fontSize: "40px",
+      lineHeight: "104.5%",
+      margin: 0,
+      color: "#431AB7",
+      "& span": {
+        fontSize: "18px",
+        lineHeight: "23px",
+      },
+    },
+    "& > div > h5": {
+      color: "#431AB7",
+      fontWeight: 400,
+      fontStyle: "normal",
+      fontSize: "18px",
+      lineHeight: "104.5%",
+      marginTop: "24px",
+      marginBottom: "84px",
+      "& span": {
+        fontSize: "18px",
+        lineHeight: "23px",
+      },
+    },
+    "& > h3": {
+      marginTop: "64px",
+      fontSize: "30px",
+      lineHeight: "104.5%",
+      marginBottom: "16px",
+      fontWeight: 400
+    },
+    "& > div > h3": {
+      marginTop: "64px",
+      fontSize: "30px",
+      lineHeight: "104.5%",
+      marginBottom: "16px",
+      fontWeight: 400
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "63px 64px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "63px 40px",
+    },
+  },
+  img1: {
+    width: "198px",
+    height: "183px",
+    position: "absolute",
+    top: "10%",
+    left: "5%",
+    // marginBottom: "24px",
+    // marginLeft: "16px",
+    transform: "rotate(-12.57deg)",
+    "& svg": {
+      width: '100%',
+      height: '100%',
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "118px",
+      height: "109px",
+      marginLeft: theme.spacing(1),
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: "76px",
+      height: "70px",
+      marginLeft: theme.spacing(1),
+    },
+  },
+  img2: {
+    width: "145px",
+    height: "139px",
+    position: "absolute",
+    top: "15%",
+    right: "5%",
+    [theme.breakpoints.down("sm")]: {
+      top: "24%",
+      width: "115px",
+      height: "110px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      top: "24%",
+      width: "80px",
+      height: "76px",
+    },
+  },
+  ellipse: {
+    position: "absolute",
+    zIndex: 0,
+    top: 0,
+  },
+  purpleBox: {
+    background: "#E2E6FB",
+    boxShadow: "0px 2px 12px rgba(0, 0, 0, 0.1)",
+    position: "relative",
+    padding: "24px",
+    paddingLeft: "64px",
+    color: "#431AB7",
+    borderRadius: "8px",
+    fontSize: "18px",
+    fontWeight: 800,
+    minHeight: "75px",
+    width: "fit-content",
+    "& img": {
+      position: "absolute",
+      top: "-33px",
+      left: "-41px",
+    },
+  },
+  greenButton: {
+    color: "#431AB7 !important",
+    background: "#DDFF57 !important",
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12) !important",
+    borderRadius: "4px !important",
+    padding: "0px 48px !important",
+    fontSize: "18px !important",
+    fontWeight: 800,
+    height: "47px !important",
+  },
+  artCards: {
+    width: "calc(100% + 20px)",
+    marginLeft: -10,
+    marginTop: -10,
+    marginBottom: 38,
+    padding: "10px 5px",
+    "& > div": {
+      width: "100%",
+      "& > div > div > div": {
+        padding: "0 !important",
+      },
+    },
+  },
+  mediaImage: {
+    borderRadius: "16px",
+    height: "80px",
+    width: "80px",
+    marginRight: "16px",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  },
+  mediaTitle: {
+    color: "#181818",
+    fontSize: "16px",
+    lineHeight: "104.5%",
+    marginBottom: "4px",
+  },
+  secondary: {
+    border: "1px solid #431AB7 !important",
+    marginTop: "8px",
+    background: "white !important",
+    color: "#431AB7 !important",
+  },
+  primary: {
+    border: "1px solid #431AB7 !importafnt",
+    marginTop: "8px",
+    color: "white !important",
+    background: "#431AB7 !important",
+  },
+  chain: {
+    width: 24,
+    height: 24,
+    objectFit: "contain",
+    borderRadius: "50%",
+  },
+  blue: { color: "#9EACF2" },
+  tableContainerWithAbsoluteImage: {
+    width: "100%",
+    zIndex: 2,
+    paddingTop: "80px",
+    position: "relative",
+    marginTop: "-80px",
+  },
+  tableContainer: {
+    borderRadius: "16px",
+    width: "100%",
+    zIndex: 2,
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
+  },
+  absoluteImage: {
+    top: "-25px",
+    left: "85%",
+    position: "absolute",
+    height: "187.96px",
+    transform: "rotate(3.22deg)",
+  },
+
+  flexBox: {
+    display: "flex",
+    alignItems: "center",
+  },
+  tabItem: {
+    color: Color.MusicDAODark,
+    opacity: 0.5,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px ${theme.spacing(2)}px`,
+    cursor: "pointer",
+  },
+  tabItemActive: {
+    borderBottom: "1px solid #000000",
+    opacity: 1,
+  },
+  header5: {
+    fontSize: 16,
+    fontWeight: 800,
+    lineHeight: "130%",
+  },
+  optionSection: {
+    display: "flex",
+    alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      justifyContent: "flex-end",
+    },
+  },
+  filterButtonBox: {
+    background: "rgba(240, 245, 248, 0.7)",
+    display: "flex",
+    alignItems: "center",
+    padding: `${theme.spacing(1)}px ${theme.spacing(1.5)}px`,
+    borderRadius: theme.spacing(4),
+    cursor: "pointer",
+    marginLeft: 8,
+    color: Color.MusicDAODark,
+    [theme.breakpoints.down("xs")]: {
+      padding: "8px 14px",
+    },
+  },
+
+}));

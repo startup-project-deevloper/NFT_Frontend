@@ -1,0 +1,61 @@
+{
+  "address": "0x36c370eEB45f80d5722197d7C708E73AFe4839Ea",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    }
+  ],
+  "transactionHash": "0xde4e34fb1ecb34bf7cae35d0b593a5a2df98eaa5b471a75dae500a058b4ba2a6",
+  "receipt": {
+    "to": null,
+    "from": "0x7d994063E2C98b2F49b13418Fc3FE58c45DdcC0D",
+    "contractAddress": "0x36c370eEB45f80d5722197d7C708E73AFe4839Ea",
+    "transactionIndex": 1,
+    "gasUsed": "67066",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000018020000000000000000000000000000000000000000000000000000000800000000000000000000100000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000200000000000000000000000000000024000000000000000000001000000000000000000000000000000100000000000000000000000000000000000000000000000100010000000000000000000100000",
+    "blockHash": "0xfcea825a26d23b577032e74b6f3b42d3d6b481e19b1eb664958338ae17679366",
+    "transactionHash": "0xde4e34fb1ecb34bf7cae35d0b593a5a2df98eaa5b471a75dae500a058b4ba2a6",
+    "logs": [
+      {
+        "transactionIndex": 1,
+        "blockNumber": 19355610,
+        "transactionHash": "0xde4e34fb1ecb34bf7cae35d0b593a5a2df98eaa5b471a75dae500a058b4ba2a6",
+        "address": "0x0000000000000000000000000000000000001010",
+        "topics": [
+          "0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63",
+          "0x0000000000000000000000000000000000000000000000000000000000001010",
+          "0x0000000000000000000000007d994063e2c98b2f49b13418fc3fe58c45ddcc0d",
+          "0x000000000000000000000000e4b8e9222704401ad16d4d826732953daf07c7e2"
+        ],
+        "data": "0x0000000000000000000000000000000000000000000000000000b6fd0f51cc000000000000000000000000000000000000000000000000004278d37d49dbf54c00000000000000000000000000000000000000000000000000a6a59912ebee0000000000000000000000000000000000000000000000000042781c803a8a294c00000000000000000000000000000000000000000000000000a75c96223dba00",
+        "logIndex": 2,
+        "blockHash": "0xfcea825a26d23b577032e74b6f3b42d3d6b481e19b1eb664958338ae17679366"
+      }
+    ],
+    "blockNumber": 19355610,
+    "cumulativeGasUsed": "88066",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "ad72fb9df374b74165c0aae7989823fa",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/polygon/mocks/EmptyMock.sol\":\"EmptyMock\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/polygon/mocks/EmptyMock.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\r\\npragma solidity ^0.8.4;\\r\\n\\r\\ncontract EmptyMock {\\r\\n    // solhint-disable-next-line\\r\\n    constructor() {}\\r\\n}\\r\\n\",\"keccak256\":\"0x0897d4c03b81a0685c90577b7d7f7e5470013c4b494c65ebeb2650849707fa36\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220d8be5bd2b5395839a739102dfbaea51bd67080aeed9f7f2dc2b75b3c313e703b64736f6c63430008040033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220d8be5bd2b5395839a739102dfbaea51bd67080aeed9f7f2dc2b75b3c313e703b64736f6c63430008040033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

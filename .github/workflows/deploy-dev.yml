@@ -49,10 +49,8 @@ jobs:
 
 
     - name: clone repo B, build output, and push to repo B
-      env:
-        API_TOKEN_GITHUB_DEV: ${{ secrets.API_TOKEN_GITHUB_DEV }}
       run: |
-        git clone https://${{ env.API_TOKEN_GITHUB_DEV }}@github.com/Cache2020/Privi-Pix-Dev-Build.git
+        git clone https://${{ secrets.API_TOKEN_GITHUB_DEV }}@github.com/Cache2020/Privi-Pix-Dev-Build.git
         cd Privi-Pix-Dev-Build/
         git rm -r  .
         git add . && git commit -m 'remove all'

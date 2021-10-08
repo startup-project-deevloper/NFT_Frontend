@@ -69,16 +69,8 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
     user.urlSlug.match(acceptedChars);
 
     //check special characters
-    if (
-      user.twitter?.includes("@") ||
-      user.facebook?.includes("@") ||
-      user.instagram?.includes("@") ||
-      user.tiktok?.includes("@")
-    ) {
-      showAlertMessage("You don't have to include @ in your usernames", {variant: "error"});
-      return false;
-    } else if (!user.urlSlug.match(acceptedChars)) {
-      showAlertMessage("Please type only letters, numbers, or special characters . and _", {variant: "error"});
+    if (user.urlSlug.includes('/')) {
+      showAlertMessage("You don't have to include '/' in your profile url", {variant: "error"});
       return false;
     } else {
       if (user.urlSlug.includes(".", user.urlSlug.length - 1)) {

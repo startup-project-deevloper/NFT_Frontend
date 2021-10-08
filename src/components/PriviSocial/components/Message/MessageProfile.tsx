@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -31,7 +31,11 @@ export const MessageProfile = () => {
     dispatch(setSelectedUser(userInfo.id));
   };
 
+  
   const { userInfo } = messageBoxInfo;
+  const user = userInfo.urlSlug ? userInfo.urlSlug : "";
+  const userName = user.length > 17 ? user.substr(0, 13) + "..." + user.substr(user.length - 3, 3) : user;
+
   if (userInfo !== undefined && (userInfo.name || userInfo.urlSlug))
     return (
       <div>
@@ -45,8 +49,8 @@ export const MessageProfile = () => {
         />
         <div className="name">{userInfo && userInfo.name}</div>
         <div className="slug-container">
-          {userInfo && userInfo.urlSlug ? (
-            <div className="slug-name">@{userInfo && userInfo.urlSlug ? userInfo.urlSlug : ""}</div>
+          {userName ? (
+            <div className="slug-name">@{userName}</div>
           ) : null}
           <img className="verified-label" src={require("assets/icons/profileVerified.svg")} alt={"check"} />
           <span className="profile-level">level 1</span>

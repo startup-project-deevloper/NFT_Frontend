@@ -273,6 +273,11 @@ const InfoPane = React.memo(
       }
     };
 
+    const userName = useMemo(() => {
+      const user = userProfile.urlSlug ?? userProfile.id ?? userId ?? "";
+      return user.length > 17 ? user.substr(0, 13) + "..." + user.substr(user.length - 3, 3) : user;
+    }, [userProfile])
+
     return (
       <Card noPadding>
         <div
@@ -329,9 +334,7 @@ const InfoPane = React.memo(
                   <Box fontSize={22} fontWeight={400} color="#181818">
                     {`${userProfile.name ?? `${userProfile.firstName || ""} ${userProfile.lastName || ""}`}`}
                   </Box>
-                  <Box fontWeight={800} fontSize={16} color="#9EACF2">{`@${
-                    userProfile.urlSlug ?? userProfile.id ?? userId ?? ""
-                  }`}</Box>
+                  <Box fontWeight={800} fontSize={16} color="#9EACF2">{`@${userName}`}</Box>
                 </Box>
                 {!ownUser && (
                   <Button className={classes.followButton} onClick={onFollowUser}>

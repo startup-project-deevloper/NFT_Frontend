@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessageBox } from "store/selectors/user";
 import "./PixMessageProfile.css";
@@ -211,6 +211,11 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
     }
   }, [chat]);
 
+  const userName = useMemo(() => {
+    const user = userInfo?.urlSlug ? userInfo?.urlSlug : "";
+    return user.length > 17 ? user.substr(0, 13) + "..." + user.substr(user.length - 3, 3) : user;
+  }, [userInfo])
+
   if (userInfo !== undefined)
     return (
       <div>
@@ -224,9 +229,9 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
         />
         <div className="name">{userInfo && userInfo.name}</div>
         <div className="slug-container">
-          {userInfo && userInfo.urlSlug ? (
+          {userName ? (
             <div className="slug-name" style={type === "trax" ? { color: Color.MusicDAOGreen } : {}}>
-              @{userInfo && userInfo.urlSlug ? userInfo.urlSlug : ""}
+              @{userName}
             </div>
           ) : null}
           <img className="verified-label" src={require("assets/icons/profileVerified.svg")} alt={"check"} />

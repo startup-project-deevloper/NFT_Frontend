@@ -472,8 +472,8 @@ const syntheticCollectionManager = (network: string) => {
             },
           },
         } = response;
-
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log("verify response", response);
+        await new Promise(resolve => setTimeout(resolve, 10000));
 
         await contract.getPastEvents(
           "VerifyResponseReceived",
@@ -482,6 +482,7 @@ const syntheticCollectionManager = (network: string) => {
             toBlock: "latest",
           },
           (error, events) => {
+            console.log("verify events", events);
             const event = events
               .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
               .find(res => res.requestId === requestId);

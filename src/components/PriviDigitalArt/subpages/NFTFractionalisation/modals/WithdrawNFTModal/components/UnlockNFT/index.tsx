@@ -9,6 +9,8 @@ import { useWeb3React } from "@web3-react/core";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { requestUnlockNFT, withdrawNFT } from "shared/services/API/web3/contracts/NFTVaultManager";
+import axios from "axios";
+import URL from "shared/functions/getURL";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -16,7 +18,7 @@ const isProd = process.env.REACT_APP_ENV === "prod";
 export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = true, nft }) {
   const classes = useUnlockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isUnlocked, setUnlocked] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
@@ -30,7 +32,6 @@ export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = tru
         return;
       }
     }
-    setIsLoading(true);
     setIsProceeding(true);
 
     try {
@@ -46,28 +47,30 @@ export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = tru
       if (!requestUnlockResponse.status) {
         showAlertMessage(`Request Unlock is failed, please try again later`, { variant: "error" });
         setIsProceeding(false);
-        setIsLoading(false);
         return;
       }
       const withdrawResponse = await withdrawNFT(web3, account!, payload);
       if (!withdrawResponse.status) {
         showAlertMessage(`Unlock NFT is failed, please try again later`, { variant: "error" });
         setIsProceeding(false);
-        setIsLoading(false);
         return;
+      }
+      const params = {
+        collectionAddress: nft.collection_id,
+        syntheticID: nft.SyntheticID,
+      };
+      const { data } = await axios.post(`${URL()}/syntheticFractionalize/unlockNFT`, params);
+      if (data.success) {
+        onCompleted();
+      } else {
+        showAlertMessage(`Unlock NFT is failed, please try again later`, { variant: "error" });
       }
       onCompleted();
       setIsProceeding(false);
-      setIsLoading(false);
-
-      // await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
-      //   collectionAddress: selectedNFT.tokenAddress,
-      //   syntheticID,
-      // });
+      setUnlocked(true);
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);
-      setIsLoading(false);
       showAlertMessage(`Unlock NFT is failed, please try again later`, { variant: "error" });
     }
   };
@@ -83,16 +86,28 @@ export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = tru
   return (
     <div className={classes.root}>
       <div className={classes.container}>
-        {isProceeding ? (
+        {isUnlocked ? (
+          <Box className={classes.result}>
+            <img className={classes.icon} src={require("assets/icons/lock-success-icon.png")} alt="" />
+            <h1 className={classes.title}>Your NFT is unlocked!</h1>
+            <p className={classes.description}>
+              Your NFT has been unlocked successfully. <br />
+              You can see it in My NFT Panel now.
+            </p>
+            <button className={classes.checkBtn} onClick={handleLater}>
+              Close
+            </button>
+          </Box>
+        ) : isProceeding ? (
           <>
             <LoadingWrapper loading={true} theme="blue" iconWidth="80px" iconHeight="80px" />
             <Box className={classes.result}>
-              <h1 className={classes.title}>Locking in progress</h1>
+              <h1 className={classes.title}>Unlocking in progress</h1>
               <p className={classes.description}>
                 Transaction is proceeding on Ethereum. <br />
                 This can take a moment, please be patient...
               </p>
-              {!isLoading && (
+              {hash && (
                 <>
                   <CopyToClipboard text={hash}>
                     <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
@@ -104,7 +119,7 @@ export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = tru
                     </Box>
                   </CopyToClipboard>
                   <button className={classes.checkBtn} onClick={handleEtherScan}>
-                    Check on Ethereum Scan
+                    Check on EtherScan
                   </button>
                 </>
               )}
@@ -115,7 +130,7 @@ export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = tru
             <img className={classes.icon} src={require("assets/icons/lock-nft-icon.png")} alt="" />
             <h1 className={classes.title}>Unlock NFT on Ethereum</h1>
             <p className={classes.description}>
-              Your NFT will be locked in a Vault on Ethereum smart contract. <br />
+              Your NFT will be unlocked from a Vault on Ethereum smart contract. <br />
               Please keep in mind this process can take some time so be patient.
             </p>
             {needLockLaterBtn ? (

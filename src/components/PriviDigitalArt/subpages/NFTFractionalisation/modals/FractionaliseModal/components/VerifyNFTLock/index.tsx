@@ -51,25 +51,32 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
         tokenId: nft.SyntheticID,
         setHash: setHash_,
       });
-      if (response.success) {
-        const params = {
-          collectionAddress: nft.collection_id,
-          syntheticID: nft.SyntheticID,
-        };
-        const { data } = await axios.post(`${URL()}/syntheticFractionalize/verifyNFT`, params);
-        if (data.success) {
-          onCompleted();
-          setVerified(true);
-        } else {
-          showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
-        }
+      if (!response.success) {
+        setIsLoading(false);
+        setIsProceeding(false);
+        showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
+        return;
       }
+      const params = {
+        collectionAddress: nft.collection_id,
+        syntheticID: nft.SyntheticID,
+      };
+      const { data } = await axios.post(`${URL()}/syntheticFractionalize/verifyNFT`, params);
+      if (!data.success) {
+        setIsLoading(false);
+        setIsProceeding(false);
+        showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
+        return;
+      }
+      onCompleted();
+      setVerified(true);
       setIsLoading(false);
       setIsProceeding(false);
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);
       setIsLoading(false);
+      showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
     }
   };
 

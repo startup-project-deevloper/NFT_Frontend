@@ -4,20 +4,13 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Box from "shared/ui-kit/Box";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
-import { toNDecimals } from "shared/functions/web3";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-
-import { ContractInstance } from "shared/connectors/web3/functions";
-import config from "shared/connectors/web3/config";
-import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
-import SyntheticProtocolRouter from "shared/connectors/web3/contracts/SyntheticProtocolRouter.json";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -117,7 +110,16 @@ export default function WithdrawNFT({ onClose, onCompleted, nft }) {
       setIsLoading(false);
       setIsProceeding(false);
       if (response.success) {
-        onCompleted();
+        const params = {
+          collectionAddress: nft.collection_id,
+          syntheticID: nft.SyntheticID,
+        };
+        const { data } = await axios.post(`${URL()}/syntheticFractionalize/withdrawNFT`, params);
+        if (data.success) {
+          onCompleted();
+        } else {
+          showAlertMessage(`Got failed withdrawing `, { variant: "error" });
+        }
       } else {
         showAlertMessage(`Got failed withdrawing `, { variant: "error" });
       }

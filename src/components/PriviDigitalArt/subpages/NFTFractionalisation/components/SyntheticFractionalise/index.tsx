@@ -37,6 +37,7 @@ const parseMoralisData = (data, address, selectedChain) => {
     chainId: selectedChain.chainId,
     contractType: data.contract_type,
     tokenAddress: data.token_address,
+    tokenURI: data.token_uri
   };
 };
 

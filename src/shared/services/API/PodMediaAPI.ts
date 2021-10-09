@@ -318,6 +318,16 @@ export async function getPodPriceHistory(podAddress: string, numPoints: number):
 
 ////////////////////// -- NEW POD LOGIC -- /////////////////////////////////
 
+export async function priviPodInitiatePod(payload: Object): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/new/initiatePod`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
 export async function mediaPodInitiatePod(payload: Object): Promise<any> {
   try {
     const response = await axios.post(`${URL()}/mediaPod/new/initiatePod`, payload);

@@ -242,5 +242,20 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
       padding: "8px 14px",
     },
   },
-
+  filterTag: {
+    background: "#9EACF2",
+    borderRadius: "100px",
+    marginTop: "15px",
+    marginRight: "10px",
+    color: "#fff",
+    fontFamily: "Montserrat",
+    fontWeight: 600,
+    fontSize: 12,
+    lineHeight: "18px",
+    padding: "5px 12px",
+    cursor: "pointer",
+  },
+  filterActive: {
+    background : "#431AB7",
+  },
 }));

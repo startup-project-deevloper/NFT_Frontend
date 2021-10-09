@@ -70,33 +70,6 @@ const GeneralNFTMediaTab = (props: any) => {
             theme="privi-pix"
           />
         </Grid>
-        <Grid item xs={12}>
-          <InputWithLabelAndTooltip
-            labelName="Hashtags"
-            placeHolder="Hashtags divided by coma"
-            onInputValueChange={e => {
-              props.setPod({
-                ...props.pod,
-                hashtagsString: e.target.value,
-                Hashtags: e.target.value.split(","),
-              });
-            }}
-            inputValue={props.pod.hashtagsString}
-            type="text"
-            theme="privi-pix"
-            tooltip="Please provide at least one hashtag for your community. As the Communities grow, this field will help people discover your community"
-          />
-          <div className={classes.hashtagsRow} style={{ flexFlow: "wrap", marginTop: "0px" }}>
-            {props.pod.Hashtags.map((hashtag, index) => (
-              <div
-                className={index === 0 ? classes.hashtagPillFilled : classes.hashtagPill}
-                style={{ marginTop: "8px" }}
-              >
-                {props.pod.Hashtags && props.pod.Hashtags[index] ? props.pod.Hashtags[index] : hashtag}
-              </div>
-            ))}
-          </div>
-        </Grid>
       </Grid>
     </div>
   );

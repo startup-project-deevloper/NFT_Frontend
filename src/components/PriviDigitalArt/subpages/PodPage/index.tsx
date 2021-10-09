@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useRef, useCallback, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
 import InfiniteScroll from "react-infinite-scroll-component";
+
+import { getRaisedTrendingPods, getPods } from "shared/services/API/PriviPodAPI";
 
 import NFTPodCard from "components/PriviDigitalArt/components/Cards/NFTPodCard";
 import CreatePodModal from "components/PriviDigitalArt/modals/CreatePodModal/CreatePodModal";
@@ -21,12 +23,16 @@ import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { ReactComponent as GovernanceImg } from "assets/icons/governance.svg";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { SearchIcon } from "../../components/Icons/SvgIcons";
+import CustomPopup from "components/PriviDigitalArt/components/CustomPopup";
 
 import { useTypedSelector } from "store/reducers/Reducer";
 import { getUser } from "store/selectors";
 import { useDebounce } from "use-debounce/lib";
 import PodProposalCard from "components/PriviDigitalArt/components/Cards/PodProposalCard";
 
+import { getPodStatus } from "shared/functions/utilsPriviPod";
+
+const apiType = 'pix';
 const LoadingIndicatorWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -35,10 +41,8 @@ const LoadingIndicatorWrapper = styled.div`
   padding-top: 20px;
 `;
 
-const podStateOptions = ["All", "Formation", "Investment", "Released"];
-const investingOptions = ["Off", "On"];
-const sortByPriceOptions = ["Descending", "Ascending"];
-const podTypeOptions = ["All", "Media Pods", "Fractionalised Media"];
+const filterTagOptions = ["Trending", "Hot", "New"];
+const filterTagMorOptions = ["MoreOption1", "MoreOption2", "MoreOption3", "MoreOption4"];
 
 const PodPage = () => {
   const classes = useNFTPodsPageStyles();
@@ -49,14 +53,13 @@ const PodPage = () => {
 
   const { setOpenFilters } = useContext(DigitalArtContext);
 
+  const [filterOption, setFilterOption] = useState<string>("Trending");
+  const [filterMore, setFilterMore] = useState<string>("More");
+
   const [loadingTrendingPods, setLoadingTrendingPods] = useState<boolean>(false);
   const [trendingPods, setTrendingPods] = useState<any[]>([]);
 
   // filter and sort selections
-  const [podStateSelection, setPodStateSelection] = useState<string>(podStateOptions[0]);
-  const [investingSelection, setInvestingSelection] = useState<string>(investingOptions[0]);
-  const [sortByPriceSelection, setSortByPriceSelection] = useState<string>(sortByPriceOptions[0]);
-  const [podTypeSelection, setPodTypeSelection] = useState<string>(podTypeOptions[0]); // all, media pod, fractionalized
   const [searchValue, setSearchValue] = useState<string>("");
   const [showSearchBox, setShowSearchBox] = React.useState<boolean>(false);
 
@@ -75,10 +78,17 @@ const PodPage = () => {
 
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const lastIdRef = useRef<string>("undefined");
+
+
   useEffect(() => {
-    setOpenFilters(false);
-    getMediaTrendingPods(true);
-    getMediaPodsInformation([]);
+    getTopPodsList();
+  }, [filterOption, filterMore]);
+
+  useEffect(() => {
+    loadMore();
   }, []);
 
   useEffect(() => {
@@ -87,6 +97,51 @@ const PodPage = () => {
       loadMoreProposals();
     }
   }, [user?.address, debouncedSearchValue]);
+
+  const getTopPodsList = ()=>{
+    if(filterMore !== "More" && filterMore.length > 0 ) {
+      // TODO: get pods by more filter option
+    } else if(filterOption === "Trending") {
+      getRaisedTrendingPods(apiType)
+      .then(resp => {
+        if (resp?.success) {
+          const data = resp.data;
+          const nextPagePods = data
+            .filter(p => getPodStatus(p))
+            .map(p => ({ ...p, status: getPodStatus(p) }));
+
+          setTrendingPods(nextPagePods);
+        }
+      })
+      .catch(err => console.log(err));
+    } else if(filterOption === "Hot") {
+      // TODO:
+    } else if(filterOption === "New") {
+
+    }
+  };
+
+  // load pods for next page
+  const loadMore = (isInit = false) => {
+    if (isLoading || !hasMore) return;
+    setIsLoading(true);
+    if (isInit) lastIdRef.current = "undefined";
+    getPods(lastIdRef.current, apiType)
+      .then(resp => {
+        setIsLoading(false);
+        if (resp?.success) {
+          const data = resp.data;
+          const nextPagePods = data.pods
+            .filter(p => getPodStatus(p))
+            .map(p => ({ ...p, status: getPodStatus(p) }));
+          setHasMore(data.hasMore ?? false);
+          setPods([...pods, ...nextPagePods]);
+          lastIdRef.current = nextPagePods.length ? nextPagePods[nextPagePods.length - 1].id : "";
+          console.log(nextPagePods);
+        }
+      })
+      .catch(err => console.log(err));
+  };
 
   const loadMoreProposals = (isInit = false) => {
     // setIsLoadingProposals(true);
@@ -105,91 +160,27 @@ const PodPage = () => {
     //   .catch(_ => setProposals([]))
     //   .finally(() => setIsLoadingProposals(false));
   };
-
-  const getMediaTrendingPods = (forceRefreshCache?: boolean) => {
-    setLoadingTrendingPods(true);
-
-    axios
-      .get(
-        `${URL()}/mediaPod/getTrendingMediaPods`,
-        forceRefreshCache
-          ? {
-            params: {
-              forceRefreshCache: true,
-            },
-          }
-          : undefined
-      )
-      .then(res => {
-        const resp = res.data;
-        console.log("res", res);
-        if (resp.success) {
-          const data = resp.data;
-          let trendingMediaPods = [...(data.trending || [])];
-          trendingMediaPods = trendingMediaPods.reduce(
-            (unique, pod) => (unique.some(u => u.PodAddress === pod.PodAddress) ? unique : [...unique, pod]),
-            []
-          );
-          dispatch(setTrendingPodsList(trendingMediaPods));
-          setTrendingPods(trendingMediaPods.filter((_, index) => index < 8));
-        } else {
-          console.log("error getting trending Media Pods");
-        }
-      })
-      .finally(() => {
-        setLoadingTrendingPods(false);
-      });
+  const onClickFilterTag = (tag) => {
+    setFilterOption(tag);
+    setFilterMore("More");
   };
-
-  const getMediaPodsInformation = async currMediaPods => {
-    const config = {
-      params: {
-        podStateSelection: podStateSelection,
-        investingSelection: investingSelection,
-        sortByPriceSelection: sortByPriceSelection,
-        podTypeSelection: podTypeSelection,
-        searchValue: searchValue,
-      },
-    };
-    const response = await axios.get(`${URL()}/mediaPod/getMediaPods/${pagination}/${lastIdx}`, config);
-    const resp = response.data;
-    if (resp.success) {
-      const data = resp.data;
-      const mediaPods = data.mediaPods ?? [];
-      const hasMore = data.hasMore ?? false;
-      const lastId = data.lastId ?? "null";
-
-      for (let index = 0; index < mediaPods.length; index++) {
-        const mediaPod = mediaPods[index];
-        if (mediaPod.PodAddress && !mediaPod.dimensions) {
-          let dimensions;
-          const mediaUrl = `${mediaPod.Url}?${Date.now()}`;
-          if (mediaUrl) {
-            try {
-              dimensions = await preloadImageAndGetDimenstions(mediaUrl);
-            } catch (e) { }
-          }
-          mediaPods[index].dimensions = dimensions;
-        }
-      }
-      const newMediaPods = [...currMediaPods, ...mediaPods];
-
-      setPods(newMediaPods);
-      setHasMorePods(hasMore);
-      setLastIdx(lastId);
-      setPagination(prevState => prevState + 1);
-    }
+  const onChangeFilterMore = (val) => {
+    setFilterMore(val);
+    setFilterOption("");
   };
 
   const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
       if (hasMorePods) {
-        getMediaPodsInformation(pods);
+        // getMediaPodsInformation(pods);
+        loadMore(true);
       }
     }
   };
 
-  const handleRefresh = React.useCallback(() => { }, []);
+  const handleRefresh = React.useCallback(() => {
+    loadMore(true);
+  }, []);
 
   return (
     <>
@@ -278,8 +269,21 @@ const PodPage = () => {
         </Box>
         {activeTab === 0 ? (
           <>
-            <Box display="flex" alignItems="flex-end">
-              <h3>✨ Trending</h3>
+            {/* filter tags */}
+            <Box display="flex" alignItems="flex-end" pb={3} pt={1} flexWrap="wrap">
+              {filterTagOptions.map((tag) => (
+                <>
+                  <Box className={`${classes.filterTag} ${filterOption === tag ? classes.filterActive : ''}`} onClick={()=>{onClickFilterTag(tag)}}>{tag}</Box>
+                </>
+              ))}
+              <Box className={`${classes.filterTag} ${filterMore.length > 0 && filterMore !== 'More' ? classes.filterActive : ''}`}>
+                <CustomPopup
+                  items={filterTagMorOptions}
+                  onSelect={onChangeFilterMore}
+                  value={filterMore}
+                  theme="light"
+                />
+              </Box>
             </Box>
             <LoadingWrapper loading={loadingTrendingPods} theme={"blue"}>
               <div className={classes.artCards}>
@@ -299,7 +303,7 @@ const PodPage = () => {
                 renderItem={(item, index) => <NFTPodCard item={item} key={`item-${index}`} />}
                 columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
               />
-              {hasMorePods && (
+              {isLoading && (
                 <div
                   style={{
                     width: "100%",

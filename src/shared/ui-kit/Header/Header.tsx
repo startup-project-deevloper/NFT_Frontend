@@ -640,7 +640,7 @@ const Header = props => {
                       history.push("/");
                     }}
                   >
-                    Privi Pix
+                    Pix
                     <img src={require("assets/logos/privi_pix_simple.png")} alt="icon" />
                   </PrimaryButton>
                   <MenuItem onClick={handleSearch}>

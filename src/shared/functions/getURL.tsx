@@ -16,7 +16,8 @@
  * @returns URL to connect to the backend
  */
 const URL = (): string => {
-  return process.env.REACT_APP_PRIVI_BACKEND_URL ?? "http://localhost:3000";
+  //return process.env.REACT_APP_PRIVI_BACKEND_URL ?? "http://localhost:3000";
+  return "https://priv-iweb-backend-x68uu.ondigitalocean.app/backend" ?? "http://localhost:3000";
   // if (process.env.NODE_ENV === "development") {
   //   if (process.env.REACT_APP_ENV === "dev_ssl") {
   //     // When executing [ REACT_APP_ENV='dev_ssl' npm start ]

@@ -35,7 +35,8 @@ const URL = (): string => {
 };
 
 export const PriceFeed_URL = (): string => {
-  return process.env.REACT_APP_PRICE_FEED_URL || "http://localhost:3002";
+  //return process.env.REACT_APP_PRICE_FEED_URL || "http://localhost:3002";
+  return "https://price-feed-dev.privi.store" || "http://localhost:3002"
 };
 
 export const PriceFeed_Token = (): string => {

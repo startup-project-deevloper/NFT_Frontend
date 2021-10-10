@@ -1,344 +1,401 @@
-import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { BorderRadius, Color } from "shared/ui-kit";
+import { Color } from "shared/ui-kit";
 
-export const usePodPageStyles = makeStyles(theme => ({
-  root: {
-    overflow: "visible",
+export const usePodPageIndividualStyles = makeStyles(theme => ({
+  container: {
+    background: "linear-gradient(0deg, #EEF2F7, #EEF2F7), #F0F5F8",
+    height: `calc(100vh - 80px)`,
+    paddingBottom: "40px",
   },
-  page: {
+  subContainer: {
     width: "100%",
-    height: "100%",
     overflowY: "auto",
+    scrollbarWidth: "none",
+    height: "calc(100vh - 80px)",
+    paddingBottom: "80px",
+  },
+  fractionBox: {
+    color: "white",
+    borderRadius: 8,
+    padding: "4px 11px",
+    fontSize: "14px",
+    background: "#65CB63",
+    fontWeight: 600,
+    fontFamily: "Montserrat",
+  },
+  title: {
+    fontSize: 44,
+    fontWeight: 800,
+    lineHeight: "104.5%",
+    fontFamily: "Agrandir",
+    color: "#081831",
+    textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
+    marginTop: 16,
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 20,
+    },
+  },
+  flexBox: {
     display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    minHeight: "calc(100vh - 104px)",
-    maxHeight: "calc(100vh - 104px)",
-    overflowX: "hidden",
-    position: "relative",
+    alignItems: "center",
   },
-  content: {
-    width: "100%",
-    padding: `${theme.spacing(0)}px ${theme.spacing(10)}px ${theme.spacing(5)}px ${theme.spacing(10)}px`,
+  header1: {
+    fontSize: 14,
+    fontWeight: 400,
+    fontFamily: "Agrandir",
+    color: "#707582",
+    lineHeight: "140%",
+  },
+  header2: {
+    fontSize: "20px",
+    fontWeight: 400,
+    color: "#2D3047",
+  },
+  header3: {
+    fontSize: "14px",
+    fontWeight: 600,
+    color: "#2D3047",
+    fontFamily: "Montserrat",
+  },
+  header4: {
+    fontSize: 22,
+    fontWeight: 800,
+    color: Color.MusicDAODark,
+  },
+  headerBox: {
+    backgroundSize: "cover",
+    backgroundRepeat: "none",
+  },
+  backgroundBox: {
+    padding: "32px 168px",
+    backgroundSize: "cover",
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    backdropFilter: "blur(60px)",
+    [theme.breakpoints.down("md")]: {
+      padding: "32px 84px",
+    },
     [theme.breakpoints.down("sm")]: {
-      padding: `${theme.spacing(0)}px ${theme.spacing(2)}px ${theme.spacing(5)}px ${theme.spacing(2)}px`,
+      padding: "32px 16px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "32px 16px",
     },
   },
-  detailImg: {
-    maxHeight: 448,
-    height: 240,
-    borderRadius: 16,
+  divider: {
+    border: "1px dashed #181818 !important",
+  },
+  paper: {
+    width: 267,
+    marginLeft: -90,
+    marginTop: 16,
+    borderRadius: 10,
+    boxShadow: "0px 2px 20px rgba(0, 0, 0, 0.1)",
+    position: "inherit",
+    [theme.breakpoints.down(1280)]: {
+      marginLeft: -40,
+    },
+    [theme.breakpoints.down(960)]: {
+      marginLeft: -16,
+    },
+  },
+  svgBox: {
+    width: theme.spacing(2),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     cursor: "pointer",
-    objectFit: "contain",
-    [theme.breakpoints.down("sm")]: {
-      height: 270,
+    "& svg": {
+      width: "100%",
+      height: "100%",
+    },
+    "& path": {
+      stroke: "black",
     },
   },
-  artist: {
+  followButton: {
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+    fontSize: 12,
+    fontWeight: 700,
+    "& svg": {
+      width: 10,
+      height: 10,
+    },
+    "& path": {
+      stroke: "black",
+    },
+  },
+  tagBox: {
+    background: "rgba(175, 172, 215, 0.3)",
+    padding: "5px 10px",
+    borderRadius: 5,
+    fontSize: 10,
+    fontWeight: 600,
+    lineHeight: "12px",
+    color: "#2D3047",
+    fontFamily: "Montserrat",
+    marginRight: 4,
+  },
+  tabBox: {
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    borderRadius: theme.spacing(4),
+    color: "#181818",
+    fontWeight: 500,
+    fontSize: 14,
     cursor: "pointer",
     "& + &": {
-      marginLeft: -12,
+      marginLeft: 36,
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "8px",
+      "& + &": {
+        marginLeft: 18,
+      },
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "6px 2px",
+      "& + &": {
+        marginLeft: 8,
+      },
     },
   },
-  rateIcon: {
-    marginRight: 4,
-    background: Color.Yellow,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+  selectedTabBox: {
+    background: "#2D3047",
+    color: "#ffffff",
   },
-  emptyRateIcon: {
-    marginRight: 4,
-    width: 12,
-    height: 12,
-    background: Color.GrayLight,
-    border: `1px solid ${Color.GrayLight}`,
+  timeBox: {
+    background: "linear-gradient(87.82deg, #A0D800 20.18%, #0DCC9E 78.08%)",
     borderRadius: 6,
-    boxSizing: "border-box",
-  },
-  message: {
-    height: 64,
-    borderRadius: 8,
-    backgroundColor: Color.GrayInputBackground,
-    "& input": {
-      flex: 1,
-      border: "none",
-      background: "transparent",
-      marginLeft: 10,
-      marginRight: 10,
+    fontSize: 16,
+    fontWeight: 700,
+    color: "#ffffff",
+    fontFamily: "Montserrat",
+    padding: "7px 11px",
+    "& + &": {
+      marginLeft: 4,
     },
-    paddingLeft: 8,
-    paddingRight: 8,
+    [theme.breakpoints.down("md")]: {
+      fontSize: 12,
+    },
+  },
+  title2: {
+    fontSize: 22,
+    color: "#2D3047",
+    fontWeight: 800,
+    fontFamily: "Agrandir",
+    lineHeight: "130%",
+  },
+  title3: {
+    fontSize: 14,
+    color: "#707582",
+    fontWeight: 500,
+    fontFamily: "Montserrat",
+    lineHeight: "104.5%",
+    cursor: "pointer",
+    "& span": {
+      marginRight: 8,
+    },
+  },
+  podSubPageHeader: {
+    display: "flex",
+    alignItems: "center",
+    padding: "8px 168px",
+    borderBottom: "1px solid #00000022",
+    borderTop: "1px solid #00000022",
+    [theme.breakpoints.down("md")]: {
+      padding: "8px 84px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "8px 32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "8px 16px",
+    },
+  },
+  artistsBox: {
+    display: "flex",
+    alignItems: "center",
+    padding: "0px 168px",
+
+    [theme.breakpoints.down("md")]: {
+      padding: "0px 84px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "0px 16px",
+    },
+  },
+  artistsMainContent: {
+    display: "flex",
+    alignItems: "center",
+    padding: "0px 168px",
+    marginBottom: 32,
+    overflowX: "auto",
+
+    [theme.breakpoints.down("md")]: {
+      padding: "0px 84px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "0px 16px",
+    },
+  },
+  whiteBox: {
+    display: "flex",
+    alignItems: "center",
+    background: "white",
+    opacity: "0.8",
+    justifyContent: "space-between",
+    padding: "16px 168px",
+
+    [theme.breakpoints.down("md")]: {
+      padding: "16px 84px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "16px 32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "16px 0px",
+      flexDirection: "column",
+      justifyContent: "center",
+    },
+  },
+  podSubPageContent: {
+    padding: "32px 168px",
+    [theme.breakpoints.down("md")]: {
+      padding: "32px 84px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      padding: "32px 32px",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "16px",
+    },
+  },
+  valueBox: {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    background: "white",
+    opacity: 0.8,
+    justifyContent: "space-between",
+    padding: `${theme.spacing() * 3}px ${theme.spacing() * 20}px`,
+    "& > div": {
+      padding: 8,
+    },
+    [theme.breakpoints.down(1200)]: {
+      padding: `${theme.spacing() * 3}px ${theme.spacing() * 1}px`,
+    },
+  },
+  contentBody: {
+    padding: `${theme.spacing() * 4}px ${theme.spacing() * 21}px`,
+    [theme.breakpoints.down(1200)]: {
+      padding: `${theme.spacing() * 4}px ${theme.spacing() * 2}px`,
+    },
+  },
+  artistBox: {
+    display: "flex",
+    flexWrap: "wrap",
+    "& > div": {
+      margin: 8,
+    },
   },
   accordion: {
+    background: "transparent",
     boxShadow: "none",
-    "&::before": {
-      backgroundColor: "transparent",
+    marginTop: "0 !important",
+    "&:before": {
+      display: "none",
     },
     "& .MuiAccordionSummary-root": {
-      minHeight: "unset",
       padding: 0,
       "& .MuiAccordionSummary-content": {
         margin: 0,
       },
-      "& .MuiAccordionSummary-expandIcon": {
-        margin: 0,
-        padding: 0,
-      },
     },
     "& .MuiAccordionDetails-root": {
-      marginTop: 20,
       padding: 0,
-      display: "block",
     },
   },
-  paper: {},
-  creatorName: {
-    maxWidth: 124,
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    lineHeight: 1.2,
-  },
-  followBtn: {
-    border: "none !important",
-    background: "transparent !important",
+  contentBox: {
     display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
-      padding: "12px 8px !important",
-      background: "linear-gradient(0deg, #EEF2F7, #EEF2F7), #F0F5F8 0!important",
-      borderRadius: "49px !important",
-    },
-  },
-  primaryBtn: {
-    background: "#1B1B1B",
-    borderRadius: "4px !important",
-  },
-  transparentBtn: {
-    background: "#FFFFFF",
-    border: "1px solid #CBCBCB !important",
-    borderRadius: "4px !important",
-  },
-  divider: {
-    border: "1px solid #EBEBEB",
-    margin: "24px 0px",
-  },
-  link: {
-    cursor: "pointer",
-    color: "#999999",
-    "&:hover": {
-      textDecoration: "underline",
-    },
-  },
-  commentUername: {
-    fontSize: 14,
-    lineHeight: "120%",
-    color: "#181818",
-  },
-  commentDescription: {
-    fontSize: 14,
-    lineHeight: "120%",
-    color: "#707582",
-  },
-  graphBox: {
-    position: "relative",
-  },
-  whiteBox: {
-    background: "white",
+    flexDirection: "column",
     borderRadius: theme.spacing(1),
+    background: "white",
+    height: theme.spacing(70),
+    textAlign: "center",
     padding: theme.spacing(2),
-    position: "absolute",
-    top: theme.spacing(1),
-    left: theme.spacing(3),
-    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
   },
-  header1: {
-    fontSize: "25px",
-    fontWeight: 600,
-    color: "#2D3047",
+  commonBtn: {
+    fontSize: "14px !important",
+    borderRadius: "46px !important",
   },
-  header2: {
-    fontSize: "14px",
-    color: "#2D3047",
+  showAllBtn: {
+    width: "150px !important",
+    border: `1px solid #65CB63 !important`,
+    backgroundColor: "transparent !important",
+    color: `${Color.MusicDAODark} !important`,
+    position: "relative",
   },
-  fraction: {
-    backgroundColor: Color.GreenLight,
-    padding: `${theme.spacing(4)}px ${theme.spacing(8)}px`,
-    marginTop: theme.spacing(3),
+  createWallBtn: {
+    width: "150px !important",
+    backgroundColor: "#65CB63 !important",
   },
-  fractionTitle: {
-    fontSize: 14,
-    color: Color.Purple,
-    fontWeight: 800,
-    marginBottom: theme.spacing(0.5),
+  discussionBtn: {
+    backgroundColor: "#2D3047 !important",
   },
-  fractionValue: {
-    fontSize: 22,
-    color: Color.Purple,
-    fontWeight: 800,
+  createPollBtn: {
+    backgroundColor: "#7F6FFF !important",
   },
-  fractionBuy: {
-    backgroundColor: `${Color.Purple} !important`,
-    borderRadius: "4px !important",
-    marginBottom: theme.spacing(2),
-  },
-  fractionSell: {
-    border: `1px solid ${Color.Purple} !important`,
-    borderRadius: "4px !important",
-    marginLeft: "0px !important",
-  },
-  radialText: {
-    fontSize: 11,
-    color: Color.Black,
-  },
-  card: {
-    background: "#FFFFFF",
-    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
-    borderRadius: 16,
-    padding: 16,
-  },
-  table: {
-    borderRadius: "16px",
-    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
-    marginTop: theme.spacing(3),
-    "& .MuiTableContainer-root": {
-      borderRadius: 16,
+  pollBtn: {
+    border: "none !important",
+    padding: "10px 17px !important",
+    fontSize: "12px !important",
+    color: "#181818 !important",
+    background: "linear-gradient(0deg, #EEF2F7, #EEF2F7), #F0F5F8",
+    borderRadius: "26px !important",
+    minWidth: "unset !important",
+    height: "auto !important",
+    lineHeight: "unset !important",
+    "& + &": {
+      marginLeft: 8,
     },
   },
-  greenBox: {
+  selectedPollBtn: {
+    color: "white !important",
+    background: "#54658F !important",
+  },
+  pollBox: {
+    flex: 1,
+    overflow: "scroll",
+    "& > div + div": {
+      marginTop: 11,
+    },
+    width: "calc(100% + 15px)",
+    paddingRight: "10px",
+    paddingBottom: "20px",
+  },
+  arrowBox: {
     display: "flex",
     alignItems: "center",
-    marginTop: "24px",
-    fontWeight: 800,
-    padding: "32px 0",
-    justifyContent: "space-between",
-    borderTop: "1px solid #EBEBEB",
-    borderBottom: "1px solid #EBEBEB",
-    "& div": {
-      marginRight: "8px",
-      "& h5": {
-        margin: "0px 0px 4px",
-        lineHeight: "120%",
-        fontSize: "14px",
-        color: "#707582",
-        [theme.breakpoints.down("sm")]: {
-          fontSize: "12px",
-        },
-      },
-      "& h3": {
-        margin: "0px",
-        lineHeight: "36px",
-        fontSize: "20px",
-        color: "#2D3047",
-        [theme.breakpoints.down("sm")]: {
-          fontSize: "16px",
-        },
-      },
-      [theme.breakpoints.down("sm")]: {
-        marginRight: "4px",
-      },
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "48px 16px",
-    },
-    [theme.breakpoints.down(780)]: {
-      flexWrap: "wrap",
-      paddingBottom: "48px",
-      "& div": {
-        marginBottom: "18px",
-      },
-    },
-  },
-  tab: {
+    justifyContent: "center",
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    borderRadius: theme.spacing(2),
+    background: "white",
     cursor: "pointer",
-    padding: "8px 32px",
-    color: "#1A1B1C",
-    fontSize: "18px",
-    fontWeight: 800,
   },
-  selectedTab: {
-    color: "white",
-    background: "#9EACF2",
-    borderRadius: "16px",
-  },
-  hashtag: {
-    color: "#DDFF57",
-    fontWeight: 600,
-    background: "#431AB7",
-    borderRadius: 5,
-    padding: "5px 10px",
-    fontSize: 10,
-  },
-  headerBlur: {
-    borderRadius: 16,
-    padding: "42px 48px 48px 50px",
+  discussionContent: {
+    borderRadius: 12,
+    background: "#ffffff",
+    height: 610,
+    textAlign: "center",
+    padding: theme.spacing(2),
     position: "relative",
-    overflow: "hidden",
-    [theme.breakpoints.down("md")]: {
-      padding: "28px 18px 50px",
-    },
-  },
-  gradientImage1: {
-    position: "absolute",
-    background: "#DDFF57",
-    filter: "blur(80px)",
-    bottom: "15%",
-    right: "45%",
-    width: "100%",
-    height: "100%",
-    [theme.breakpoints.down("sm")]: {
-      filter: "blur(50px)",
-      right: "10%",
-      bottom: "5%",
-      width: "200%",
-    },
-  },
-  gradientImage2: {
-    position: "absolute",
-    background: "#9EACF2",
-    filter: "blur(50px)",
-    bottom: "-10%",
-    left: "55%",
-    width: "100%",
-    height: "100%",
-    borderRadius: "50%",
-    [theme.breakpoints.down("sm")]: {
-      left: "30%",
-      bottom: 0,
-      width: "150%",
-      height: "50%",
-    },
-  },
-  headerContent: {
-    zIndex: 1,
-    "& > h2": {
-      color: "#431AB7",
-    },
-  },
-  headerContentMobileImage: {
-    zIndex: 1,
-    display: "none",
-    [theme.breakpoints.down("sm")]: {
-      display: "block",
-      width: "100%",
-    },
-  },
-  headerContentImage: {
-    zIndex: 1,
-    display: "block",
-    [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
-  },
-  description: {
-    "& span": {
-      wordBreak: "break-word",
-      fontSize: 14,
-      color: "#431AB7",
-      opacity: 0.7,
-    },
   },
 }));

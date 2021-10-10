@@ -578,7 +578,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
               fontFamily: "Montserrat",
               letterSpacing: "-0.04em",
               fontSize: isMobile ? 14 : 16,
-              // width: isMobile ? "100%" : "unset",
+              width: isMobile ? "200px" : "unset",
               marginBottom: isMobile ? 16 : 0,
             }}
             isRounded
@@ -596,6 +596,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
                   fontFamily: "Montserrat",
                   letterSpacing: "-0.04em",
                   fontSize: isMobile ? 14 : 16,
+                  width: isMobile ? "200px" : "unset",
                 }}
                 isRounded
               >
@@ -611,7 +612,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
                   fontFamily: "Montserrat",
                   letterSpacing: "-0.04em",
                   fontSize: isMobile ? 14 : 16,
-                  width: step === 0 && isMobile ? "100%" : "unset",
+                  width: isMobile ? "200px" : "unset",
                 }}
                 isRounded
                 onClick={handleNext}
@@ -627,6 +628,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
                   fontFamily: "Montserrat",
                   letterSpacing: "-0.04em",
                   fontSize: isMobile ? 14 : 16,
+                  width: isMobile ? "200px" : "unset",
                 }}
                 isRounded
                 onClick={handleSubmit}

@@ -200,7 +200,7 @@ export default function PodProposalCard({ pod }) {
             size="medium"
             style={{ background: Gradient.Green1, paddingLeft: 48, paddingRight: 48 }}
             isRounded
-            onClick={() => history.push(`/trax/pods/${podData.Id}`)}
+            onClick={() => history.push(`/pods/${podData.Id}`)}
           >
             OPEN POD
           </PrimaryButton>

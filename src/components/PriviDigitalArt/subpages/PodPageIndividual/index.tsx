@@ -18,7 +18,7 @@ import PodArtists from "./Artists";
 import { useTypedSelector } from "store/reducers/Reducer";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs/LoadingWrapper";
-import { musicDaoGetPod } from "shared/services/API";
+import { getPod } from "shared/services/API/PriviPodAPI";
 import { Gradient, SecondaryButton } from "shared/ui-kit";
 import { default as ServerURL } from "shared/functions/getURL";
 
@@ -30,6 +30,7 @@ import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 
+const apiType = 'pix';
 const PODSTABOPTIONS = ["Media", "Reward", "Investments", "Discussion", "Chat", "Proposals"];
 
 const getPodState = pod => {
@@ -201,7 +202,7 @@ const PodPageIndividual = () => {
   const loadData = async () => {
     if (podId) {
       try {
-        const resp = await musicDaoGetPod(podId);
+        const resp = await getPod(podId, apiType);
         if (resp?.success) {
           let podData = resp.data;
           podData = getPodState(podData);

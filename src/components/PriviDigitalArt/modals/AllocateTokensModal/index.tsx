@@ -578,7 +578,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
               fontFamily: "Montserrat",
               letterSpacing: "-0.04em",
               fontSize: isMobile ? 14 : 16,
-              width: isMobile ? "100%" : "unset",
+              // width: isMobile ? "100%" : "unset",
               marginBottom: isMobile ? 16 : 0,
             }}
             isRounded

@@ -38,9 +38,9 @@ const SyntheticFractionalisePage = ({
   const classes = nftFractionalisationStyles();
   const history = useHistory();
   const isNormalScreen = useMediaQuery(theme.breakpoints.down(1800));
-  const isTablet = useMediaQuery(theme.breakpoints.down(1200));
+  const isTablet = useMediaQuery(theme.breakpoints.down(1420));
   const isNarrow = useMediaQuery(theme.breakpoints.down(860));
-  const isMobile = useMediaQuery(theme.breakpoints.down(658));
+  const isMobile = useMediaQuery(theme.breakpoints.down(650));
 
   const itemsToShow = isMobile ? 1 : isNarrow ? 2 : isTablet ? 3 : isNormalScreen ? 4 : 5;
 

@@ -1,9 +1,10 @@
-import { Box, CircularProgress } from "@material-ui/core";
 import React from "react";
-import { Color, Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
-import { useTransactionProgressModalStyles } from "./index.styles";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import Box from "shared/ui-kit/Box";
+import { Color, Modal, PrimaryButton } from "shared/ui-kit";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { useTransactionProgressModalStyles } from "./index.styles";
 
 require("dotenv").config();
 const isDev = process.env.REACT_APP_ENV === "dev";

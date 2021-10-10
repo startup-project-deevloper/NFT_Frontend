@@ -6,7 +6,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     flexDirection: 'column',
     width: '100%',
     color: '#2D3047',
-    background: '#F0F5F8',
+    background: '#ffffff',
   },
   title: {
     fontSize: 30,
@@ -29,40 +29,19 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    background: '#FFFFFF',
+    background: 'rgba(158, 172, 242, 0.3)',
     boxShadow: '0px 15px 16px -11px rgba(0, 0, 0, 0.02)',
     borderRadius: 20,
     padding: '52px 0 87px',
     marginBottom: 80,
-  },
-  h1: {
-    fontFamily: "Agrandir",
-    fontStyle: "normal",
-    fontWeight: 800,
-    fontSize: 24,
-    lineHeight: "130%",
-    paddingTop: 10
-  },
-  h2: {
-    fontFamily: "Montserrat",
-    fontStyle: "normal",
-    fontWeight: 600,
-    fontSize: 16,
-    lineHeight: "104%",
-  },
-  h3: {
-    fontFamily: "Montserrat",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: 14,
-    lineHeight: "150%",
   },
   typo1: {
     fontSize: 22,
     fontWeight: 800,
     fontFamily: 'Agrandir',
     lineHeight: '28.6px',
-    marginTop: -40,
+    marginTop: 16,
+    color: '#431AB7',
     [theme.breakpoints.down('xs')]: {
       fontSize: 18,
     }
@@ -72,7 +51,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     fontWeight: 500,
     fontFamily: 'Montserrat',
     lineHeight: '27px',
-    color: '#54658F',
+    color: '#1A1B1C',
     [theme.breakpoints.down('xs')]: {
       fontSize: 16,
     }
@@ -89,7 +68,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     fontWeight: 600,
     fontFamily: 'Montserrat',
     lineHeight: '130%',
-    color: '#65CB63',
+    color: '#431AB7',
     textTransform: 'uppercase',
     marginTop: 2,
   },
@@ -121,7 +100,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     lineHeight: '21px',
     padding: '0 68px',
     borderRadius: 48,
-    color: '#ffffff',
+    color: '#1A1B1C',
     background: 'linear-gradient(97.63deg, #A0D800 26.36%, #0DCC9E 80%)',
     marginTop: 34,
     cursor: 'pointer'
@@ -129,7 +108,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
   tokenActionsContent: {
     display: 'flex',
     flexDirection: 'column',
-    background: '#FFFFFF',
+    background: '#EFF2FD',
     boxShadow: '0px 15px 16px -11px rgba(0, 0, 0, 0.02)',
     borderRadius: 20,
     marginBottom: 23,
@@ -143,13 +122,13 @@ export const socialTokenPageStyles = makeStyles(theme => ({
   },
   tokenActionsBar: {
     display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    flexDirection: 'column'
   },
   actionWrap: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between"
+    marginTop: 23,
   },
   actionBtn: {
     display: 'flex',
@@ -176,7 +155,8 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     },
   },
   airdropTokenBtn: {
-    background: '#2D3047',
+    background: '#431AB7',
+    marginRight: 32,
   },
   allocateTokenBtn: {
     background: '#65CB63',
@@ -197,8 +177,8 @@ export const socialTokenPageStyles = makeStyles(theme => ({
   tokenStatsContent: {
     display: 'flex',
     flexDirection: 'column',
-    background: '#ffffff',
-    boxShadow: '0px 15px 16px -11px rgba(0, 0, 0, 0.02)',
+    background: '#EFF2FD',
+    boxShadow: '0px 4px 8px #9EACF2',
     borderRadius: 20,
     padding: '33px 53px 42px',
     marginBottom: 23,
@@ -269,7 +249,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
   tableContent: {
     display: 'flex',
     flexDirection: 'column',
-    background: '#ffffff',
+    background: '#EFF2FD',
     boxShadow: '0px 15px 16px -11px rgba(0, 0, 0, 0.02)',
     borderRadius: 20,
     padding: '20px 0 40px',
@@ -277,7 +257,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     "& .MuiTableContainer-root": {
       boxShadow: 'unset',
       "& .MuiTableCell-head": {
-        color: '#707582',
+        color: '#431AB7',
         background: '#F7F9FE',
         fontSize: 14,
         fontWeight: 600,
@@ -300,20 +280,20 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     alignItems: "center",
     padding: 0,
     borderRadius: "77px",
-    background: "#F0F5F8",
+    background: "#ffffff",
     width: 290,
   },
   tableFilter: {
     cursor: "pointer",
     padding: "9px 16px",
-    color: "#181818",
+    color: "#1A1B1C",
     fontFamily: "Montserrat",
     fontSize: 14,
     fontWeight: 500,
     lineHeight: '14.63px'
   },
   selectedTableFilter: {
-    backgroundColor: '#2D3047',
+    backgroundColor: '#431AB7',
     borderRadius: "77px",
     color: "#FFFFFF",
     fontWeight: 600,

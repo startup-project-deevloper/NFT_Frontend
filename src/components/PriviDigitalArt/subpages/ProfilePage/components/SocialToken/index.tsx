@@ -595,71 +595,11 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
       ) : (
         <Box display="flex" flexDirection="column" width={1} mb={10}>
           <div className={classes.tokenActionsContent}>
-            <Box display="flex" alignItems="center" flexDirection={isMobile ? "column" : "row"}>
-              {/* <img
-                src={imageIPFS ? imageIPFS : ""}
-                alt="social_token"
-                style={{
-                  paddingRight: "20px",
-                  paddingBottom: isMobile ? "15px" : "0",
-                  width: isMobile ? "100%" : "160px",
-                }}
-              /> */}
-              <Box>
-                <Box display="flex" alignItems="center" justifyContent={isMobile ? "center" : "flex-start"}>
-                  <Box>
-                    <Box className={classes.h2} style={{ color: "#54658F" }}>
-                      Pod Token Name
-                    </Box>
-                    <Box className={classes.h1} style={{ color: "#2D3047" }}>
-                      {token.TokenName}
-                    </Box>
-                  </Box>
-                  <div
-                    style={{
-                      width: "1px",
-                      height: "40px",
-                      background: "#ddd",
-                      margin: isMobile ? "0 20px" : "0 50px",
-                    }}
-                  ></div>
-                  <Box>
-                    <Box className={classes.h2} style={{ color: "#54658F" }}>
-                      Symbol
-                    </Box>
-                    <Box className={classes.h1} style={{ color: "#2D3047" }}>
-                      {token.TokenSymbol}
-                    </Box>
-                  </Box>
-                </Box>
-                <Box className={classes.h3} style={{ color: "#54658F" }} pt={2}>
-                  {token.Description}
-                </Box>
-              </Box>
-            </Box>
-            <div
-              style={{
-                width: "100%",
-                height: "1px",
-                background: "#ccc",
-                marginTop: "10px",
-                marginBottom: "25px",
-              }}
-            ></div>
-            <Box
-              className={classes.tokenActionsBar}
-              display="flex"
-              flexDirection={isMobile ? "column" : "row"}
-            >
+            <div className={classes.tokenActionsBar}>
               <Box className={classes.typo3} style={{ flex: 2 }} pb={isMobile ? 2 : 0}>
                 Token Actions
               </Box>
-              <Box
-                className={classes.actionWrap}
-                style={{ flex: 7 }}
-                display="flex"
-                flexDirection={isMobile ? "column" : "row"}
-              >
+              <Box className={classes.actionWrap} flexDirection={isMobile ? "column" : "row"}>
                 <div
                   className={`${classes.actionBtn} ${classes.airdropTokenBtn}`}
                   onClick={() => setOpenAirdropTokenModal(true)}
@@ -672,15 +612,8 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
                 >
                   Allocate Tokens
                 </div>
-                {!isMobile && <div style={{ width: "1px", height: "40px", background: "#E6E6E8" }}></div>}
-                <div
-                  className={`${classes.actionBtn} ${classes.metaMaskBtn}`}
-                  onClick={handleAddTokenToMetamask}
-                >
-                  Add to Metamask
-                </div>
               </Box>
-            </Box>
+            </div>
           </div>
           <div className={classes.tokenStatsContent}>
             <div className={classes.typo3}>Token Stats</div>

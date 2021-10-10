@@ -155,19 +155,9 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
 
   const handleNext = () => {
     if (step === 0) {
-      //   setStatus({
-      //     msg: "Wallet address is required.",
-      //     key: Math.random(),
-      //     variant: "error",
-      //   });
       setStep(1);
     } else if (step === 1) {
       setStep(2);
-      //   setStatus({
-      //     msg: "Please add valid Token Values for all users.",
-      //     key: Math.random(),
-      //     variant: "error",
-      //   });
     }
   };
 
@@ -601,8 +591,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
                 size="medium"
                 onClick={() => setStep(step - 1)}
                 style={{
-                  background: "rgba(84, 101, 143, 0.3)",
-                  color: "#2D3047",
+                  background: "#1A1B1C",
                   padding: isMobile ? "0px 64px" : isTablet ? "0px 40px" : "0px 64px",
                   fontFamily: "Montserrat",
                   letterSpacing: "-0.04em",
@@ -617,7 +606,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
               <PrimaryButton
                 size="medium"
                 style={{
-                  background: "#2D3047",
+                  background: "#431AB7",
                   padding: isMobile ? "0px 64px" : isTablet ? "0px 40px" : "0px 64px",
                   fontFamily: "Montserrat",
                   letterSpacing: "-0.04em",
@@ -633,7 +622,7 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
               <PrimaryButton
                 size="medium"
                 style={{
-                  background: "#65CB63",
+                  background: "#431AB7",
                   padding: isMobile ? "0px 12px" : isTablet ? "0px 32px" : "0px 52px",
                   fontFamily: "Montserrat",
                   letterSpacing: "-0.04em",

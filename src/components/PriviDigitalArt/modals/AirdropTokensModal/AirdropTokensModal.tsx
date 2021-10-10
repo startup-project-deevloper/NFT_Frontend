@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 
 import { InputBase, Grid } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 
-import URL from "shared/functions/getURL";
-import { signTransaction } from "shared/functions/signTransaction";
 import { RootState, useTypedSelector } from "store/reducers/Reducer";
 import { handleSetStatus } from "shared/functions/commonFunctions";
 import { airdropTokensModalStyles, useAutoCompleteStyles } from "./AirdropTokensModal.styles";
@@ -421,7 +418,7 @@ export const AirdropTokensModal: React.FC<AirdropTokensModalProps> = ({
           <Box mt={2}>
             <div
               className={classes.contentDescription}
-              style={{ color: Color.Green, fontWeight: 800, marginBottom: 8 }}
+              style={{ color: "#431AB7", fontWeight: 800, marginBottom: 8 }}
             >
               Allocation
             </div>
@@ -575,25 +572,20 @@ export const AirdropTokensModal: React.FC<AirdropTokensModalProps> = ({
                 <PrimaryButton
                   size="medium"
                   onClick={() => setStep(step - 1)}
-                  style={{ background: "rgba(84, 101, 143, 0.3)", color: Color.MusicDAODark }}
+                  style={{ background: "#1A1B1C", color: "#ffffff" }}
                   isRounded
                 >
                   Back
                 </PrimaryButton>
               )}
               {step < 2 ? (
-                <PrimaryButton
-                  size="medium"
-                  style={{ background: Color.MusicDAODark }}
-                  isRounded
-                  onClick={handleNext}
-                >
+                <PrimaryButton size="medium" style={{ background: "#431AB7" }} isRounded onClick={handleNext}>
                   Next
                 </PrimaryButton>
               ) : (
                 <PrimaryButton
                   size="medium"
-                  style={{ background: Color.MusicDAOGreen }}
+                  style={{ background: "#431AB7" }}
                   isRounded
                   onClick={handleSubmit}
                 >

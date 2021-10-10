@@ -78,7 +78,7 @@ export const airdropTokensModalStyles = makeStyles((theme: Theme) =>
     },
     userLabel: {
       fontWeight: 500,
-      color: Color.Green,
+      color: "#431AB7",
       fontFamily: "Agrandir",
       textOverflow: "ellipsis",
       overflow: "hidden",
@@ -91,7 +91,7 @@ export const airdropTokensModalStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "center",
       borderRadius: "50%",
-      background: Color.Green,
+      background: "#431AB7",
     },
     removeBox: {
       width: 24,
@@ -224,7 +224,7 @@ export const airdropTokensModalStyles = makeStyles((theme: Theme) =>
     },
     userTKNSection: {
       fontSize: 16,
-      color: "#181818",
+      color: "#431AB7",
     },
     controlButtons: {
       display: "flex",
@@ -236,7 +236,7 @@ export const airdropTokensModalStyles = makeStyles((theme: Theme) =>
     amountInputContainer: {
       border: "1px solid #949bab",
       borderRadius: 11.36,
-      color: "#181818",
+      color: "#431AB7",
       padding: "4px 8px",
     },
   })

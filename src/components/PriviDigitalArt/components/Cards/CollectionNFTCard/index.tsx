@@ -23,7 +23,7 @@ export default function CollectionNFTCard({
             </Box>
           )}
           <img
-            src={item?.image ? item.image : require(`assets/backgrounds/digital_art_1.png`)}
+            src={item?.Url ? item.Url : require(`assets/backgrounds/digital_art_1.png`)}
             alt={item.MediaName}
           />
           <Box display="flex" flexDirection="column" width={"90%"} mt={"8px"}>

@@ -17,21 +17,29 @@ export interface ICreateSocialToken {
   TokenChain: string;
 }
 
-export async function createSocialToken(payload: ICreateSocialToken, additionalData: Object): Promise<any> {
+export async function createSocialToken(payload: any): Promise<any> {
   try {
-    const { address, privateKey } = await getPriviWallet();
-    const { signature } = await signPayload("createSocialToken", address, payload, privateKey);
-    const requestData: IAPIRequestProps = {
-      Function: "createSocialToken",
-      Address: address,
-      Signature: signature,
-      Payload: payload,
-    };
-    const body = {
-      Data: requestData,
-      AdditionalData: additionalData,
-    };
-    const response = await axios.post(`${URL()}/social/createSocialToken/v2`, body);
+    const response = await axios.post(`${URL()}/social/createSocialToken/v2`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function allocateSocialToken(payload: any): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/social/allocateSocialToken/v2`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function airdropSocialToken(payload: any): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/social/airdropSocialToken/v2`, payload);
     return response.data;
   } catch (e) {
     console.log(e);

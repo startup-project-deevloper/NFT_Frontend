@@ -9,6 +9,10 @@ import { useAuth } from "shared/contexts/AuthContext";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import Box from "shared/ui-kit/Box";
 import { NoMetamaskModal } from "shared/ui-kit/Modal/Modals/NoMetamaskModal";
+import { NoAuthModal } from "shared/ui-kit/Modal/Modals/NoAuthModal";
+import { USDTGetModal } from "shared/ui-kit/Modal/Modals/USDTGetModal"
+import { SwitchNetworkModal } from "shared/ui-kit/Modal/Modals/SwitchNetworkModal/SwitchNetworkModal";
+import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import Web3 from "web3";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -73,7 +77,7 @@ const PriviPixConnect = () => {
   const { isSignedin, setSignedin } = useAuth();
   const userSelector = useSelector((state: RootState) => state.user);
   const { showAlertMessage } = useAlertMessage();
-  const { activate, account, library } = useWeb3React();
+  const { activate, account, library, chainId } = useWeb3React();
   const [status, setStatus] = useState<string>("nolist");
   const [waitlisted, setWaitlisted] = useState<boolean>(false);
   const [tweetWait, setTweetWait] = useState<boolean>(false);
@@ -82,11 +86,22 @@ const PriviPixConnect = () => {
   const [noMetamask, setNoMetamask] = useState<boolean>(false);
   const dispatch = useDispatch();
   const twitterButton = useRef<HTMLButtonElement>(null);
-
+  const [rightNetwork, setRightNetwork] = useState<boolean>(true);
+  const [isShowNoAuth, setShowNoAuth] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isShowUSDTGet, setShowUSDTGet] = useState<boolean>(false);
+  
   const [openConnectModal, setOpenConnectModal] = useState<boolean>(false);
 
   useEffect(() => {
+    if (chainId) {
+      setRightNetwork(chainId == 80001);
+    }
+  }, [chainId])
+
+  useEffect(() => {
     if (account && account.length > 0) {
+      setLoading(true);
       axios
         .post(`${URL()}/wallet/getEthAddressStatus`, {
           address: account,
@@ -101,6 +116,7 @@ const PriviPixConnect = () => {
               const web3 = new Web3(library.provider);
               API.signInWithMetamaskWallet(account, web3, "Privi PIX").then(res => {
                 if (res.isSignedIn) {
+                  setLoading(false);
                   setSignedin(true);
                   const data = res.userData;
                   if (!socket) {
@@ -125,6 +141,7 @@ const PriviPixConnect = () => {
                   //another way to fix that feel free to change it
                   history.push("/");
                 } else {
+                  setLoading(false);
                   if (res.message) {
                     showAlertMessage(res.message, { variant: "error" });
                   } else {
@@ -233,6 +250,11 @@ const PriviPixConnect = () => {
 
   const handleCloseConnectModal = () => {
     setOpenConnectModal(false);
+  }
+
+  const handleCloseSwitchNetworkModal = () => {
+    setRightNetwork(true);
+    setNoMetamask(true);
   }
 
   return (
@@ -344,6 +366,38 @@ const PriviPixConnect = () => {
         handleWallectConnect={handleWalletConnect}
         handleMetamaskConnect={handleMetamaskConnect}
       />
+      <SwitchNetworkModal
+        open={!rightNetwork}
+        onClose={handleCloseSwitchNetworkModal}
+      />
+      <NoAuthModal open={isShowNoAuth} onClose={() => setShowNoAuth(false)} />
+      <LoadingScreen
+        loading={loading}
+        TitleRender={() => (
+          <span style={{ fontSize: 20, fontWeight: 800 }}>
+            We are{" "}
+            <span style={{ color: "#2D3047" }}>
+              Sending You 100K Test USDT
+            </span>{" "}
+            To Test TRAX
+          </span>
+        )}
+        SubTitleRender={() => (
+          <span style={{ fontSize: 18, color: "#2D3047" }}>
+            This will take around 30 seconds.
+            <br />
+            Please be patient
+          </span>
+        )}
+        handleClose={() => setLoading(false)}
+      >
+        <USDTGetModal
+          open={isShowUSDTGet}
+          onClose={() => setShowUSDTGet(false)}
+          amount="100K"
+          account={account ?? ""}
+        />
+      </LoadingScreen>
     </Box>
   );
 };

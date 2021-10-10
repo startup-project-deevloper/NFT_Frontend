@@ -1,11 +1,10 @@
-import { Box, CircularProgress } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import { Color, Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
-import { useTransactionProgressModalStyles } from "./index.styles";
+import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import Box from "shared/ui-kit/Box";
+import { Color, Modal, PrimaryButton } from "shared/ui-kit";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { useWeb3React } from "@web3-react/core";
-import { BlockchainNets } from "shared/constants/constants";
+import { useTransactionProgressModalStyles } from "./index.styles";
 
 require("dotenv").config();
 const isDev = process.env.REACT_APP_ENV === "dev";
@@ -24,33 +23,23 @@ export default function TransactionProgressModal({
   const classes = useTransactionProgressModalStyles();
   const { showAlertMessage } = useAlertMessage();
 
-  //   const url = `${isDev ? "https://mumbai.polygonscan.com/tx/" : "https://mumbai.polygonscan.com/tx/"}${hash}`;
-  const [currentChain, setCurrentChain] = useState<any>({});
+  const url = `${isDev ? "https://mumbai.polygonscan.com/tx/" : "https://mumbai.polygonscan.com/tx/"}${hash}`;
 
   const handleOpenTx = () => {
-    window.open(transactionUrl, "_blank");
+    window.open(url, "_blank");
   };
-
-  const { chainId } = useWeb3React();
-
-  useEffect(() => {
-    const targetChain = BlockchainNets.find(net => net.chainId === chainId);
-    setCurrentChain(targetChain);
-  }, [chainId]);
-
-  const transactionUrl = `${currentChain?.scan?.url}/tx/${hash}`;
 
   return (
     <Modal showCloseIcon isOpen={open} onClose={onClose} className={classes.root} size="small">
       {txSuccess === true ? (
-        <img src={require("assets/pixImages/result_success.png")} />
+        <img src={require("assets/musicDAOImages/result_success.png")} />
       ) : txSuccess === false ? (
-        <img src={require("assets/pixImages/result_fail.png")} />
+        <img src={require("assets/musicDAOImages/result_fail.png")} />
       ) : (
         <div style={{ position: "relative" }}>
-          <img className={classes.loader} src={require("assets/pixImages/loading.png")} />
+          <img className={classes.loader} src={require("assets/musicDAOImages/loading.png")} />
           <div className={classes.ethImg}>
-            <img src={require("assets/pixImages/eth.png")} />
+            <img src={require("assets/musicDAOImages/eth.png")} />
           </div>
         </div>
       )}
@@ -92,7 +81,7 @@ export default function TransactionProgressModal({
             isRounded
             onClick={handleOpenTx}
           >
-            Check on {currentChain?.name} Scan
+            Check on Polygon Scan
           </PrimaryButton>
         </>
       )}

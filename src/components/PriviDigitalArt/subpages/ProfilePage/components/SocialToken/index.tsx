@@ -456,7 +456,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
               <Box display="flex" alignItems="center" justifyContent="left">
                 <Avatar url={item.from.avatar} size={"small"} />
                 <Box display="flex" flexDirection="column" ml={3}>
-                  <Box fontSize={14} fontWeight={500} color="#65CB63">
+                  <Box fontSize={14} fontWeight={500} color="#431AB7">
                     {item.from.name}
                   </Box>
                 </Box>

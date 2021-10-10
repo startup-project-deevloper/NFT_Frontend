@@ -37,3 +37,13 @@ export async function getPodsProposal(userAddress, searchStr, lastId, type): Pro
     throw new Error(e.message);
   }
 }
+
+export async function getPod(podAddress: string, type: string): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/priviPod/getPod?podAddress=${podAddress}&&type=${type}`);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}

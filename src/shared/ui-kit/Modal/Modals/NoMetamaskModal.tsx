@@ -31,8 +31,7 @@ export const NoMetamaskModal: FC<IProps> = props => {
           </SvgIcon>
           <h1>Don’t have Metamask?</h1>
           <span>
-            You can download browser extension for Chrome, Firefox, Brave or Edge and connect it to get
-            waitlisted.
+            You can download browser extension for Chrome, Firefox, Brave or Edge. For more guidance, check here.
           </span>
           <a type="button" target="_blank" href="https://metamask.io/" className={styles.submit}>
             Go to Metamask Website

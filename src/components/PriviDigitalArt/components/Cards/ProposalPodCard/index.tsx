@@ -9,7 +9,7 @@ import Avatar from "shared/ui-kit/Avatar";
 import Box from "shared/ui-kit/Box";
 import { ProposalPodCardStyles } from "./index.styles";
 import { useSelector } from "react-redux";
-import { musicDaoVoteForPodProposal, musicDaoExecutePod } from "shared/services/API";
+import { priviPodVoteForPodProposal, priviPodExecutePod } from "shared/services/API";
 import { RootState } from "store/reducers/Reducer";
 import TransactionProgressModal from "../../../modals/TransactionProgressModal";
 import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
@@ -78,7 +78,7 @@ export const ProposalPodCard = props => {
       return;
     }
 
-    const voteAPIresponse = await musicDaoVoteForPodProposal({
+    const voteAPIresponse = await priviPodVoteForPodProposal({
       podId,
       id: proposal.Id,
       voter: userSelector.id,
@@ -128,7 +128,7 @@ export const ProposalPodCard = props => {
 
     const podAddress = executeContractResponse.data.podAddress;
 
-    const executeResponse = await musicDaoExecutePod({
+    const executeResponse = await priviPodExecutePod({
       podId,
       podAddress,
       proposalId: proposal.Id,
@@ -141,7 +141,7 @@ export const ProposalPodCard = props => {
   };
 
   const handleDecline = async () => {
-    const response = await musicDaoVoteForPodProposal({
+    const response = await priviPodVoteForPodProposal({
       podId,
       id: proposal.Id,
       voter: userSelector.id,

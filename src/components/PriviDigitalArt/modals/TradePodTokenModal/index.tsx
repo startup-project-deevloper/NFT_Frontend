@@ -9,7 +9,7 @@ import { Modal } from "shared/ui-kit";
 import {
   musicDaoBuyPodTokens,
   musicDaoSellPodTokens,
-  musicDaoInvestPod,
+  priviPodInvestPod,
   musicDaoGetBuyingPodFundingTokenAmount,
   musicDaoGetSellingPodFundingTokenAmount,
 } from "shared/services/API";
@@ -526,7 +526,7 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
 
           setTransactionSuccess(true);
 
-          buyResponse = await musicDaoInvestPod({
+          buyResponse = await priviPodInvestPod({
             podId: pod.Id,
             podAddress: pod.PodAddress,
             amount: payload.Amount,
@@ -542,7 +542,7 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
             showAlertMessage(`invest failed`, { variant: "error" });
           }
         } else {
-          buyResponse = await musicDaoInvestPod(payload);
+          buyResponse = await priviPodInvestPod(payload);
 
           setDisableSubmit(false);
           if (buyResponse.success) {

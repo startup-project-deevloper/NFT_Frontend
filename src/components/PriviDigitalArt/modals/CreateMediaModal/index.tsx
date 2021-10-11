@@ -1026,6 +1026,10 @@ const CreateMediaModal = (props: any) => {
         }}
         isSuccess={tnxSuccess}
         hash={hash}
+        network={mediaData.blockchainNet.replace(
+          " Chain",
+          ""
+        )}
       />
     </LoadingScreen>
   );

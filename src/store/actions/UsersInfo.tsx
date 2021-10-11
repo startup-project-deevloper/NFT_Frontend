@@ -35,7 +35,7 @@ export interface UserInfo {
   email?: string;
   whitelisted?: boolean;
   infoImage: any,
-  ipfsImage: any
+  ipfsImage?: any;
 }
 
 export const createUserInfo = (

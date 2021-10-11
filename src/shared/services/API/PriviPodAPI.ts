@@ -47,3 +47,44 @@ export async function getPod(podAddress: string, type: string): Promise<any> {
     throw new Error(e.message);
   }
 }
+
+/// POD LOGIC
+export async function priviPodInitiatePod(payload: Object): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/initiatePod`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodRegisterPodProposal(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/registerPodProposal`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodVoteForPodProposal(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/voteForPodProposal`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodExecutePod(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/executePod`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}

@@ -48,7 +48,7 @@ const SyntheticFractionalisePage = ({
 
   const [featuredCollections, setFeaturedCollections] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
-  const [hasMoreCollections, setHasMoreCollections] = useState<boolean>(true);
+  const [hasMoreCollections, setHasMoreCollections] = useState<boolean>(false);
   const [pagination, setPagination] = useState<number>(0);
   const [lastIdx, setLastIdx] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -66,7 +66,6 @@ const SyntheticFractionalisePage = ({
       if (resp && resp.success) {
         setCollections(resp.data);
         setHasMoreCollections(resp.hasMore);
-        setPagination(pagination => pagination + 1);
       }
       setLoading(false);
     });
@@ -82,7 +81,7 @@ const SyntheticFractionalisePage = ({
   useEffect(() => {
     if (hasScrollOnSynthetic && hasMoreCollections) {
       setLoading(true);
-      getSyntheticCollections(pagination).then(resp => {
+      getSyntheticCollections(pagination + 1).then(resp => {
         if (resp && resp.success) {
           setCollections([...collections, ...(resp.data ?? [])]);
           setHasMoreCollections(resp.hasMore);
@@ -118,7 +117,12 @@ const SyntheticFractionalisePage = ({
                   >
                     Synthetic Fractionalise NFT
                   </div>
-                  <div className={classes.tradeNFTBtnWrapper} onClick={() => {}}>
+                  <div
+                    className={classes.tradeNFTBtnWrapper}
+                    onClick={() => {
+                      window.open("https://ddex.privi.store/nft-derivatives", "_blank");
+                    }}
+                  >
                     <div className={classes.tradeNFTBtn}>Trade NFT Derivatives</div>
                   </div>
                 </Grid>

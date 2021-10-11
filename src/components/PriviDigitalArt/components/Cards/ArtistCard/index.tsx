@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { useTypedSelector } from "store/reducers/Reducer";
@@ -12,6 +12,11 @@ import { CircularLoadingIndicator } from "shared/ui-kit";
 import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { useEffect } from "react";
 
+import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
+import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
+import { onGetNonDecrypt } from "../../../../../shared/ipfs/get";
+import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
+
 export default function ArtistCard({ item, currentIndex }) {
   const classes = artistCardStyles();
 
@@ -21,6 +26,30 @@ export default function ArtistCard({ item, currentIndex }) {
   const { followUser, unfollowUser, isUserFollowed } = useUserConnections();
   const [isFollowInProgress, setIsFollowInProgress] = React.useState<boolean>(false);
   const isFollowing = item ? isUserFollowed(item.id) : 0;
+
+  const [artist, setArtist] = useState<any>(item);
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const [imageIPFS, setImageIPFS] = useState<any>();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  useEffect(() => {
+    if (ipfs && Object.keys(ipfs).length !== 0 && item) {
+      getUserPhoto(item);
+    }
+  }, [item, ipfs]);
+
+  const getUserPhoto = async (user: any) => {
+    if (user && user.infoImage && user.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageIPFS(imageUrl);
+    } else {
+      setImageIPFS(require(`assets/anonAvatars/${artist.anonAvatar ?? "ToyFaces_Colored_BG_001.jpg"}`));
+    }
+  };
 
   const handleFollow = e => {
     e.stopPropagation();
@@ -46,11 +75,9 @@ export default function ArtistCard({ item, currentIndex }) {
         history.push(`/${item.urlSlug}/profile`);
       }}
       style={{
-        backgroundImage: item.url
+        backgroundImage: imageIPFS ? `url(${imageIPFS})` : item.url
           ? `url(${item.url})`
-          : item.id
-          ? `url(${getRandomAvatarForUserIdWithMemoization(item.id)})`
-          : `url(${getRandomAvatar()})`,
+          : `url(${getDefaultAvatar()})`
       }}
     >
       <div className={classes.filter}>
@@ -77,13 +104,12 @@ export default function ArtistCard({ item, currentIndex }) {
             <b>🌟 Collections</b>
             <Box marginTop="8px">
               {item.myMediasCount
-                ? `${
-                    item.myMediasCount > 1000000
-                      ? (item.myMediasCount / 1000000).toFixed(1)
-                      : item.myMediasCount > 1000
-                      ? (item.myMediasCount / 1000).toFixed(1)
-                      : item.myMediasCount
-                  }${item.myMediasCount > 1000000 ? "M" : item.myMediasCount > 1000 ? "K" : ""}`
+                ? `${item.myMediasCount > 1000000
+                  ? (item.myMediasCount / 1000000).toFixed(1)
+                  : item.myMediasCount > 1000
+                    ? (item.myMediasCount / 1000).toFixed(1)
+                    : item.myMediasCount
+                }${item.myMediasCount > 1000000 ? "M" : item.myMediasCount > 1000 ? "K" : ""}`
                 : 0}
             </Box>
           </Box>
@@ -92,13 +118,12 @@ export default function ArtistCard({ item, currentIndex }) {
             <b>🌟 Followers</b>
             <Box marginTop="8px">
               {item.numFollowers && item.numFollowers > 0
-                ? `${
-                    item.numFollowers > 1000000
-                      ? (item.numFollowers / 1000000).toFixed(1)
-                      : item.numFollowers > 1000
-                      ? (item.numFollowers / 1000).toFixed(1)
-                      : item.numFollowers
-                  }${item.numFollowers > 1000000 ? "M" : item.numFollowers > 1000 ? "K" : ""}`
+                ? `${item.numFollowers > 1000000
+                  ? (item.numFollowers / 1000000).toFixed(1)
+                  : item.numFollowers > 1000
+                    ? (item.numFollowers / 1000).toFixed(1)
+                    : item.numFollowers
+                }${item.numFollowers > 1000000 ? "M" : item.numFollowers > 1000 ? "K" : ""}`
                 : 0}
             </Box>
           </Box>

@@ -23,7 +23,7 @@ import MediaSellingOfferModal from "shared/ui-kit/Modal/Modals/MediaSellingOffer
 import { useNotifications } from "shared/contexts/NotificationsContext";
 import URL from "shared/functions/getURL";
 import { getUser, getUsersInfoList } from "store/selectors/user";
-import { signOut } from "store/actions/User";
+import { setUser, signOut } from "store/actions/User";
 import CreateMediaModal from "shared/ui-kit/Modal/Modals/CreateMediaModal";
 import CreatePixMediaModal from "components/PriviDigitalArt/modals/CreateMediaModal";
 import PodCreateNFTMediaModal from "shared/ui-kit/Modal/Modals/Pod-Create-NFTMedia-Modal/PodCreateNFTMediaModal";
@@ -58,6 +58,8 @@ import { ReactComponent as GovernanceIcon } from "assets/icons/governance_card.s
 import { ReactComponent as DefiIcon } from "assets/icons/defi_card.svg";
 import { ReactComponent as FiberManualRecordIcon } from "assets/icons/fiber_manual_record.svg";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
+import getPhotoIPFS from "../../functions/getPhotoIPFS";
+import useIPFS from "../../utils-IPFS/useIPFS";
 
 enum OpenType {
   Home = "HOME",
@@ -130,6 +132,12 @@ const Header = props => {
 
   const [openMobileMenu, setOpenMobileMenu] = React.useState<boolean>(false);
   const anchorMobileMenuRef = React.useRef<HTMLDivElement>(null);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
   const handleOpenMobileMenu = (event: React.MouseEvent<EventTarget>) => {
     event.stopPropagation();
@@ -232,15 +240,26 @@ const Header = props => {
   };
 
   useEffect(() => {
+    setUserWithIpfsImage();
     setUserId(userSelector.id);
     setOwnUser(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idUrl, userSelector]);
+  }, [idUrl, ipfs]);
+
+  const setUserWithIpfsImage = async () => {
+    if (ipfs && Object.keys(ipfs).length !== 0 &&
+        userSelector && userSelector.infoImage &&
+        userSelector.infoImage.newFileCID) {
+      userSelector.ipfsImage = await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption);
+    }
+
+    dispatch(setUser(userSelector));
+  }
 
   useEffect(() => {
     if (userId && userId.length > 0) {
       if (socket) {
-        socket.on("user_connect_status", connectStatus => {
+        socket.on("user_connect_status", async connectStatus => {
           const users = usersInfoList;
           const index = users.findIndex(u => u.id === connectStatus.userId);
           if (index >= 0) {
@@ -248,6 +267,12 @@ const Header = props => {
             if (user) {
               user.connected = connectStatus.connected;
               const uList = [...usersInfoList.slice(0, index), user, ...usersInfoList.slice(index + 1)];
+
+              for(let usr of uList) {
+                if(usr && usr.infoImage && usr.infoImage.newFileCID && (!usr.ipfsImage || usr.ipfsImage === "")) {
+                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption)
+                }
+              }
               dispatch(setUsersInfoList(uList));
             }
           }
@@ -284,12 +309,12 @@ const Header = props => {
                 user.anonAvatar.length > 0
               ) {
                 image = `${require(`assets/anonAvatars/${user.anonAvatar}`)}`;
-              } else {
+              }/* else {
                 if (user.hasPhoto && user.url) {
                   image = `${user.url}?${Date.now()}`;
                 }
-              }
-              user.imageUrl = image;
+              }*/
+              // user.imageUrl = image;
               user.assistances = user.assistances ?? 0;
               user.rate = user.rate ?? 0;
 
@@ -329,6 +354,8 @@ const Header = props => {
                   user.wallets ?? [],
                   user.email ?? "",
                   user.infoImage ?? {},
+                  false,
+                  user.ipfsImage ?? "",
                 )
               );
             });
@@ -880,7 +907,7 @@ const Header = props => {
                   </ToolbarButtonWithPopper>
                 )}
               </div>
-              <Hidden mdDown={width <= 768 && isPriviPix}>                
+              <Hidden mdDown={width <= 768 && isPriviPix}>
                 {isPriviPix && account && (
                   <Hidden smDown>
                     <SecondaryButton size="medium" className={classes.accountInfo}>
@@ -900,7 +927,9 @@ const Header = props => {
                     onClick={handleCreatePopup}
                     className="avatar"
                     style={{
-                      backgroundImage: userSelector.id ? `url(${userAvatar})` : "none",
+                      backgroundImage: userSelector.ipfsImage
+                        ? `url(${userSelector.ipfsImage})`
+                        : "none",
                       cursor: ownUser ? "pointer" : "auto",
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",

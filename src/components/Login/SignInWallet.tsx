@@ -15,6 +15,8 @@ import { convertPrivateKeyToAddress } from "shared/helpers/wallet";
 
 import { useWeb3React } from "@web3-react/core";
 import { injected } from "shared/connectors";
+import getPhotoIPFS from "../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../shared/utils-IPFS/useIPFS";
 const useStyles = makeStyles(() =>
   createStyles({
     header: {
@@ -74,6 +76,12 @@ const SignInWallet = () => {
   const [showMnemonicInput, setShowMnemonicInput] = useState<boolean>(false);
   const { setSignedin } = useAuth();
 
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
   const { activate, account, deactivate, library } =
         useWeb3React();
   const [isMetamaskConnected, setMetamaskConnection] = useState(false);
@@ -111,11 +119,16 @@ const SignInWallet = () => {
     }
   }, [isMetamaskConnected, account, library]);
 
-  const successFunc = res => {
+  const successFunc = async res => {
     if (res && res.isSignedIn) {
       setSignedin(true);
       const data = res.userData;
       socket.emit("add user", data.id);
+
+      if (data && data.infoImage && data.infoImage.newFileCID) {
+        data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
+      }
+
       dispatch(setUser(data));
       localStorage.setItem("token", res.accessToken);
       localStorage.setItem("userId", data.id);

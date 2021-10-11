@@ -22,7 +22,6 @@ const UserCard = props => {
 
   const [user, setUser] = useState<any>();
 
-
   const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);

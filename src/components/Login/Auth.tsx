@@ -24,6 +24,8 @@ import {
   getAddressStreamingsOfTokensHLF,
   getStreamingsInfoHLF,
 } from "shared/services/API";
+import useIPFS from "../../shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "../../shared/functions/getPhotoIPFS";
 
 export let socket: SocketIOClient.Socket;
 export const setSocket = (sock: SocketIOClient.Socket) => {
@@ -42,6 +44,12 @@ const Auth = () => {
 
   const user = useTypedSelector(state => state.user);
   const selectedUserSelector = useSelector((state: RootState) => state.selectedUser);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
   // NOTE: this hack is required to trigger re-render
   const [internalSocket, setInternalSocket] = useState<SocketIOClient.Socket | null>(null);
@@ -189,13 +197,18 @@ const Auth = () => {
               Authorization: `Bearer ${token}`,
             },
           })
-          .then(response => {
+          .then(async response => {
             if (response.data.success) {
               const data = response.data.data;
               socket = io(URL(), { query: { token } });
               socket.connect();
               setInternalSocket(socket);
               socket.emit("add user", data.id);
+
+              console.log('data infoImage', data.infoImage);
+              if (data && data.infoImage && data.infoImage.newFileCID) {
+                data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
+              }
 
               loadDataToReduxStore(data); //load data to redux store
               dispatch(setUser(data));

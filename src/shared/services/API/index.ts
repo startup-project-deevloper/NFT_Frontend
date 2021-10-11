@@ -12,3 +12,4 @@ export * from "./WalletAPI";
 export * from "./UserAPI";
 export * from "./SocialTokenAPI";
 export * from "./MusicDaoAPI";
+export * from "./PriviPodAPI";

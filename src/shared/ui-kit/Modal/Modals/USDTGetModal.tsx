@@ -13,10 +13,12 @@ interface IProps {
   account: string;
 }
 
+const USDT_ADDRESS = "0x2cA48b8c2d574b282FDAB69545646983A94a3286";
+
 export const USDTGetModal: FC<IProps> = (props) => {
   const classes = usdtGetModalStyles();
 
-  const { open, onClose, amount, account } = props;
+  const { open, onClose, amount } = props;
 
   const handleClose = () => {
     onClose && onClose();
@@ -31,11 +33,11 @@ export const USDTGetModal: FC<IProps> = (props) => {
       params: {
         type: "ERC20",
         options: {
-          address: "0xaE502540f0CEa5475D23EbbA48AacD8469bceFe4",
-          symbol: "TRAX",
+          address: USDT_ADDRESS,
+          symbol: "USDT",
           decimals: 18,
           image:
-            "https://uploadsdev.ams3.digitaloceanspaces.com/launchpad/tokenFunding-app-token-photo/7183d138-585a-4886-868d-e83454d81b562WAkNq2M7nIg6Iu0HzBA.gif",
+            "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/images/contract/usdt.svg",
         },
       },
     });
@@ -48,13 +50,12 @@ export const USDTGetModal: FC<IProps> = (props) => {
         <img src={require("assets/pixImages/usdt.png")} alt="PRIVI PIX" width={70} />
         <h1 className={classes.title}>Received {amount}<br /> Test USDT Token</h1>
         <p className={classes.description}>
-          You have just received&nbsp;<span>{amount} USDT Test Tokens</span>&nbsp;to try out the Privi
-          Exchange features before we rollout the Mainnet version shortly.
+          You have just received&nbsp;<span>{amount} USDT Test Tokens</span>&nbsp;to try out the Pix App features before we rollout the Mainnet version shortly.
           <br />
           <br />
           <strong>Include USDT Testnet Token</strong>&nbsp;on your token list with Metamask. The address is
           <br />
-          <span>{account}</span>
+          <span>{USDT_ADDRESS}</span>
         </p>
         <PrimaryButton size="medium" className={classes.button} onClick={onAddTrax}>
           Add USDT to Metamask + 

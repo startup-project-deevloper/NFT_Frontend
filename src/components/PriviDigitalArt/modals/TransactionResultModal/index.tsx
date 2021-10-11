@@ -12,16 +12,25 @@ export default function TransactionResultModal({
   onClose,
   isSuccess,
   hash,
+  network
 }: {
   open: boolean;
   onClose: () => void;
   hash?: string;
   isSuccess?: boolean;
+  network?: string
 }) {
   const classes = useTransactionResultModalStyles();
-
   const handleCheck = () => {
-    window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
+    if (network) {
+      if (network === 'Polygon') {
+        window.open(`https://mumbai.polygonscan.com/tx/${hash}`, "_blank");
+      } else if (network === 'Ethereum') {
+        window.open(`https://rinkeby.etherscan.io/tx/${hash}`, "_blank");
+      }
+    } else {
+      window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
+    }
   };
 
   return (
@@ -54,7 +63,7 @@ export default function TransactionResultModal({
 
       {hash && (
         <button className={classes.buttonCheck} onClick={handleCheck}>
-          Check on Polygon Scan
+          Check on {network} Scan
         </button>
       )}
     </Modal>

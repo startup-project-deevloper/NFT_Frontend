@@ -43,6 +43,7 @@ jobs:
     - run: yarn build
       env:
           NODE_OPTIONS: '--max_old_space_size=8192'
+          REACT_APP_ENV: 'dev' 
           REACT_APP_PRIVI_BACKEND_URL: 'https://backend-prod.privi.store/backend'
           REACT_APP_PRICE_FEED_URL: 'https://price-feed-prod.privi.store/'
           REACT_APP_PRICE_FEED_TOKEN: 'SoMeR@nD0MsTrInG'

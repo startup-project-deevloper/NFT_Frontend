@@ -27,6 +27,7 @@ export type Notification = {
   date: number; // timestamp
   otherItemId: string;
   comment: string;
+  podType?: string;
 };
 
 type GetNotificationsResult =

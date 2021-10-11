@@ -283,7 +283,7 @@ const Header = props => {
                   usr.infoImage.newFileCID &&
                   (!usr.ipfsImage || usr.ipfsImage === "")
                 ) {
-                  console.log("user", usr.infoImage.newFileCID);
+                  // console.log("user", usr.infoImage.newFileCID);
                   usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
                 }
               }
@@ -414,7 +414,7 @@ const Header = props => {
       });
       // setFilteredUsers(allUsers);
     }
-  }, [usersInfoList, userSelector.id]);
+  }, [usersInfoList, userSelector.id, ipfs]);
 
   useEffect(() => {
     setIsHideHeader(true);

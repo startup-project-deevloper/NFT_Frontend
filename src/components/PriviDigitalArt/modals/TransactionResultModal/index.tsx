@@ -63,7 +63,7 @@ export default function TransactionResultModal({
 
       {hash && (
         <button className={classes.buttonCheck} onClick={handleCheck}>
-          Check on {network} Scan
+          Check on {network ?? 'Polygon'} Scan
         </button>
       )}
     </Modal>

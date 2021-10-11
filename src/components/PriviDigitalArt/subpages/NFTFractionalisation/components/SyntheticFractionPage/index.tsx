@@ -508,7 +508,7 @@ const SyntheticFractionPage = ({ }) => {
       row.push({
         cell: (
           <Box display="flex" alignItems="center" justifyContent="center">
-            <img width={24} height={24} src={require("assets/tokenImages/POLYGON.png")} alt="polygon" />
+            <img width={24} height={24} src={require("assets/tokenImages/POLYGON-SYMBOL.png")} alt="polygon" />
           </Box>
         ),
         cellAlign: "center",

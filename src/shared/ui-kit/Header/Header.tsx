@@ -31,6 +31,7 @@ import CreateCommunityModal from "shared/ui-kit/Modal/Modals/CreateCommunity";
 import CreateImportSocialTokenModal from "shared/ui-kit/Modal/Modals/Create-social-token/CreateImportSocialTokenModal";
 import { CreatePriviWalletModal } from "shared/ui-kit/Modal/Modals";
 import { capitalize } from "shared/helpers/string";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
 import { createUserInfo, setUsersInfoList } from "store/actions/UsersInfo";
 import CommunityContributionModal from "shared/ui-kit/Modal/Modals/CommunityContributionModal";
@@ -58,6 +59,8 @@ import { ReactComponent as GovernanceIcon } from "assets/icons/governance_card.s
 import { ReactComponent as DefiIcon } from "assets/icons/defi_card.svg";
 import { ReactComponent as FiberManualRecordIcon } from "assets/icons/fiber_manual_record.svg";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
+import useIPFS from "../../utils-IPFS/useIPFS";
+import getPhotoIPFS from "../../functions/getPhotoIPFS";
 
 enum OpenType {
   Home = "HOME",
@@ -130,6 +133,30 @@ const Header = props => {
 
   const [openMobileMenu, setOpenMobileMenu] = React.useState<boolean>(false);
   const anchorMobileMenuRef = React.useRef<HTMLDivElement>(null);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const [imageIPFS, setImageIPFS] = useState<any>(null);
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  useEffect(() => {
+    getPhotoUser();
+  }, [ipfs, userSelector.id]);
+
+  const getPhotoUser = async () => {
+    if (
+      ipfs &&
+      Object.keys(ipfs).length !== 0 &&
+      userSelector &&
+      userSelector.infoImage &&
+      userSelector.infoImage.newFileCID
+    ) {
+      setImageIPFS(await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption));
+    }
+  };
 
   const handleOpenMobileMenu = (event: React.MouseEvent<EventTarget>) => {
     event.stopPropagation();
@@ -240,7 +267,7 @@ const Header = props => {
   useEffect(() => {
     if (userId && userId.length > 0) {
       if (socket) {
-        socket.on("user_connect_status", connectStatus => {
+        socket.on("user_connect_status", async connectStatus => {
           const users = usersInfoList;
           const index = users.findIndex(u => u.id === connectStatus.userId);
           if (index >= 0) {
@@ -248,6 +275,19 @@ const Header = props => {
             if (user) {
               user.connected = connectStatus.connected;
               const uList = [...usersInfoList.slice(0, index), user, ...usersInfoList.slice(index + 1)];
+
+              for (let usr of uList) {
+                if (
+                  usr &&
+                  usr.infoImage &&
+                  usr.infoImage.newFileCID &&
+                  (!usr.ipfsImage || usr.ipfsImage === "")
+                ) {
+                  console.log("user", usr.infoImage.newFileCID);
+                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
+                }
+              }
+
               dispatch(setUsersInfoList(uList));
             }
           }
@@ -266,7 +306,7 @@ const Header = props => {
   }, [unreadMessages]);
 
   useEffect(() => {
-    if (!usersInfoList || usersInfoList.length === 0) {
+    if (!usersInfoList || (usersInfoList.length === 0 && ipfs && Object.keys(ipfs).length !== 0)) {
       axios
         .post(`${URL()}/chat/getUsers`)
         .then(response => {
@@ -340,7 +380,14 @@ const Header = props => {
               if (name2.startsWith("0x")) return -1;
               return capitalize(name1).localeCompare(capitalize(name2));
             });
+            // setUsers(allUsers);
+            // setFilteredUsers(allUsers);
             const dispatchUsers = async () => {
+              for (let usr of u) {
+                if (usr && usr.infoImage && usr.infoImage.newFileCID) {
+                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
+                }
+              }
               await dispatch(setUsersInfoList(u));
             };
 
@@ -365,6 +412,7 @@ const Header = props => {
         user.assistances = user.assistances ?? 0;
         user.rate = user.rate ?? 0;
       });
+      // setFilteredUsers(allUsers);
     }
   }, [usersInfoList, userSelector.id]);
 
@@ -613,15 +661,16 @@ const Header = props => {
                       <div
                         className="avatar"
                         style={{
-                          backgroundImage: userSelector.id
-                            ? `url(${getUserAvatar({
-                                id: userSelector.id,
-                                anon: userSelector.anon,
-                                hasPhoto: userSelector.hasPhoto,
-                                anonAvatar: userSelector.anonAvatar,
-                                url: userSelector.url,
-                              })})`
-                            : "none",
+                          // backgroundImage: userSelector.id
+                          //   ? `url(${getUserAvatar({
+                          //       id: userSelector.id,
+                          //       anon: userSelector.anon,
+                          //       hasPhoto: userSelector.hasPhoto,
+                          //       anonAvatar: userSelector.anonAvatar,
+                          //       url: userSelector.url,
+                          //     })})`
+                          //   : "none",
+                          backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getDefaultAvatar()})`,
                           cursor: ownUser ? "pointer" : "auto",
                           backgroundRepeat: "no-repeat",
                           backgroundSize: "cover",
@@ -900,7 +949,8 @@ const Header = props => {
                     onClick={handleCreatePopup}
                     className="avatar"
                     style={{
-                      backgroundImage: userSelector.id ? `url(${userAvatar})` : "none",
+                      // backgroundImage: userSelector.id ? `url(${userAvatar})` : "none",
+                      backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getDefaultAvatar()})`,
                       cursor: ownUser ? "pointer" : "auto",
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",

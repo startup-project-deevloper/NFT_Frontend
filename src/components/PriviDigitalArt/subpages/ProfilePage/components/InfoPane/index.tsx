@@ -12,10 +12,11 @@ import useWindowDimensions from "shared/hooks/useWindowDimensions";
 import BadgeHexagon from "shared/ui-kit/Badge-hexagon/Badge-hexagon";
 import * as UserConnectionsAPI from "shared/services/API/UserConnectionsAPI";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import URL from "shared/functions/getURL";
 import { setUser } from "store/actions/User";
+import useIPFS from "shared/utils-IPFS/useIPFS";
 
 import BadgesProfileModal from "../../modals/BadgesModal";
 import ProfileFollowsModal from "../../modals/FollowingsFollowers";
@@ -23,6 +24,8 @@ import ChangeProfileBackgroundModal from "../../modals/ChangeProfileBackgroundMo
 import ChangeAnonAvatarModal from "../../modals/ChangeAnonAvatarModal/ChangeAnonAvatarModal";
 import { Card, profilePageStyles } from "../../index.styles";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
+import { onUploadNonEncrypt } from "shared/ipfs/upload";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 
 const arePropsEqual = (prevProps, currProps) => {
   return (
@@ -75,7 +78,20 @@ const InfoPane = React.memo(
     const [profileBG, setProfileBG] = useState<string>("");
     const [anonAvatar, setAnonAvatar] = useState<string>("");
 
+    const [changeImageTimestamp, setChangeImageTimestamp] = useState<number>(0);
     const inputRef = useRef<any>();
+
+    const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
+
+    const [imageIPFS, setImageIPFS] = useState<any>(null);
+
+    useEffect(() => {
+      setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+    }, []);
+
+    useEffect(() => {
+      getPhotoUser();
+    }, [ipfs, user, changeImageTimestamp]);
 
     useEffect(() => {
       if (user.backgroundURL) {
@@ -90,6 +106,18 @@ const InfoPane = React.memo(
     useEffect(() => {
       getFollowers();
     }, [userId, ownUser]);
+
+    const getPhotoUser = async () => {
+      if (
+        ipfs &&
+        Object.keys(ipfs).length !== 0 &&
+        userProfile &&
+        userProfile.infoImage &&
+        userProfile.infoImage.newFileCID
+      ) {
+        setImageIPFS(await getPhotoIPFS(userProfile.infoImage.newFileCID, downloadWithNonDecryption));
+      }
+    };
 
     const handleOpenModalFollows = () => {
       setOpenModalFollows(true);
@@ -213,9 +241,9 @@ const InfoPane = React.memo(
       }
     };
 
-    const handleFiles = (files: any) => {
+    const handleFiles = async (files: any) => {
       if (validateFile(files[0])) {
-        const formData = new FormData();
+        /*const formData = new FormData();
         formData.append("image", files[0], localStorage.getItem("userId") ?? "");
         const config = {
           headers: {
@@ -237,7 +265,30 @@ const InfoPane = React.memo(
               key: Math.random(),
               variant: "error",
             });
-          });
+          });*/
+
+          let metadataID = await onUploadNonEncrypt(files[0], file => uploadWithNonEncryption(file));
+
+          axios
+            .post(`${URL()}/user/changeProfilePhoto/saveMetadata/${user.id}`, metadataID)
+            .then(res => {
+              if (res.data.data) {
+                let setterUser: any = { ...user, infoImage: res.data.data };
+                setterUser.hasPhoto = true;
+                if (setterUser.id) {
+                  dispatch(setUser(setterUser));
+                }
+                setChangeImageTimestamp(Date.now());
+              }
+            })
+            .catch(error => {
+              console.log("Error", error);
+              setStatus({
+                msg: "Error change user profile photo",
+                key: Math.random(),
+                variant: "error",
+              });
+            });
       } else {
         files[0]["invalid"] = true;
       }
@@ -293,7 +344,8 @@ const InfoPane = React.memo(
         <div
           className={classes.avatar}
           style={{
-            backgroundImage: userProfile && userProfile.id ? `url(${userAvatar})` : "none",
+            backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getDefaultAvatar()})`,
+            // backgroundImage: userProfile && userProfile.id ? `url(${userAvatar})` : "none",
             cursor: ownUser ? "pointer" : "auto",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",

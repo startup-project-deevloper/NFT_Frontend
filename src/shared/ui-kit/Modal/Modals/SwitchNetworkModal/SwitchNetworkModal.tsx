@@ -70,7 +70,7 @@ export const SwitchNetworkModal: FC<IProps> = props => {
         <span className={classes.warning}>⚠️</span>
         <h1 className={classes.title}>Important</h1>
         <p className={classes.description}>
-          The platform is running on  <span>MUMBAI TESTNET</span> here, make sure to at no times send any tokens from your <span>BSC OR ETHEREUM MAINNET</span> addresses to any ot the addresses here.
+          The platform is running on  <span>RINKEBY and MUMBAI networks</span>, make sure to at no times send any tokens from your <span>MAINNET</span> addresses to any of the addresses here.
         </p>
         <PrimaryButton size="medium" className={classes.button} onClick={onSuccess}>
           I understood it

@@ -3,10 +3,12 @@ import Web3 from "web3";
 import { signWithMetamask, signWithPrivi } from "../WalletSign";
 import URL from "shared/functions/getURL";
 
-export async function signInWithMetamaskWallet(address: string, web3: Web3, domain: string, auth: boolean | string = false): Promise<any> {
+export async function signInWithMetamaskWallet(address: string, web3: Web3, domain: string, handleClickSign?: any, auth: boolean | string = false): Promise<any> {
   let signature = auth;
   if (!auth)
     signature = await signWithMetamask(address, web3, domain);
+  if (handleClickSign)
+    await handleClickSign();
   return new Promise<any>((resolve, reject) => {
     axios
     .post(`${URL()}/user/signInWithMetamaskWallet_v2`, { address, signature, domain })

@@ -374,12 +374,12 @@ const PriviPixConnect = () => {
       <LoadingScreen
         loading={loading}
         TitleRender={() => (
-          <span style={{ fontSize: 20, fontWeight: 800 }}>
-            We are{" "}
+          <span style={{ fontSize: 20, fontWeight: 800, textAlign: 'center' }}>
+            We Are{" "}
             <span style={{ color: "#2D3047" }}>
               Sending You 100K Test USDT
             </span>{" "}
-            To Test TRAX
+            To Test <br />Test TRAX
           </span>
         )}
         SubTitleRender={() => (

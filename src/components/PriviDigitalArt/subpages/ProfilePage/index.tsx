@@ -681,7 +681,7 @@ const ProfilePage = () => {
               className={`${classes.tabItem} ${activeTab === 2 ? classes.tabItemActive : ""}`}
               onClick={() => setActiveTab(2)}
             >
-              Latest Wall Post
+              Wall
             </Box>
             <Box
               className={`${classes.tabItem} ${activeTab === 3 ? classes.tabItemActive : ""}`}

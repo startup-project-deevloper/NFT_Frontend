@@ -116,6 +116,8 @@ const PriviPixConnect = () => {
 
             if (data.status === "authorized") {
               setStatus("authorized");
+              setRightNetwork(false);
+
               const web3 = new Web3(library.provider);
               API.signInWithMetamaskWallet(account, web3, "Privi PIX", handleClickSign).then(res => {
                 if (res.isSignedIn) {
@@ -147,7 +149,7 @@ const PriviPixConnect = () => {
 
                   //added this last line to refresh the page, it got stuck after loging in. If there's
                   //another way to fix that feel free to change it
-                  //history.push("/");
+                  history.push("/");
                 } else {
                   setLoading(false);
                   if (res.message) {
@@ -253,7 +255,7 @@ const PriviPixConnect = () => {
   }, 10000);
 
   const handleOpenConnectModal = () => {
-    setRightNetwork(false);
+    setOpenConnectModal(true);
   }
 
   const handleCloseConnectModal = () => {
@@ -262,7 +264,6 @@ const PriviPixConnect = () => {
 
   const handleCloseSwitchNetworkModal = () => {
     setRightNetwork(true);
-    setOpenConnectModal(true);
   }
 
   return (

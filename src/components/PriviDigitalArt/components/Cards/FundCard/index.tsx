@@ -109,6 +109,7 @@ export const FundCard = props => {
     await priviPodExecutePod({
       podId,
       podAddress,
+      podType: 'PIX'
     });
 
     showAlertMessage("The Proposal has been executed.", { variant: "success" });

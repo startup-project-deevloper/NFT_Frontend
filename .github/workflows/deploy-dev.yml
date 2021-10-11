@@ -44,7 +44,7 @@ jobs:
       env:
           NODE_OPTIONS: '--max_old_space_size=8192'
           REACT_APP_ENV: 'dev'
-          REACT_APP_PRIVI_BACKEND_URL: 'https://priv-iweb-backend-x68uu.ondigitalocean.app/backend'
+          REACT_APP_PRIVI_BACKEND_URL: 'https://priv-iweb-backend-x68uu.ondigitalocean.app'
           REACT_APP_PRICE_FEED_URL: 'https://price-feed-dev.privi.store'
           REACT_APP_PRICE_FEED_TOKEN: 'SoMeR@nD0MsTrInG'
           CI: false

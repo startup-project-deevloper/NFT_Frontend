@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import Web3 from "web3";
 import ProposalDetailModal from "components/PriviDigitalArt/modals/ProposalDetailModal";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { BlockchainNets } from "shared/constants/constants";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Avatar from "shared/ui-kit/Avatar";
@@ -46,14 +46,14 @@ export const ProposalPodCard = props => {
   }, []);
 
   useEffect(() => {
-    if(ipfs && Object.keys(ipfs).length !== 0) {
-      getImages()
+    if (ipfs && Object.keys(ipfs).length !== 0) {
+      getImages();
     }
   }, [pod, ipfs]);
 
   useEffect(() => {
-    if(ipfs && Object.keys(ipfs).length !== 0 && creator && creator.id) {
-      getUserPhoto(creator)
+    if (ipfs && Object.keys(ipfs).length !== 0 && creator && creator.id) {
+      getUserPhoto(creator);
     }
   }, [ipfs, creator]);
 
@@ -83,6 +83,7 @@ export const ProposalPodCard = props => {
       id: proposal.Id,
       voter: userSelector.id,
       status: true,
+      type: "PIX",
     });
 
     if (!voteAPIresponse.success) {
@@ -132,6 +133,7 @@ export const ProposalPodCard = props => {
       podId,
       podAddress,
       proposalId: proposal.Id,
+      type: "PIX",
     });
 
     if (executeResponse.success) {
@@ -146,6 +148,7 @@ export const ProposalPodCard = props => {
       id: proposal.Id,
       voter: userSelector.id,
       status: false,
+      type: "PIX",
     });
 
     if (response.success) {
@@ -159,29 +162,31 @@ export const ProposalPodCard = props => {
   };
 
   const getImages = async () => {
-    let i : number = 0;
-    let photos : any = {};
-    for(let creator of pod.CreatorsData) {
-      if(creator && creator.id) {
-
+    let i: number = 0;
+    let photos: any = {};
+    for (let creator of pod.CreatorsData) {
+      if (creator && creator.id) {
         let creatorFound = usersList.find(user => user.id === creator.id);
 
         if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
-          photos[i + '-photo']= await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
+          photos[i + "-photo"] = await getPhotoIPFS(
+            creatorFound.infoImage.newFileCID,
+            downloadWithNonDecryption
+          );
         }
       }
     }
     setMediasPhotos(photos);
-  }
+  };
 
-  const getUserPhoto = async (creator : any ) => {
+  const getUserPhoto = async (creator: any) => {
     let creatorFound = usersList.find(user => user.id === creator.id);
 
-    if(creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
+    if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
-      setCreatorImage(imageUrl)
+      setCreatorImage(imageUrl);
     }
-  }
+  };
 
   return (
     <Box className={classes.root}>
@@ -219,17 +224,20 @@ export const ProposalPodCard = props => {
           </Box>
           <Box display="flex">
             {pod.CreatorsData.map((item, index) => {
-              return(
-                  <Box ml={index > 1 ? -2 : 2}>
-                    <Avatar
-                      size={34}
-                      rounded
-                      bordered
-                      image={mediasPhotos && mediasPhotos[index + '-photo'] ?
-                        mediasPhotos[index + '-photo'] : require(`assets/anonAvatars/ToyFaces_Colored_BG_00${index + 1}.jpg`)}
-                    />
-                  </Box>
-                )
+              return (
+                <Box ml={index > 1 ? -2 : 2}>
+                  <Avatar
+                    size={34}
+                    rounded
+                    bordered
+                    image={
+                      mediasPhotos && mediasPhotos[index + "-photo"]
+                        ? mediasPhotos[index + "-photo"]
+                        : require(`assets/anonAvatars/ToyFaces_Colored_BG_00${index + 1}.jpg`)
+                    }
+                  />
+                </Box>
+              );
             })}
           </Box>
         </Box>

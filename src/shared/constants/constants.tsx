@@ -116,7 +116,7 @@ export const erc20ToWeiUnit = {
 };
 
 export const BlockchainNets: any =
-  process.env.NODE_ENV !== "development" || process.env.REACT_APP_ENV === "prod"
+  process.env.REACT_APP_ENV === "prod"
     ? // prod (mainnets)
       [
         {
@@ -129,14 +129,14 @@ export const BlockchainNets: any =
           name: "POLYGON",
           value: "Polygon Chain",
           image: "tokenImages/POLYGON.png",
-          chainId: 1,
+          chainId: 137,
           scan: { name: "POLYGONSCAN", url: "https://polygonscan.com" },
         },
         {
           name: "ETHEREUM",
           value: "Ethereum Chain",
           image: "tokenImages/ETH.png",
-          chainId: 137,
+          chainId: 1,
           scan: { name: "ETHERSCAN", url: "https://etherscan.io" },
         },
       ]

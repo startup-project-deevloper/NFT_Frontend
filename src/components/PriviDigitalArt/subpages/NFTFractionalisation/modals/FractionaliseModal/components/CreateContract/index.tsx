@@ -169,7 +169,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           params = {
             collectionAddress: selectedNFT.tokenAddress,
             SyntheticID: nftInfo.syntheticTokenId,
-            NftId: selectedNFT.BlockchainId,
+            NFTId: selectedNFT.BlockchainId,
+            NFTName: selectedNFT.MediaName,
             NFTImageUrl: selectedNFT.Url,
             JotName: `Privi Jot ${selectedNFT.MediaName}`,
             JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
@@ -182,7 +183,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             collectionName: collectionInfo.data.name,
             collectionSymbol: collectionInfo.data.symbol,
             description: collectionInfo.data.description,
-            imageUrl: collectionInfo.data.imageUrl,
+            imageUrl: collectionInfo.data.imageUrl ?? selectedNFT.Url,
             quickSwapAddress: collection.jotPairAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
@@ -195,7 +196,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           params = {
             collectionAddress: selectedNFT.tokenAddress,
             SyntheticID: nftInfo.syntheticTokenId,
-            NftId: selectedNFT.BlockchainId,
+            NFTId: selectedNFT.BlockchainId,
+            NFTName: selectedNFT.MediaName,
             NFTImageUrl: selectedNFT.Url,
             Price: priceFraction,
             OwnerSupply: supplyToKeep,

@@ -88,6 +88,10 @@ const NFTFractionalisation = () => {
       if (selectedTab === "synthetic") {
         setHasScrollOnSynthetic(true);
       }
+    } else {
+      if (selectedTab === "synthetic") {
+        setHasScrollOnSynthetic(false);
+      }
     }
   };
 

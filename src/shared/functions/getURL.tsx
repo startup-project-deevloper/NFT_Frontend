@@ -17,6 +17,7 @@
  */
 const URL = (): string => {
   return process.env.REACT_APP_PRIVI_BACKEND_URL ?? "http://localhost:3000";
+  //return "https://priv-iweb-backend-x68uu.ondigitalocean.app/backend" ?? "http://localhost:3000";
   // if (process.env.NODE_ENV === "development") {
   //   if (process.env.REACT_APP_ENV === "dev_ssl") {
   //     // When executing [ REACT_APP_ENV='dev_ssl' npm start ]
@@ -35,6 +36,7 @@ const URL = (): string => {
 
 export const PriceFeed_URL = (): string => {
   return process.env.REACT_APP_PRICE_FEED_URL || "http://localhost:3002";
+  //return "https://price-feed-dev.privi.store" || "http://localhost:3002"
 };
 
 export const PriceFeed_Token = (): string => {

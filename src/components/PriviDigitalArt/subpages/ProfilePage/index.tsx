@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import cls from "classnames";
 import styled from "styled-components";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Grid } from "@material-ui/core";
+import { useParams } from "react-router-dom";
+import Axios from "axios";
+
+import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
 
 import { CircularLoadingIndicator, PrimaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -13,22 +16,21 @@ import { removeUndef } from "shared/helpers";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 // import PrintChart from "shared/ui-kit/Chart/Chart";
 import { getPixProfileItems } from "shared/services/API";
-import CardsGrid from "./components/CardsGrid";
-import MyWall from "./components/MyWall";
-import InfoPane from "./components/InfoPane";
-import { profilePageStyles } from "./index.styles";
-import Feed from "./components/Feed";
 import ProfileEditModal from "components/PriviSocial/subpages/Home/modals/ProfileEdit";
-import { useParams } from "react-router-dom";
 import { socket } from "components/Login/Auth";
 import { getUser, getUsersInfoList } from "store/selectors";
-import Axios from "axios";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { setSelectedUser } from "store/actions/SelectedUser";
 import { setUser } from "store/actions/User";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
+import CardsGrid from "./components/CardsGrid";
+import MyWall from "./components/MyWall";
+import InfoPane from "./components/InfoPane";
+import Feed from "./components/Feed";
+import SocialToken from "./components/SocialToken";
+import { profilePageStyles } from "./index.styles";
 
 const profileSubTabs = ["All", "Owned", "Curated", "Liked"];
 
@@ -140,6 +142,10 @@ const FreeHoursChartConfig = {
 
 const ProfilePage = () => {
   const classes = profilePageStyles();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
   const dispatch = useDispatch();
   const loggedUser = useSelector(getUser);
@@ -512,43 +518,24 @@ const ProfilePage = () => {
     setPaginationHasMore(true);
   };
 
-  const rendererDigtalArt = () => {
+  const renderDigitalArt = () => {
     return (
       <>
-        {/* {socialChart && socialChart.config.data.datasets[0].data.length > 1 && (
-          <Box className={classes.chartContainer} display="flex" flexDirection="row" mt={7}>
-            <Box width={1}>
-              <Box display="flex" color="#1A1B1C" fontSize={18} fontWeight={400} mb={3}>
-                ✨ Digital Art
-              </Box>
-              <Box className={classes.chartWrapper}>
-                <Box display="flex" flexDirection="column" className={classes.chartInfo}>
-                  <Box fontSize={18} fontWeight={400} color="#181818">
-                    {totalBalance} ETH
-                  </Box>
-                  <Box fontSize={14} fontWeight={400} color="#431AB7" mt="5px">
-                    {increaseValue} (+{increaseRate}%)
-                  </Box>
-                </Box>
-                <PrintChart config={socialChart} />
-              </Box>
-            </Box>
-          </Box>
-        )} */}
         <Box display="flex" alignItems="center" mt={"48px"} mb={"42px"}>
           {priviUser !== undefined &&
             (priviUser
               ? profileSubTabs.map((option, index) => {
-                if (index === 1) return;
-                return (
-                  <div
-                    className={cls({ [classes.subTabSelected]: subTabsValue === index }, classes.subTab)}
-                    key={`cards-tab-${index}`}
-                    onClick={() => setSubTabsValue(index)}
-                  >
-                    {option}
-                  </div>
-                )})
+                  if (index === 1) return;
+                  return (
+                    <div
+                      className={cls({ [classes.subTabSelected]: subTabsValue === index }, classes.subTab)}
+                      key={`cards-tab-${index}`}
+                      onClick={() => setSubTabsValue(index)}
+                    >
+                      {option}
+                    </div>
+                  );
+                })
               : collections.length > 1
               ? collections.map((option, index) => (
                   <div
@@ -681,19 +668,28 @@ const ProfilePage = () => {
             Feed
           </Box>
         )}
-        <Box
-          className={`${classes.tabItem} ${activeTab === 1 ? classes.tabItemActive : ""}`}
-          onClick={() => setActiveTab(1)}
-        >
-          Digital Art
-        </Box>
+
         {priviUser && (
-          <Box
-            className={`${classes.tabItem} ${activeTab === 2 ? classes.tabItemActive : ""}`}
-            onClick={() => setActiveTab(2)}
-          >
-            Latest Wall Post
-          </Box>
+          <>
+            <Box
+              className={`${classes.tabItem} ${activeTab === 1 ? classes.tabItemActive : ""}`}
+              onClick={() => setActiveTab(1)}
+            >
+              Digital Art
+            </Box>
+            <Box
+              className={`${classes.tabItem} ${activeTab === 2 ? classes.tabItemActive : ""}`}
+              onClick={() => setActiveTab(2)}
+            >
+              Latest Wall Post
+            </Box>
+            <Box
+              className={`${classes.tabItem} ${activeTab === 3 ? classes.tabItemActive : ""}`}
+              onClick={() => setActiveTab(3)}
+            >
+              Social Token
+            </Box>
+          </>
         )}
       </Box>
 
@@ -702,11 +698,11 @@ const ProfilePage = () => {
           {activeTab === 0 && ownUser ? (
             <Feed userId={userId} userProfile={userProfile} scrollRef={scrollRef} ownUser={ownUser} />
           ) : activeTab === 1 ? (
-            rendererDigtalArt()
+            renderDigitalArt()
+          ) : activeTab === 2 ? (
+            <MyWall userId={userId} userProfile={userProfile} />
           ) : (
-            <>
-              <MyWall userId={userId} userProfile={userProfile} />
-            </>
+            <SocialToken userId={userId} userProfile={userProfile} />
           )}
         </LoadingWrapper>
       </Box>

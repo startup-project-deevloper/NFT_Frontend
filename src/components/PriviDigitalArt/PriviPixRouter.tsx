@@ -42,6 +42,7 @@ export default function PriviPixRouter(props) {
       <Route exact path="/explorer/:collectionName" component={CollectionPage} />
       <Route exact path="/like" component={LikedPage} />
       <Route exact path="/pods" component={PodPage} />
+      <Route exact path="/pods/:podId" component={PodPageIndividual} />
       <Route exact path="/marketplace" component={MarketplacePage} />
       <Route exact path="/loan" component={NFTLoansPage} />
       <Route exact path="/loan/positions" component={NFTPositionManagerPage} />

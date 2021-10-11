@@ -11,7 +11,7 @@ const Header = ({ cardHidden }) => {
   return (
     <Box width={1}>
       <Box className={`headerBox ${classes.headerBox}`} zIndex={1}>
-        <img src={require("assets/logos/privi_pix_alpha.png")} className={`logo ${classes.logo}`} />
+        <img src={require("assets/logos/privi_pix_alpha.svg")} className={`logo ${classes.logo}`} />
         {!cardHidden && (
           <img src={require("assets/pixImages/PixCards.png")} className={`card ${classes.card}`} />
         )}

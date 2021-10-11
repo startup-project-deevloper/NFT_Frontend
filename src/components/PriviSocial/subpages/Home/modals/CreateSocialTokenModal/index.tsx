@@ -167,7 +167,7 @@ export default function CreateSocialTokenModal({ handleRefresh, handleClose, ope
         HasPhoto: socialToken.photo ? true : false,
         Description: socialToken.Description || "",
       };
-      const resp = await createSocialToken(payload, additionalData);
+      const resp = await createSocialToken(payload);
       if (resp.success) {
         const id = resp.data?.id;
         if (socialToken.photo && id) await uploadImage(resp.data.id, socialToken.TokenSymbol);

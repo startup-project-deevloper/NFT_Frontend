@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import clsx from "clsx";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { getRaisedTrendingPods, getPods } from "shared/services/API/PriviPodAPI";
+import { getRaisedTrendingPods, getPods, getPodsProposal } from "shared/services/API/PriviPodAPI";
 
 import NFTPodCard from "components/PriviDigitalArt/components/Cards/NFTPodCard";
 import CreatePodModal from "components/PriviDigitalArt/modals/CreatePodModal/CreatePodModal";
@@ -69,12 +69,12 @@ const PodPage = () => {
   // pods
   const [pods, setPods] = useState<any[]>([]);
   const [hasMorePods, setHasMorePods] = useState<boolean>(true);
-  const [lastIdx, setLastIdx] = useState<string>("null");
   const [pagination, setPagination] = useState<number>(1);
 
   const [proposals, setProposals] = useState<any[]>([]);
   const [isLoadingProposals, setIsLoadingProposals] = useState<boolean>(false);
   const [hasMoreProposals, setHasMoreProposals] = useState<boolean>(true);
+  const [lastId, setLastId] = useState<any>();
 
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
@@ -92,7 +92,6 @@ const PodPage = () => {
   }, []);
 
   useEffect(() => {
-    setLastIdx("null");
     if (user?.address && !isLoadingProposals) {
       loadMoreProposals();
     }
@@ -144,21 +143,21 @@ const PodPage = () => {
   };
 
   const loadMoreProposals = (isInit = false) => {
-    // setIsLoadingProposals(true);
-    // musicDaoGetPodsProposal(user.address, debouncedSearchValue, isInit ? undefined : lastId)
-    //   .then(resp => {
-    //     if (resp?.success) {
-    //       if (isInit) {
-    //         setProposals(resp.data);
-    //       } else {
-    //         setProposals(prev => [...prev, ...resp.data]);
-    //       }
-    //       setLastId(resp.lastId);
-    //       setHasMoreProposals(resp.data.length === 20);
-    //     } else setProposals([]);
-    //   })
-    //   .catch(_ => setProposals([]))
-    //   .finally(() => setIsLoadingProposals(false));
+    setIsLoadingProposals(true);
+    getPodsProposal(user.address, debouncedSearchValue, isInit ? undefined : lastId, apiType)
+      .then(resp => {
+        if (resp?.success) {
+          if (isInit) {
+            setProposals(resp.data);
+          } else {
+            setProposals(prev => [...prev, ...resp.data]);
+          }
+          setLastId(resp.lastId);
+          setHasMoreProposals(resp.data.length === 20);
+        } else setProposals([]);
+      })
+      .catch(_ => setProposals([]))
+      .finally(() => setIsLoadingProposals(false));
   };
   const onClickFilterTag = (tag) => {
     setFilterOption(tag);

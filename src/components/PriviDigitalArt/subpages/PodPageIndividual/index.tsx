@@ -1,412 +1,440 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Helmet } from "react-helmet";
-import cls from "classnames";
+import Web3 from "web3";
+import { useParams } from "react-router-dom";
+import SimpleCarousel from "react-simply-carousel";
 
-import { Grid, Tabs } from "@material-ui/core";
-
+import Staking from "./subPages/Staking";
+import Investments from "./subPages/Investments";
+import Discussion from "./subPages/Discussion";
+import Chat from "./subPages/Chat";
+import { Media } from "./subPages/Media";
+import Discord from "./Discord";
+import { Proposals } from "./subPages/Proposals";
+import { ProposalPodCard } from "components/PriviDigitalArt/components/Cards/ProposalPodCard";
+import NewDistributionModal from "components/PriviDigitalArt/modals/NewDistributionModal";
+import PodHeader from "./Header";
+import PodArtists from "./Artists";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { Avatar, Text, SecondaryButton, FontSize, HeaderBold2 } from "shared/ui-kit";
-import URL from "shared/functions/getURL";
 import Box from "shared/ui-kit/Box";
-import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
-import { getRandomAvatar } from "shared/services/user/getUserAvatar";
-import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { getMediaPod } from "shared/services/API";
-import { formatNumber } from "shared/functions/commonFunctions";
-import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import { SharePopup } from "shared/ui-kit/SharePopup";
-import { sumTotalViews } from "shared/functions/totalViews";
-import { BackButton } from "../../components/BackButton";
-import { MediaPhotoDetailsModal } from "../../modals/MediaPhotoDetailsModal";
-import Media from "./components/Media";
-import Investment from "./components/Investment";
-import Discussion from "./components/Discussion";
-import Chat from "./components/Chat";
-import { usePodPageStyles } from "./index.styles";
-import { useHistory, useParams } from "react-router-dom";
+import { LoadingWrapper } from "shared/ui-kit/Hocs/LoadingWrapper";
+import { getPod } from "shared/services/API/PriviPodAPI";
+import { Gradient, SecondaryButton } from "shared/ui-kit";
+import { default as ServerURL } from "shared/functions/getURL";
+
+import { usePodPageIndividualStyles } from "./index.styles";
+import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
+import { BlockchainNets } from "shared/constants/constants";
+import { useWeb3React } from "@web3-react/core";
+import { onGetNonDecrypt } from "shared/ipfs/get";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+
+const apiType = 'pix';
+const PODSTABOPTIONS = ["Media", "Reward", "Investments", "Discussion", "Chat", "Proposals"];
+
+const getPodState = pod => {
+  if (pod && pod.FundingDate && pod.FundingDate > Math.trunc(Date.now() / 1000)) {
+    pod.status = "Funding";
+  } else if (
+    pod &&
+    pod.FundingDate &&
+    pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
+    (pod.RaisedFunds || 0) < pod.FundingTarget
+  ) {
+    pod.status = "Funding Failed";
+  } else if (
+    pod &&
+    pod.FundingDate &&
+    pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
+    (pod.RaisedFunds || 0) >= pod.FundingTarget
+  ) {
+    pod.status = "Funded";
+  }
+  return pod;
+};
 
 const PodPageIndividual = () => {
-  const parmas: any = useParams();
-  const history = useHistory();
-
-  const classes = usePodPageStyles();
-  const { showAlertMessage } = useAlertMessage();
-  const { convertTokenToUSD } = useTokenConversion();
+  const classes = usePodPageIndividualStyles();
+  const params: any = useParams();
   const user = useTypedSelector(state => state.user);
 
-  const [pod, setPod] = useState<any>({});
-  const [creatorData, setCreatorData] = useState<any>({});
+  const [podMenuSelection, setPodMenuSelection] = useState<string>(PODSTABOPTIONS[0]);
+  const [pod, setPod] = useState<any>();
+  const [podInfo, setPodInfo] = useState<any>(null);
+  const [followed, setFollowed] = useState<boolean>(false);
+  const [isCreatorOrCollab, setIsCreatorOrCollab] = useState<boolean>(false);
 
-  const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [openOptionsMenu, setOpenOptionsMenu] = useState<boolean>(false);
-  const anchorOptionsMenuRef = React.useRef<HTMLDivElement>(null);
+  const [generalChat, setGeneralChat] = useState<string>("");
+
+  const [activeSlide, setActiveSlide] = useState<number>(0);
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
-  const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
-  const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
-  const [status, setStatus] = React.useState<any>("");
+  const [discussions, setDiscussions] = useState<any>();
+  const [openDistributionTopic, setOpenDistributionTopic] = useState<boolean>(false);
 
-  const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
+  const [fundingEnded, setFundingEnded] = useState<boolean>(false);
+  const [fundingEndTime, setFundingEndTime] = useState<any>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  const { library } = useWeb3React();
+
+  const podId = params?.podId;
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const [imageIPFS, setImageIPFS] = useState({});
+
+  const isFunded = React.useMemo(
+    () =>
+      pod &&
+      pod.FundingDate &&
+      pod.FundingDate < Math.trunc(Date.now() / 1000) &&
+      (pod.RaisedFunds || 0) > pod.FundingTarget,
+    [pod]
+  );
 
   useEffect(() => {
-    if (parmas.id) {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  useEffect(() => {
+    if (podId && ipfs && Object.keys(ipfs).length !== 0) {
       loadData();
     }
-  }, [parmas.id]);
+  }, [podId, ipfs]);
 
   useEffect(() => {
-    if (pod && pod?.Bookmarks && pod?.Bookmarks.some((id: string) => id === user.id)) setBookmarked(true);
+    if (pod?.FundingDate) {
+      const timerId = setInterval(() => {
+        const now = new Date();
+        let delta = Math.floor(pod.FundingDate - now.getTime() / 1000);
 
-    // check if user already followed the pod
-    const followers: any[] = pod?.Followers ?? [];
-    if (followers) {
-      let followed = false;
-      followers.forEach(followerData => {
-        if (followerData.id === user.id) {
-          followed = true;
+        if (delta < 0) {
+          setFundingEnded(true);
+          setFundingEndTime({
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+          });
+          clearInterval(timerId);
+        } else {
+          let days = Math.floor(delta / 86400);
+          delta -= days * 86400;
+
+          // calculate (and subtract) whole hours
+          let hours = Math.floor(delta / 3600) % 24;
+          delta -= hours * 3600;
+
+          // calculate (and subtract) whole minutes
+          let minutes = Math.floor(delta / 60) % 60;
+          delta -= minutes * 60;
+
+          // what's left is seconds
+          let seconds = delta % 60;
+          setFundingEnded(false);
+          setFundingEndTime({
+            days,
+            hours,
+            minutes,
+            seconds,
+          });
         }
-      });
-      setIsFollowing(followed);
+
+        const podRef = pod;
+        setPod(getPodState(podRef));
+      }, 1000);
+
+      return () => clearInterval(timerId);
     }
-  }, [pod]);
+  }, [pod?.FundingDate]);
+
+  useEffect(() => {
+    if (!pod || !pod.PodAddress) return;
+
+    (async () => {
+      if (ipfs && Object.keys(ipfs).length !== 0) {
+        const web3APIHandler = BlockchainNets[1].apiHandler;
+        const web3 = new Web3(library.provider);
+
+        const podInfo = await web3APIHandler?.PodManager.getPodInfo(web3, {
+          podAddress: pod.PodAddress,
+          fundingToken: pod.FundingToken,
+        });
+        setPodInfo(podInfo);
+      }
+    })();
+
+    const podRef = pod;
+    setPod(getPodState(podRef));
+  }, [pod, pod?.PodAddress]);
+
+  const getImageIPFS = async (cid: string) => {
+    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
+      downloadWithNonDecryption(fileCID, download)
+    );
+    if (files) {
+      let base64String = _arrayBufferToBase64(files.content);
+      setImageIPFS("data:image/png;base64," + base64String);
+    }
+  };
+
+  const createNewTopic = (title, description) => {
+    axios
+      .post(`${ServerURL()}/podDiscussion/new/newChat`, {
+        title,
+        description,
+        podId,
+        createdBy: user.id,
+        podType: "TRAX",
+      })
+      .then(response => {
+        const resp = response.data.data;
+        const newDiscussionData = [{ id: resp.topicId, ...resp.topicData }, ...discussions];
+        setDiscussions(newDiscussionData);
+      });
+  };
 
   const loadData = async () => {
-    setIsDataLoading(true);
-    await getMediaPod(parmas.id)
-      .then(async resp => {
-        if (resp.success) {
-          const data = resp.data;
-          sumTotalViews(data, true);
-          const creatorsData = data.CreatorsData ?? [];
-          if (creatorData) {
-            creatorsData.forEach(creatorData => {
-              if (!creatorData.imageUrl) {
-                if (creatorData.anonAvatar)
-                  creatorData.imageUrl = require(`assets/anonAvatars/${creatorData.anonAvatar}`);
-                else creatorData.imageUrl = getRandomAvatar();
-              }
-              if (creatorData.address === data.CreatorAddress) setCreatorData(creatorData);
-            });
+    if (podId) {
+      try {
+        const resp = await getPod(podId, apiType);
+        if (resp?.success) {
+          let podData = resp.data;
+          podData = getPodState(podData);
+
+          if (!podData.distributionProposalAccepted) {
+            let privateChats: any[] = podData.PrivateChats;
+
+            let generalChat: any = privateChats.find(chat => chat.title === "General");
+            if (generalChat && generalChat.id) {
+              setGeneralChat(generalChat.id);
+            }
           }
-          setPod(data);
-        }
-      })
-      .finally(() => {
-        setIsDataLoading(false);
-      });
-  };
 
-  const handleOpenShareMenu = () => {
-    setOpenShareMenu(!openShareMenu);
-  };
-
-  const handleCloseShareMenu = () => {
-    setOpenShareMenu(false);
-  };
-
-  const handleFollow = e => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const body = {
-      userId: user.id,
-      podId: pod.PodAddress,
-    };
-
-    if (!isFollowing) {
-      axios.post(`${URL()}/mediaPod/followMediaPod`, body).then(res => {
-        const resp = res.data;
-        if (resp.success) {
-          setStatus({
-            msg: "follow success",
-            key: Math.random(),
-            variant: "success",
-          });
-          const followers: any[] = pod?.Followers ?? [];
-          if (followers) {
-            followers.push({
-              date: Date.now(),
-              id: user.id,
-            });
-            setPod(prev => ({ ...prev, Followers: followers }));
+          let isCollab = podData.Collabs.findIndex(collab => collab.userId === user.id);
+          if (podData.CreatorId === user.id || isCollab !== -1) {
+            setIsCreatorOrCollab(true);
           }
-        } else {
-          setStatus({
-            msg: "follow failed",
-            key: Math.random(),
-            variant: "error",
-          });
-        }
-      });
-    } else {
-      axios.post(`${URL()}/mediaPod/unFollowMediaPod`, body).then(res => {
-        const resp = res.data;
-        if (resp.success) {
-          setStatus({
-            msg: "unfollow success",
-            key: Math.random(),
-            variant: "success",
-          });
-          const followers: any[] = pod?.Followers ?? [];
-          if (followers) {
-            const updatedFollowers = followers.filter(item => item.id !== user.id);
-            setPod(prev => ({ ...prev, Followers: updatedFollowers }));
+
+          setPod(podData);
+          if (podData && podData.InfoImage && podData.InfoImage.newFileCID) {
+            getImageIPFS(podData.InfoImage.newFileCID);
           }
-        } else {
-          setStatus({
-            msg: "unfollow failed",
-            key: Math.random(),
-            variant: "error",
-          });
+          const followers: any[] = podData.Followers ?? [];
+          setFollowed(followers.find(followerData => followerData.id == user.id) != undefined);
         }
-      });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
-  const bookmarkMedia = () => {
-    axios
-      .post(`${URL()}/media/bookmarkMedia/${pod?.MediaSymbol ?? pod?.id}`, {
-        userId: user.id,
-        mediaType: pod?.Type,
-      })
-      .then(res => {
-        showAlertMessage("Bookmarked media", { variant: "success" });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  const handleRefresh = () => {
+    loadData();
   };
 
-  const unBookmarkMedia = () => {
-    axios
-      .post(`${URL()}/media/removeBookmarkMedia/${pod?.MediaSymbol ?? pod?.id}`, {
-        userId: user.id,
-        mediaType: pod?.Type,
-      })
-      .then(res => {
-        showAlertMessage("Removed bookmark", { variant: "success" });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const handleBookmark = React.useCallback(() => {
-    if (!bookmarked) bookmarkMedia();
-    else unBookmarkMedia();
-  }, [bookmarked, bookmarkMedia, unBookmarkMedia]);
-
-  const handleOptions = () => {
-    setOpenOptionsMenu(!openOptionsMenu);
-  };
-
-  const handleOpenMediaPhotoDetailModal = () => {
-    setIsShowingMediaPhotoDetailModal(true);
-  };
-
-  const handleCloseMediaPhotoDetailModal = () => {
-    setIsShowingMediaPhotoDetailModal(false);
-  };
-
-  const handleFruit = type => {
-    const body = {
-      userId: user.id,
-      fruitId: type,
-      podAddress: pod?.PodAddress ?? pod?.id,
-    };
-
-    axios.post(`${URL()}/mediaPod/fruit`, body).then(res => {
-      const resp = res.data;
-      if (resp.success) {
-        const itemCopy = { ...pod };
-        itemCopy.fruits = [
-          ...(itemCopy.fruits || []),
-          { userId: user.id, fruitId: type, date: new Date().getTime() },
-        ];
-        setPod(itemCopy);
-      }
-    });
-  };
-
-  return (
-    <div className={classes.page}>
-      <Helmet>
-        <title>{pod?.Name ?? "pod.name"}</title>
-        <meta property="og:image" content={pod?.Type === "DIGITAL_ART_TYPE" ? pod?.Url : pod?.ImageUrl} />
-        <meta name="og:image" content={pod?.mediaURL} />
-        <meta property="og:image:width" content="1280" />
-        <meta property="og:image:height" content="720" />
-      </Helmet>
-      <div className={classes.content}>
-        <Box mb="24px" mt="32px">
-          <BackButton dark />
-        </Box>
-        <LoadingWrapper loading={!pod || isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
-          <Box>
-            <Grid className={classes.headerBlur} container spacing={2}>
-              <Box className={classes.gradientImage1} />
-              <Box className={classes.gradientImage2} />
-              <Grid item sm={12} className={classes.headerContentMobileImage}>
-                <img
-                  src={pod?.Url || `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`}
-                  className={classes.detailImg}
-                  width="100%"
-                  height="100%"
+  return (pod && !pod.PodAddress) || (pod && pod.PodAddress && podInfo) ? (
+    <Box className={classes.container}>
+      <Box className={classes.subContainer}>
+        <PodHeader
+          pod={pod}
+          followed={followed}
+          setFollowed={setFollowed}
+          fundingEnded={fundingEnded}
+          fundingEndTime={fundingEndTime}
+          imageIPFS={imageIPFS}
+        />
+        <PodArtists pod={pod} />
+        {pod.distributionProposalAccepted && (
+          <div className={classes.podSubPageHeader}>
+            <Box className={classes.flexBox} justifyContent="center">
+              {PODSTABOPTIONS.map((item, index) => {
+                if (item !== "Proposals" || (isCreatorOrCollab && isFunded)) {
+                  if (item !== "Reward" || isFunded) {
+                    return (
+                      <Box
+                        key={`pod-detail-tab-${index}`}
+                        className={`${classes.tabBox} ${
+                          podMenuSelection === item ? classes.selectedTabBox : ""
+                        }`}
+                        onClick={() => setPodMenuSelection(item)}
+                      >
+                        {item}
+                      </Box>
+                    );
+                  }
+                }
+              })}
+            </Box>
+          </div>
+        )}
+        <div className={classes.podSubPageContent}>
+          {pod.distributionProposalAccepted && (
+            <Box pt={1}>
+              {podMenuSelection === PODSTABOPTIONS[0] && (
+                <Media medias={pod.Medias} pod={pod} handleRefresh={loadData} />
+              )}
+              {podMenuSelection === PODSTABOPTIONS[1] && (
+                <Staking pod={pod} handleRefresh={loadData} podInfo={podInfo} />
+              )}
+              {podMenuSelection === PODSTABOPTIONS[2] && podInfo && (
+                <Investments pod={pod} podInfo={podInfo} handleRefresh={loadData} />
+              )}
+              {podMenuSelection === PODSTABOPTIONS[3] && (
+                <Discussion
+                  podId={podId}
+                  pod={pod}
+                  refreshPod={() => loadData()}
+                  isCreatorOrCollab={isCreatorOrCollab}
                 />
-              </Grid>
-              <Grid item sm={12} md={8} lg={9} className={classes.headerContent}>
-                <HeaderBold2 noMargin>{pod?.Name}</HeaderBold2>
-                <Box display="flex" gridColumnGap={4} alignItems="center" mt={1}>
-                  {pod?.Hashtags &&
-                    pod?.Hashtags.map((item, index) => (
-                      <span className={classes.hashtag} key={index}>
-                        #{item}
-                      </span>
-                    ))}
-                </Box>
-                <Box className={classes.description} mt={2}>
-                  <Text size={FontSize.L}>{pod?.Description}</Text>
-                </Box>
-                <Box display="flex" flexDirection="row" alignItems="center" mt={5}>
-                  {pod.CreatorsData && pod.CreatorsData.length > 0 && (
-                    <Box display="flex" alignItems="center" my={2}>
-                      {pod.CreatorsData.map((creator: any) => (
-                        <Avatar
-                          key={`artist-${creator.id}`}
-                          className={classes.artist}
-                          size="small"
-                          url={creator.imageUrl}
-                          alt={creator.id}
-                          title={`${creator.name}`}
-                          onClick={() => history.push(`/${creator.id}/profile`)}
-                        />
-                      ))}
+              )}
+              {podMenuSelection === PODSTABOPTIONS[4] && (
+                /*isCreatorOrCollab && isFunded &&*/ <Chat
+                  podId={podId}
+                  pod={pod}
+                  podInfo={podInfo}
+                  refreshPod={() => loadData()}
+                  openProposal={() => setPodMenuSelection("Proposals")}
+                />
+              )}
+              {podMenuSelection === "Proposals" && isCreatorOrCollab && isFunded && <Proposals pod={pod} />}
+            </Box>
+          )}
+          {!pod.distributionProposalAccepted && (
+            <Box>
+              {/* Proposals title bar */}
+              <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Box className={classes.header4}>All Proposals</Box>
+                {pod.Proposals && pod.Proposals.length !== 0 ? (
+                  <Box display="flex" alignItems="center">
+                    <Box
+                      className={classes.arrowBox}
+                      onClick={() => setActiveSlide(prev => Math.max(0, prev - 1))}
+                    >
+                      <LeftArrowIcon />
                     </Box>
-                  )}
-                  <Box ml={1.5}>
-                    <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
-                      <img src={require(`assets/icons/share_filled.svg`)} alt="like" />
-                    </div>
+                    <Box
+                      style={{ transform: `rotate(180deg)` }}
+                      className={classes.arrowBox}
+                      ml={3}
+                      onClick={() => setActiveSlide(prev => Math.min(5, prev + 1))}
+                    >
+                      <LeftArrowIcon />
+                    </Box>
                   </Box>
-                  <Box ml={4} mr={3} style={{ background: "rgba(67, 26, 183, 0.32)", borderRadius: "50%" }}>
-                    <FruitSelect fruitObject={pod} onGiveFruit={handleFruit} />
-                  </Box>
-                  {user.address !== pod.CreatorAddress && (
-                    <SecondaryButton size="small" onClick={handleFollow} className={classes.followBtn}>
-                      {isFollowing ? "Unfollow" : "+ Follow"}
-                    </SecondaryButton>
-                  )}
-                </Box>
-              </Grid>
-              <Grid item sm={12} md={4} lg={3} className={classes.headerContentImage}>
-                <img
-                  src={pod?.Url || `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`}
-                  className={classes.detailImg}
-                  width="100%"
-                  height="100%"
-                />
-              </Grid>
-            </Grid>
-            <div className={classes.greenBox}>
-              <Box>
-                <h5>Price</h5>
-                <h3>{formatNumber(convertTokenToUSD(pod.FundingToken, pod?.Price ?? 0), "USD", 4)}</h3>
+                ) : null}
               </Box>
-              <Box>
-                <h5>Interest Rate</h5>
-                <h3>{(pod?.InvestorDividend ?? 0) * 100}%</h3>
+              {/* Proposals cards */}
+              <Box width={1} overflow="hidden">
+                {!pod.Proposals || pod.Proposals.length === 0 ? (
+                  <p
+                    style={{
+                      width: "100%",
+                      marginTop: "30px",
+                      textAlign: "center",
+                      color: "grey",
+                    }}
+                  >
+                    No proposals yet
+                  </p>
+                ) : (
+                  <SimpleCarousel
+                    containerProps={{
+                      style: {
+                        width: "100%",
+                        justifyContent: "flex-start",
+                      },
+                    }}
+                    activeSlideIndex={activeSlide}
+                    onAfterChange={setActiveSlide}
+                    forwardBtnProps={{
+                      style: {
+                        display: "none",
+                      },
+                    }}
+                    backwardBtnProps={{
+                      style: {
+                        display: "none",
+                      },
+                    }}
+                    speed={400}
+                    infinite={false}
+                  >
+                    {pod.Proposals.map((proposal, i) => {
+                      return (
+                        <Box width={"600px"} pr={2} key={i}>
+                          <ProposalPodCard
+                            podId={podId}
+                            pod={pod}
+                            proposal={proposal}
+                            handleRefresh={handleRefresh}
+                            handleNewProposalModal={() => setOpenDistributionTopic(true)}
+                          />
+                        </Box>
+                      );
+                    })}
+                  </SimpleCarousel>
+                )}
               </Box>
-              <Box>
-                <h5>Raised Funds</h5>
-                <h3>{formatNumber(convertTokenToUSD(pod.FundingToken, pod?.RaisedFunds ?? 0), "USD", 4)}</h3>
-              </Box>
-              <Box>
-                <h5>Market Cap</h5>
-                <h3>
-                  {formatNumber(
-                    (pod?.SupplyReleased ?? 0) * convertTokenToUSD(pod.FundingToken, pod?.Price ?? 0),
-                    "USD",
-                    4
-                  )}
-                </h3>
-              </Box>
-              <Box>
-                <h5>Supply Released</h5>
-                <h3>{formatNumber(pod?.SupplyReleased ?? 0, pod.TokenSymbol, 4)}</h3>
-              </Box>
-              <Box>
-                <h5>Share & Earn</h5>
-                <h3>{pod?.SharingPercent ?? 0}%</h3>
-              </Box>
-              <Box>
-                <h5>Revenue</h5>
-                <h3>{pod?.Revenue ?? 0}</h3>
-              </Box>
-            </div>
-            <SharePopup
-              item={pod}
-              openMenu={openShareMenu}
-              anchorRef={anchorShareMenuRef}
-              handleCloseMenu={handleCloseShareMenu}
-            />
-            <Tabs variant="scrollable" style={{ marginTop: "40px" }}>
-              {["Media", "Investment", "Discussion"].map((t, i) => (
-                <div
-                  onClick={() => setSelectedTab(i)}
-                  className={cls({ [classes.selectedTab]: i === selectedTab }, classes.tab)}
+              {/* Discussion title bar */}
+              <Box className={classes.flexBox} justifyContent="space-between" my={3}>
+                <div className={classes.header4}>Discussion</div>
+                <SecondaryButton
+                  size="medium"
+                  onClick={() => setOpenDistributionTopic(true)}
+                  isRounded
+                  style={{ border: "none", background: Gradient.Green1, color: "white" }}
                 >
-                  {t}
-                </div>
-              ))}
-            </Tabs>
-
-            <hr className={classes.divider} style={{ margin: "24px 0px" }} />
-            {selectedTab === 0 ? (
-              <Media
-                medias={pod?.Medias ?? []}
-                pod={pod}
-                creator={creatorData}
-                handleRefresh={loadData}
-                loading={isDataLoading}
-              />
-            ) : selectedTab === 1 ? (
-              <Investment pod={pod} handleRefresh={loadData} />
-            ) : selectedTab === 2 ? (
-              <Discussion
-                pod={{
-                  ...pod,
-                  // PostsArray: [1, 2, 3, 4, 5, 6, 7].map(item => ({
-                  //   hasPhoto: item < 3,
-                  //   imageUrl: require("assets/backgrounds/blog.png"),
-                  //   userImageURL: getRandomAvatar(),
-                  //   name: "Rallying market when providing stablecoins drop.",
-                  //   textShort: "That seems to be the most risky thing to do now",
-                  //   replies: [{ userId: user.id, message: "test" }],
-                  //   isPinned: item === 3,
-                  // })),
-                  // Votings: [1, 2, 3, 4, 5, 6, 7].map(item => ({
-                  //   name: "Do you think that having Cardano as collateral could benefit this pool?",
-                  //   EndingDate: new Date().getTime(),
-                  // })),
-                }}
-                handleRefresh={loadData}
-              />
-            ) : (
-              <Chat pod={pod} />
-            )}
-            <MediaPhotoDetailsModal
-              isOpen={isShowingMediaPhotoDetailModal}
-              onClose={handleCloseMediaPhotoDetailModal}
-              imageURL={pod?.Url || `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`}
-            />
-          </Box>
-        </LoadingWrapper>
-      </div>
-    </div>
+                  New Distribution Proposal
+                </SecondaryButton>
+              </Box>
+              {/* Discussion card */}
+              <Box className={classes.discussionContent}>
+                <LoadingWrapper loading={isDataLoading}>
+                  <Discord
+                    podId={podId}
+                    chatType={"PrivateChat"}
+                    chatId={generalChat}
+                    sidebar={false}
+                    theme="dark"
+                  />
+                </LoadingWrapper>
+              </Box>
+            </Box>
+          )}
+        </div>
+      </Box>
+      {openDistributionTopic && (
+        <NewDistributionModal
+          pod={pod}
+          podId={podId}
+          open={openDistributionTopic}
+          handleRefresh={handleRefresh}
+          onClose={() => setOpenDistributionTopic(false)}
+          createNewTopic={createNewTopic}
+        />
+      )}
+    </Box>
+  ) : (
+    <LoadingWrapper loading />
   );
 };
 
-export default React.memo(PodPageIndividual);
+export default PodPageIndividual;
+
+const LeftArrowIcon = () => (
+  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M6.13229 11.3846L1.0744 6.48479M1.0744 6.48479L6.13229 1.58496M1.0744 6.48479H13.9277"
+      stroke="#181818"
+      stroke-width="1.5122"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);

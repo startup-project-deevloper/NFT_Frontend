@@ -19,7 +19,6 @@ export const FractionaliseModal = ({
   const [step, setStep] = useState<number>(0);
   const [syntheticNFT, setSyntheticNFT] = useState<any>();
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-
   const handleCompleteStep = stepIndex => {
     setStep(stepIndex + 1);
     if (completedSteps.includes(stepIndex)) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,14 +6,18 @@ import { Modal } from "shared/ui-kit/Modal";
 
 interface ILoadingScreenProps {
   loading: boolean;
-  title: string;
+  title?: string;
   subTitle?: string | React.ReactNode;
+  TitleRender?: FC;
+  SubTitleRender?: FC;
   handleClose: () => void;
 }
 
 export const LoadingScreen: React.FC<ILoadingScreenProps> = ({
   loading,
   title,
+  TitleRender,
+  SubTitleRender,
   subTitle,
   handleClose,
   children,
@@ -34,9 +38,9 @@ export const LoadingScreen: React.FC<ILoadingScreenProps> = ({
               color: "#431AB7",
             }}
           >
-            {title.toUpperCase()}
+            {TitleRender ? <TitleRender /> : title?.toUpperCase()}
           </h3>
-          <p style={{ fontSize: "18px", marginTop: "20px", whiteSpace: "pre-wrap" }}>{subTitle}</p>
+          <p style={{ fontSize: "18px", marginTop: "20px", whiteSpace: "pre-wrap" }}>{SubTitleRender ? <SubTitleRender /> : subTitle}</p>
         </Box>
       </Box>
     </Modal>

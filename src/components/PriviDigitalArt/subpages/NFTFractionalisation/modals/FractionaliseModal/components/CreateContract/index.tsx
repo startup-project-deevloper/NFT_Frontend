@@ -128,7 +128,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const jotAPI = JOT(network);
       const decimals = await jotAPI.decimals(web3, jotContractAddress);
       const tSupply = toNDecimals(+supplyToKeep, decimals);
-
+      const tokenURI = selectedNFT.tokenURI;
       const gas = await contract.methods
         .registerNFT(
           selectedNFT.tokenAddress,
@@ -137,7 +137,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           price,
           collectionInfo.data.name,
           collectionInfo.data.symbol,
-          ""
+          tokenURI
         )
         .estimateGas({ from: account });
       const response = await contract.methods
@@ -148,7 +148,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           price,
           collectionInfo.data.name,
           collectionInfo.data.symbol,
-          ""
+          tokenURI
         )
         .send({ from: account, gas })
         .on("transactionHash", hash => {
@@ -170,6 +170,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             collectionAddress: selectedNFT.tokenAddress,
             SyntheticID: nftInfo.syntheticTokenId,
             NftId: selectedNFT.BlockchainId,
+            NFTImageUrl: selectedNFT.Url,
             JotName: `Privi Jot ${selectedNFT.MediaName}`,
             JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
             JotAddress: collection.jotAddress,
@@ -195,6 +196,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             collectionAddress: selectedNFT.tokenAddress,
             SyntheticID: nftInfo.syntheticTokenId,
             NftId: selectedNFT.BlockchainId,
+            NFTImageUrl: selectedNFT.Url,
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
             isAddCollection: false,

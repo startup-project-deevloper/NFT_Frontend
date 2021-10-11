@@ -7,73 +7,80 @@ import * as LightweightCharts from 'lightweight-charts';
 import { Color } from "shared/ui-kit";
 import { format, addDays, setMinutes, setHours, setSeconds, setMilliseconds } from "date-fns";
 
-const intervals = ['1D', '7D', '1M', 'YTD'];
-
 export default function PriceGraph({ data, title, subTitle }) {
     const classes = PriceGraphStyles();
 
     const theme = useTheme();
-    const isTablet = useMediaQuery(theme.breakpoints.between(769, 960));
-	const isMobile = useMediaQuery(theme.breakpoints.down(700));
 	const [seriesesData, setSeriesData] = useState<any>(null)
-	const [timeVisible, setTimeVisible] = useState<boolean>(false);
+	const [intervals, setIntervals] = useState<Array<string>>(['1D', '7D']);
 	
 	useEffect(() => {
 		const dayData: any[] = [];
 		const weekData: any[] = [];
 		const monthData: any[] = [];
-		const ystData: any[] = [];
+		const yearData: any[] = [];
 
-		
-		let hour = 0;
-		let day = 0;
-		let month = 0;
-		let week = 0;
+		let day = '';
+		let month = '';
+		let week = '';
+		let year = '';
 		const yesterday = addDays(new Date(), -1);
 		const start = setSeconds(setMinutes(setHours(yesterday, 0), 0), 0);
 		const end = setMilliseconds(setSeconds(setMinutes(setHours(yesterday, 23), 59), 59), 999);
 
 		data.forEach((m) => {
-			if (hour !== m.hour && m.hour > start && m.hour < end) {
-				ystData.push({
-					time: Math.floor(m.timestamp / 1000),
+			const dayFormat = format(new Date(m.timestamp), "yyyy-MM-dd");
+			const monthFormat = format(new Date(m.timestamp), "yyyy-MM");
+			const yearFormat = format(new Date(m.timestamp), "yyyy");
+
+			if (year !== yearFormat) {
+				yearData.push({
+					time: dayFormat,
 					value: +m.price
 				});
-				hour = m.hour;
+				year = yearFormat;
 			}
-
-			if (day !== m.day) {
-				dayData.push({
-					time: format(new Date(m.timestamp), "yyyy-MM-dd"),
-					value: +m.price
-				});
-				day = m.day;
-			}
-
-			if (month !== m.month) {
+			if (month !== monthFormat) {
 				monthData.push({
-					time: format(new Date(m.timestamp), "yyyy-MM-dd"),
+					time: dayFormat,
 					value: +m.price
 				});
-				month = m.month;
+				month = monthFormat;
 			}
-			if (week !== m.week) {
+			if (week !== dayFormat) {
 				weekData.push({
-					time: format(new Date(m.timestamp), "yyyy-MM-dd"),
+					time: dayFormat,
 					value: +m.price
 				});
-				week = m.week;
+				week = dayFormat;
+			}
+			if (day !== dayFormat) {
+				dayData.push({
+					time: dayFormat,
+					value: +m.price
+				});
+				day = dayFormat;
 			}
 		})
 
+		const mapData: any = [
+			['1D', dayData],
+			['7D', weekData]
+		];
+		const intervalData: string[] = [...intervals];
 
+		if (monthData.length > 1) {
+			intervalData.push('1D');
+			mapData.push(['1M', monthData]);
+		}
+		if (yearData.length > 1) {
+			intervalData.push('YTD');
+			mapData.push(['YTD', yearData]);
+		}
+
+		setIntervals(intervalData)
 		// @ts-ignore
-		setSeriesData(new Map([
-			['1D', dayData ],
-			['7D', weekData ],
-			['1M', monthData ],
-			['YTD', ystData ],
-		]))
+		setSeriesData(new Map(mapData))
 	}, [data])
 
     useEffect(() => {
@@ -137,11 +144,7 @@ export default function PriceGraph({ data, title, subTitle }) {
 				timeVisible: true,
 				borderVisible: false,
 				fixLeftEdge: true,
-				fixRightEdge: true,
-				tickMarkFormatter: (time, tickMarkType, locale) => {
-					const t = LightweightCharts.isBusinessDay(time) ? `${time.month}/${time.day}` : format(new Date(time * 1000), "HH:mm");
-					return String(t);
-				}
+				fixRightEdge: true
             },
 		});
 		
@@ -160,10 +163,10 @@ export default function PriceGraph({ data, title, subTitle }) {
                 areaSeries = null;
             }
             areaSeries = chart.addAreaSeries({
-                topColor: 'rgba(76, 175, 80, 0.56)',
-                bottomColor: 'rgba(76, 175, 80, 0.04)',
-                lineColor: 'rgba(76, 175, 80, 1)',
-                lineWidth: 2,
+                topColor: '#DDFF57',
+                bottomColor: '#DDFF5704',
+                lineColor: '#DDFF57',
+                lineWidth: 4,
             });
             areaSeries.setData(seriesesData.get(interval));
         }
@@ -171,7 +174,7 @@ export default function PriceGraph({ data, title, subTitle }) {
 		if (seriesesData) {
 			syncToInterval(intervals[0]);
 		}
-    }, [seriesesData, timeVisible])
+    }, [seriesesData, intervals])
 
     return (
         <Box id="price_chart" className={classes.root}>

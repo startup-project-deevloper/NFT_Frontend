@@ -67,7 +67,7 @@ export default function PriviDigitalArt() {
       }}
     >
       <Helmet>
-        <title>Digital Art NFT Marketplace | Pix</title>
+        <title>PIX</title>
       </Helmet>
       <div className={classes.priviDigitalArt}>
         <Header handleOpenSearcher={() => history.push("/explorer/")} handleRefresh={handleRefresh} />

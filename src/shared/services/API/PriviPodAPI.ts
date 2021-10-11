@@ -88,3 +88,66 @@ export async function priviPodExecutePod(payload: any) {
     throw new Error(e.message);
   }
 }
+
+export async function priviPodInvestPod(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/invest`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodClaimPodTokens(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/claimPodTokens`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodStakeTokens(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/stakeTokens`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodGetStaking(id: any) {
+  try {
+    const response = await axios.get(`${URL()}/priviPod/staking`, {
+      params: {
+        podId: id,
+      },
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function priviPodUnstakeTokens(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/unstakeTokens`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodClaimReward(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/claimReward`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}

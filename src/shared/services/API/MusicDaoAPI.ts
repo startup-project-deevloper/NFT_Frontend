@@ -39,26 +39,6 @@ export async function musicDaoRegisterPodProposal(payload: any) {
   }
 }
 
-export async function priviPodVoteForPodProposal(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/priviPod/new/pod/voteForPodProposal`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function priviPodExecutePod(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/priviPod/new/pod/executePod`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
 export async function musicDaoFollowPod(userId: string, podAddress: string): Promise<any> {
   try {
     const response = await axios.post(`${URL()}/musicDao/pod/followPod`, { userId, podAddress });
@@ -100,49 +80,6 @@ export async function musicDaoUnfollowPod(userId: string, podAddress: string): P
 //     throw new Error(e.message);
 //   }
 // }
-
-export async function priviPodInvestPod(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/priviPod/new/pod/invest`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function priviPodClaimPodTokens(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/priviPod/new/pod/claimPodTokens`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function priviPodStakeTokens(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/priviPod/new/pod/stakeTokens`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function priviPodGetStaking(id: any) {
-  try {
-    const response = await axios.get(`${URL()}/priviPod/new/pod/staking`, {
-      params: {
-        podId: id,
-      },
-    });
-    return response.data;
-  } catch (e) {
-    console.log(e);
-  }
-}
 
 export async function musicDaoUploadMedia(payload: IUploadMedia, additionalData: Object): Promise<any> {
   try {
@@ -330,26 +267,6 @@ export async function musicDaoGetPodDistributionInfo(podAddress: string): Promis
       },
     };
     const response = await axios.get(`${URL()}/musicDao/pod/getDistributionInfo`, config);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function priviPodUnstakeTokens(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/priviPod/new/pod/unstakeTokens`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function priviPodClaimReward(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/priviPod/new/pod/claimReward`, payload);
     return response.data;
   } catch (e) {
     console.log(e);

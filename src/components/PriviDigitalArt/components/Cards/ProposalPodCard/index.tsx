@@ -132,6 +132,7 @@ export const ProposalPodCard = props => {
       podId,
       podAddress,
       proposalId: proposal.Id,
+      podType: 'PIX'
     });
 
     if (executeResponse.success) {

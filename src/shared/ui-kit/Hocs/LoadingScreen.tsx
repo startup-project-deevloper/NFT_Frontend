@@ -27,7 +27,7 @@ export const LoadingScreen: React.FC<ILoadingScreenProps> = ({
   return loading ? (
     <Modal isOpen={loading} size="medium" showCloseIcon className={classes.root} onClose={handleClose}>
       <Box style={{ textAlign: "center", paddingTop: "50px", paddingBottom: "50px" }}>
-        <LoadingWrapper loading theme="purple" iconWidth="80px" iconHeight="80px"></LoadingWrapper>
+        <LoadingWrapper loading theme="purple" iconWidth="166px" iconHeight="166px"></LoadingWrapper>
         <Box>
           <h3
             style={{

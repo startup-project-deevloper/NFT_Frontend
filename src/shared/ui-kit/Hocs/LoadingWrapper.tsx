@@ -36,6 +36,9 @@ export const LoadingWrapper: React.FC<ILoadingWrapperProps> = ({
               : "#27e8d9",
           width: iconWidth,
           height: iconHeight,
+          padding: 14,
+          border: "1px solid #40465819",
+          borderRadius: "50%"
         }}
       />
     </LoaderDiv>

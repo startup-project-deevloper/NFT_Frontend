@@ -11,7 +11,7 @@ import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-import { musicDaoClaimReward, musicDaoUnstakeTokens } from "shared/services/API";
+import { priviPodClaimReward, priviPodUnstakeTokens } from "shared/services/API";
 import TransactionProgressModal from "../TransactionProgressModal";
 
 const useStyles = makeStyles(() => ({
@@ -153,7 +153,7 @@ export default function UnstakeRedeemModal({
       );
       if (response.success) {
         setTransactionSuccess(true);
-        const resp = await musicDaoUnstakeTokens({
+        const resp = await priviPodUnstakeTokens({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.amount,
@@ -175,7 +175,7 @@ export default function UnstakeRedeemModal({
       );
       if (response.success) {
         setTransactionSuccess(true);
-        const resp = await musicDaoClaimReward({
+        const resp = await priviPodClaimReward({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.reward,
@@ -199,7 +199,7 @@ export default function UnstakeRedeemModal({
       );
       if (response.success) {
         setTransactionSuccess(true);
-        const resp = await musicDaoUnstakeTokens({
+        const resp = await priviPodUnstakeTokens({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.amount,
@@ -221,7 +221,7 @@ export default function UnstakeRedeemModal({
       );
       if (response.success) {
         setTransactionSuccess(true);
-        const resp = await musicDaoClaimReward({
+        const resp = await priviPodClaimReward({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.reward,

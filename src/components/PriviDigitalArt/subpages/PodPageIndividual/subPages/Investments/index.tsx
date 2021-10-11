@@ -18,7 +18,7 @@ import {
   musicDaogGetPodPriceHistory,
   musicDaoGetPodInvestmentTransactions,
   musicDaoGetBuySellTransactions,
-  musicDaoClaimPodTokens,
+  priviPodClaimPodTokens,
 } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import { investmentStyles } from "./index.styles";
@@ -587,7 +587,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
       if (response.success) {
         setTransactionSuccess(true);
 
-        await musicDaoClaimPodTokens({
+        await priviPodClaimPodTokens({
           podId: pod.Id,
           user: userSelector.id,
         });

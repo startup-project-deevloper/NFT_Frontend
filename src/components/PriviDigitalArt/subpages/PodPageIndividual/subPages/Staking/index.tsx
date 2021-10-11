@@ -6,7 +6,7 @@ import Box from "shared/ui-kit/Box";
 import { Gradient, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import TradePodTokenModal from "components/PriviDigitalArt/modals/TradePodTokenModal";
 import { formatNumber, generateMonthLabelsFromDate } from "shared/functions/commonFunctions";
-import { musicDaoGetStaking, musicDaogGetPodPriceHistory } from "shared/services/API";
+import { priviPodGetStaking, musicDaogGetPodPriceHistory } from "shared/services/API";
 import StakingPodCard from "components/PriviDigitalArt/components/Cards/StakingPodCard";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import PodStakingModal from "components/PriviDigitalArt/modals/PodStakingModal";
@@ -391,7 +391,7 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
     });
 
     // load staking positions
-    const response = await musicDaoGetStaking(pod.Id);
+    const response = await priviPodGetStaking(pod.Id);
     if (response?.success) {
       setStakings(response.data);
     }

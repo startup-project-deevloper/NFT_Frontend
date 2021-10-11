@@ -59,7 +59,7 @@ const erc721 = network => {
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods.mint(payload.to, payload.tokenId, payload.uri).send({ from: account, gas: gas });
         console.log("transaction succeed", response);
-        resolve(true);
+        resolve(response.transactionHash);
       } catch (e) {
         console.log(e);
         resolve(null);

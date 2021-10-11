@@ -37,6 +37,8 @@ import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2IPFS";
 import getIPFSURL from "shared/functions/getIPFSURL";
+import TransactionResultModal from "../TransactionResultModal";
+
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
 const audioIcon = require("assets/mediaIcons/small/audio.png");
@@ -100,6 +102,8 @@ const CreateMediaModal = (props: any) => {
   const [tokens, setTokens] = useState<string[]>(priviTokenList);
 
   const [disableButton, setDisableButton] = useState<boolean>(false);
+  const [openTranactionModal, setOpenTranactionModal] = useState<boolean>(false);
+  const [hash, setHash] = useState<string>("");
 
   const [mediaData, setMediaData] = useState<any>({
     type: MEDIA_TYPES[0].value,
@@ -135,6 +139,7 @@ const CreateMediaModal = (props: any) => {
   const mediaAdditionalDataRef = useRef<any>({});
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [tnxSuccess, setTnxSuccess] = useState<boolean>(false);
   const { account, library, chainId } = useWeb3React();
 
   const triedEager = useEagerConnect();
@@ -340,7 +345,8 @@ const CreateMediaModal = (props: any) => {
       uri: uri
     };
     console.log('CreateMediaModal', { payload });
-    web3APIHandler.Erc721.mint(web3, account!, payload).then(async () => {
+    web3APIHandler.Erc721.mint(web3, account!, payload).then(async (res) => {
+      setHash(res)
       if (tokenId) {
         const body = {
           main: {
@@ -357,7 +363,7 @@ const CreateMediaModal = (props: any) => {
         setLoading(false);
       }
       setDisableButton(false);
-    });
+    }).catch(console.log);
   };
 
   const afterCreateMedia = async resp => {
@@ -379,13 +385,17 @@ const CreateMediaModal = (props: any) => {
       if (props.updateMedia) props.updateMedia();
       showAlertMessage("NFT created!", { variant: "success" });
       reloadMediaPage();
+      setOpenTranactionModal(true);
+      setTnxSuccess(true);
 
-      setTimeout(() => {
-        initForm();
-        props.handleClose();
-        if (props.handleRefresh) props.handleRefresh();
-      }, 1000);
+      // setTimeout(() => {
+      //   initForm();
+      //   props.handleClose();
+      //   if (props.handleRefresh) props.handleRefresh();
+      // }, 1000);
     } else {
+      setOpenTranactionModal(true);
+      setTnxSuccess(false);
       if ((resp as any).error) {
         showAlertMessage((resp as any).error, { variant: "error" });
       }
@@ -483,9 +493,6 @@ const CreateMediaModal = (props: any) => {
       return false;
     } else if (!mediaData.Hashtags || mediaData.Hashtags.length <= 0) {
       showAlertMessage("Minimum 1 Hashtag", { variant: "error" });
-      return false;
-    } else if ((mediaData.purpose === "1" && !mediaData.NftPrice) || mediaData.NftPrice < 0) {
-      showAlertMessage("Incorrect price", { variant: "error" });
       return false;
     } else if (
       (mediaData.purpose === "1" && !mediaData.NftRoyalty) ||
@@ -925,7 +932,7 @@ const CreateMediaModal = (props: any) => {
                       </Box>
                     </Box>
                   </Box>
-                  <Box className={classes.formBox}>
+                  {/* <Box className={classes.formBox}>
                     <Box className={classes.controlBox} mt={"0px !important"} width={1}>
                       <h5 className={classes.controlLabel}>Price</h5>
                     </Box>
@@ -953,7 +960,7 @@ const CreateMediaModal = (props: any) => {
                         />
                       </Box>
                     </Box>
-                  </Box>
+                  </Box> */}
                   <Box className={classes.formBox} mt={1}>
                     <Box className={classes.controlBox} display="flex" width={1}>
                       <Box>
@@ -1009,6 +1016,16 @@ const CreateMediaModal = (props: any) => {
           )}
         </div>
       </Modal>
+      <TransactionResultModal
+        open={openTranactionModal}
+        onClose={() => {
+          setHash("");
+          setOpenTranactionModal(false);
+          props.handleClose();
+        }}
+        isSuccess={tnxSuccess}
+        hash={hash}
+      />
     </LoadingScreen>
   );
 };

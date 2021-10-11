@@ -269,7 +269,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     "& span:first-child": {
       color: Color.Purple,
-      fontFamily: "Agrandir",
+      fontFamily: "Agrandir GrandHeavy",
       fontWeight: 800,
       fontSize: 44,
       lineHeight: "104.5%",

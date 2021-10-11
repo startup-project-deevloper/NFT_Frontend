@@ -650,7 +650,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
               <Box className={classes.typo3} style={{ flex: 2 }} pb={isMobile ? 2 : 0}>
                 Token Actions
               </Box>
-              <Box className={classes.actionWrap} flexDirection={isMobile ? "column" : "row"}>
+              <div className={classes.actionWrap}>
                 <div
                   className={`${classes.actionBtn} ${classes.airdropTokenBtn}`}
                   onClick={() => setOpenAirdropTokenModal(true)}
@@ -670,7 +670,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
                 >
                   Add to Metamask
                 </div>
-              </Box>
+              </div>
             </div>
           </div>
           <div className={classes.tokenStatsContent}>

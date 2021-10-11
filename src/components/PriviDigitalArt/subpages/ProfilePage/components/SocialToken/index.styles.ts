@@ -35,6 +35,28 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     padding: '52px 0 87px',
     marginBottom: 80,
   },
+  h1: {
+    fontFamily: "Agrandir",
+    fontStyle: "normal",
+    fontWeight: 800,
+    fontSize: 24,
+    lineHeight: "130%",
+    paddingTop: 10
+  },
+  h2: {
+    fontFamily: "Montserrat",
+    fontStyle: "normal",
+    fontWeight: 600,
+    fontSize: 16,
+    lineHeight: "104%",
+  },
+  h3: {
+    fontFamily: "Montserrat",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: 14,
+    lineHeight: "150%",
+  },
   typo1: {
     fontSize: 22,
     fontWeight: 800,
@@ -109,7 +131,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     background: '#EFF2FD',
-    boxShadow: '0px 15px 16px -11px rgba(0, 0, 0, 0.02)',
+    boxShadow: '0px 4px 8px #9EACF2',
     borderRadius: 20,
     marginBottom: 23,
     padding: '33px 53px 42px',
@@ -156,7 +178,6 @@ export const socialTokenPageStyles = makeStyles(theme => ({
   },
   airdropTokenBtn: {
     background: '#431AB7',
-    marginRight: 32,
     [theme.breakpoints.down('xs')]: {
       marginRight: 0,
     }
@@ -253,7 +274,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     background: '#EFF2FD',
-    boxShadow: '0px 15px 16px -11px rgba(0, 0, 0, 0.02)',
+    boxShadow: '0px 4px 8px #9EACF2',
     borderRadius: 20,
     padding: '20px 0 40px',
     marginBottom: 80,

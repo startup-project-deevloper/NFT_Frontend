@@ -23,6 +23,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
     amount,
     onlyInformation,
     otherItemId,
+    podType,
   } = notification;
 
   const history = useHistory();
@@ -1847,19 +1848,31 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         <div>
           <b>{`Congratulation! Your NFT has been deposited successfully.`}</b>
         </div>
-      ) : type === 216 ? (
+      ) : type === 216 && podType === 'PIX' ? (
         <div>
           <b>{`@${returnNameUserFromId(follower)}`}</b>
           {`, just created `}
           <b>{pod}</b>
           {` and invited you.`}
         </div>
-      ) : type === 217 ? (
+      ) : type === 217 && podType === 'PIX' ? (
         <div>
           <b>{`@${returnNameUserFromId(follower)}`}</b>
           {`, just created a Pod Proposal in `}
           <b>{pod}</b>
           {` pod.`}
+        </div>
+      ) : type === 218 && podType === 'PIX' ? (
+        <div>
+          {`Pod Proposal in `}
+          <b>{pod}</b>
+          {` has been accepted`}
+        </div>
+      ) : type === 219 && podType === 'PIX' ? (
+        <div>
+          {`Pod Proposal in `}
+          <b>{pod}</b>
+          {` has been declined`}
         </div>
       ) : type === 220 ? (
         <div>
@@ -1873,6 +1886,10 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             Go to NFT
           </b>
+        </div>
+      ) : type === 221 && podType === 'PIX' ? (
+        <div>
+          <b>{`News! ${follower} sent ${amount} withdraw proposal on ${pod}.`}</b>
         </div>
       ) : null}
     </>

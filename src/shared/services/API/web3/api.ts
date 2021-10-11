@@ -8,6 +8,8 @@ import vaultFactory from "./contracts/VaultFactory";
 import tokenVault from "./contracts/TokenVault";
 import erc20Exchange from "./contracts/Erc20Exchange";
 import podManager from "./contracts/PodManager";
+import podWithdrawManager from "./contracts/PodWithdrawManager";
+import distributionManager from "./contracts/DistributionManager";
 import syntheticCollectionManager from "./contracts/SyntheticCollectionManager";
 import syntheticProtocolRouter from "./contracts/SyntheticProtocolRouter";
 import jotPool from "./contracts/JotPool";
@@ -24,13 +26,15 @@ const api = network => {
     VaultFactory: vaultFactory(network),
     TokenVault: tokenVault(network),
     erc20Exchange: erc20Exchange(network),
-    PodManager: podManager(network),
     SyntheticCollectionManager: syntheticCollectionManager(network),
     SyntheticProtocolRouter: syntheticProtocolRouter(network),
     SyntheticFractionalisationAuctionsManager: syntheticFractionalisationAuctionsManager(network),
     SyntheticNFTAuction: syntheticNFTAuction(network),
     JotPool: jotPool(network),
     QuickSwap: quickswap(network),
+    PodManager: podManager(network),
+    PodWithdrawManager: podWithdrawManager(network),
+    DistributionManager: distributionManager(network),
   };
 };
 

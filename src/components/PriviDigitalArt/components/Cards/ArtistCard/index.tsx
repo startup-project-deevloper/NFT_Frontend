@@ -10,7 +10,6 @@ import Box from "shared/ui-kit/Box";
 import { artistCardStyles } from "./index.styles";
 import { CircularLoadingIndicator } from "shared/ui-kit";
 import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
-import { useEffect } from "react";
 
 import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";

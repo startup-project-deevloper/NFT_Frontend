@@ -16,7 +16,6 @@ import { getDefaultAvatar, getUserAvatar } from "shared/services/user/getUserAva
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import URL from "shared/functions/getURL";
 import { setUser } from "store/actions/User";
-import useIPFS from "shared/utils-IPFS/useIPFS";
 
 import BadgesProfileModal from "../../modals/BadgesModal";
 import ProfileFollowsModal from "../../modals/FollowingsFollowers";
@@ -291,30 +290,7 @@ const InfoPane = React.memo(
               key: Math.random(),
               variant: "error",
             });
-          });*/
-
-          let metadataID = await onUploadNonEncrypt(files[0], file => uploadWithNonEncryption(file));
-
-          axios
-            .post(`${URL()}/user/changeProfilePhoto/saveMetadata/${user.id}`, metadataID)
-            .then(res => {
-              if (res.data.data) {
-                let setterUser: any = { ...user, infoImage: res.data.data };
-                setterUser.hasPhoto = true;
-                if (setterUser.id) {
-                  dispatch(setUser(setterUser));
-                }
-                setChangeImageTimestamp(Date.now());
-              }
-            })
-            .catch(error => {
-              console.log("Error", error);
-              setStatus({
-                msg: "Error change user profile photo",
-                key: Math.random(),
-                variant: "error",
-              });
-            });
+          });
       } else {
         files[0]["invalid"] = true;
       }

@@ -130,7 +130,7 @@ export const useCreateTokenStyles = makeStyles((theme: Theme) =>
       color: "#181818",
 
       "& button": {
-        background: Gradient.Green1,
+        background: "#431AB7",
         color: "white",
         border: "none",
       },

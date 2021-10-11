@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Color, Gradient, Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
-import axios from "axios";
+// import axios from "axios";
 
-import URL from "shared/functions/getURL";
+// import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
 // import { SignatureRequestModal } from "shared/ui-kit/Modal/Modals";
 import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { createSocialToken, ICreateSocialToken, getCryptosRateAsList } from "shared/services/API";
 import CreateSocialTokenGeneralTab from "./components/GeneralTab";
-import CreateSocialTokenFundingTokenTab from "./components/FundingTokenTab";
+// import CreateSocialTokenFundingTokenTab from "./components/FundingTokenTab";
 import CreateSocialTokenSupplyTab from "./components/SupplyTab";
 import { useCreateTokenStyles } from "./index.styles";
 
@@ -45,9 +45,9 @@ export default function CreateSocialTokenModal({
     Network: BlockchainNets[1].name, //"Ethereum",
   });
 
-  const payloadRef = useRef<ICreateSocialToken>();
-  const [openSignRequestModal, setOpenSignRequestModal] = useState<boolean>(false);
-  const [signRequestModalDetail, setSignRequestModalDetail] = useState<any>(null);
+  // const payloadRef = useRef<ICreateSocialToken>();
+  // const [openSignRequestModal, setOpenSignRequestModal] = useState<boolean>(false);
+  // const [signRequestModalDetail, setSignRequestModalDetail] = useState<any>(null);
 
   const { account, library, chainId } = useWeb3React();
 
@@ -75,88 +75,88 @@ export default function CreateSocialTokenModal({
   }, [open]);
 
   //photo functions
-  const uploadImage = async (tokenId, tokenSymbol) => {
-    return new Promise((resolve, reject) => {
-      const formData = new FormData();
-      formData.append("image", socialToken.photo, tokenId);
-      const formTokenData = new FormData();
-      formTokenData.append("image", socialToken.photo, tokenSymbol);
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
-      axios
-        .post(`${URL()}/social/changeSocialTokenPhoto`, formTokenData, config)
-        .then(response => {
-          resolve(true);
-        })
-        .catch(error => {
-          resolve(true);
-          console.log(error);
-          showAlertMessage(`Error uploading photo`, { variant: "error" });
-        });
-      //upload token symbol image
-      axios
-        .post(`${URL()}/wallet/changeTokenPhoto`, formTokenData, config)
-        .then(response => {
-          let body = { dimensions: socialToken.tokenDimensions ?? socialToken.dimensions, id: tokenSymbol };
-          axios.post(`${URL()}/wallet/updateTokenPhotoDimensions`, body).catch(error => {
-            showAlertMessage(`Error uploading photo`, { variant: "error" });
-          });
-          resolve(true);
-        })
-        .catch(error => {
-          showAlertMessage(`Error uploading photo`, { variant: "error" });
-          resolve(true);
-        });
-    });
-  };
+  // const uploadImage = async (tokenId, tokenSymbol) => {
+  //   return new Promise((resolve, reject) => {
+  //     const formData = new FormData();
+  //     formData.append("image", socialToken.photo, tokenId);
+  //     const formTokenData = new FormData();
+  //     formTokenData.append("image", socialToken.photo, tokenSymbol);
+  //     const config = {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //       },
+  //     };
+  //     axios
+  //       .post(`${URL()}/social/changeSocialTokenPhoto`, formTokenData, config)
+  //       .then(response => {
+  //         resolve(true);
+  //       })
+  //       .catch(error => {
+  //         resolve(true);
+  //         console.log(error);
+  //         showAlertMessage(`Error uploading photo`, { variant: "error" });
+  //       });
+  //     //upload token symbol image
+  //     axios
+  //       .post(`${URL()}/wallet/changeTokenPhoto`, formTokenData, config)
+  //       .then(response => {
+  //         let body = { dimensions: socialToken.tokenDimensions ?? socialToken.dimensions, id: tokenSymbol };
+  //         axios.post(`${URL()}/wallet/updateTokenPhotoDimensions`, body).catch(error => {
+  //           showAlertMessage(`Error uploading photo`, { variant: "error" });
+  //         });
+  //         resolve(true);
+  //       })
+  //       .catch(error => {
+  //         showAlertMessage(`Error uploading photo`, { variant: "error" });
+  //         resolve(true);
+  //       });
+  //   });
+  // };
 
-  const validateSocialTokenInfo = () => {
-    if (!(socialToken.TokenName && socialToken.TokenName.length >= 5)) {
-      showAlertMessage(`Name field invalid. Minimum 5 characters required`, { variant: "error" });
-      return false;
-    } else if (!(socialToken.TokenSymbol && socialToken.TokenSymbol.length >= 3)) {
-      showAlertMessage(`Token symbol field invalid. Minimum 3 characters required`, { variant: "error" });
-      return false;
-    } else if (!(socialToken.Description && socialToken.Description.length >= 20)) {
-      showAlertMessage(`Description field invalid. Minimum 20 characters required`, { variant: "error" });
-      return false;
-    } else if (!socialToken.FundingToken) {
-      showAlertMessage(`Funding Token field invalid`, { variant: "error" });
-      return false;
-    } else if (!socialToken.TradingSpread) {
-      showAlertMessage(`Trading Spread field invalid`, { variant: "error" });
-      return false;
-    } else if (Number(socialToken.TradingSpread) < 0.1 || Number(socialToken.TradingSpread) > 20) {
-      showAlertMessage(`Trading Spread must be between 0.1% - 20%`, { variant: "error" });
-      return false;
-    } else if (!socialToken.TargetSupply || Number(socialToken.TargetSupply) < 0) {
-      showAlertMessage(`Target Supply field invalid. Musn't be filled and greater than 0`, {
-        variant: "error",
-      });
-      return false;
-    } else if (!socialToken.TargetSupply || Number(socialToken.TargetPrice) < 0) {
-      showAlertMessage(`Target Price field invalid. Must be filled and greater than 0`, { variant: "error" });
-      return false;
-    } else if (!socialToken.InitialSupply || Number(socialToken.InitialSupply) < 0) {
-      showAlertMessage(`Initial Supply field invalid. Must be filled and greater than 0`, {
-        variant: "error",
-      });
-      return false;
-    } else if (Number(socialToken.InitialSupply) > Number(socialToken.TargetSupply)) {
-      showAlertMessage(`Initial Supply must be greater than 0 and smaller or equal to the Target Supply`, {
-        variant: "error",
-      });
-      return false;
-    } else if (!socialToken.AMM || socialToken.AMM === "") {
-      showAlertMessage("Price Direction is invalid. Must select one", { variant: "error" });
-      return false;
-    } else {
-      return true;
-    }
-  };
+  // const validateSocialTokenInfo = () => {
+  //   if (!(socialToken.TokenName && socialToken.TokenName.length >= 5)) {
+  //     showAlertMessage(`Name field invalid. Minimum 5 characters required`, { variant: "error" });
+  //     return false;
+  //   } else if (!(socialToken.TokenSymbol && socialToken.TokenSymbol.length >= 3)) {
+  //     showAlertMessage(`Token symbol field invalid. Minimum 3 characters required`, { variant: "error" });
+  //     return false;
+  //   } else if (!(socialToken.Description && socialToken.Description.length >= 20)) {
+  //     showAlertMessage(`Description field invalid. Minimum 20 characters required`, { variant: "error" });
+  //     return false;
+  //   } else if (!socialToken.FundingToken) {
+  //     showAlertMessage(`Funding Token field invalid`, { variant: "error" });
+  //     return false;
+  //   } else if (!socialToken.TradingSpread) {
+  //     showAlertMessage(`Trading Spread field invalid`, { variant: "error" });
+  //     return false;
+  //   } else if (Number(socialToken.TradingSpread) < 0.1 || Number(socialToken.TradingSpread) > 20) {
+  //     showAlertMessage(`Trading Spread must be between 0.1% - 20%`, { variant: "error" });
+  //     return false;
+  //   } else if (!socialToken.TargetSupply || Number(socialToken.TargetSupply) < 0) {
+  //     showAlertMessage(`Target Supply field invalid. Musn't be filled and greater than 0`, {
+  //       variant: "error",
+  //     });
+  //     return false;
+  //   } else if (!socialToken.TargetSupply || Number(socialToken.TargetPrice) < 0) {
+  //     showAlertMessage(`Target Price field invalid. Must be filled and greater than 0`, { variant: "error" });
+  //     return false;
+  //   } else if (!socialToken.InitialSupply || Number(socialToken.InitialSupply) < 0) {
+  //     showAlertMessage(`Initial Supply field invalid. Must be filled and greater than 0`, {
+  //       variant: "error",
+  //     });
+  //     return false;
+  //   } else if (Number(socialToken.InitialSupply) > Number(socialToken.TargetSupply)) {
+  //     showAlertMessage(`Initial Supply must be greater than 0 and smaller or equal to the Target Supply`, {
+  //       variant: "error",
+  //     });
+  //     return false;
+  //   } else if (!socialToken.AMM || socialToken.AMM === "") {
+  //     showAlertMessage("Price Direction is invalid. Must select one", { variant: "error" });
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // };
 
   const handleCreateSocialToken = async () => {
     const targetChain = BlockchainNets.find(net => net.name === socialToken.Network);
@@ -232,7 +232,7 @@ export default function CreateSocialTokenModal({
         {page === 0 ? (
           <div className={classes.firstPage}>
             <img src={require("assets/pixImages/profile_social_token.png")} alt="money face" />
-            <Box className={classes.title} mt={-4}>
+            <Box className={classes.title} mt={2}>
               Create Social Token
             </Box>
             <div className={classes.label}>Generate you own token and see it grow!</div>
@@ -240,7 +240,7 @@ export default function CreateSocialTokenModal({
               size="medium"
               isRounded
               onClick={() => setPage(1)}
-              style={{ background: Color.MusicDAODark, width: "40%" }}
+              style={{ background: "#431AB7", width: "40%", marginTop: 24 }}
             >
               Get started
             </PrimaryButton>

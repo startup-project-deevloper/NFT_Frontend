@@ -157,6 +157,9 @@ export const socialTokenPageStyles = makeStyles(theme => ({
   airdropTokenBtn: {
     background: '#431AB7',
     marginRight: 32,
+    [theme.breakpoints.down('xs')]: {
+      marginRight: 0,
+    }
   },
   allocateTokenBtn: {
     background: '#65CB63',

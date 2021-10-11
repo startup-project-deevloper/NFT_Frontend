@@ -3,7 +3,7 @@ import cls from "classnames";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 import { useWeb3React } from "@web3-react/core";
-import { format, getDate } from "date-fns";
+import { format } from "date-fns";
 import Web3 from "web3";
 
 import { useMediaQuery, useTheme } from "@material-ui/core";
@@ -11,8 +11,8 @@ import Pagination from "@material-ui/lab/Pagination";
 
 import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import PrintChart from "shared/ui-kit/Chart/Chart";
-import { getRandomAvatar } from "shared/services/user/getUserAvatar";
+// import PrintChart from "shared/ui-kit/Chart/Chart";
+// import { getRandomAvatar } from "shared/services/user/getUserAvatar";
 import { Avatar } from "shared/ui-kit";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { getUnixEpochTimeStamp } from "shared/helpers";
@@ -210,7 +210,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   //   const [userRole, setUserRole] = useState(userProfile.role.toLowerCase());
 
   const [token, setToken] = useState<any>({});
-  const [selectedTimeFilter, setSelectedTimeFilter] = useState<number>(0);
+  // const [selectedTimeFilter, setSelectedTimeFilter] = useState<number>(0);
   const [selectedTableFilter, setSelectedTableFilter] = useState<number>(0);
   const [rewardConfig, setRewardConfig] = React.useState<any>();
   const [tableHeader, setTableHeader] = useState<Array<CustomTableHeaderInfo>>(AirdropTableHeaders);

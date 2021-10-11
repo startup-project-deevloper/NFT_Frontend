@@ -23,7 +23,7 @@ export const allocateTokensModalStyles = makeStyles((theme: Theme) => createStyl
       fontWeight: 800,
       fontFamily: 'Agrandir',
       lineHeight: "104.5%",
-      color: '#65CB63',
+      color: '#431AB7',
       marginTop: 32,
       [theme.breakpoints.down('xs')]: {
         fontSize: 16
@@ -120,7 +120,7 @@ export const allocateTokensModalStyles = makeStyles((theme: Theme) => createStyl
     },
     userLabel: {
       fontWeight: 500,
-      color: Color.Green,
+      color: "#431AB7",
       fontFamily: "Agrandir",
       textOverflow: "ellipsis",
       overflow: "hidden",
@@ -133,7 +133,7 @@ export const allocateTokensModalStyles = makeStyles((theme: Theme) => createStyl
       alignItems: "center",
       justifyContent: "center",
       borderRadius: "50%",
-      background: Color.Green,
+      background: "#431AB7",
     },
     removeBox: {
       width: 24,
@@ -286,7 +286,7 @@ export const allocateTokensModalStyles = makeStyles((theme: Theme) => createStyl
     step2Title2: {
       fontSize: 16,
       fontWeight: 600,
-      color: "#65CB63",
+      color: "#431AB7",
       fontFamily: 'Montserrat',
       height: 35,
       textAlign: "start",

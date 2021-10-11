@@ -34,7 +34,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
   const returnNameUserFromId = (userId: string) => {
     let user: any = allUsers.find(user => user.address === userId);
 
-    return user.urlSlug;
+    return user?.urlSlug;
   };
 
   return (

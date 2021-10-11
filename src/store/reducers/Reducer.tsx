@@ -98,6 +98,7 @@ export interface RootState {
     followingProposals: any[];
     uninterestedMedias?: string[];
     whitelisted?: boolean;
+    infoImage?: any;
   };
   userBalances: {
     [key: string]: BalanceModel;

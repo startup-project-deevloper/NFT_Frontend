@@ -23,7 +23,7 @@ export default function WallFeedCard({
   userProfile,
   feedItem,
   type,
-}: {
+} : {
   item: any;
   userProfile: any;
   feedItem?: boolean;
@@ -49,6 +49,8 @@ export default function WallFeedCard({
   };
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
+  const [imageWallIPFS, setImageWallIPFS] = useState<any>(null);
+  const [videoWallIPFS, setVideoWallIPFS] = useState<any>(null);
 
   const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
@@ -57,8 +59,8 @@ export default function WallFeedCard({
   }, []);
 
   useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0) {
-      getUserPhoto(feedData);
+    if (feedData && ipfs && Object.keys(ipfs).length !== 0) {
+      getPhotos(feedData);
 
       if (feedData.comments && feedData.responses?.length > 0) {
         let r = [] as any;
@@ -70,7 +72,6 @@ export default function WallFeedCard({
             slug = thisUser.urlSlug;
             image = await getReturnUserPhoto(thisUser);
           }
-
           r.push({ ...response, urlSlug: slug, url: image });
         });
 
@@ -87,13 +88,24 @@ export default function WallFeedCard({
     }
   }, [feedData]);
 
-  const getUserPhoto = async (feedData) => {
+  const getPhotos = async (feedData) => {
     const userFound = users.find(usr => usr.id === feedData.userId);
 
     if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
       setImageIPFS(imageUrl);
     }
+
+    if (feedData && feedData.infoImage && feedData.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(feedData.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageWallIPFS(imageUrl);
+    }
+
+    if (feedData && feedData.infoVideo && feedData.infoVideo.newFileCID) {
+      let videoUrl = await getPhotoIPFS(feedData.infoVideo.newFileCID, downloadWithNonDecryption);
+      setVideoWallIPFS(videoUrl);
+    }
+
   }
 
   const getReturnUserPhoto = async (userFound: any) => {
@@ -127,7 +139,8 @@ export default function WallFeedCard({
 
   return (
     <>
-      <div className={classes.wallItem} onClick={handleOpenWallItemModal}>
+      <div className={classes.wallItem}
+           onClick={handleOpenWallItemModal}>
         <Box mb={"16px"} display="flex" alignItems="center">
           <Avatar
             size={"small"}
@@ -162,11 +175,11 @@ export default function WallFeedCard({
           </Box>
         </Box>
         <Box mb={"16px"} display="flex" alignItems="flex-start" flexDirection="column" gridColumnGap={16}>
-          {feedData.hasPhoto && (feedData?.url || feedData?.imageURL) && (
+          {imageWallIPFS && (
             <Box display="flex" alignItems="center" justifyContent="center" width={1}>
               <img
                 onClick={handleOpenWallItemModal}
-                src={feedData?.url ?? feedData?.imageURL}
+                src={imageWallIPFS ? imageWallIPFS : ""}
                 className={classes.feedImg}
                 alt={"wall"}
                 style={{ width: "100%", objectFit: "cover" }}
@@ -235,6 +248,8 @@ export default function WallFeedCard({
           comments={comments}
           setComments={setComments}
           creatorImage={imageIPFS}
+          imageWallIPFS={imageWallIPFS}
+          videoWallIPFS={videoWallIPFS}
         />
       )}
     </>

@@ -1,5 +1,4 @@
 import { useLayoutEffect, useState, useCallback, RefObject } from "react";
-import ResizeObserver from "resize-observer-polyfill";
 
 export interface ResizeObserverEntry {
   target: HTMLElement;

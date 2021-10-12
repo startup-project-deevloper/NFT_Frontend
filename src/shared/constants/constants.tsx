@@ -128,7 +128,7 @@ export const BlockchainNets: any =
         {
           name: "POLYGON",
           value: "Polygon Chain",
-          image: "tokenImages/POLYGON.png",
+          image: "tokenImages/POLYGON-SYMBOL.png",
           chainId: 137,
           scan: { name: "POLYGONSCAN", url: "https://polygonscan.com" },
         },
@@ -151,7 +151,7 @@ export const BlockchainNets: any =
         {
           name: "POLYGON",
           value: "Polygon Chain",
-          image: "tokenImages/POLYGON.png",
+          image: "tokenImages/POLYGON-SYMBOL.png",
           chainId: 80001,
           config: Web3Config.Polygon,
           apiHandler: polygonAPI,
@@ -180,7 +180,7 @@ export const LoanBlockchainNet: any = [
   {
     name: "POLYGON",
     value: "Polygon Chain",
-    image: "tokenImages/POLYGON.png",
+    image: "tokenImages/POLYGON-SYMBOL.png",
     chainId: 80001,
     config: Web3Config.Polygon,
     apiHandler: polygonAPI,

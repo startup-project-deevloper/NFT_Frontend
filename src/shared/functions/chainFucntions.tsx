@@ -2,11 +2,11 @@ export const getLoanChainImageUrl = (chain, blockchainNetwork) => {
   if (chain) {
     return require(`assets/tokenImages/${chain}.png`);
   } else if (blockchainNetwork.includes('Polygon')) {
-    return require('assets/tokenImages/POLYGON.png');
+    return require('assets/tokenImages/POLYGON-SYMBOL.png');
   } else if (blockchainNetwork.includes('Ethereum')) {
     return require('assets/tokenImages/ETH.png');
   }
-  return require('assets/tokenImages/POLYGON.png');
+  return require('assets/tokenImages/POLYGON-SYMBOL.png');
 };
 
 export const getChainImageUrl = (blockchain) => {
@@ -16,7 +16,7 @@ export const getChainImageUrl = (blockchain) => {
   if (blockchain.toLowerCase().includes('privi')) {
     return require('assets/tokenImages/PRIVI.png');
   } else if (blockchain.toLowerCase().includes('polygon')) {
-    return require('assets/tokenImages/POLYGON.png');
+    return require('assets/tokenImages/POLYGON-SYMBOL.png');
   } else if (blockchain.toLowerCase().includes('ethereum')) {
     return require('assets/tokenImages/ETH.png');
   } else if (blockchain.toLowerCase().includes('wax')) {

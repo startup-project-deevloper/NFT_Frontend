@@ -8,7 +8,7 @@ import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import URL from "shared/functions/getURL";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { digitalArtCardStyles } from "./index.styles";
 import ReactPlayer from "react-player";
@@ -241,7 +241,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               url={
                 creator.ipfsImage
                   ? creator.ipfsImage
-                  : "none"
+                  : getRandomAvatar()
               }
               alt={creator.id}
               title={`${creator.name}`}

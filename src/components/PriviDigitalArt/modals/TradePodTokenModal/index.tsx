@@ -553,8 +553,19 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
     }
   };
 
+  function validate(values: { [key: string]: string }): { [key: string]: string } {
     var errors: { [key: string]: string } = {};
     if (values.fundingQuantity === null || !Number(values.fundingQuantity)) {
+      errors.fundingQuantity = "invalid fundingQuantity";
+    } else if (Number(values.fundingQuantity) === 0) {
+      errors.fundingQuantity = "fundingQuantity cant be 0";
+    } else if (Number(values.fundingQuantity) < 0) {
+      errors.fundingQuantity = "fundingQuantity cant be negative";
+    } else if (Number(values.fundingQuantity) > fundingTokenBalance) {
+      errors.fundingQuantity = "insufficient fund to invest";
+    }
+    return errors;
+  }
 
   return (
     <>

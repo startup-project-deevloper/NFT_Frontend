@@ -49,7 +49,7 @@ export default function Discussion(props) {
   useEffect(() => {
     if (props.podId) {
       // setIsDataLoading(true);
-      if (props.pod && props.pod.PrivateChats &&  props.podInfo) {
+      if (props.pod && props.pod.PrivateChats && props.podInfo) {
         setPod(props.pod);
         setPodInfo(props.podInfo);
         setDiscussions(props.pod.PrivateChats);
@@ -58,7 +58,6 @@ export default function Discussion(props) {
   }, [props.podId, props.pod, props.podInfo, users]);
 
   const onTopicSelected = val => {
-    console.log("topic", val);
     socket?.emit("subscribe-podDiscussion", {
       podId: props.podId,
       topicId: val.id,
@@ -69,50 +68,67 @@ export default function Discussion(props) {
     setSelectedChat(val);
   };
 
+  const fundedStatus = React.useMemo(
+    () =>
+      pod &&
+      pod.FundingDate &&
+      pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
+      (pod.RaisedFunds || 0) >= pod.FundingTarget,
+    [pod]
+  );
+
   if (props.pod)
     return (
       <Box mt={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Box className={classes.flexBox} justifyContent="space-between" mb={3}>
-              <div className={classes.title}>
-                Discussion
-              </div>
-              <PrimaryButton
-                size="medium"
-                onClick={() => setOpenClaimFundsModal(true)}
-                style={{
-                  padding: isMobile ? "0 15px" : "0 30px",
-                  fontSize: isMobile ? "13px" : "18px",
-                  background: Gradient.Green1
-                }}
-                isRounded
-              >
-                New Withdraw Proposal
-              </PrimaryButton>
+              <div className={classes.title}>Discussion</div>
+              {fundedStatus && (
+                <PrimaryButton
+                  size="medium"
+                  onClick={() => setOpenClaimFundsModal(true)}
+                  style={{
+                    padding: isMobile ? "0 15px" : "0 30px",
+                    fontSize: isMobile ? "13px" : "18px",
+                    background: Gradient.Green1,
+                  }}
+                  isRounded
+                >
+                  New Withdraw Proposal
+                </PrimaryButton>
+              )}
             </Box>
-            <div className={classes.discussionContent}
-              style={{ paddingRight: 0 }}>
+            <div className={classes.discussionContent} style={{ paddingRight: 0 }}>
               <LoadingWrapper loading={isDataLoading}>
-                <Grid container
-                  style={{ height: "100%" }}>
-                  <Grid item xs={12} sm={4}
-                    style={{ height: isMobile ? "170px" : "100%", borderRight: isMobile ? "none" : "1px solid #ddd" }}>
+                <Grid container style={{ height: "100%" }}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
+                    style={{
+                      height: isMobile ? "170px" : "100%",
+                      borderRight: isMobile ? "none" : "1px solid #ddd",
+                    }}
+                  >
                     <Box p={3}>
-                      <ListChats discussions={discussions}
+                      <ListChats
+                        discussions={discussions}
                         selectedChat={selectedChatId}
-                        onTopicSelected={(val) => onTopicSelected(val)} />
+                        onTopicSelected={val => onTopicSelected(val)}
+                      />
                     </Box>
                   </Grid>
                   {/* <Box style={{width:"1px", background:"#ccc"}} /> */}
-                  <Grid item xs={12} sm={8}
-                    style={{ height: isMobile ? "calc(100% - 170px)" : "100%" }}>
+                  <Grid item xs={12} sm={8} style={{ height: isMobile ? "calc(100% - 170px)" : "100%" }}>
                     <Box pb={2} style={{ height: "100%" }}>
-                      <Discord podId={props.podId}
+                      <Discord
+                        podId={props.podId}
                         chatType={"PrivateChat"}
                         chatId={selectedChatId}
                         sidebar={false}
-                        theme="dark" />
+                        theme="dark"
+                      />
                     </Box>
                   </Grid>
                 </Grid>
@@ -131,6 +147,8 @@ export default function Discussion(props) {
             open={openClaimFundsModal}
             handleClose={() => setOpenClaimFundsModal(false)}
             openProposal={props.openProposal}
+            podId={props.podId}
+            pod={pod}
             podInfo={podInfo}
           />
         )}

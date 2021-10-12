@@ -143,12 +143,10 @@ export async function priviPodClaimReward(payload: any) {
   }
 }
 
-export async function priviPodGetStaking(id: any) {
+export async function priviPodGetStaking(payload) {
   try {
     const response = await axios.get(`${URL()}/priviPod/staking`, {
-      params: {
-        podId: id,
-      },
+      params: payload,
     });
     return response.data;
   } catch (e) {
@@ -166,9 +164,12 @@ export async function priviPodCreateWithdrawProposal(payload: any): Promise<any>
   }
 }
 
-export async function priviPodGetWithdrawProposals(podId: string): Promise<any> {
+export async function priviPodGetWithdrawProposals(payload: any): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/priviPod/getWithdrawProposals?podId=${podId}`);
+    const config = {
+      params: payload,
+    };
+    const response = await axios.get(`${URL()}/priviPod/getWithdrawProposals`, config);
     return response.data;
   } catch (e) {
     console.log(e);

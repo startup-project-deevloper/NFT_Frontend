@@ -1,30 +1,45 @@
 import { Grid } from "@material-ui/core";
 import { FundCard } from "components/PriviDigitalArt/components/Cards/FundCard";
 import React from "react";
+import { priviPodGetWithdrawProposals } from "shared/services/API";
 import { Color, Gradient, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { ProposalsStyle } from "./index.styles";
 
-export const Proposals = (props: any) => {
+export const Proposals = ({
+  pod,
+  podId,
+  podInfo,
+  handleRefresh,
+}: {
+  pod: any;
+  podId: string;
+  podInfo: any;
+  handleRefresh: any;
+}) => {
   const classes = ProposalsStyle();
 
-  // const [isLoadingProposals, setIsLoadingProposals] = React.useState<boolean>(false);
-  // const [proposals, setProposals] = React.useState<any[]>([]);
+  const [isLoadingProposals, setIsLoadingProposals] = React.useState<boolean>(false);
+  const [proposals, setProposals] = React.useState<any[]>([]);
 
   React.useEffect(() => {
-    //   setIsLoadingProposals(true);
-    //   musicDaoGetPodsProposal(user.address, "", lastId)
-    //     .then(resp => {
-    //       if (resp?.success) {
-    //         setProposals(resp.data);
-    //         setLastId(resp.lastId);
-    //         setHasMoreProposals(resp.data.length === 20);
-    //       } else setProposals([]);
-    //     })
-    //     .catch(_ => setProposals([]))
-    //     .finally(() => setIsLoadingProposals(false));
-    // };
+    loadData();
   }, []);
+
+  const loadData = async () => {
+    setIsLoadingProposals(true);
+    (async () => {
+      try {
+        const response = await priviPodGetWithdrawProposals({ podId, type: "PIX" });
+        if (response.success) {
+          setProposals(response.data);
+        }
+        setIsLoadingProposals(false);
+      } catch (e) {
+        console.log("network error");
+      }
+    })();
+  };
 
   return (
     <Box>
@@ -45,8 +60,16 @@ export const Proposals = (props: any) => {
               Show history
             </SecondaryButton>
           </Box>
-          {[1, 2].map(item => (
-            <FundCard proposal={{ creator: "test", creatorId: "test", value: 171 }} />
+          {proposals.map(item => (
+            <FundCard
+              proposal={item}
+              podId={podId}
+              pod={pod}
+              handleRefresh={() => {
+                loadData();
+                handleRefresh();
+              }}
+            />
           ))}
         </Grid>
         <Grid item xs={12} sm={5} md={4}>

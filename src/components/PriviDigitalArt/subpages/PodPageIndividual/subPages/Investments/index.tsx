@@ -514,7 +514,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                 Invest
               </PrimaryButton>
             )}
-            {fundingEnded && isFundingTargetReached && (
+            {/* {fundingEnded && isFundingTargetReached && (
               <Box className={classes.flexBox} justifyContent="flex-end" px={2}>
                 <SecondaryButton
                   size="small"
@@ -562,10 +562,11 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                   Buy
                 </PrimaryButton>
               </Box>
-            )}
+            )} */}
           </Box>
           {!fundingEnded ? <></> : <></>}
-          {!(isFundingTargetReached && fundingEnded) ? (
+          {
+          // !(isFundingTargetReached && fundingEnded) ? (
             <Box>
               <Box className={classes.whiteBox} mx={1}>
                 <Grid container>
@@ -697,93 +698,94 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                 />
               </Box>
             </Box>
-          ) : (
-            <Box>
-              <Grid container>
-                <Grid item xs={12} sm={4}>
-                  <Box className={classes.shadowBox}>
-                    <Box className={classes.header1}>Market Cap</Box>
-                    <Box className={classes.title} mt={1}>
-                      {formatNumber(
-                        convertTokenToUSD(pod.FundingToken, pod.Price * pod.SupplyReleased),
-                        "USD",
-                        4
-                      )}
-                    </Box>
-                  </Box>
-                  <Box className={classes.graphBox}>
-                    <Box className={classes.graphHeader}>
-                      <Box className={classes.header1}>Shares Distribution</Box>
-                    </Box>
-                    <Grid container style={{ marginTop: "16px" }}>
-                      <Grid item xs={12} sm={6}>
-                        {ownershipConfig && <PrintChart config={ownershipConfig} canvasHeight={250} />}
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <Box style={{ marginLeft: "12px" }}>
-                          {ownershipConfig &&
-                            ownershipConfig.config.data.datasets[0].labels.map((item, index) => (
-                              <Box className={classes.flexBox} mb={2} key={"labels-" + index}>
-                                <Box
-                                  className={classes.colorBox}
-                                  style={{
-                                    background:
-                                      ownershipConfig.config.data.datasets[0].backgroundColor[index],
-                                  }}
-                                />
-                                <Box ml={2}>
-                                  <Box className={classes.header2}>{item}</Box>
-                                  <Box className={classes.header1}>
-                                    ${ownershipConfig.config.data.datasets[0].data[index]}
-                                  </Box>
-                                </Box>
-                              </Box>
-                            ))}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={8}>
-                  <Box className={classes.graphBox} height="400px">
-                    <Box className={classes.graphHeader}>
-                      <Box className={classes.header1}>Price History</Box>
-                      <FormControl variant="outlined">
-                        <StyledSelect className={classes.select} value={selectedTimeRange} onChange={v => {}}>
-                          {TimRangeList.map((item, index) => (
-                            <StyledMenuItem key={index} value={item}>
-                              {item}
-                            </StyledMenuItem>
-                          ))}
-                        </StyledSelect>
-                      </FormControl>
-                    </Box>
-                    <Box style={{ height: "100%" }}>
-                      {priceChartConfig && <PrintChart config={priceChartConfig} />}
-                    </Box>
-                    <Box className={classes.valueBox}>
-                      <Box className={classes.header1}>{formatNumber(lastPrice, "USD", 2)}</Box>
-                      <Box className={classes.header2} color={lastPrice >= prevPrice ? "#0FCEA6" : "#F43E5F"}>
-                        {lastPrice > prevPrice ? "+" : ""}
-                        {lastPrice - prevPrice} ({priceChange > 0 ? "+" : ""}
-                        {priceChange * 100}%)
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
-              <Box mt={2} px={1}>
-                <CustomTable
-                  headers={[
-                    ...TRANSACTIONTABLEHEADER,
-                    { headerName: podNetwork.scan.name, headerAlign: "center" },
-                  ]}
-                  rows={transactionTableData}
-                  theme="transaction"
-                />
-              </Box>
-            </Box>
-          )}
+          // ) : (
+          //   <Box>
+          //     <Grid container>
+          //       <Grid item xs={12} sm={4}>
+          //         <Box className={classes.shadowBox}>
+          //           <Box className={classes.header1}>Market Cap</Box>
+          //           <Box className={classes.title} mt={1}>
+          //             {formatNumber(
+          //               convertTokenToUSD(pod.FundingToken, pod.Price * pod.SupplyReleased),
+          //               "USD",
+          //               4
+          //             )}
+          //           </Box>
+          //         </Box>
+          //         <Box className={classes.graphBox}>
+          //           <Box className={classes.graphHeader}>
+          //             <Box className={classes.header1}>Shares Distribution</Box>
+          //           </Box>
+          //           <Grid container style={{ marginTop: "16px" }}>
+          //             <Grid item xs={12} sm={6}>
+          //               {ownershipConfig && <PrintChart config={ownershipConfig} canvasHeight={250} />}
+          //             </Grid>
+          //             <Grid item xs={12} sm={6}>
+          //               <Box style={{ marginLeft: "12px" }}>
+          //                 {ownershipConfig &&
+          //                   ownershipConfig.config.data.datasets[0].labels.map((item, index) => (
+          //                     <Box className={classes.flexBox} mb={2} key={"labels-" + index}>
+          //                       <Box
+          //                         className={classes.colorBox}
+          //                         style={{
+          //                           background:
+          //                             ownershipConfig.config.data.datasets[0].backgroundColor[index],
+          //                         }}
+          //                       />
+          //                       <Box ml={2}>
+          //                         <Box className={classes.header2}>{item}</Box>
+          //                         <Box className={classes.header1}>
+          //                           ${ownershipConfig.config.data.datasets[0].data[index]}
+          //                         </Box>
+          //                       </Box>
+          //                     </Box>
+          //                   ))}
+          //               </Box>
+          //             </Grid>
+          //           </Grid>
+          //         </Box>
+          //       </Grid>
+          //       <Grid item xs={12} sm={8}>
+          //         <Box className={classes.graphBox} height="400px">
+          //           <Box className={classes.graphHeader}>
+          //             <Box className={classes.header1}>Price History</Box>
+          //             <FormControl variant="outlined">
+          //               <StyledSelect className={classes.select} value={selectedTimeRange} onChange={v => {}}>
+          //                 {TimRangeList.map((item, index) => (
+          //                   <StyledMenuItem key={index} value={item}>
+          //                     {item}
+          //                   </StyledMenuItem>
+          //                 ))}
+          //               </StyledSelect>
+          //             </FormControl>
+          //           </Box>
+          //           <Box style={{ height: "100%" }}>
+          //             {priceChartConfig && <PrintChart config={priceChartConfig} />}
+          //           </Box>
+          //           <Box className={classes.valueBox}>
+          //             <Box className={classes.header1}>{formatNumber(lastPrice, "USD", 2)}</Box>
+          //             <Box className={classes.header2} color={lastPrice >= prevPrice ? "#0FCEA6" : "#F43E5F"}>
+          //               {lastPrice > prevPrice ? "+" : ""}
+          //               {lastPrice - prevPrice} ({priceChange > 0 ? "+" : ""}
+          //               {priceChange * 100}%)
+          //             </Box>
+          //           </Box>
+          //         </Box>
+          //       </Grid>
+          //     </Grid>
+          //     <Box mt={2} px={1}>
+          //       <CustomTable
+          //         headers={[
+          //           ...TRANSACTIONTABLEHEADER,
+          //           { headerName: podNetwork.scan.name, headerAlign: "center" },
+          //         ]}
+          //         rows={transactionTableData}
+          //         theme="transaction"
+          //       />
+          //     </Box>
+          //   </Box>
+          // )
+          }
           <TransactionProgressModal
             open={openTranactionModal}
             onClose={() => {

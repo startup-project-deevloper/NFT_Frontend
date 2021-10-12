@@ -12,7 +12,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledMenuItem, StyledSelect } from "shared/ui-kit/Styled-components/StyledComponents";
 import { toDecimals } from "shared/functions/web3";
-import { musicDaoStakeTokens } from "shared/services/API";
+import { priviPodStakeTokens } from "shared/services/API";
 import TransactionProgressModal from "../TransactionProgressModal";
 
 const useStyles = makeStyles(() => ({
@@ -258,12 +258,13 @@ export default function PodStakingModal({ open, onClose, handleRefresh, podInfo,
   const handleStakeSucceed = async (response, type) => {
     if (response.success) {
       setTransactionSuccess(true);
-      await musicDaoStakeTokens({
+      await priviPodStakeTokens({
         podId: pod.Id,
         staker: response.data.staker,
         type,
         tokenId: response.data.tokenId,
         amount: response.data.amount,
+        podType: "PIX",
       });
       onClose();
       handleRefresh();

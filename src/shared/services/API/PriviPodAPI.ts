@@ -1,5 +1,9 @@
 import axios from "axios";
 import URL from "shared/functions/getURL";
+import { getPriviWallet } from "shared/helpers";
+import { IAPIRequestProps } from "shared/types";
+import { IUploadMedia } from ".";
+import { signPayload } from "../WalletSign";
 
 export async function getRaisedTrendingPods(type: string): Promise<any> {
   try {
@@ -82,6 +86,157 @@ export async function priviPodVoteForPodProposal(payload: any) {
 export async function priviPodExecutePod(payload: any) {
   try {
     const response = await axios.post(`${URL()}/priviPod/executePod`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodInvestPod(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/invest`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodClaimPodTokens(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/claimPodTokens`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodStakeTokens(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/stakeTokens`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodUnstakeTokens(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/unstakeTokens`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodClaimReward(payload: any) {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/claimReward`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodGetStaking(id: any) {
+  try {
+    const response = await axios.get(`${URL()}/priviPod/staking`, {
+      params: {
+        podId: id,
+      },
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function priviPodCreateWithdrawProposal(payload: any): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/createWithdrawProposal`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodGetWithdrawProposals(podId: string): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/priviPod/getWithdrawProposals?podId=${podId}`);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodVoteForWithdrawProposal(payload: any): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/voteForWithdrawProposals`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodFollowPod(userId: string, podId: string): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/followPod`, { userId, podId });
+    return response.data;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function priviPodUnfollowPod(userId: string, podId: string): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/unfollowPod`, { userId, podId });
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodGetPriceHistory(payload: any): Promise<any> {
+  try {
+    const config = {
+      params: payload,
+    };
+    const response = await axios.get(`${URL()}/priviPod/getPriceHistory`, config);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodGetInvestmentsTransactions(payload: any): Promise<any> {
+  try {
+    const config = {
+      params: payload,
+    };
+    const response = await axios.get(`${URL()}/priviPod/getInvestmentTransactions`, config);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodGetDistributionInfo(payload): Promise<any> {
+  try {
+    const config = {
+      params: payload,
+    };
+    const response = await axios.get(`${URL()}/priviPod/getDistributionInfo`, config);
     return response.data;
   } catch (e) {
     console.log(e);

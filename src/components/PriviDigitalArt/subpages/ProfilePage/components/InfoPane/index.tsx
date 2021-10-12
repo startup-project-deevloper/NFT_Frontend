@@ -16,7 +16,6 @@ import { getDefaultAvatar, getUserAvatar } from "shared/services/user/getUserAva
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import URL from "shared/functions/getURL";
 import { setUser } from "store/actions/User";
-import useIPFS from "shared/utils-IPFS/useIPFS";
 
 import BadgesProfileModal from "../../modals/BadgesModal";
 import ProfileFollowsModal from "../../modals/FollowingsFollowers";
@@ -24,8 +23,9 @@ import ChangeProfileBackgroundModal from "../../modals/ChangeProfileBackgroundMo
 import ChangeAnonAvatarModal from "../../modals/ChangeAnonAvatarModal/ChangeAnonAvatarModal";
 import { Card, profilePageStyles } from "../../index.styles";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
-import { onUploadNonEncrypt } from "shared/ipfs/upload";
-import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+import { onUploadNonEncrypt } from "../../../../../../shared/ipfs/upload";
+import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
 
 const arePropsEqual = (prevProps, currProps) => {
   return (
@@ -168,12 +168,12 @@ const InfoPane = React.memo(
           following.forEach((followed, index) => {
             const matchedUser = users.find(u => u.id === followed.id || u.id === followed.id?.user);
             if (matchedUser) {
-              following[index].userImageURL = matchedUser.imageURL
-                ? matchedUser.imageURL
-                : matchedUser.imageUrl
-                ? matchedUser.imageUrl
-                : matchedUser.url
-                ? matchedUser.url
+              following[index].ipfsImage = matchedUser.ipfsImage
+                ? matchedUser.ipfsImage
+                : matchedUser.ipfsImage
+                ? matchedUser.ipfsImage
+                : matchedUser.ipfsImage
+                ? matchedUser.ipfsImage
                 : require(`assets/anonAvatars/${matchedUser.anonAvatar}`);
               following[index].urlSlug = matchedUser.urlSlug;
             }
@@ -204,12 +204,12 @@ const InfoPane = React.memo(
           followers.forEach((follower, index) => {
             const matchedUser = users.find(u => u.id === follower.id || u.id === follower.id?.user);
             if (matchedUser) {
-              followers[index].userImageURL = matchedUser.imageURL
-                ? matchedUser.imageURL
-                : matchedUser.imageUrl
-                ? matchedUser.imageUrl
-                : matchedUser.url
-                ? matchedUser.url
+              followers[index].ipfsImage = matchedUser.ipfsImage
+                ? matchedUser.ipfsImage
+                : matchedUser.ipfsImage
+                ? matchedUser.ipfsImage
+                : matchedUser.ipfsImage
+                ? matchedUser.ipfsImage
                 : require(`assets/anonAvatars/${matchedUser.anonAvatar}`);
               followers[index].urlSlug = matchedUser.urlSlug;
             }
@@ -267,28 +267,30 @@ const InfoPane = React.memo(
             });
           });*/
 
-          let metadataID = await onUploadNonEncrypt(files[0], file => uploadWithNonEncryption(file));
+        let metadataID = await onUploadNonEncrypt(files[0], file => uploadWithNonEncryption(file));
 
-          axios
-            .post(`${URL()}/user/changeProfilePhoto/saveMetadata/${user.id}`, metadataID)
-            .then(res => {
-              if (res.data.data) {
-                let setterUser: any = { ...user, infoImage: res.data.data };
-                setterUser.hasPhoto = true;
-                if (setterUser.id) {
-                  dispatch(setUser(setterUser));
+        axios
+          .post(`${URL()}/user/changeProfilePhoto/saveMetadata/${user.id}`, metadataID)
+          .then(async res => {
+            if (res.data.data) {
+              let setterUser: any = { ...user, infoImage: res.data.data };
+              setterUser.hasPhoto = true;
+              if (setterUser.id) {
+                if(setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
+                  setterUser.ipfsImage = await getPhotoIPFS(setterUser.infoImage.newFileCID, downloadWithNonDecryption)
                 }
-                setChangeImageTimestamp(Date.now());
+                dispatch(setUser(setterUser));
               }
-            })
-            .catch(error => {
-              console.log("Error", error);
-              setStatus({
-                msg: "Error change user profile photo",
-                key: Math.random(),
-                variant: "error",
-              });
+            }
+          })
+          .catch(error => {
+            console.log("Error", error);
+            setStatus({
+              msg: "Error change user profile photo",
+              key: Math.random(),
+              variant: "error",
             });
+          });
       } else {
         files[0]["invalid"] = true;
       }

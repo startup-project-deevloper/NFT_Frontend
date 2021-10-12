@@ -77,6 +77,7 @@ export const setUser = (payload: {
   followingProposals: any[];
   uninterestedMedias?: string[];
   whitelisted?: boolean;
+  ipfsImage?: any;
 }) => ({
   type: actionTypes.SET_USER,
   ...payload,

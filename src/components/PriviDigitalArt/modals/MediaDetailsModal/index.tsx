@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
@@ -56,7 +56,7 @@ const MediaDetailsModal = (props: any) => {
     setOpenFractionalise(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     let cts = [] as any;
     const isFollowing = media ? userConnections.isUserFollowed(media.CreatorId) : 0;
     setIsFollowing(isFollowing);
@@ -308,16 +308,14 @@ const MediaDetailsModal = (props: any) => {
             <Box display="flex" flexDirection="row" alignItems="center">
               <Avatar
                 size="medium"
-                url={getUserAvatar({
-                  id: creator?.id,
-                  anon: creator?.anon,
-                  hasPhoto: creator?.hasPhoto,
-                  anonAvatar: creator?.anonAvatar,
-                  url: creator?.url,
-                })}
+                url={user.ipfsImage
+                  ? user.ipfsImage
+                  : ""}
               />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
-                <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
+                <Text color={Color.Black}
+                      className={classes.creatorName}
+                      style={{ marginBottom: 4 }}>
                   {creator?.name || media?.CreatorName || media?.creator}
                 </Text>
                 {creator?.urlSlug && <Text className={classes.creatorName}>{`@${creator?.urlSlug}`}</Text>}
@@ -373,13 +371,9 @@ const MediaDetailsModal = (props: any) => {
                     key={`artist-${owner.id}`}
                     className={classes.artist}
                     size="small"
-                    url={getUserAvatar({
-                      id: owner?.id,
-                      anon: owner?.anon,
-                      hasPhoto: owner?.hasPhoto,
-                      anonAvatar: owner?.anonAvatar,
-                      url: owner?.url,
-                    })}
+                    url={owner.ipfsImage
+                      ? owner.ipfsImage
+                      : ""}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>

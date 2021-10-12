@@ -390,7 +390,7 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
     });
 
     // load staking positions
-    const response = await priviPodGetStaking(pod.Id);
+    const response = await priviPodGetStaking({ podId: pod.Id, type: "PIX" });
     if (response?.success) {
       setStakings(response.data);
     }

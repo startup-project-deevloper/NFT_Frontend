@@ -2,14 +2,13 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const createPodModalStyles = makeStyles(theme => ({
   headerCreatePod: {
-    fontFamily: "Agrandir GrandLight",
+    fontFamily: "Agrandir",
     fontStyle: "normal",
     fontWeight: 800,
     fontSize: "22px",
     lineHeight: "130%",
     color: "#2D3047",
-    marginBottom: "35px",
-    textAlign: "center",
+    marginBottom: "31px",
     "& span": {
       color: "#7F6FFF",
       marginLeft: "10px",
@@ -34,11 +33,9 @@ export const createPodModalStyles = makeStyles(theme => ({
       lineHeight: "130%",
     },
     "& p": {
-      fontStyle: "normal",
-      fontFamily: "Montserrat",
       fontSize: 16,
-      fontWeight: 500,
-      lineHeight: "160%",
+      fontWeight: 400,
+      lineHeight: "25.6px",
       textAlign: "center",
       color: "black",
       marginTop: 0,
@@ -109,7 +106,7 @@ export const createPodModalStyles = makeStyles(theme => ({
   },
   tabHeaderPodMediaSelected: {
     color: "#FFFFFF",
-    background: "#2D3047",
+    background: "#431AB7",
     borderRadius: "77px",
   },
   tooltipHeaderInfo: {

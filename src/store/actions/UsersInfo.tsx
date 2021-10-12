@@ -72,7 +72,8 @@ export const createUserInfo = (
   wallets: [] = [],
   email: string,
   infoImage: any,
-  whitelisted: boolean = false
+  whitelisted: boolean = false,
+  ipfsImage: any
 ): UserInfo => {
   return {
     id,
@@ -108,7 +109,8 @@ export const createUserInfo = (
     wallets,
     email,
     infoImage,
-    whitelisted
+    whitelisted,
+    ipfsImage
   };
 };
 

@@ -56,6 +56,7 @@ export const socialTokenPageStyles = makeStyles(theme => ({
     fontWeight: 500,
     fontSize: 14,
     lineHeight: "150%",
+    wordBreak: 'break-word'
   },
   typo1: {
     fontSize: 22,
@@ -144,13 +145,23 @@ export const socialTokenPageStyles = makeStyles(theme => ({
   },
   tokenActionsBar: {
     display: "flex",
+    alignItems: 'center',
     justifyContent: "space-between",
-    flexDirection: 'column'
+    flexDirection: 'row',
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column'
+    }
   },
   actionWrap: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 23,
+    flexDirection: 'row',
+    flex: 7,
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column'
+    }
   },
   actionBtn: {
     display: 'flex',

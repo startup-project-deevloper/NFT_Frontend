@@ -90,7 +90,7 @@ const PriviPixConnect = () => {
   const [isShowNoAuth, setShowNoAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [isShowUSDTGet, setShowUSDTGet] = useState<boolean>(false);
-  
+
   const [openConnectModal, setOpenConnectModal] = useState<boolean>(false);
 
   const handleClickSign = async () => {
@@ -388,7 +388,7 @@ const PriviPixConnect = () => {
             <span style={{ color: "#2D3047" }}>
               Sending You 100K Test USDT
             </span>{" "}
-            To Test <br />Test TRAX
+            To Test <br />Test PIX
           </span>
         )}
         SubTitleRender={() => (

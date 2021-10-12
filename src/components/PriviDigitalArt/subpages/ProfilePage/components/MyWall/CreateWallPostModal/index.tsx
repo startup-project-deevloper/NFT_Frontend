@@ -465,6 +465,7 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
             videoUrl={videoUrl}
             comments={post.responses}
             setComments={null}
+            creatorImage={""}
             onlyDisplay
           />
         </>

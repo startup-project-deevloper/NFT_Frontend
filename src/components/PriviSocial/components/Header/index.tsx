@@ -365,14 +365,8 @@ export default function Header({ id }) {
           aria-describedby={popperId}
           onClick={handleCreatePopup}
           style={{
-            backgroundImage: userSelector.id
-              ? `url(${getUserAvatar({
-                  id: userSelector.id,
-                  anon: userSelector.anon,
-                  hasPhoto: userSelector.hasPhoto,
-                  anonAvatar: userSelector.anonAvatar,
-                  url: userSelector.url,
-                })})`
+            backgroundImage: userSelector.ipfsImage
+              ? `url(${userSelector.ipfsImage})`
               : "none",
             cursor: "pointer",
             backgroundRepeat: "no-repeat",

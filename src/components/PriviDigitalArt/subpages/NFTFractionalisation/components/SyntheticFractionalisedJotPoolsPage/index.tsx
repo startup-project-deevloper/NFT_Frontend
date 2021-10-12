@@ -259,31 +259,19 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
               <Grid item md={3} xs={12}>
                 <Box className={classes.leftJots}>
                   <Box className={classes.hWrap1}>
-                    <Box className={classes.h1}>0,9983 JOTS</Box>
-                    <Box className={classes.h5} paddingY={1}>
-                      TRANSACTION VOLUME
-                    </Box>
-                    <Box className={classes.h6} style={{ color: "#FF1F00" }}>
-                      <ArrowDown /> 1.25%
-                    </Box>
-                  </Box>
-                  <Box className={classes.hWrap1}>
-                    <Box className={classes.h1}>1.000.000 JOTS</Box>
+                    <Box className={classes.h1}>{collection.totalLiquidity} JOTS</Box>
                     <Box className={classes.h5} paddingY={1}>
                       POOL TOTAL LIQUIDITY
                     </Box>
-                    <Box className={classes.h6} style={{ color: "#09C605" }}>
-                      <ArrowUp style={{ color: "#ccc" }} /> 5.71%
-                    </Box>
                   </Box>
                   <Box className={classes.hWrap2}>
-                    <Box className={classes.h1}>5.000 JOTS</Box>
+                    <Box className={classes.h1}>{collection.totalAccuredReward} JOTS</Box>
                     <Box className={classes.h5} paddingY={1}>
                       POOL TOTAL ACCRUED REWARD
                     </Box>
                   </Box>
                   <Box className={classes.hWrap2}>
-                    <Box className={classes.h1}>0,9983 JOTS</Box>
+                    <Box className={classes.h1}>{collection.totalShares} JOTS</Box>
                     <Box className={classes.h5} paddingY={1}>
                       LIQUIDITY SHARE VALUE
                     </Box>

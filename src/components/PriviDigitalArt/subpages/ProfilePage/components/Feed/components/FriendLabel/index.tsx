@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Avatar } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -18,7 +18,7 @@ export default function FriendLabel({ friend }) {
       onClick={() => history.push(`/${friend.urlSlug}/profile`)}
     >
       <Box display="flex" alignItems="flex-start" width="95%">
-        <Avatar url={friend.imageURL ?? ""} size="small" />
+        <Avatar url={friend.ipfsImage ? friend.ipfsImage : ""} size="small" />
         <Box ml="14px" maxWidth="70%">
           <Box color="#181818" fontSize="16px" mb="4px">
             {friend.name ?? <StyledSkeleton width={120} animation="wave" />}

@@ -39,26 +39,6 @@ export async function musicDaoRegisterPodProposal(payload: any) {
   }
 }
 
-export async function musicDaoVoteForPodProposal(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/musicDao/new/pod/voteForPodProposal`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function musicDaoExecutePod(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/musicDao/new/pod/executePod`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
 export async function musicDaoFollowPod(userId: string, podAddress: string): Promise<any> {
   try {
     const response = await axios.post(`${URL()}/musicDao/pod/followPod`, { userId, podAddress });
@@ -79,7 +59,7 @@ export async function musicDaoUnfollowPod(userId: string, podAddress: string): P
   }
 }
 
-// export async function musicDaoInvestPod(payload: IInvestPod, additionalData: Object): Promise<any> {
+// export async function priviPodInvestPod(payload: IInvestPod, additionalData: Object): Promise<any> {
 //   try {
 //     const { address, privateKey } = await getPriviWallet();
 //     const { signature } = await signPayload("investPod", address, payload, privateKey);
@@ -100,49 +80,6 @@ export async function musicDaoUnfollowPod(userId: string, podAddress: string): P
 //     throw new Error(e.message);
 //   }
 // }
-
-export async function musicDaoInvestPod(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/musicDao/new/pod/invest`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function musicDaoClaimPodTokens(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/musicDao/new/pod/claimPodTokens`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function musicDaoStakeTokens(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/musicDao/new/pod/stakeTokens`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function musicDaoGetStaking(id: any) {
-  try {
-    const response = await axios.get(`${URL()}/musicDao/new/pod/staking`, {
-      params: {
-        podId: id,
-      },
-    });
-    return response.data;
-  } catch (e) {
-    console.log(e);
-  }
-}
 
 export async function musicDaoUploadMedia(payload: IUploadMedia, additionalData: Object): Promise<any> {
   try {
@@ -330,26 +267,6 @@ export async function musicDaoGetPodDistributionInfo(podAddress: string): Promis
       },
     };
     const response = await axios.get(`${URL()}/musicDao/pod/getDistributionInfo`, config);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function musicDaoUnstakeTokens(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/musicDao/new/pod/unstakeTokens`, payload);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-    throw new Error(e.message);
-  }
-}
-
-export async function musicDaoClaimReward(payload: any) {
-  try {
-    const response = await axios.post(`${URL()}/musicDao/new/pod/claimReward`, payload);
     return response.data;
   } catch (e) {
     console.log(e);

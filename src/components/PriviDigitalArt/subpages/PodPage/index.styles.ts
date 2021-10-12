@@ -16,14 +16,13 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     padding: "32px 31px",
     "& > div > h2": {
       fontFamily: "Agrandir GrandLight",
-      fontWeight: "800",
       fontSize: "40px",
       lineHeight: "104.5%",
       margin: 0,
       color: "#431AB7",
       "& span": {
-        fontSize: "18px",
-        lineHeight: "23px",
+        fontFamily: "Agrandir GrandHeavy",
+        fontWeight: 800,
       },
     },
     "& > div > h5": {
@@ -105,6 +104,12 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     position: "absolute",
     zIndex: 0,
     top: 0,
+  },
+  blueEllipse: {
+    position: "absolute",
+    zIndex: 0,
+    top: 0,
+    right: 0
   },
   purpleBox: {
     background: "#E2E6FB",
@@ -224,6 +229,7 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
   optionSection: {
     display: "flex",
     alignItems: "center",
+    zIndex: 1,
     [theme.breakpoints.down("xs")]: {
       width: "100%",
       justifyContent: "flex-end",

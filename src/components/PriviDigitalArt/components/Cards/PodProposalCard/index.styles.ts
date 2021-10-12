@@ -9,8 +9,8 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
   },
   podImageContent: {
-    width: "285px",
-    height: "220px",
+    width: "224px",
+    height: "171px",
     borderRadius: theme.spacing(2),
   },
   podImage: {
@@ -23,7 +23,7 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     fontWeight: 600,
   },
   header2: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 700,
   },
   header3: {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core";
 import axios from "axios";
 import Web3 from "web3";
@@ -12,6 +12,8 @@ import { CreatePriviWalletModal, MnemonicWordsInputModal } from "shared/ui-kit/M
 import { useHistory } from "react-router-dom";
 import { generatePriviWallet } from "shared/helpers";
 import * as Crypto from "shared/helpers/aes-gcm";
+import getPhotoIPFS from "../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../shared/utils-IPFS/useIPFS";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -77,6 +79,12 @@ const SignUpWallet: React.FC<ISignUpWalletProps> = ({ handleCloseModal }) => {
   const [showPriviWalletDialog, setShowPriviWalletDialog] = useState<boolean>(false);
   const [showMnemonicInputModal, setShowMnemonicInputModal] = useState<boolean>(false);
 
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
   const dispatch = useDispatch();
   const { setSignedin } = useAuth();
   const history = useHistory();
@@ -107,10 +115,15 @@ const SignUpWallet: React.FC<ISignUpWalletProps> = ({ handleCloseModal }) => {
         .then(result => {
           if (result.success) {
             setSignedUp(true);
-            API.signInWithMetamaskWallet(accounts[0], web3, "Privi Wallet", result.signature).then(res => {
+            API.signInWithMetamaskWallet(accounts[0], web3, "Privi Wallet", result.signature).then(async res => {
               if (res.isSignedIn) {
                 const data = res.userData;
                 socket.emit("add user", data.id);
+
+                if (data && data.infoImage && data.infoImage.newFileCID) {
+                  data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
+                }
+
                 dispatch(setUser(data));
                 localStorage.setItem("token", res.accessToken);
                 localStorage.setItem("userId", data.id);
@@ -150,6 +163,10 @@ const SignUpWallet: React.FC<ISignUpWalletProps> = ({ handleCloseModal }) => {
         if (respSignIn.isSignedIn) {
           const data = respSignIn.userData;
           socket.emit("add user", data.id);
+
+          if (data && data.infoImage && data.infoImage.newFileCID) {
+            data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
+          }
 
           dispatch(setUser(data));
           localStorage.setItem("token", respSignIn.accessToken);

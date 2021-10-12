@@ -15,6 +15,8 @@ import WallItemModal from "components/PriviDigitalArt/subpages/ProfilePage/compo
 import { ReactComponent as FacebookIcon } from "assets/snsIcons/facebook.svg";
 import { ReactComponent as TwitterIcon } from "assets/snsIcons/twitter.svg";
 import { ReactComponent as InstagramIcon } from "assets/snsIcons/instagram.svg";
+import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
 
 export default function WallFeedCard({
   item,
@@ -46,32 +48,36 @@ export default function WallFeedCard({
     setOpenWallItemModal(false);
   };
 
+  const [imageIPFS, setImageIPFS] = useState<any>(null);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
   useEffect(() => {
-    if (feedData.comments && feedData.responses?.length > 0) {
-      let r = [] as any;
-      feedData.responses.forEach(response => {
-        let slug = response.userName;
-        let image = "";
-        let thisUser = users.find(u => u.id === response.userId);
-        if (thisUser) {
-          slug = thisUser.urlSlug;
-          image = getUserAvatar({
-            id: thisUser.id,
-            anon: thisUser.anon,
-            hasPhoto: thisUser.hasPhoto,
-            anonAvatar: thisUser.anonAvatar,
-            url: thisUser.url,
-          });
-        } else {
-          image = getRandomAvatarForUserIdWithMemoization(response.userId);
-        }
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
-        r.push({ ...response, urlSlug: slug, url: image });
-      });
+  useEffect(() => {
+    if (ipfs && Object.keys(ipfs).length !== 0) {
+      getUserPhoto(feedData);
 
-      setComments && setComments(r);
+      if (feedData.comments && feedData.responses?.length > 0) {
+        let r = [] as any;
+        feedData.responses.forEach(async response => {
+          let slug = response.userName;
+          let image = "";
+          let thisUser = users.find(u => u.id === response.userId);
+          if (thisUser) {
+            slug = thisUser.urlSlug;
+            image = await getReturnUserPhoto(thisUser);
+          }
+
+          r.push({ ...response, urlSlug: slug, url: image });
+        });
+
+        setComments && setComments(r);
+      }
     }
-  }, [feedData, users]);
+  }, [feedData, users, ipfs]);
 
   useEffect(() => {
     if (userSelector.id === userProfile.id) {
@@ -80,6 +86,24 @@ export default function WallFeedCard({
       setOwnUserWall(false);
     }
   }, [feedData]);
+
+  const getUserPhoto = async (feedData) => {
+    const userFound = users.find(usr => usr.id === feedData.userId);
+
+    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageIPFS(imageUrl);
+    }
+  }
+
+  const getReturnUserPhoto = async (userFound: any) => {
+    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+      return(imageUrl);
+    } else {
+      return("");
+    }
+  }
 
   const handleFruit = type => {
     const body = {
@@ -107,12 +131,8 @@ export default function WallFeedCard({
         <Box mb={"16px"} display="flex" alignItems="center">
           <Avatar
             size={"small"}
-            url={
-              feedData.userImageURL ??
-              feedData.imageURL ??
-              userProfile.imageURL ??
-              users.find(u => u.id === feedData.createdBy)?.imageURL ??
-              getRandomAvatarForUserIdWithMemoization(feedData.createdBy)
+            url={imageIPFS ?
+              imageIPFS : ""
             }
           />
           <Box ml="8px" fontSize="12px">
@@ -214,6 +234,7 @@ export default function WallFeedCard({
           item={feedData}
           comments={comments}
           setComments={setComments}
+          creatorImage={imageIPFS}
         />
       )}
     </>

@@ -190,7 +190,7 @@ const PodPage = () => {
           <GovernanceImg />
         </div>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
-          <h2>✨ NFT Pods</h2>
+          <h2>✨ <span>NFT</span> Pods</h2>
           <h5
             style={
               width < 1100
@@ -218,6 +218,7 @@ const PodPage = () => {
           zIndex={1}
           borderBottom="1px solid #00000022"
         >
+          <img src={require("assets/pixImages/ellipse_gradient.png")} className={classes.blueEllipse} />
           <div className={classes.flexBox}>
             <div
               className={clsx(classes.tabItem, { [classes.tabItemActive]: activeTab === 0 })}
@@ -320,7 +321,7 @@ const PodPage = () => {
           </>
         ) : (
           <>
-            <div style={{ zIndex: 1 }}>
+            <div style={{ zIndex: 1, width: '100%' }}>
               <InfiniteScroll
                 hasChildren={proposals.length > 0}
                 dataLength={proposals.length}

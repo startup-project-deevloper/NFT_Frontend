@@ -66,7 +66,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
               let data = response.data.data;
-              const creatorData : any = users.find(u => u.address === creatorId);
+              const creatorData : any = users.find(u => u.address === creatorId || u.id === creatorId);
 
               data.infoImage = creatorData.infoImage || null;
 
@@ -86,7 +86,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           }
         };
         // Try to get creator data with address
-        getCreatorData(media.CreatorAddress).then(result => {
+        getCreatorData(media.CreatorAddress || media.CreatorId).then(result => {
           if (!result) {
             // Try to get creator data with id
             getCreatorData(media.CreatorId).then(tryWithId => {
@@ -162,6 +162,10 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
       getImageIPFS(media.cid);
     }
   }, [ipfs]);
+
+  useEffect(() => {
+    console.log('item', item);
+  }, [item]);
 
   const getImageIPFS = async (cid: string) => {
     let files = await onGetNonDecrypt(cid, (fileCID, download) =>

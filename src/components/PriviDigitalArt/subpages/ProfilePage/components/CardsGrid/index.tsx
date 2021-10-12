@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import UseWindowDimensions from "shared/hooks/useWindowDimensions";
@@ -33,7 +33,7 @@ const CardsGrid = React.memo(
       return !!localStorage.getItem("token");
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
       const firstColumn = [] as any[];
       const secondColumn = [] as any[];
       const thirdColumn = [] as any[];

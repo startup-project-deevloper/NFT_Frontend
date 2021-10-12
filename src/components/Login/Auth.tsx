@@ -205,7 +205,6 @@ const Auth = () => {
               setInternalSocket(socket);
               socket.emit("add user", data.id);
 
-              console.log('data infoImage', data.infoImage);
               if (data && data.infoImage && data.infoImage.newFileCID) {
                 data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
               }

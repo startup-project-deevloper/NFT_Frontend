@@ -60,7 +60,6 @@ export default function ProfileCard({
   const [totalView, setTotalView] = useState<number>(0);
   const [chain, setChain] = useState<string>("PRIVI");
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [imageURL, setImageURL] = useState<string>("");
   const [change24h, setChange24h] = useState<number>(0);
   const [creatorsData, setCreatorsData] = useState<any[]>([]);
 
@@ -99,7 +98,6 @@ export default function ProfileCard({
     if (item) {
       setChain(item.TokenChain ? (item.TokenChain === "" ? "PRIVI" : item.TokenChain) : item.tag ?? "PRIVI");
       setBookmarked(true);
-      setImageURL(item.imageURL ?? item.UrlMainPhoto ?? item.Url ?? item.url ?? "");
       setTotalView(item.TotalView);
       axios.get(`${URL()}/user/getBasicUserInfo/${item.CreatorAddress}`).then(res => {
         const resp = res.data;
@@ -365,7 +363,7 @@ export default function ProfileCard({
             }
           >
             <div className={classes.aspectRatioWrapper}>
-              {(!imageURL && !item.cid) || type === "Social" ? (
+              {(!item.cid) || type === "Social" ? (
                 <div
                   className={classes.image}
                   style={
@@ -385,7 +383,9 @@ export default function ProfileCard({
                   )}
                 </div>
               ) : (
-                <object data={item.cid ? imageIPFS : imageURL} type="image/png" className={cls(classes.image, classes.img)}>
+                <object data={item.cid ? imageIPFS : ""}
+                        type="image/png"
+                        className={cls(classes.image, classes.img)}>
                   <div className={classes.image} />
                 </object>
               )}
@@ -561,7 +561,7 @@ export default function ProfileCard({
           handleRefresh={handleRefresh}
           media={item}
           mediaViews={totalView}
-          cidUrl={(item?.cid) ? imageIPFS : imageURL}
+          cidUrl={(item?.cid) ? imageIPFS : ""}
         />
       )}
     </>

@@ -291,23 +291,23 @@ export default function PodHeader({
 
   return (
     <>
-      <Box className={classes.headerBox} style={{ backgroundImage: `url(${podData?.url ?? randomImage})` }}>
-        <Box py={4} className={classes.backgroundBox}>
-          <Box
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
-            style={{ cursor: "pointer" }}
-            onClick={() => history.goBack()}
-            mb={isMobile ? 2 : 4}
-          >
-            <Box>
-              <ArrowIcon color={"#54658F"} />
-            </Box>
-            <Box color="#54658F" fontSize={14} fontWeight={700} fontFamily="Agrandir" ml="5px" mb="4px">
-              BACK
-            </Box>
+      <Box className={classes.headerBox} style={{ backgroundImage: "linear-gradient(to right, #DDFF57 , #9EACF2)" }}>
+        <Box
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+          style={{ cursor: "pointer" }}
+          onClick={() => history.goBack()}
+          mb={isMobile ? 2 : 4}
+        >
+          <Box>
+            <ArrowIcon color={"#54658F"} />
           </Box>
+          <Box color="#54658F" fontSize={14} fontWeight={700} fontFamily="Agrandir" ml="5px" mb="4px">
+            BACK
+          </Box>
+        </Box>
+        <Box py={4} className={classes.backgroundBox}>
           <Grid container>
             <Hidden smUp>
               <Grid item xs={12}>

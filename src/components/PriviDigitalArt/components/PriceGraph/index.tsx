@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { useMediaQuery, useTheme } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
@@ -6,13 +6,16 @@ import { PriceGraphStyles } from "./index.styles";
 import * as LightweightCharts from 'lightweight-charts';
 import { Color } from "shared/ui-kit";
 import { format, addDays, setMinutes, setHours, setSeconds, setMilliseconds } from "date-fns";
+import { useResizeObserver } from "./useResizeObserver";
 
 export default function PriceGraph({ data, title, subTitle }) {
     const classes = PriceGraphStyles();
+	const containerRef = useRef(null);
 
     const theme = useTheme();
 	const [seriesesData, setSeriesData] = useState<any>(null)
 	const [intervals, setIntervals] = useState<Array<string>>(['1D', '7D']);
+	const [width, height] = useResizeObserver(containerRef);
 	
 	useEffect(() => {
 		const dayData: any[] = [];
@@ -123,8 +126,8 @@ export default function PriceGraph({ data, title, subTitle }) {
 		var chartElement = document.createElement('div');
 		  
         var chart = LightweightCharts.createChart(chartElement, {
-            width: 1144,
-            height: 405,
+            width,
+            height,
             layout: {
                 backgroundColor: Color.Purple,
                 textColor: '#d1d4dc',
@@ -174,14 +177,15 @@ export default function PriceGraph({ data, title, subTitle }) {
 		if (seriesesData) {
 			syncToInterval(intervals[0]);
 		}
-    }, [seriesesData, intervals])
+    }, [seriesesData, intervals, width, height])
 
     return (
-        <Box id="price_chart" className={classes.root}>
+		
+		<div ref={containerRef} id="price_chart" className={classes.root} style={{ width: '100%' }}>
             <Box display="flex" flexDirection="column" className={classes.titleBox}>
                 <span className={classes.title}>{title}</span>
                 <span className={classes.date}>{subTitle}</span>
             </Box>
-        </Box>
+        </div>
     )
 }

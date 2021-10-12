@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Web3 from "web3";
 
 import {
   ClickAwayListener,
@@ -23,9 +24,13 @@ import { musicDaoFollowPod, musicDaoUnfollowPod, musicDaoFruitPod } from "shared
 import { useTypedSelector } from "store/reducers/Reducer";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import Box from "shared/ui-kit/Box";
-import { podCardStyles } from "../../../components/Cards/NFTPodCard/index.styles";
+import { podCardStyles } from "../../../components/Cards/PodCard/index.styles";
 import { usePodPageIndividualStyles } from "../index.styles";
 import { ArrowIcon } from "components/PriviDigitalArt/components/Icons/SvgIcons";
+import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
+import { useWeb3React } from "@web3-react/core";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
 
 const checkValidate = value => {
   if (value && value >= 0) {
@@ -43,22 +48,27 @@ const CustomMenuItem = withStyles({
 
 const randomImageNumber = Math.floor(Math.random() * 15 + 1);
 
+declare let window: any;
+
 export default function PodHeader({
   pod,
+  podInfo,
   followed,
   setFollowed,
   fundingEnded,
   fundingEndTime,
   imageIPFS,
+  isFunded,
 }: {
   pod: any;
+  podInfo: any;
   followed: boolean;
   setFollowed: any;
   fundingEnded: boolean;
   fundingEndTime: any;
   imageIPFS: any;
+  isFunded: boolean;
 }) {
-
   const user = useTypedSelector(state => state.user);
   const classes = usePodPageIndividualStyles();
   const styles = podCardStyles();
@@ -87,6 +97,8 @@ export default function PodHeader({
     minutes: 0,
     seconds: 0,
   });
+
+  const { library, chainId } = useWeb3React();
 
   useEffect(() => {
     if (!podData.distributionProposalAccepted) {
@@ -171,23 +183,6 @@ export default function PodHeader({
           ...(itemCopy.fruits || []),
           { userId: user.id, fruitId: type, date: new Date().getTime() },
         ];
-        if (pod && pod.FundingDate && pod.FundingDate > Math.trunc(Date.now() / 1000)) {
-          pod.status = "Funding";
-        } else if (
-          pod &&
-          pod.FundingDate &&
-          pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
-          pod.RaisedFunds < pod.FundingTarget
-        ) {
-          pod.status = "Funding Failed";
-        } else if (
-          pod &&
-          pod.FundingDate &&
-          pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
-          pod.RaisedFunds >= pod.FundingTarget
-        ) {
-          pod.status = "Funded";
-        }
         console.log("itemCopy", itemCopy, itemCopy.status);
         setPodData(itemCopy);
       }
@@ -213,13 +208,85 @@ export default function PodHeader({
   }
 
   const handleOpenQRCodeModal = () => {
-    const link = `trax/pods/${podData.Id}`;
+    const link = `pods/${podData.Id}`;
     shareMediaWithQrCode(podData.Id, link);
   };
 
   const handleOpenShareModal = () => {
-    const link = `trax/pods/${podData.Id}`;
+    const link = `pods/${podData.Id}`;
     shareMediaToSocial(podData.Id, "Pod", "NEW-PRIVI-PODS", link);
+  };
+
+  const handleAddCopyright = async () => {
+    if (!pod || !podInfo) return;
+
+    const targetChain = BlockchainNets.find(net => net.value === pod.blockchainNetwork);
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage("Got failed while switching over to target netowrk", { variant: "error" });
+        return;
+      }
+    }
+
+    const web3APIHandler = targetChain.apiHandler;
+    const web3 = new Web3(library.provider);
+
+    const decimals = await web3APIHandler?.Erc20["COPYRIGHT"].decimals(web3, podInfo.copyrightToken);
+    window.ethereum
+      .request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: podInfo.copyrightToken,
+            symbol: pod.CopyRightSymbol,
+            decimals,
+          },
+        },
+      })
+      .then(() => {
+        showAlertMessage("Successfully added the token to your metamask", { variant: "success" });
+      })
+      .catch(e => {
+        showAlertMessage(e.message, { variant: "error" });
+      });
+  };
+
+  const handleAddPodToken = async () => {
+    if (!pod || !podInfo) return;
+
+    const targetChain = BlockchainNets.find(net => net.value === pod.blockchainNetwork);
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage("Got failed while switching over to target netowrk", { variant: "error" });
+        return;
+      }
+    }
+
+    const web3APIHandler = targetChain.apiHandler;
+    const web3 = new Web3(library.provider);
+
+    const decimals = await web3APIHandler?.Erc20["POD"].decimals(web3, podInfo.podAddress);
+    window.ethereum
+      .request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: podInfo.podAddress,
+            symbol: pod.TokenSymbol,
+            decimals,
+          },
+        },
+      })
+      .then(() => {
+        showAlertMessage("Successfully added the token to your metamask", { variant: "success" });
+      })
+      .catch(e => {
+        showAlertMessage(e.message, { variant: "error" });
+      });
   };
 
   return (
@@ -262,10 +329,10 @@ export default function PodHeader({
                     podData.status === "Funding"
                       ? styles.orangeBox
                       : podData.status === "Funding Failed"
-                        ? styles.redBox
-                        : podData.status === "Funded"
-                          ? styles.blueBox
-                          : styles.blueBox
+                      ? styles.redBox
+                      : podData.status === "Funded"
+                      ? styles.blueBox
+                      : styles.blueBox
                   }
                   style={{ fontWeight: "bold" }}
                   px={1}
@@ -274,10 +341,10 @@ export default function PodHeader({
                   {podData.status === "Funding"
                     ? "Funding"
                     : podData.status === "Funding Failed"
-                      ? "Funding Failed"
-                      : podData.status === "Funded"
-                        ? "Funded"
-                        : "Under formation"}
+                    ? "Funding Failed"
+                    : podData.status === "Funded"
+                    ? "Funded"
+                    : "Under formation"}
                 </Box>
               </Box>
               <div className={classes.title}>{podData.Name || "Untitled Pod"}</div>
@@ -285,7 +352,12 @@ export default function PodHeader({
                 <div className={classes.tagBox}>pop</div>
                 <div className={classes.tagBox}>electro</div>
               </Box>
-              <Box mt={2} className={classes.header1} color="#081831 !important" style={{ wordBreak: "break-word" }}>
+              <Box
+                mt={2}
+                className={classes.header1}
+                color="#081831 !important"
+                style={{ wordBreak: "break-word" }}
+              >
                 {podData.Description}
               </Box>
               <Box
@@ -368,36 +440,69 @@ export default function PodHeader({
                     </Box>
                   </Box>
                 </Box>
-                <Box
-                  mb={1}
-                  display="flex"
-                  alignItems={isTablet ? "flex-start" : "center"}
-                  flexDirection={isTablet ? "column" : "row"}
-                >
+                {isFunded ? (
                   <Box
-                    className={classes.header3}
-                    fontWeight={"bold"}
-                    color="#2D3047"
-                    fontFamily="Montserrat"
-                    mb={isTablet ? "4px" : 0}
+                    mb={1}
+                    display="flex"
+                    alignItems={isTablet ? "flex-start" : "center"}
+                    flexDirection={isTablet ? "column" : "row"}
                   >
-                    {pod.distributionProposalAccepted ? "Time to finish funding" : "Pod Creation Deadline"}
+                    <PrimaryButton
+                      size="small"
+                      isRounded
+                      onClick={handleAddCopyright}
+                      style={{ background: Color.MusicDAOGreen }}
+                    >
+                      <Box display="flex" alignItems="center" justifyContent="space-between">
+                        Add Copyright Fractions&nbsp; +
+                        <img src={require("assets/walletImages/metamask.svg")} width={16} height={16} />
+                      </Box>
+                    </PrimaryButton>
+                    <SecondaryButton
+                      size="small"
+                      isRounded
+                      onClick={handleAddPodToken}
+                      style={{ background: Color.Black, color: Color.White, border: "none" }}
+                    >
+                      <Box display="flex" alignItems="center" justifyContent="space-between">
+                        Add POD Token&nbsp; +
+                        <img src={require("assets/walletImages/metamask.svg")} width={16} height={16} />
+                      </Box>
+                    </SecondaryButton>
                   </Box>
-                  <Box className={classes.flexBox} ml={1}>
-                    <Box className={classes.timeBox} fontWeight={800}>
-                      {pod.distributionProposalAccepted ? fundingEndTime.days : proposalEndTime.days} Days
+                ) : (
+                  <Box
+                    mb={1}
+                    display="flex"
+                    alignItems={isTablet ? "flex-start" : "center"}
+                    flexDirection={isTablet ? "column" : "row"}
+                  >
+                    <Box
+                      className={classes.header3}
+                      fontWeight={"bold"}
+                      color="#2D3047"
+                      fontFamily="Montserrat"
+                      mb={isTablet ? "4px" : 0}
+                    >
+                      {pod.distributionProposalAccepted ? "Time to finish funding" : "Pod Creation Deadline"}
                     </Box>
-                    <Box className={classes.timeBox}>
-                      {pod.distributionProposalAccepted ? fundingEndTime.hours : proposalEndTime.hours}h
-                    </Box>
-                    <Box className={classes.timeBox}>
-                      {pod.distributionProposalAccepted ? fundingEndTime.minutes : proposalEndTime.minutes}min
-                    </Box>
-                    <Box className={classes.timeBox}>
-                      {pod.distributionProposalAccepted ? fundingEndTime.seconds : proposalEndTime.seconds}s
+                    <Box className={classes.flexBox} ml={1}>
+                      <Box className={classes.timeBox} fontWeight={800}>
+                        {pod.distributionProposalAccepted ? fundingEndTime.days : proposalEndTime.days} Days
+                      </Box>
+                      <Box className={classes.timeBox}>
+                        {pod.distributionProposalAccepted ? fundingEndTime.hours : proposalEndTime.hours}h
+                      </Box>
+                      <Box className={classes.timeBox}>
+                        {pod.distributionProposalAccepted ? fundingEndTime.minutes : proposalEndTime.minutes}
+                        min
+                      </Box>
+                      <Box className={classes.timeBox}>
+                        {pod.distributionProposalAccepted ? fundingEndTime.seconds : proposalEndTime.seconds}s
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
+                )}
               </Box>
             </Grid>
             <Hidden xsDown>
@@ -420,55 +525,8 @@ export default function PodHeader({
       </Box>
       {pod.distributionProposalAccepted && (
         <Box py={2} className={classes.whiteBox}>
-          {!isMobile ? (<>
-            <Box>
-              <Box className={classes.header1}>Price</Box>
-              <Box className={classes.header2} mt={1}>
-                {formatNumber(checkValidate(podData?.FundingPrice), "USD", 4)}
-              </Box>
-            </Box>
-            <Box>
-              <Box className={classes.header1}>Interest Share</Box>
-              <Box className={classes.header2} mt={1}>
-                {podData?.InvestorShare ?? 0}%
-              </Box>
-            </Box>
-            <Box>
-              <Box className={classes.header1}>Raised Funds</Box>
-              <Box className={classes.header2} mt={1}>
-                {formatNumber(checkValidate(podData?.RaisedFunds), "USD", 4)}
-              </Box>
-            </Box>
-            <Box>
-              <Box className={classes.header1}>Market Cap</Box>
-              <Box className={classes.header2} mt={1}>
-                {formatNumber(checkValidate(podData?.RaisedFunds), "USD", 4)}
-              </Box>
-              {/* <Box className={classes.header1} mt={1}></Box> */}
-            </Box>
-            <Box>
-              <Box className={classes.header1}>Supply Released</Box>
-              <Box className={classes.header2} mt={1}>
-                {(podData?.RaisedFunds && podData?.FundingPrice) ? (+podData?.RaisedFunds / +podData?.FundingPrice).toFixed(2) : 0}
-              </Box>
-              {/* <Box className={classes.header1} mt={1}></Box> */}
-            </Box>
-            <Box>
-              <Box className={classes.header1}>{"Share & Earn"}</Box>
-              <Box className={classes.header2} mt={1}>
-                {podData?.SharingPercentage ?? 0}%
-              </Box>
-              {/* <Box className={classes.header1} mt={1}></Box> */}
-            </Box>
-            <Box>
-              <Box className={classes.header1}>Revenue</Box>
-              <Box className={classes.header2} mt={1}>
-                --
-              </Box>
-              {/* <Box className={classes.header1} mt={1}></Box> */}
-            </Box>
-          </>) : (<>
-            <Box px={2} sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+          {!isMobile ? (
+            <>
               <Box>
                 <Box className={classes.header1}>Price</Box>
                 <Box className={classes.header2} mt={1}>
@@ -494,13 +552,12 @@ export default function PodHeader({
                 </Box>
                 {/* <Box className={classes.header1} mt={1}></Box> */}
               </Box>
-            </Box>
-            <Box my={2} sx={{ width: "100%", height: "1px", bgcolor: "#ccc" }} />
-            <Box px={2} sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
               <Box>
                 <Box className={classes.header1}>Supply Released</Box>
                 <Box className={classes.header2} mt={1}>
-                  {(podData?.RaisedFunds && podData?.FundingPrice) ? (+podData?.RaisedFunds / +podData?.FundingPrice).toFixed(2) : 0}
+                  {podData?.RaisedFunds && podData?.FundingPrice
+                    ? (+podData?.RaisedFunds / +podData?.FundingPrice).toFixed(2)
+                    : 0}
                 </Box>
                 {/* <Box className={classes.header1} mt={1}></Box> */}
               </Box>
@@ -518,8 +575,64 @@ export default function PodHeader({
                 </Box>
                 {/* <Box className={classes.header1} mt={1}></Box> */}
               </Box>
-            </Box>
-          </>)}
+            </>
+          ) : (
+            <>
+              <Box px={2} sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+                <Box>
+                  <Box className={classes.header1}>Price</Box>
+                  <Box className={classes.header2} mt={1}>
+                    {formatNumber(checkValidate(podData?.FundingPrice), "USD", 4)}
+                  </Box>
+                </Box>
+                <Box>
+                  <Box className={classes.header1}>Interest Share</Box>
+                  <Box className={classes.header2} mt={1}>
+                    {podData?.InvestorShare ?? 0}%
+                  </Box>
+                </Box>
+                <Box>
+                  <Box className={classes.header1}>Raised Funds</Box>
+                  <Box className={classes.header2} mt={1}>
+                    {formatNumber(checkValidate(podData?.RaisedFunds), "USD", 4)}
+                  </Box>
+                </Box>
+                <Box>
+                  <Box className={classes.header1}>Market Cap</Box>
+                  <Box className={classes.header2} mt={1}>
+                    {formatNumber(checkValidate(podData?.RaisedFunds), "USD", 4)}
+                  </Box>
+                  {/* <Box className={classes.header1} mt={1}></Box> */}
+                </Box>
+              </Box>
+              <Box my={2} sx={{ width: "100%", height: "1px", bgcolor: "#ccc" }} />
+              <Box px={2} sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+                <Box>
+                  <Box className={classes.header1}>Supply Released</Box>
+                  <Box className={classes.header2} mt={1}>
+                    {podData?.RaisedFunds && podData?.FundingPrice
+                      ? (+podData?.RaisedFunds / +podData?.FundingPrice).toFixed(2)
+                      : 0}
+                  </Box>
+                  {/* <Box className={classes.header1} mt={1}></Box> */}
+                </Box>
+                <Box>
+                  <Box className={classes.header1}>{"Share & Earn"}</Box>
+                  <Box className={classes.header2} mt={1}>
+                    {podData?.SharingPercentage ?? 0}%
+                  </Box>
+                  {/* <Box className={classes.header1} mt={1}></Box> */}
+                </Box>
+                <Box>
+                  <Box className={classes.header1}>Revenue</Box>
+                  <Box className={classes.header2} mt={1}>
+                    --
+                  </Box>
+                  {/* <Box className={classes.header1} mt={1}></Box> */}
+                </Box>
+              </Box>
+            </>
+          )}
         </Box>
       )}
     </>

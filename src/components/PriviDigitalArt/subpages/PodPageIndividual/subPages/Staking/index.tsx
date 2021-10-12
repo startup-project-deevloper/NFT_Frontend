@@ -4,9 +4,8 @@ import PrintChart from "shared/ui-kit/Chart/Chart";
 import { StyledMenuItem, StyledSelect } from "shared/ui-kit/Styled-components/StyledComponents";
 import Box from "shared/ui-kit/Box";
 import { Gradient, PrimaryButton, SecondaryButton } from "shared/ui-kit";
-import TradePodTokenModal from "components/PriviDigitalArt/modals/TradePodTokenModal";
 import { formatNumber, generateMonthLabelsFromDate } from "shared/functions/commonFunctions";
-import { priviPodGetStaking, musicDaogGetPodPriceHistory } from "shared/services/API";
+import { priviPodGetStaking, priviPodGetPriceHistory } from "shared/services/API";
 import StakingPodCard from "components/PriviDigitalArt/components/Cards/StakingPodCard";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import PodStakingModal from "components/PriviDigitalArt/modals/PodStakingModal";
@@ -355,11 +354,11 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
 
   const loadData = async () => {
     // load price history
-    musicDaogGetPodPriceHistory(pod.PodAddress, 180).then(resp => {
+    priviPodGetPriceHistory({ podId: pod.Id, numPoints: 180, type: "PIX" }).then(resp => {
       const points = resp.data;
       let prices: number[] = [];
       let dates: number[] = [];
-      if(points) {
+      if (points) {
         prices = points.map(obj => obj.price);
         dates = points.map(obj => obj.date);
       }
@@ -391,7 +390,7 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
     });
 
     // load staking positions
-    const response = await priviPodGetStaking(pod.Id);
+    const response = await priviPodGetStaking({ podId: pod.Id, type: "PIX" });
     if (response?.success) {
       setStakings(response.data);
     }

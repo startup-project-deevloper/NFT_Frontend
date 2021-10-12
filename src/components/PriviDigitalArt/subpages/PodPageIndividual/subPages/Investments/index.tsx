@@ -13,13 +13,7 @@ import TradePodTokenModal from "components/PriviDigitalArt/modals/TradePodTokenM
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { formatNumber, generateMonthLabelsFromDate } from "shared/functions/commonFunctions";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import {
-  musicDaoGetPodDistributionInfo,
-  musicDaogGetPodPriceHistory,
-  musicDaoGetPodInvestmentTransactions,
-  musicDaoGetBuySellTransactions,
-  priviPodClaimPodTokens,
-} from "shared/services/API";
+import { priviPodGetInvestmentsTransactions, priviPodClaimPodTokens } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import { investmentStyles } from "./index.styles";
 import { switchNetwork } from "shared/functions/metamask";
@@ -267,7 +261,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
   const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
-  const podNetwork = BlockchainNets.find(net => net.name === pod.blockchainNetwork) || BlockchainNets[0];
+  const podNetwork = BlockchainNets.find(net => net.value === pod.blockchainNetwork) || BlockchainNets[0];
 
   const isFundingTargetReached = React.useMemo(
     () => podInfo && podInfo.raisedFunds >= podInfo.fundingTarget,
@@ -304,7 +298,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
     if (!pod.IsTrading) {
       let amount = 0;
       // load table
-      musicDaoGetPodInvestmentTransactions(pod.Id).then(resp => {
+      priviPodGetInvestmentsTransactions({ podId: pod.Id, type: "PIX" }).then(resp => {
         if (resp?.success) {
           const tableData: Array<Array<CustomTableCellInfo>> = [];
           const data = resp.data;
@@ -364,119 +358,6 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
         }
       });
     } else {
-      // load price history
-      musicDaogGetPodPriceHistory(pod.Id, 180).then(resp => {
-        const points = resp.data;
-        const prices: number[] = points.map(obj => obj.price);
-        const dates: number[] = points.map(obj => obj.date);
-        const labels: string[] = generateMonthLabelsFromDate(dates);
-        const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
-        newRewardConfig.configurer = configurer;
-        newRewardConfig.config.data.labels = labels;
-        newRewardConfig.config.data.datasets[0].data = prices;
-        newRewardConfig.config.data.datasets[0].backgroundColor = "#0FCEA6";
-        newRewardConfig.config.data.datasets[0].borderColor = "#0FCEA6";
-        newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#0FCEA6";
-        newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#0FCEA6";
-        newRewardConfig.config.data.datasets[0].type = "line";
-        newRewardConfig.config.options.scales.xAxes[0].offset = false;
-        newRewardConfig.config.options.scales.yAxes[0].ticks.display = false;
-        setPriceChartConfig(newRewardConfig);
-
-        // set price change
-        let newLastPrice = 0;
-        let newPrevPrice = 0;
-        let newPriceChange = 0;
-        if (prices.length > 0) newLastPrice = prices[prices.length - 1];
-        if (prices.length > 1) newPrevPrice = prices[prices.length - 2];
-        if (newPrevPrice) newPriceChange = (newLastPrice - newPrevPrice) / newPrevPrice;
-        setLastPrice(Number(newLastPrice.toFixed(4)));
-        setPrevPrice(Number(newPrevPrice.toFixed(4)));
-        setPriceChange(Number(newPriceChange.toFixed(2)));
-      });
-      // load shares distribution
-      musicDaoGetPodDistributionInfo(pod.Id).then(resp => {
-        if (resp?.success) {
-          const data = resp.data;
-          const newStakingRadial = JSON.parse(JSON.stringify(RadialConfig));
-          newStakingRadial.config.data.datasets[0].labels = ["Pod Owners", "Investors", "Share & Earn"];
-          newStakingRadial.config.data.datasets[0].data = [
-            (data.creatorSum * pod.Price).toFixed(6),
-            (data.investorSum * pod.Price).toFixed(6),
-            (data.sharerSum * pod.Price).toFixed(6),
-          ];
-          newStakingRadial.config.data.datasets[0].backgroundColor = ["#0FCEA6", "#FF78D3", "#F9E373"];
-          setOwnershipConfig(newStakingRadial);
-        }
-      });
-      musicDaoGetBuySellTransactions(pod.Id).then(resp => {
-        if (resp?.success) {
-          const data = resp.data;
-          const tableData: Array<Array<CustomTableCellInfo>> = [];
-          data.forEach(item => {
-            const from = item.From
-              ? item.From.substring(0, 8) + "..."
-              : pod.PodAddress.substring(0, 8) + "...";
-            const to = item.To ? item.To.substring(0, 8) + "..." : pod.PodAddress.substring(0, 8) + "...";
-            const row: Array<CustomTableCellInfo> = [];
-            row.push({
-              cell: <Box>{item.Type.includes("Buy") ? "Buy" : "Sell"}</Box>,
-              cellAlign: "center",
-            });
-            row.push({
-              cell: <img src={require(`assets/tokenImages/${item.Token}.png`)} width={24} height={24} />,
-              cellAlign: "center",
-            });
-            row.push({
-              cell: <Box>{item.PodAmount}</Box>,
-              cellAlign: "center",
-            });
-            row.push({
-              cell: <Box>{item.Amount}</Box>,
-              cellAlign: "center",
-            });
-            row.push({
-              cell: <Box color="#65CB63">{from}</Box>,
-              cellAlign: "center",
-            });
-            row.push({
-              cell: <Box color="#65CB63">{to}</Box>,
-              cellAlign: "center",
-            });
-            row.push({
-              cell: <Moment format="ddd, DD MMM-h:mm A">{item.Date * 1000}</Moment>,
-              cellAlign: "center",
-            });
-            row.push({
-              cell: (
-                <Box className={classes.flexBox}>
-                  <Box className={classes.circle}></Box>
-                  Confirmed
-                </Box>
-              ),
-              cellAlign: "center",
-            });
-            row.push({
-              cell: (
-                <Box>
-                  {item.Id && (
-                    <a target="_blank" rel="noopener noreferrer" href={"https://priviscan.io/tx/" + item.Id}>
-                      <img
-                        className={classes.externalLink}
-                        src={require("assets/icons/newScreen_black.svg")}
-                        alt="link"
-                      />
-                    </a>
-                  )}
-                </Box>
-              ),
-              cellAlign: "center",
-            });
-            tableData.push(row);
-          });
-          setTransactionTableData(tableData);
-        }
-      });
     }
   };
 
@@ -590,6 +471,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
         await priviPodClaimPodTokens({
           podId: pod.Id,
           user: userSelector.id,
+          type: "PIX",
         });
 
         handleRefresh();
@@ -766,6 +648,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                       onClick={onClaimPodTokens}
                       style={{ background: Color.MusicDAOGreen, color: "white", border: "none" }}
                       isRounded
+                      disabled={!fundingEnded}
                     >
                       CLAIM YOUR POD TOKENS
                     </SecondaryButton>

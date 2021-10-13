@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Moment from "react-moment";
 import URL from "shared/functions/getURL";
 import ReactPlayer from "react-player";
@@ -14,6 +14,10 @@ import { saveAs } from "file-saver";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import { ReactComponent as PlaySolid } from "assets/icons/play-solid.svg";
 import { ReactComponent as DownloadSolid } from "assets/icons/download-solid.svg";
+import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
+import {onGetNonDecrypt} from "../../../../shared/ipfs/get";
+import {_arrayBufferToBase64} from "../../../../shared/functions/commonFunctions";
 
 const useStyles = makeStyles(theme => ({
   dialogContainer: {
@@ -61,6 +65,16 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "flex-start",
     alignItems: "center",
   },
+  noMessagesLabelChat: {
+    fontSize: "14px",
+    color: "grey",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "10px",
+    marginBottom: "10px",
+    width: "100%"
+  },
   videoPlayer: {
     cursor: "pointer",
     width: "180px !important",
@@ -94,16 +108,55 @@ const useStyles = makeStyles(theme => ({
 
 const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "social" }) => {
   const { userInfo } = chat;
-  const playerVideo = React.useRef(null);
+  const playerVideo = useRef(null);
   const classes = useStyles();
-  const [selectedPhoto, setSelectedPhoto] = React.useState<string>("");
-  const [selectedVideo, setSelectedVideo] = React.useState<string>("");
-  const [openModalPhotoFullScreen, setOpenModalPhotoFullScreen] = React.useState<boolean>(false);
-  const [openModalVideoFullScreen, setOpenModalVideoFullScreen] = React.useState<boolean>(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<string>("");
+  const [selectedVideo, setSelectedVideo] = useState<string>("");
+  const [openModalPhotoFullScreen, setOpenModalPhotoFullScreen] = useState<boolean>(false);
+  const [openModalVideoFullScreen, setOpenModalVideoFullScreen] = useState<boolean>(false);
   const isLeftItem =
     (mediaOnCommunity && user && user !== message.from) || (userInfo && userInfo.id === message.from);
   const isRightItem =
     (mediaOnCommunity && user && user === message.from) || (userInfo && userInfo.id === message.to);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const [fileIPFS, setFileIPFS] = useState<any>(null);
+  const [fileBlobIPFS, setFileBlobIPFS] = useState<any>(null);
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  useEffect(() => {
+    if(ipfs && Object.keys(ipfs).length !== 0 &&
+      message && message.type && message.type !== "text" &&
+      message.message && message.message.newFileCID) {
+      getUserFileIpfs(message.message.newFileCID, message.type);
+    }
+  }, [message, ipfs]);
+
+  const getUserFileIpfs = async (cid: any, type: string) => {
+    let fileUrl : string = '';
+    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
+      downloadWithNonDecryption(fileCID, download)
+    );
+    if(files) {
+      let base64String = _arrayBufferToBase64(files.content);
+      if (type === 'photo') {
+        fileUrl = "data:image/png;base64," + base64String;
+      } else if (type === 'video') {
+        fileUrl = "data:video/mp4;base64," + base64String;
+      } else if (type === 'audio') {
+        fileUrl = "data:audio/mp3;base64," + base64String;
+      } else {
+        fileUrl = base64String;
+        setFileBlobIPFS(files.blob);
+      }
+    }
+    setFileIPFS(fileUrl);
+  }
+
   const handleOpenModalPhotoFullScreen = () => {
     setOpenModalPhotoFullScreen(true);
   };
@@ -119,8 +172,14 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
   };
 
   const downloadFile = () => {
-    saveAs(`${message.url}`, message.message);
+    if(fileBlobIPFS) {
+      saveAs(fileBlobIPFS,
+        message.message && message.message.metadata &&
+        message.message.metadata.properties && message.message.metadata.properties.name
+          ? message.message.metadata.properties.name : "File");
+    }
   };
+
   const downloadFileMediaOnCommunity = () => {
     saveAs(`${message.url}`, message.message);
   };
@@ -156,13 +215,11 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
             <div
               className={classes.photoContainer}
               onClick={() => {
-                setSelectedPhoto(`${message.url}?${Date.now()}`);
+                setSelectedPhoto(`${fileIPFS}`);
                 handleOpenModalPhotoFullScreen();
               }}
               style={{
-                backgroundImage: `url(${
-                  message.url.startsWith("https://") ? message.url : "https://" + message.url
-                }?${Date.now()})`,
+                backgroundImage: `url(${fileIPFS ? fileIPFS : ""})`,
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
@@ -183,11 +240,12 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
               </div>
               <ReactPlayer
                 onClick={() => {
-                  console.log(message);
-                  setSelectedVideo(`${message.url}`);
-                  handleOpenModalVideoFullScreen();
+                  if(fileIPFS) {
+                    setSelectedVideo(fileIPFS);
+                    handleOpenModalVideoFullScreen();
+                  }
                 }}
-                url={`${message.url}`}
+                url={fileIPFS}
                 className={classes.videoPlayer}
                 ref={playerVideo}
                 progressInterval={200}
@@ -201,20 +259,26 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
           <div className={classes.container}>
             <div className={classes.itemMeta}>{message?.fromType?.toUpperCase()}</div>
             <div className={classes.audioContainer}>
-              <Waveform
-                url={
-                  mediaOnCommunity
-                    ? `${URL()}/mediaOnCommunity/getMessageAudio/${message.chatId}/${message.from}/${
-                        message.id
-                      }`
-                    : `${URL()}/chat/getMessageAudio/${chat.room}/${message.from}/${message.id}`
-                }
-                mine={false}
-                showTime={false}
-                onPauseFunction={null}
-                onPlayFunction={null}
-                onReadyFunction={null}
-              />
+              {
+                fileIPFS ?
+                  <Waveform
+                    url={
+                      mediaOnCommunity
+                        ? `${URL()}/mediaOnCommunity/getMessageAudio/${message.chatId}/${message.from}/${
+                          message.id
+                        }`
+                        : fileIPFS ? fileIPFS : null
+                    }
+                    mine={false}
+                    showTime={false}
+                    onPauseFunction={null}
+                    onPlayFunction={null}
+                    onReadyFunction={null}
+                  /> :
+                  <p className={classes.noMessagesLabelChat}>
+                    Loading audio...
+                  </p>
+              }
             </div>
             <Moment fromNow className={classes.itemMeta}>
               {message.created}
@@ -224,8 +288,11 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
           <div className="item-content">
             <div className="item-subtitle">{message?.fromType?.toUpperCase()}</div>
             <div className="item-file">
-              <div className="item-file-name">{message.message.originalname || "file"}</div>
-              <div
+              <div className="item-file-name">
+                {message.message && message.message.metadata &&
+                message.message.metadata.properties && message.message.metadata.properties.name
+                  ? message.message.metadata.properties.name : "File"}
+              </div>              <div
                 onClick={() => {
                   if (mediaOnCommunity) {
                     downloadFileMediaOnCommunity();

@@ -163,10 +163,6 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
     }
   }, [ipfs]);
 
-  useEffect(() => {
-    console.log('item', item);
-  }, [item]);
-
   const getImageIPFS = async (cid: string) => {
     let files = await onGetNonDecrypt(cid, (fileCID, download) =>
       downloadWithNonDecryption(fileCID, download)

@@ -39,8 +39,7 @@ export default function PodArtists({ pod }) {
             // pod.CreatorsData.length > 2
             //   ?
             pod.CreatorsData.map((creator, index) => (
-              <UserCard key={`artist-${index}`}
-                        userId={creator.id} />
+              <UserCard key={`artist-${index}`} userId={creator.id} />
             ))
             // : pod.CreatorsData.map((creator, index) => (
             //     <UserWideCard key={`artist-${index}`} userId={creator.id} />
@@ -56,7 +55,7 @@ const UpArrowIcon = () => (
   <svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M7 4L4 1L1 4"
-      stroke="#77788E"
+      stroke="#1A1B1C"
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -68,7 +67,7 @@ const DownArrwoIcon = () => (
   <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M1 1.60547L4 4.60547L7 1.60547"
-      stroke="#77788E"
+      stroke="#1A1B1C"
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"

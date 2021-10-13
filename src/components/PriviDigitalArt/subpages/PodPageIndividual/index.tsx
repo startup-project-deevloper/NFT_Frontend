@@ -309,7 +309,7 @@ const PodPageIndividual = () => {
             <Box>
               {/* Proposals title bar */}
               <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box className={classes.header4}>All Proposals</Box>
+                <Box className={classes.header4}>Proposals</Box>
                 {pod.Proposals && pod.Proposals.length !== 0 ? (
                   <Box display="flex" alignItems="center">
                     <Box

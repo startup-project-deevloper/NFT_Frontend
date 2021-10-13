@@ -7,7 +7,7 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     padding: "30px",
     [theme.breakpoints.down("sm")]: {
       padding: "0",
-      paddingBottom: "30px"
+      paddingBottom: "30px",
     },
     display: "flex",
     flexDirection: "column",
@@ -38,7 +38,8 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     background: "#DDFF57",
     boxShadow: "0px 25px 36px -11px rgba(0, 0, 0, 0.02)",
     borderRadius: 20,
-    padding: "97px 44px",
+    padding: "114px 44px",
+    maxWidth: 368,
   },
   jotWrapper: {
     display: "flex",
@@ -46,15 +47,16 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
   },
   jotLabel: {
     color: "#9EACF2",
+    fontWeight: "bold",
     fontSize: 16,
     marginBottom: 5,
   },
   jotDivider: {
-    marginBottom: 15,
-    marginTop: 10,
+    margin: "20px 0",
   },
   jotTitle: {
     color: "#431AB7",
+    fontFamily: "Agrandir GrandHeavy",
     fontSize: 19,
     marginBottom: 5,
     fontWeight: 800,
@@ -303,5 +305,5 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     fontWeight: 400,
     color: "#FFF",
     margin: 0,
-  }
+  },
 }));

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Axios from "axios";
 
@@ -19,6 +19,8 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import URL from "shared/functions/getURL";
 import { WallPostModalContent } from "../WallItemModal";
 import { wallStyles } from "../index.styles";
+import useIPFS from "../../../../../../../shared/utils-IPFS/useIPFS";
+import { onUploadNonEncrypt } from "../../../../../../../shared/ipfs/upload";
 
 const infoIcon = require("assets/icons/info_gray.png");
 const uploadIcon = require("assets/icons/upload.png");
@@ -56,7 +58,13 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
 
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const createPost = () => {
+  const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  const createPost = async () => {
     let description = "";
     let descriptionArray: Array<string> = [];
     if (editor && editor.blocks) {
@@ -68,6 +76,14 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
 
     if (validatePostInfo()) {
       let body = { ...post };
+
+      let infoImage = photo
+        ? await onUploadNonEncrypt(photo, file => uploadWithNonEncryption(file))
+        : undefined;
+      let infoVideo = video
+        ? await onUploadNonEncrypt(video, file => uploadWithNonEncryption(file))
+        : undefined;
+
       body.mainHashtag = hashTags.length > 0 ? hashTags[0] : "";
       body.hashtags = hashTags;
       body.schedulePost = post.schedulePost; // integer timestamp eg 1609424040000
@@ -78,6 +94,9 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
       body.hasPhoto = hasPhoto;
 
       body.userId = userId;
+
+      body.infoImage = infoImage || null;
+      body.infoVideo = infoVideo || null;
 
       setCreationProgress(true);
       if (!post.scheduled) {
@@ -90,13 +109,13 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
         .then(async response => {
           const resp = response.data;
           if (resp.success) {
-            if (hasPhoto) {
+            /*if (hasPhoto) {
               await uploadUserWallPostImage(resp.data.id);
             }
 
             if (video) {
               await uploadUserVideo(resp.data.id);
-            }
+            }*/
             setStatus({
               msg: "Post created",
               key: Math.random(),
@@ -461,10 +480,11 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
 
           <WallPostModalContent
             item={post}
-            urlMainPhoto={photoImg}
-            videoUrl={videoUrl}
             comments={post.responses}
             setComments={null}
+            creatorImage={""}
+            imageWallIPFS={""}
+            videoWallIPFS={""}
             onlyDisplay
           />
         </>

@@ -102,6 +102,8 @@ const initialState: State = {
   followingProposals: [],
   uninterestedMedias: [],
   whitelisted: false,
+  infoImage: {},
+  ipfsImage: ''
 };
 
 // Set a User into the global state

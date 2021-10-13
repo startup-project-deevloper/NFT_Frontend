@@ -36,27 +36,29 @@ export const onUploadEncrypt = async (file, address, mnemonic, uploadWithEncrypt
 };
 
 export const onUploadNonEncrypt = async (file, uploadWithNonEncryption) => {
+  return new Promise(async (resolve, reject) => {
+    console.log("----------Upload Start----------");
 
-  console.log("----------Upload Start----------");
+    TimeLogger.start("Upload IPFS");
+    const { added } = await uploadWithNonEncryption(file);
+    TimeLogger.end("Upload IPFS");
 
-  TimeLogger.start("Upload IPFS");
-  const { added } = await uploadWithNonEncryption(file);
-  TimeLogger.end("Upload IPFS");
+    console.log("added 1", added);
 
-  console.log("added 1", added);
+    TimeLogger.start("Upload MetaData");
+    const newMetaDataID = await uploadMetaDataPublic(added, file);
+    TimeLogger.end("Upload MetaData");
 
-  TimeLogger.start("Upload MetaData");
-  const newMetaDataID = await uploadMetaDataPublic(added, file);
-  TimeLogger.end("Upload MetaData");
+    /*TimeLogger.start("add file to HLF");
+    const metaHLF = await addFile("createFile", added, {}, file, {}, address, "public");
+    TimeLogger.end("add file to HLF");*/
 
-  /*TimeLogger.start("add file to HLF");
-  const metaHLF = await addFile("createFile", added, {}, file, {}, address, "public");
-  TimeLogger.end("add file to HLF");*/
+    console.log("----------Upload End----------");
+    TimeLogger.log();
 
-  console.log("----------Upload End----------");
-  TimeLogger.log();
+    resolve(newMetaDataID);
+  });
 
-  return newMetaDataID;
 };
 
 const getEncryptedKey = async (

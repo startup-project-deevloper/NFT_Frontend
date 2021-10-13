@@ -31,6 +31,8 @@ import InfoPane from "./components/InfoPane";
 import Feed from "./components/Feed";
 import SocialToken from "./components/SocialToken";
 import { profilePageStyles } from "./index.styles";
+import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 
 const profileSubTabs = ["All", "Owned", "Curated", "Liked"];
 
@@ -188,6 +190,12 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const scrollRef = useRef<any>();
 
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
   useEffect(() => {
     setOpenFilters(false);
   }, []);
@@ -306,10 +314,13 @@ const ProfilePage = () => {
     }
   }, [subTabsValue]);
 
-  const setUserSelector = setterUser => {
+  const setUserSelector = async setterUser => {
     if (setterUser.id) {
       dispatch(setSelectedUser(setterUser.id, setterUser.address));
       if (ownUser) {
+        if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
+          setterUser.imageIPFS = await getPhotoIPFS(setterUser.infoImage.newFileCID, downloadWithNonDecryption);
+        }
         dispatch(setUser(setterUser));
       }
     }
@@ -681,7 +692,7 @@ const ProfilePage = () => {
               className={`${classes.tabItem} ${activeTab === 2 ? classes.tabItemActive : ""}`}
               onClick={() => setActiveTab(2)}
             >
-              Latest Wall Post
+              Wall
             </Box>
             <Box
               className={`${classes.tabItem} ${activeTab === 3 ? classes.tabItemActive : ""}`}

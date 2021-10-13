@@ -94,6 +94,7 @@ const CreateMediaModal = (props: any) => {
   const allUsers = useSelector(getUsersInfoList);
 
   const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
+
   useEffect(() => {
     setMultiAddr(multiAddr);
   }, []);

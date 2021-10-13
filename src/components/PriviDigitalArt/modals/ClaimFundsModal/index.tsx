@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Color, Modal, PrimaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
@@ -9,8 +9,15 @@ import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { toDecimals } from "shared/functions/web3";
+import { priviPodCreateWithdrawProposal } from "shared/services/API";
+import { useSelector } from "react-redux";
+import { RootState } from "store/reducers/Reducer";
 
 export const ClaimFundsModal = (props: any) => {
+  const { pod, podInfo, podId, open, handleClose } = props;
+  const userSelector = useSelector((state: RootState) => state.user);
+
   const { showAlertMessage } = useAlertMessage();
 
   const classes = ClaimFundsModalStyles();
@@ -23,6 +30,30 @@ export const ClaimFundsModal = (props: any) => {
   const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
   const { account, library, chainId } = useWeb3React();
+
+  const [availableFunds, setAvailableFunds] = useState<number>(0);
+
+  useEffect(() => {
+    if (!open || !pod || !podInfo) return;
+
+    (async () => {
+      const targetChain = BlockchainNets.find(net => net.value === pod.blockchainNetwork);
+      if (chainId && chainId !== targetChain?.chainId) {
+        const isHere = await switchNetwork(targetChain?.chainId || 0);
+        if (!isHere) {
+          showAlertMessage("Got failed while switching over to target network", { variant: "error" });
+          return;
+        }
+      }
+      const web3APIHandler = targetChain.apiHandler;
+      const web3 = new Web3(library.provider);
+      const decimals = await web3APIHandler.Erc20[pod.FundingToken].decimals(web3);
+      const balance = await web3APIHandler.Erc20[pod.FundingToken].balanceOf(web3, {
+        account: podInfo.podAddress,
+      });
+      setAvailableFunds(Number(toDecimals(balance, decimals)));
+    })();
+  }, [open, pod, podInfo]);
 
   const handleSubmit = async () => {
     setOpenTransactionModal(true);
@@ -43,19 +74,30 @@ export const ClaimFundsModal = (props: any) => {
       account!,
       {
         amount,
-        podAddress: props.podInfo.podAddress,
+        podAddress: podInfo.podAddress,
         recipient: address,
+        fundingToken: pod.FundingToken,
       },
       setHash
     );
 
     if (response.success) {
       setTransactionSuccess(true);
-      showAlertMessage("Successfully withdraw funds.", { variant: "success" });
+      showAlertMessage("Successfully created a withdraw proposal.", { variant: "success" });
       setStep(step + 1);
+
+      await priviPodCreateWithdrawProposal({
+        podId,
+        creator: userSelector.firstName + userSelector.lastName ?? userSelector.urlSlug,
+        creatorId: userSelector.id,
+        proposalId: response.data.proposalId,
+        recipient: address,
+        amount,
+        type: "PIX",
+      });
     } else {
       setTransactionSuccess(false);
-      showAlertMessage("Failed to withdraw funds.", { variant: "error" });
+      showAlertMessage("Failed to create a withdraw proposal.", { variant: "error" });
     }
   };
 
@@ -90,7 +132,7 @@ export const ClaimFundsModal = (props: any) => {
           AVAILABLE FUNDS
         </Box>
         <Box className={classes.header5} color={Color.MusicDAODark}>
-          2425 <span>USD</span>
+          {availableFunds} <span>{pod && pod.FundingToken}</span>
         </Box>
       </Box>
       <Box mt={2}>
@@ -168,13 +210,7 @@ export const ClaimFundsModal = (props: any) => {
           hash={hash}
         />
       ) : (
-        <Modal
-          size="small"
-          isOpen={props.open}
-          onClose={props.handleClose}
-          showCloseIcon
-          className={classes.root}
-        >
+        <Modal size="small" isOpen={open} onClose={handleClose} showCloseIcon className={classes.root}>
           {step === 0 ? firstScreen() : step === 1 ? secondScreen() : thirdScreen()}
         </Modal>
       )}

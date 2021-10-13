@@ -99,6 +99,7 @@ export interface RootState {
     uninterestedMedias?: string[];
     whitelisted?: boolean;
     infoImage?: any;
+    ipfsImage?: any;
   };
   userBalances: {
     [key: string]: BalanceModel;

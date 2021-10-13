@@ -320,12 +320,12 @@ const WallItem = React.memo((props: any) => {
             />
           ) : null}
 
-          {props.imageUrl && props.item.hasPhoto ? (
+          {props.item.ipfsImage ? (
             <div
               className="user-image"
               style={{
                 backgroundImage:
-                  item.userImageURL && item.userImageURL.length > 0 ? `url(${item.userImageURL})` : "none",
+                  props.item.ipfsImage ? props.item.ipfsImage : "none",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -401,9 +401,7 @@ const WallItem = React.memo((props: any) => {
                     className="user-image"
                     style={{
                       backgroundImage:
-                        item.userImageURL && item.userImageURL.length > 0
-                          ? `url(${item.userImageURL})`
-                          : "none",
+                        props.item.ipfsImage ? props.item.ipfsImage : "none",
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       backgroundPosition: "center",
@@ -461,9 +459,7 @@ const WallItem = React.memo((props: any) => {
                     className="user-image"
                     style={{
                       backgroundImage:
-                        item.userImageURL && item.userImageURL.length > 0
-                          ? `url(${item.userImageURL})`
-                          : "none",
+                      props.item.ipfsImage ? props.item.ipfsImage : "none",
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       backgroundPosition: "center",

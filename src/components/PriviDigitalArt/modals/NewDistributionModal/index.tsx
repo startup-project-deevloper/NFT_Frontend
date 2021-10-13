@@ -7,7 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { RootState } from "store/reducers/Reducer";
-import { getCryptosRateAsList } from "shared/services/API";
+import { getCryptosRateAsList, priviPodRegisterPodProposal } from "shared/services/API";
 import { Modal, PrimaryButton, SecondaryButton, CircularLoadingIndicator } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import CopyRightFractionTab from "./components/CopyRightFractionTab";
@@ -17,15 +17,13 @@ import { newDistributionModalStyles } from "./index.styles";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { musicDaoRegisterPodProposal } from "shared/services/API";
-import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "../../../../shared/functions/commonFunctions";
 import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import TransactionProgressModal from "../TransactionProgressModal";
 
 // const startDate = Math.floor(Date.now() / 1000 + 3600 * 24 * 7); // one week later
-const startDate = Math.floor(Date.now() / 1000 + 3600 * 24); // 20 mins later
+const startDate = Math.floor(Date.now() / 1000 + 1200); // 20 mins later
 
 export default function NewDistributionModal(props: any) {
   const userSelector = useSelector((state: RootState) => state.user);
@@ -69,9 +67,7 @@ export default function NewDistributionModal(props: any) {
 
   const uploadPhoto = async () => {
     let infoImage = await onUploadNonEncrypt(tokenPhoto, file => uploadWithNonEncryption(file));
-    if (infoImage) {
-      setImageIPFSTokenPhoto(infoImage);
-    }
+    setImageIPFSTokenPhoto(infoImage);
   };
 
   useEffect(() => {
@@ -143,7 +139,7 @@ export default function NewDistributionModal(props: any) {
         (a: number, b: number) => a + b,
         0
       );
-      if (creatorsSum + Number(pod.CopyrightInvestorShare) !== 100) {
+      if (creatorsSum + Number(pod.CopyrightInvestorShare ?? 0) !== 100) {
         showAlertMessage(`All distribution share sum percentage should be 100%`, { variant: "error" });
         return false;
       }
@@ -173,7 +169,7 @@ export default function NewDistributionModal(props: any) {
           if (resp) {
             setTransactionSuccess(true);
 
-            await musicDaoRegisterPodProposal({
+            await priviPodRegisterPodProposal({
               podId: props.podId,
               proposal: {
                 Id: resp.data.id,
@@ -188,6 +184,7 @@ export default function NewDistributionModal(props: any) {
                 TokenInfoImage: imageIPFSTokenPhoto || null,
                 CopyRightSupply: pod.CopyRightSupply,
                 CopyRightAllocation: pod.CreatorsData.map(data => data.sharingPercent),
+                CopyRightSymbol: pod.CopyRightSymbol,
                 CopyrightInvestorShare: pod.CopyrightInvestorShare,
                 Royalty: pod.Royalty,
                 FundingToken: pod.FundingToken,
@@ -198,6 +195,7 @@ export default function NewDistributionModal(props: any) {
                 InvestorShare: pod.InvestorShare,
                 SharingPercentage: pod.SharingPercentage,
               },
+              type: "PIX",
             });
             props.handleRefresh();
             props.onClose();
@@ -241,8 +239,8 @@ export default function NewDistributionModal(props: any) {
                 ? "32px 12px 50px"
                 : "32px 39px 50px"
               : isMobile
-                ? "20px 22px 63px"
-                : "20px 58px 63px",
+              ? "20px 22px 63px"
+              : "20px 58px 63px",
           }}
         >
           <div>

@@ -1,7 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import Web3 from "web3";
-import ProposalDetailModal from "components/PriviDigitalArt/modals/ProposalDetailModal";
 import React, { useState } from "react";
 import { BlockchainNets } from "shared/constants/constants";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -9,9 +8,14 @@ import Avatar from "shared/ui-kit/Avatar";
 import Box from "shared/ui-kit/Box";
 import { FundCardStyles } from "./index.styles";
 import { useSelector } from "react-redux";
-import { musicDaoVoteForPodProposal, musicDaoExecutePod } from "shared/services/API";
+import { priviPodVoteForWithdrawProposal } from "shared/services/API";
 import { RootState } from "store/reducers/Reducer";
 import TransactionProgressModal from "../../../modals/TransactionProgressModal";
+import { Typography } from "@material-ui/core";
+
+require("dotenv").config();
+
+const isDev = process.env.REACT_APP_ENV === "dev";
 
 export const FundCard = props => {
   const { podId, proposal, pod, handleRefresh } = props;
@@ -22,23 +26,23 @@ export const FundCard = props => {
 
   const { account, library } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
-  const creator = pod.CreatorsData.find(creator => creator.id === proposal.Proposer);
 
   const [hash, setHash] = useState<string>("");
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
   const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
-  const handleAccept = async () => {
+  const handleVote = async vote => {
     setOpenTransactionModal(true);
 
     const web3APIHandler = BlockchainNets[1].apiHandler;
     const web3 = new Web3(library.provider);
 
-    const voteContractResponse = await web3APIHandler.PodManager.voteForPodProposal(
+    const voteContractResponse = await web3APIHandler.PodWithdrawManager.voteWithdrawProposal(
       web3,
       account!,
       {
-        id: parseInt(proposal.Id),
+        proposalId: proposal.id,
+        vote: vote,
       },
       setHash
     );
@@ -51,11 +55,15 @@ export const FundCard = props => {
 
     setTransactionSuccess(true);
 
-    const voteAPIresponse = await musicDaoVoteForPodProposal({
+    const accepted = voteContractResponse.data.accepted;
+    const voteAPIresponse = await priviPodVoteForWithdrawProposal({
       podId,
-      id: proposal.Id,
+      proposalId: proposal.id,
       voter: userSelector.id,
-      status: true,
+      vote,
+      accepted,
+      hash: voteContractResponse.data.hash,
+      type: "PIX",
     });
 
     if (!voteAPIresponse.success) {
@@ -67,7 +75,8 @@ export const FundCard = props => {
     showAlertMessage("Accepted the proposal successfully", { variant: "success" });
     setOpenDetailModal(false);
 
-    if (!voteAPIresponse.data.accepted) {
+    if (!accepted) {
+      handleRefresh();
       return;
     }
 
@@ -75,64 +84,18 @@ export const FundCard = props => {
 
     showAlertMessage("The Proposal has been accepted.", { variant: "success" });
 
-    handleExecute();
-  };
-
-  const handleExecute = async () => {
-    setOpenTransactionModal(true);
-
-    const web3APIHandler = BlockchainNets[1].apiHandler;
-    const web3 = new Web3(library.provider);
-
-    const executeContractResponse = await web3APIHandler.PodManager.executePodProposal(
-      web3,
-      account!,
-      {
-        id: parseInt(proposal.Id),
-      },
-      setHash
-    );
-
-    if (!executeContractResponse) {
-      showAlertMessage("Failed to execute the proposal. Trying again now. Please wait.", {
-        variant: "error",
-      });
-      setTransactionSuccess(false);
-
-      return;
-    }
-
-    setTransactionSuccess(true);
-
-    const podAddress = executeContractResponse.data.podAddress;
-
-    await musicDaoExecutePod({
-      podId,
-      podAddress,
-      podType: 'PIX'
-    });
-
-    showAlertMessage("The Proposal has been executed.", { variant: "success" });
     handleRefresh();
   };
 
-  const handleDecline = async () => {
-    const response = await musicDaoVoteForPodProposal({
-      podId,
-      id: proposal.Id,
-      voter: userSelector.id,
-      status: false,
-    });
-
-    if (response.success) {
-      showAlertMessage("Declined the proposal successfully", { variant: "success" });
-      setOpenDetailModal(false);
-      handleRefresh();
-    } else {
-      showAlertMessage("Failed to declined the proposal", { variant: "error" });
-      setOpenDetailModal(false);
-    }
+  const handleCheckHash = () => {
+    window.open(
+      `${isDev ? "https://mumbai.polygonscan.com/tx/" : "https://polygonscan.com/tx/"}${proposal.hash}`,
+      "_blank"
+    );
   };
+
+  const isAccepted = proposal.Votes && proposal.Votes[userSelector.id] === true;
+  const isDeclined = proposal.Votes && proposal.Votes[userSelector.id] === false;
 
   return (
     <Box className={classes.root}>
@@ -142,7 +105,7 @@ export const FundCard = props => {
         </PrimaryButton>
         <Box display="flex" alignItems="center">
           <Box className={classes.header1} mr={1}>
-            Pending
+            {proposal.status.toUpperCase()}
           </Box>
           <PendingIcon />
         </Box>
@@ -165,25 +128,47 @@ export const FundCard = props => {
             Amount to withdraw
           </Box>
           <Box className={classes.header2}>
-            {`pUSD ${proposal.value}`}
-            <span style={{ color: "#707582" }}>{`($${proposal.value})`}</span>
+            {`${proposal.amount} ${pod.FundingToken}`}
+            <span style={{ color: "#707582" }}>{`($${+proposal.amount})`}</span>
           </Box>
         </Box>
       </Box>
-      <Box display="flex" justifyContent="flex-end" mt={2}>
-        <SecondaryButton size="medium" isRounded onClick={handleDecline}>
-          Decline
-        </SecondaryButton>
-        <PrimaryButton
-          size="medium"
-          isRounded
-          onClick={handleAccept}
-          style={{ background: Color.MusicDAOGreen, width: "40%" }}
-        >
-          Accept & Sign
-        </PrimaryButton>
-      </Box>
-      {openTranactionModal ? (
+      {proposal.status === "Success" ? (
+        <Box display="flex" justifyContent="flex-end" mt={2}>
+          <PrimaryButton
+            size="medium"
+            isRounded
+            onClick={() => handleCheckHash()}
+            style={{ background: Color.MusicDAOGreen, width: "40%" }}
+          >
+            Check on Polygon Scan
+          </PrimaryButton>
+        </Box>
+      ) : isAccepted ? (
+        <Box display="flex" justifyContent="flex-end" mt={2}>
+          <Typography>You've already accepted the proposal.</Typography>
+        </Box>
+      ) : isDeclined ? (
+        <Box display="flex" justifyContent="flex-end" mt={2}>
+          <Typography>You've already declined the proposal.</Typography>
+        </Box>
+      ) : (
+        <Box display="flex" justifyContent="flex-end" mt={2}>
+          <SecondaryButton size="medium" isRounded onClick={() => handleVote(false)}>
+            Decline
+          </SecondaryButton>
+          <PrimaryButton
+            size="medium"
+            isRounded
+            onClick={() => handleVote(true)}
+            style={{ background: Color.MusicDAOGreen, width: "40%" }}
+          >
+            Accept & Sign
+          </PrimaryButton>
+        </Box>
+      )}
+
+      {openTranactionModal && (
         <TransactionProgressModal
           open={openTranactionModal}
           onClose={() => {
@@ -193,14 +178,6 @@ export const FundCard = props => {
           }}
           txSuccess={transactionSuccess}
           hash={hash}
-        />
-      ) : (
-        <ProposalDetailModal
-          {...props}
-          open={openDetailModal}
-          onClose={() => setOpenDetailModal(false)}
-          handleAccept={handleAccept}
-          handleDecline={handleDecline}
         />
       )}
     </Box>

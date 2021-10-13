@@ -6,6 +6,8 @@
 // import dai from "./DAI";
 // import pix from "./PIX";
 import jot from "./JOT";
+import pod from "./POD";
+import copyright from "./COPYRIGHT";
 
 import erc20_standard from "./ERC20Standard";
 import config from "shared/connectors/web3/config";
@@ -24,6 +26,8 @@ const erc20 = network => {
     instance[token] = erc20_standard(network, token);
   });
   instance["JOT"] = jot(network);
+  instance["POD"] = pod(network);
+  instance["COPYRIGHT"] = copyright(network);
   return instance;
 };
 

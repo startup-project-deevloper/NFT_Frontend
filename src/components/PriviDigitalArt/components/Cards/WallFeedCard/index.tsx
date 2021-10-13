@@ -15,13 +15,15 @@ import WallItemModal from "components/PriviDigitalArt/subpages/ProfilePage/compo
 import { ReactComponent as FacebookIcon } from "assets/snsIcons/facebook.svg";
 import { ReactComponent as TwitterIcon } from "assets/snsIcons/twitter.svg";
 import { ReactComponent as InstagramIcon } from "assets/snsIcons/instagram.svg";
+import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
 
 export default function WallFeedCard({
   item,
   userProfile,
   feedItem,
   type,
-}: {
+} : {
   item: any;
   userProfile: any;
   feedItem?: boolean;
@@ -46,32 +48,37 @@ export default function WallFeedCard({
     setOpenWallItemModal(false);
   };
 
+  const [imageIPFS, setImageIPFS] = useState<any>(null);
+  const [imageWallIPFS, setImageWallIPFS] = useState<any>(null);
+  const [videoWallIPFS, setVideoWallIPFS] = useState<any>(null);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
   useEffect(() => {
-    if (feedData.comments && feedData.responses?.length > 0) {
-      let r = [] as any;
-      feedData.responses.forEach(response => {
-        let slug = response.userName;
-        let image = "";
-        let thisUser = users.find(u => u.id === response.userId);
-        if (thisUser) {
-          slug = thisUser.urlSlug;
-          image = getUserAvatar({
-            id: thisUser.id,
-            anon: thisUser.anon,
-            hasPhoto: thisUser.hasPhoto,
-            anonAvatar: thisUser.anonAvatar,
-            url: thisUser.url,
-          });
-        } else {
-          image = getRandomAvatarForUserIdWithMemoization(response.userId);
-        }
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
-        r.push({ ...response, urlSlug: slug, url: image });
-      });
+  useEffect(() => {
+    if (feedData && ipfs && Object.keys(ipfs).length !== 0) {
+      getPhotos(feedData);
 
-      setComments && setComments(r);
+      if (feedData.comments && feedData.responses?.length > 0) {
+        let r = [] as any;
+        feedData.responses.forEach(async response => {
+          let slug = response.userName;
+          let image = "";
+          let thisUser = users.find(u => u.id === response.userId);
+          if (thisUser) {
+            slug = thisUser.urlSlug;
+            image = await getReturnUserPhoto(thisUser);
+          }
+          r.push({ ...response, urlSlug: slug, url: image });
+        });
+
+        setComments && setComments(r);
+      }
     }
-  }, [feedData, users]);
+  }, [feedData, users, ipfs]);
 
   useEffect(() => {
     if (userSelector.id === userProfile.id) {
@@ -80,6 +87,35 @@ export default function WallFeedCard({
       setOwnUserWall(false);
     }
   }, [feedData]);
+
+  const getPhotos = async (feedData) => {
+    const userFound = users.find(usr => usr.id === feedData.userId);
+
+    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageIPFS(imageUrl);
+    }
+
+    if (feedData && feedData.infoImage && feedData.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(feedData.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageWallIPFS(imageUrl);
+    }
+
+    if (feedData && feedData.infoVideo && feedData.infoVideo.newFileCID) {
+      let videoUrl = await getPhotoIPFS(feedData.infoVideo.newFileCID, downloadWithNonDecryption);
+      setVideoWallIPFS(videoUrl);
+    }
+
+  }
+
+  const getReturnUserPhoto = async (userFound: any) => {
+    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+      return(imageUrl);
+    } else {
+      return("");
+    }
+  }
 
   const handleFruit = type => {
     const body = {
@@ -103,16 +139,13 @@ export default function WallFeedCard({
 
   return (
     <>
-      <div className={classes.wallItem} onClick={handleOpenWallItemModal}>
+      <div className={classes.wallItem}
+           onClick={handleOpenWallItemModal}>
         <Box mb={"16px"} display="flex" alignItems="center">
           <Avatar
             size={"small"}
-            url={
-              feedData.userImageURL ??
-              feedData.imageURL ??
-              userProfile.imageURL ??
-              users.find(u => u.id === feedData.createdBy)?.imageURL ??
-              getRandomAvatarForUserIdWithMemoization(feedData.createdBy)
+            url={imageIPFS ?
+              imageIPFS : ""
             }
           />
           <Box ml="8px" fontSize="12px">
@@ -142,11 +175,11 @@ export default function WallFeedCard({
           </Box>
         </Box>
         <Box mb={"16px"} display="flex" alignItems="flex-start" flexDirection="column" gridColumnGap={16}>
-          {feedData.hasPhoto && (feedData?.url || feedData?.imageURL) && (
+          {imageWallIPFS && (
             <Box display="flex" alignItems="center" justifyContent="center" width={1}>
               <img
                 onClick={handleOpenWallItemModal}
-                src={feedData?.url ?? feedData?.imageURL}
+                src={imageWallIPFS ? imageWallIPFS : ""}
                 className={classes.feedImg}
                 alt={"wall"}
                 style={{ width: "100%", objectFit: "cover" }}
@@ -214,6 +247,9 @@ export default function WallFeedCard({
           item={feedData}
           comments={comments}
           setComments={setComments}
+          creatorImage={imageIPFS}
+          imageWallIPFS={imageWallIPFS}
+          videoWallIPFS={videoWallIPFS}
         />
       )}
     </>

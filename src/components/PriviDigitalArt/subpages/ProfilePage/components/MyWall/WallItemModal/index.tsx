@@ -20,6 +20,8 @@ import MorePicturesModal from "./MorePicturesModal";
 import DiscordVideoFullScreen from "shared/ui-kit/Page-components/Discord/DiscordVideoFullScreen/DiscordVideoFullScreen";
 import ReactPlayer from "react-player";
 import { getRandomAvatarForUserIdWithMemoization, getUserAvatar } from "shared/services/user/getUserAvatar";
+import getPhotoIPFS from "../../../../../../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../../../../../../shared/utils-IPFS/useIPFS";
 
 const chatGreyIcon = require("assets/icons/message_gray.png");
 const CustomMenuItem = withStyles({
@@ -29,29 +31,18 @@ const CustomMenuItem = withStyles({
   },
 })(MenuItem);
 
-export default function WallItemModal({ item, open, onClose, comments, setComments }) {
-  const [videoUrl, setVideoUrl] = useState<string>("");
-  const [urlMainPhoto, setUrlMainPhoto] = useState<string>("");
-
-  useEffect(() => {
-    if (item.id && item.videosId && item.videosId[0]) {
-      setVideoUrl(item.videosId[0].url);
-    }
-
-    if (item.hasPhoto) {
-      setUrlMainPhoto(item?.url ?? item?.imageURL ?? "");
-    }
-  }, [item]);
+export default function WallItemModal({ item, open, onClose, comments, setComments, creatorImage, imageWallIPFS, videoWallIPFS }) {
 
   if (item)
     return (
       <Modal isOpen={open} theme="light" size="medium" showCloseIcon onClose={onClose}>
         <WallPostModalContent
           item={item}
-          videoUrl={videoUrl}
-          urlMainPhoto={urlMainPhoto}
           comments={comments}
           setComments={setComments}
+          creatorImage={creatorImage}
+          imageWallIPFS={imageWallIPFS}
+          videoWallIPFS={videoWallIPFS}
         />
       </Modal>
     );
@@ -68,7 +59,7 @@ const ResponseWallPost = ({ response }) => {
         <div
           className={styles.authorPhotoWallPost}
           style={{
-            backgroundImage: response && response.url ? `url(${response.url}?${Date.now()})` : "none",
+            backgroundImage: response && response.url ? `url(${response.url})` : "none",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -100,17 +91,19 @@ const ResponseWallPost = ({ response }) => {
 export const WallPostModalContent = ({
   item,
   onlyDisplay,
-  videoUrl,
-  urlMainPhoto,
   comments,
   setComments,
+  creatorImage,
+  imageWallIPFS,
+  videoWallIPFS
 }: {
   item: any;
   onlyDisplay?: boolean;
-  videoUrl: string;
-  urlMainPhoto: string;
   comments: any[];
   setComments: any;
+  creatorImage: any;
+  imageWallIPFS: any;
+  videoWallIPFS: any;
 }) => {
   const userSelector = useSelector((state: RootState) => state.user);
   const users = useSelector((state: RootState) => state.usersInfoList);
@@ -135,6 +128,12 @@ export const WallPostModalContent = ({
   const handleCloseMorePicturesModal = () => {
     setOpenMorePicturesModal(false);
   };
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
   useEffect(() => {
     if (!onlyDisplay) {
@@ -182,21 +181,16 @@ export const WallPostModalContent = ({
             let responses: any[] = [...response.data.data];
             let r = [] as any;
 
-            responses.forEach(response => {
+            responses.forEach(async response => {
               let slug = response.userName;
               let image = "";
+
               let thisUser = users.find(u => u.id === response.userId);
+              console.log('resp', response, thisUser);
+
               if (thisUser) {
                 slug = thisUser.urlSlug;
-                image = getUserAvatar({
-                  id: thisUser.id,
-                  anon: thisUser.anon,
-                  hasPhoto: thisUser.hasPhoto,
-                  anonAvatar: thisUser.anonAvatar,
-                  url: thisUser.url,
-                });
-              } else {
-                image = getRandomAvatarForUserIdWithMemoization(response.userId);
+                image = await getReturnUserPhoto(thisUser);
               }
 
               r.push({ ...response, urlSlug: slug, url: image });
@@ -226,6 +220,14 @@ export const WallPostModalContent = ({
     }
   };
 
+  const getReturnUserPhoto = async (userFound: any) => {
+    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+      return(imageUrl);
+    } else {
+      return("");
+    }
+  }
   const handleKeyDown = event => {
     if (event.key === "Enter") {
       makeResponse();
@@ -272,13 +274,13 @@ export const WallPostModalContent = ({
       <Moment className={styles.date} fromNow>
         {!onlyDisplay ? item?.createdAt : new Date()}
       </Moment>
-      {(urlMainPhoto || (item.descriptionImages && item.descriptionImages.length > 0)) && (
+      {(imageWallIPFS && (
         <Box className={styles.postImages} mt="24px">
-          {urlMainPhoto && urlMainPhoto !== "" && (
+          {imageWallIPFS && imageWallIPFS !== "" && (
             <div
               className={styles.photoPost}
               style={{
-                backgroundImage: `url(${urlMainPhoto})`,
+                backgroundImage: `url(${imageWallIPFS})`,
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "contain",
                 backgroundPosition: "center",
@@ -291,10 +293,10 @@ export const WallPostModalContent = ({
             <Box
               className={styles.postDescriptionImages}
               style={{
-                marginLeft: urlMainPhoto && urlMainPhoto !== "" ? "4px" : 0,
-                flexDirection: urlMainPhoto && urlMainPhoto !== "" ? "column" : "row",
+                marginLeft: imageWallIPFS && imageWallIPFS !== "" ? "4px" : 0,
+                flexDirection: imageWallIPFS && imageWallIPFS !== "" ? "column" : "row",
               }}
-              width={urlMainPhoto && urlMainPhoto !== "" ? "50%" : "100%"}
+              width={imageWallIPFS && imageWallIPFS !== "" ? "50%" : "100%"}
             >
               {item.descriptionImages &&
                 item.descriptionImages.length > 0 &&
@@ -304,26 +306,26 @@ export const WallPostModalContent = ({
                     <div
                       className={styles.photoPost}
                       style={{
-                        width: urlMainPhoto && urlMainPhoto !== "" ? "100%" : "50%",
+                        width: imageWallIPFS && imageWallIPFS !== "" ? "100%" : "50%",
                         backgroundImage: image
                           ? `url(${URL()}/user/wall/getDescriptionPostPhoto/${image})`
                           : "none",
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "cover",
-                        marginTop: urlMainPhoto && urlMainPhoto !== "" && index === 1 ? "4px" : 0,
-                        marginLeft: !urlMainPhoto && index === 1 ? "4px" : 0,
-                        height: urlMainPhoto && urlMainPhoto !== "" ? "50%" : "100%",
+                        marginTop: imageWallIPFS && imageWallIPFS !== "" && index === 1 ? "4px" : 0,
+                        marginLeft: !imageWallIPFS && index === 1 ? "4px" : 0,
+                        height: imageWallIPFS && imageWallIPFS !== "" ? "50%" : "100%",
                         backgroundPosition: "center",
                         borderRadius:
                           index === 0
-                            ? urlMainPhoto && urlMainPhoto !== ""
+                            ? imageWallIPFS && imageWallIPFS !== ""
                               ? item.descriptionImages.length > 1
                                 ? `0px 67px 0px 0px`
                                 : `0px 67px 67px 0px`
                               : item.descriptionImages.length > 1
                               ? `67px 0px 0px 67px`
                               : `67px 67px 67px 67px`
-                            : urlMainPhoto && urlMainPhoto !== ""
+                            : imageWallIPFS && imageWallIPFS !== ""
                             ? "0px 0px 67px 0px"
                             : `0px 67px 67px 0px`,
                       }}
@@ -336,10 +338,10 @@ export const WallPostModalContent = ({
             <div
               className={styles.moreImages}
               style={{
-                marginTop: urlMainPhoto && urlMainPhoto !== "" ? "4px" : 0,
-                marginLeft: !urlMainPhoto ? "4px" : 0,
-                borderRadius: urlMainPhoto && urlMainPhoto !== "" ? "0px 0px 67px 0px" : `0px 67px 67px 0px`,
-                height: urlMainPhoto && urlMainPhoto !== "" ? "50%" : "100%",
+                marginTop: imageWallIPFS && imageWallIPFS !== "" ? "4px" : 0,
+                marginLeft: !imageWallIPFS ? "4px" : 0,
+                borderRadius: imageWallIPFS && imageWallIPFS !== "" ? "0px 0px 67px 0px" : `0px 67px 67px 0px`,
+                height: imageWallIPFS && imageWallIPFS !== "" ? "50%" : "100%",
               }}
               onClick={handleOpenMorePicturesModal}
             >
@@ -347,15 +349,15 @@ export const WallPostModalContent = ({
             </div>
           )}
         </Box>
-      )}
+      ))}
 
-      {videoUrl ? (
+      {videoWallIPFS ? (
         <Box display="flex" justifyContent="center" mt={3} mb={3}>
           <ReactPlayer
             onClick={() => {
               handleOpenModalDiscordVideoFullScreen();
             }}
-            url={videoUrl}
+            url={videoWallIPFS ? videoWallIPFS : null}
             className={styles.reactPlayer}
             progressInterval={200}
           />
@@ -366,7 +368,8 @@ export const WallPostModalContent = ({
             onClose={handleCloseModalDiscordVideoFullScreen}
             showCloseIcon
           >
-            <DiscordVideoFullScreen onCloseModal={handleCloseModalDiscordVideoFullScreen} url={videoUrl} />
+            <DiscordVideoFullScreen onCloseModal={handleCloseModalDiscordVideoFullScreen}
+                                    url={videoWallIPFS ? videoWallIPFS : ""} />
           </Modal>
         </Box>
       ) : null}
@@ -375,9 +378,7 @@ export const WallPostModalContent = ({
         <Box className={styles.userInfo} onClick={() => history.push(`/${item.createdBy}/profile`)}>
           <Avatar
             url={
-              item?.userImageURL ??
-              users.find(u => u.id === item?.createdBy)?.imageURL ??
-              getRandomAvatarForUserIdWithMemoization(item?.createdBy)
+              creatorImage ? creatorImage : "none"
             }
             size={"large"}
           />

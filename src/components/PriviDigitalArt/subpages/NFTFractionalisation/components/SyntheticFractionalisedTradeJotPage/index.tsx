@@ -302,7 +302,7 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
     <Box className={classes.root}>
       <Box className={classes.infoWrap}>
         <Grid container spacing={2}>
-          <Grid item md={5} xs={12}>
+          <Grid item md={3} xs={12}>
             <LoadingWrapper loading={loadingTradingInfo}>
               <Box className={classes.leftJots}>
                 <Box className={classes.jotWrapper}>
@@ -313,23 +313,17 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
                 <Box className={classes.jotWrapper}>
                   <Box className={classes.jotLabel}>24h Trading Vol</Box>
                   <Box className={classes.jotTitle}>${formatNumber(volume24h)}</Box>
-                  <Box className={classes.jotPercent}>
-                    <ArrowUp /> 0.32%
-                  </Box>
                 </Box>
                 <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
                 <Box className={classes.jotWrapper}>
                   <Box className={classes.jotLabel}>7d Trading Vol</Box>
                   <Box className={classes.jotTitle}>${formatNumber(volume7h)}</Box>
-                  <Box className={classes.jotPercent}>
-                    <ArrowUp /> 0.32%
-                  </Box>
                 </Box>
               </Box>
             </LoadingWrapper>
           </Grid>
           {/* chart gird */}
-          <Grid item md={7} xs={12}>
+          <Grid item md={9} xs={12}>
             <Box className={classes.rightChart}>
               {/* top control box */}
               <Box className={classes.controlParentBox}>

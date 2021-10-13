@@ -3,9 +3,10 @@ import { Color } from "shared/ui-kit";
 
 export const usePodPageIndividualStyles = makeStyles(theme => ({
   container: {
-    background: "linear-gradient(0deg, #EEF2F7, #EEF2F7), #F0F5F8",
+    background: "#fff",
     height: `calc(100vh - 80px)`,
-    paddingBottom: "40px",
+    padding: "60px",
+    width: "100%"
   },
   subContainer: {
     width: "100%",
@@ -69,7 +70,6 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   backgroundBox: {
     padding: "32px 168px",
     backgroundSize: "cover",
-    backgroundColor: "rgba(255, 255, 255, 0.6)",
     backdropFilter: "blur(60px)",
     [theme.breakpoints.down("md")]: {
       padding: "32px 84px",

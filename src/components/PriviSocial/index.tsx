@@ -14,6 +14,8 @@ import PriviSocialRouter from "./PriviSocialRouter";
 import { priviSocialPageStyles } from "./index.styles";
 import { useWeb3React } from "@web3-react/core";
 import { useHistory } from "react-router-dom";
+import getPhotoIPFS from "../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../shared/utils-IPFS/useIPFS";
 
 export default function PriviSocial({ id }) {
   let pathName = window.location.href; // If routing changes, change to pathname
@@ -32,6 +34,12 @@ export default function PriviSocial({ id }) {
   const [status, setStatus] = useState<any>("");
 
   const scrollRef = React.useRef<any>();
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -119,8 +127,11 @@ export default function PriviSocial({ id }) {
     }
   }, [userId, ownUser]);
 
-  const setUserSelector = setterUser => {
+  const setUserSelector = async setterUser => {
     if (setterUser.id) {
+      if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
+        setterUser.imageIPFS = await getPhotoIPFS(setterUser.infoImage.newFileCID, downloadWithNonDecryption);
+      }
       dispatch(setUser(setterUser));
     }
   };

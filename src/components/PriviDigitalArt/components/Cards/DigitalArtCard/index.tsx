@@ -3,7 +3,7 @@ import cls from "classnames";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import { Avatar } from "shared/ui-kit";
-import { useTypedSelector } from "store/reducers/Reducer";
+import { RootState, useTypedSelector } from "store/reducers/Reducer";
 import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
@@ -17,6 +17,8 @@ import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { useSelector } from "react-redux";
+import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
 
 const getRandomImageUrl = () => {
   return require(`assets/backgrounds/digital_art_1.png`);
@@ -24,7 +26,7 @@ const getRandomImageUrl = () => {
 
 export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   const classes = digitalArtCardStyles();
-
+  const users = useSelector((state: RootState) => state.usersInfoList);
   const user = useTypedSelector(state => state.user);
   const history = useHistory();
 
@@ -48,12 +50,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   }, [item]);
 
   const [media, setMedia] = React.useState<any>(fixedUrlItem);
-  const [creator, setCreator] = React.useState<any>({
-    imageUrl: "",
-    name: "",
-    urlSlug: "",
-    anonAvatar: "",
-  });
+  const [creator, setCreator] = useState<any>({});
   const [auctionEnded, setAuctionEnded] = React.useState<boolean>(false);
   const [endTime, setEndTime] = useState<any>();
   const [openDigitalArtModal, setOpenDigitalArtModal] = useState<boolean>(false);
@@ -69,6 +66,14 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
               let data = response.data.data;
+              const creatorData : any = users.find(u => u.address === creatorId);
+
+              data.infoImage = creatorData.infoImage || null;
+
+              if (ipfs && Object.keys(ipfs).length !== 0 && data && data.infoImage) {
+                data.ipfsImage = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption)
+              }
+
               setCreator({
                 ...data,
                 name: data.name ?? `${data.firstName} ${data.lastName}`,
@@ -225,19 +230,17 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   };
 
   return (
-    <div className={classes.card} style={{ marginBottom: heightFixed === "auction" ? 100 : 0 }}>
+    <div className={classes.card}
+         style={{ marginBottom: heightFixed === "auction" ? 100 : 0 }}>
       <div className={classes.header}>
-        <Box display="flex" alignItems="center">
+        <Box display="flex"
+             alignItems="center">
           {creator ? (
             <Avatar
               size="small"
               url={
-                creator.imageUrl
-                  ? creator.imageUrl
-                  : creator.url
-                  ? creator.url
-                  : creator.anonAvatar
-                  ? require(`assets/anonAvatars/${creator.anonAvatar}`)
+                creator.ipfsImage
+                  ? creator.ipfsImage
                   : "none"
               }
               alt={creator.id}

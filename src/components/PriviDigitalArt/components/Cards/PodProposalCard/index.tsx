@@ -136,7 +136,7 @@ export default function PodProposalCard({ pod }) {
       </Box>
       <Box width={1} ml={2}>
         <Box display="flex">
-          <Box style={{ background: Gradient.Green1, borderRadius: 8, padding: "4px 24px" }}>
+          <Box style={{ background: Color.Purple, borderRadius: 8, padding: "3px 34px", height: '22px' }}>
             <Box className={styles.header1} color="white">
               POD Proposal
             </Box>
@@ -146,7 +146,7 @@ export default function PodProposalCard({ pod }) {
           {podData.Name}
         </Box>
         {podData.Creator && (
-          <Box display="flex" alignItems="center" mt={2} pb={2}>
+          <Box display="flex" alignItems="center" mt={2}>
             <Box
               onClick={() => {
                 history.push(`/trax/profile/${podData.CreatorId}`);
@@ -163,7 +163,7 @@ export default function PodProposalCard({ pod }) {
             <Box ml={2} className={styles.header1} style={{ color: "#707582" }}>
               Sent by
             </Box>
-            <Box ml={2} className={styles.header1} style={{ color: Color.Green }}>
+            <Box ml={2} className={styles.header1} style={{ color: Color.Purple }}>
               {`@${users.find(u => u.address === podData.Creator)?.name}`}
             </Box>
           </Box>
@@ -182,7 +182,7 @@ export default function PodProposalCard({ pod }) {
               Proposal Deadline
             </Box>
             <Box className={styles.flexBox} ml={1}>
-              <Box fontSize={14} fontWeight={500} color="#65CB63" mr={"6px"}>
+              <Box fontSize={14} fontWeight={500} color={Color.Purple} mr={"6px"}>
                 {proposalEndTime.days} Days
               </Box>
               <Box fontSize={14} fontWeight={500} color="#2D3047" mr={"6px"}>
@@ -198,7 +198,7 @@ export default function PodProposalCard({ pod }) {
           </Box>
           <PrimaryButton
             size="medium"
-            style={{ background: Gradient.Green1, paddingLeft: 48, paddingRight: 48 }}
+            style={{ background: Color.Purple, padding: "0 20px", fontSize: '14px', fontWeight: 600 }}
             isRounded
             onClick={() => history.push(`/pods/${podData.Id}`)}
           >

@@ -502,7 +502,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         </div>
         {selectedTab === "auction" ? (
           <>
-            <AuctionDetail auction={dummyAuction} />
+            <AuctionDetail nft={nft} />
             <OfferList nft={nft} />
           </>
         ) : selectedTab === "flip_coin" ? (

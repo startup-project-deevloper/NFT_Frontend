@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AnyIfEmpty } from "react-redux";
 import URL from "shared/functions/getURL";
 
 /////////////////////////// GET //////////////////////////
@@ -95,8 +96,8 @@ export async function getJotPoolBalanceHistory(collectionId): Promise<any> {
   try {
     const response = await axios.get(`${URL()}/syntheticFractionalize/getJotPoolBalanceHistory`, {
       params: {
-        collectionId
-      }
+        collectionId,
+      },
     });
     return response.data;
   } catch (e) {
@@ -192,6 +193,18 @@ export async function startSyntheticNFTAuction(payload): Promise<any> {
 export async function bidSyntheticNFTAuction(payload): Promise<any> {
   try {
     const response = await axios.post(`${URL()}/syntheticFractionalize/bidSyntheticNFTAuction`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
+export async function getSyntheticNFTBidHistory(payload: any): Promise<any> {
+  try {
+    const config = {
+      params: payload,
+    };
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getBidHistory`, config);
     return response.data;
   } catch (e) {
     console.log(e.message);

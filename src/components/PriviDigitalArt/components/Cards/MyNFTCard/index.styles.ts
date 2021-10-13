@@ -123,6 +123,34 @@ export const myNFTCardStyles = makeStyles(theme => ({
       borderRadius: 3.5,
     },
   },
+  unVerifiedLabel: {
+    height: 20,
+    padding: "6px 8.5px",
+    color: "white",
+    fontSize: 9,
+    fontWeight: 700,
+    fontFamily: "Agrandir",
+    lineHeight: "100%",
+    borderRadius: 6,
+    background: '#1DCC00',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textTransform: 'uppercase',
+    "& span": {
+      textAlign: "center"
+    },
+    [theme.breakpoints.down(880)]: {
+      fontSize: 7,
+      height: 16,
+      borderRadius: 4,
+    },
+    [theme.breakpoints.down(768)]: {
+      fontSize: 5,
+      height: 11,
+      borderRadius: 3.5,
+    },
+  },
   lockLabel: {
     height: 20,
     padding: "6px 8.5px",

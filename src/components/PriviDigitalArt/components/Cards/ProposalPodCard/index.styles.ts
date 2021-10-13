@@ -3,7 +3,7 @@ import { Color } from "shared/ui-kit";
 
 export const ProposalPodCardStyles = makeStyles(theme => ({
   root: {
-    background: "white",
+    background: "transparent",
     borderRadius: theme.spacing(2),
     boxShadow: "0px 18px 10px -10px rgba(19, 45, 38, 0.07)",
     padding: theme.spacing(3),
@@ -12,7 +12,7 @@ export const ProposalPodCardStyles = makeStyles(theme => ({
   header1: {
     fontSize: 14,
     fontWeight: 500,
-    color: Color.MusicDAOLightBlue,
+    color: "#1A1B1C",
   },
   header2: {
     fontSize: 16,
@@ -25,12 +25,12 @@ export const ProposalPodCardStyles = makeStyles(theme => ({
   header3: {
     fontSize: 14,
     fontWeight: 600,
-    color: Color.MusicDAOGreen,
+    color: Color.Purple,
   },
   header4: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 500,
-    color: "#707582",
+    color: "#1A1B1C",
     maxWidth: 180
   },
   flexBox: {

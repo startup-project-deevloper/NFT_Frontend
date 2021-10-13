@@ -1,13 +1,8 @@
 import React from "react";
 
 export const ArrowIcon = ({ color = "white" }) => (
-  <svg width="57" height="15" viewBox="0 0 57 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M7.29892 0.85612L7.15468 0.716853L7.01577 0.861441L0.855773 7.27344L0.72266 7.412L0.855773 7.55056L7.01577 13.9626L7.15218 14.1045L7.29628 13.9704L8.10828 13.2144L8.25661 13.0763L8.11656 12.9298L3.56791 8.172H55.756H55.956V7.972V6.852V6.652H55.756H3.56969L8.11618 1.92261L8.25449 1.77874L8.11092 1.64012L7.29892 0.85612Z"
-      fill={color}
-      stroke={color}
-      strokeWidth="0.4"
-    />
+  <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 7L17 7M1 7L7 1M1 7L7 13" stroke={color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 );
 

@@ -291,24 +291,24 @@ export default function PodHeader({
 
   return (
     <>
-      <Box className={classes.headerBox} style={{ backgroundImage: "linear-gradient(to right, #DDFF57 , #9EACF2)" }}>
-        <Box
-          display="flex"
-          flexDirection="row"
-          alignItems="center"
-          style={{ cursor: "pointer" }}
-          onClick={() => history.goBack()}
-          mb={isMobile ? 2 : 4}
-        >
-          <Box>
-            <ArrowIcon color={"#54658F"} />
-          </Box>
-          <Box color="#54658F" fontSize={14} fontWeight={700} fontFamily="Agrandir" ml="5px" mb="4px">
-            BACK
-          </Box>
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        style={{ cursor: "pointer" }}
+        onClick={() => history.goBack()}
+        mb={isMobile ? 2 : 4}
+      >
+        <Box>
+          <ArrowIcon color={"#181818"} />
         </Box>
+        <Box color="#181818" fontSize={14} fontWeight={700} fontFamily="Agrandir" ml="5px" mb="4px">
+          BACK
+        </Box>
+      </Box>
+      <Box className={classes.headerBox} style={{ backgroundImage: "linear-gradient(to right, #DDFF57 , #9EACF2)" }}>
         <Box py={4} className={classes.backgroundBox}>
-          <Grid container>
+          <Grid container justifyContent="space-between">
             <Hidden smUp>
               <Grid item xs={12}>
                 <img
@@ -322,7 +322,7 @@ export default function PodHeader({
                 />
               </Grid>
             </Hidden>
-            <Grid item md={8} sm={6} xs={12} style={{ paddingRight: isLgTablet ? 0 : "64px" }}>
+            <div style={{ paddingRight: isLgTablet ? 0 : "64px" }}>
               <Box display="flex">
                 <Box
                   className={
@@ -367,7 +367,7 @@ export default function PodHeader({
                 flexWrap="wrap"
                 flexDirection={!pod.distributionProposalAccepted && !isLgTablet ? "row-reverse" : "row"}
               >
-                <Box className={classes.flexBox} mb={isLgTablet ? 2 : 0}>
+                <Box className={classes.flexBox} mb={isLgTablet ? 2 : 0} ml={16}>
                   <div
                     ref={anchorShareMenuRef}
                     className={classes.svgBox}
@@ -443,6 +443,7 @@ export default function PodHeader({
                 {isFunded ? (
                   <Box
                     mb={1}
+                    mt={1}
                     display="flex"
                     alignItems={isTablet ? "flex-start" : "center"}
                     flexDirection={isTablet ? "column" : "row"}
@@ -504,10 +505,10 @@ export default function PodHeader({
                   </Box>
                 )}
               </Box>
-            </Grid>
+            </div>
             <Hidden xsDown>
-              <Grid item md={4} sm={6}>
-                <Box height={240} p={2} overflow={"hidden"}>
+              <div>
+                <Box height={240} overflow={"hidden"}>
                   <img
                     src={imageIPFS ? imageIPFS : randomImage}
                     style={{
@@ -515,10 +516,10 @@ export default function PodHeader({
                       borderRadius: "10px",
                     }}
                     height="100%"
-                    width="100%"
+                    width="208px"
                   />
                 </Box>
-              </Grid>
+              </div>
             </Hidden>
           </Grid>
         </Box>

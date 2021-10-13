@@ -210,3 +210,12 @@ export async function getSyntheticNFTBidHistory(payload: any): Promise<any> {
     console.log(e.message);
   }
 }
+
+export async function endSyntheticNFTAuction(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/endSyntheticNFTAuction`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}

@@ -40,13 +40,10 @@ const syntheticNFTAuction = (network: string) => {
     });
   };
 
-  const withdraw = async (web3: Web3, account: string, collection: any, payload: any) => {
+  const withdraw = async (web3: Web3, account: string, auctionAddress: string, payload: any) => {
     return new Promise(async resolve => {
       try {
         const { setHash } = payload;
-        const {
-          auctionData: { auctionAddress },
-        } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, auctionAddress);
         const gas = await contract.methods.withdraw().estimateGas({ from: account });
@@ -76,13 +73,10 @@ const syntheticNFTAuction = (network: string) => {
     });
   };
 
-  const endAuction = async (web3: Web3, account: string, collection: any, payload: any) => {
+  const endAuction = async (web3: Web3, account: string, auctionAddress: string, payload: any) => {
     return new Promise(async resolve => {
       try {
         const { setHash } = payload;
-        const {
-          auctionData: { auctionAddress },
-        } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, auctionAddress);
         const gas = await contract.methods.endAuction().estimateGas({ from: account });

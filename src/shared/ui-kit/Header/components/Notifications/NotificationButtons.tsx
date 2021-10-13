@@ -30,6 +30,7 @@ import {
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { handleSetStatus } from "shared/functions/commonFunctions";
 import { notificationButtonStyles } from "./NotificationButtons.styles";
+import SyntheticAuctionClaimModal from "components/PriviDigitalArt/subpages/NFTFractionalisation/modals/SyntheticFractionalisationModals/SyntheticAuctionClaimModal";
 
 type NotificationButtonsProps = {
   notification: Notification;
@@ -99,6 +100,8 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
   const payloadRef = useRef<any>({});
   const [openSignRequestModal, setOpenSignRequestModal] = useState<boolean>(false);
   const [signRequestModalDetail, setSignRequestModalDetail] = useState<any>(null);
+
+  const [openClaim, setOpenClaim] = useState<boolean>(false);
 
   const handleOpenModalWallPost = () => {
     setOpenModalWallPost(true);
@@ -321,7 +324,7 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
 
   // Functions Notifications
   const acceptDeclineFollowing = (user, boolUpdateFollowing, idNotification) => {
-    if(!user || !user.id) return;
+    if (!user || !user.id) return;
     if (boolUpdateFollowing) {
       // accept
       axios
@@ -731,29 +734,31 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
     axios
       .post(`${URL()}/musicDao/new/pod/acceptInvitation`, {
         podId: notification.pod,
-        userId: userSelector.id
+        userId: userSelector.id,
       })
-      .then(response => {
-
-      })
+      .then(response => {})
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
   const declineInvitationPodCollab = (notification: any) => {
     axios
       .post(`${URL()}/musicDao/new/pod/declineInvitation`, {
         podId: notification.pod,
-        userId: userSelector.id
+        userId: userSelector.id,
       })
-      .then(response => {
-
-      })
+      .then(response => {})
       .catch(error => {
         console.log(error);
       });
-  }
+  };
+
+  const viewSyntheticNFT = (notification: any) => {
+    history.push(
+      `/fractionalisation/collection/${notification.externalData.collectionId}/nft/${notification.externalData.syntheticId}`
+    );
+  };
 
   return (
     <>
@@ -1511,7 +1516,7 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
         isCreator={community.Creator === userSelector.id}
         refreshCommunity={() => getWIPCommunity(community.id, null)}
         refreshAllProfile={() => refreshAllProfile(userSelector.id)}
-      />      
+      />
       {(proposalType == "airdrop" || proposalType == "allocation") && (
         <ReviewCommunityAirdropProposalModal
           open={openReviewCommunityProposal}
@@ -1566,6 +1571,43 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
         >
           See Pod
         </PrimaryButton>
+      )}
+
+      {(notification.type === 222 || notification.type === 224 || notification.type === 227) && (
+        <PrimaryButton
+          className={theme === "dark" ? classes.darkButton : classes.blueButton}
+          size="small"
+          onClick={() => viewSyntheticNFT(notification)}
+        >
+          View your NFT
+        </PrimaryButton>
+      )}
+
+      {(notification.type === 223 || notification.type === 225 || notification.type === 226) && (
+        <PrimaryButton
+          className={theme === "dark" ? classes.darkButton : classes.blueButton}
+          size="small"
+          onClick={() => viewSyntheticNFT(notification)}
+        >
+          View NFT
+        </PrimaryButton>
+      )}
+
+      {notification.type === 228 && (
+        <>
+          <PrimaryButton
+            className={theme === "dark" ? classes.darkButton : classes.blueButton}
+            size="small"
+            onClick={() => setOpenClaim(true)}
+          >
+            Claim NFT
+          </PrimaryButton>
+          <SyntheticAuctionClaimModal
+            open={openClaim}
+            onClose={() => setOpenClaim(false)}
+            data={notification.externalData}
+          />
+        </>
       )}
 
       {status && (

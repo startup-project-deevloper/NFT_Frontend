@@ -28,13 +28,14 @@ export type Notification = {
   otherItemId: string;
   comment: string;
   podType?: string;
+  externalData: any;
 };
 
 type GetNotificationsResult =
   | {
-    success: true;
-    data: Notification[];
-  }
+      success: true;
+      data: Notification[];
+    }
   | { success: false };
 
 export const getNotifications = async (): Promise<GetNotificationsResult> => {

@@ -51,7 +51,10 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     background: "#DDFF57",
     boxShadow: "0px 25px 36px -11px rgba(0, 0, 0, 0.02)",
     borderRadius: 20,
-    padding: "27px 27px 0 27px",
+    padding: "27px",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   editWrap: {
     padding: "20px 0",
@@ -84,8 +87,8 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       padding: 0,
       "& canvas": {
-        width: "100%"
-      }
+        width: "100%",
+      },
     },
   },
   controlParentBox: {
@@ -98,7 +101,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down("xs")]: {
       padding: 12,
-      flexDirection: 'column-reverse'
+      flexDirection: "column-reverse",
     },
     width: "100%",
   },
@@ -108,7 +111,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
       alignItems: "flex-end",
-      width: '100%'
+      width: "100%",
     },
   },
   liquidityBox: {
@@ -120,7 +123,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     [theme.breakpoints.down("xs")]: {
       marginBottom: theme.spacing(1),
-      marginLeft: 'auto'
+      marginLeft: "auto",
     },
     "& button": {
       paddingLeft: theme.spacing(2),
@@ -168,7 +171,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
   },
 
   h1: {
-    fontFamily: "Agrandir",
+    fontFamily: "Agrandir GrandHeavy",
     fontStyle: "normal",
     fontWeight: 800,
     fontSize: "18px",
@@ -190,11 +193,11 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     padding: "35px 50px",
     [theme.breakpoints.down("sm")]: {
       fontSize: 20,
-      padding: "25px 32px"
+      padding: "25px 32px",
     },
     [theme.breakpoints.down("xs")]: {
       fontSize: 18,
-      padding: "30px 16"
+      padding: "30px 16",
     },
   },
   h3: {
@@ -227,11 +230,11 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
   },
   exploreButton: {
     [theme.breakpoints.down("sm")]: {
-      minWidth: "76px !important"
+      minWidth: "76px !important",
     },
     [theme.breakpoints.down("xs")]: {
-      minWidth: "48px !important"
-    }
+      minWidth: "48px !important",
+    },
   },
   userField: {
     columnGap: 12,
@@ -239,7 +242,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
       columnGap: 8,
       "& > span": {
         fontSize: "12px !important",
-      }
+      },
     },
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
@@ -247,8 +250,8 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
       columnGap: 4,
       "& > span": {
         fontSize: "10px !important",
-      }
-    }
+      },
+    },
   },
   table: {
     marginTop: 24,
@@ -261,7 +264,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
       },
       [theme.breakpoints.down("xs")]: {
         padding: "8px",
-      }
+      },
     },
     "& .MuiTableRow-head": {
       background: Color.White,
@@ -276,7 +279,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
         },
         [theme.breakpoints.down("xs")]: {
           fontSize: 12,
-        }
+        },
       },
     },
     "& .MuiTableRow-root": {
@@ -287,8 +290,8 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
         },
         [theme.breakpoints.down("xs")]: {
           fontSize: 9,
-        }
-      }
+        },
+      },
     },
     [theme.breakpoints.down("sm")]: {
       minHeight: 200,

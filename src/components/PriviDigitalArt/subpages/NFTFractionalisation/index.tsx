@@ -119,33 +119,7 @@ const NFTFractionalisation = () => {
             <div className={classes.title}>NFT Fractionalisation</div>
             <SecondaryButton
               size="medium"
-              style={
-                !isMobile
-                  ? {
-                      height: "50px",
-                      fontSize: "18px",
-                      padding: "0 50px",
-                      position: "relative",
-                      background: "#431AB7",
-                      borderRadius: "8px",
-                      color: "#fff",
-                      border: "none",
-                      display: "flex",
-                      alignItems: "center",
-                    }
-                  : {
-                      height: "42px",
-                      fontSize: "14px",
-                      padding: "12px",
-                      position: "relative",
-                      background: "#431AB7",
-                      borderRadius: "8px",
-                      color: "#fff",
-                      border: "none",
-                      display: "flex",
-                      alignItems: "center"
-                    }
-              }
+              className={classes.manageButton}
               onClick={() => {
                 history.push("/mynft");
               }}

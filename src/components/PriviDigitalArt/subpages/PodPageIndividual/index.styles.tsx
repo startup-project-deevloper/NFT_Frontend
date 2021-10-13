@@ -6,7 +6,8 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     background: "#fff",
     height: `calc(100vh - 80px)`,
     padding: "40px 60px 60px",
-    width: "100%"
+    width: "100%",
+    overflow: "auto"
   },
   subContainer: {
     width: "100%",
@@ -337,11 +338,49 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     cursor: "pointer",
   },
   discussionContent: {
-    borderRadius: 12,
-    background: "#ffffff",
     height: 610,
     textAlign: "center",
-    padding: theme.spacing(2),
     position: "relative",
+    background: "rgba(158, 172, 242, 0.16)",
+    boxShadow: "0px 4px 8px #9EACF2",
+    borderRadius: "32px",
+    margin: "0 8px",
+
+    "& .podDiscordFullPage": {
+      height: "calc(100% - 40px)"
+    },
+
+    "& .podDiscordChatGrid": {
+      background: "transparent"
+    },
+    "& .podInputDiscordChat": {
+      border: "1px solid #431AB7",
+      background: "white",
+      "& input": {
+        color: "#181818"
+      }
+    }
   },
+  comment: {
+    display: "flex",
+    alignItems: "center",
+    textAlign: "left",
+    paddingLeft: "33px",
+
+    "& span": {
+      fontWeight: "normal",
+      fontSize: "14px",
+      lineHeight: "18px",
+      color: "#431AB7",
+      marginLeft: "8px"
+    }
+  },
+  ProposalPodCardContainer: {
+    background: "#FFFFFF",
+    boxShadow: "0px 4px 8px #9EACF2",
+    borderRadius: "18px",
+    width: 674,
+    height: 229,
+    margin: "0 24px 10px 5px !important"
+  }
 }));

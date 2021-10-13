@@ -4,7 +4,7 @@ import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { mediaCardStyles } from "./index.styles";
 import MediaTermsModal from "components/PriviDigitalArt/modals/MediaTermsModal";
-import { IUploadMedia, musicDaoUploadMedia } from "shared/services/API";
+import { IUploadMedia } from "shared/services/API";
 import { buildJsxFromObject } from "shared/functions/commonFunctions";
 import { SignatureRequestModal } from "shared/ui-kit/Modal/Modals";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
@@ -63,12 +63,12 @@ export const MediaCard = ({ media, pod, handleRefresh }) => {
   const handleConfirm = () => {
     const payload = payloadRef.current;
     if (payload && Object.keys(payload)) {
-      musicDaoUploadMedia(payload, {}).then(resp => {
-        if (resp?.success) {
-          showAlertMessage("Media uploaded", { variant: "success" });
-          handleRefresh();
-        } else showAlertMessage("Media upload failed", { variant: "error" });
-      });
+      // musicDaoUploadMedia(payload, {}).then(resp => {
+      //   if (resp?.success) {
+      //     showAlertMessage("Media uploaded", { variant: "success" });
+      //     handleRefresh();
+      //   } else showAlertMessage("Media upload failed", { variant: "error" });
+      // });
     }
   };
 

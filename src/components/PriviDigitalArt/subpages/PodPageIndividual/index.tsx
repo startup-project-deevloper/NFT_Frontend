@@ -30,7 +30,7 @@ import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 
-const apiType = 'pix';
+const apiType = "pix";
 const PODSTABOPTIONS = ["Media", "Reward", "Investments", "Discussion", "Chat", "Proposals"];
 
 const getPodState = pod => {
@@ -93,7 +93,7 @@ const PodPageIndividual = () => {
       pod &&
       pod.FundingDate &&
       pod.FundingDate < Math.trunc(Date.now() / 1000) &&
-      (pod.RaisedFunds || 0) > pod.FundingTarget,
+      (+pod.RaisedFunds || 0) >= +pod.FundingTarget,
     [pod]
   );
 
@@ -243,10 +243,12 @@ const PodPageIndividual = () => {
       <Box className={classes.subContainer}>
         <PodHeader
           pod={pod}
+          podInfo={podInfo}
           followed={followed}
           setFollowed={setFollowed}
           fundingEnded={fundingEnded}
           fundingEndTime={fundingEndTime}
+          isFunded={isFunded}
           imageIPFS={imageIPFS}
         />
         <PodArtists pod={pod} />
@@ -302,7 +304,9 @@ const PodPageIndividual = () => {
                   openProposal={() => setPodMenuSelection("Proposals")}
                 />
               )}
-              {podMenuSelection === "Proposals" && isCreatorOrCollab && isFunded && <Proposals pod={pod} />}
+              {podMenuSelection === "Proposals" && isCreatorOrCollab && isFunded && (
+                <Proposals pod={pod} podId={podId} podInfo={podInfo} handleRefresh={loadData} />
+              )}
             </Box>
           )}
           {!pod.distributionProposalAccepted && (

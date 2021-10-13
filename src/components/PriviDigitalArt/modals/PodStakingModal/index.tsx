@@ -264,6 +264,7 @@ export default function PodStakingModal({ open, onClose, handleRefresh, podInfo,
         type,
         tokenId: response.data.tokenId,
         amount: response.data.amount,
+        podType: "PIX",
       });
       onClose();
       handleRefresh();

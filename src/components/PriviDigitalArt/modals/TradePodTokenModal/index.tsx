@@ -6,13 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { formatNumber } from "shared/functions/commonFunctions";
 import { Modal } from "shared/ui-kit";
-import {
-  musicDaoBuyPodTokens,
-  musicDaoSellPodTokens,
-  priviPodInvestPod,
-  musicDaoGetBuyingPodFundingTokenAmount,
-  musicDaoGetSellingPodFundingTokenAmount,
-} from "shared/services/API";
+import { priviPodInvestPod } from "shared/services/API";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
@@ -353,35 +347,36 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
   // get pod token to receive in investment each time investing amount changes
   useEffect(() => {
     if (mode && podQuantity) {
-      if (mode == "buy") {
-        setDisableSubmit(true);
-        musicDaoGetBuyingPodFundingTokenAmount(pod.PodAddress, Number(podQuantity))
-          .then(resp => {
-            if (resp.success) {
-              setFundingQuantity(String(Number(podQuantity) * Number(resp.data)));
-            }
-            setDisableSubmit(false);
-          })
-          .catch(e => {
-            showAlertMessage(e, { variant: "error" });
-            setDisableSubmit(false);
-          });
-      } else if (mode == "sell") {
-        setDisableSubmit(true);
-        musicDaoGetSellingPodFundingTokenAmount(pod.PodAddress, Number(podQuantity))
-          .then(resp => {
-            if (resp.success) {
-              setFundingQuantity(String(Number(resp.data) * Number(podQuantity)));
-            }
-            setDisableSubmit(false);
-          })
-          .catch(e => {
-            showAlertMessage(e, { variant: "error" });
-            setDisableSubmit(false);
-          });
-      }
-      // investing
-      else setFundingQuantity(String(Number(podQuantity) * pod.FundingPrice ?? 0));
+      // if (mode == "buy") {
+      //   setDisableSubmit(true);
+      //   musicDaoGetBuyingPodFundingTokenAmount(pod.PodAddress, Number(podQuantity))
+      //     .then(resp => {
+      //       if (resp.success) {
+      //         setFundingQuantity(String(Number(podQuantity) * Number(resp.data)));
+      //       }
+      //       setDisableSubmit(false);
+      //     })
+      //     .catch(e => {
+      //       showAlertMessage(e, { variant: "error" });
+      //       setDisableSubmit(false);
+      //     });
+      // } else if (mode == "sell") {
+      //   setDisableSubmit(true);
+      //   musicDaoGetSellingPodFundingTokenAmount(pod.PodAddress, Number(podQuantity))
+      //     .then(resp => {
+      //       if (resp.success) {
+      //         setFundingQuantity(String(Number(resp.data) * Number(podQuantity)));
+      //       }
+      //       setDisableSubmit(false);
+      //     })
+      //     .catch(e => {
+      //       showAlertMessage(e, { variant: "error" });
+      //       setDisableSubmit(false);
+      //     });
+      // }
+      // // investing
+      // else
+      setFundingQuantity(String(Number(podQuantity) * pod.FundingPrice ?? 0));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podQuantity, mode]);
@@ -451,108 +446,110 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
     const web3 = new Web3(library.provider);
 
     if (Object.keys(payload).length) {
-      if (mode === "buy") {
-        setDisableSubmit(true);
-        const buyResponse = await musicDaoBuyPodTokens(payload, {});
-        setDisableSubmit(false);
-        if (buyResponse.success) {
-          showAlertMessage(`buy success`, { variant: "success" });
-          closeAndRefresh();
-        } else {
-          showAlertMessage(`buy failed`, { variant: "error" });
+      // if (mode === "buy") {
+      //   setDisableSubmit(true);
+      //   const buyResponse = await musicDaoBuyPodTokens(payload, {});
+      //   setDisableSubmit(false);
+      //   if (buyResponse.success) {
+      //     showAlertMessage(`buy success`, { variant: "success" });
+      //     closeAndRefresh();
+      //   } else {
+      //     showAlertMessage(`buy failed`, { variant: "error" });
+      //   }
+      // } else if (mode == "sell") {
+      //   setDisableSubmit(true);
+      //   const buyResponse = await musicDaoSellPodTokens(payload, {});
+      //   setDisableSubmit(false);
+      //   if (buyResponse.success) {
+      //     showAlertMessage(`sell success`, { variant: "success" });
+      //     closeAndRefresh();
+      //   } else {
+      //     showAlertMessage(`sell failed`, { variant: "error" });
+      //   }
+      // } else {
+      setDisableSubmit(true);
+      let buyResponse;
+      if (pod.blockchainNetwork === BlockchainNets[1].value) {
+        let balance = await web3APIHandler.Erc20[pod.FundingToken].balanceOf(web3, { account });
+        let decimals = await web3APIHandler.Erc20[pod.FundingToken].decimals(web3);
+        balance = Number(toDecimals(balance, decimals));
+
+        const amount = toNDecimals(+payload.Amount, decimals);
+
+        if (!decimals || !balance) {
+          showAlertMessage(`Can't get decimals`, { variant: "error" });
+          setDisableSubmit(false);
+
+          return;
         }
-      } else if (mode == "sell") {
-        setDisableSubmit(true);
-        const buyResponse = await musicDaoSellPodTokens(payload, {});
-        setDisableSubmit(false);
-        if (buyResponse.success) {
-          showAlertMessage(`sell success`, { variant: "success" });
-          closeAndRefresh();
-        } else {
-          showAlertMessage(`sell failed`, { variant: "error" });
+
+        if (balance < +payload.Amount) {
+          showAlertMessage(`Insufficient balance to invest the pod`, { variant: "error" });
+          setDisableSubmit(false);
+          return;
         }
-      } else {
-        setDisableSubmit(true);
-        let buyResponse;
-        if (pod.blockchainNetwork === BlockchainNets[1].value) {
-          let balance = await web3APIHandler.Erc20[pod.FundingToken].balanceOf(web3, { account });
-          let decimals = await web3APIHandler.Erc20[pod.FundingToken].decimals(web3);
-          balance = Number(toDecimals(balance, decimals));
 
-          const amount = toNDecimals(+payload.Amount, decimals);
+        const approved: any = await web3APIHandler.Erc20[pod.FundingToken].approve(
+          web3,
+          account!,
+          web3Config.CONTRACT_ADDRESSES.POD_MANAGER,
+          amount
+        );
 
-          if (!decimals || !balance) {
-            showAlertMessage(`Can't get decimals`, { variant: "error" });
-            setDisableSubmit(false);
+        if (!approved) {
+          showAlertMessage(`Can't proceed to invest the pod`, { variant: "error" });
+          setDisableSubmit(false);
+          return;
+        }
 
-            return;
-          }
-
-          if (balance < +payload.Amount) {
-            showAlertMessage(`Insufficient balance to invest the pod`, { variant: "error" });
-            setDisableSubmit(false);
-            return;
-          }
-
-          const approved: any = await web3APIHandler.Erc20[pod.FundingToken].approve(
-            web3,
-            account!,
-            web3Config.CONTRACT_ADDRESSES.POD_MANAGER,
-            amount
-          );
-
-          if (!approved) {
-            showAlertMessage(`Can't proceed to invest the pod`, { variant: "error" });
-            setDisableSubmit(false);
-            return;
-          }
-
-          const contractResponse: any = await web3APIHandler.PodManager.investPod(
-            web3,
-            account!,
-            {
-              podAddress: pod.PodAddress,
-              amount,
-            },
-            setHash
-          );
-
-          if (!contractResponse) {
-            showAlertMessage(`Can't proceed to invest the pod`, { variant: "error" });
-            setDisableSubmit(false);
-            setTransactionSuccess(false);
-            return;
-          }
-
-          setTransactionSuccess(true);
-
-          buyResponse = await priviPodInvestPod({
-            podId: pod.Id,
+        const contractResponse: any = await web3APIHandler.PodManager.investPod(
+          web3,
+          account!,
+          {
             podAddress: pod.PodAddress,
-            amount: payload.Amount,
-            hash: contractResponse.hash,
-            investor: account!,
-          });
+            amount,
+          },
+          setHash
+        );
 
+        if (!contractResponse) {
+          showAlertMessage(`Can't proceed to invest the pod`, { variant: "error" });
           setDisableSubmit(false);
-          if (buyResponse.success) {
-            showAlertMessage(`invest success`, { variant: "success" });
-            closeAndRefresh();
-          } else {
-            showAlertMessage(`invest failed`, { variant: "error" });
-          }
+          setTransactionSuccess(false);
+          return;
+        }
+
+        setTransactionSuccess(true);
+
+        buyResponse = await priviPodInvestPod({
+          podId: pod.Id,
+          podAddress: pod.PodAddress,
+          amount: payload.Amount,
+          hash: contractResponse.hash,
+          investor: account!,
+          type: "PIX",
+        });
+
+        setDisableSubmit(false);
+        if (buyResponse.success) {
+          showAlertMessage(`invest success`, { variant: "success" });
+          closeAndRefresh();
         } else {
-          buyResponse = await priviPodInvestPod(payload);
-
-          setDisableSubmit(false);
-          if (buyResponse.success) {
-            showAlertMessage(`invest success`, { variant: "success" });
-            closeAndRefresh();
-          } else {
-            showAlertMessage(`invest failed`, { variant: "error" });
-          }
+          showAlertMessage(`invest failed`, { variant: "error" });
         }
       }
+      //  else {
+      //   buyResponse = await musicDaoInvestPod(payload);
+
+      //   setDisableSubmit(false);
+      //   if (buyResponse.success) {
+      //     showAlertMessage(`invest success`, { variant: "success" });
+      //     closeAndRefresh();
+      //   } else {
+      //     showAlertMessage(`invest failed`, { variant: "error" });
+      //   }
+      // }
+      // }
     }
   };
 

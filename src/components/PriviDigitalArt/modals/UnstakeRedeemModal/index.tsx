@@ -157,6 +157,7 @@ export default function UnstakeRedeemModal({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.amount,
+          type: "PIX",
         });
         afterSuccess(resp);
       } else {
@@ -179,6 +180,7 @@ export default function UnstakeRedeemModal({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.reward,
+          type: "PIX",
         });
         afterSuccess(resp);
       } else {
@@ -203,6 +205,7 @@ export default function UnstakeRedeemModal({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.amount,
+          type: "PIX",
         });
         afterSuccess(resp);
       } else {
@@ -225,6 +228,7 @@ export default function UnstakeRedeemModal({
           podId: pod.Id,
           tokenId: response.data.tokenId,
           amount: response.data.reward,
+          type: "PIX",
         });
         afterSuccess(resp);
       } else {

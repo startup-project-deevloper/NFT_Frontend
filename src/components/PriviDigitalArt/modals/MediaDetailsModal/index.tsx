@@ -308,8 +308,8 @@ const MediaDetailsModal = (props: any) => {
             <Box display="flex" flexDirection="row" alignItems="center">
               <Avatar
                 size="medium"
-                url={user.ipfsImage
-                  ? user.ipfsImage
+                url={creator && creator.ipfsImage
+                  ? creator.ipfsImage
                   : ""}
               />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>

@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict } from "date-fns/esm";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Notification } from "shared/services/API/NotificationsAPI";
 import { getUserPhoto } from "shared/services/user/getUserPhoto";
@@ -74,19 +74,17 @@ export const NotificationsPopperContent: React.FunctionComponent<NotificationsPo
       notification.typeItemId === "user" ? notification.itemId : notification.follower;
     let user: any = users.find(usr => usr.id === notificationUserId);
 
-    if(!user || !user.url) {
-      user = userSelector;
-    }
-
     return (
       <NotificationContainer key={notification.date}>
         <AvatarContainer>
           <Avatar
             noBorder={theme === "dark"}
             url={
-              theme === "dark"
-                ? require("assets/icons3d/SuperToroid-Iridescent.png")
-                : getUserPhoto(notificationUserId, user?.url || "")
+              user && user.ipfsImage ?
+                user.ipfsImage :
+                theme === "dark"
+                  ? require("assets/icons3d/SuperToroid-Iridescent.png")
+                  : getUserPhoto(notificationUserId, user?.url || "")
             }
             size="medium"
           />

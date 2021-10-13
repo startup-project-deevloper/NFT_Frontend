@@ -6,6 +6,8 @@ import { SearchInputBox } from "shared/ui-kit/SearchInputBox/SearchInputBox";
 import { getUsersInfoList } from "store/selectors/user";
 import { getUser } from "store/selectors/user";
 import { closeNewChatModal, startChat, addChatInList } from "store/actions/MessageActions";
+import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
 
 const useStyles = makeStyles({
   container: {
@@ -145,8 +147,11 @@ const NewChatModal = () => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.header} onClick={handleMinimize}>
-        <div className={classes.title}>New Message</div>
+      <div className={classes.header}
+           onClick={handleMinimize}>
+        <div className={classes.title}>
+          New Message
+        </div>
         <div className={classes.actionButtons}>
           {minimize === true ? (
             <img src={require("assets/icons/minimize.svg")} onClick={handleMinimize} />
@@ -172,7 +177,8 @@ const NewChatModal = () => {
                 .map((user, index) => {
                   return (
                     <div className={classes.userItem} key={index} onClick={() => handleClick(user)}>
-                      <Avatar src={`${user.imageURL}`} alt={user.name} />
+                      <Avatar src={`${user.imageURL}`}
+                              alt={user.name} />
                       <div className={classes.userInfo}>
                         <div className={classes.userName} style={{ fontWeight: 800 }}>
                           {user.name}

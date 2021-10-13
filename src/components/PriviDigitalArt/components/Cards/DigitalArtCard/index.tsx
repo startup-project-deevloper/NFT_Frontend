@@ -8,7 +8,7 @@ import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import URL from "shared/functions/getURL";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { digitalArtCardStyles } from "./index.styles";
 import ReactPlayer from "react-player";
@@ -66,7 +66,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
               let data = response.data.data;
-              const creatorData : any = users.find(u => u.address === creatorId);
+              const creatorData : any = users.find(u => u.address === creatorId || u.id === creatorId);
 
               data.infoImage = creatorData.infoImage || null;
 
@@ -86,7 +86,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           }
         };
         // Try to get creator data with address
-        getCreatorData(media.CreatorAddress).then(result => {
+        getCreatorData(media.CreatorAddress || media.CreatorId).then(result => {
           if (!result) {
             // Try to get creator data with id
             getCreatorData(media.CreatorId).then(tryWithId => {
@@ -241,7 +241,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               url={
                 creator.ipfsImage
                   ? creator.ipfsImage
-                  : "none"
+                  : getRandomAvatar()
               }
               alt={creator.id}
               title={`${creator.name}`}

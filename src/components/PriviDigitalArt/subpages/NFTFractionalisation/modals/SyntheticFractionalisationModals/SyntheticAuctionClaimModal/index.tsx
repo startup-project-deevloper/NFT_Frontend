@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 
@@ -13,7 +13,6 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { BlockchainNets } from "shared/constants/constants";
 import { endSyntheticNFTAuction, getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
-import { useEffect } from "hoist-non-react-statics/node_modules/@types/react";
 import CollectionNFTCard from "components/PriviDigitalArt/components/Cards/CollectionNFTCard";
 
 const useStyles = makeStyles(theme => ({
@@ -153,7 +152,7 @@ const SyntheticAuctionClaimModal = ({ open, onClose, data }) => {
     <Modal size="medium" isOpen={open} onClose={onClose} className={classes.modal} showCloseIcon={true}>
       <Grid container spacing={2} direction="column" alignItems="center">
         <Grid item>
-          <CollectionNFTCard item={nft} />
+          <CollectionNFTCard item={nft} handleSelect={() => {}} />
         </Grid>
         <Grid item>
           Congrats, your buying offer was accepted. You can claim your Synthetic NFT now, manage it, sell or

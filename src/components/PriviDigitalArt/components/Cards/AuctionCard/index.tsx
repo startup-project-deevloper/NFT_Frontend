@@ -37,7 +37,7 @@ export default function AuctionCard({ nft, price, onClick, onStartAuction }) {
             <PrimaryButton size="medium">
               <span>Auction Ending In</span>
               <br />
-              <span>{getDuration(new Date((auctionData && auctionData.createdAt) || 0), new Date())}</span>
+              <span>{getDuration(new Date((auctionData && auctionData.endAt) || 0), new Date())}</span>
             </PrimaryButton>
           ) : (
             <PrimaryButton size="medium" onClick={onStartAuction}>

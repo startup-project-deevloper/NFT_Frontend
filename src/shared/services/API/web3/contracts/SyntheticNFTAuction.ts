@@ -1,6 +1,4 @@
 import Web3 from "web3";
-import { toNDecimals } from "shared/functions/web3";
-import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { ContractInstance } from "shared/connectors/web3/functions";
 
 const syntheticNFTAuction = (network: string) => {
@@ -12,17 +10,12 @@ const syntheticNFTAuction = (network: string) => {
         const { amount, setHash } = payload;
         const {
           auctionData: { auctionAddress },
-          JotAddress,
         } = collection;
 
-        const jotAPI = JOT(network);
-
-        const decimals = await jotAPI.decimals(web3, JotAddress);
-
         const contract = ContractInstance(web3, metadata.abi, auctionAddress);
-        const gas = await contract.methods.bid(toNDecimals(amount, decimals)).estimateGas({ from: account });
+        const gas = await contract.methods.bid(amount).estimateGas({ from: account });
         contract.methods
-          .bid(toNDecimals(amount, decimals))
+          .bid(amount)
           .send({ from: account, gas })
           .on("transactionHash", function (hash) {
             setHash(hash);
@@ -51,7 +44,9 @@ const syntheticNFTAuction = (network: string) => {
     return new Promise(async resolve => {
       try {
         const { setHash } = payload;
-        const { auctionAddress } = collection;
+        const {
+          auctionData: { auctionAddress },
+        } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, auctionAddress);
         const gas = await contract.methods.withdraw().estimateGas({ from: account });
@@ -85,7 +80,9 @@ const syntheticNFTAuction = (network: string) => {
     return new Promise(async resolve => {
       try {
         const { setHash } = payload;
-        const { auctionAddress } = collection;
+        const {
+          auctionData: { auctionAddress },
+        } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, auctionAddress);
         const gas = await contract.methods.endAuction().estimateGas({ from: account });
@@ -115,7 +112,22 @@ const syntheticNFTAuction = (network: string) => {
     });
   };
 
-  return { bid, withdraw, endAuction };
+  const auctionEndTime = async (web3: Web3, auctionAddress: string) => {
+    return new Promise(async resolve => {
+      try {
+        console.log(auctionAddress);
+        const contract = ContractInstance(web3, metadata.abi, auctionAddress);
+
+        const result = await contract.methods.auctionEndTime().call();
+        resolve(result);
+      } catch (err) {
+        console.log(err);
+        resolve(null);
+      }
+    });
+  };
+
+  return { bid, withdraw, endAuction, auctionEndTime };
 };
 
 export default syntheticNFTAuction;

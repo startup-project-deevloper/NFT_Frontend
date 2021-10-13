@@ -80,7 +80,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [result, setResult] = React.useState<number>(0);
   const [hash, setHash] = useState<string>("");
 
-  const auctionInitialPrice = 10000;
+  const auctionInitialPrice = 1000;
 
   useEffect(() => {
     if (!params.id) return;
@@ -294,18 +294,23 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         setResult(1);
         setLoading(false);
 
+        const auctionEndTime = await web3APIHandler.SyntheticNFTAuction.auctionEndTime(
+          web3,
+          contractResponse.data.auctionContract
+        );
+
         const response = await startSyntheticNFTAuction({
           collectionId: params.id,
-          syntheticId: +nft.SyntheticID,
+          syntheticId: nft.SyntheticID,
           auctionAddress: contractResponse.data.auctionContract,
           buyoutPrice: contractResponse.data.openingBid,
-          auctionLength: 1000000,
+          endAt: +(auctionEndTime ?? Date.now() + 7 * 24 * 3600) * 1000,
           starterAddress: account,
         });
 
         if (response.success) {
           showAlertMessage("Auction started.", { variant: "success" });
-          history.push(`/pix/fractionalisation/collection/${params.id}/nft/${nft.SyntheticID}`);
+          history.push(`/fractionalisation/collection/${params.id}/nft/${nft.SyntheticID}`);
         } else {
           setLoading(false);
           setResult(-1);

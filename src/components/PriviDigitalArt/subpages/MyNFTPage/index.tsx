@@ -69,7 +69,20 @@ const MyNFT = () => {
       };
     });
     setMyNFTs(newNFTs);
-  }
+  };
+
+  const onMyNFTVerified = index => {
+    const newNFTs: any[] = myNFTs.map((nft, i) => {
+      if (i !== index) {
+        return nft;
+      }
+      return {
+        ...nft,
+        isVerified: true,
+      };
+    });
+    setMyNFTs(newNFTs);
+  };
 
   return (
     <>
@@ -124,7 +137,7 @@ const MyNFT = () => {
                     {myNFTs
                       .filter(nft => !nft.isLocked)
                       .map((item, index) => (
-                        <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} onUnLockCompleted={() => onMyNFTUnlocked(index)}/>
+                        <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} />
                       ))}
                   </div>
                 </LoadingWrapper>
@@ -138,7 +151,7 @@ const MyNFT = () => {
                     {myNFTs
                       .filter(nft => nft.isLocked && !nft.isVerified)
                       .map((item, index) => (
-                        <MyNFTCard key={index} item={item} />
+                        <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(index)} />
                       ))}
                   </div>
                 </LoadingWrapper>
@@ -156,7 +169,7 @@ const MyNFT = () => {
                     {myNFTs
                       .filter(nft => nft.isWithdrawn && !nft.isUnlocked)
                       .map((item, index) => (
-                        <MyNFTCard key={index} item={item} />
+                        <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(index)} />
                       ))}
                   </div>
                 </LoadingWrapper>

@@ -159,30 +159,14 @@ export default function WithdrawJotsModal({
             endAdornment={<div className={classes.purpleText}>JOTS</div>}
             disabled={disabled}
           />
-          <Grid container>
-            <Grid item md={7} xs={12}>
-              <Box className={classes.leftBalance} display="flex" alignItems="center">
-                <Header5 style={{ marginBottom: 0 }}>Wallet Balance</Header5>
-                <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
-                  <Box className={classes.point}></Box>
-                  <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
-                    {jotBalance.toFixed(2)} JOTs
-                  </Header5>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item md={5} xs={12}>
-              <Box
-                className={classes.rightBalance}
-                flexGrow={1}
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-end"
-              >
-                <Box onClick={() => setJOTs(maxJot)}>MAX: {maxJot.toFixed(2)}</Box>
-              </Box>
-            </Grid>
-          </Grid>
+          <Box
+            className={classes.rightBalance}
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <Box onClick={() => setJOTs(maxJot)}>MAX: {maxJot.toFixed(2)}</Box>
+          </Box>
           <Box display="flex" alignItems="center" mt={6} justifyContent="space-between">
             <SecondaryButton
               size="medium"

@@ -213,6 +213,7 @@ export default function AddJotsModal({
               size="medium"
               style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
               onClick={handleAddJots}
+              disabled={jotBalance <= 0}
             >
               Confirm
             </PrimaryButton>

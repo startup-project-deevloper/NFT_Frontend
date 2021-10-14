@@ -105,25 +105,27 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   }, [isOwner, isAuction]);
 
   useEffect(() => {
-    (async () => {
-      setLoadingData(true);
-
-      if (!params || !params.collectionId || !params.nftId) {
-        return;
-      }
-
-      const response = await getSyntheticNFT(params.collectionId, params.nftId);
-      if (response?.success) {
-        setNft(response.data);
-        setLoadingData(false);
-      }
-
-      const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
-      if (flipResp?.success) {
-        setFlipHistory(flipResp.data);
-      }
-    })();
+    handleRefresh();
   }, [params]);
+
+  const handleRefresh = async () => {
+    setLoadingData(true);
+
+    if (!params || !params.collectionId || !params.nftId) {
+      return;
+    }
+
+    const response = await getSyntheticNFT(params.collectionId, params.nftId);
+    if (response?.success) {
+      setNft(response.data);
+      setLoadingData(false);
+    }
+
+    const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
+    if (flipResp?.success) {
+      setFlipHistory(flipResp.data);
+    }
+  };
 
   const handleOpenChangeLockedNFTModal = () => {
     setOpenChangeLockedNFTModal(true);
@@ -502,7 +504,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         </div>
         {selectedTab === "auction" ? (
           <>
-            <AuctionDetail nft={nft} />
+            <AuctionDetail nft={nft} handleRefresh={handleRefresh} />
             <OfferList nft={nft} />
           </>
         ) : selectedTab === "flip_coin" ? (

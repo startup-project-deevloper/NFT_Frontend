@@ -120,7 +120,7 @@ const SyntheticFractionalisePage = ({
                   <div
                     className={classes.tradeNFTBtnWrapper}
                     onClick={() => {
-                      window.open("https://ddex.privi.store/nft-derivatives", "_blank");
+                      window.open("https://juice.privi.store/nft-derivatives#/", "_blank");
                     }}
                   >
                     <div className={classes.tradeNFTBtn}>Trade NFT Derivatives</div>

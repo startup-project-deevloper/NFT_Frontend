@@ -86,22 +86,15 @@ const PriviPixConnect = () => {
   const [noMetamask, setNoMetamask] = useState<boolean>(false);
   const dispatch = useDispatch();
   const twitterButton = useRef<HTMLButtonElement>(null);
-  const [rightNetwork, setRightNetwork] = useState<boolean>(true);
+  const [rightNetwork, setRightNetwork] = useState<boolean>(false);
   const [isShowNoAuth, setShowNoAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [isShowUSDTGet, setShowUSDTGet] = useState<boolean>(false);
+  const [freeUSDTAmount, setFreeUSDTAmount] = useState<number>(0);
 
   const [openConnectModal, setOpenConnectModal] = useState<boolean>(false);
 
-  const handleClickSign = async () => {
-    const web3 = new Web3(library.provider);
-    if (account) {
-      // console.log('=++++++++++++')
-      // const tokenBalance = await getTokenBalance(web3, account);
-      // console.log('=++++++++++++---')
-    }
-    setLoading(true);
-  };
+  const signData = useRef();
 
   useEffect(() => {
     if (account && account.length > 0) {
@@ -116,49 +109,13 @@ const PriviPixConnect = () => {
 
             if (data.status === "authorized") {
               setStatus("authorized");
-              setRightNetwork(false);
-
-              const web3 = new Web3(library.provider);
-              API.signInWithMetamaskWallet(account, web3, "Privi PIX", handleClickSign).then(res => {
-                if (res.isSignedIn) {
-                  setLoading(false);
-
-                  if (res.freeUsdtAmount === 0) {
-                    setShowUSDTGet(true);
-                  }
-
-                  setSignedin(true);
-                  const data = res.userData;
-                  if (!socket) {
-                    const sock = io(URL(), { query: { token: res.accessToken } });
-                    sock.connect();
-                    setSocket(sock);
-                  }
-                  if (socket) {
-                    socket.emit("add user", data.id);
-                  }
-                  dispatch(setUser(data));
-
-                  localStorage.setItem("token", res.accessToken);
-                  localStorage.setItem("address", account);
-                  localStorage.setItem("userId", data.id);
-                  localStorage.setItem("userSlug", data.urlSlug ?? data.id);
-
-                  axios.defaults.headers.common["Authorization"] = "Bearer " + res.accessToken;
-                  dispatch(setLoginBool(true));
-
-                  //added this last line to refresh the page, it got stuck after loging in. If there's
-                  //another way to fix that feel free to change it
-                  history.push("/");
-                } else {
-                  setLoading(false);
-                  if (res.message) {
-                    showAlertMessage(res.message, { variant: "error" });
-                  } else {
-                    showAlertMessage("Connect the metamask", { variant: "error" });
-                  }
-                }
-              });
+              const isNotifiedTestnet = localStorage.getItem(`PixTestNetNotify${account}`);
+              if (!isNotifiedTestnet || isNotifiedTestnet !== "true") {
+                setRightNetwork(true);
+                localStorage.setItem(`PixTestNetNotify${account}`, "true");
+              } else {
+                OnGetUSDT();
+              }
             } else {
               if (data.status === "nolist") {
                 twitterButton?.current?.click();
@@ -264,6 +221,79 @@ const PriviPixConnect = () => {
 
   const handleCloseSwitchNetworkModal = () => {
     setRightNetwork(true);
+  }
+
+  const OnGetUSDT = async () => {
+    try {
+      setRightNetwork(false);
+      if (account && library) {
+        const web3 = new Web3(library.provider);
+        const res = await API.signInWithMetamaskWallet(account, web3, "Privi PIX");
+        if (res.isSignedIn) {
+          signData.current = res;
+          const data = res.userData;
+          //added this last line to refresh the page, it got stuck after loging in. If there's
+          //another way to fix that feel free to change it
+          if (!data.isGotFreeToken) {
+            setLoading(true);
+            const tokenRes = await axios.post(
+              `${URL()}/user/sendFreeUSDTToken`,
+              { address: account },
+              {
+                headers: {
+                  "Authorization": "Bearer " + res.accessToken,
+                }
+              }
+            );
+            setLoading(false);
+            if (tokenRes.data.success) {
+              setFreeUSDTAmount(tokenRes.data.amount);
+              setShowUSDTGet(true);
+            } else {
+              setShowNoAuth(true);
+              showAlertMessage(tokenRes.data.message, { variant: "error" });
+            }
+          } else {
+            handleSignIn();
+          }
+        } else {
+          if (res.message) {
+            showAlertMessage(res.message, { variant: "error" });
+          } else {
+            showAlertMessage("Connect the metamask", { variant: "error" });
+          }
+        }
+      }
+    } catch (err) {
+
+    }
+  };
+
+  const handleSignIn = async () => {
+    const res: any = signData.current;
+    if (res && account) {
+      setSignedin(true);
+      if (!socket) {
+        const sock = io(URL(), {
+          query: { token: res.accessToken },
+          transports: ["websocket"],
+        });
+        sock.connect();
+        setSocket(sock);
+      }
+      if (socket) {
+        socket.emit("add user", res.userData.id);
+      }
+      dispatch(setUser(res.userData));
+      localStorage.setItem("token", res.accessToken);
+      localStorage.setItem("address", account);
+      localStorage.setItem("userId", res.userData.id);
+      localStorage.setItem("userSlug", res.userData.urlSlug ?? res.userData.id);
+
+      axios.defaults.headers.common["Authorization"] = "Bearer " + res.accessToken;
+      dispatch(setLoginBool(true));
+      history.push("/");
+    }
   }
 
   return (
@@ -376,8 +406,9 @@ const PriviPixConnect = () => {
         handleMetamaskConnect={handleMetamaskConnect}
       />
       <SwitchNetworkModal
-        open={!rightNetwork}
+        open={rightNetwork}
         onClose={handleCloseSwitchNetworkModal}
+        onNext={OnGetUSDT}
       />
       <NoAuthModal open={isShowNoAuth} onClose={() => setShowNoAuth(false)} />
       <LoadingScreen
@@ -403,10 +434,10 @@ const PriviPixConnect = () => {
         <USDTGetModal
           open={isShowUSDTGet}
           onClose={() => {
-            history.push("/");
             setShowUSDTGet(false);
+            handleSignIn();
           }}
-          amount="100K"
+          amount={freeUSDTAmount}
           account={account ?? ""}
         />
       </LoadingScreen>

@@ -6,7 +6,7 @@ import { InputBase } from "@material-ui/core";
 import { RootState } from "store/reducers/Reducer";
 import { Avatar } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
-import { getRandomAvatar } from "shared/services/user/getUserAvatar";
+import { getRandomAvatar, useUserAvatar } from "shared/services/user/getUserAvatar";
 import { getMatchingUsers, IAutocompleteUsers } from "shared/services/API";
 
 const searchIcon = require("assets/icons/search.png");
@@ -37,6 +37,7 @@ const CollabsTab = ({ pod, setPod }) => {
     setPod({ ...pod, Collabs: newCollabs });
   };
 
+  const avatar = useUserAvatar(user.id);
   return (
     <>
       <div className={classes.inputContainer}>
@@ -71,7 +72,7 @@ const CollabsTab = ({ pod, setPod }) => {
               >
                 <Box display="flex" alignItems="center">
                   <Avatar noBorder
-                          url={option.imageUrl ? option.imageUrl : getRandomAvatar()}
+                          url={option.imageUrl ? option.imageUrl : avatar!}
                           size="medium" />
                   <Box ml="11px" fontFamily="Montserrat" color="#404658" fontSize="16px">
                     {userName}

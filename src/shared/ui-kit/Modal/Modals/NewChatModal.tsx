@@ -40,16 +40,17 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     overflowY: "scroll",
+    overflowX: "hidden"
   },
   userItem: {
     display: "flex",
     marginTop: 15,
     cursor: "pointer",
     "& img": {
-      width: 32,
-      height: 32,
+      width: 40,
+      height: 40,
       borderRadius: "50%",
-      marginRight: 10,
+      /*marginRight: 10,*/
     },
   },
   userInfo: {
@@ -146,7 +147,9 @@ const NewChatModal = () => {
   return (
     <div className={classes.container}>
       <div className={classes.header} onClick={handleMinimize}>
-        <div className={classes.title}>New Message</div>
+        <div className={classes.title}>
+          New Message
+        </div>
         <div className={classes.actionButtons}>
           {minimize === true ? (
             <img src={require("assets/icons/minimize.svg")} onClick={handleMinimize} />
@@ -171,8 +174,11 @@ const NewChatModal = () => {
                 })
                 .map((user, index) => {
                   return (
-                    <div className={classes.userItem} key={index} onClick={() => handleClick(user)}>
-                      <Avatar src={`${user.imageURL}`} alt={user.name} />
+                    <div className={classes.userItem}
+                         key={index}
+                         onClick={() => handleClick(user)}>
+                      <Avatar src={user.ipfsImage ? user.ipfsImage : `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)})`}
+                              alt={user.name} />
                       <div className={classes.userInfo}>
                         <div className={classes.userName} style={{ fontWeight: 800 }}>
                           {user.name}

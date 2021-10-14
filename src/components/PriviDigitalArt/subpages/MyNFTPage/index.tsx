@@ -17,7 +17,7 @@ const MyNFT = () => {
   const history = useHistory();
 
   const theme = useTheme();
-  const [selectedTab, setSelectedTab] = useState<"owned" | "synthetic">("synthetic");
+  const [selectedTab, setSelectedTab] = useState<"owned" | "synthetic" | "withdraw">("synthetic");
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -58,6 +58,19 @@ const MyNFT = () => {
     setMyNFTs(newNFTs);
   };
 
+  const onMyNFTUnlocked = index => {
+    const newNFTs: any[] = myNFTs.map((nft, i) => {
+      if (i !== index) {
+        return nft;
+      }
+      return {
+        ...nft,
+        isUnlocked: true,
+      };
+    });
+    setMyNFTs(newNFTs);
+  }
+
   return (
     <>
       <div className={classes.content}>
@@ -80,6 +93,12 @@ const MyNFT = () => {
             onClick={() => setSelectedTab("synthetic")}
           >
             <span>Synthetic NFT proposal</span>
+          </div>
+          <div
+            className={cls({ [classes.selectedTabSection]: selectedTab === "withdraw" }, classes.tabSection)}
+            onClick={() => setSelectedTab("withdraw")}
+          >
+            <span>NFT withdrawals</span>
           </div>
         </div>
         <div className={classes.cardsGroup}>
@@ -105,7 +124,7 @@ const MyNFT = () => {
                     {myNFTs
                       .filter(nft => !nft.isLocked)
                       .map((item, index) => (
-                        <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} />
+                        <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(index)} onUnLockCompleted={() => onMyNFTUnlocked(index)}/>
                       ))}
                   </div>
                 </LoadingWrapper>
@@ -118,6 +137,24 @@ const MyNFT = () => {
                   <div className={classes.cardsGrid}>
                     {myNFTs
                       .filter(nft => nft.isLocked && !nft.isVerified)
+                      .map((item, index) => (
+                        <MyNFTCard key={index} item={item} />
+                      ))}
+                  </div>
+                </LoadingWrapper>
+              </Box>
+            </Box>
+          )}
+          {selectedTab === "withdraw" && (
+            <Box display="flex" flexDirection="column" gridRowGap={50}>
+              <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                <Box className={classes.sectionTitle} color="#1DCC00">
+                  NFT To Unlock
+                </Box>
+                <LoadingWrapper theme={"blue"} loading={loading}>
+                  <div className={classes.cardsGrid}>
+                    {myNFTs
+                      .filter(nft => nft.isWithdrawn && !nft.isUnlocked)
                       .map((item, index) => (
                         <MyNFTCard key={index} item={item} />
                       ))}

@@ -43,7 +43,7 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import PrintChart from "shared/ui-kit/Chart/Chart";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { getUser } from "store/selectors";
 import {
@@ -96,6 +96,7 @@ import Moment from "react-moment";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
 
 const removeIcon = require("assets/icons/remove_red.png");
 const editIcon = require("assets/icons/edit_icon.svg");
@@ -495,6 +496,7 @@ const MediaPage = () => {
   }, []);
 
   const [imageIPFS, setImageIPFS] = useState("");
+  const [imageCreatorIPFS, setImageCreatorIPFS] = useState<any>(null);
 
   useEffect(() => {
     setOpenFilters(false);
@@ -529,12 +531,24 @@ const MediaPage = () => {
 
   useEffect(() => {
     if (media) {
+      console.log('media', media);
       sumTotalViews(media);
       if (media?.CreatorId) {
+        getCreatorPhotoIpfs(media.CreatorId)
+
         setIsFollowing(isUserFollowed(media?.CreatorId));
       }
     }
   }, [media?.id]);
+
+  const getCreatorPhotoIpfs = async (creatorId) => {
+    const userFound = usersList.find(usr => usr.id === creatorId);
+
+    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageCreatorIPFS(imageUrl);
+    }
+  }
 
   useEffect(() => {
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))
@@ -2153,9 +2167,9 @@ const MediaPage = () => {
                           key={`creator-${media?.CreatorAddress}`}
                           size="small"
                           url={
-                            media?.CreatorImageUrl ?? media?.CreatorAnonAvatar
-                              ? require(`assets/anonAvatars/${media.CreatorAnonAvatar}`)
-                              : media?.url ?? "none"
+                            imageCreatorIPFS
+                              ? imageCreatorIPFS
+                              : getRandomAvatar()
                           }
                         />
                       </div>
@@ -2969,13 +2983,9 @@ const MediaPage = () => {
                 >
                   <Avatar
                     size="medium"
-                    url={getUserAvatar({
-                      id: user.id,
-                      anon: user.anon,
-                      hasPhoto: user.hasPhoto,
-                      anonAvatar: user.anonAvatar,
-                      url: user.url,
-                    })}
+                    url={user && user.ipfsImage ?
+                      user.ipfsImage : getRandomAvatar()
+                    }
                   />
                   <InputWithLabelAndTooltip
                     transparent

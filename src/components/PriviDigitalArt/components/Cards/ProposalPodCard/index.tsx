@@ -191,7 +191,7 @@ export const ProposalPodCard = props => {
   return (
     <Box className={classes.root}>
       <Box className={classes.flexBox} style={{ borderBottom: "1px dashed #18181822" }} pb={2}>
-        <PrimaryButton size="small" style={{ background: Color.MusicDAOGreen }}>
+        <PrimaryButton size="small" style={{ background: Color.Purple, fontWeight: 'normal', height: 22, borderRadius: 6, lineHeight: "13px" }}>
           Copyright Distribution
         </PrimaryButton>
         <Box display="flex" alignItems="center">
@@ -213,7 +213,13 @@ export const ProposalPodCard = props => {
             {creator ? (
               <>
                 <Box className={classes.header2}>{creator.name || ""}</Box>
-                <Box className={classes.header3}>{`@${creator.id}`}</Box>
+                <Box className={classes.header3}>
+                  {`@${
+                    creator.id.length > 13
+                      ? creator.id.substr(0, 13) + "..." + creator.id.substr(creator.id.length - 2, 2)
+                      : creator.id
+                  }`}
+                </Box>
               </>
             ) : null}
           </Box>
@@ -283,7 +289,7 @@ const PendingIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_d)">
       <g clip-path="url(#clip0)">
-        <rect x="1.88477" y="1" width="17" height="17" rx="8.5" fill="#54658F" />
+        <rect x="1.88477" y="1" width="17" height="17" rx="8.5" fill="#1A1B1C" />
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"

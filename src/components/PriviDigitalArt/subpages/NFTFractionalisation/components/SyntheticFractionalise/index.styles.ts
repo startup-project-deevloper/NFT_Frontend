@@ -45,7 +45,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     },
   },
   title: {
-    fontFamily: "Agrandir Grand",
+    fontFamily: "Agrandir GrandHeavy",
     fontStyle: "normal",
     fontWeight: 800,
     fontSize: 24,
@@ -66,7 +66,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     marginBottom: "24px",
     [theme.breakpoints.down(768)]: {
       fontSize: 16,
-    }
+    },
   },
   shortLabel: {
     "& label": {
@@ -99,9 +99,9 @@ export const useFractionaliseStyles = makeStyles(theme => ({
         justifyContent: "flex-end",
         [theme.breakpoints.down("md")]: {
           justifyContent: "center",
-          paddingTop: 35
-        }
-      }
+          paddingTop: 35,
+        },
+      },
     },
     fontFamily: "Agrandir",
     fontStyle: "normal",
@@ -203,7 +203,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     fontSize: "14px",
     lineHeight: "18px",
     textAlign: "center",
-    padding: "8px 32px",
+    padding: "8px 84px",
     minHeight: 0,
   },
   sliderContainer: { width: "100%" },
@@ -214,6 +214,8 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     color: "#431AB7",
     textAlign: "center",
     borderRadius: theme.spacing(1),
+    fontSize: "14px",
+    lineHeight: "150%",
     "& span": {
       fontWeight: 800,
       textTransform: "uppercase",
@@ -226,15 +228,13 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     borderRadius: "20px",
     // padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     // textAlign: "center",
-    display:"flex",
+    display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
     // height: "100%",
     // height: "calc(100% - 24px - 20px)",
-
-
   },
   label: {
     marginBottom: "9px",
@@ -247,7 +247,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     fontSize: "12px",
     color: "#707582",
     lineHeight: 1.2,
-  }
+  },
 }));
 
 export const PurpleSlider = withStyles({
@@ -290,8 +290,8 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     height: 340,
     width: "100%",
-    maxWidth: '230px',
-    minWidth: '150px',
+    maxWidth: "230px",
+    minWidth: "150px",
     cursor: "pointer",
   },
   selectedCard: {
@@ -301,7 +301,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     clipPath: "polygon(100% 0%, 100% 79%,  50% 91%, 0% 79%, 0% 0%)",
   },
   innerBox: {
-    background: "#9EACF2",
+    background: "linear-gradient(180deg, rgba(255, 255, 255, 0.4) 3.83%, rgba(255, 255, 255, 0) 31.54%), #9EACF2;",
     boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 79%,  50% 90%, 0% 79%, 0% 0%)",
@@ -314,8 +314,8 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     "& img": {
       width: "100%",
       height: 170,
-      border: '0.550168px solid rgba(0, 0, 0, 0.09)',
-      boxShadow: '0px 19.806px 15.4047px -14.8545px rgba(63, 83, 183, 0.22)',
+      border: "0.550168px solid rgba(0, 0, 0, 0.09)",
+      boxShadow: "0px 19.806px 15.4047px -14.8545px rgba(63, 83, 183, 0.22)",
       borderRadius: 11,
     },
     [theme.breakpoints.between(960, 980)]: {
@@ -325,17 +325,17 @@ export const normalNFTCardStyles = makeStyles(theme => ({
   starGroup: {
     display: "flex",
     alignItems: "center",
-    marginTop: 25
+    marginTop: 25,
   },
   ntfName: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 800,
     fontFamily: "Agrandir",
     lineHeight: "13px",
     textTransform: "capitalize",
-    letterSpacing: '0.02em',
+    letterSpacing: "0.02em",
     marginBottom: 4,
-    textAlign: "center"
+    textAlign: "center",
   },
   priceSection: {
     display: "flex",

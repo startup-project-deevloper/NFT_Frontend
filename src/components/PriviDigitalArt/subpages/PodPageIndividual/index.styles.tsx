@@ -5,8 +5,9 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   container: {
     background: "#fff",
     height: `calc(100vh - 80px)`,
-    padding: "60px",
-    width: "100%"
+    padding: "40px 60px 60px",
+    width: "100%",
+    overflow: "auto"
   },
   subContainer: {
     width: "100%",
@@ -28,9 +29,8 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     fontSize: 44,
     fontWeight: 800,
     lineHeight: "104.5%",
-    fontFamily: "Agrandir",
-    color: "#081831",
-    textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
+    fontFamily: "Agrandir GrandHeavy",
+    color: "#431AB7",
     marginTop: 16,
     [theme.breakpoints.down("xs")]: {
       fontSize: 20,
@@ -61,14 +61,14 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   header4: {
     fontSize: 22,
     fontWeight: 800,
-    color: Color.MusicDAODark,
+    color: Color.Purple,
   },
   headerBox: {
     backgroundSize: "cover",
     backgroundRepeat: "none",
   },
   backgroundBox: {
-    padding: "32px 168px",
+    padding: "32px 32px 64px",
     backgroundSize: "cover",
     backdropFilter: "blur(60px)",
     [theme.breakpoints.down("md")]: {
@@ -127,13 +127,13 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     },
   },
   tagBox: {
-    background: "rgba(175, 172, 215, 0.3)",
+    color: "#fff",
     padding: "5px 10px",
     borderRadius: 5,
     fontSize: 10,
     fontWeight: 600,
     lineHeight: "12px",
-    color: "#2D3047",
+    background: "#431AB7",
     fontFamily: "Montserrat",
     marginRight: 4,
   },
@@ -165,7 +165,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     color: "#ffffff",
   },
   timeBox: {
-    background: "linear-gradient(87.82deg, #A0D800 20.18%, #0DCC9E 78.08%)",
+    background: "#431AB7",
     borderRadius: 6,
     fontSize: 16,
     fontWeight: 700,
@@ -180,16 +180,15 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     },
   },
   title2: {
-    fontSize: 22,
-    color: "#2D3047",
+    fontSize: 34,
     fontWeight: 800,
     fontFamily: "Agrandir",
     lineHeight: "130%",
   },
   title3: {
-    fontSize: 14,
-    color: "#707582",
-    fontWeight: 500,
+    fontSize: 18,
+    color: "#1A1B1C",
+    fontWeight: 800,
     fontFamily: "Montserrat",
     lineHeight: "104.5%",
     cursor: "pointer",
@@ -200,50 +199,19 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   podSubPageHeader: {
     display: "flex",
     alignItems: "center",
-    padding: "8px 168px",
     borderBottom: "1px solid #00000022",
-    borderTop: "1px solid #00000022",
-    [theme.breakpoints.down("md")]: {
-      padding: "8px 84px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "8px 32px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "8px 16px",
-    },
+    borderTop: "1px solid #00000022"
   },
   artistsBox: {
     display: "flex",
     alignItems: "center",
-    padding: "0px 168px",
-
-    [theme.breakpoints.down("md")]: {
-      padding: "0px 84px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "0px 32px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "0px 16px",
-    },
+    color: Color.Purple
   },
   artistsMainContent: {
     display: "flex",
     alignItems: "center",
-    padding: "0px 168px",
     marginBottom: 32,
-    overflowX: "auto",
-
-    [theme.breakpoints.down("md")]: {
-      padding: "0px 84px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "0px 32px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "0px 16px",
-    },
+    paddingLeft: 5
   },
   whiteBox: {
     display: "flex",
@@ -251,31 +219,10 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     background: "white",
     opacity: "0.8",
     justifyContent: "space-between",
-    padding: "16px 168px",
-
-    [theme.breakpoints.down("md")]: {
-      padding: "16px 84px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "16px 32px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "16px 0px",
-      flexDirection: "column",
-      justifyContent: "center",
-    },
+    padding: "16px 0"
   },
   podSubPageContent: {
-    padding: "32px 168px",
-    [theme.breakpoints.down("md")]: {
-      padding: "32px 84px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      padding: "32px 32px",
-    },
-    [theme.breakpoints.down("xs")]: {
-      padding: "16px",
-    },
+    padding: "32px 0"
   },
   valueBox: {
     display: "flex",
@@ -391,11 +338,49 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     cursor: "pointer",
   },
   discussionContent: {
-    borderRadius: 12,
-    background: "#ffffff",
     height: 610,
     textAlign: "center",
-    padding: theme.spacing(2),
     position: "relative",
+    background: "rgba(158, 172, 242, 0.16)",
+    boxShadow: "0px 4px 8px #9EACF2",
+    borderRadius: "32px",
+    margin: "0 8px",
+
+    "& .podDiscordFullPage": {
+      height: "calc(100% - 40px)"
+    },
+
+    "& .podDiscordChatGrid": {
+      background: "transparent"
+    },
+    "& .podInputDiscordChat": {
+      border: "1px solid #431AB7",
+      background: "white",
+      "& input": {
+        color: "#181818"
+      }
+    }
   },
+  comment: {
+    display: "flex",
+    alignItems: "center",
+    textAlign: "left",
+    paddingLeft: "33px",
+
+    "& span": {
+      fontWeight: "normal",
+      fontSize: "14px",
+      lineHeight: "18px",
+      color: "#431AB7",
+      marginLeft: "8px"
+    }
+  },
+  ProposalPodCardContainer: {
+    background: "#FFFFFF",
+    boxShadow: "0px 4px 8px #9EACF2",
+    borderRadius: "18px",
+    width: 674,
+    height: 229,
+    margin: "0 24px 10px 5px !important"
+  }
 }));

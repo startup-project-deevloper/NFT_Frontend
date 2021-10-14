@@ -18,10 +18,27 @@ import { saveExternallyFetchedNfts, getNftDataByTokenIds, mint } from "shared/se
 import { DateInput } from "shared/ui-kit/DateTimeInput";
 import NFTCard from "./NFTCard";
 import { FractionaliseModal } from "../../modals/FractionaliseModal";
+import axios from "axios";
+import URL from "shared/functions/getURL";
 
 // parse it to same format as fb collection
-const parseMoralisData = (data, address, selectedChain) => {
-  const metadata = data.metadata ? JSON.parse(data.metadata) : {};
+const parseMoralisData = async (data, address, selectedChain) => {
+  let metadata: any = {};
+  if (data.metadata) {
+    metadata = JSON.parse(data.metadata);
+  } else {
+    if (data.token_uri && data.token_uri.startsWith("http")) {
+      try {
+        const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
+          url: data.token_uri,
+        });
+        console.log("tokenResp", tokenResp);
+        if (tokenResp.success) {
+          metadata = tokenResp.data;
+        }
+      } catch (err) {}
+    }
+  }
   return {
     BlockchainId: data.token_id,
     BlockchainNetwork: selectedChain.value,
@@ -37,7 +54,7 @@ const parseMoralisData = (data, address, selectedChain) => {
     chainId: selectedChain.chainId,
     contractType: data.contract_type,
     tokenAddress: data.token_address,
-    tokenURI: data.token_uri
+    tokenURI: data.token_uri,
   };
 };
 
@@ -94,7 +111,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           const pixCreatedNftMap = {};
           const externallyCreatedNft: any[] = [];
           for (let obj of result) {
-            const data = parseMoralisData(obj, account, selectedChain);
+            const data = await parseMoralisData(obj, account, selectedChain);
             if (["PRIVIERC721", "PNR"].includes(data.MediaSymbol)) pixCreatedNftMap[data.BlockchainId] = data;
             else externallyCreatedNft.push(data);
           }

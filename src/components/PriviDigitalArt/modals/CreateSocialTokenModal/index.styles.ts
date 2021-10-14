@@ -4,14 +4,15 @@ import { Color, Gradient } from "shared/ui-kit";
 export const useCreateTokenStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: "auto !important",
+      width: "665px !important",
       "& > svg": {},
     },
     firstPage: {
-      width: "490px",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      justifyContent: 'center',
+      padding: '32px 0'
     },
     title: {
       fontSize: 22,
@@ -28,7 +29,6 @@ export const useCreateTokenStyles = makeStyles((theme: Theme) =>
       marginTop: "0px",
     },
     content: {
-      width: "600px",
       display: "flex",
       flexDirection: "column",
       "& h5": {
@@ -64,7 +64,7 @@ export const useCreateTokenStyles = makeStyles((theme: Theme) =>
     },
     stepsBorder: {
       borderBottom: "1.5px solid #707582",
-      width: "calc(100% - 90px)",
+      width: "calc(100% - 50px)",
       marginLeft: "10px",
       marginTop: "18px",
       marginBottom: "-18px",
@@ -111,7 +111,7 @@ export const useCreateTokenStyles = makeStyles((theme: Theme) =>
       },
 
       "& div:nth-child(2)": {
-        marginRight: "8%",
+        // marginRight: "8%",
       },
 
       "& div:last-child": {

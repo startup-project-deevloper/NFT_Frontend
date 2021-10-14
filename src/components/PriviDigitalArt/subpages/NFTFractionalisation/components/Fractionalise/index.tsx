@@ -234,7 +234,6 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
     }
   };
 
-  console.log(isMobile, isTablet)
   return (
     <LoadingScreen
       loading={loading}

@@ -90,15 +90,16 @@ export default function FractionalizedNFTCard({ item, heightFixed, index = 0 }) 
             <div
               className={classes.avatar}
               style={{
-                backgroundImage: creator
-                  ? `url(${getUserAvatar({
+                backgroundImage: creator && creator.imageIPFS
+                  ? `url(${creator.imageIPFS})`
+                  : creator ?
+                    `url(${getUserAvatar({
                       id: creator.id,
                       anon: creator.anon,
                       hasPhoto: creator.hasPhoto,
                       anonAvatar: creator.anonAvatar,
                       url: creator.url,
-                    })})`
-                  : "none",
+                    })})` : "none",
               }}
               onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
             />

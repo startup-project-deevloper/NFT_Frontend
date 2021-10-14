@@ -3,10 +3,10 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const nftFractionalisationStyles = makeStyles(theme => ({
   ksUFlT: {
-    color: "#fff !important"
+    color: "#fff !important",
   },
   dwCxzp: {
-    color: "#fff !important"
+    color: "#fff !important",
   },
   content: {
     width: "100%",
@@ -34,19 +34,37 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     padding: "0 35px",
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
-      alignItems: 'flex-start'
+      alignItems: "flex-start",
     },
   },
   title: {
+    fontFamily: "Agrandir GrandHeavy",
     fontSize: 40,
     fontWeight: 800,
-    fontFamily: "Agrandir",
     color: "#431AB7",
     [theme.breakpoints.down(950)]: {
       fontSize: 28,
     },
     [theme.breakpoints.down("xs")]: {
-      paddingBottom: 8
+      paddingBottom: 8,
+    },
+  },
+  manageButton: {
+    position: "relative",
+    background: "#431AB7 !important",
+    borderRadius: "8px !important",
+    color: "#fff !important",
+    border: "none !important",
+    display: "flex",
+    alignItems: "center",
+    height: "50px !important",
+    fontSize: "18px !important",
+    padding: "0 50px !important",
+    lineHeight: "24px !important",
+    [theme.breakpoints.down("xs")]: {
+      height: "42px",
+      fontSize: "14px",
+      padding: "12px",
     },
   },
   countCircle: {
@@ -69,7 +87,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       lineHeight: "8px",
       top: 6,
       right: 10,
-    }
+    },
   },
   subTitleSection: {
     display: "flex",
@@ -89,7 +107,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       fontSize: 12,
     },
     [theme.breakpoints.down("xs")]: {
-      padding: "0 0"
+      padding: "0 0",
     },
   },
   tabSection: {
@@ -114,8 +132,8 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       fontSize: 16,
       margin: "0 0",
       padding: "0 24px",
-      height: '84px',
-      width: '50%'
+      height: "84px",
+      width: "50%",
     },
     borderBottom: "4px solid transparent",
   },
@@ -157,8 +175,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "flex-end",
     columnGap: 10,
-    [theme.breakpoints.down(750)]: {
-    },
+    [theme.breakpoints.down(750)]: {},
   },
   liveSaleBtn: {
     display: "flex",
@@ -263,7 +280,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    width: "100%"
+    width: "100%",
   },
   rewardsWrapper: {
     backgroundImage: "linear-gradient(151.11deg, #AA26C2 6.74%, #4BA7F8 90.8%)",
@@ -299,6 +316,7 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       "linear-gradient(274.54deg, #418DFF -30.42%, #4541FF 23.19%, #4541FF 39.93%, #EF41CB 114.31%, #EF41CB 122.04%, #EFA941 130.17%)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
+    fontFamily: "Agrandir GrandHeavy",
     fontSize: 22,
     fontWeight: 800,
     maxWidth: 600,
@@ -484,13 +502,13 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       padding: "0 25px 25px 25px",
     },
     "& span": {
-      fontSize: 32,
+      fontFamily: "Agrandir GrandHeavy",
+      fontSize: 24,
       fontWeight: 800,
       background:
         "linear-gradient(274.54deg, #418DFF -30.42%, #4541FF 23.19%, #4541FF 39.93%, #EF41CB 114.31%, #EF41CB 122.04%, #EFA941 130.17%)",
       WebkitBackgroundClip: "text",
       WebkitTextFillColor: "transparent",
-      fontFamily: "Agrandir",
       lineHeight: "130%",
       [theme.breakpoints.down("xs")]: {
         fontSize: 25,
@@ -504,10 +522,10 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
   allNFTTitle: {
     display: "flex",
     alignItems: "center",
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 800,
     color: "#431AB7",
-    fontFamily: "Agrandir",
+    fontFamily: "Agrandir GrandHeavy",
     lineHeight: "130%",
     "& span": {
       paddingBottom: 25,
@@ -562,9 +580,9 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
           // width: "unset",
           "& > div": {
             boxShadow: "none",
-          }
-        }
-      }
+          },
+        },
+      },
     },
   },
   allNFTSection: {
@@ -585,9 +603,9 @@ export const nftFractionalisationStyles = makeStyles(theme => ({
       background: "#431AB7",
       "& svg": {
         stroke: "#DDFF57",
-      }
-    }
-  }
+      },
+    },
+  },
 }));
 
 export const LiveSaleIcon = () => (

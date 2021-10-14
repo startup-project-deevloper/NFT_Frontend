@@ -19,7 +19,7 @@ import { useTypedSelector } from "store/reducers/Reducer";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs/LoadingWrapper";
 import { getPod } from "shared/services/API/PriviPodAPI";
-import { Gradient, SecondaryButton } from "shared/ui-kit";
+import { Color, Gradient, SecondaryButton } from "shared/ui-kit";
 import { default as ServerURL } from "shared/functions/getURL";
 
 import { usePodPageIndividualStyles } from "./index.styles";
@@ -313,7 +313,7 @@ const PodPageIndividual = () => {
             <Box>
               {/* Proposals title bar */}
               <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box className={classes.header4}>All Proposals</Box>
+                <Box className={classes.header4}>Proposals</Box>
                 {pod.Proposals && pod.Proposals.length !== 0 ? (
                   <Box display="flex" alignItems="center">
                     <Box
@@ -351,7 +351,7 @@ const PodPageIndividual = () => {
                     containerProps={{
                       style: {
                         width: "100%",
-                        justifyContent: "flex-start",
+                        justifyContent: "flex-start"
                       },
                     }}
                     activeSlideIndex={activeSlide}
@@ -371,7 +371,7 @@ const PodPageIndividual = () => {
                   >
                     {pod.Proposals.map((proposal, i) => {
                       return (
-                        <Box width={"600px"} pr={2} key={i}>
+                        <Box width={"600px"} pr={2} key={i} className={classes.ProposalPodCardContainer}>
                           <ProposalPodCard
                             podId={podId}
                             pod={pod}
@@ -392,9 +392,17 @@ const PodPageIndividual = () => {
                   size="medium"
                   onClick={() => setOpenDistributionTopic(true)}
                   isRounded
-                  style={{ border: "none", background: Gradient.Green1, color: "white" }}
+                  style={{
+                    border: "none",
+                    background: "#DDFF57",
+                    borderRadius: "8px",
+                    padding: "0 66px",
+                    color: Color.Purple,
+                    fontSize: "18px",
+                    lineHeight: "104.5%"
+                  }}
                 >
-                  New Distribution Proposal
+                  New Pod Proposal
                 </SecondaryButton>
               </Box>
               {/* Discussion card */}
@@ -408,6 +416,10 @@ const PodPageIndividual = () => {
                     theme="dark"
                   />
                 </LoadingWrapper>
+                <Box className={classes.comment}>
+                  <MessageIcon />
+                  <span>3 Comments</span>
+                </Box>
               </Box>
             </Box>
           )}
@@ -442,3 +454,9 @@ const LeftArrowIcon = () => (
     />
   </svg>
 );
+
+const MessageIcon = () => (
+  <svg width="17" height="19" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16.4827 1H0.896484V13H3.8189V18L8.68959 13H16.4827V1Z" stroke="#431AB7" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+)

@@ -73,6 +73,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
   const [resultState, setResultState] = useState<number>(0);
+  const [flipDisabled, setFlipDisabled] = useState<boolean>(false);
 
   const usersList = useSelector((state: RootState) => state.usersInfoList);
   const getUserInfo = (address: string) => usersList.find(u => u.address === address);
@@ -103,6 +104,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   useEffect(() => {
     setSelectedTab(isAuction ? "auction" : isOwner ? "ownership" : "flip_coin");
   }, [isOwner, isAuction]);
+
+  useEffect(() => {
+    setFlipDisabled(+(nft.totalStaked ?? 0) <= 0 || +(nft.OwnerSupply ?? 0) <= 0);
+  }, [nft]);
 
   useEffect(() => {
     handleRefresh();
@@ -537,7 +542,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               {isFlipped ? (
                 <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>
               ) : (
-                <div className={classes.flipCoinButton} onClick={() => setOpenFlipCoinGuessModal(true)}>
+                <div
+                  className={cls({ [classes.disabledFlip]: flipDisabled }, classes.flipCoinButton)}
+                  onClick={() => (flipDisabled ? null : setOpenFlipCoinGuessModal(true))}
+                >
                   Flip The Coin
                 </div>
               )}

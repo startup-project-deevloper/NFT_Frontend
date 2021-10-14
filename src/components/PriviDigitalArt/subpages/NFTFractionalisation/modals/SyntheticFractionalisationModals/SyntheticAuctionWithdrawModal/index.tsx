@@ -14,6 +14,7 @@ import { BlockchainNets } from "shared/constants/constants";
 import { getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
 import { useEffect } from "hoist-non-react-statics/node_modules/@types/react";
+import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -87,8 +88,13 @@ const SyntheticAuctionWithdrawModal = ({ open, onClose, data }) => {
   const { showAlertMessage } = useAlertMessage();
   const { account, library, chainId } = useWeb3React();
 
-  const [result, setResult] = React.useState<number>(0);
   const [hash, setHash] = useState<string>("");
+  const [network, setNetwork] = useState<string>("");
+  const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
+  const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
+
+  const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
+
   const [nft, setNft] = React.useState<any>();
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -105,7 +111,22 @@ const SyntheticAuctionWithdrawModal = ({ open, onClose, data }) => {
     })();
   }, [open]);
 
+  const handleOpenTransactionModal = () => {
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
+    setNetwork("polygon");
+  };
+
+  const handleCloseTransactionModal = () => {
+    setOpenTransactionModal(false);
+    onClose();
+  };
+
   const handleWithdraw = async () => {
+    if (!nft) return;
+
+    handleOpenTransactionModal();
+
     try {
       const targetChain = BlockchainNets[1];
 
@@ -130,14 +151,20 @@ const SyntheticAuctionWithdrawModal = ({ open, onClose, data }) => {
       );
 
       if (contractResponse.success) {
-        setResult(1);
+        setHash(contractResponse.data.hash);
+        setTransactionInProgress(false);
+        setTransactionSuccess(true);
+        showAlertMessage("Successfully withdraw the offer", { variant: "success" });
       } else {
-        setResult(-1);
-        showAlertMessage("Failed to withdraw offer", { variant: "error" });
+        setTransactionInProgress(false);
+        setTransactionSuccess(false);
+        showAlertMessage("Failed to withdraw the offer", { variant: "error" });
       }
     } catch (e) {
+      setTransactionInProgress(false);
+      setTransactionSuccess(false);
       console.log(e);
-      showAlertMessage(`Failed to withdraw offer`, { variant: "error" });
+      showAlertMessage(`Failed to withdraw the offer`, { variant: "error" });
     }
   };
 
@@ -163,11 +190,13 @@ const SyntheticAuctionWithdrawModal = ({ open, onClose, data }) => {
         </Grid>
       </Grid>
 
-      <TransactionResultModal
-        open={result !== 0}
-        onClose={() => setResult(0)}
-        isSuccess={result === 1}
+      <TransactionProgressModal
+        open={openTransactionModal}
+        onClose={handleCloseTransactionModal}
+        transactionInProgress={transactionInProgress}
+        transactionSuccess={transactionSuccess}
         hash={hash}
+        network={network}
       />
     </Modal>
   );

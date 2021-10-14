@@ -80,7 +80,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [result, setResult] = React.useState<number>(0);
   const [hash, setHash] = useState<string>("");
 
-  const auctionInitialPrice = 1000;
+  const auctionInitialPrice = 10000;
 
   useEffect(() => {
     if (!params.id) return;

@@ -40,51 +40,49 @@ const MarketActivity = ({ nft }) => {
   useEffect(() => {
     if (!(nft.collection_id && nft.SyntheticID)) return;
 
-    (async () => {
-      const response = await getSyntheticNFTBidHistory({
-        collectionId: nft.collection_id,
-        syntheticId: nft.SyntheticID,
-      });
-      if (response.success) {
-        setTableData(
-          response.data.map(item => [
-            {
-              cell: (
-                <Box display="flex" flexDirection="row" alignItems="center">
-                  <Avatar size="medium" url={item.bidderInfo?.avatar || ""} />
-                  <Text ml={1.5}>{item.bidderAddress}</Text>
-                </Box>
-              ),
-            },
-            {
-              cell: `${item.bidAmount} ${nft.JotSymbol}`,
-            },
-            {
-              cell: <Moment format="DD.MM.yyyy">{new Date(item.bidTime)}</Moment>,
-            },
-            {
-              cell: <Moment format="hh:kk">{new Date(item.bidTime)}</Moment>,
-            },
-            {
-              cell: (
-                <img
-                  onClick={() =>
-                    window.open(
-                      `https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${item.hash}`,
-                      "_blank"
-                    )
-                  }
-                  className={classes.explorerImg}
-                  src={require("assets/priviIcons/polygon.png")}
-                />
-              ),
-            },
-          ])
-        );
-      }
-    })();
+    reload();
   }, [nft]);
 
+  const reload = async () => {
+    const response = await getSyntheticNFTBidHistory({
+      collectionId: nft.collection_id,
+      syntheticId: nft.SyntheticID,
+    });
+    if (response.success) {
+      setTableData(
+        response.data.map(item => [
+          {
+            cell: (
+              <Box display="flex" flexDirection="row" alignItems="center">
+                <Avatar size="medium" url={item.bidderInfo?.avatar || ""} />
+                <Text ml={1.5}>{item.bidderAddress}</Text>
+              </Box>
+            ),
+          },
+          {
+            cell: `${item.bidAmount} ${nft.JotSymbol}`,
+          },
+          {
+            cell: <Moment format="DD.MM.yyyy">{new Date(item.bidTime)}</Moment>,
+          },
+          {
+            cell: <Moment format="hh:kk">{new Date(item.bidTime)}</Moment>,
+          },
+          {
+            cell: (
+              <img
+                onClick={() =>
+                  window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${item.hash}`, "_blank")
+                }
+                className={classes.explorerImg}
+                src={require("assets/priviIcons/polygon.png")}
+              />
+            ),
+          },
+        ])
+      );
+    }
+  };
   return (
     <div className={classes.offerList}>
       <span className={classes.offerTitle}>👋 Total offers: {tableData.length}</span>
@@ -92,9 +90,11 @@ const MarketActivity = ({ nft }) => {
         <CustomTable headers={tableHeaders} rows={tableData} placeholderText="No offers" />
       </div>
       <a>See All Offers</a>
-      <PrimaryButton size="medium" onClick={() => setOpenPlaceBidModal(true)}>
-        Place Bid
-      </PrimaryButton>
+      {nft.auctionData?.endAt > Date.now() && (
+        <PrimaryButton size="medium" onClick={() => setOpenPlaceBidModal(true)}>
+          Place Bid
+        </PrimaryButton>
+      )}
 
       {openPlaceBidModal && (
         <SyntheticAuctionBidModal
@@ -102,7 +102,7 @@ const MarketActivity = ({ nft }) => {
           onClose={() => setOpenPlaceBidModal(false)}
           previousBid={0}
           nft={nft}
-          handleRefresh={() => {}}
+          handleRefresh={reload}
         />
       )}
     </div>

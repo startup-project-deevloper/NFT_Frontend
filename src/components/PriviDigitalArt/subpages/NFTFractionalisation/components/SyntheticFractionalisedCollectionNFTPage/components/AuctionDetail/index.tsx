@@ -13,7 +13,6 @@ import { endSyntheticNFTAuction } from "shared/services/API/SyntheticFractionali
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
 import { RootState } from "store/reducers/Reducer";
 import { useSelector } from "react-redux";
-import SyntheticAuctionClaimModal from "components/PriviDigitalArt/subpages/NFTFractionalisation/modals/SyntheticFractionalisationModals/SyntheticAuctionClaimModal";
 
 export default ({ nft, handleRefresh }) => {
   const classes = AuctionDetailStyles();

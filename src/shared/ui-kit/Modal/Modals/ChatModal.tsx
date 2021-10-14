@@ -345,7 +345,9 @@ const ChatModal = ({ chat }) => {
     <div className={classes.container} style={{ display: chat.hidden ? "none" : "inline-block" }}>
       <div className={classes.header} onClick={handleMinimize}>
         <div className={classes.chatInfo}>
-          <Avatar src={differentUser.imageURL} alt={differentUser.name} style={{
+          <Avatar src={differentUser.ipfsImage ? differentUser.ipfsImage : ""}
+                  alt={differentUser.name}
+                  style={{
             filter: "drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2))",
             backgroundColor: "#fff",
             padding: 2,

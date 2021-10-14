@@ -13,6 +13,8 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { socket } from "components/Login/Auth";
 import FileAttachment, { FileType } from "shared/ui-kit/FileAttachment";
 import { Gradient } from "shared/ui-kit";
+import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
+import {onUploadNonEncrypt} from "../../../../shared/ipfs/upload";
 
 export const MessageFooter = props => {
   const { chat, messages, setMessages, specialWidthInput, type = "social" } = props;
@@ -26,283 +28,298 @@ export const MessageFooter = props => {
   const [status, setStatus] = useState<any>("");
   const emojiRef = useRef<any>();
 
-  const onChangeMessagePhoto = (file: any) => {
-    let now = Date.now();
-    const formData = new FormData();
-    formData.append("image", file, "" + now);
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
-    let from: string = "";
-    let to: string = "";
-    if (userSelector.id === chat.users.userFrom.userId) {
-      from = chat.users.userFrom.userId;
-      to = chat.users.userTo.userId;
-    } else {
-      from = chat.users.userTo.userId;
-      to = chat.users.userFrom.userId;
-    }
+  const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
 
-    axios
-      .post(`${ServerURL()}/chat/addMessagePhoto/${chat.room}/${from}/${to}`, formData, config)
-      .then(response => {
-        if (response.data && response.data.success) {
-          let msg: any = response.data.data;
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
-          msg.noAddMessage = true;
-          socket.emit("add-message", msg);
+  const onChangeMessagePhoto = async (file: any) => {
+    try {
+      let from: string = "";
+      let to: string = "";
+      if (userSelector.id === chat.users.userFrom.userId) {
+        from = chat.users.userFrom.userId;
+        to = chat.users.userTo.userId;
+      } else {
+        from = chat.users.userTo.userId;
+        to = chat.users.userFrom.userId;
+      }
 
-          let messagesCopy = [...messages];
-          messagesCopy.push(msg);
-          setMessages(messagesCopy);
+      let infoImage = await onUploadNonEncrypt(file, file => uploadWithNonEncryption(file));
 
-          const chatObj = {
-            ...chat,
-            lastMessage: msg.type,
-            lastMessageDate: msg.created,
-            messages: messagesCopy,
-          };
-          if (props.setChat) {
-            props.setChat(chatObj);
+      axios
+        .post(`${ServerURL()}/chat/addMessagePhoto/${chat.room}/${from}/${to}`, infoImage)
+        .then(response => {
+          if (response.data && response.data.success) {
+            let msg: any = response.data.data;
+
+            msg.noAddMessage = true;
+            socket.emit("add-message", msg);
+
+            let messagesCopy = [...messages];
+            messagesCopy.push(msg);
+            setMessages(messagesCopy);
+
+            const chatObj = {
+              ...chat,
+              lastMessage: msg.type,
+              lastMessageDate: msg.created,
+              messages: messagesCopy,
+            };
+            if (props.setChat) {
+              props.setChat(chatObj);
+            }
+
+            dispatch(setChat(chatObj));
+            dispatch(setMessage(msg));
+
+            setStatus({
+              msg: "Photo uploaded successfully",
+              key: Math.random(),
+              variant: "success",
+            });
+          } else {
+            console.log(response.data);
+            setStatus({
+              msg: response.data.error,
+              key: Math.random(),
+              variant: "error",
+            });
           }
-
-          dispatch(setChat(chatObj));
-          dispatch(setMessage(msg));
-
+        })
+        .catch(error => {
+          console.log(error);
           setStatus({
-            msg: "Photo uploaded successfully",
-            key: Math.random(),
-            variant: "success",
-          });
-        } else {
-          console.log(response.data);
-          setStatus({
-            msg: response.data.error,
+            msg: "Error uploading photo",
             key: Math.random(),
             variant: "error",
           });
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        setStatus({
-          msg: "Error uploading photo",
-          key: Math.random(),
-          variant: "error",
         });
+    } catch (error) {
+      console.log(error);
+      setStatus({
+        msg: "Error uploading photo",
+        key: Math.random(),
+        variant: "error",
       });
+    }
   };
 
-  const onChangeMessageAudio = (file: any) => {
-    let now = Date.now();
-    const formData = new FormData();
-    formData.append("audio", file, "" + now);
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
+  const onChangeMessageAudio = async (file: any) => {
+    try {
+      let from: string = "";
+      let to: string = "";
+      if (userSelector.id === chat.users.userFrom.userId) {
+        from = chat.users.userFrom.userId;
+        to = chat.users.userTo.userId;
+      } else {
+        from = chat.users.userTo.userId;
+        to = chat.users.userFrom.userId;
+      }
 
-    let from: string = "";
-    let to: string = "";
-    if (userSelector.id === chat.users.userFrom.userId) {
-      from = chat.users.userFrom.userId;
-      to = chat.users.userTo.userId;
-    } else {
-      from = chat.users.userTo.userId;
-      to = chat.users.userFrom.userId;
-    }
+      let infoImage = await onUploadNonEncrypt(file, file => uploadWithNonEncryption(file));
 
-    axios
-      .post(`${ServerURL()}/chat/addMessageAudio/${chat.room}/${from}/${to}`, formData, config)
-      .then(response => {
-        if (response.data && response.data.success) {
-          let msg: any = response.data.data;
+      axios
+        .post(`${ServerURL()}/chat/addMessageAudio/${chat.room}/${from}/${to}`, infoImage)
+        .then(response => {
+          if (response.data && response.data.success) {
+            let msg: any = response.data.data;
 
-          msg.noAddMessage = true;
-          socket.emit("add-message", msg);
+            msg.noAddMessage = true;
+            socket.emit("add-message", msg);
 
-          let messagesCopy = [...messages];
-          messagesCopy.push(msg);
-          setMessages(messagesCopy);
+            let messagesCopy = [...messages];
+            messagesCopy.push(msg);
+            setMessages(messagesCopy);
 
-          const chatObj = {
-            ...chat,
-            lastMessage: msg.type,
-            lastMessageDate: msg.created,
-            messages: messagesCopy,
-          };
-          if (props.setChat) {
-            props.setChat(chatObj);
+            const chatObj = {
+              ...chat,
+              lastMessage: msg.type,
+              lastMessageDate: msg.created,
+              messages: messagesCopy,
+            };
+            if (props.setChat) {
+              props.setChat(chatObj);
+            }
+
+            dispatch(setChat(chatObj));
+            dispatch(setMessage(msg));
+
+            setStatus({
+              msg: "Audio uploaded successfully",
+              key: Math.random(),
+              variant: "success",
+            });
+          } else {
+            console.log(response.data);
+            setStatus({
+              msg: response.data.error,
+              key: Math.random(),
+              variant: "error",
+            });
           }
-
-          dispatch(setChat(chatObj));
-          dispatch(setMessage(msg));
-
+        })
+        .catch(error => {
+          console.log(error);
           setStatus({
-            msg: "Audio uploaded successfully",
-            key: Math.random(),
-            variant: "success",
-          });
-        } else {
-          console.log(response.data);
-          setStatus({
-            msg: response.data.error,
+            msg: "Error uploading audio",
             key: Math.random(),
             variant: "error",
           });
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        setStatus({
-          msg: "Error uploading audio",
-          key: Math.random(),
-          variant: "error",
         });
+    } catch (error) {
+      console.log(error);
+      setStatus({
+        msg: "Error uploading audio",
+        key: Math.random(),
+        variant: "error",
       });
+    }
   };
 
-  const onChangeMessageOther = (file: any) => {
-    let now = Date.now();
-    const formData = new FormData();
-    formData.append("file", file, file.name);
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
+  const onChangeMessageOther = async (file: any) => {
+    try {
+      let from: string = "";
+      let to: string = "";
+      if (userSelector.id === chat.users.userFrom.userId) {
+        from = chat.users.userFrom.userId;
+        to = chat.users.userTo.userId;
+      } else {
+        from = chat.users.userTo.userId;
+        to = chat.users.userFrom.userId;
+      }
 
-    let from: string = "";
-    let to: string = "";
-    if (userSelector.id === chat.users.userFrom.userId) {
-      from = chat.users.userFrom.userId;
-      to = chat.users.userTo.userId;
-    } else {
-      from = chat.users.userTo.userId;
-      to = chat.users.userFrom.userId;
-    }
+      let infoImage = await onUploadNonEncrypt(file, file => uploadWithNonEncryption(file));
 
-    axios
-      .post(`${ServerURL()}/chat/addMessageFile/${chat.room}/${from}/${to}`, formData, config)
-      .then(response => {
-        if (response.data && response.data.success) {
-          let msg: any = response.data.data;
+      axios
+        .post(`${ServerURL()}/chat/addMessageFile/${chat.room}/${from}/${to}`, infoImage)
+        .then(response => {
+          if (response.data && response.data.success) {
+            let msg: any = response.data.data;
 
-          msg.noAddMessage = true;
-          socket.emit("add-message", msg);
+            msg.noAddMessage = true;
+            socket.emit("add-message", msg);
 
-          let messagesCopy = [...messages];
-          messagesCopy.push(msg);
-          setMessages(messagesCopy);
+            let messagesCopy = [...messages];
+            messagesCopy.push(msg);
+            setMessages(messagesCopy);
 
-          const chatObj = {
-            ...chat,
-            lastMessage: msg.type,
-            lastMessageDate: msg.created,
-            messages: messagesCopy,
-          };
-          if (props.setChat) {
-            props.setChat(chatObj);
+            const chatObj = {
+              ...chat,
+              lastMessage: msg.type,
+              lastMessageDate: msg.created,
+              messages: messagesCopy,
+            };
+            if (props.setChat) {
+              props.setChat(chatObj);
+            }
+
+            dispatch(setChat(chatObj));
+            dispatch(setMessage(msg));
+
+            setStatus({
+              msg: "File uploaded successfully",
+              key: Math.random(),
+              variant: "success",
+            });
+          } else {
+            console.log(response.data);
+            setStatus({
+              msg: response.data.error,
+              key: Math.random(),
+              variant: "error",
+            });
           }
-
-          dispatch(setChat(chatObj));
-          dispatch(setMessage(msg));
-
+        })
+        .catch(error => {
+          console.log(error);
           setStatus({
-            msg: "File uploaded successfully",
-            key: Math.random(),
-            variant: "success",
-          });
-        } else {
-          console.log(response.data);
-          setStatus({
-            msg: response.data.error,
+            msg: "Error uploading file",
             key: Math.random(),
             variant: "error",
           });
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        setStatus({
-          msg: "Error uploading file",
-          key: Math.random(),
-          variant: "error",
         });
+    } catch (error) {
+      console.log(error);
+      setStatus({
+        msg: "Error uploading file",
+        key: Math.random(),
+        variant: "error",
       });
+    }
   };
 
-  const onChangeMessageVideo = (file: any) => {
-    let now = Date.now();
-    const formData = new FormData();
-    formData.append("video", file, "" + now);
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
+  const onChangeMessageVideo = async (file: any) => {
+    try {
+      let from: string = "";
+      let to: string = "";
+      if (userSelector.id === chat.users.userFrom.userId) {
+        from = chat.users.userFrom.userId;
+        to = chat.users.userTo.userId;
+      } else {
+        from = chat.users.userTo.userId;
+        to = chat.users.userFrom.userId;
+      }
 
-    let from: string = "";
-    let to: string = "";
-    if (userSelector.id === chat.users.userFrom.userId) {
-      from = chat.users.userFrom.userId;
-      to = chat.users.userTo.userId;
-    } else {
-      from = chat.users.userTo.userId;
-      to = chat.users.userFrom.userId;
-    }
+      let infoImage = await onUploadNonEncrypt(file, file => uploadWithNonEncryption(file));
 
-    axios
-      .post(`${ServerURL()}/chat/addMessageVideo/${chat.room}/${from}/${to}`, formData, config)
-      .then(response => {
-        if (response.data && response.data.success) {
-          let msg: any = response.data.data;
+      axios
+        .post(`${ServerURL()}/chat/addMessageVideo/${chat.room}/${from}/${to}`, infoImage)
+        .then(response => {
+          if (response.data && response.data.success) {
+            let msg: any = response.data.data;
 
-          msg.noAddMessage = true;
-          socket.emit("add-message", msg);
+            msg.noAddMessage = true;
+            socket.emit("add-message", msg);
 
-          let messagesCopy = [...messages];
-          messagesCopy.push(msg);
-          setMessages(messagesCopy);
+            let messagesCopy = [...messages];
+            messagesCopy.push(msg);
+            setMessages(messagesCopy);
 
-          const chatObj = {
-            ...chat,
-            lastMessage: msg.type,
-            lastMessageDate: msg.created,
-            messages: messagesCopy,
-          };
-          if (props.setChat) {
-            props.setChat(chatObj);
+            const chatObj = {
+              ...chat,
+              lastMessage: msg.type,
+              lastMessageDate: msg.created,
+              messages: messagesCopy,
+            };
+            if (props.setChat) {
+              props.setChat(chatObj);
+            }
+
+            dispatch(setChat(chatObj));
+            dispatch(setMessage(msg));
+
+            setStatus({
+              msg: "Video uploaded successfully",
+              key: Math.random(),
+              variant: "success",
+            });
+          } else {
+            console.log(response.data);
+            setStatus({
+              msg: response.data.error,
+              key: Math.random(),
+              variant: "error",
+            });
           }
-
-          dispatch(setChat(chatObj));
-          dispatch(setMessage(msg));
-
+        })
+        .catch(error => {
+          console.log(error);
           setStatus({
-            msg: "Video uploaded successfully",
-            key: Math.random(),
-            variant: "success",
-          });
-        } else {
-          console.log(response.data);
-          setStatus({
-            msg: response.data.error,
+            msg: "Error uploading video",
             key: Math.random(),
             variant: "error",
           });
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        setStatus({
-          msg: "Error uploading video",
-          key: Math.random(),
-          variant: "error",
         });
+    } catch (error) {
+      console.log(error);
+      setStatus({
+        msg: "Error uploading video",
+        key: Math.random(),
+        variant: "error",
       });
+    }
   };
 
   const onFileChange = (file: any, type: FileType) => {
@@ -332,11 +349,11 @@ export const MessageFooter = props => {
   };
 
   function b64toBlob(dataURI) {
-    var byteString = atob(dataURI.split(",")[1]);
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
+    let byteString = atob(dataURI.split(",")[1]);
+    let ab = new ArrayBuffer(byteString.length);
+    let ia = new Uint8Array(ab);
 
-    for (var i = 0; i < byteString.length; i++) {
+    for (let i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
     }
     return new Blob([ab], { type: "image/jpeg" });
@@ -430,7 +447,8 @@ export const MessageFooter = props => {
     >
       {!audioMessage && (
         <>
-          <FileAttachment setStatus={setStatus} onFileChange={onFileChange} />
+          <FileAttachment setStatus={setStatus}
+                          onFileChange={onFileChange} />
           <img
             src={require("assets/icons/pix_emoji_icon.svg")}
             className="emoji-icon"
@@ -462,7 +480,8 @@ export const MessageFooter = props => {
       )}
 
       {!audioMessage && (
-        <div className="send-icon" onClick={() => sendMessage()}>
+        <div className="send-icon"
+             onClick={() => sendMessage()}>
           <img src={require("assets/icons/send_icon.svg")} />
         </div>
       )}

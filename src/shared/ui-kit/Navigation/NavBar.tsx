@@ -50,7 +50,8 @@ const NavBar = () => {
                 <div className="chat-modal-container">
                   {activeChats.map(chat =>
                     chat && chat.users && chat.receipientId ? (
-                      <ChatModal chat={chat} key={chat.receipientId} />
+                      <ChatModal chat={chat}
+                                 key={chat.receipientId} />
                     ) : null
                   )}
                   {messageBoxInfo.openNewChatModal && <NewChatModal />}

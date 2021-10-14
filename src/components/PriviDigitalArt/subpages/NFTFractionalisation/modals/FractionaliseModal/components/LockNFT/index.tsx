@@ -20,7 +20,6 @@ const isProd = process.env.REACT_APP_ENV === "prod";
 export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, selectedNFT, syntheticID }) {
   const classes = useLockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
@@ -34,7 +33,6 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         return;
       }
     }
-    setIsLoading(true);
     setIsProceeding(true);
 
     try {
@@ -54,7 +52,6 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       );
       if (!response.success) {
         setIsProceeding(false);
-        setIsLoading(false);
         showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
         return;
       }
@@ -68,7 +65,6 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       const lockResponse = await lockNFT(web3, account!, payload);
       if (!lockResponse.status) {
         setIsProceeding(false);
-        setIsLoading(false);
         showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
         return;
       }
@@ -78,11 +74,9 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       });
       onCompleted();
       setIsProceeding(false);
-      setIsLoading(false);
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);
-      setIsLoading(false);
       showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
     }
   };
@@ -107,7 +101,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
                 Transaction is proceeding on Ethereum. <br />
                 This can take a moment, please be patient...
               </p>
-              {!isLoading && (
+              {hash && (
                 <>
                   <CopyToClipboard text={hash}>
                     <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>

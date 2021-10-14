@@ -567,7 +567,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               )}
               onClick={() => setSelectedTab("jots_pool")}
             >
-              <span>JOTS POOL</span>
+              <span>JOT POOL</span>
             </div>
             <div
               className={cls(

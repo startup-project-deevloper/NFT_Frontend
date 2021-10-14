@@ -682,7 +682,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           }}
                           onClick={handleOpenAddJOTsModal}
                         >
-                          Add more JOTS
+                          Add "JOTs"
                         </PrimaryButton>
                       </Box>
                     </Box>

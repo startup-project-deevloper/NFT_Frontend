@@ -259,19 +259,19 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
               <Grid item md={3} xs={12}>
                 <Box className={classes.leftJots}>
                   <Box className={classes.hWrap1}>
-                    <Box className={classes.h1}>{collection.totalLiquidity} JOTS</Box>
+                    <Box className={classes.h1}>{collection.totalLiquidity ?? 0} JOTS</Box>
                     <Box className={classes.h5} paddingY={1}>
                       POOL TOTAL LIQUIDITY
                     </Box>
                   </Box>
                   <Box className={classes.hWrap2}>
-                    <Box className={classes.h1}>{collection.totalAccuredReward} JOTS</Box>
+                    <Box className={classes.h1}>{collection.totalAccuredReward ?? 0} JOTS</Box>
                     <Box className={classes.h5} paddingY={1}>
                       POOL TOTAL ACCRUED REWARD
                     </Box>
                   </Box>
                   <Box className={classes.hWrap2}>
-                    <Box className={classes.h1}>{collection.totalShares} JOTS</Box>
+                    <Box className={classes.h1}>{collection.totalShares ?? 0} JOTS</Box>
                     <Box className={classes.h5} paddingY={1}>
                       LIQUIDITY SHARE VALUE
                     </Box>

@@ -1598,17 +1598,21 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
           <PrimaryButton
             className={theme === "dark" ? classes.darkButton : classes.blueButton}
             size="small"
-            onClick={() => setOpenClaim(true)}
+            onClick={() => {
+              setOpenClaim(true);
+              handleHidePopper();
+            }}
           >
             Claim NFT
           </PrimaryButton>
-          <SyntheticAuctionClaimModal
-            open={openClaim}
-            onClose={() => setOpenClaim(false)}
-            data={notification.externalData}
-          />
         </>
       )}
+
+      <SyntheticAuctionClaimModal
+        open={openClaim}
+        onClose={() => setOpenClaim(false)}
+        data={notification.externalData}
+      />
 
       {status && (
         <AlertMessage

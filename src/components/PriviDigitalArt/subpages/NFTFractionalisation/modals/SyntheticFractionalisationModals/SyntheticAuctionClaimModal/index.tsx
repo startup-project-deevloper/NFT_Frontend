@@ -14,6 +14,7 @@ import { BlockchainNets } from "shared/constants/constants";
 import { endSyntheticNFTAuction, getSyntheticNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
 import CollectionNFTCard from "components/PriviDigitalArt/components/Cards/CollectionNFTCard";
+import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -87,8 +88,12 @@ const SyntheticAuctionClaimModal = ({ open, onClose, data }) => {
   const { showAlertMessage } = useAlertMessage();
   const { account, library, chainId } = useWeb3React();
 
-  const [result, setResult] = React.useState<number>(0);
   const [hash, setHash] = useState<string>("");
+  const [network, setNetwork] = useState<string>("");
+  const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
+  const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
+
+  const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
   const [nft, setNft] = React.useState<any>();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -106,9 +111,21 @@ const SyntheticAuctionClaimModal = ({ open, onClose, data }) => {
     })();
   }, [open]);
 
+  const handleOpenTransactionModal = () => {
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
+    setNetwork("polygon");
+  };
+
+  const handleCloseTransactionModal = () => {
+    setOpenTransactionModal(false);
+    onClose();
+  };
+
   const handleClaim = async () => {
     if (!nft) return;
 
+    handleOpenTransactionModal();
     try {
       const targetChain = BlockchainNets[1];
 
@@ -133,27 +150,30 @@ const SyntheticAuctionClaimModal = ({ open, onClose, data }) => {
       );
 
       if (contractResponse.success) {
-        setResult(1);
+        setHash(contractResponse.data.hash);
+        setTransactionInProgress(false);
+        setTransactionSuccess(true);
+
         await endSyntheticNFTAuction({
           collectionId: data.collectionId,
           syntheticId: data.syntheticId,
         });
+        showAlertMessage("Successfully claimed the nft.", { variant: "success" });
       } else {
-        setResult(-1);
-        showAlertMessage("Failed to end auction", { variant: "error" });
+        setTransactionInProgress(false);
+        setTransactionSuccess(false);
+        showAlertMessage("Failed to claim the nft", { variant: "error" });
       }
     } catch (e) {
       console.log(e);
-      showAlertMessage(`Failed to end auction`, { variant: "error" });
+      showAlertMessage(`Failed to claim the nft`, { variant: "error" });
     }
   };
 
   return (
     <Modal size="medium" isOpen={open} onClose={onClose} className={classes.modal} showCloseIcon={true}>
       <Grid container spacing={2} direction="column" alignItems="center">
-        <Grid item>
-          <CollectionNFTCard item={nft} handleSelect={() => {}} />
-        </Grid>
+        <Grid item>{nft && <CollectionNFTCard item={nft} handleSelect={() => {}} />}</Grid>
         <Grid item>
           Congrats, your buying offer was accepted. You can claim your Synthetic NFT now, manage it, sell or
           withdraw the real NFT.
@@ -167,11 +187,13 @@ const SyntheticAuctionClaimModal = ({ open, onClose, data }) => {
         </Grid>
       </Grid>
 
-      <TransactionResultModal
-        open={result !== 0}
-        onClose={() => setResult(0)}
-        isSuccess={result === 1}
+      <TransactionProgressModal
+        open={openTransactionModal}
+        onClose={handleCloseTransactionModal}
+        transactionInProgress={transactionInProgress}
+        transactionSuccess={transactionSuccess}
         hash={hash}
+        network={network}
       />
     </Modal>
   );

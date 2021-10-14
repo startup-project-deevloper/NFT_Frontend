@@ -328,6 +328,10 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     }
   };
 
+  const handleTradeDerivatives = () => {
+    window.open("https://juice.privi.store/nft-derivatives#/", "_blank");
+  };
+
   const auctionNFTs = React.useMemo(
     () => syntheticNFTs.filter(nft => nft.isAuctionable === true && nft.user === userSelector.id),
     syntheticNFTs
@@ -365,7 +369,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 </Box>
               </Box>
               <Box display="flex" width="100%" justifyContent="space-between">
-                <Box
+                {/* <Box
                   onClick={handleOrderBook}
                   className={classes.orderBookBtn}
                   display="flex"
@@ -378,8 +382,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                     style={{ marginRight: "8px", height: "24px", width: "24px" }}
                   />
                   Order Book
-                </Box>
-                <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+                </Box> */}
+                <div className={classes.tradeDerivativeButton} onClick={handleTradeDerivatives}>
                   <div>
                     <span>TRADE DERIVATIVES</span>
                   </div>
@@ -389,7 +393,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           )}
           {!isMobile && (
             <Box display="flex" className={classes.buttonWrapper}>
-              <Box
+              {/* <Box
                 onClick={handleOrderBook}
                 className={classes.orderBookBtn}
                 display="flex"
@@ -401,8 +405,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                   style={{ marginRight: "8px", height: "24px", width: "24px" }}
                 />
                 Order Book
-              </Box>
-              <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+              </Box> */}
+              <div className={classes.tradeDerivativeButton} onClick={handleTradeDerivatives}>
                 <div>
                   <span>TRADE DERIVATIVES</span>
                 </div>

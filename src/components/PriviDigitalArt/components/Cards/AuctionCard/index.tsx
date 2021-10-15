@@ -80,7 +80,7 @@ export default function AuctionCard({ nft, price, onClick, onStartAuction }) {
           <Box display="flex" flexDirection="column" width={"90%"} mt={1}>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"4px"}>
               <div className={classes.typo1}>Reserve Price</div>
-              <div className={classes.typo2}>{`${price} JOTS`}</div>
+              <div className={classes.typo2}>{`${price} JOTs`}</div>
             </Box>
           </Box>
           {auctionData ? (

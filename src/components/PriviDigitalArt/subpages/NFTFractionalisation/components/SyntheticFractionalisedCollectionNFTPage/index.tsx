@@ -520,7 +520,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   <div className={classes.typo3}>Flip a coin & win</div>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <div>
-                      <div className={classes.typo4}>Guess the result of the coin flip and win JOTS.</div>
+                      <div className={classes.typo4}>Guess the result of the coin flip and win JOTs.</div>
                       <div className={classes.typo4}>Increase your JOTs if you guess correctly!</div>
                     </div>
                     {isMobile && (

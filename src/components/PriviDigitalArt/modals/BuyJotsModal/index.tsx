@@ -224,7 +224,7 @@ export default function BuyJotsModal({
           required
           type="number"
           theme="light"
-          endAdornment={<div className={classes.purpleText}>JOTS</div>}
+          endAdornment={<div className={classes.purpleText}>JOTs</div>}
         />
         <Grid container>
           <Grid item md={7} xs={5}>

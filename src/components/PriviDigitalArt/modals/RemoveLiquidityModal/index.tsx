@@ -27,7 +27,7 @@ export default function RemoveLiquidityModal({ open, onClose, onConfirm }) {
           required
           type="number"
           theme="light"
-          endAdornment={<div className={classes.purpleText}>JOTS</div>}
+          endAdornment={<div className={classes.purpleText}>JOTs</div>}
         />
         <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7">
           <Box display="flex" alignItems="center" gridColumnGap="10px" fontSize="14px">
@@ -35,7 +35,7 @@ export default function RemoveLiquidityModal({ open, onClose, onConfirm }) {
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
               <Box fontWeight="700" marginLeft={1}>
-                200.00 JOTS
+                200.00 JOTs
               </Box>
             </Box>
           </Box>

@@ -454,6 +454,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     history.push(`/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
+  const handleBuyBack = () => {};
+
   const totalJot = 10000;
   const percentage = useMemo(
     () => Number(((ownerSupply || ownershipJot) / totalJot).toFixed(2)) * 100,
@@ -771,6 +773,30 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       </PrimaryButton>
                     </Box>
                   </Box>
+                </Box>
+                <Box
+                  className={classes.boxBuyBack}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box>
+                    Current Reserve Price to Buy Back
+                    <Box className={classes.h2}>10,000 JOTs</Box>
+                  </Box>
+                  <PrimaryButton
+                    className={classes.h4}
+                    size="medium"
+                    style={{
+                      background: Color.Purple,
+                      color: Color.White,
+                      padding: "0px 25px",
+                      borderRadius: 4,
+                    }}
+                    onClick={handleBuyBack}
+                  >
+                    Buy Back to Withdraw
+                  </PrimaryButton>
                 </Box>
               </>
             )}

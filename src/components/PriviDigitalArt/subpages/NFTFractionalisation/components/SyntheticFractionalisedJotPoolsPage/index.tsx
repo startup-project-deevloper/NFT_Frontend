@@ -299,7 +299,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                     color: "#431AB7",
                   }}
                 >
-                  ADD LIQUIDITY
+                  Stake JOTs
                 </PrimaryButton>
               </Box>
             )}

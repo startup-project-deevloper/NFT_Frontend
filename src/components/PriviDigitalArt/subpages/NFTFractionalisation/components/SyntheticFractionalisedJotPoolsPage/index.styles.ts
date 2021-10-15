@@ -53,7 +53,6 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     borderRadius: 20,
     padding: "27px",
     height: "100%",
-    alignItems: "center",
     justifyContent: "center",
   },
   editWrap: {

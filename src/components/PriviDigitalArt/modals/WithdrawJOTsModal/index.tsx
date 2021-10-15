@@ -156,7 +156,7 @@ export default function WithdrawJotsModal({
             required
             type="number"
             theme="light"
-            endAdornment={<div className={classes.purpleText}>JOTS</div>}
+            endAdornment={<div className={classes.purpleText}>JOTs</div>}
             disabled={disabled}
           />
           <Box

@@ -542,7 +542,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     <Box className={classes.timeBox}>{remainingSec}s</Box>
                   </Box>
                   <Box className={classes.descBox} mt={4.5}>
-                    Your position has been liquidated, you can buy back your NFT at 10k JOTS for next 7 days.
+                    Your position has been liquidated, you can buy back your NFT at 10k JOTs for next 7 days.
                     After that time the NFT will go for an auction.
                   </Box>
                 </>

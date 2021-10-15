@@ -29,11 +29,11 @@ export default function CollectionNFTCard({
           <Box display="flex" flexDirection="column" width={"90%"} mt={"8px"}>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Owner</div>
-              <div className={classes.typo2}>{`${item.OwnerSupply || 0} JOTS`}</div>
+              <div className={classes.typo2}>{`${item.OwnerSupply || 0} JOTs`}</div>
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Available</div>
-              <div className={classes.typo2}>{`${item.SellingSupply || 0} JOTS`}</div>
+              <div className={classes.typo2}>{`${item.SellingSupply || 0} JOTs`}</div>
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Price</div>

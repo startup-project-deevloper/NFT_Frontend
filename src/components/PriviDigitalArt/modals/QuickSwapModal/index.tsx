@@ -90,7 +90,7 @@ export default function QuickSwapModal({ open, handleClose, nft, collectionId })
             />
           </Grid>
           <Grid item xs={12} md={5} className={classes.unitInput}>
-            <div className={classes.label}>Balance: {Number(maxBalance.balance).toFixed(3)} JOTS</div>
+            <div className={classes.label}>Balance: {Number(maxBalance.balance).toFixed(3)} JOTs</div>
             <InputWithLabelAndTooltip type="text" inputValue={"USDT/JOT"} theme="privi-pix" />
           </Grid>
         </Grid>

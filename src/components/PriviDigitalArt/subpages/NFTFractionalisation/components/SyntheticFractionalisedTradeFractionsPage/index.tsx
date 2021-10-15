@@ -782,7 +782,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                 >
                   <Box>
                     Current Reserve Price to Buy Back
-                    <Box className={classes.h2}>10,000 JOTs</Box>
+                    <Box className={classes.h2}>10,000 USDT</Box>
                   </Box>
                   <PrimaryButton
                     className={classes.h4}

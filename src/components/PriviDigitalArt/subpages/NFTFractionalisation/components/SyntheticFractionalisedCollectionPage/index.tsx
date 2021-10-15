@@ -214,8 +214,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   /// Circulating Supply = Locked NFTs * 10000
   const circulatingSupply = useMemo(() => {
     const lockedCount = syntheticNFTs?.filter(nft => nft.isLocked).length || 0;
-    if (lockedCount >= 100) return `$${lockedCount / 100}M`;
-    return `$${lockedCount * 10}K`;
+    if (lockedCount >= 100) return `${lockedCount / 100}M JOTs`;
+    return `${lockedCount * 10}K JOTs`;
   }, [syntheticNFTs]);
 
   const handleFollow = () => {

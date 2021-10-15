@@ -403,12 +403,16 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     cursor: "pointer",
     backgroundColor: "#431AB7",
     borderRadius: 8,
-    padding: "9px 18px 9px 6px",
+    padding: "9px 18px",
     [theme.breakpoints.down("xs")]: {
       padding: "13px 11px",
     },
     color: "white",
     fontWeight: 800,
+
+    '& img': {
+      marginRight: "8px !important"
+    }
   },
 }));
 

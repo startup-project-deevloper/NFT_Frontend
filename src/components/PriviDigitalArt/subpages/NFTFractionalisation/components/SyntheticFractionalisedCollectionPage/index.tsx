@@ -50,7 +50,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
 
   const [selectedTab, setSelectedTab] = useState<
     "nft" | "jots_pool" | "trade_jots" | "auctions" | "redemption"
-  >("redemption");
+  >("nft");
 
   const [collection, setCollection] = useState<any>({});
   const [syntheticNFTs, setSyntheticNFTs] = useState<any>([]);

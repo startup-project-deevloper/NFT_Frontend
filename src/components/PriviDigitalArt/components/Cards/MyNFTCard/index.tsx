@@ -107,6 +107,7 @@ export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted, on
           onClose={() => setOpenLockNFT(false)}
           nft={item}
           onLockCompleted={onLockCompleted}
+          onVerifyCompleted={onVerifyCompleted}
         />
       )}
       {openUnLockNFT && (

@@ -137,7 +137,12 @@ const MyNFT = () => {
                     {myNFTs
                       .filter(nft => !nft.isLocked)
                       .map((item, index) => (
-                        <MyNFTCard key={index} item={item} onLockCompleted={() => onMyNFTLocked(item)} />
+                        <MyNFTCard
+                          key={index}
+                          item={item}
+                          onLockCompleted={() => onMyNFTLocked(item)}
+                          onVerifyCompleted={() => onMyNFTVerified(item)}
+                        />
                       ))}
                   </div>
                 </LoadingWrapper>

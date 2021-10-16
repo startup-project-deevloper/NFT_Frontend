@@ -258,7 +258,7 @@ export default ({ collection }) => {
         </Box>
       </Box>
       <Box className={classes.outBox} style={{ background: "white" }}>
-        <div className={classes.h2}>Redeption history</div>
+        <div className={classes.h2}>Redemption history</div>
         <div className={classes.table}>
           <CustomTable headers={tableHeaders} rows={historyRows} placeholderText="No history" />
           <Box display="flex" m={2} justifyContent="center" width="100%" className={classes.pagination}>

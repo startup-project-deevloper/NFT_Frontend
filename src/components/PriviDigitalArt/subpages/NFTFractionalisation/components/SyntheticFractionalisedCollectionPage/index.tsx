@@ -16,6 +16,7 @@ import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
+import SyntheticFractionalisedRedemptionPage from "../SyntheticFractionalisedRedemptionPage";
 import {
   getSyntheticCollection,
   startSyntheticNFTAuction,
@@ -47,7 +48,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const { showAlertMessage } = useAlertMessage();
   const userSelector = useSelector((state: RootState) => state.user);
 
-  const [selectedTab, setSelectedTab] = useState<"nft" | "jots_pool" | "trade_jots" | "auctions">("nft");
+  const [selectedTab, setSelectedTab] = useState<
+    "nft" | "jots_pool" | "trade_jots" | "auctions" | "redemption"
+  >("redemption");
 
   const [collection, setCollection] = useState<any>({});
   const [syntheticNFTs, setSyntheticNFTs] = useState<any>([]);
@@ -591,6 +594,15 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             >
               <span>AUCTIONS</span>
             </div>
+            <div
+              className={cls(
+                { [classes.selectedTabSection]: selectedTab === "redemption" },
+                classes.tabSection
+              )}
+              onClick={() => setSelectedTab("redemption")}
+            >
+              <span>REDEMPTION</span>
+            </div>
           </div>
         </Box>
         {selectedTab === "nft" ? (
@@ -668,9 +680,13 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               </div>
             )}
           </div>
-        ) : (
+        ) : selectedTab === "trade_jots" ? (
           <div>
             <SyntheticFractionalisedTradeJotPage collection={collection} />
+          </div>
+        ) : (
+          <div>
+            <SyntheticFractionalisedRedemptionPage collection={collection} />
           </div>
         )}
       </div>

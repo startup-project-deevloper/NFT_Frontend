@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-elastic-carousel";
-import { Pagination } from "semantic-ui-react";
+import Pagination from "@material-ui/lab/Pagination";
 
 import { createTheme, useMediaQuery } from "@material-ui/core";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -29,12 +29,13 @@ const dummyNFTs = [
   },
 ];
 
+const ROWS_PER_PAGE = 20;
+
 export default ({ collection }) => {
   const [nfts, setNFTs] = useState(dummyNFTs);
   const classes = SyntheticFractionalisedRedemptionPageStyles();
   const [historyRows, setHistoryRows] = useState<any>([]);
   const [openRedeemJotsModal, setOpenRedeemJotsModal] = useState<boolean>(false);
-  const [pageCount, setPageCount] = useState<number>(20);
   const [activePage, setActivePage] = useState<number>(1);
 
   const theme = createTheme({
@@ -80,8 +81,8 @@ export default ({ collection }) => {
   const setShowAllNFTs = () => {};
 
   useEffect(() => {
-    setHistoryRows([
-      [
+    setHistoryRows(
+      new Array(205).fill([
         {
           cellAlign: "center",
           cell: "Redemption",
@@ -110,8 +111,8 @@ export default ({ collection }) => {
             </div>
           ),
         },
-      ],
-    ]);
+      ])
+    );
   }, []);
 
   const handleConfirmRedeem = () => {
@@ -260,22 +261,19 @@ export default ({ collection }) => {
       <Box className={classes.outBox} style={{ background: "white" }}>
         <div className={classes.h2}>Redemption history</div>
         <div className={classes.table}>
-          <CustomTable headers={tableHeaders} rows={historyRows} placeholderText="No history" />
+          <CustomTable
+            headers={tableHeaders}
+            rows={historyRows.slice((activePage - 1) * ROWS_PER_PAGE, activePage * ROWS_PER_PAGE)}
+            placeholderText="No history"
+          />
           <Box display="flex" m={2} justifyContent="center" width="100%" className={classes.pagination}>
             <Pagination
-              defaultActivePage={0}
-              totalPages={pageCount}
-              activePage={activePage}
-              onPageChange={(_, e) => setActivePage(Number(e?.activePage ?? "1"))}
-              firstItem={null}
-              lastItem={null}
-              prevItem={<TableArrowLeftIcon disabled={activePage === 1} />}
-              nextItem={<TableArrowRightIcon disabled={activePage === pageCount} />}
-              ellipsisItem={
-                <span className={classes.moreIcon}>
-                  <MoreIcon />
-                </span>
-              }
+              count={Math.ceil(historyRows.length / ROWS_PER_PAGE)}
+              page={activePage}
+              onChange={(_, page) => {
+                setActivePage(page);
+                //   selectedTableFilter === 0 ? getAirdrops() : getAllocations();
+              }}
             />
           </Box>
         </div>

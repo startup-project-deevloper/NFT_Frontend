@@ -22,6 +22,11 @@ import { Dropdown } from "shared/ui-kit/Select/Select";
 import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import { DateInput } from "shared/ui-kit/DateTimeInput";
 import { TimeInput } from "shared/ui-kit/TimeInput";
+import Web3 from "web3";
+import { useSelector } from "react-redux";
+import { RootState } from "store/reducers/Reducer";
+import Axios from "axios";
+import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 
 // parse it to same format as fb collection
 const parseMoralisData = async (data, address, selectedChain) => {
@@ -69,6 +74,8 @@ const NFTAuctionPage = ({ goBack }) => {
   const classes = useStyles();
   const { showAlertMessage } = useAlertMessage();
 
+  const user = useSelector((state: RootState) => state.user);
+
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.between(769, 960));
   const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
@@ -86,13 +93,20 @@ const NFTAuctionPage = ({ goBack }) => {
   const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
 
   const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
-  const [token, setToken] = useState<string>("ETH");
+  const [token, setToken] = useState<string>("USDT");
 
   const [price, setPrice] = useState<number>(0);
 
   const [startDateTime, setStartDateTime] = useState<number>(new Date().getTime());
   const [endDateTime, setEndDateTime] = useState<number>(tomorrow.getTime());
 
+  const [hash, setHash] = useState<string>("");
+  const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
+  const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
+
+  const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
+
+  console.log(selectedNFT);
   // set token list according chain
   useEffect(() => {
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
@@ -169,10 +183,107 @@ const NFTAuctionPage = ({ goBack }) => {
     return true;
   };
 
-  const handleSellingOrder = async () => {
+  const handleStartAuction = async () => {
     if (!walletConnected) {
       showAlertMessage("Please connect your wallet first", { variant: "error" });
       return;
+    }
+
+    if (!validate()) {
+      return;
+    }
+
+    const now = new Date().getTime();
+    let endDate = new Date(endDateTime);
+    let startDate = new Date(startDateTime);
+
+    let startDateTimeInMs = startDate.getTime();
+    if (startDateTimeInMs < now + 15 * 60 * 1000) {
+      startDateTimeInMs = now + 15 * 60 * 1000;
+    }
+    let endDateTimeInMs = endDate.getTime();
+
+    const payload = {
+      MediaSymbol: selectedNFT.mediaSymbol,
+      TokenSymbol: token,
+      Owner: user.address,
+      BidIncrement: "0",
+      StartTime: Math.floor(startDateTimeInMs / 1000),
+      EndTime: Math.floor(endDateTimeInMs / 1000),
+      ReservePrice: price,
+      IpfHash: "",
+    };
+
+    const web3APIHandler = selectedChain.apiHandler;
+    const web3Config = selectedChain.config;
+    const web3 = new Web3(library.provider);
+
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
+
+    web3APIHandler.Erc721.setApprovalForAll(
+      web3,
+      account!,
+      {
+        operator: web3Config.CONTRACT_ADDRESSES.ERC721_AUCTION,
+        approve: true,
+      },
+      selectedNFT.tokenAddress
+    ).then(resp => {
+      if (resp.success) {
+        const createAuctionRequest = {
+          tokenAddress: selectedNFT.tokenAddress,
+          tokenId: +selectedNFT.BlockchainId,
+          mediaSymbol: selectedNFT.MediaSymbol,
+          tokenSymbol: payload.TokenSymbol,
+          bidToken: web3Config.TOKEN_ADDRESSES[token],
+          reservePrice: payload.ReservePrice,
+          ipfsHash: "0x7465737400000000000000000000000000000000000000000000000000000000",
+          bidIncrement: payload.BidIncrement,
+          startTime: payload.StartTime,
+          endTime: payload.EndTime,
+        };
+        web3APIHandler.Auction.createAuction(web3, account!, createAuctionRequest, setHash).then(
+          async res => {
+            if (res) {
+              const tx = res.transaction;
+              const blockchainRes = { output: { Auctions: {}, Transactions: {} } };
+              blockchainRes.output.Auctions[selectedNFT.MediaSymbol] = payload;
+              blockchainRes.output.Transactions[tx.Id] = [tx];
+              const body = {
+                BlockchainRes: blockchainRes,
+                AdditionalData: {
+                  MediaSymbol: selectedNFT.MediaSymbol,
+                  MediaType: selectedNFT.Type,
+                },
+              };
+
+              setTransactionInProgress(false);
+              setTransactionSuccess(true);
+
+              const response = await Axios.post(`${URL()}/auction/createAuction/v2_p`, body);
+
+              onAfterCreateAuction(response.data);
+            } else {
+              setTransactionInProgress(false);
+              setTransactionSuccess(false);
+            }
+          }
+        );
+      } else {
+        onAfterCreateAuction(resp);
+
+        setTransactionInProgress(false);
+        setTransactionSuccess(false);
+      }
+    });
+  };
+
+  const onAfterCreateAuction = async (resp: any) => {
+    if (resp?.success) {
+      showAlertMessage("Auction created successfully", { variant: "success" });
+    } else {
+      showAlertMessage("Auction creation failed. Please try again", { variant: "error" });
     }
   };
 
@@ -304,11 +415,11 @@ const NFTAuctionPage = ({ goBack }) => {
                   </Box>
                   <Box mt="40px" display="flex" justifyContent="flex-end">
                     <button
-                      disabled={!walletConnected}
+                      disabled={!walletConnected || !selectedNFT}
                       className={classes.nftsButton}
-                      onClick={handleSellingOrder}
+                      onClick={handleStartAuction}
                     >
-                      Place Selling Order
+                      Start Auction
                     </button>
                   </Box>
                 </div>
@@ -367,7 +478,11 @@ const NFTAuctionPage = ({ goBack }) => {
                 <DateAndHourSelect value={endDateTime} setValue={v => setEndDateTime(v)} label={"End"} />
               </Box>
               <Box mt="40px" display="flex" justifyContent="flex-end">
-                <button className={classes.nftsButton} onClick={handleSellingOrder}>
+                <button
+                  className={classes.nftsButton}
+                  onClick={handleStartAuction}
+                  disabled={!walletConnected || !selectedNFT}
+                >
                   Start Auction
                 </button>
               </Box>
@@ -375,6 +490,16 @@ const NFTAuctionPage = ({ goBack }) => {
           </Grid>
         )}
       </Grid>
+      <TransactionProgressModal
+        open={openTransactionModal}
+        onClose={() => {
+          setOpenTransactionModal(false);
+        }}
+        transactionInProgress={transactionInProgress}
+        transactionSuccess={transactionSuccess}
+        hash={hash}
+        network={selectedChain?.value}
+      />
     </div>
   );
 };

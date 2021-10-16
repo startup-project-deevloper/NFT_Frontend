@@ -20,6 +20,11 @@ import URL from "shared/functions/getURL";
 import NFTCard from "components/PriviDigitalArt/subpages/NFTFractionalisation/components/SyntheticFractionalise/NFTCard";
 import { Dropdown } from "shared/ui-kit/Select/Select";
 import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
+import Web3 from "web3";
+import { useSelector } from "react-redux";
+import { RootState } from "store/reducers/Reducer";
+import Axios from "axios";
+import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 
 // parse it to same format as fb collection
 const parseMoralisData = async (data, address, selectedChain) => {
@@ -64,6 +69,8 @@ const SellNFTPage = ({ goBack }) => {
   const classes = useStyles();
   const { showAlertMessage } = useAlertMessage();
 
+  const user = useSelector((state: RootState) => state.user);
+
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.between(769, 960));
   const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
@@ -82,7 +89,13 @@ const SellNFTPage = ({ goBack }) => {
   const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
 
   const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
-  const [token, setToken] = useState<string>("ETH");
+  const [token, setToken] = useState<string>("USDT");
+
+  const [hash, setHash] = useState<string>("");
+  const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
+  const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
+
+  const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
   // set token list according chain
   useEffect(() => {
@@ -164,6 +177,97 @@ const SellNFTPage = ({ goBack }) => {
     if (!walletConnected) {
       showAlertMessage("Please connect your wallet first", { variant: "error" });
       return;
+    }
+
+    if (!validate()) {
+      return;
+    }
+
+    const payload = {
+      Address: user.address,
+      ExchangeToken: selectedNFT.MediaSymbol,
+      InitialAmount: 1,
+      OfferToken: token,
+      Price: price.toString(),
+    };
+
+    const web3APIHandler = selectedChain.apiHandler;
+    const web3Config = selectedChain.config;
+    const web3 = new Web3(library.provider);
+
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
+
+    web3APIHandler.Erc721.setApprovalForAll(
+      web3,
+      account!,
+      {
+        operator: web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
+        approve: true,
+      },
+      selectedNFT.tokenAddress
+    ).then(resp => {
+      if (resp.success) {
+        const tokenId = selectedNFT.BlockchainId;
+        const createExchangeRequest = {
+          input: {
+            exchangeName: "erc721exchange",
+            exchangeTokenAddress: selectedNFT.tokenAddress,
+            offerTokenAddress: web3Config.TOKEN_ADDRESSES[token],
+            tokenId: tokenId,
+            price: price,
+          },
+          caller: account!,
+        };
+        web3APIHandler.Exchange.CreateERC721TokenExchange(
+          web3,
+          account!,
+          createExchangeRequest,
+          setHash
+        ).then(async res => {
+          if (res) {
+            const exchange = res.data;
+            const tx = res.transaction;
+            const blockchainRes = { output: { Exchanges: {}, Transactions: {} } };
+            blockchainRes.output.Exchanges[exchange.exchangeId] = {
+              ...payload,
+              CreatorAddress: user.address,
+              Id: exchange.exchangeId,
+              TokenId: tokenId,
+              InitialOfferId: exchange.initialOfferId,
+            };
+            blockchainRes.output.Transactions[tx.Id] = [tx];
+            const body = {
+              BlockchainRes: blockchainRes,
+              AdditionalData: {
+                MediaType: selectedNFT.Type,
+                MediaSymbol: selectedNFT.MediaSymbol,
+              },
+            };
+            setTransactionInProgress(false);
+            setTransactionSuccess(true);
+
+            const response = await Axios.post(`${URL()}/exchange/createExchange/v2_p`, body);
+            onAfterCreateExchange(response.data);
+          } else {
+            setTransactionInProgress(false);
+            setTransactionSuccess(false);
+          }
+        });
+      } else {
+        onAfterCreateExchange(resp);
+
+        setTransactionInProgress(false);
+        setTransactionSuccess(false);
+      }
+    });
+  };
+
+  const onAfterCreateExchange = async (resp: any) => {
+    if (resp?.success) {
+      showAlertMessage("Selling order created successfully", { variant: "success" });
+    } else {
+      showAlertMessage("Selling order failed. Please try again", { variant: "error" });
     }
   };
 
@@ -351,6 +455,16 @@ const SellNFTPage = ({ goBack }) => {
           </Grid>
         )}
       </Grid>
+      <TransactionProgressModal
+        open={openTransactionModal}
+        onClose={() => {
+          setOpenTransactionModal(false);
+        }}
+        transactionInProgress={transactionInProgress}
+        transactionSuccess={transactionSuccess}
+        hash={hash}
+        network={selectedChain?.value}
+      />
     </div>
   );
 };

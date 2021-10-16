@@ -8,6 +8,7 @@ import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { SyntheticFractionalisedRedemptionPageStyles } from "./index.styles";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
+import RedeemJotsModal from "components/PriviDigitalArt/modals/RedeemJotsModal";
 
 const dummyNFTs = [
   {
@@ -32,7 +33,7 @@ export default ({ collection }) => {
   const [nfts, setNFTs] = useState(dummyNFTs);
   const classes = SyntheticFractionalisedRedemptionPageStyles();
   const [historyRows, setHistoryRows] = useState<any>([]);
-  const [redeemJotsModal, setRedeemJotsModal] = useState<boolean>(false);
+  const [openRedeemJotsModal, setOpenRedeemJotsModal] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(20);
   const [activePage, setActivePage] = useState<number>(1);
 
@@ -113,6 +114,10 @@ export default ({ collection }) => {
     ]);
   }, []);
 
+  const handleConfirmRedeem = () => {
+    setOpenRedeemJotsModal(false);
+  };
+
   return (
     <Box className={classes.root}>
       <Box className={classes.outBox}>
@@ -131,13 +136,10 @@ export default ({ collection }) => {
             </Box>
           </Box>
           <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-            <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+            <Box className={classes.h4} pb={1}>
               Redeption rate
             </Box>
-            <Box
-              className={classes.h2}
-              sx={{ justifyContent: "center", fontWeight: 800, fontFamily: "Agrandir Grand !important" }}
-            >
+            <Box className={classes.h2} sx={{ fontWeight: 800, fontFamily: "Agrandir Grand !important" }}>
               <span style={{ fontFamily: "Agrandir GrandHeavy", marginRight: "4px" }}>2</span> USDT/JOT
             </Box>
           </Box>
@@ -150,7 +152,7 @@ export default ({ collection }) => {
               padding: "0px 87.5px",
               height: "60px",
             }}
-            onClick={() => setRedeemJotsModal(true)}
+            onClick={() => setOpenRedeemJotsModal(true)}
           >
             Redeem
           </PrimaryButton>
@@ -278,6 +280,11 @@ export default ({ collection }) => {
           </Box>
         </div>
       </Box>
+      <RedeemJotsModal
+        open={openRedeemJotsModal}
+        handleClose={() => setOpenRedeemJotsModal(false)}
+        onConfirm={handleConfirmRedeem}
+      />
     </Box>
   );
 };

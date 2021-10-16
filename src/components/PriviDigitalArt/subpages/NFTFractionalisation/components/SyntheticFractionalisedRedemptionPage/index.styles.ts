@@ -25,6 +25,7 @@ export const SyntheticFractionalisedRedemptionPageStyles = makeStyles(theme => (
   boxBody: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
 
     [theme.breakpoints.down(1080)]: {
       flexDirection: "column",
@@ -41,7 +42,7 @@ export const SyntheticFractionalisedRedemptionPageStyles = makeStyles(theme => (
   },
   col_half: {
     height: "100%",
-    flex: 1,
+    flex: 0.33,
     position: "relative",
 
     [theme.breakpoints.down(1080)]: {

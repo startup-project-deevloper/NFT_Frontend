@@ -20,6 +20,7 @@ const isProd = process.env.REACT_APP_ENV === "prod";
 export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, selectedNFT, syntheticID }) {
   const classes = useLockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
+  const [isLocked, setLocked] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
@@ -73,6 +74,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         syntheticID,
       });
       onCompleted();
+      setLocked(true);
       setIsProceeding(false);
     } catch (err) {
       console.log("error", err);
@@ -92,7 +94,18 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
   return (
     <div className={classes.root}>
       <div className={classes.container}>
-        {isProceeding ? (
+        {isLocked ? (
+          <Box className={classes.result}>
+            <img className={classes.icon} src={require("assets/icons/lock-success-icon.png")} alt="" />
+            <h1 className={classes.title}>Your NFT is locked!</h1>
+            <p className={classes.description}>
+              Your NFT has been locked successfully. <br />
+            </p>
+            <button className={classes.checkBtn} onClick={handleLater}>
+              Close
+            </button>
+          </Box>
+        ) : isProceeding ? (
           <>
             <LoadingWrapper loading={true} theme="blue" iconWidth="80px" iconHeight="80px" />
             <Box className={classes.result}>

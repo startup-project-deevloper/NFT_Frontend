@@ -454,13 +454,30 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     history.push(`/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
-  const handleBuyBack = () => {};
+  const handleBuyBack = async () => {
+    setLoading(true);
+
+    const targetChain = BlockchainNets[1];
+    const web3 = new Web3(library.provider);
+    const web3APIHandler = targetChain.apiHandler;
+
+    const payload = {
+      nft,
+    };
+    const response = await web3APIHandler.SyntheticCollectionManager.buyBack(web3, account!, payload);
+    console.log("response", response);
+    if (response.success) {
+    } else {
+    }
+    setLoading(false);
+  };
 
   const totalJot = 10000;
-  const percentage = useMemo(
-    () => Number(((ownerSupply || ownershipJot) / totalJot).toFixed(2)) * 100,
-    [ownerSupply, ownershipJot, totalJot]
-  );
+  const percentage = useMemo(() => Number(((ownerSupply || ownershipJot) / totalJot).toFixed(2)) * 100, [
+    ownerSupply,
+    ownershipJot,
+    totalJot,
+  ]);
 
   React.useEffect(() => {
     if (ownershipJot === 0) {

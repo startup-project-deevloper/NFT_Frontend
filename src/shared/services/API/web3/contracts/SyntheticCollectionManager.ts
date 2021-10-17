@@ -628,6 +628,34 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const buyBack = async (web3: Web3, account: string, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { nft, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const gas = await contract.methods.buyBack(SyntheticID).estimateGas({ from: account });
+        const response = await contract.methods
+          .buyBack(SyntheticID)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) setHash(hash);
+          });
+
+        // Temporaily purpose due to oracle issue
+        if (response) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     depositJots,
@@ -647,6 +675,7 @@ const syntheticCollectionManager = (network: string) => {
     getAccruedReward,
     exchangeOwnerJot,
     exitProtocol,
+    buyBack,
   };
 };
 

@@ -203,6 +203,7 @@ const ProfilePage = () => {
   useEffect(() => {
     setMyMedia([]);
     setPriviUser(undefined);
+    setUserProfile({});
     if (params.id) {
       if (params.id && !params.id.includes("Px")) {
         Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/user`)

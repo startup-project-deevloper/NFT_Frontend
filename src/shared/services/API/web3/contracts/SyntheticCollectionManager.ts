@@ -656,6 +656,55 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const getAvailableBuyback = (web3: Web3, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { nft } = payload;
+        const { SyntheticCollectionManagerAddress, SyntheticID, JotAddress } = nft;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.getAvailableBuyback(SyntheticID).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve({ jots: toDecimals(result[0], decimals), funding: toDecimals(result[1], decimals) });
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve(null);
+      }
+    });
+  };
+
+  const getRequiredFundingForBuyBack = (web3: Web3, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { nft } = payload;
+        const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        contract.methods.getRequiredFundingForBuyBack(SyntheticID).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(result);
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve(null);
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     depositJots,
@@ -676,6 +725,8 @@ const syntheticCollectionManager = (network: string) => {
     exchangeOwnerJot,
     exitProtocol,
     buyBack,
+    getAvailableBuyback,
+    getRequiredFundingForBuyBack,
   };
 };
 

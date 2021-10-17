@@ -13,6 +13,7 @@ import BuyJotsModal from "../../../../modals/BuyJotsModal";
 import EditNFTPriceModal from "../../../../modals/EditNFTPrice";
 import EditJOTsSupplyModal from "../../../../modals/EditJOTsSupply";
 import QuickSwapModal from "../../../../modals/QuickSwapModal";
+import BuyBackModel from "../../modals/BuyBackModal";
 import {
   getSyntheticNFTTransactions,
   getSyntheticNFTOwnerHistory,
@@ -280,6 +281,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openAddJOTsModal, setOpenAddJOTsModal] = React.useState<boolean>(false);
   const [openQuickSwapModal, setOpenQuickSwapModal] = React.useState<boolean>(false);
   const [openWithdrawJOTsModal, setOpenWithdrawJOTsModal] = React.useState<boolean>(false);
+  const [openBuyBackModal, setOpenBuyBackModal] = React.useState<boolean>(false);
   const [remainingTime, setRemainingTime] = React.useState<number>(-1);
   const [intervalId, setIntervalId] = React.useState<any>(null);
 
@@ -454,22 +456,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     history.push(`/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
-  const handleBuyBack = async () => {
-    setLoading(true);
-
-    const targetChain = BlockchainNets[1];
-    const web3 = new Web3(library.provider);
-    const web3APIHandler = targetChain.apiHandler;
-
-    const payload = {
-      nft,
-    };
-    const response = await web3APIHandler.SyntheticCollectionManager.buyBack(web3, account!, payload);
-    console.log("response", response);
-    if (response.success) {
-    } else {
-    }
-    setLoading(false);
+  const handleBuyBack = () => {
+    setOpenBuyBackModal(true);
   };
 
   const totalJot = 10000;
@@ -729,7 +717,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           }}
                           onClick={handleOpenAddJOTsModal}
                         >
-                          Add "JOTs"
+                          Add JOTs
                         </PrimaryButton>
                       </Box>
                     </Box>
@@ -1148,6 +1136,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
       />
+      <BuyBackModel open={openBuyBackModal} onClose={() => setOpenBuyBackModal(false)} nft={nft} />
       <LoadingScreen
         loading={loading}
         title={`Transaction \nin progress`}

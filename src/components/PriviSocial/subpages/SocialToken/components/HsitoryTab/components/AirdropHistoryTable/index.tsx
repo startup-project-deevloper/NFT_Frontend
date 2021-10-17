@@ -107,7 +107,7 @@ export default function AirdropHistoryTable({ airdropHistory }) {
                         : "none",
                   }}
                 />
-                {txn.user && txn.user.online &&
+                {txn.user && txn.user.connected &&
                   <div style={{
                     background: Gradient.Mint,
                     border: "1px solid #FFFFFF",

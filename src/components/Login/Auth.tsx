@@ -36,7 +36,6 @@ const Auth = () => {
   const dispatch = useDispatch();
   const [numberOfMessages, setNumberOfMessages] = useState<number>(0);
 
-
   // --------- for balance ---------
   const tokenTypeMap = useRef({}); // ref to tokenTypeMap given that setInterval cant get current state of useState hook
 
@@ -77,6 +76,15 @@ const Auth = () => {
             }
           })
           .catch(err => console.log("numberMessages error: ", err));
+        if (!socket) {
+          const sock = io(URL(), {
+            query: { token: localStorage.getItem("token")?.toString() || "" },
+            transports: ["websocket"],
+          });
+          sock.connect();
+          setSocket(sock);
+          sock.emit("add user", localStorage.getItem("userId")?.toString() || "");
+        }
         socket && socket.emit("subscribeToYou", { _id: userId });
       }
     }
@@ -200,7 +208,7 @@ const Auth = () => {
           .then(async response => {
             if (response.data.success) {
               const data = response.data.data;
-              socket = io(URL(), { query: { token } });
+              socket = io(URL(), { query: { token }, transports: ["websocket"] });
               socket.connect();
               setInternalSocket(socket);
               socket.emit("add user", data.id);
@@ -231,13 +239,13 @@ const Auth = () => {
             <MessagesContextProvider socket={internalSocket} numberMessages={numberOfMessages}>
               <NotificationsContextProvider socket={internalSocket}>
                 {/* <StreamingContextProvider> */}
-                  <UserConnectionsContextProvider>
-                    <TokenConversionContextProvider>
-                      <>
-                        <NavBar />
-                      </>
-                    </TokenConversionContextProvider>
-                  </UserConnectionsContextProvider>
+                <UserConnectionsContextProvider>
+                  <TokenConversionContextProvider>
+                    <>
+                      <NavBar />
+                    </>
+                  </TokenConversionContextProvider>
+                </UserConnectionsContextProvider>
                 {/* </StreamingContextProvider> */}
               </NotificationsContextProvider>
             </MessagesContextProvider>

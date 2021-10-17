@@ -26,7 +26,7 @@ export default function FriendLabel({ friend }) {
           </Box>
           <GreenText fontSize="14px">@{friend.urlSlug}</GreenText>
         </Box>
-        {friend.online && (
+        {friend.connected && (
           <div
             style={{
               background:

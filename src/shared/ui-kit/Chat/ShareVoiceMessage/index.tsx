@@ -23,7 +23,6 @@ const useStyles = makeStyles<Theme, StyleProps>(theme => ({
     marginBottom: theme.spacing(2),
     height: "auto",
     width: "100%",
-    maxWidth: 906,
     fontSize: 26,
     [theme.breakpoints.down("xs")]: {
       padding: `${theme.spacing(2)}px`,

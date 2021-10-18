@@ -12,8 +12,7 @@ export default ({
   onClose,
   onSuccess,
   selectedNFT,
-  supplyToKeep,
-  priceFraction,
+  currentNFT
 }) => {
   const classes = ChangeToSyntheticModalStyles();
   const [step, setStep] = useState<number>(0);
@@ -41,19 +40,20 @@ export default ({
         {step === 0 ? (
           <RequestChangeNFT
             onClose={onClose}
-            onCompleted={() => {
+            onCompleted={(nft) => {
+              setSyntheticNFT(nft);
               handleCompleteStep(0);
             }}
             selectedNFT={selectedNFT}
-            supplyToKeep={supplyToKeep}
-            priceFraction={priceFraction}
+            currentNFT={currentNFT}
           />
         ) : step === 1 ? (
           <LockNFT
             onClose={onClose}
             onCompleted={() => handleCompleteStep(1)}
-            selectedNFT={selectedNFT}
-            syntheticID={syntheticNFT?.SyntheticID}
+            tokenAddress={selectedNFT}
+            tokenFromId={+selectedNFT?.SyntheticID}
+            tokenToId={+syntheticNFT?.SyntheticID}
           />
         ) : (
           <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} nft={syntheticNFT} />

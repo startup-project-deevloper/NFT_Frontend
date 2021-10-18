@@ -6,33 +6,81 @@ import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { useLockNFTStyles } from "./index.styles";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import NFTVaultManager from "shared/connectors/ethereum/contracts/NFTVaultManager.json";
-import config from "shared/connectors/ethereum/config";
-import { ContractInstance } from "shared/connectors/web3/functions";
 import { BlockchainNets } from "shared/constants/constants";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { requestChangeNFT, changeNFT } from "shared/services/API/web3/contracts/NFTVaultManager";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
-export default function LockNFT({ onClose, onCompleted, selectedNFT, syntheticID }) {
+export default function LockNFT({ onClose, onCompleted, tokenAddress, tokenFromId, tokenToId }) {
   const classes = useLockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
   const [approveBtn, setApproveBtn] = useState<boolean>(false);
 
-  const handleProceed = async () => {
+  const handleProceed = () => {
     setApproveBtn(true)
   }
 
   const handleApprove = async () => {
-    onCompleted();
+    console.log("chainId", chainId);
+    if (chainId !== 1 && chainId !== 4) {
+      let changed = await switchNetwork(isProd ? 1 : 4);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to ethereum network`, { variant: "error" });
+        return;
+      }
+    }
+    setIsProceeding(true);
+
+    try {
+      const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
+      const web3APIHandler = targetChain.apiHandler;
+
+      const web3 = new Web3(library.provider);
+
+      const requestChangeRes = await requestChangeNFT(web3, account!, {
+        tokenAddress,
+        tokenFromId,
+        tokenToId,
+        setHash
+      })
+
+      if (!requestChangeRes) {
+        setIsProceeding(false);
+        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+        return;
+      }
+
+      const lockResponse = await changeNFT(web3, account!, {
+        tokenAddress,
+        tokenFromId,
+        tokenToId,
+        setHash
+      });
+
+      if (!lockResponse.status) {
+        setIsProceeding(false);
+        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+        return;
+      }
+      await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
+        collectionAddress: tokenAddress,
+        tokenToId,
+      });
+      onCompleted();
+      setIsProceeding(false);
+    } catch (err) {
+      console.log("error", err);
+      setIsProceeding(false);
+      showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+    }
   };
 
   const handleLater = () => {
@@ -55,7 +103,7 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, syntheticID
                 Transaction is proceeding on Ethereum. <br />
                 This can take a moment, please be patient...
               </p>
-              {!isLoading && (
+              {hash && (
                 <>
                   <CopyToClipboard text={hash}>
                     <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>

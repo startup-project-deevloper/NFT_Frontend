@@ -29,7 +29,7 @@ const NFTPositionManagerPage = () => {
           {/* <BackButton dark overrideFunction={() => history.push("/loan")} /> */}
           <img src={require("assets/icons3d/vault.png")} alt="" className={classes.absoluteImage} />
           <Box display="flex" alignItems="center" pl={4}>
-            <h2>✨ Manage your positions</h2>
+            <h2>✨ Manage Your Loans</h2>
           </Box>
 
           <Box mt={7} width="100%">

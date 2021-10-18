@@ -1,5 +1,6 @@
 import axios from "axios";
 import URL from "shared/functions/getURL";
+import { signOut } from "../actions/User";
 
 const interceptor = (store) => {
   // Add a request interceptor
@@ -40,6 +41,13 @@ const interceptor = (store) => {
     function (error) {
       console.log("privi axios response error");
       // Do something with response error
+      if (error.response.status === 403) {
+        console.log("403 ERROR AUTH JWT!");
+        store.dispatch(signOut());
+        localStorage.clear();
+        store.history.push("/");
+        window.location.reload();
+      }
       return Promise.reject(error);
     }
   );

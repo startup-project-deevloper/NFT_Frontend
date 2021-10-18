@@ -182,7 +182,7 @@ export default function NFTPodCard({ item }) {
             onLoad={() => setImageLoaded(true)}
             alt={podData.Name}
             onClick={() => {
-              history.push(`/pix/pods/${podData.PodAddress}`);
+              history.push(`/pix/pods/${podData.id}`);
             }}
           /> */}
         </div>
@@ -228,7 +228,7 @@ export default function NFTPodCard({ item }) {
       <Box
         className={styles.podMainInfo}
         onClick={() => {
-          history.push(`/pods/${podData.PodAddress}`);
+          history.push(`/pods/${podData.id}`);
         }}
       >
         <Box className={styles.flexBox}>

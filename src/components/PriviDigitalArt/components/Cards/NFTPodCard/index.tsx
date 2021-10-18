@@ -137,7 +137,7 @@ export default function NFTPodCard({ item }) {
     const body = {
       userId: user.id,
       fruitId: type,
-      podAddress: podData.PodAddress ?? podData.id,
+      podAddress: podData.PodAddress ?? podData.Id,
     };
 
     Axios.post(`${URL()}/mediaPod/fruit`, body).then(res => {
@@ -182,7 +182,7 @@ export default function NFTPodCard({ item }) {
             onLoad={() => setImageLoaded(true)}
             alt={podData.Name}
             onClick={() => {
-              history.push(`/pix/pods/${podData.id}`);
+              history.push(`/pix/pods/${podData.Id}`);
             }}
           /> */}
         </div>
@@ -228,7 +228,7 @@ export default function NFTPodCard({ item }) {
       <Box
         className={styles.podMainInfo}
         onClick={() => {
-          history.push(`/pods/${podData.id}`);
+          history.push(`/pods/${podData.Id}`);
         }}
       >
         <Box className={styles.flexBox}>

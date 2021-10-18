@@ -262,7 +262,6 @@ export const headerStyles = makeStyles(theme => ({
   },
   header_popup_back_item: {
     cursor: "pointer",
-    textAlign: "end",
     padding: 20,
     borderBottom: "1px solid #ffffff",
     "&:last-child": {

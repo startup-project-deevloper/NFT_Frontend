@@ -29,7 +29,7 @@ export const copyRightFractionTabStyles = makeStyles(() => ({
     color: "black",
   },
   distribBox: {
-    background: "rgba(236, 240, 244, 0.4)",
+    background: "#EFF2FD",
     borderRadius: 8,
     padding: "12px 12px 12px 20px",
     "& + &": {
@@ -61,7 +61,7 @@ export const copyRightFractionTabStyles = makeStyles(() => ({
     fontSize: 14,
     fontWeight: 600,
     fontFamily: "Montserrat",
-    color: "#65CB63",
+    color: "#431AB7",
     lineHeight: "104.5%",
   },
 }));

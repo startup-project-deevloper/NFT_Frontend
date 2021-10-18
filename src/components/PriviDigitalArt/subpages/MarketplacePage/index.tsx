@@ -5,11 +5,12 @@ import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import DigitalArtContext, { initialDigitalArtFilters } from "shared/contexts/DigitalArtContext";
 import Box from "shared/ui-kit/Box";
 import { CircularLoadingIndicator, PrimaryButton } from "shared/ui-kit";
-import { NFTModal } from "components/PriviDigitalArt/modals/NFTModal";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "../ExplorePage";
 import DigitalArtCard from "../../components/Cards/DigitalArtCard";
 import { subPageStyles } from "../index.styles";
-import { getMarketplaceMedias } from "shared/services/API"
+import { getMarketplaceMedias } from "shared/services/API";
+import SellNFTPage from "./components/SellNFTPage";
+import NFTAuctionPage from "./components/NFTAuctionPage";
 
 export default function MarketplacePage() {
   const classes = subPageStyles();
@@ -17,12 +18,13 @@ export default function MarketplacePage() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [isOpenSellNFTModal, setIsOpenSellNFTModal] = useState<boolean>(false);
-  const [isOpenStartAuctionModal, setIsOpenStartAuctionModal] = useState<boolean>(false);
   const user = useTypedSelector(state => state.user);
 
   const lastIdRef = useRef<string>("");
   const hasMoreRef = useRef<boolean>(true);
+
+  const [openSellNFTPage, setOpenSellNFTPage] = useState<boolean>(false);
+  const [openStartAuctionPage, setOpenStartAuctionPage] = useState<boolean>(false);
 
   useEffect(() => {
     setOpenFilters(false);
@@ -31,7 +33,7 @@ export default function MarketplacePage() {
 
   useEffect(() => {
     initialLoad();
-  }, [filters.Status])
+  }, [filters.Status]);
 
   const initialLoad = () => {
     setIsLoading(true);
@@ -42,14 +44,14 @@ export default function MarketplacePage() {
         const medias = data.data;
         setFilteredData([...medias]);
         hasMoreRef.current = data.hasMore;
-        lastIdRef.current = medias.length? medias[medias.length-1].MediaSymbol : "";
+        lastIdRef.current = medias.length ? medias[medias.length - 1].MediaSymbol : "";
       } else {
         setFilteredData([]);
         hasMoreRef.current = false;
         lastIdRef.current = "";
       }
-    })
-  }
+    });
+  };
 
   const loadMore = () => {
     setIsLoading(true);
@@ -60,13 +62,13 @@ export default function MarketplacePage() {
         const medias = data.data;
         setFilteredData([...filteredData, ...medias]);
         hasMoreRef.current = data.hasMore;
-        lastIdRef.current = medias.length? medias[medias.length-1].MediaSymbol : "";
+        lastIdRef.current = medias.length ? medias[medias.length - 1].MediaSymbol : "";
       } else {
         hasMoreRef.current = false;
         lastIdRef.current = "";
       }
-    })
-  }
+    });
+  };
 
   const reload = () => {
     setIsLoading(true);
@@ -76,16 +78,6 @@ export default function MarketplacePage() {
     setTimeout(() => {
       initialLoad();
     }, 1000);
-  }
-
-  const handleOpenSellNFTModal = () => {
-    setIsOpenSellNFTModal(true);
-    setIsOpenStartAuctionModal(false);
-  };
-
-  const handleOpenStartAuctionModal = () => {
-    setIsOpenSellNFTModal(false);
-    setIsOpenStartAuctionModal(true);
   };
 
   const handleScroll = React.useCallback(
@@ -98,83 +90,62 @@ export default function MarketplacePage() {
   );
 
   return (
-    <div className={classes.page} onScroll={handleScroll}>
-      <div className={classes.content}>
-        <div className={classes.headerTitle}>
-          <Box display="flex" alignItems="center">
-            ✨ Marketplace
-            {/* <Box
-              onClick={() => {
-                setOpenFilters(true);
-              }}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              ml={2}
-              mb={0.5}
-              p={1}
-              style={{ cursor: "pointer", borderRadius: "50%", width: "38px" }}
-            >
-              <img src={require("assets/icons/filters.svg")} alt="filters" title="Filters" />
-            </Box> */}
-          </Box>
-          <Box className={classes.marketButtonBox}>
-            <PrimaryButton size="small" className={classes.nftActionButton} onClick={handleOpenSellNFTModal}>
-              Sell NFT
-            </PrimaryButton>
-            <PrimaryButton
-              size="small"
-              className={classes.nftActionButton}
-              onClick={handleOpenStartAuctionModal}
-            >
-              Start Auction
-            </PrimaryButton>
-          </Box>
-        </div>
-        <div className={classes.artCards}>
-          <MasonryGrid
-            gutter={"24px"}
-            data={filteredData}
-            renderItem={(item, index) => (
-              <DigitalArtCard heightFixed={false} item={item} key={`item-${index}`} />
-            )}
-            columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-          />
-          {isLoading && (
-            <div
-              style={{
-                width: "100%",
-                height: "calc(100vh - 200px)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                paddingTop: 16,
-                paddingBottom: 16,
-              }}
-            >
-              <CircularLoadingIndicator theme="blue" />
+    <>
+      {openSellNFTPage && <SellNFTPage goBack={() => setOpenSellNFTPage(false)} />}
+      {openStartAuctionPage && <NFTAuctionPage goBack={() => setOpenStartAuctionPage(false)} />}
+
+      {!openSellNFTPage && !openStartAuctionPage && (
+        <div className={classes.page} onScroll={handleScroll}>
+          <div className={classes.content}>
+            <div className={classes.headerTitle}>
+              <Box display="flex" alignItems="center">
+                ✨ Marketplace
+              </Box>
+              <Box className={classes.marketButtonBox}>
+                <PrimaryButton
+                  size="small"
+                  className={classes.nftActionButton}
+                  onClick={() => setOpenSellNFTPage(true)}
+                >
+                  Sell NFT
+                </PrimaryButton>
+                <PrimaryButton
+                  size="small"
+                  className={classes.nftActionButton}
+                  onClick={() => setOpenStartAuctionPage(true)}
+                >
+                  Start Auction
+                </PrimaryButton>
+              </Box>
             </div>
-          )}
+            <div className={classes.artCards}>
+              <MasonryGrid
+                gutter={"24px"}
+                data={filteredData}
+                renderItem={(item, index) => (
+                  <DigitalArtCard heightFixed={false} item={item} key={`item-${index}`} />
+                )}
+                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+              />
+              {isLoading && (
+                <div
+                  style={{
+                    width: "100%",
+                    height: "calc(100vh - 200px)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingTop: 16,
+                    paddingBottom: 16,
+                  }}
+                >
+                  <CircularLoadingIndicator theme="blue" />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-      {isOpenSellNFTModal && (
-        <NFTModal
-          open={isOpenSellNFTModal}
-          onClose={() => setIsOpenSellNFTModal(false)}
-          type="sell-nft"
-          reload={reload}
-        />
       )}
-      {isOpenStartAuctionModal && (
-        <NFTModal
-          open={isOpenStartAuctionModal}
-          onClose={() => {
-            setIsOpenStartAuctionModal(false);
-          }}
-          type="start-auction"
-          reload={reload}
-        />
-      )}
-    </div>
+    </>
   );
 }

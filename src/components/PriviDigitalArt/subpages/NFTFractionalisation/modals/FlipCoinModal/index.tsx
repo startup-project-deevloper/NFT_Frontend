@@ -61,7 +61,7 @@ export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, h
                     <h1 className={classes.title}>You have won!</h1>
                     <p className={classes.description}>
                       Congrats! You have guessed correctly and <br />
-                      <span className={classes.result}>you have won 0.1 JOTS</span>
+                      <span className={classes.result}>you have won 0.1 JOTs</span>
                     </p>
                     <button
                       className={classes.checkBtn}
@@ -86,7 +86,7 @@ export default function FlipCoinModal({ open, onClose, isFlipping, flipResult, h
                       Unfortunatelly! You have guessed incorrectly <br />
                       and the result was {resultState} <br />
                       <span className={`${classes.result} ${classes.grad}`}>
-                        you have lost 0.1 JOTS to the owner
+                        you have lost 0.1 JOTs to the owner
                       </span>
                     </p>
                     <Box display="flex" alignItems="center" width="100%" justifyContent="center">

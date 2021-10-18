@@ -73,6 +73,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
   const [resultState, setResultState] = useState<number>(0);
+  const [flipDisabled, setFlipDisabled] = useState<boolean>(false);
 
   const usersList = useSelector((state: RootState) => state.usersInfoList);
   const getUserInfo = (address: string) => usersList.find(u => u.address === address);
@@ -105,25 +106,31 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   }, [isOwner, isAuction]);
 
   useEffect(() => {
-    (async () => {
-      setLoadingData(true);
+    setFlipDisabled(+(nft.totalStaked ?? 0) <= 0 || +(nft.OwnerSupply ?? 0) <= 0);
+  }, [nft]);
 
-      if (!params || !params.collectionId || !params.nftId) {
-        return;
-      }
-
-      const response = await getSyntheticNFT(params.collectionId, params.nftId);
-      if (response?.success) {
-        setNft(response.data);
-        setLoadingData(false);
-      }
-
-      const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
-      if (flipResp?.success) {
-        setFlipHistory(flipResp.data);
-      }
-    })();
+  useEffect(() => {
+    handleRefresh();
   }, [params]);
+
+  const handleRefresh = async () => {
+    setLoadingData(true);
+
+    if (!params || !params.collectionId || !params.nftId) {
+      return;
+    }
+
+    const response = await getSyntheticNFT(params.collectionId, params.nftId);
+    if (response?.success) {
+      setNft(response.data);
+      setLoadingData(false);
+    }
+
+    const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
+    if (flipResp?.success) {
+      setFlipHistory(flipResp.data);
+    }
+  };
 
   const handleOpenChangeLockedNFTModal = () => {
     setOpenChangeLockedNFTModal(true);
@@ -502,7 +509,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         </div>
         {selectedTab === "auction" ? (
           <>
-            <AuctionDetail nft={nft} />
+            <AuctionDetail nft={nft} handleRefresh={handleRefresh} />
             <OfferList nft={nft} />
           </>
         ) : selectedTab === "flip_coin" ? (
@@ -513,7 +520,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   <div className={classes.typo3}>Flip a coin & win</div>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <div>
-                      <div className={classes.typo4}>Guess the result of the coin flip and win JOTS.</div>
+                      <div className={classes.typo4}>Guess the result of the coin flip and win JOTs.</div>
                       <div className={classes.typo4}>Increase your JOTs if you guess correctly!</div>
                     </div>
                     {isMobile && (
@@ -535,7 +542,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               {isFlipped ? (
                 <div className={classes.flippedCoinButton}>rebalancing pool. Next flip in 00:30h</div>
               ) : (
-                <div className={classes.flipCoinButton} onClick={() => setOpenFlipCoinGuessModal(true)}>
+                <div
+                  className={cls({ [classes.disabledFlip]: flipDisabled }, classes.flipCoinButton)}
+                  onClick={() => (flipDisabled ? null : setOpenFlipCoinGuessModal(true))}
+                >
                   Flip The Coin
                 </div>
               )}

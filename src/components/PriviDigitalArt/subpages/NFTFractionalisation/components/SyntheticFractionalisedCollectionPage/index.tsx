@@ -16,6 +16,7 @@ import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
+import SyntheticFractionalisedRedemptionPage from "../SyntheticFractionalisedRedemptionPage";
 import {
   getSyntheticCollection,
   startSyntheticNFTAuction,
@@ -47,7 +48,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const { showAlertMessage } = useAlertMessage();
   const userSelector = useSelector((state: RootState) => state.user);
 
-  const [selectedTab, setSelectedTab] = useState<"nft" | "jots_pool" | "trade_jots" | "auctions">("nft");
+  const [selectedTab, setSelectedTab] = useState<
+    "nft" | "jots_pool" | "trade_jots" | "auctions" | "redemption"
+  >("nft");
 
   const [collection, setCollection] = useState<any>({});
   const [syntheticNFTs, setSyntheticNFTs] = useState<any>([]);
@@ -80,7 +83,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const [result, setResult] = React.useState<number>(0);
   const [hash, setHash] = useState<string>("");
 
-  const auctionInitialPrice = 1000;
+  const auctionInitialPrice = 10000;
 
   useEffect(() => {
     if (!params.id) return;
@@ -214,8 +217,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   /// Circulating Supply = Locked NFTs * 10000
   const circulatingSupply = useMemo(() => {
     const lockedCount = syntheticNFTs?.filter(nft => nft.isLocked).length || 0;
-    if (lockedCount >= 100) return `$${lockedCount / 100}M`;
-    return `$${lockedCount * 10}K`;
+    if (lockedCount >= 100) return `${lockedCount / 100}M JOTs`;
+    return `${lockedCount * 10}K JOTs`;
   }, [syntheticNFTs]);
 
   const handleFollow = () => {
@@ -328,6 +331,10 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
     }
   };
 
+  const handleTradeDerivatives = () => {
+    window.open("https://juice.privi.store/nft-derivatives#/", "_blank");
+  };
+
   const auctionNFTs = React.useMemo(
     () => syntheticNFTs.filter(nft => nft.isAuctionable === true && nft.user === userSelector.id),
     syntheticNFTs
@@ -365,7 +372,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                 </Box>
               </Box>
               <Box display="flex" width="100%" justifyContent="space-between">
-                <Box
+                {/* <Box
                   onClick={handleOrderBook}
                   className={classes.orderBookBtn}
                   display="flex"
@@ -378,8 +385,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                     style={{ marginRight: "8px", height: "24px", width: "24px" }}
                   />
                   Order Book
-                </Box>
-                <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+                </Box> */}
+                <div className={classes.tradeDerivativeButton} onClick={handleTradeDerivatives}>
                   <div>
                     <span>TRADE DERIVATIVES</span>
                   </div>
@@ -389,7 +396,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           )}
           {!isMobile && (
             <Box display="flex" className={classes.buttonWrapper}>
-              <Box
+              {/* <Box
                 onClick={handleOrderBook}
                 className={classes.orderBookBtn}
                 display="flex"
@@ -401,8 +408,8 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
                   style={{ marginRight: "8px", height: "24px", width: "24px" }}
                 />
                 Order Book
-              </Box>
-              <div className={classes.tradeDerivativeButton} onClick={() => {}}>
+              </Box> */}
+              <div className={classes.tradeDerivativeButton} onClick={handleTradeDerivatives}>
                 <div>
                   <span>TRADE DERIVATIVES</span>
                 </div>
@@ -567,7 +574,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               )}
               onClick={() => setSelectedTab("jots_pool")}
             >
-              <span>JOTS POOL</span>
+              <span>JOT POOL</span>
             </div>
             <div
               className={cls(
@@ -586,6 +593,15 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               onClick={() => setSelectedTab("auctions")}
             >
               <span>AUCTIONS</span>
+            </div>
+            <div
+              className={cls(
+                { [classes.selectedTabSection]: selectedTab === "redemption" },
+                classes.tabSection
+              )}
+              onClick={() => setSelectedTab("redemption")}
+            >
+              <span>REDEMPTION</span>
             </div>
           </div>
         </Box>
@@ -664,9 +680,13 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               </div>
             )}
           </div>
-        ) : (
+        ) : selectedTab === "trade_jots" ? (
           <div>
             <SyntheticFractionalisedTradeJotPage collection={collection} />
+          </div>
+        ) : (
+          <div>
+            <SyntheticFractionalisedRedemptionPage collection={collection} />
           </div>
         )}
       </div>

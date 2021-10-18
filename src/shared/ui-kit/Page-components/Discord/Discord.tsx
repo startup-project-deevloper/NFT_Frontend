@@ -104,7 +104,10 @@ const Discord = React.memo((props: any) => {
 
   useEffect(() => {
     if (!socket && localStorage.getItem("userId")) {
-      const sock = io(URL(), { query: { token: localStorage.getItem("token")?.toString() || "" } });
+      const sock = io(URL(), {
+        query: { token: localStorage.getItem("token")?.toString() || "" },
+        transports: ["websocket"],
+      });
       sock.connect();
       setSocket(sock);
       sock.emit("add user", localStorage.getItem("userId")?.toString() || "");

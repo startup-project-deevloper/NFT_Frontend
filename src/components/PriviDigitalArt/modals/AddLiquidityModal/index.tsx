@@ -101,14 +101,14 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
           type="number"
           theme="light"
           minValue={1}
-          endAdornment={<div className={classes.purpleText}>JOTS</div>}
+          endAdornment={<div className={classes.purpleText}>JOTs</div>}
         />
         <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7">
           <Box display="flex" alignItems="center" gridColumnGap="10px" fontSize="14px">
             <span>Wallet Balance</span>
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
-              <Box fontWeight="700">{jotsBalance} JOTS</Box>
+              <Box fontWeight="700">{jotsBalance} JOTs</Box>
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">

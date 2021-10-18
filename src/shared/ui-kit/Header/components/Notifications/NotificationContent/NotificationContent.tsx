@@ -24,6 +24,7 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
     onlyInformation,
     otherItemId,
     podType,
+    externalData,
   } = notification;
 
   const history = useHistory();
@@ -1848,27 +1849,27 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         <div>
           <b>{`Congratulation! Your NFT has been deposited successfully.`}</b>
         </div>
-      ) : type === 216 && podType === 'PIX' ? (
+      ) : type === 216 && podType === "PIX" ? (
         <div>
           <b>{`@${returnNameUserFromId(follower)}`}</b>
           {`, just created `}
           <b>{pod}</b>
           {` and invited you.`}
         </div>
-      ) : type === 217 && podType === 'PIX' ? (
+      ) : type === 217 && podType === "PIX" ? (
         <div>
           <b>{`@${returnNameUserFromId(follower)}`}</b>
           {`, just created a Pod Proposal in `}
           <b>{pod}</b>
           {` pod.`}
         </div>
-      ) : type === 218 && podType === 'PIX' ? (
+      ) : type === 218 && podType === "PIX" ? (
         <div>
           {`Pod Proposal in `}
           <b>{pod}</b>
           {` has been accepted`}
         </div>
-      ) : type === 219 && podType === 'PIX' ? (
+      ) : type === 219 && podType === "PIX" ? (
         <div>
           {`Pod Proposal in `}
           <b>{pod}</b>
@@ -1887,9 +1888,38 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
             Go to NFT
           </b>
         </div>
-      ) : type === 221 && podType === 'PIX' ? (
+      ) : type === 221 && podType === "PIX" ? (
         <div>
           <b>{`News! ${follower} sent ${amount} withdraw proposal on ${pod}.`}</b>
+        </div>
+      ) : type === 222 ? (
+        <div>
+          Congratulations! {notification.externalData.bidderName} has made a bid on your{" "}
+          {notification.externalData.nftName}.
+        </div>
+      ) : type === 223 ? (
+        <div>Great! Your bid has been successful.</div>
+      ) : type === 224 ? (
+        <div>
+          Congratulations! {notification.externalData.bidderName} has made hider bid on your&nbsp;
+          {notification.externalData.nftName}.
+        </div>
+      ) : type === 225 ? (
+        <div>
+          News! {notification.externalData.bidderName} has made a higher bid on{" "}
+          {notification.externalData.nftName}. Your loan plus 10% of interest has been returned to you.
+        </div>
+      ) : type === 226 ? (
+        <div>Great! Your bid has been successful.</div>
+      ) : type === 227 ? (
+        <div>
+          Your {notification.externalData.nftName} is about has ended. {notification.externalData.winnerName}{" "}
+          has placed the highest bid of {notification.externalData.topAmount} USDT and won the auction!
+        </div>
+      ) : type === 228 ? (
+        <div>
+          Congratulations! The you have won the {notification.externalData.nftName} auction. Claim your NFT
+          whenever you are ready.
         </div>
       ) : null}
     </>

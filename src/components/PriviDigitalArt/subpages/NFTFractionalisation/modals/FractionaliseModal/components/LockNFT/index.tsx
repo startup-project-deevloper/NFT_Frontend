@@ -20,7 +20,7 @@ const isProd = process.env.REACT_APP_ENV === "prod";
 export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true, selectedNFT, syntheticID }) {
   const classes = useLockNFTStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLocked, setLocked] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
@@ -34,7 +34,6 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         return;
       }
     }
-    setIsLoading(true);
     setIsProceeding(true);
 
     try {
@@ -54,7 +53,6 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       );
       if (!response.success) {
         setIsProceeding(false);
-        setIsLoading(false);
         showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
         return;
       }
@@ -68,7 +66,6 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       const lockResponse = await lockNFT(web3, account!, payload);
       if (!lockResponse.status) {
         setIsProceeding(false);
-        setIsLoading(false);
         showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
         return;
       }
@@ -77,12 +74,11 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         syntheticID,
       });
       onCompleted();
+      setLocked(true);
       setIsProceeding(false);
-      setIsLoading(false);
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);
-      setIsLoading(false);
       showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
     }
   };
@@ -98,7 +94,18 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
   return (
     <div className={classes.root}>
       <div className={classes.container}>
-        {isProceeding ? (
+        {isLocked ? (
+          <Box className={classes.result}>
+            <img className={classes.icon} src={require("assets/icons/lock-success-icon.png")} alt="" />
+            <h1 className={classes.title}>Your NFT is locked!</h1>
+            <p className={classes.description}>
+              Your NFT has been locked successfully. <br />
+            </p>
+            <button className={classes.checkBtn} onClick={handleLater}>
+              Close
+            </button>
+          </Box>
+        ) : isProceeding ? (
           <>
             <LoadingWrapper loading={true} theme="blue" iconWidth="80px" iconHeight="80px" />
             <Box className={classes.result}>
@@ -107,7 +114,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
                 Transaction is proceeding on Ethereum. <br />
                 This can take a moment, please be patient...
               </p>
-              {!isLoading && (
+              {hash && (
                 <>
                   <CopyToClipboard text={hash}>
                     <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>

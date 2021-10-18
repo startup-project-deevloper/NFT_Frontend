@@ -9,7 +9,7 @@ declare let window: any;
 interface IProps {
   open: boolean;
   onClose: () => void;
-  amount: string;
+  amount: number;
   account: string;
 }
 

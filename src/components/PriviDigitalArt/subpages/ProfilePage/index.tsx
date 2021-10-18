@@ -15,7 +15,7 @@ import URL from "shared/functions/getURL";
 import { removeUndef } from "shared/helpers";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 // import PrintChart from "shared/ui-kit/Chart/Chart";
-import { getPixProfileItems } from "shared/services/API";
+import { getOwnPixProfileItem, getPixProfileItems } from "shared/services/API";
 import ProfileEditModal from "components/PriviSocial/subpages/Home/modals/ProfileEdit";
 import { socket } from "components/Login/Auth";
 import { getUser, getUsersInfoList } from "store/selectors";
@@ -203,6 +203,7 @@ const ProfilePage = () => {
   useEffect(() => {
     setMyMedia([]);
     setPriviUser(undefined);
+    setUserProfile({});
     if (params.id) {
       if (params.id && !params.id.includes("Px")) {
         Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/user`)
@@ -319,7 +320,10 @@ const ProfilePage = () => {
       dispatch(setSelectedUser(setterUser.id, setterUser.address));
       if (ownUser) {
         if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
-          setterUser.imageIPFS = await getPhotoIPFS(setterUser.infoImage.newFileCID, downloadWithNonDecryption);
+          setterUser.imageIPFS = await getPhotoIPFS(
+            setterUser.infoImage.newFileCID,
+            downloadWithNonDecryption
+          );
         }
         dispatch(setUser(setterUser));
       }
@@ -448,35 +452,44 @@ const ProfilePage = () => {
   const getAllInfoProfile = async () => {
     if (userId) {
       try {
-        setIsDataLoading(true);
-        const resp = await getPixProfileItems(userId, !ownUser, subTabsValue.toString());
-        setIsDataLoading(false);
-        if (resp?.success) {
-          setPaginationHasMore(false);
-          const medias = resp.data ?? [];
-          let mMedia = [] as any;
-          medias.forEach((m, index) => {
-            medias[index].eth = m.MediaSymbol === undefined;
-            const SavedCollabs =
-              m.SavedCollabs && m.SavedCollabs.length > 0
-                ? m.SavedCollabs.map(collaborator => {
-                    const collaboratorUser = users.find(user => user.id === collaborator.id);
-                    return collaboratorUser
-                      ? {
-                          ...collaborator,
-                          name: collaboratorUser.name ?? "",
-                          imageURL: collaboratorUser.imageURL ?? "",
-                          urlSlug: collaboratorUser.urlSlug ?? "",
-                          id: collaboratorUser.id ?? "",
-                        }
-                      : undefined;
-                  }).filter(removeUndef)
-                : undefined;
-            medias[index].SavedCollabs = SavedCollabs;
-            mMedia.push(m);
-          });
-          const newMyMedia = [...mMedia];
-          setMyMedia(newMyMedia);
+        if (profileSubTabs[subTabsValue] === profileSubTabs[1]) {
+          setIsDataLoading(true);
+          const resp = await getOwnPixProfileItem(userId);
+          setIsDataLoading(false);
+          if (resp?.success) {
+            setMyMedia(resp.data);
+          }
+        } else {
+          setIsDataLoading(true);
+          const resp = await getPixProfileItems(userId, !ownUser, subTabsValue.toString());
+          setIsDataLoading(false);
+          if (resp?.success) {
+            setPaginationHasMore(false);
+            const medias = resp.data ?? [];
+            let mMedia = [] as any;
+            medias.forEach((m, index) => {
+              medias[index].eth = m.MediaSymbol === undefined;
+              const SavedCollabs =
+                m.SavedCollabs && m.SavedCollabs.length > 0
+                  ? m.SavedCollabs.map(collaborator => {
+                      const collaboratorUser = users.find(user => user.id === collaborator.id);
+                      return collaboratorUser
+                        ? {
+                            ...collaborator,
+                            name: collaboratorUser.name ?? "",
+                            imageURL: collaboratorUser.imageURL ?? "",
+                            urlSlug: collaboratorUser.urlSlug ?? "",
+                            id: collaboratorUser.id ?? "",
+                          }
+                        : undefined;
+                    }).filter(removeUndef)
+                  : undefined;
+              medias[index].SavedCollabs = SavedCollabs;
+              mMedia.push(m);
+            });
+            const newMyMedia = [...mMedia];
+            setMyMedia(newMyMedia);
+          }
         }
       } catch (error) {
         showAlertMessage(`Error getting user stats`, { variant: "error" });
@@ -536,7 +549,6 @@ const ProfilePage = () => {
           {priviUser !== undefined &&
             (priviUser
               ? profileSubTabs.map((option, index) => {
-                  if (index === 1) return;
                   return (
                     <div
                       className={cls({ [classes.subTabSelected]: subTabsValue === index }, classes.subTab)}

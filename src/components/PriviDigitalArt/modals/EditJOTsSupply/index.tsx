@@ -231,7 +231,7 @@ export default function EditJOTsModal({ open, onClose, collectionId, nft }) {
         </Grid>
         <Grid item xs={12} md={5}>
           <div className={classes.select}>
-            <InputWithLabelAndTooltip type="text" inputValue={"JOTS"} theme="privi-pix" />
+            <InputWithLabelAndTooltip type="text" inputValue={"JOTs"} theme="privi-pix" />
           </div>
         </Grid>
       </Grid>

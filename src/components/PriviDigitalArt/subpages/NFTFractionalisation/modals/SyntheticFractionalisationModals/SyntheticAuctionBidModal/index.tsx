@@ -141,7 +141,6 @@ const SyntheticAuctionBidModal = ({ open, onClose, previousBid, nft, handleRefre
 
       let balance = await web3APIHandler.Erc20["JOT"].balanceOf(web3, nft?.JotAddress, { account });
       let decimals = await web3APIHandler.Erc20["JOT"].decimals(web3, nft?.JotAddress);
-      console.log(+toDecimals(balance, decimals), amount);
       if (+toDecimals(balance, decimals) < amount) {
         showAlertMessage(`Insufficient balance to place bid`, { variant: "error" });
         return;
@@ -176,6 +175,7 @@ const SyntheticAuctionBidModal = ({ open, onClose, previousBid, nft, handleRefre
             bidderInfo: {
               id: user.id,
               avatar: user.anonAvatar,
+              username: `${user.firstName} ${user.lastName}`,
             },
             hash: res.data.hash,
           });

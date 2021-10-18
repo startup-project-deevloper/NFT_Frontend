@@ -12,9 +12,10 @@ interface IProps {
   item: any;
   onLockCompleted?: () => void;
   onUnLockCompleted?: () => void;
+  onVerifyCompleted?: () => void;
 }
 
-export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted }: IProps) {
+export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted, onVerifyCompleted }: IProps) {
   const classes = myNFTCardStyles();
   const history = useHistory();
   const { isSignedin } = useAuth();
@@ -34,7 +35,7 @@ export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted }: 
     if (item?.isWithdrawn && !item?.isUnlocked) {
       setOpenUnLockNFT(true);
     }
-  }
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" position="relative">
@@ -42,14 +43,16 @@ export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted }: 
         <div className={classes.innerBox}>
           <Box display="flex" justifyContent="space-between" alignItems="center" width={1} mb={1}>
             <div className={classes.nftName}>{`${item.collectionName} #${item.NftId}`}</div>
-            {item?.isVerified ? item?.isWithdrawn ? (
-              <div className={classes.unVerifiedLabel}>
-                <span>Unverified</span>
-              </div>
-            ) : (
-              <div className={classes.lockLabel}>
-                <span>Verified</span>
-              </div>
+            {item?.isVerified ? (
+              item?.isWithdrawn ? (
+                <div className={classes.unVerifiedLabel}>
+                  <span>Unverified</span>
+                </div>
+              ) : (
+                <div className={classes.lockLabel}>
+                  <span>Verified</span>
+                </div>
+              )
             ) : item?.isLocked ? (
               <div className={classes.lockLabel}>
                 <span>Locked</span>
@@ -78,17 +81,15 @@ export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted }: 
               {item?.isLocked ? "Verify NFT" : "Lock NFT"}
             </div>
           )}
-          {
-            item?.isVerified && item?.isWithdrawn && !item?.isUnlocked && (
-              <div
-                className={classes.nftModalButton}
-                style={{ background: "#1DCC00", color: "#ffffff" }}
-                onClick={handleUnlockNFT}
-              >
-                Unlock
-              </div>
-            )
-          }
+          {item?.isVerified && item?.isWithdrawn && !item?.isUnlocked && (
+            <div
+              className={classes.nftModalButton}
+              style={{ background: "#1DCC00", color: "#ffffff" }}
+              onClick={handleUnlockNFT}
+            >
+              Unlock
+            </div>
+          )}
           <div className={classes.starGroup} style={{ marginTop: item?.isVerified ? "10px" : 0 }}>
             <Box fontSize={5} mr={"2px"}>
               🌟{" "}
@@ -106,6 +107,7 @@ export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted }: 
           onClose={() => setOpenLockNFT(false)}
           nft={item}
           onLockCompleted={onLockCompleted}
+          onVerifyCompleted={onVerifyCompleted}
         />
       )}
       {openUnLockNFT && (
@@ -117,7 +119,12 @@ export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted }: 
         />
       )}
       {openVerifyLockNFT && (
-        <VerifyLockNFTModal open={openVerifyLockNFT} onClose={() => setOpenVerifyLockNFT(false)} nft={item} />
+        <VerifyLockNFTModal
+          open={openVerifyLockNFT}
+          onClose={() => setOpenVerifyLockNFT(false)}
+          nft={item}
+          onVerifyCompleted={onVerifyCompleted}
+        />
       )}
     </Box>
   );

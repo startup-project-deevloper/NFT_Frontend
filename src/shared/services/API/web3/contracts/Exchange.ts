@@ -14,8 +14,6 @@ const exchange = network => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
-        console.log(payload.input);
-        console.log(payload.caller);
         const gas = await contract.methods
           .CreateERC721TokenExchange(payload.input, payload.caller)
           .estimateGas({ from: account });

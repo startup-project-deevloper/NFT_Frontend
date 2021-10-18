@@ -39,7 +39,6 @@ const parseMoralisData = async (data, address, selectedChain) => {
         const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
           url: data.token_uri,
         });
-        console.log("tokenResp", tokenResp);
         if (tokenResp.success) {
           metadata = tokenResp.data;
         }
@@ -106,7 +105,6 @@ const NFTAuctionPage = ({ goBack }) => {
 
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
-  console.log(selectedNFT);
   // set token list according chain
   useEffect(() => {
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
@@ -212,6 +210,7 @@ const NFTAuctionPage = ({ goBack }) => {
       EndTime: Math.floor(endDateTimeInMs / 1000),
       ReservePrice: price,
       IpfHash: "",
+      BlockchainNetwork: selectedChain.value,
     };
 
     const web3APIHandler = selectedChain.apiHandler;

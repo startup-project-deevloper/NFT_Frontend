@@ -21,26 +21,12 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     position: "relative",
     padding: "45px 80px",
     "& > div > h2": {
-      fontFamily: "Agrandir GrandLight",
+      fontFamily: "Agrandir GrandHeavy",
       fontWeight: "800",
       fontSize: "40px",
       lineHeight: "104.5%",
       margin: 0,
       color: "#431AB7",
-      "& span": {
-        fontSize: "18px",
-        lineHeight: "23px",
-      },
-    },
-    "& > div > h5": {
-      color: "#431AB7",
-      fontWeight: "normal",
-      fontStyle: "normal",
-      fontSize: "18px",
-      lineHeight: "104.5%",
-      marginTop: "24px",
-      marginBottom: "84px",
-      textAlign: 'center',
       "& span": {
         fontSize: "18px",
         lineHeight: "23px",
@@ -60,11 +46,6 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down('sm')]: {
       padding: '35px 8px',
-    },
-  },
-  cardContainer: {
-    [theme.breakpoints.down('sm')]: {
-      padding: "0 25px",
     },
   },
   ellipse: {
@@ -322,10 +303,9 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   buttonGroup: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
     width: "100%",
-    marginTop: 76,
-    marginBottom: 40,
+    marginTop: 36,
+    marginBottom: 60,
     [theme.breakpoints.down('xs')]: {
       flexDirection: 'column',
       marginTop: 46,
@@ -370,5 +350,25 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
         fontSize: 8,
       }
     },
-  }
+  },
+  tab: {
+    fontFamily: "Agrandir GrandHeavy",
+    marginRight: 135,
+    fontStyle: "normal",
+    fontSize: 16,
+    lineHeight: "104.5%",
+    color: "#431AB760",
+    cursor: "pointer",
+    border: "none",
+    padding: "0 12px 12px",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 16,
+      marginRight: 18,
+    },
+  },
+  selectedTab: {
+    color: "#431AB7",
+    borderBottom: "4px solid #431AB7",
+    opacity: 1,
+  },
 }));

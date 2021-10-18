@@ -21,7 +21,7 @@ export async function getPixProfileItems(userId: string, isVisitor: boolean, tab
 
 export async function getOwnPixProfileItem(userId: string): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/user/getOwnedMediaUserInfo/Px24ddc552-dfa0-4ee3-81f2-6ad9f8eacc87`);
+    const response = await axios.get(`${URL()}/user/getOwnedMediaUserInfo/${userId}`);
     return response?.data;
   } catch (e) {
     console.log(e);

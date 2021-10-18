@@ -10,7 +10,6 @@ const auction = network => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
-        console.log(payload);
         console.log("Getting gas....");
         const gas = await contract.methods.createAuction(payload).estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);

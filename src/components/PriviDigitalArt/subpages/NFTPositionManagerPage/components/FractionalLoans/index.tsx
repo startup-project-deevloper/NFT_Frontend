@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-const IncrementalLoans = () => {
+const FractionalLoans = () => {
   return (
     <></>
   );
 };
 
-export default React.memo(IncrementalLoans);
+export default React.memo(FractionalLoans);

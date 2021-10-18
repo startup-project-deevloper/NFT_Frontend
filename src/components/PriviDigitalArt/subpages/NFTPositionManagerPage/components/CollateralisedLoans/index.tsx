@@ -20,7 +20,7 @@ import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../../NFTLoansPage/index.styles";
 
-const PositionsManager = () => {
+const CollateralisedLoans = () => {
   const classes = useNFTLoansPageStyles();
 
   const history = useHistory();
@@ -311,7 +311,7 @@ const PositionsManager = () => {
   );
 };
 
-export default React.memo(PositionsManager);
+export default React.memo(CollateralisedLoans);
 
 const Ellipse = () => {
   const classes = useNFTLoansPageStyles();

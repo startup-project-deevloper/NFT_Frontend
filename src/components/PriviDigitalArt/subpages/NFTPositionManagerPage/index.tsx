@@ -2,11 +2,12 @@ import React, { useState, useContext } from "react";
 import cls from "classnames";
 
 import { useHistory } from "react-router";
-import PositionsManager from "./components/PositionsManager";
 import Box from "shared/ui-kit/Box";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { useNFTPositionManagerPageStyles } from "./index.styles";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
+import CollateralisedLoans from "./components/CollateralisedLoans";
+import FractionalLoans from "./components/FractionalLoans";
 
 const Tabs = ["collateralised loans", "Fractional  Loans"];
 
@@ -49,14 +50,14 @@ const NFTPositionManagerPage = () => {
           </Box>
 
           {selectedTab === 0 && (
-            <PositionsManager />
+            <CollateralisedLoans />
+          )}
+          {selectedTab === 1 && (
+            <FractionalLoans />
           )}
         </div>
       </div>
     </>
-    // <Box className={classes.main}>
-    //   <PositionsManager />
-    // </Box>
   );
 };
 

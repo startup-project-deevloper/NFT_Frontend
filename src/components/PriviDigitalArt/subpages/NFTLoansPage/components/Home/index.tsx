@@ -4,6 +4,7 @@ import cls from "classnames";
 import Box from "shared/ui-kit/Box";
 import { useNFTLoansPageStyles } from "../../index.styles";
 import CollateralisedLoans from "./CollateralisedLoans";
+import FractionalLoans from "./FractionalLoans";
 
 const Tabs = ["Collateralised Loans", "Fractional Loans"];
 
@@ -15,11 +16,11 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
     <>
       <Ellipse />
       <div className={classes.content}>
-        <Box display="flex" alignItems="center" width="100%">
+        <Box display="flex" alignItems="center" width="100%" pl={10}>
           <h2>✨ NFT Loans</h2>
         </Box>
         
-        <Box mt={7} width="100%">
+        <Box mt={7} width="100%" padding="0 80px">
           <Box display="flex" width="100%" style={{ borderBottom: "1px solid #431AB720"}}>
             {Tabs.map((tab, index) => (
               <div
@@ -40,6 +41,11 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
             setOpenDepositPage={setOpenDepositPage}
           />
         )}
+        {
+          selectedTab === 1 && (
+            <FractionalLoans />
+          )
+        }
       </div>
     </>
   );

@@ -131,7 +131,7 @@ export default ({ setOpenDepositPage }) => {
   };
 
   return (
-    <div style={{ width: "100%" }} onScroll={handleScroll}>
+    <div style={{ width: "100%", padding: "0 80px" }} onScroll={handleScroll}>
       <Box className={classes.loanTopButtonBox}>
         <Box className={classes.btnGroup}>
           <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>

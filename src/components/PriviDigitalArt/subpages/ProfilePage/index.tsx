@@ -457,7 +457,11 @@ const ProfilePage = () => {
           const resp = await getOwnPixProfileItem(userId);
           setIsDataLoading(false);
           if (resp?.success) {
-            setMyMedia(resp.data);
+            setMyMedia(
+              resp.data.map(d => {
+                return { ...d, metadata: JSON.parse(d.metadata) };
+              })
+            );
           }
         } else {
           setIsDataLoading(true);

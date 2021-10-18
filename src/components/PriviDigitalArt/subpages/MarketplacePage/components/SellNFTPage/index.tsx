@@ -37,7 +37,6 @@ const parseMoralisData = async (data, address, selectedChain) => {
         const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
           url: data.token_uri,
         });
-        console.log("tokenResp", tokenResp);
         if (tokenResp.success) {
           metadata = tokenResp.data;
         }

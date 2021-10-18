@@ -382,7 +382,8 @@ export default function ProfileCard({
                           justifyContent: "center",
                         }
                       : {
-                          backgroundImage: `url(${getRandomImageUrl()})`,
+                          backgroundImage: `url(${item?.metadata?.image ?? getRandomImageUrl()})`,
+                          backgroundSize: "cover",
                         }
                   }
                 >
@@ -541,7 +542,7 @@ export default function ProfileCard({
                 />
               )}
               <Box style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {item?.MediaName || item?.name}
+                {item?.MediaName || item?.metadata?.name}
               </Box>
             </Box>
 

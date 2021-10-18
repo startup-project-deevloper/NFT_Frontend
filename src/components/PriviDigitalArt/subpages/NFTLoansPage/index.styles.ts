@@ -3,10 +3,10 @@ import { Color } from "shared/ui-kit";
 
 export const useNFTLoansPageStyles = makeStyles(theme => ({
   main: {
-    position: 'relative',
-    width: 'calc(100% - 208px)',
+    position: "relative",
+    width: "calc(100% - 208px)",
     "@media (max-width: 768px)": {
-      width: '100%',
+      width: "100%",
     },
   },
   content: {
@@ -39,14 +39,14 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       lineHeight: "104.5%",
       marginBottom: "16px",
     },
-    [theme.breakpoints.down('md')]: {
-      padding: '63px 30px',
+    [theme.breakpoints.down("md")]: {
+      padding: "63px 30px",
     },
-    [theme.breakpoints.down('sm')]: {
-      padding: '63px 20px',
+    [theme.breakpoints.down("sm")]: {
+      padding: "63px 20px",
     },
-    [theme.breakpoints.down('sm')]: {
-      padding: '35px 8px',
+    [theme.breakpoints.down("sm")]: {
+      padding: "35px 8px",
     },
   },
   ellipse: {
@@ -89,16 +89,16 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     "&:last-child:not(:first-child)": {
       marginLeft: "40.5px",
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       padding: "12px 32px",
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       padding: "12px 48px",
       marginTop: 16,
       "&:last-child:not(:first-child)": {
         marginLeft: "0px",
       },
-    }
+    },
   },
   artCards: {
     width: "calc(100% + 20px)",
@@ -114,21 +114,21 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     height: "73px",
     width: "73px",
     marginRight: 16,
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       height: "60px",
       width: "60px",
       marginRight: 8,
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       borderRadius: 8,
       height: "40px",
       width: "40px",
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       borderRadius: 4,
       height: "20px",
       width: "20px",
-      flex: 0
+      flex: 0,
     },
   },
   mediaImage: {
@@ -139,16 +139,16 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     backgroundPosition: "center",
     boxSizing: "content-box",
     borderRadius: "16px",
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       height: "60px",
       width: "60px",
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       borderRadius: 8,
       height: "40px",
       width: "40px",
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       borderRadius: 4,
       height: "25px",
       width: "25px",
@@ -158,8 +158,8 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     color: "#9EACF2",
     textAlign: "left",
     flex: 2,
-    [theme.breakpoints.down('xs')]: {
-      wordBreak: "break-all"
+    [theme.breakpoints.down("xs")]: {
+      wordBreak: "break-all",
     },
   },
   mediaTitle: {
@@ -185,7 +185,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     height: 24,
     objectFit: "contain",
     borderRadius: "50%",
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       height: 12,
       width: 12,
     },
@@ -244,10 +244,10 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
 
     "& .MuiTableContainer-root": {
       borderRadius: 16,
-      overflowX: 'auto',
+      overflowX: "auto",
       "&::-webkit-scrollbar-thumb": {
         background: "rgb(193 193 193)",
-      }
+      },
     },
 
     "& .MuiTableCell-head": {
@@ -258,24 +258,24 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       "& th": {
         height: 64,
         lineHeight: "120%",
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down("xs")]: {
           height: 48,
-          letterSpacing: "-0.1px"
+          letterSpacing: "-0.1px",
         },
       },
       "& td, & th": {
-        borderRadius: '0px !important',
+        borderRadius: "0px !important",
         paddingRight: 0,
         paddingLeft: 16,
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down("md")]: {
           fontSize: 12,
           padding: 8,
           paddingRight: 0,
         },
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           fontSize: 10,
         },
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down("xs")]: {
           fontSize: 9,
           paddingLeft: 0,
           paddingTop: 8,
@@ -287,30 +287,30 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
         },
         "&:last-child": {
           paddingRight: 16,
-          [theme.breakpoints.down('md')]: {
+          [theme.breakpoints.down("md")]: {
             paddingRight: 8,
           },
-          [theme.breakpoints.down('sm')]: {
+          [theme.breakpoints.down("sm")]: {
             paddingRight: 4,
           },
-          [theme.breakpoints.down('xs')]: {
+          [theme.breakpoints.down("xs")]: {
             paddingRight: 0,
           },
-        }
-      }
+        },
+      },
     },
   },
   tableAvatarField: {
     marginLeft: 16,
     cursor: "pointer",
     fontWeight: "bold",
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       marginLeft: 8,
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       marginLeft: 4,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       width: 64,
     },
   },
@@ -322,7 +322,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     transform: "rotate(3.22deg)",
 
     "@media (max-width: 1200px)": {
-      display: 'none',
+      display: "none",
     },
   },
   positionTitle: {
@@ -331,7 +331,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     marginBottom: "32px",
     marginTop: "40px",
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       fontSize: 26,
     },
   },
@@ -344,8 +344,8 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     width: "100%",
     marginTop: 36,
     marginBottom: 60,
-    [theme.breakpoints.down('xs')]: {
-      flexDirection: 'column',
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
       marginTop: 46,
       marginBottom: 64,
     },
@@ -398,36 +398,36 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     rowGap: 8,
     flexDirection: "row",
     marginRight: 16,
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       marginRight: 8,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
       rowGap: 4,
     },
     "& > button": {
       whiteSpace: "nowrap",
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints.down("md")]: {
         fontSize: 12,
       },
-      [theme.breakpoints.down('sm')]: {
-        marginLeft: '0 !important',
-        marginTop: '0 !important',
+      [theme.breakpoints.down("sm")]: {
+        marginLeft: "0 !important",
+        marginTop: "0 !important",
         height: 25,
-        width: '100%',
-        lineHeight: '25px',
+        width: "100%",
+        lineHeight: "25px",
       },
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down("xs")]: {
         fontSize: 9,
         fontWeight: 400,
         height: 20,
-        lineHeight: '20px',
-        minWidth: 'unset',
-        padding: '0px 3px'
+        lineHeight: "20px",
+        minWidth: "unset",
+        padding: "0px 3px",
       },
       [theme.breakpoints.down(370)]: {
         fontSize: 8,
-      }
+      },
     },
   },
   tab: {
@@ -477,5 +477,23 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     color: "#431AB7",
     
     textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
-  }
+  },
+  loanTopButtonBox: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: 36,
+    marginBottom: 60,
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      marginTop: 46,
+      marginBottom: 64,
+    },
+  },
+  btnGroup: {
+    display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      marginBottom: theme.spacing(2),
+    },
+  },
 }));

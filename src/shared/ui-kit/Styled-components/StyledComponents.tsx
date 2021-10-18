@@ -179,3 +179,7 @@ export const StyledSkeleton = withStyles({
     borderRadius: 12,
   },
 })(Skeleton);
+export const SkeletonAvatar = withStyles({
+  root: {
+    borderRadius: "100%"  },
+})(Skeleton);

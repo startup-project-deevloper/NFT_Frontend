@@ -8,7 +8,7 @@ import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import URL from "shared/functions/getURL";
-import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { digitalArtCardStyles } from "./index.styles";
 import ReactPlayer from "react-player";
@@ -16,7 +16,7 @@ import { onGetDecrypt, onGetNonDecrypt } from "shared/ipfs/get";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
-import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { StyledSkeleton, SkeletonAvatar } from "shared/ui-kit/Styled-components/StyledComponents";
 import { useSelector } from "react-redux";
 import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
 
@@ -59,18 +59,22 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    if (media && user) {
+    if (media && user && users && users.length > 0) {
       if (media.CreatorId || media.CreatorAddress) {
         const getCreatorData = async creatorId => {
           try {
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
               let data = response.data.data;
-              const creatorData : any = users.find(u => u.address === creatorId || u.id === creatorId);
+              const creatorData: any = users.find(u => u.address === creatorId || u.id === creatorId);
 
               data.infoImage = creatorData.infoImage || null;
               if (ipfs && Object.keys(ipfs).length !== 0 && data && data.infoImage) {
                 data.ipfsImage = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption)
+              }
+
+              if (!data.ipfsImage) {
+                data.ipfsImage = getDefaultAvatar();
               }
 
               setCreator({
@@ -154,7 +158,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         return () => clearInterval(timerId);
       } else return;
     }
-  }, [media, user, ipfs]);
+  }, [media, user, ipfs, users]);
 
   useEffect(() => {
     if (media.cid) {
@@ -230,17 +234,15 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
 
   return (
     <div className={classes.card}
-         style={{ marginBottom: heightFixed === "auction" ? 100 : 0 }}>
+      style={{ marginBottom: heightFixed === "auction" ? 100 : 0 }}>
       <div className={classes.header}>
         <Box display="flex"
-             alignItems="center">
-          {creator ? (
+          alignItems="center">
+          {creator.ipfsImage ? (
             <Avatar
               size="small"
               url={
                 creator.ipfsImage
-                  ? creator.ipfsImage
-                  : getRandomAvatar()
               }
               alt={creator.id}
               title={`${creator.name}`}
@@ -251,7 +253,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               }}
             />
           ) : (
-            <StyledSkeleton width={40} height={40} animation="wave" variant="circle" />
+            <SkeletonAvatar width={40} height={40} animation="wave" variant="circle" />
           )}
           <Box display="flex" flexDirection="column" ml={1}>
             <div
@@ -307,13 +309,12 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           <div
             className={cls(classes.media, classes.fixed)}
             style={{
-              backgroundImage: `url(${
-                media.cid
+              backgroundImage: `url(${media.cid
                   ? imageIPFS
                   : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                  ? media.UrlMainPhoto
-                  : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-              })`,
+                    ? media.UrlMainPhoto
+                    : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
+                })`,
             }}
             onClick={handleOpenDigitalArtModal}
           />
@@ -326,13 +327,12 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             </Box>
           )}
           <img
-            src={`${
-              media.cid
+            src={`${media.cid
                 ? imageIPFS
                 : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                ? media.UrlMainPhoto
-                : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-            }`}
+                  ? media.UrlMainPhoto
+                  : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
+              }`}
             onLoad={() => setImageLoaded(true)}
             alt={media.MediaSymbol ?? media.id}
             onClick={handleOpenDigitalArtModal}
@@ -362,9 +362,8 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               {(media.Auctions.Gathered ?? 0) > (media.Auctions.ReservePrice ?? 0)
                 ? "Current bid"
                 : "Reserve price"}
-              <span>{`${Math.max(media.Auctions.Gathered ?? 0, media.Auctions.ReservePrice ?? 0) || ""} ${
-                media.Auctions.TokenSymbol
-              }`}</span>
+              <span>{`${Math.max(media.Auctions.Gathered ?? 0, media.Auctions.ReservePrice ?? 0) || ""} ${media.Auctions.TokenSymbol
+                }`}</span>
             </div>
           ) : media.ExchangeData ? (
             <div className={classes.gray}>
@@ -373,16 +372,14 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             </div>
           ) : (
             <div className={classes.gray}>
-              <span style={{ marginLeft: "0px" }}>{`${
-                media && media.NftConditions && media.NftConditions.Price ? media.NftConditions.Price : "Free"
-              } ${
-                media && media.NftConditions && media.NftConditions.Price > 0
+              <span style={{ marginLeft: "0px" }}>{`${media && media.NftConditions && media.NftConditions.Price ? media.NftConditions.Price : "Free"
+                } ${media && media.NftConditions && media.NftConditions.Price > 0
                   ? (media.NftConditions.FundingToken ||
-                      media.NftConditions.NftToken ||
-                      media.ViewConditions.ViewingToken) ??
-                    ""
+                    media.NftConditions.NftToken ||
+                    media.ViewConditions.ViewingToken) ??
+                  ""
                   : ""
-              }`}</span>
+                }`}</span>
             </div>
           )
         ) : (

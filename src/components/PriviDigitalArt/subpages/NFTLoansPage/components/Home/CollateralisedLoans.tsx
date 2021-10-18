@@ -128,7 +128,7 @@ export default ({ setOpenDepositPage, }) => {
   };
 
   return (
-    <div style={{ width: "100%" }} onScroll={handleScroll}>
+    <div style={{ width: "100%", padding: "0 80px" }} onScroll={handleScroll}>
       <div className={classes.buttonGroup}>
         <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>
           Deposit your NFT

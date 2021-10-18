@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
+import { Color } from "shared/ui-kit";
 
 export const useNFTLoansPageStyles = makeStyles(theme => ({
   main: {
@@ -19,7 +20,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     maxHeight: "calc(100vh - 80px)",
     overflowX: "hidden",
     position: "relative",
-    padding: "45px 80px",
+    padding: "45px 0",
     "& > div > h2": {
       fontFamily: "Agrandir GrandHeavy",
       fontWeight: "800",
@@ -110,9 +111,8 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
   },
   mediaImageWrapper: {
-    height: "80px",
-    width: "80px",
-    flex: 1,
+    height: "73px",
+    width: "73px",
     marginRight: 16,
     [theme.breakpoints.down('md')]: {
       height: "60px",
@@ -193,10 +193,48 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   blue: { color: "#9EACF2" },
   tableContainerWithAbsoluteImage: {
     width: "100%",
-    zIndex: 2,
-    paddingTop: "80px",
-    position: "relative",
-    marginTop: "-80px",
+    background: "#F6F5F8",
+    padding: "0 80px"
+  },
+  tableLoansContainer: {
+
+    "& .MuiTable-root": {
+      borderCollapse: "separate",
+      borderSpacing: "0 10px"
+    },
+
+    "& .MuiTableHead-root": {
+
+      "& .MuiTableRow-root": {
+        backgroundColor: "transparent",
+      }
+    },
+
+    "& .MuiTableCell-head": {
+      background: "transparent",
+      fontWeight: 600,
+      fontSize: 14,
+      lineHeight: "120%",
+      color: Color.Purple,
+
+      "&:first-child": {
+        paddingLeft: 25,
+      }
+    },
+    "& .MuiTableRow-root": {
+      backgroundColor: "#white",
+      border: "1px solid rgba(158, 172, 242, 0.4)",
+
+      "& td:first-child": {
+        borderTopLeftRadius: 16,
+        borderBottomLeftRadius: 16,
+      },
+      
+      "& td:last-child": {
+        borderTopRightRadius: 16,
+        borderBottomRightRadius: 16,
+      }
+    },
   },
   tableContainer: {
     borderRadius: "16px",
@@ -312,6 +350,47 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       marginBottom: 64,
     },
   },
+  positionColumnButtons: {
+    display: "flex",
+    alignItems: "center",
+    rowGap: 4,
+    flexDirection: "column",
+    marginRight: 16,
+    [theme.breakpoints.down('md')]: {
+      marginRight: 8,
+    },
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: "column",
+      rowGap: 4,
+    },
+    "& > button": {
+      whiteSpace: "nowrap",
+      borderRadius: 4,
+      padding: "0 40px",
+      marginLeft: '0 !important',
+      [theme.breakpoints.down('md')]: {
+        fontSize: 12,
+      },
+      [theme.breakpoints.down('sm')]: {
+        marginLeft: '0 !important',
+        marginTop: '0 !important',
+        height: 25,
+        width: '100%',
+        lineHeight: '25px',
+      },
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 9,
+        fontWeight: 400,
+        height: 20,
+        lineHeight: '20px',
+        minWidth: 'unset',
+        padding: '0px 3px'
+      },
+      [theme.breakpoints.down(370)]: {
+        fontSize: 8,
+      }
+    },
+  },
   positionButtons: {
     display: "flex",
     alignItems: "center",
@@ -371,4 +450,32 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     borderBottom: "4px solid #431AB7",
     opacity: 1,
   },
+  loanMediaNameTag: {
+    background: "#431AB7",
+    borderRadius: 4,
+    fontWeight: "bold",
+    fontSize: 10,
+    color: "white",
+    padding: "5px 9px",
+    width: "fit-content"
+  },
+  loanMediaNameName: {
+    fontWeight: "bold",
+    fontSize: 18,
+    lineHeight: "104.5%",
+
+    textAlign: "justify",
+
+    color: "#431AB7",
+  },
+  loanMediaNameId: {
+    fontSize: 14,
+    lineHeight: "104.5%",
+    
+    textAlign: "justify",
+    
+    color: "#431AB7",
+    
+    textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
+  }
 }));

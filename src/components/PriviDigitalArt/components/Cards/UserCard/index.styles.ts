@@ -40,7 +40,7 @@ export const userCardStyles = makeStyles(theme => ({
     fontWeight: 700,
     fontSize: 11,
     fontFamily: 'Agrandir',
-    color: "#65CB63",
+    color: "#431AB7",
     textAlign: "center",
     margin: "5px 10px 0",
   },

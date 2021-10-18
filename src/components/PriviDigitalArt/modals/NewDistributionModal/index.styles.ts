@@ -52,19 +52,19 @@ export const newDistributionModalStyles = makeStyles((theme) => ({
       height: 45,
       width: 250,
       marginTop: 39,
-      borderRadius: "48px",
+      borderRadius: "8px",
       fontFamily: "Montserrat",
       fontSize: 16,
       fontWeight: 600,
       lineHeight: "18px",
       border: "none",
       color: "#ffffff",
-      background: "#2D3047",
+      background: "#431AB7",
     },
     "& span": {
       fontSize: 16,
       fontWeight: 600,
-      color: "#65CB63",
+      color: "#431AB7",
       textAlign: "center",
       marginTop: 30,
     }
@@ -90,7 +90,7 @@ export const newDistributionModalStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     marginBottom: 40,
-    background: "#F0F5F8",
+    background: "#EFF2FD",
     borderRadius: "68px",
     [theme.breakpoints.down('xs')]: {
       marginTop: 24,
@@ -117,7 +117,7 @@ export const newDistributionModalStyles = makeStyles((theme) => ({
   },
   tabHeaderPodMediaSelected: {
     color: "#FFFFFF",
-    background: "#2D3047",
+    background: "#431AB7",
     borderRadius: "77px",
   },
   tooltipHeaderInfo: {
@@ -157,7 +157,7 @@ export const newDistributionModalStyles = makeStyles((theme) => ({
     marginTop: "32px",
     "& button": {
       height: "59px",
-      borderRadius: "48px",
+      borderRadius: "8px",
       fontFamily: "Montserrat",
       fontWeight: 800,
       lineHeight: "20px",
@@ -170,7 +170,7 @@ export const newDistributionModalStyles = makeStyles((theme) => ({
       },
       "&:last-child": {
         color: "#FFFFFF",
-        background: "#2D3047",
+        background: "#431AB7",
         width: 295
       },
     },

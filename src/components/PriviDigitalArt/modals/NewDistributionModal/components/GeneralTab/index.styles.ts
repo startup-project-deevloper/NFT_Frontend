@@ -5,7 +5,7 @@ export const generalTabStyles = makeStyles(() => ({
   button: {
     width: "100% !important",
     background: "linear-gradient(0deg, #F2FBF6, #F2FBF6), #17172D !important",
-    color: `${Color.MusicDAODark} !important`,
+    color: `#431AB7 !important`,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",

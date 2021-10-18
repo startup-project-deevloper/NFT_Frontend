@@ -18,6 +18,7 @@ import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { getUser, getUsersInfoList } from "store/selectors";
 
 const getRandomImageUrl = () => {
   return require(`assets/backgrounds/digital_art_1.png`);
@@ -26,8 +27,9 @@ const getRandomImageUrl = () => {
 export default function LoanCard({ item, index = 0, setItem }) {
   const classes = loanCardStyles();
 
-  const user = useTypedSelector(state => state.user);
   const history = useHistory();
+  const user = useTypedSelector(getUser);
+  const users = useTypedSelector(getUsersInfoList);
 
   const { isSignedin } = useAuth();
 
@@ -45,43 +47,24 @@ export default function LoanCard({ item, index = 0, setItem }) {
 
   const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
-  const [imageIPFS, setImageIPFS] = useState('');
+  const [imageIPFS, setImageIPFS] = useState("");
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
   useEffect(() => {
-    if (media && user) {
+    if (media && users) {
       if (item?.CreatorAddress) {
-        if (item.CreatorAddress === user?.address) {
-          setCreator({
-            ...user,
-            name: `${user.firstName} ${user.lastName}`,
-          });
+        const c = users.find(u => u.address === item?.CreatorAddress);
+        if (c) {
+          setCreator(c);
         } else {
-          const getCreatorData = async () => {
-            await Axios.get(`${URL()}/user/getBasicUserInfo/${item?.CreatorAddress}`)
-              .then(response => {
-                if (response.data.success) {
-                  let data = response.data.data;
-                  setCreator({
-                    ...data,
-                    name: data.name ?? `${data.firstName} ${data.lastName}`,
-                  });
-                } else {
-                  setCreator({
-                    imageUrl: getRandomAvatarForUserIdWithMemoization(media?.creator),
-                    urlSlug: "",
-                  });
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
-          };
-
-          getCreatorData();
+          setCreator({
+            imageUrl: getRandomAvatarForUserIdWithMemoization(media?.creator),
+            name: media?.creator,
+            urlSlug: media?.creator,
+          });
         }
       } else {
         setCreator({
@@ -95,7 +78,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
     if (media && media?.cid) {
       getImageIPFS(media?.cid);
     }
-  }, [media, user]);
+  }, [media, users]);
 
   useEffect(() => {
     if (media?.cid) {
@@ -206,15 +189,8 @@ export default function LoanCard({ item, index = 0, setItem }) {
             <div
               className={classes.avatar}
               style={{
-                backgroundImage: creator
-                  ? `url(${getUserAvatar({
-                      id: creator.id,
-                      anon: creator.anon,
-                      hasPhoto: creator.hasPhoto,
-                      anonAvatar: creator.anonAvatar,
-                      url: creator.url,
-                    })})`
-                  : "none",
+                backgroundImage:
+                  creator?.ipfsImage ? `url(${creator?.ipfsImage})` : `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)})`,
               }}
               onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
             />
@@ -233,7 +209,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
           </Box>
         </Box>
 
-        {media &&
+        {media && (
           <Box display="flex" alignItems="center">
             <div className={classes.fruitsContainer}>
               <FruitSelect
@@ -259,7 +235,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
               index={index}
             /> */}
           </Box>
-        }
+        )}
       </div>
       {media?.cid && !imageIPFS ? (
         <Box my={1}>
@@ -271,8 +247,8 @@ export default function LoanCard({ item, index = 0, setItem }) {
           style={{
             backgroundImage: `url(${
               media?.cid
-              ? imageIPFS
-              : media?.Type && media?.Type !== "DIGITAL_ART_TYPE"
+                ? imageIPFS
+                : media?.Type && media?.Type !== "DIGITAL_ART_TYPE"
                 ? media?.UrlMainPhoto
                 : media?.UrlMainPhoto ?? media?.Url ?? media?.url ?? getRandomImageUrl()
             })`,

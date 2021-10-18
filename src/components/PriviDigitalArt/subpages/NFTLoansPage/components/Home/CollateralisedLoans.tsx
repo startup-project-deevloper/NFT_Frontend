@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import { useHistory } from "react-router";
 import URL from "shared/functions/getURL";
 
-import { Grid, Hidden } from "@material-ui/core";
 import { useNFTLoansPageStyles } from "../../index.styles";
 import LoanCard from "components/PriviDigitalArt/components/Cards/LoanCard";
 import DepositNFT from "components/PriviDigitalArt/modals/DepositNFTModal";
@@ -11,9 +10,11 @@ import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subp
 
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
+import { SecondaryButton } from "shared/ui-kit";
+import Box from "shared/ui-kit/Box";
+import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
 
-
-export default ({ setOpenDepositPage, }) => {
+export default ({ setOpenDepositPage }) => {
   const classes = useNFTLoansPageStyles();
   const [openDepositNFTModal, setOpenDepositNFTModal] = useState<boolean>(false);
   const [hotLoans, setHotLoans] = useState<any[]>([]);
@@ -22,6 +23,8 @@ export default ({ setOpenDepositPage, }) => {
 
   const [loadingHotLoans, setLoadingHotLoans] = useState<boolean>(false);
   const [loadingLoans, setLoadingLoans] = useState<boolean>(false);
+
+  const [openHowModal, setOpenHowModal] = useState<boolean>(false);
 
   const lastIdRef = useRef<string>("");
   const hasMoreRef = useRef<boolean>(true);
@@ -129,15 +132,27 @@ export default ({ setOpenDepositPage, }) => {
 
   return (
     <div style={{ width: "100%" }} onScroll={handleScroll}>
-      <div className={classes.buttonGroup}>
-        <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>
-          Deposit your NFT
-        </button>
-        <button className={classes.greenButton} style={{ color: 'white', background: "#431AB7" }} onClick={() => history.push("/loan/positions")}>
-          Manage your positions
-        </button>
-      </div>
-
+      <Box className={classes.loanTopButtonBox}>
+        <Box className={classes.btnGroup}>
+          <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>
+            Deposit your NFT
+          </button>
+          <button
+            className={classes.greenButton}
+            style={{ color: "white", background: "#431AB7" }}
+            onClick={() => history.push("/loan/positions")}
+          >
+            Manage your positions
+          </button>
+        </Box>
+        <SecondaryButton
+          size="medium"
+          onClick={() => setOpenHowModal(true)}
+          style={{ color: "#431AB7", border: "1px solid #431AB7" }}
+        >
+          How it works
+        </SecondaryButton>
+      </Box>
       <h3>✨ Hottest Loans</h3>
       <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
         <div className={classes.artCards}>
@@ -181,6 +196,7 @@ export default ({ setOpenDepositPage, }) => {
         </div>
       </LoadingWrapper>
       <DepositNFT open={openDepositNFTModal} onClose={handleCloseDepositNFTModal} reload={reload} />
+      {openHowModal && <HowItWorksModal open={openHowModal} handleClose={() => setOpenHowModal(false)} />}
     </div>
-  )
-}
+  );
+};

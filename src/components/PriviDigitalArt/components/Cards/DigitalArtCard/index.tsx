@@ -371,20 +371,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               Market Price
               <span>{`${media.ExchangeData?.Price} ${media.ExchangeData?.OfferToken ?? "USDT"}`}</span>
             </div>
-          ) : (
-            <div className={classes.gray}>
-              <span style={{ marginLeft: "0px" }}>{`${
-                media && media.NftConditions && media.NftConditions.Price ? media.NftConditions.Price : ""
-              } ${
-                media && media.NftConditions && media.NftConditions.Price > 0
-                  ? (media.NftConditions.FundingToken ||
-                      media.NftConditions.NftToken ||
-                      media.ViewConditions.ViewingToken) ??
-                    ""
-                  : ""
-              }`}</span>
-            </div>
-          )
+          ) : null
         ) : (
           <div className={classes.gray}>
             <span style={{ marginLeft: "0px" }}>

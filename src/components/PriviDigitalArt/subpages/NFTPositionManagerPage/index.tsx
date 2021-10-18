@@ -42,7 +42,7 @@ const NFTPositionManagerPage = () => {
                     setSelectedTab(index);
                   }}
                 >
-                  {tab}
+                  {tab.toUpperCase()}
                 </div>
               ))}
             </Box>

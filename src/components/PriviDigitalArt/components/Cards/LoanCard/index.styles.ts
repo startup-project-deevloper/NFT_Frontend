@@ -118,17 +118,14 @@ export const loanCardStyles = makeStyles(theme => ({
     },
   },
   fruitsContainer: {
-    "& > div > div": {
-      background: "#9EACF2",
-      width: 30,
-      height: 30,
-      borderRadius: 15,
-      padding: 5,
-      filter: "drop-shadow(0px 1.5px 6px rgba(0, 0, 0, 0.2))",
-      "& img": {
-        width: 21,
-      },
-    },
+    background: "#9EACF2",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    filter: "drop-shadow(0px 1.5px 6px rgba(0, 0, 0, 0.2))",
   },
   chain: {
     width: 22,

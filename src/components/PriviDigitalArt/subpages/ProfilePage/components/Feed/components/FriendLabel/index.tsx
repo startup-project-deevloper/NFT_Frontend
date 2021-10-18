@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { Avatar } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -28,10 +28,11 @@ export default function FriendLabel({ friend }) {
           </Box>
         </Box>
       </Box>
-      {!friend.online && (
+      {friend.connected && (
         <Box
           style={{
-            background: "#431AB7",
+            background:
+              "conic-gradient(from 111.31deg at 50% 51.67%, #B1FF00 -118.12deg, #00FF15 110.62deg, #B1FF00 241.88deg, #00FF15 470.63deg)",
             width: "8px",
             height: "8px",
             borderRadius: "4px",

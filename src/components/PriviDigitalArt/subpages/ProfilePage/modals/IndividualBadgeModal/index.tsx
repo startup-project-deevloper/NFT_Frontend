@@ -153,7 +153,7 @@ export default function IndividualBadgeModal({ badge, open, handleClose }) {
           badgeOwnersList.map((owner, index) => (
             <GridItem key={`Item - ${index + 1}`} item xs={12} md={6}>
               <OwnerWrapper>
-                <UserPicture imageUrl={owner.imageURL}>{owner.online ? <OnlineSpot /> : null}</UserPicture>
+                <UserPicture imageUrl={owner.imageURL}>{owner.connected ? <OnlineSpot /> : null}</UserPicture>
                 <div>
                   <UserName>{owner.name}</UserName>
                   <div className={classes.socialContent}>

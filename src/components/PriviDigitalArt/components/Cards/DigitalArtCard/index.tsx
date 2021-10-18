@@ -69,7 +69,6 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               const creatorData : any = users.find(u => u.address === creatorId || u.id === creatorId);
 
               data.infoImage = creatorData.infoImage || null;
-
               if (ipfs && Object.keys(ipfs).length !== 0 && data && data.infoImage) {
                 data.ipfsImage = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption)
               }
@@ -155,7 +154,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         return () => clearInterval(timerId);
       } else return;
     }
-  }, [media, user]);
+  }, [media, user, ipfs]);
 
   useEffect(() => {
     if (media.cid) {
@@ -372,20 +371,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               Market Price
               <span>{`${media.ExchangeData?.Price} ${media.ExchangeData?.OfferToken ?? "USDT"}`}</span>
             </div>
-          ) : (
-            <div className={classes.gray}>
-              <span style={{ marginLeft: "0px" }}>{`${
-                media && media.NftConditions && media.NftConditions.Price ? media.NftConditions.Price : "Free"
-              } ${
-                media && media.NftConditions && media.NftConditions.Price > 0
-                  ? (media.NftConditions.FundingToken ||
-                      media.NftConditions.NftToken ||
-                      media.ViewConditions.ViewingToken) ??
-                    ""
-                  : ""
-              }`}</span>
-            </div>
-          )
+          ) : null
         ) : (
           <div className={classes.gray}>
             <span style={{ marginLeft: "0px" }}>

@@ -241,26 +241,12 @@ const ChatModal = ({ chat }) => {
       userFrom: {
         userId: userSelector.id,
         userName: userSelector.firstName,
-        userFoto: userSelector.anon
-          ? userSelector.anonAvatar && userSelector.anonAvatar.length > 0
-            ? `${require(`assets/anonAvatars/${userSelector.anonAvatar}`)}`
-            : `${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}`
-          : userSelector.hasPhoto && userSelector.url
-            ? `${userSelector.url}?${Date.now()}`
-            : "",
         userConnected: true,
         lastView: new Date(),
       },
       userTo: {
         userId: user.id,
         userName: user.name,
-        userFoto: user.anon
-          ? user.anonAvatar && user.anonAvatar.length > 0
-            ? `${require(`assets/anonAvatars/${user.anonAvatar}`)}`
-            : `${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}`
-          : user.hasPhoto && user.url
-            ? `${user.url}?${Date.now()}`
-            : "",
         userConnected: false,
         lastView: null,
       },

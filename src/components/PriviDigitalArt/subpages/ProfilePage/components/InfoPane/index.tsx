@@ -27,6 +27,7 @@ import { onUploadNonEncrypt } from "../../../../../../shared/ipfs/upload";
 import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
 import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
 import SkeletonBox from "shared/ui-kit/SkeletonBox";
+import { usePageRefreshContext } from "shared/contexts/PageRefreshContext";
 
 const arePropsEqual = (prevProps, currProps) => {
   return (
@@ -84,6 +85,7 @@ const InfoPane = React.memo(
     const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
 
     const [imageIPFS, setImageIPFS] = useState<any>(null);
+    const { profileAvatarChanged, setProfileAvatarChanged } = usePageRefreshContext();
 
     useEffect(() => {
       setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
@@ -96,7 +98,7 @@ const InfoPane = React.memo(
       } else if (!Object.entries(userProfile).length) {
         setImageIPFS(null);
       }
-    }, [ipfs, userProfile]);
+    }, [ipfs, userProfile, profileAvatarChanged]);
 
     useEffect(() => {
       if (user.backgroundURL) {
@@ -291,6 +293,7 @@ const InfoPane = React.memo(
                 }
                 dispatch(setUser(setterUser));
               }
+              setProfileAvatarChanged(Date.now());
             }
           })
           .catch(error => {

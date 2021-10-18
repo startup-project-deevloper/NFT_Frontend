@@ -61,6 +61,7 @@ import { ReactComponent as FiberManualRecordIcon } from "assets/icons/fiber_manu
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import useIPFS from "../../utils-IPFS/useIPFS";
 import getPhotoIPFS from "../../functions/getPhotoIPFS";
+import { usePageRefreshContext } from "shared/contexts/PageRefreshContext";
 
 enum OpenType {
   Home = "HOME",
@@ -138,13 +139,15 @@ const Header = props => {
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
+  const { profileAvatarChanged } = usePageRefreshContext();
+
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
   useEffect(() => {
     getPhotoUser();
-  }, [ipfs, userSelector.id]);
+  }, [ipfs, userSelector.id, profileAvatarChanged]);
 
   const getPhotoUser = async () => {
     if (

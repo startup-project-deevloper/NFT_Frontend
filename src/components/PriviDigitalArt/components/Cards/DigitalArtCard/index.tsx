@@ -374,7 +374,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           ) : (
             <div className={classes.gray}>
               <span style={{ marginLeft: "0px" }}>{`${
-                media && media.NftConditions && media.NftConditions.Price ? media.NftConditions.Price : "Free"
+                media && media.NftConditions && media.NftConditions.Price ? media.NftConditions.Price : ""
               } ${
                 media && media.NftConditions && media.NftConditions.Price > 0
                   ? (media.NftConditions.FundingToken ||

@@ -2393,15 +2393,11 @@ const MediaPage = () => {
                   </>
                 ) : !media?.Auctions && !media?.ExchangeData && media?.NftConditions ? (
                   <Box display="flex" flexDirection="row" alignItems="center">
-                    <Text color={Color.Black} size={FontSize.XL}>
-                      Price
-                    </Text>
-                    {media?.NftConditions?.Price === 0 ? (
-                      <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                        Free
-                      </Text>
-                    ) : (
+                    {media?.NftConditions?.Price !== 0 && (
                       <>
+                        <Text color={Color.Black} size={FontSize.XL}>
+                          Price
+                        </Text>
                         <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
                           {`${
                             media?.NftConditions?.NftToken

@@ -8,7 +8,7 @@ import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { useNFTPositionManagerPageStyles } from "./index.styles";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 
-const Tabs = ["base NFT loans", "Incremental Loans"];
+const Tabs = ["collateralised loans", "Fractional  Loans"];
 
 const NFTPositionManagerPage = () => {
   const classes = useNFTPositionManagerPageStyles();

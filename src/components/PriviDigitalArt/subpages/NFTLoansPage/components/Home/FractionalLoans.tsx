@@ -169,9 +169,9 @@ const FractionalLoans = ({ loading, loans }) => {
                     }}
                   />
                 </Box>
-                <Box display="flex" flexDirection="column" justifyContent="space-between" height="73px" ml={2}>
+                <Box display="flex" flexDirection="column" justifyContent="space-between" className={classes.loanMediaTextWrapper}>
                   <span className={classes.loanMediaNameTag}>collection</span>
-                  <span className={classes.loanMediaNameName}>{row?.media?.MediaName ?? ""}</span>
+                  <span className={classes.loanMediaName}>{row?.media?.MediaName ?? ""}</span>
                   <span className={classes.loanMediaNameId}>ID #24556</span>
                 </Box>
               </Box>

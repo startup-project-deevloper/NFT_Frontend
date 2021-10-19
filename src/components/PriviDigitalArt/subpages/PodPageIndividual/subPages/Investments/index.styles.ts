@@ -1,5 +1,5 @@
-import {makeStyles} from '@material-ui/core';
-import { Gradient } from 'shared/ui-kit';
+import { makeStyles } from "@material-ui/core";
+import { Color, Gradient } from "shared/ui-kit";
 
 export const investmentStyles = makeStyles(theme => ({
   flexBox: {
@@ -23,52 +23,51 @@ export const investmentStyles = makeStyles(theme => ({
   },
   whiteBox: {
     borderRadius: 16,
-    background: "#ffffff",
+    background: "rgba(158, 172, 242, 0.16)",
     padding: "40px 34px 25px",
     [theme.breakpoints.down(680)]: {
       padding: "40px 12px 25px",
-    }
+    },
   },
   whiteBoxPriceItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRight: '1px solid #18181822',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    borderRight: "1px solid #18181822",
   },
   whiteBoxFundsItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRight: '1px solid #18181822',
-    [theme.breakpoints.down('xs')]: {
-      borderRight: 'unset',
-    }
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRight: "1px solid #18181822",
+    [theme.breakpoints.down("xs")]: {
+      borderRight: "unset",
+    },
   },
   whiteBoxPaddingItem: {
-    padding: '0px 24px 0px 64px',
+    padding: "0px 24px 0px 64px",
     [theme.breakpoints.down(780)]: {
-      padding: '0px 24px',
+      padding: "0px 24px",
     },
     [theme.breakpoints.down(680)]: {
-      padding: '0px 12px',
+      padding: "0px 12px",
     },
-    [theme.breakpoints.down('xs')]: {
-      padding: '0px 12px',
+    [theme.breakpoints.down("xs")]: {
+      padding: "0px 12px",
       marginTop: 12,
       paddingTop: 19,
-      borderTop: '1px solid #18181822',
+      borderTop: "1px solid #18181822",
       paddingBottom: 21,
-      borderBottom: '1px solid #18181822',
-    }
+      borderBottom: "1px solid #18181822",
+    },
   },
   title: {
     fontSize: "22px",
     fontWeight: 800,
     fontFamily: "Agrandir",
-    lineHeight: '130%',
-    color: "#2D3047",
+    lineHeight: "130%",
+    color: Color.Purple,
   },
   header1: {
     fontFamily: "Montserrat",
@@ -104,10 +103,20 @@ export const investmentStyles = makeStyles(theme => ({
   greenBox: {
     display: "flex",
     alignItems: "center",
-    background: "linear-gradient(0deg, #F2FBF6, #F2FBF6), #17172D",
-    padding: '19px 0px',
+    background: Color.Violet,
+    padding: "19px 8px",
     borderRadius: "12px",
     marginTop: 25,
+    color: Color.White,
+  },
+  timeBox: {
+    display: "flex",
+    alignItems: "center",
+    background: Color.Violet,
+    padding: theme.spacing(1),
+    borderRadius: "12px",
+    marginTop: 25,
+    color: Color.White,
   },
   graphBox: {
     display: "flex",
@@ -149,7 +158,6 @@ export const investmentStyles = makeStyles(theme => ({
     width: "10px",
     height: "10px",
     borderRadius: "50%",
-    background: "#65CB63",
     marginRight: "8px",
   },
   externalLink: {
@@ -188,12 +196,12 @@ export const investmentStyles = makeStyles(theme => ({
   },
 
   barContainer: {
-    background: "rgba(84, 101, 143, 0.3)",
+    background: Color.Violet,
     height: 3,
     borderRadius: "20px",
     width: "100%",
     "& > div": {
-      background: "linear-gradient(90deg, #A0D800 39.81%, #0DCC9E 75.56%, rgba(255, 255, 255, 0) 98.84%)",
+      background: Color.Purple,
       height: 3,
       borderRadius: "20px",
     },

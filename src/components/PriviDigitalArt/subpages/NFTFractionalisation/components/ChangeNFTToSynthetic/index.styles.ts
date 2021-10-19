@@ -204,6 +204,13 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     padding: "8px 32px",
     minHeight: 0,
     width: 230,
+
+    "&:disabled": {
+      border: "1px solid rgba(67, 26, 183, 0.24)",
+      background: "rgb(239, 242, 253)",
+      color: "#431AB7",
+      cursor: "not-allowed"
+    }
   },
   sliderContainer: { width: "100%" },
   borderBox: {

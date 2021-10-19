@@ -268,7 +268,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   if (openChangeNFTToSynthetic) {
     return (
       <div className={classes.root}>
-        <ChangeNFTToSynthetic goBack={() => setOpenChangeNFTToSynthetic(false)} />
+        <ChangeNFTToSynthetic goBack={() => setOpenChangeNFTToSynthetic(false)} nft={nft}/>
       </div>
     );
   }

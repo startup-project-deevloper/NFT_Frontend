@@ -16,7 +16,7 @@ import { useWeb3React } from "@web3-react/core";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
-const ChangeNFTToSynthetic = ({ goBack }) => {
+const ChangeNFTToSynthetic = ({ goBack, nft }) => {
   const classes = useFractionaliseStyles();
   const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
@@ -27,8 +27,6 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
   const isMobileScreen = useMediaQuery("(max-width:586px)");
   const [prevSelectedChain, setPrevSelectedChain] = useState<any>(filteredBlockchainNets[1]);
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
-  const [supply, setSupply] = useState<string>("");
-  const [initialPrice, setInitialPrice] = useState<string>("");
   const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
 
   const theme = useTheme();
@@ -132,7 +130,7 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
             <div className={classes.text}>You will create a synthetic copy of the NFT you are selecting.</div>
           </Box>
           {userNFTs && userNFTs.length > 0 && (
-            <button disabled={!walletConnected} className={classes.nftsButton} onClick={handleProceed}>
+            <button disabled={!walletConnected || !selectedNFT} className={classes.nftsButton} onClick={handleProceed}>
               Continue
             </button>
           )}
@@ -211,8 +209,7 @@ const ChangeNFTToSynthetic = ({ goBack }) => {
           open={openChangeToSyntheticModal}
           onClose={() => setOpenChangeToSyntheticModal(false)}
           selectedNFT={selectedNFT}
-          supplyToKeep={supply}
-          priceFraction={initialPrice}
+          currentNFT={nft}
           onSuccess={fractionaliseSuccess}
         />
       )}

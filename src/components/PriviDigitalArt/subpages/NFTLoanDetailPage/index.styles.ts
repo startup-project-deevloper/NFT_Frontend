@@ -18,7 +18,7 @@ export const useLoanViewStyles = makeStyles(theme => ({
       borderRadius: "8px",
     },
     [theme.breakpoints.down('xs')]: {
-      padding: "45px 16px",
+      padding: "16px 16px 45px 16px",
     }
   },
   detailImg: {

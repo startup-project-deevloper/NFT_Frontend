@@ -41,7 +41,7 @@ const interceptor = (store) => {
     function (error) {
       console.log("privi axios response error");
       // Do something with response error
-      if (error.response.status === 403) {
+      if (error && error.response && error.response.status && error.response.status === 403) {
         console.log("403 ERROR AUTH JWT!");
         store.dispatch(signOut());
         localStorage.clear();

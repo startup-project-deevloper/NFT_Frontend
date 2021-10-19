@@ -1,4 +1,6 @@
 import React, { useState, useContext } from "react";
+import { useSelector } from "react-redux";
+import Axios from "axios";
 import cls from "classnames";
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
@@ -9,6 +11,11 @@ import { useNFTPositionManagerPageStyles } from "./index.styles";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import CollateralisedLoans from "./components/CollateralisedLoans";
 import FractionalLoans from "./components/FractionalLoans";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { onGetNonDecrypt } from "shared/ipfs/get";
+import URL from "shared/functions/getURL";
+import { getUser } from "store/selectors";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 
 const Tabs = ["collateralised loans", "Fractional  Loans"];
 
@@ -23,12 +30,63 @@ const NFTPositionManagerPage = () => {
   const initTab = location.state?.tabId ?? 0;
 
   const { setOpenFilters } = useContext(DigitalArtContext);
-
+  const userSelector = useSelector(getUser);
   const [selectedTab, setSelectedTab] = useState<number>(initTab);
+
+  const [positions, setPositions] = useState<any[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
 
   React.useEffect(() => {
     setOpenFilters(false);
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const getImageIPFS = async (cid: string) => {
+    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
+      downloadWithNonDecryption(fileCID, download)
+    );
+    if (files) {
+      let base64String = _arrayBufferToBase64(files.content);
+      return "data:image/png;base64," + base64String;
+    }
+    return "";
+  };
+
+  React.useEffect(() => {
+    if (userSelector?.id && Object.keys(ipfs).length) {
+      loadData();
+    }
+  }, [userSelector, ipfs]);
+
+  const loadData = () => {
+    setIsDataLoading(true);
+    Axios.get(
+      `${URL()}/nftLoan/getUserNFTLoans/${"0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
+      }`
+    )
+      .then(async ({ data }) => {
+        if (data.success) {
+          const postionsData = await Promise.all(
+            data.data?.map(async nft => {
+              const cidUrl = nft.media?.cid ? await getImageIPFS(nft.media?.cid) : "";
+              if (cidUrl) {
+                nft.media["cidUrl"] = cidUrl;
+              }
+              return nft;
+            })
+          );
+          setPositions(postionsData || []);
+        }
+      })
+      .catch(e => {
+        console.log(e);
+      })
+      .finally(() => {
+        setIsDataLoading(false);
+      });
+  };
 
   return (
     <>
@@ -57,7 +115,11 @@ const NFTPositionManagerPage = () => {
           </Box>
 
           {selectedTab === 0 && (
-            <CollateralisedLoans />
+            <CollateralisedLoans
+              positions={positions}
+              isDataLoading={isDataLoading}
+              loadData={loadData}
+            />
           )}
           {selectedTab === 1 && (
             <FractionalLoans />

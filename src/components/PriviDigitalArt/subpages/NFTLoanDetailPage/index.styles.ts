@@ -23,7 +23,6 @@ export const useLoanViewStyles = makeStyles(theme => ({
   },
   detailImg: {
     width: "100%",
-    height: "100%",
     objectFit: "fill",
     borderRadius: 16,
     cursor: 'pointer'

@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react";
 import cls from "classnames";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import Box from "shared/ui-kit/Box";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { useNFTPositionManagerPageStyles } from "./index.styles";
@@ -12,12 +13,18 @@ import FractionalLoans from "./components/FractionalLoans";
 const Tabs = ["collateralised loans", "Fractional  Loans"];
 
 const NFTPositionManagerPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
+
   const classes = useNFTPositionManagerPageStyles();
   const history = useHistory();
+  const location: any = useLocation<Location>();
+  const initTab = location.state?.tabId ?? 0;
 
   const { setOpenFilters } = useContext(DigitalArtContext);
 
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<number>(initTab);
 
   React.useEffect(() => {
     setOpenFilters(false);
@@ -27,14 +34,14 @@ const NFTPositionManagerPage = () => {
     <>
       <div className={classes.main}>
         <div className={classes.content}>
-          {/* <BackButton dark overrideFunction={() => history.push("/loan")} /> */}
           <img src={require("assets/icons3d/vault.png")} alt="" className={classes.absoluteImage} />
-          <Box display="flex" alignItems="center" pl={4}>
+          <Box pl={4}>
+            <BackButton purple overrideFunction={() => history.push("/loan")} />
             <h2>✨ Manage Your Loans</h2>
           </Box>
 
-          <Box mt={7} width="100%">
-            <Box px={4} display="flex" width="100%" style={{ borderBottom: "1px solid #431AB720" }}>
+          <Box mt={isMobile ? 5 : 7} width="100%" padding={isMobile ? "0 15px" : "0 42px"} style={{ borderBottom: "1px solid #431AB720" }}>
+            <Box display="flex" width="100%">
               {Tabs.map((tab, index) => (
                 <div
                   key={`tab-${index}`}

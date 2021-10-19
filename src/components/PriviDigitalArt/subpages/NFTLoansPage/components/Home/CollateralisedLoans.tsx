@@ -52,7 +52,12 @@ export default ({
             <button
               className={classes.greenButton}
               style={{ color: "white", background: "#431AB7" }}
-              onClick={() => history.push("/loan/positions")}
+              onClick={() => history.push({
+                pathname: "/loan/positions",
+                state: {
+                  tabId: 0,
+                }
+              })}
             >
               Manage positions
             </button>

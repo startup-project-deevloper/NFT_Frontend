@@ -230,7 +230,12 @@ const FractionalLoans = ({ loading, loans }) => {
               <button
                 className={classes.greenButton}
                 style={{ color: "white", background: "#431AB7" }}
-                onClick={() => history.push("/loan/positions")}
+                onClick={() => history.push({
+                  pathname: "/loan/positions",
+                  state: {
+                    tabId: 1,
+                  }
+                })}
               >
                 Manage positions
               </button>
@@ -248,7 +253,12 @@ const FractionalLoans = ({ loading, loans }) => {
             <button
               className={classes.greenButton}
               style={{ color: "white", background: "#431AB7" }}
-              onClick={() => history.push("/loan/positions")}
+              onClick={() => history.push({
+                pathname: "/loan/positions",
+                state: {
+                  tabId: 1,
+                }
+              })}
             >
               Manage positions
             </button>

@@ -131,72 +131,76 @@ export default ({ setOpenDepositPage }) => {
   };
 
   return (
-    <div style={{ width: "100%", padding: "0 80px" }} onScroll={handleScroll}>
-      <Box className={classes.loanTopButtonBox}>
-        <Box className={classes.btnGroup}>
-          <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>
-            Deposit your NFT
-          </button>
-          <button
-            className={classes.greenButton}
-            style={{ color: "white", background: "#431AB7" }}
-            onClick={() => history.push("/loan/positions")}
+    <div style={{width: "100%", fontFamily: "Agrandir"}}>
+      <div>
+        <Box className={classes.loanTopButtonBox}>
+          <Box className={classes.btnGroup}>
+            <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>
+              Deposit your NFT
+            </button>
+            <button
+              className={classes.greenButton}
+              style={{ color: "white", background: "#431AB7" }}
+              onClick={() => history.push("/loan/positions")}
+            >
+              Manage positions
+            </button>
+          </Box>
+          <SecondaryButton
+            size="medium"
+            onClick={() => setOpenHowModal(true)}
+            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px" }}
           >
-            Manage your positions
-          </button>
+            How it works?
+          </SecondaryButton>
         </Box>
-        <SecondaryButton
-          size="medium"
-          onClick={() => setOpenHowModal(true)}
-          style={{ color: "#431AB7", border: "1px solid #431AB7" }}
-        >
-          How it works
-        </SecondaryButton>
-      </Box>
-      <h3>✨ Hottest Loans</h3>
-      <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
-        <div className={classes.artCards}>
-          <MasonryGrid
-            gutter={"24px"}
-            data={hotLoans}
-            renderItem={(item, index) => (
-              <LoanCard
-                item={item}
-                key={`item-${index}`}
-                setItem={newItem => {
-                  const newLoans = [...hotLoans];
-                  newLoans[index] = newItem;
-                  setHotLoans(newLoans);
-                }}
-              />
-            )}
-            columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-          />
-        </div>
-      </LoadingWrapper>
-      <h3>✨ All</h3>
-      <LoadingWrapper loading={loadingLoans} theme={"blue"}>
-        <div className={classes.artCards}>
-          <MasonryGrid
-            gutter={"24px"}
-            data={loans}
-            renderItem={(item, index) => (
-              <LoanCard
-                item={item}
-                key={`item-${index}`}
-                setItem={newItem => {
-                  const newLoans = [...loans];
-                  newLoans[index] = newItem;
-                  setLoans(newLoans);
-                }}
-              />
-            )}
-            columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-          />
-        </div>
-      </LoadingWrapper>
-      <DepositNFT open={openDepositNFTModal} onClose={handleCloseDepositNFTModal} reload={reload} />
-      {openHowModal && <HowItWorksModal open={openHowModal} handleClose={() => setOpenHowModal(false)} />}
+      </div>
+      <div style={{ width: "100%", padding: "0 24px", paddingTop:"32px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }} onScroll={handleScroll}>
+        <h3>✨ Hottest Loans.</h3>
+        <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
+          <div className={classes.artCards}>
+            <MasonryGrid
+              gutter={"24px"}
+              data={hotLoans}
+              renderItem={(item, index) => (
+                <LoanCard
+                  item={item}
+                  key={`item-${index}`}
+                  setItem={newItem => {
+                    const newLoans = [...hotLoans];
+                    newLoans[index] = newItem;
+                    setHotLoans(newLoans);
+                  }}
+                />
+              )}
+              columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+            />
+          </div>
+        </LoadingWrapper>
+        <h3>✨ All</h3>
+        <LoadingWrapper loading={loadingLoans} theme={"blue"}>
+          <div className={classes.artCards}>
+            <MasonryGrid
+              gutter={"24px"}
+              data={loans}
+              renderItem={(item, index) => (
+                <LoanCard
+                  item={item}
+                  key={`item-${index}`}
+                  setItem={newItem => {
+                    const newLoans = [...loans];
+                    newLoans[index] = newItem;
+                    setLoans(newLoans);
+                  }}
+                />
+              )}
+              columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+            />
+          </div>
+        </LoadingWrapper>
+        <DepositNFT open={openDepositNFTModal} onClose={handleCloseDepositNFTModal} reload={reload} />
+        {openHowModal && <HowItWorksModal open={openHowModal} handleClose={() => setOpenHowModal(false)} />}
+      </div>
     </div>
   );
 };

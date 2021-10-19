@@ -87,7 +87,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     fontSize: "18px",
     height: 45,
     "&:last-child:not(:first-child)": {
-      marginLeft: "40.5px",
+      marginLeft: "20px",
     },
     [theme.breakpoints.down("sm")]: {
       padding: "12px 32px",
@@ -194,7 +194,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   tableContainerWithAbsoluteImage: {
     width: "100%",
     background: "#F6F5F8",
-    padding: "0 80px"
+    padding: "0 36px"
   },
   tableLoansContainer: {
 
@@ -481,8 +481,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   loanTopButtonBox: {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: 36,
-    marginBottom: 60,
+    margin: "36px 42px",
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
       marginTop: 46,

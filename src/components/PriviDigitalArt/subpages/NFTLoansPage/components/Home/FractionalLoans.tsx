@@ -17,6 +17,7 @@ import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../index.styles";
+import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
 
 const FractionalLoans = () => {
   const classes = useNFTLoansPageStyles();
@@ -30,6 +31,7 @@ const FractionalLoans = () => {
   const isMediumScreen = useMediaQuery("(max-width: 1000px)");
   const [openDepositModal, setOpenDepositModal] = useState<boolean>(false);
   const [openBorrowModal, setOpenBorrowModal] = useState<boolean>(false);
+  const [openHowModal, setOpenHowModal] = useState<boolean>(false);
 
   const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
@@ -89,8 +91,7 @@ const FractionalLoans = () => {
   const loadData = () => {
     setIsDataLoading(true);
     Axios.get(
-      `${URL()}/nftLoan/getUserNFTLoans/${
-        "0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
+      `${URL()}/nftLoan/getUserNFTLoans/${"0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
       }`
     )
       .then(async ({ data }) => {
@@ -184,12 +185,11 @@ const FractionalLoans = () => {
                       style={{
                         backgroundImage:
                           row?.media?.cidUrl ?? row?.media?.UrlMainPhoto ?? row?.media?.Url ?? row?.media?.url
-                            ? `url(${
-                                row?.media?.cidUrl ??
-                                row?.media?.UrlMainPhoto ??
-                                row?.media?.Url ??
-                                row?.media?.url
-                              })`
+                            ? `url(${row?.media?.cidUrl ??
+                            row?.media?.UrlMainPhoto ??
+                            row?.media?.Url ??
+                            row?.media?.url
+                            })`
                             : "none",
                         backgroundColor: "#DDFF57",
                       }}
@@ -251,20 +251,24 @@ const FractionalLoans = () => {
 
   return (
     <div style={{ width: "100%" }}>
-      <Box display="flex" justifyContent="space-between" padding="32px 64px 32px 32px">
-        <button className={classes.greenButton} style={{ color: 'white', background: "#431AB7" }} onClick={() => history.push("/loan/positions")}>
-          Manage your positions
-        </button>
-        <SecondaryButton
-          className={classes.secondary}
-          style={{ borderRadius: 4, marginTop: 0, height: 46, padding: "0 40px" }}
-          size="medium"
-          onClick={() => {}}
-        >
-          How it works?
-        </SecondaryButton>
-      </Box>
-
+      <div>
+        <Box className={classes.loanTopButtonBox}>
+          <button
+            className={classes.greenButton}
+            style={{ color: "white", background: "#431AB7" }}
+            onClick={() => history.push("/loan/positions")}
+          >
+            Manage positions
+          </button>
+          <SecondaryButton
+            size="medium"
+            onClick={() => setOpenHowModal(true)}
+            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px" }}
+          >
+            How it works?
+          </SecondaryButton>
+        </Box>
+      </div>
       <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
           <div className={`${classes.tableLoansContainer} position-table`}>
@@ -272,6 +276,8 @@ const FractionalLoans = () => {
           </div>
         </div>
       </LoadingWrapper>
+
+      {openHowModal && <HowItWorksModal open={openHowModal} handleClose={() => setOpenHowModal(false)} />}
     </div>
   );
 };

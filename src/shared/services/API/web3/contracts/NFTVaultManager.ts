@@ -121,7 +121,15 @@ export const requestChangeNFT = (web3: Web3, account: string, payload: any): Pro
         },
         (error, events) => {
           console.log("requestChangeNFT events", events);
-          resolve(true)
+          if (events.length) {
+            const { returnValues } = events[0];
+            if (returnValues.response) {
+              resolve(true)
+            } else {
+              resolve(false)
+            }
+          }
+          resolve(false)
         }
       );
     } catch (err) {

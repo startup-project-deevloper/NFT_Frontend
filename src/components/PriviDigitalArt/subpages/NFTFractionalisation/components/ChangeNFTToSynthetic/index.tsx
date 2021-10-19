@@ -130,7 +130,7 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
             <div className={classes.text}>You will create a synthetic copy of the NFT you are selecting.</div>
           </Box>
           {userNFTs && userNFTs.length > 0 && (
-            <button disabled={!walletConnected} className={classes.nftsButton} onClick={handleProceed}>
+            <button disabled={!walletConnected || !selectedNFT} className={classes.nftsButton} onClick={handleProceed}>
               Continue
             </button>
           )}

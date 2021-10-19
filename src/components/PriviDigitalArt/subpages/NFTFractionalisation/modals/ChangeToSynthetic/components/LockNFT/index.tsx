@@ -5,6 +5,7 @@ import Box from "shared/ui-kit/Box";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { useLockNFTStyles } from "./index.styles";
 import Web3 from "web3";
+import config from "shared/connectors/ethereum/config";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import axios from "axios";
@@ -44,6 +45,22 @@ export default function LockNFT({ onClose, onCompleted, tokenAddress, tokenFromI
       const web3APIHandler = targetChain.apiHandler;
 
       const web3 = new Web3(library.provider);
+      const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
+      const response = await web3APIHandler.Erc721.setApprovalForToken(
+        web3,
+        account!,
+        {
+          to: contractAddress,
+          tokenId: tokenToId,
+        },
+        tokenAddress
+      );
+
+      if (!response.success) {
+        setIsProceeding(false);
+        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+        return;
+      }
 
       const requestChangeRes = await requestChangeNFT(web3, account!, {
         tokenAddress,

@@ -18,7 +18,7 @@ import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../index.styles";
 
-const FractionalLoans = () => {
+const FractionalLoans = ({ loading, loans }) => {
   const classes = useNFTLoansPageStyles();
 
   const history = useHistory();
@@ -81,39 +81,8 @@ const FractionalLoans = () => {
   ];
 
   useEffect(() => {
-    if (userSelector?.id && Object.keys(ipfs).length) {
-      loadData();
-    }
-  }, [userSelector, ipfs]);
-
-  const loadData = () => {
-    setIsDataLoading(true);
-    Axios.get(
-      `${URL()}/nftLoan/getUserNFTLoans/${
-        "0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
-      }`
-    )
-      .then(async ({ data }) => {
-        if (data.success) {
-          const postionsData = await Promise.all(
-            data.data?.map(async nft => {
-              const cidUrl = nft.media?.cid ? await getImageIPFS(nft.media?.cid) : "";
-              if (cidUrl) {
-                nft.media["cidUrl"] = cidUrl;
-              }
-              return nft;
-            })
-          );
-          setPositions(postionsData || []);
-        }
-      })
-      .catch(e => {
-        console.log(e);
-      })
-      .finally(() => {
-        setIsDataLoading(false);
-      });
-  };
+    setPositions(loans || []);
+  }, [loans]);
 
   const handleOpenDepositModal = loan => {
     setOpenDepositModal(loan);
@@ -265,7 +234,7 @@ const FractionalLoans = () => {
         </SecondaryButton>
       </Box>
 
-      <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
+      <LoadingWrapper loading={loading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
           <div className={`${classes.tableLoansContainer} position-table`}>
             <CustomTable theme="art green" headers={tableHeaders} rows={tableData} />

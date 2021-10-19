@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Axios from "axios";
+import URL from "shared/functions/getURL";
 
 import cls from "classnames";
 import Box from "shared/ui-kit/Box";
@@ -11,6 +13,108 @@ const Tabs = ["Collateralised Loans", "Fractional Loans"];
 const NFTLoansHome = ({ setOpenDepositPage }) => {
   const classes = useNFTLoansPageStyles();
   const [selectedTab, setSelectedTab] = useState<number>(0);
+
+  const [loadingHotLoans, setLoadingHotLoans] = useState<boolean>(false);
+  const [loadingLoans, setLoadingLoans] = useState<boolean>(false);
+  const [hotLoans, setHotLoans] = useState<any[]>([]);
+  const [loans, setLoans] = useState<any[]>([]);
+
+  const lastIdRef = useRef<string>("");
+  const hasMoreRef = useRef<boolean>(true);
+
+  useEffect(() => {
+    loadLoans();
+    loadHottestLoans();
+  }, []);
+  
+  const reload = () => {
+    setLoans([]);
+    hasMoreRef.current = true;
+    lastIdRef.current = "";
+    setTimeout(() => {
+      loadLoans();
+      loadHottestLoans();
+    }, 1000);
+  };
+
+  const loadLoans = () => {
+    setLoadingLoans(true);
+
+    const config = {
+      params: {
+        lastId: lastIdRef.current,
+      },
+    };
+
+    Axios.get(`${URL()}/nftLoan/getNFTLoans`, config)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          const nftLoans = data.data;
+          const newData = [...nftLoans];
+          setLoans(newData);
+          lastIdRef.current = data.lastId;
+          hasMoreRef.current = data.hasMore;
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingLoans(false);
+      });
+  };
+
+  const loadHottestLoans = () => {
+    setLoadingHotLoans(true);
+
+    Axios.get(`${URL()}/nftLoan/getHottestNFTLoans`)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          const nftLoans = data.data;
+          setHotLoans(nftLoans);
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingHotLoans(false);
+      });
+  };
+
+  const loadMore = () => {
+    if (!hasMoreRef.current || loadingHotLoans) return;
+    setLoadingLoans(true);
+
+    const config = {
+      params: {
+        lastId: lastIdRef.current,
+      },
+    };
+
+    Axios.get(`${URL()}/nftLoan/getNFTLoans`, config)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          const nftLoans = data.data;
+          const newData = [...loans, ...nftLoans];
+          setLoans(newData);
+          lastIdRef.current = data.lastId;
+          hasMoreRef.current = data.hasMore;
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingLoans(false);
+      });
+  };
+  
+  const handleScroll = React.useCallback(
+    async e => {
+      if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
+        if (hasMoreRef.current) loadMore();
+      }
+    },
+    [hasMoreRef.current]
+  );
 
   return (
     <>
@@ -39,11 +143,22 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
         {selectedTab === 0 && (
           <CollateralisedLoans
             setOpenDepositPage={setOpenDepositPage}
+            reload={reload}
+            hotLoans={hotLoans}
+            setHotLoans={setHotLoans}
+            loans={loans}
+            setLoans={setLoans}
+            loadingLoans={loadingLoans}
+            loadingHotLoans={loadingHotLoans}
+            handleScroll={handleScroll}
           />
         )}
         {
           selectedTab === 1 && (
-            <FractionalLoans />
+            <FractionalLoans
+              loading={loadingLoans}
+              loans={loans}
+            />
           )
         }
       </div>

@@ -2391,35 +2391,6 @@ const MediaPage = () => {
                       </Grid>
                     </Box>
                   </>
-                ) : !media?.Auctions && !media?.ExchangeData && media?.NftConditions ? (
-                  <Box display="flex" flexDirection="row" alignItems="center">
-                    <Text color={Color.Black} size={FontSize.XL}>
-                      Price
-                    </Text>
-                    {media?.NftConditions?.Price === 0 ? (
-                      <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                        Free
-                      </Text>
-                    ) : (
-                      <>
-                        <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                          {`${
-                            media?.NftConditions?.NftToken
-                              ? media?.NftConditions?.NftToken
-                              : media?.ViewConditions?.ViewingToken ?? "ETH"
-                          } ${media?.NftConditions.Price}`}
-                        </Text>
-                        <Text color={Color.Black} size={FontSize.S}>
-                          {`$(${convertTokenToUSD(
-                            media?.NftConditions?.NftToken
-                              ? media?.NftConditions?.NftToken
-                              : media?.ViewConditions?.ViewingToken ?? "ETH",
-                            media?.NftConditions.Price
-                          ).toFixed(6)})`}
-                        </Text>
-                      </>
-                    )}
-                  </Box>
                 ) : media?.ExchangeData ? (
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <Text color={Color.Black} size={FontSize.XL}>

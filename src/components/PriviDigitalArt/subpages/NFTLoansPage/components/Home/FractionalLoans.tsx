@@ -6,9 +6,6 @@ import { useHistory } from "react-router";
 
 import { useMediaQuery } from "@material-ui/core";
 
-import { BackButton } from "components/PriviDigitalArt/components/BackButton";
-import RepayLoanModal from "components/PriviDigitalArt/modals/RepayLoanModal";
-import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundsModal";
 import URL from "shared/functions/getURL";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -19,9 +16,9 @@ import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import { useNFTLoansPageStyles } from "../../../NFTLoansPage/index.styles";
+import { useNFTLoansPageStyles } from "../../index.styles";
 
-const PositionsManager = () => {
+const FractionalLoans = () => {
   const classes = useNFTLoansPageStyles();
 
   const history = useHistory();
@@ -31,6 +28,8 @@ const PositionsManager = () => {
   const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
   const [tableData, setTableData] = useState<Array<Array<CustomTableCellInfo>>>([]);
   const isMediumScreen = useMediaQuery("(max-width: 1000px)");
+  const [openDepositModal, setOpenDepositModal] = useState<boolean>(false);
+  const [openBorrowModal, setOpenBorrowModal] = useState<boolean>(false);
 
   const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
@@ -51,27 +50,27 @@ const PositionsManager = () => {
 
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
-      headerName: "NFT",
+      headerName: "Collection",
+      headerAlign: "left",
+    },
+    {
+      headerName: "Total Size",
       headerAlign: "center",
     },
     {
-      headerName: "CHAIN",
-      headerAlign: "center",
-    },
-    {
-      headerName: "INTEREST",
+      headerName: "Total Borrowed",
       headerAlign: "right",
     },
     {
-      headerName: "LOAN PRINCIPAL",
+      headerName: "Collateral Locked",
       headerAlign: "center",
     },
     {
-      headerName: "ENDS ON",
+      headerName: "C-Ratio",
       headerAlign: "center",
     },
     {
-      headerName: "DEBT TO REPAY",
+      headerName: "Interest APR",
       headerAlign: "center",
     },
     {
@@ -116,21 +115,12 @@ const PositionsManager = () => {
       });
   };
 
-  const [openRepayLoanModal, setOpenRepayLoanModal] = useState<any | boolean>(false);
-  const [openWithdrawFundsModal, setOpenWithdrawFundsModal] = useState<any | boolean>(false);
-
-  const handleOpenRepayLoan = loan => {
-    setOpenRepayLoanModal(loan);
-  };
-  const handleCloseRepayLoan = () => {
-    setOpenRepayLoanModal(false);
+  const handleOpenDepositModal = loan => {
+    setOpenDepositModal(loan);
   };
 
-  const handleOpenWithdrawFunds = loan => {
-    setOpenWithdrawFundsModal(loan);
-  };
-  const handleCloseWithdrawFunds = () => {
-    setOpenWithdrawFundsModal(false);
+  const handleOpenBorrowModal = loan => {
+    setOpenBorrowModal(loan);
   };
 
   useEffect(() => {
@@ -205,69 +195,48 @@ const PositionsManager = () => {
                       }}
                     />
                   </Box>
-                  <Box className={classes.mediaName}>{row?.media?.MediaName ?? ""}</Box>
+                  <Box display="flex" flexDirection="column" justifyContent="space-between" height="73px" ml={2}>
+                    <span className={classes.loanMediaNameTag}>collection</span>
+                    <span className={classes.loanMediaNameName}>{row?.media?.MediaName ?? ""}</span>
+                    <span className={classes.loanMediaNameId}>ID #24556</span>
+                  </Box>
                 </Box>
               ),
               cellAlign: "center",
             },
             {
-              cell: (
-                <img
-                  src={getLoanChainImageUrl(row.Chain, row.media.BlockchainNetwork)}
-                  alt={"chain"}
-                  className={classes.chain}
-                />
-              ),
+              cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
               cellAlign: "center",
             },
             {
-              cell: `${row.FeePct ? row.FeePct : "0"}%`,
+              cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
               cellAlign: "center",
             },
             {
-              cell: row.BidderAddress ? `${row.Bid || 0} ${row.FundingToken || "ETH"}` : "",
+              cell: <span style={{ color: "#431AB7" }}>52,455 JOTs</span>,
               cellAlign: "center",
             },
             {
-              cell: endDate
-                ? `Ended ${endDate}`
-                : `${String(endTime.days).padStart(2, "0")}d
-                  ${String(endTime.hours).padStart(2, "0")}h
-                  ${String(endTime.minutes).padStart(2, "0")}m
-                  ${String(endTime.seconds).padStart(2, "0")}s`,
+              cell: <span style={{ color: "#431AB7" }}>2.5%</span>,
               cellAlign: "center",
             },
             {
-              cell: <div className={`${classes.blue} ${classes.debtColumn}`}>{row.Debt}</div>,
+              cell: <span style={{ color: "#04B800" }}>2.5%</span>,
               cellAlign: "center",
             },
             {
               cell: (
-                <Box className={classes.positionButtons}>
-                  {row.BidderAddress ? (
-                    <>
-                      {row.Debt ? (
-                        <SecondaryButton
-                          className={classes.secondary}
-                          size="medium"
-                          onClick={() => handleOpenRepayLoan(row)}
-                        >
-                          Repay Loan
-                        </SecondaryButton>
-                      ) : (
-                        <PrimaryButton className={classes.primary} disabled size="medium">
-                          Loan repayed
-                        </PrimaryButton>
-                      )}
-                      <SecondaryButton
-                        className={classes.secondary}
-                        size="medium"
-                        onClick={() => handleOpenWithdrawFunds(row)}
-                      >
-                        Withdraw Funds
-                      </SecondaryButton>
-                    </>
-                  ) : null}
+                <Box className={classes.positionColumnButtons}>
+                  <PrimaryButton className={classes.primary} size="medium">
+                    Deposit
+                  </PrimaryButton>
+                  <SecondaryButton
+                    className={classes.secondary}
+                    size="medium"
+                    onClick={() => handleOpenBorrowModal(row)}
+                  >
+                    Borrow
+                  </SecondaryButton>
                 </Box>
               ),
               cellAlign: "center",
@@ -281,73 +250,30 @@ const PositionsManager = () => {
   }, [positions]);
 
   return (
-    <div className={classes.content}>
-      <Ellipse />
-
-      <BackButton dark overrideFunction={() => history.push("/loan")} />
-
-      <Box className={classes.positionTitle}>✨ Manage your positions</Box>
+    <div style={{ width: "100%" }}>
+      <Box display="flex" justifyContent="space-between" padding="32px 64px 32px 32px">
+        <button className={classes.greenButton} style={{ color: 'white', background: "#431AB7" }} onClick={() => history.push("/loan/positions")}>
+          Manage your positions
+        </button>
+        <SecondaryButton
+          className={classes.secondary}
+          style={{ borderRadius: 4, marginTop: 0, height: 46, padding: "0 40px" }}
+          size="medium"
+          onClick={() => {}}
+        >
+          How it works?
+        </SecondaryButton>
+      </Box>
 
       <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
-          <img src={require("assets/icons3d/vault.png")} alt="" className={classes.absoluteImage} />
-          <div className={`${classes.tableContainer} position-table`}>
+          <div className={`${classes.tableLoansContainer} position-table`}>
             <CustomTable theme="art green" headers={tableHeaders} rows={tableData} />
           </div>
         </div>
       </LoadingWrapper>
-      {openRepayLoanModal && (
-        <RepayLoanModal
-          open={openRepayLoanModal !== false}
-          onClose={handleCloseRepayLoan}
-          loan={openRepayLoanModal}
-          reload={loadData}
-        />
-      )}
-      {openWithdrawFundsModal && (
-        <WithdrawFundsModal
-          open={openWithdrawFundsModal !== false}
-          onClose={handleCloseWithdrawFunds}
-          loan={openWithdrawFundsModal}
-          reload={loadData}
-        />
-      )}
     </div>
   );
 };
 
-export default React.memo(PositionsManager);
-
-const Ellipse = () => {
-  const classes = useNFTLoansPageStyles();
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="698"
-      height="649"
-      viewBox="0 0 698 649"
-      fill="none"
-      className={classes.ellipse2}
-    >
-      <g filter="url(#filter0_f)">
-        <ellipse cx="349" cy="300.5" rx="169" ry="168.5" fill="#DDFF57" />
-      </g>
-      <defs>
-        <filter
-          id="filter0_f"
-          x="0"
-          y="-48"
-          width="698"
-          height="697"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-          <feGaussianBlur stdDeviation="90" result="effect1_foregroundBlur" />
-        </filter>
-      </defs>
-    </svg>
-  );
-};
+export default React.memo(FractionalLoans);

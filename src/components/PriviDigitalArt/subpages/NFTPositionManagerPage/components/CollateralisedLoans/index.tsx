@@ -6,7 +6,6 @@ import { useHistory } from "react-router";
 
 import { useMediaQuery } from "@material-ui/core";
 
-import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import RepayLoanModal from "components/PriviDigitalArt/modals/RepayLoanModal";
 import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundsModal";
 import URL from "shared/functions/getURL";
@@ -21,7 +20,7 @@ import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../../NFTLoansPage/index.styles";
 
-const PositionsManager = () => {
+const CollateralisedLoans = () => {
   const classes = useNFTLoansPageStyles();
 
   const history = useHistory();
@@ -284,13 +283,9 @@ const PositionsManager = () => {
     <div className={classes.content}>
       <Ellipse />
 
-      <BackButton dark overrideFunction={() => history.push("/loan")} />
-
-      <Box className={classes.positionTitle}>✨ Manage your positions</Box>
-
       <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
-          <img src={require("assets/icons3d/vault.png")} alt="" className={classes.absoluteImage} />
+          {/* <img src={require("assets/icons3d/vault.png")} alt="" className={classes.absoluteImage} /> */}
           <div className={`${classes.tableContainer} position-table`}>
             <CustomTable theme="art green" headers={tableHeaders} rows={tableData} />
           </div>
@@ -316,7 +311,7 @@ const PositionsManager = () => {
   );
 };
 
-export default React.memo(PositionsManager);
+export default React.memo(CollateralisedLoans);
 
 const Ellipse = () => {
   const classes = useNFTLoansPageStyles();

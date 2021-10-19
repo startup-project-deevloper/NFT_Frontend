@@ -1,42 +1,41 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
-import { useHistory } from "react-router";
-
-import { Grid, Hidden } from "@material-ui/core";
-
-import LoanCard from "components/PriviDigitalArt/components/Cards/LoanCard";
-import DepositNFT from "components/PriviDigitalArt/modals/DepositNFTModal";
-import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
 import URL from "shared/functions/getURL";
+
+import cls from "classnames";
 import Box from "shared/ui-kit/Box";
-import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { useNFTLoansPageStyles } from "../../index.styles";
+import CollateralisedLoans from "./CollateralisedLoans";
+import FractionalLoans from "./FractionalLoans";
+
+const Tabs = ["Collateralised Loans", "Fractional Loans"];
 
 const NFTLoansHome = ({ setOpenDepositPage }) => {
   const classes = useNFTLoansPageStyles();
-  const history = useHistory();
+  const [selectedTab, setSelectedTab] = useState<number>(0);
 
   const [loadingHotLoans, setLoadingHotLoans] = useState<boolean>(false);
   const [loadingLoans, setLoadingLoans] = useState<boolean>(false);
-
   const [hotLoans, setHotLoans] = useState<any[]>([]);
   const [loans, setLoans] = useState<any[]>([]);
+
   const lastIdRef = useRef<string>("");
   const hasMoreRef = useRef<boolean>(true);
-
-  const [openDepositNFTModal, setOpenDepositNFTModal] = useState<boolean>(false);
-  const handleCloseDepositNFTModal = () => {
-    setOpenDepositNFTModal(false);
-  };
-  const handleOpenDepositNFTModal = () => {
-    setOpenDepositNFTModal(true);
-  };
 
   useEffect(() => {
     loadLoans();
     loadHottestLoans();
   }, []);
+  
+  const reload = () => {
+    setLoans([]);
+    hasMoreRef.current = true;
+    lastIdRef.current = "";
+    setTimeout(() => {
+      loadLoans();
+      loadHottestLoans();
+    }, 1000);
+  };
 
   const loadLoans = () => {
     setLoadingLoans(true);
@@ -107,7 +106,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
         setLoadingLoans(false);
       });
   };
-
+  
   const handleScroll = React.useCallback(
     async e => {
       if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
@@ -117,127 +116,51 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
     [hasMoreRef.current]
   );
 
-  const reload = () => {
-    setLoans([]);
-    hasMoreRef.current = true;
-    lastIdRef.current = "";
-    setTimeout(() => {
-      loadLoans();
-      loadHottestLoans();
-    }, 1000);
-  };
-
   return (
     <>
       <Ellipse />
-      <div className={classes.content} onScroll={handleScroll}>
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
+      <div className={classes.content}>
+        <Box display="flex" alignItems="center" width="100%" pl={10}>
           <h2>✨ NFT Loans</h2>
-          <h5>Deposit your NFTs and get funds from other users bidding!</h5>
         </Box>
-        <Grid container className={classes.cardContainer} alignItems="center" spacing={8}>
-          <Hidden only="xs">
-            <Grid item md={3} />
-          </Hidden>
-          <Grid
-            item
-            md={6}
-            xs={12}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-          >
-            <div className={classes.purpleBox}>
-              <img
-                src={require("assets/icons/governance.svg")}
-                alt="heart eyes"
-                style={{ width: "110px", height: "102px" }}
-              />
-              <div>Deposit your NFT as collateral to get a loan.</div>
-            </div>
-          </Grid>
-          <Hidden only="xs">
-            <Grid item md={3} />
-          </Hidden>
-          <Grid
-            item
-            md={6}
-            xs={12}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-          >
-            <div className={classes.purpleBox}>
-              <div>Users can bid for your NFT, the higher bid the more funds!</div>
-            </div>
-          </Grid>
-          <Grid
-            item
-            md={6}
-            xs={12}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-          >
-            <div className={classes.purpleBox}>
-              <img
-                src={require("assets/icons/wallet_simple.svg")}
-                alt="wallet"
-                style={{ width: "94px", height: "90px" }}
-              />
-              <div>
-                Once the term has ended, you can recover your NFT by returning the loan and the interest
+        
+        <Box mt={7} width="100%" padding="0 80px" style={{ borderBottom: "1px solid #431AB720"}}>
+          <Box display="flex" width="100%">
+            {Tabs.map((tab, index) => (
+              <div
+                key={`tab-${index}`}
+                className={cls({ [classes.selectedTab]: index === selectedTab }, classes.tab)}
+                onClick={() => {
+                  setSelectedTab(index);
+                }}
+              >
+                {tab}
               </div>
-            </div>
-          </Grid>
-        </Grid>
-
-        <div className={classes.buttonGroup}>
-          <button className={classes.greenButton} onClick={() => setOpenDepositPage(true)}>
-            Deposit your NFT
-          </button>
-          <button className={classes.greenButton} onClick={() => history.push("/loan/positions")}>
-            Manage your positions
-          </button>
-        </div>
-
-        <h3>✨ Hottest Loans</h3>
-        <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
-          <div className={classes.artCards}>
-            <MasonryGrid
-              gutter={"24px"}
-              data={hotLoans}
-              renderItem={(item, index) => (
-                <LoanCard
-                  item={item}
-                  key={`item-${index}`}
-                  setItem={newItem => {
-                    const newLoans = [...hotLoans];
-                    newLoans[index] = newItem;
-                    setHotLoans(newLoans);
-                  }}
-                />
-              )}
-              columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+            ))}
+          </Box>
+        </Box>
+        
+        {selectedTab === 0 && (
+          <CollateralisedLoans
+            setOpenDepositPage={setOpenDepositPage}
+            reload={reload}
+            hotLoans={hotLoans}
+            setHotLoans={setHotLoans}
+            loans={loans}
+            setLoans={setLoans}
+            loadingLoans={loadingLoans}
+            loadingHotLoans={loadingHotLoans}
+            handleScroll={handleScroll}
+          />
+        )}
+        {
+          selectedTab === 1 && (
+            <FractionalLoans
+              loading={loadingLoans}
+              loans={loans}
             />
-          </div>
-        </LoadingWrapper>
-        <h3>✨ All</h3>
-        <LoadingWrapper loading={loadingLoans} theme={"blue"}>
-          <div className={classes.artCards}>
-            <MasonryGrid
-              gutter={"24px"}
-              data={loans}
-              renderItem={(item, index) => (
-                <LoanCard
-                  item={item}
-                  key={`item-${index}`}
-                  setItem={newItem => {
-                    const newLoans = [...loans];
-                    newLoans[index] = newItem;
-                    setLoans(newLoans);
-                  }}
-                />
-              )}
-              columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-            />
-          </div>
-        </LoadingWrapper>
-        <DepositNFT open={openDepositNFTModal} onClose={handleCloseDepositNFTModal} reload={reload} />
+          )
+        }
       </div>
     </>
   );
@@ -258,7 +181,7 @@ const Ellipse = () => {
       fill="none"
     >
       <g filter="url(#filter0_f)">
-        <ellipse cx="-120" cy="83" rx="504" ry="157" fill="#DDFF57" />
+        <ellipse cx="-120" cy="83" rx="504" ry="157" fill="#DDFF5710" />
       </g>
       <defs>
         <filter

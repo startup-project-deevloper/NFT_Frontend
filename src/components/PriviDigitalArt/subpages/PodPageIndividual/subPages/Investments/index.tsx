@@ -5,13 +5,13 @@ import Moment from "react-moment";
 
 import { FormControl, Grid } from "@material-ui/core";
 import TransactionProgressModal from "components/PriviDigitalArt/modals/TransactionProgressModal";
-import PrintChart from "shared/ui-kit/Chart/Chart";
-import { StyledMenuItem, StyledSelect } from "shared/ui-kit/Styled-components/StyledComponents";
+// import PrintChart from "shared/ui-kit/Chart/Chart";
+// import { StyledMenuItem, StyledSelect } from "shared/ui-kit/Styled-components/StyledComponents";
 import Box from "shared/ui-kit/Box";
-import { Color, Gradient, PrimaryButton, SecondaryButton } from "shared/ui-kit";
+import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import TradePodTokenModal from "components/PriviDigitalArt/modals/TradePodTokenModal";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { formatNumber, generateMonthLabelsFromDate } from "shared/functions/commonFunctions";
+import { formatNumber } from "shared/functions/commonFunctions";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import { priviPodGetInvestmentsTransactions, priviPodClaimPodTokens } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
@@ -21,185 +21,185 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { toDecimals } from "shared/functions/web3";
 
-const FreeHoursChartConfig = {
-  config: {
-    data: {
-      labels: [] as any[],
-      datasets: [
-        {
-          type: "bar",
-          label: "",
-          data: [] as any[],
-          pointRadius: 0,
-          backgroundColor: "#F9E373",
-          borderColor: "#F9E373",
-          pointBackgroundColor: "#F9E373",
-          hoverBackgroundColor: "#F9E373",
-          borderJoinStyle: "round",
-          borderCapStyle: "round",
-          borderWidth: 3,
-          cubicInterpolationMode: "monotone",
-          lineTension: 0.1,
-        },
-      ],
-    },
+// const FreeHoursChartConfig = {
+//   config: {
+//     data: {
+//       labels: [] as any[],
+//       datasets: [
+//         {
+//           type: "bar",
+//           label: "",
+//           data: [] as any[],
+//           pointRadius: 0,
+//           backgroundColor: "#F9E373",
+//           borderColor: "#F9E373",
+//           pointBackgroundColor: "#F9E373",
+//           hoverBackgroundColor: "#F9E373",
+//           borderJoinStyle: "round",
+//           borderCapStyle: "round",
+//           borderWidth: 3,
+//           cubicInterpolationMode: "monotone",
+//           lineTension: 0.1,
+//         },
+//       ],
+//     },
 
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      chartArea: {
-        backgroundColor: "#F7F9FECC",
-      },
-      elements: {
-        point: {
-          radius: 0,
-          hitRadius: 5,
-          hoverRadius: 5,
-        },
-      },
+//     options: {
+//       responsive: true,
+//       maintainAspectRatio: false,
+//       chartArea: {
+//         backgroundColor: "#F7F9FECC",
+//       },
+//       elements: {
+//         point: {
+//           radius: 0,
+//           hitRadius: 5,
+//           hoverRadius: 5,
+//         },
+//       },
 
-      legend: {
-        display: false,
-      },
+//       legend: {
+//         display: false,
+//       },
 
-      layout: {
-        padding: {
-          left: 0,
-          right: 0,
-          top: 50,
-          bottom: 0,
-        },
-      },
+//       layout: {
+//         padding: {
+//           left: 0,
+//           right: 0,
+//           top: 50,
+//           bottom: 0,
+//         },
+//       },
 
-      scales: {
-        xAxes: [
-          {
-            offset: true,
-            display: true,
-            gridLines: {
-              color: "#ffffff",
-              lineWidth: 50,
-            },
-            ticks: {
-              beginAtZero: true,
-              fontColor: "#6B6B6B",
-              fontFamily: "Agrandir",
-            },
-          },
-        ],
-        yAxes: [
-          {
-            display: true,
-            gridLines: {
-              color: "#EFF2F8",
-            },
-            ticks: {
-              display: true,
-              beginAtZero: true,
-            },
-          },
-        ],
-      },
+//       scales: {
+//         xAxes: [
+//           {
+//             offset: true,
+//             display: true,
+//             gridLines: {
+//               color: "#ffffff",
+//               lineWidth: 50,
+//             },
+//             ticks: {
+//               beginAtZero: true,
+//               fontColor: "#6B6B6B",
+//               fontFamily: "Agrandir",
+//             },
+//           },
+//         ],
+//         yAxes: [
+//           {
+//             display: true,
+//             gridLines: {
+//               color: "#EFF2F8",
+//             },
+//             ticks: {
+//               display: true,
+//               beginAtZero: true,
+//             },
+//           },
+//         ],
+//       },
 
-      tooltips: {
-        mode: "label",
-        intersect: false,
-        callbacks: {
-          //This removes the tooltip title
-          title: function () {},
-          label: function (tooltipItem, data) {
-            return `$${tooltipItem.yLabel.toFixed(4)}`;
-          },
-        },
-        //this removes legend color
-        displayColors: false,
-        yPadding: 10,
-        xPadding: 10,
-        position: "nearest",
-        caretSize: 10,
-        backgroundColor: "rgba(255,255,255,0.9)",
-        bodyFontSize: 15,
-        bodyFontColor: "#303030",
-      },
+//       tooltips: {
+//         mode: "label",
+//         intersect: false,
+//         callbacks: {
+//           //This removes the tooltip title
+//           title: function () {},
+//           label: function (tooltipItem, data) {
+//             return `$${tooltipItem.yLabel.toFixed(4)}`;
+//           },
+//         },
+//         //this removes legend color
+//         displayColors: false,
+//         yPadding: 10,
+//         xPadding: 10,
+//         position: "nearest",
+//         caretSize: 10,
+//         backgroundColor: "rgba(255,255,255,0.9)",
+//         bodyFontSize: 15,
+//         bodyFontColor: "#303030",
+//       },
 
-      plugins: {
-        datalabels: {
-          display: function (context) {
-            return context.dataset.data[context.dataIndex] !== 0;
-          },
-        },
-      },
-    },
-  },
-};
+//       plugins: {
+//         datalabels: {
+//           display: function (context) {
+//             return context.dataset.data[context.dataIndex] !== 0;
+//           },
+//         },
+//       },
+//     },
+//   },
+// };
 
-const RadialConfig = {
-  config: {
-    type: "doughnut",
-    data: {
-      datasets: [
-        {
-          data: [] as any,
-          backgroundColor: [] as any,
-          hoverOffset: 0,
-          labels: [] as any,
-        },
-      ],
-    },
-    options: {
-      cutoutPercentage: 80,
-      animation: false,
-      rotation: Math.PI / 2,
-      tooltips: { enabled: false },
-    },
-  },
-};
+// const RadialConfig = {
+//   config: {
+//     type: "doughnut",
+//     data: {
+//       datasets: [
+//         {
+//           data: [] as any,
+//           backgroundColor: [] as any,
+//           hoverOffset: 0,
+//           labels: [] as any,
+//         },
+//       ],
+//     },
+//     options: {
+//       cutoutPercentage: 80,
+//       animation: false,
+//       rotation: Math.PI / 2,
+//       tooltips: { enabled: false },
+//     },
+//   },
+// };
 
-const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
-  for (let index = 0; index < config.data.datasets.length; index++) {
-    let gradient = ref.createLinearGradient(0, 0, 0, ref.canvas.clientHeight);
-    gradient.addColorStop(1, `${config.data.datasets[index].backgroundColor}33`);
-    gradient.addColorStop(0.5, `${config.data.datasets[index].backgroundColor}b0`);
-    config.data.datasets[index].backgroundColor = gradient;
-  }
+// const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
+//   for (let index = 0; index < config.data.datasets.length; index++) {
+//     let gradient = ref.createLinearGradient(0, 0, 0, ref.canvas.clientHeight);
+//     gradient.addColorStop(1, `${config.data.datasets[index].backgroundColor}33`);
+//     gradient.addColorStop(0.5, `${config.data.datasets[index].backgroundColor}b0`);
+//     config.data.datasets[index].backgroundColor = gradient;
+//   }
 
-  return config;
-};
+//   return config;
+// };
 
-const TRANSACTIONTABLEHEADER: Array<CustomTableHeaderInfo> = [
-  {
-    headerName: "TYPE",
-    headerAlign: "center",
-  },
-  {
-    headerName: "TOKEN",
-    headerAlign: "center",
-  },
-  {
-    headerName: "QUANTITY",
-    headerAlign: "center",
-  },
-  {
-    headerName: "PRICE",
-    headerAlign: "center",
-  },
-  {
-    headerName: "SENDER",
-    headerAlign: "center",
-  },
-  {
-    headerName: "RECEIVER",
-    headerAlign: "center",
-  },
-  {
-    headerName: "DATE",
-    headerAlign: "center",
-  },
-  {
-    headerName: "STATUS",
-    headerAlign: "center",
-  },
-];
+// const TRANSACTIONTABLEHEADER: Array<CustomTableHeaderInfo> = [
+//   {
+//     headerName: "TYPE",
+//     headerAlign: "center",
+//   },
+//   {
+//     headerName: "TOKEN",
+//     headerAlign: "center",
+//   },
+//   {
+//     headerName: "QUANTITY",
+//     headerAlign: "center",
+//   },
+//   {
+//     headerName: "PRICE",
+//     headerAlign: "center",
+//   },
+//   {
+//     headerName: "SENDER",
+//     headerAlign: "center",
+//   },
+//   {
+//     headerName: "RECEIVER",
+//     headerAlign: "center",
+//   },
+//   {
+//     headerName: "DATE",
+//     headerAlign: "center",
+//   },
+//   {
+//     headerName: "STATUS",
+//     headerAlign: "center",
+//   },
+// ];
 
 const INVESTTABLEHEADER: Array<CustomTableHeaderInfo> = [
   {
@@ -224,21 +224,21 @@ const INVESTTABLEHEADER: Array<CustomTableHeaderInfo> = [
   },
 ];
 
-const TimRangeList: any[] = ["6 Months"];
+// const TimRangeList: any[] = ["6 Months"];
 
 const Investments = ({ pod, podInfo, handleRefresh }) => {
   const classes = investmentStyles();
   const { convertTokenToUSD } = useTokenConversion();
   const userSelector = useTypedSelector(state => state.user);
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState<any>(TimRangeList[0]);
-  const [priceChartConfig, setPriceChartConfig] = useState<any>();
-  const [ownershipConfig, setOwnershipConfig] = useState<any>();
-  const [transactionTableData, setTransactionTableData] = useState<any[]>([]);
+  // const [selectedTimeRange, setSelectedTimeRange] = useState<any>(TimRangeList[0]);
+  // const [priceChartConfig, setPriceChartConfig] = useState<any>();
+  // const [ownershipConfig, setOwnershipConfig] = useState<any>();
+  // const [transactionTableData, setTransactionTableData] = useState<any[]>([]);
   const [investmentTableData, setInvestmentTableData] = useState<any[]>([]);
-  const [lastPrice, setLastPrice] = useState<number>(0);
-  const [prevPrice, setPrevPrice] = useState<number>(0);
-  const [priceChange, setPriceChange] = useState<number>(0);
+  // const [lastPrice, setLastPrice] = useState<number>(0);
+  // const [prevPrice, setPrevPrice] = useState<number>(0);
+  // const [priceChange, setPriceChange] = useState<number>(0);
 
   const [mode, setMode] = useState<string>("invest");
   const [openBuySellModal, setOpenBuySellModal] = useState<boolean>(false);
@@ -313,7 +313,13 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
               cellAlign: "center",
             });
             row.push({
-              cell: <Box color="#65CB63">{item.From}</Box>,
+              cell: (
+                <Box color={Color.Purple}>
+                  {item.From.substring(0, 6) +
+                    "..." +
+                    item.From.substring(item.From.length - 4, item.From.length)}
+                </Box>
+              ),
               cellAlign: "center",
             });
             row.push({
@@ -323,7 +329,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
             row.push({
               cell: (
                 <Box className={classes.flexBox}>
-                  <Box className={classes.circle}></Box>
+                  <Box className={classes.circle} style={{ background: Color.Purple }}></Box>
                   Confirmed
                 </Box>
               ),
@@ -338,11 +344,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                       rel="noopener noreferrer"
                       href={`${podNetwork.scan.url}/tx/${item.Id}`}
                     >
-                      <img
-                        className={classes.externalLink}
-                        src={require("assets/icons/newScreen_black.svg")}
-                        alt="link"
-                      />
+                      <ScanIcon />
                     </a>
                   )}
                 </Box>
@@ -498,15 +500,15 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                   setOpenBuySellModal(true);
                 }}
                 style={{
-                  background: Gradient.Green1,
+                  background: Color.GreenLight,
                   padding: "11px 48px",
-                  borderRadius: "46px",
                   fontFamily: "Montserrat",
                   fontWeight: 600,
                   fontSize: "14px",
                   lineHeight: "18px",
                   border: "none",
                   height: "auto",
+                  color: Color.Purple,
                   textTransform: "uppercase",
                 }}
                 isRounded
@@ -566,7 +568,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
           </Box>
           {!fundingEnded ? <></> : <></>}
           {
-          // !(isFundingTargetReached && fundingEnded) ? (
+            // !(isFundingTargetReached && fundingEnded) ? (
             <Box>
               <Box className={classes.whiteBox} mx={1}>
                 <Grid container>
@@ -595,11 +597,9 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                       <Box style={{ width: `${(podInfo.raisedFunds / podInfo.fundingTarget) * 100}%` }} />
                     </Box>
                     <Box className={classes.flexBox} justifyContent="space-between">
-                      <Box className={classes.header2}>
-                        Supply <br /> already sold
-                      </Box>
+                      <Box className={classes.header2}>Supply already sold</Box>
                       <Box className={classes.flexBox}>
-                        <Box className={classes.header2} style={{ fontFamily: "Agrandir", fontSize: "18px" }}>
+                        <Box className={classes.header3} style={{ color: Color.Purple }}>
                           {podInfo.raisedFunds ? podInfo.raisedFunds / podInfo.fundingTokenPrice : 0}/
                         </Box>
                         <Box className={classes.header3}>
@@ -614,78 +614,61 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                   className={classes.greenBox}
                   justifyContent={podInfo.raisedFunds <= 0 ? "space-around" : "space-between"}
                 >
-                  <Box flex={1} className={classes.flexBox} justifyContent="space-between">
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems={podInfo.raisedFunds <= 0 ? "flex-start" : "center"}
-                      width={1}
-                    >
-                      <Box className={classes.header2} style={{ textAlign: "center" }}>
+                  <Box display="flex" alignItems="center">
+                    <Box display="flex" flexDirection="column">
+                      <Box className={classes.header2} style={{ textAlign: "center", color: Color.White }}>
                         Amount of Pod Tokens purchased
                       </Box>
-                      <Box className={classes.header3} mt={1}>
+                      <Box className={classes.header3} mt={1} style={{ color: Color.White }}>
                         {formatNumber(+podTokenBalance || 0, pod.TokenSymbol, 4)}
                       </Box>
                     </Box>
-                    <Box className={classes.divider} />
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems={podInfo.raisedFunds <= 0 ? "flex-start" : "center"}
-                      width={1}
-                    >
-                      <Box className={classes.header2}>Amount paid</Box>
-                      <Box className={classes.header3} mt={1}>
+                    <Box display="flex" flexDirection="column" ml={3}>
+                      <Box className={classes.header2} style={{ color: Color.White }}>
+                        Amount paid
+                      </Box>
+                      <Box className={classes.header3} mt={1} style={{ color: Color.White }}>
                         {formatNumber(paidAmount, pod.FundingToken, 4)}
                       </Box>
                     </Box>
                   </Box>
-                </Box>
-                {isFundingTargetReached && !isClaimed && (
-                  <Box className={classes.flexBox} justifyContent="flex-end" mt={2}>
+                  {isFundingTargetReached && !isClaimed && (
                     <SecondaryButton
                       size="medium"
                       onClick={onClaimPodTokens}
-                      style={{ background: Color.MusicDAOGreen, color: "white", border: "none" }}
-                      isRounded
+                      style={{ background: Color.GreenLight, color: Color.Purple, border: "none" }}
                       disabled={!fundingEnded}
                     >
                       CLAIM YOUR POD TOKENS
                     </SecondaryButton>
-                  </Box>
-                )}
-                {fundingEnded && !isFundingTargetReached && (
-                  <Box className={classes.flexBox} justifyContent="flex-end" mt={2}>
+                  )}
+                  {fundingEnded && !isFundingTargetReached && (
                     <SecondaryButton
                       size="medium"
                       onClick={onRedeemBack}
-                      style={{ background: "#FF8E3C", color: "white", border: "none" }}
-                      isRounded
+                      style={{ background: "#FF8E3C", color: Color.Purple, border: "none" }}
                     >
                       REDEEM BACK THE FUNDS
                     </SecondaryButton>
-                  </Box>
-                )}
-                {
-                  <Box className={classes.flexBox} justifyContent="space-between" mt={2}>
-                    <Box className={classes.header2}>Time to finish funding</Box>
-                    <Box className={classes.flexBox}>
-                      <Box className={classes.greenBox}>
-                        {fundingEndTime.days} Day{fundingEndTime.days > 1 ? "s" : ""}
-                      </Box>
-                      <Box className={classes.greenBox} ml={1} color="#65CB63">
-                        {fundingEndTime.hours} h
-                      </Box>
-                      <Box className={classes.greenBox} ml={1} color="#65CB63">
-                        {fundingEndTime.minutes} min
-                      </Box>
-                      <Box className={classes.greenBox} ml={1} color="#65CB63">
-                        {fundingEndTime.seconds} s
-                      </Box>
+                  )}
+                </Box>
+                <Box className={classes.flexBox} justifyContent="space-between" mt={2}>
+                  <Box className={classes.header2}>Time to finish funding</Box>
+                  <Box className={classes.flexBox}>
+                    <Box className={classes.timeBox}>
+                      {fundingEndTime.days} Day{fundingEndTime.days > 1 ? "s" : ""}
+                    </Box>
+                    <Box className={classes.timeBox} ml={1}>
+                      {fundingEndTime.hours} h
+                    </Box>
+                    <Box className={classes.timeBox} ml={1}>
+                      {fundingEndTime.minutes} min
+                    </Box>
+                    <Box className={classes.timeBox} ml={1}>
+                      {fundingEndTime.seconds} s
                     </Box>
                   </Box>
-                }
+                </Box>
               </Box>
               <Box mt={2} px={1}>
                 <CustomTable
@@ -694,97 +677,97 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                     { headerName: podNetwork.scan.name, headerAlign: "center" },
                   ]}
                   rows={investmentTableData}
-                  theme="transaction"
+                  theme="bid"
                 />
               </Box>
             </Box>
-          // ) : (
-          //   <Box>
-          //     <Grid container>
-          //       <Grid item xs={12} sm={4}>
-          //         <Box className={classes.shadowBox}>
-          //           <Box className={classes.header1}>Market Cap</Box>
-          //           <Box className={classes.title} mt={1}>
-          //             {formatNumber(
-          //               convertTokenToUSD(pod.FundingToken, pod.Price * pod.SupplyReleased),
-          //               "USD",
-          //               4
-          //             )}
-          //           </Box>
-          //         </Box>
-          //         <Box className={classes.graphBox}>
-          //           <Box className={classes.graphHeader}>
-          //             <Box className={classes.header1}>Shares Distribution</Box>
-          //           </Box>
-          //           <Grid container style={{ marginTop: "16px" }}>
-          //             <Grid item xs={12} sm={6}>
-          //               {ownershipConfig && <PrintChart config={ownershipConfig} canvasHeight={250} />}
-          //             </Grid>
-          //             <Grid item xs={12} sm={6}>
-          //               <Box style={{ marginLeft: "12px" }}>
-          //                 {ownershipConfig &&
-          //                   ownershipConfig.config.data.datasets[0].labels.map((item, index) => (
-          //                     <Box className={classes.flexBox} mb={2} key={"labels-" + index}>
-          //                       <Box
-          //                         className={classes.colorBox}
-          //                         style={{
-          //                           background:
-          //                             ownershipConfig.config.data.datasets[0].backgroundColor[index],
-          //                         }}
-          //                       />
-          //                       <Box ml={2}>
-          //                         <Box className={classes.header2}>{item}</Box>
-          //                         <Box className={classes.header1}>
-          //                           ${ownershipConfig.config.data.datasets[0].data[index]}
-          //                         </Box>
-          //                       </Box>
-          //                     </Box>
-          //                   ))}
-          //               </Box>
-          //             </Grid>
-          //           </Grid>
-          //         </Box>
-          //       </Grid>
-          //       <Grid item xs={12} sm={8}>
-          //         <Box className={classes.graphBox} height="400px">
-          //           <Box className={classes.graphHeader}>
-          //             <Box className={classes.header1}>Price History</Box>
-          //             <FormControl variant="outlined">
-          //               <StyledSelect className={classes.select} value={selectedTimeRange} onChange={v => {}}>
-          //                 {TimRangeList.map((item, index) => (
-          //                   <StyledMenuItem key={index} value={item}>
-          //                     {item}
-          //                   </StyledMenuItem>
-          //                 ))}
-          //               </StyledSelect>
-          //             </FormControl>
-          //           </Box>
-          //           <Box style={{ height: "100%" }}>
-          //             {priceChartConfig && <PrintChart config={priceChartConfig} />}
-          //           </Box>
-          //           <Box className={classes.valueBox}>
-          //             <Box className={classes.header1}>{formatNumber(lastPrice, "USD", 2)}</Box>
-          //             <Box className={classes.header2} color={lastPrice >= prevPrice ? "#0FCEA6" : "#F43E5F"}>
-          //               {lastPrice > prevPrice ? "+" : ""}
-          //               {lastPrice - prevPrice} ({priceChange > 0 ? "+" : ""}
-          //               {priceChange * 100}%)
-          //             </Box>
-          //           </Box>
-          //         </Box>
-          //       </Grid>
-          //     </Grid>
-          //     <Box mt={2} px={1}>
-          //       <CustomTable
-          //         headers={[
-          //           ...TRANSACTIONTABLEHEADER,
-          //           { headerName: podNetwork.scan.name, headerAlign: "center" },
-          //         ]}
-          //         rows={transactionTableData}
-          //         theme="transaction"
-          //       />
-          //     </Box>
-          //   </Box>
-          // )
+            // ) : (
+            //   <Box>
+            //     <Grid container>
+            //       <Grid item xs={12} sm={4}>
+            //         <Box className={classes.shadowBox}>
+            //           <Box className={classes.header1}>Market Cap</Box>
+            //           <Box className={classes.title} mt={1}>
+            //             {formatNumber(
+            //               convertTokenToUSD(pod.FundingToken, pod.Price * pod.SupplyReleased),
+            //               "USD",
+            //               4
+            //             )}
+            //           </Box>
+            //         </Box>
+            //         <Box className={classes.graphBox}>
+            //           <Box className={classes.graphHeader}>
+            //             <Box className={classes.header1}>Shares Distribution</Box>
+            //           </Box>
+            //           <Grid container style={{ marginTop: "16px" }}>
+            //             <Grid item xs={12} sm={6}>
+            //               {ownershipConfig && <PrintChart config={ownershipConfig} canvasHeight={250} />}
+            //             </Grid>
+            //             <Grid item xs={12} sm={6}>
+            //               <Box style={{ marginLeft: "12px" }}>
+            //                 {ownershipConfig &&
+            //                   ownershipConfig.config.data.datasets[0].labels.map((item, index) => (
+            //                     <Box className={classes.flexBox} mb={2} key={"labels-" + index}>
+            //                       <Box
+            //                         className={classes.colorBox}
+            //                         style={{
+            //                           background:
+            //                             ownershipConfig.config.data.datasets[0].backgroundColor[index],
+            //                         }}
+            //                       />
+            //                       <Box ml={2}>
+            //                         <Box className={classes.header2}>{item}</Box>
+            //                         <Box className={classes.header1}>
+            //                           ${ownershipConfig.config.data.datasets[0].data[index]}
+            //                         </Box>
+            //                       </Box>
+            //                     </Box>
+            //                   ))}
+            //               </Box>
+            //             </Grid>
+            //           </Grid>
+            //         </Box>
+            //       </Grid>
+            //       <Grid item xs={12} sm={8}>
+            //         <Box className={classes.graphBox} height="400px">
+            //           <Box className={classes.graphHeader}>
+            //             <Box className={classes.header1}>Price History</Box>
+            //             <FormControl variant="outlined">
+            //               <StyledSelect className={classes.select} value={selectedTimeRange} onChange={v => {}}>
+            //                 {TimRangeList.map((item, index) => (
+            //                   <StyledMenuItem key={index} value={item}>
+            //                     {item}
+            //                   </StyledMenuItem>
+            //                 ))}
+            //               </StyledSelect>
+            //             </FormControl>
+            //           </Box>
+            //           <Box style={{ height: "100%" }}>
+            //             {priceChartConfig && <PrintChart config={priceChartConfig} />}
+            //           </Box>
+            //           <Box className={classes.valueBox}>
+            //             <Box className={classes.header1}>{formatNumber(lastPrice, "USD", 2)}</Box>
+            //             <Box className={classes.header2} color={lastPrice >= prevPrice ? "#0FCEA6" : "#F43E5F"}>
+            //               {lastPrice > prevPrice ? "+" : ""}
+            //               {lastPrice - prevPrice} ({priceChange > 0 ? "+" : ""}
+            //               {priceChange * 100}%)
+            //             </Box>
+            //           </Box>
+            //         </Box>
+            //       </Grid>
+            //     </Grid>
+            //     <Box mt={2} px={1}>
+            //       <CustomTable
+            //         headers={[
+            //           ...TRANSACTIONTABLEHEADER,
+            //           { headerName: podNetwork.scan.name, headerAlign: "center" },
+            //         ]}
+            //         rows={transactionTableData}
+            //         theme="transaction"
+            //       />
+            //     </Box>
+            //   </Box>
+            // )
           }
           <TransactionProgressModal
             open={openTranactionModal}
@@ -812,5 +795,17 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
     </>
   );
 };
+
+const ScanIcon = () => (
+  <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M17.8071 1.00001L7.42289 11M17.8071 1.00001L17.8072 7.00001M17.8071 1.00001L11.5767 1M7.42293 1.00001H1.19238V17H17.8072V11"
+      stroke="#431AB7"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
 
 export default Investments;

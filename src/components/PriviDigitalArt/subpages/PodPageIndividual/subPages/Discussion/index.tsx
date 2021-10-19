@@ -18,7 +18,6 @@ import CreateNewTopicModal from "components/PriviDigitalArt/modals/CreateNewTopi
 import CreateNewWallPostModal from "components/PriviDigitalArt/modals/CreateNewWallPostModal";
 import WallItem from "./components/WallItem";
 import PollItem from "./components/PollItem";
-import DiscussionPage from "./components/DiscussionPage";
 import ListChats from "../Chat/ListChats";
 import Discord from "../../Discord";
 import { socket } from "../../../../../Login/Auth";
@@ -36,8 +35,6 @@ export default function Discussion(props) {
 
   const users = useTypedSelector(state => state.usersInfoList);
   const userSelector = useSelector((state: RootState) => state.user);
-
-  const pageDiscussionRef = useRef();
 
   const [pod, setPod] = useState<any>({});
 

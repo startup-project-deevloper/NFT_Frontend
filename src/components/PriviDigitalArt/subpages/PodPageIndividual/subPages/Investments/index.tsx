@@ -610,10 +610,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                     </Box>
                   </Grid>
                 </Grid>
-                <Box
-                  className={classes.greenBox}
-                  justifyContent={podInfo.raisedFunds <= 0 ? "space-around" : "space-between"}
-                >
+                <Box className={classes.greenBox} justifyContent="space-between">
                   <Box display="flex" alignItems="center">
                     <Box display="flex" flexDirection="column">
                       <Box className={classes.header2} style={{ textAlign: "center", color: Color.White }}>
@@ -646,7 +643,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                     <SecondaryButton
                       size="medium"
                       onClick={onRedeemBack}
-                      style={{ background: "#FF8E3C", color: Color.Purple, border: "none" }}
+                      style={{ background: Color.GreenLight, color: Color.Purple, border: "none" }}
                     >
                       REDEEM BACK THE FUNDS
                     </SecondaryButton>

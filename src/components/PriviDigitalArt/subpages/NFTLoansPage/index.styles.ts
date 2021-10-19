@@ -235,6 +235,14 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       "& td:first-child": {
         borderTopLeftRadius: 16,
         borderBottomLeftRadius: 16,
+
+        [theme.breakpoints.down("xs")]: {
+          width: "fit-content",
+
+          "& > div": {
+            width: "fit-content"
+          },
+        },
       },
 
       "& td:last-child": {
@@ -489,7 +497,9 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
 
     color: "#431AB7",
     marginBottom: 8,
-    wordBreak: "break-word",
+    whiteSpace: "nowrap",
+    overflow: 'hidden',
+    textOverflow: "ellipsis",
 
     [theme.breakpoints.down("xs")]: {
       fontSize: 12,
@@ -530,9 +540,15 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   },
   loanMediaTextWrapper: {
     marginLeft: 16,
+    maxWidth: '100%',
+
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: 120,
+    },
 
     [theme.breakpoints.down("xs")]: {
-      marginLeft: 8
+      marginLeft: 8,
+      maxWidth: 75,
     },
   }
 }));

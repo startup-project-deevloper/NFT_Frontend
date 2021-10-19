@@ -130,26 +130,18 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const tSupply = toNDecimals(+supplyToKeep, decimals);
       const tokenURI = selectedNFT.tokenURI;
       const gas = await contract.methods
-        .registerNFT(
-          selectedNFT.tokenAddress,
-          selectedNFT.BlockchainId,
-          tSupply,
-          price,
-          collectionInfo.data.name,
-          collectionInfo.data.symbol,
-          tokenURI
-        )
+        .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
+          originalName: collectionInfo.data.name,
+          originalSymbol: collectionInfo.data.symbol,
+          metadata: tokenURI,
+        })
         .estimateGas({ from: account });
       const response = await contract.methods
-        .registerNFT(
-          selectedNFT.tokenAddress,
-          selectedNFT.BlockchainId,
-          tSupply,
-          price,
-          collectionInfo.data.name,
-          collectionInfo.data.symbol,
-          tokenURI
-        )
+        .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
+          originalName: collectionInfo.data.name,
+          originalSymbol: collectionInfo.data.symbol,
+          metadata: tokenURI,
+        })
         .send({ from: account, gas })
         .on("transactionHash", hash => {
           setHash(hash);
@@ -190,6 +182,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             lTokenLite: collection.lTokenLite_,
             pTokenLite: collection.pTokenLite_,
             perpetualPoolLiteAddress: collection.perpetualPoolLiteAddress_,
+            poolInfo: collection.poolInfo,
             isAddCollection: true,
           };
         } else {

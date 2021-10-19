@@ -280,8 +280,8 @@ const CollateralisedLoans = () => {
   }, [positions]);
 
   return (
-    <div className={classes.content}>
-      <Ellipse />
+    <div className={classes.content} style={{background:"#F6F5F8"}}>
+      {/* <Ellipse /> */}
 
       <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
@@ -313,36 +313,36 @@ const CollateralisedLoans = () => {
 
 export default React.memo(CollateralisedLoans);
 
-const Ellipse = () => {
-  const classes = useNFTLoansPageStyles();
+// const Ellipse = () => {
+//   const classes = useNFTLoansPageStyles();
 
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="698"
-      height="649"
-      viewBox="0 0 698 649"
-      fill="none"
-      className={classes.ellipse2}
-    >
-      <g filter="url(#filter0_f)">
-        <ellipse cx="349" cy="300.5" rx="169" ry="168.5" fill="#DDFF57" />
-      </g>
-      <defs>
-        <filter
-          id="filter0_f"
-          x="0"
-          y="-48"
-          width="698"
-          height="697"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-          <feGaussianBlur stdDeviation="90" result="effect1_foregroundBlur" />
-        </filter>
-      </defs>
-    </svg>
-  );
-};
+//   return (
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       width="698"
+//       height="649"
+//       viewBox="0 0 698 649"
+//       fill="none"
+//       className={classes.ellipse2}
+//     >
+//       <g filter="url(#filter0_f)">
+//         <ellipse cx="349" cy="300.5" rx="169" ry="168.5" fill="#DDFF57" />
+//       </g>
+//       <defs>
+//         <filter
+//           id="filter0_f"
+//           x="0"
+//           y="-48"
+//           width="698"
+//           height="697"
+//           filterUnits="userSpaceOnUse"
+//           colorInterpolationFilters="sRGB"
+//         >
+//           <feFlood floodOpacity="0" result="BackgroundImageFix" />
+//           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+//           <feGaussianBlur stdDeviation="90" result="effect1_foregroundBlur" />
+//         </filter>
+//       </defs>
+//     </svg>
+//   );
+// };

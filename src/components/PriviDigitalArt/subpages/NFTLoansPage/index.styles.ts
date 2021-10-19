@@ -197,10 +197,10 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   tableContainerWithAbsoluteImage: {
     width: "100%",
     background: "#F6F5F8",
-    padding: "0 36px",
+    padding: "0 36px 36px",
 
     [theme.breakpoints.down("xs")]: {
-      padding: "0 16px",
+      padding: "0 16px 16px",
     },
   },
   tableLoansContainer: {
@@ -489,6 +489,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
 
     color: "#431AB7",
     marginBottom: 8,
+    wordBreak: "break-word",
 
     [theme.breakpoints.down("xs")]: {
       fontSize: 12,

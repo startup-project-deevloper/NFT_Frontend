@@ -124,8 +124,8 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
           <h2>✨ NFT Loans</h2>
         </Box>
         
-        <Box mt={7} width="100%" padding="0 80px">
-          <Box display="flex" width="100%" style={{ borderBottom: "1px solid #431AB720"}}>
+        <Box mt={7} width="100%" padding="0 80px" style={{ borderBottom: "1px solid #431AB720"}}>
+          <Box display="flex" width="100%">
             {Tabs.map((tab, index) => (
               <div
                 key={`tab-${index}`}

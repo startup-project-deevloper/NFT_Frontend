@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import Box from "shared/ui-kit/Box";
 import { makeStyles } from "@material-ui/core/styles";
-import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
+import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Moment from "react-moment";
 import UnstakeRedeemModal from "components/PriviDigitalArt/modals/UnstakeRedeemModal";
 
 const useStyles = makeStyles(theme => ({
   card: {
-    background: "#FFFFFF",
-    boxShadow: "0px 15px 16px -11px rgba(0, 0, 0, 0.02)",
+    background: "#EFF2FD",
+    boxShadow: "0px 4px 8px #9EACF2",
     borderRadius: "20px",
     padding: "40px 24px 30px",
     fontFamily: "Montserrat",
-    color: "#2D3047",
   },
   title: {
     fontStyle: "normal",
     fontWeight: 600,
     fontSize: "20px",
     lineHeight: "24px",
+    color: "#2D3047",
   },
   flexSpaceBox: {
     display: "flex",
@@ -28,10 +28,10 @@ const useStyles = makeStyles(theme => ({
   },
   header1: {
     fontStyle: "normal",
-    fontWeight: 500,
+    fontWeight: "bold",
     fontSize: "14px",
     lineHeight: "17px",
-    opacity: 0.7,
+    color: Color.Purple,
   },
   header2: {
     fontStyle: "normal",
@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: "14px",
     lineHeight: "17px",
     textAlign: "right",
+    color: Color.Violet,
   },
   divider: {
     margin: "19px 0px 14px",
@@ -66,10 +67,7 @@ export default function StakingPodCard({
   const [openUnstakeRedeemModal, setOpenUnstakeRedeemModal] = useState<"unstake" | "redeem" | boolean>(false);
 
   return (
-    <div
-      className={classes.card}
-      // style={{ background: expired ? "linear-gradient(0deg, #F4F8FC, #F4F8FC)" : "white" }}
-    >
+    <div className={classes.card}>
       <Box className={classes.title} mb={5}>
         {staking.position}
       </Box>
@@ -102,18 +100,16 @@ export default function StakingPodCard({
           onClick={() => setOpenUnstakeRedeemModal("unstake")}
           style={{
             background: "transparent",
-            borderRadius: "46px",
             padding: "11px",
             fontFamily: "Montserrat",
             fontWeight: 600,
             fontSize: "14px",
             flex: 1,
             lineHeight: "18px",
-            color: "#2D3047",
-            border: "1px solid rgba(84, 101, 143, 0.3)",
+            color: Color.Purple,
+            border: `1px solid ${Color.Purple}`,
             height: "auto",
           }}
-          isRounded
         >
           Unstake
         </SecondaryButton>
@@ -121,8 +117,7 @@ export default function StakingPodCard({
           size="small"
           onClick={() => setOpenUnstakeRedeemModal("redeem")}
           style={{
-            background: "#2D3047",
-            borderRadius: "46px",
+            background: Color.Purple,
             padding: "11px",
             fontFamily: "Montserrat",
             fontWeight: 600,
@@ -130,11 +125,10 @@ export default function StakingPodCard({
             lineHeight: "18px",
             flex: 1,
             marginLeft: "15px",
-            color: "white",
+            color: Color.GreenLight,
             border: "none",
             height: "auto",
           }}
-          isRounded
         >
           Redeem
         </PrimaryButton>

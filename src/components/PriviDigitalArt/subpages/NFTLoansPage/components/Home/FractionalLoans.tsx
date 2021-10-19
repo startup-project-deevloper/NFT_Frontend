@@ -100,126 +100,124 @@ const FractionalLoans = ({ loading, loans }) => {
 
   useEffect(() => {
     if (positions) {
-      const timerId = setInterval(() => {
-        const data: Array<Array<CustomTableCellInfo>> = positions.map(row => {
-          let endTime: any = {
-            days: 0,
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-          };
-          let endDate: any = "";
-          if (row) {
-            const now = new Date();
-            let delta = Math.floor(row.Duration ? row.CreationDate + row.Duration - now.getTime() / 1000 : 0);
-            if (delta < 0) {
-              endDate = format(new Date((row.CreationDate + row.Duration) * 1000), "dd/MM/yyyy");
-              endTime = {
-                days: 0,
-                hours: 0,
-                minutes: 0,
-                seconds: 0,
-              };
-            } else {
-              let days = Math.floor(delta / 86400);
-              delta -= days * 86400;
+      const data: Array<Array<CustomTableCellInfo>> = positions.map(row => {
+        let endTime: any = {
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+        };
+        let endDate: any = "";
+        if (row) {
+          const now = new Date();
+          let delta = Math.floor(row.Duration ? row.CreationDate + row.Duration - now.getTime() / 1000 : 0);
+          if (delta < 0) {
+            endDate = format(new Date((row.CreationDate + row.Duration) * 1000), "dd/MM/yyyy");
+            endTime = {
+              days: 0,
+              hours: 0,
+              minutes: 0,
+              seconds: 0,
+            };
+          } else {
+            let days = Math.floor(delta / 86400);
+            delta -= days * 86400;
 
-              // calculate (and subtract) whole hours
-              let hours = Math.floor(delta / 3600) % 24;
-              delta -= hours * 3600;
+            // calculate (and subtract) whole hours
+            let hours = Math.floor(delta / 3600) % 24;
+            delta -= hours * 3600;
 
-              // calculate (and subtract) whole minutes
-              let minutes = Math.floor(delta / 60) % 60;
-              delta -= minutes * 60;
+            // calculate (and subtract) whole minutes
+            let minutes = Math.floor(delta / 60) % 60;
+            delta -= minutes * 60;
 
-              // what's left is seconds
-              let seconds = delta % 60;
-              endDate = "";
-              endTime = {
-                days,
-                hours,
-                minutes,
-                seconds,
-              };
-            }
+            // what's left is seconds
+            let seconds = delta % 60;
+            endDate = "";
+            endTime = {
+              days,
+              hours,
+              minutes,
+              seconds,
+            };
           }
+        }
 
-          return [
-            {
-              cell: (
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  className={classes.tableAvatarField}
-                  onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
-                >
-                  <Box className={classes.mediaImageWrapper}>
-                    <div
-                      className={classes.mediaImage}
-                      style={{
-                        backgroundImage:
-                          row?.media?.cidUrl ?? row?.media?.UrlMainPhoto ?? row?.media?.Url ?? row?.media?.url
-                            ? `url(${row?.media?.cidUrl ??
-                            row?.media?.UrlMainPhoto ??
-                            row?.media?.Url ??
-                            row?.media?.url
+        return [
+          {
+            cell: (
+              <Box
+                display="flex"
+                alignItems="center"
+                className={classes.tableAvatarField}
+                onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
+              >
+                <Box className={classes.mediaImageWrapper}>
+                  <div
+                    className={classes.mediaImage}
+                    style={{
+                      backgroundImage:
+                        row?.media?.cidUrl ?? row?.media?.UrlMainPhoto ?? row?.media?.Url ?? row?.media?.url
+                          ? `url(${
+                              row?.media?.cidUrl ??
+                              row?.media?.UrlMainPhoto ??
+                              row?.media?.Url ??
+                              row?.media?.url
                             })`
-                            : "none",
-                        backgroundColor: "#DDFF57",
-                      }}
-                    />
-                  </Box>
-                  <Box display="flex" flexDirection="column" justifyContent="space-between" height="73px" ml={2}>
-                    <span className={classes.loanMediaNameTag}>collection</span>
-                    <span className={classes.loanMediaNameName}>{row?.media?.MediaName ?? ""}</span>
-                    <span className={classes.loanMediaNameId}>ID #24556</span>
-                  </Box>
+                          : "none",
+                      backgroundColor: "#DDFF57",
+                    }}
+                  />
                 </Box>
-              ),
-              cellAlign: "center",
-            },
-            {
-              cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
-              cellAlign: "center",
-            },
-            {
-              cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
-              cellAlign: "center",
-            },
-            {
-              cell: <span style={{ color: "#431AB7" }}>52,455 JOTs</span>,
-              cellAlign: "center",
-            },
-            {
-              cell: <span style={{ color: "#431AB7" }}>2.5%</span>,
-              cellAlign: "center",
-            },
-            {
-              cell: <span style={{ color: "#04B800" }}>2.5%</span>,
-              cellAlign: "center",
-            },
-            {
-              cell: (
-                <Box className={classes.positionColumnButtons}>
-                  <PrimaryButton className={classes.primary} size="medium">
-                    Deposit
-                  </PrimaryButton>
-                  <SecondaryButton
-                    className={classes.secondary}
-                    size="medium"
-                    onClick={() => handleOpenBorrowModal(row)}
-                  >
-                    Borrow
-                  </SecondaryButton>
+                <Box display="flex" flexDirection="column" justifyContent="space-between" height="73px" ml={2}>
+                  <span className={classes.loanMediaNameTag}>collection</span>
+                  <span className={classes.loanMediaNameName}>{row?.media?.MediaName ?? ""}</span>
+                  <span className={classes.loanMediaNameId}>ID #24556</span>
                 </Box>
-              ),
-              cellAlign: "center",
-            },
-          ];
-        });
-        setTableData(data);
-      }, 1000);
-      return () => clearInterval(timerId);
+              </Box>
+            ),
+            cellAlign: "center",
+          },
+          {
+            cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
+            cellAlign: "center",
+          },
+          {
+            cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
+            cellAlign: "center",
+          },
+          {
+            cell: <span style={{ color: "#431AB7" }}>52,455 JOTs</span>,
+            cellAlign: "center",
+          },
+          {
+            cell: <span style={{ color: "#431AB7" }}>2.5%</span>,
+            cellAlign: "center",
+          },
+          {
+            cell: <span style={{ color: "#04B800" }}>2.5%</span>,
+            cellAlign: "center",
+          },
+          {
+            cell: (
+              <Box className={classes.positionColumnButtons}>
+                <PrimaryButton className={classes.primary} size="medium">
+                  Deposit
+                </PrimaryButton>
+                <SecondaryButton
+                  className={classes.secondary}
+                  size="medium"
+                  onClick={() => handleOpenBorrowModal(row)}
+                >
+                  Borrow
+                </SecondaryButton>
+              </Box>
+            ),
+            cellAlign: "center",
+          },
+        ];
+      });
+      setTableData(data);
     } else return;
   }, [positions]);
 
@@ -264,7 +262,7 @@ const FractionalLoans = ({ loading, loans }) => {
           </Box>
         )}
       </div>
-      <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
+      <LoadingWrapper loading={loading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
           <div className={`${classes.tableLoansContainer} position-table`}>
             <CustomTable theme="art green" headers={tableHeaders} rows={tableData} />

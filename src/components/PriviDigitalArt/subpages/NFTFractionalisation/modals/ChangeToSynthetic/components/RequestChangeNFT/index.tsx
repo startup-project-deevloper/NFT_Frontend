@@ -159,13 +159,13 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
 
         let params = {
           collectionAddress: selectedNFT.tokenAddress,
-          SyntheticID: nftInfo.newID,
+          SyntheticID: currentNFT.SyntheticID,
           NFTId: selectedNFT.BlockchainId,
           NFTName: selectedNFT.MediaName,
           NFTImageUrl: selectedNFT.Url,
           isAddCollection: false,
-          isLocked: false,
-          isVerified: false,
+          Price: currentNFT.Price,
+          OwnerSupply: currentNFT.OwnerSupply,
         };
 
         const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);

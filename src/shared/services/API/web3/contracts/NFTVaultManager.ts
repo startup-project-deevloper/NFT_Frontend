@@ -96,26 +96,20 @@ export const requestChangeNFT = (web3: Web3, account: string, payload: any): Pro
   return new Promise(async resolve => {
     try {
       const { tokenAddress, tokenFromId, tokenToId, setHash } = payload;
+      console.log('requestChangeNFT parameters... ', tokenAddress, tokenFromId, tokenToId);
       const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
       const contract = ContractInstance(web3, NFTVaultManager.abi, contractAddress);
       let gas = await contract.methods.requestChange(tokenAddress, tokenFromId, tokenToId).estimateGas({ from: account });
       console.log('requestChangeNFT gas... ', gas);
       let response = await contract.methods
-        .requestUnlock(tokenAddress, tokenFromId, tokenToId)
+        .requestChange(tokenAddress, tokenFromId, tokenToId)
         .send({ from: account, gas })
         .on("transactionHash", hash => {
           setHash(hash);
         });
       console.log("requestChangeNFT response", response);
 
-      const {
-        events: {
-          ChangeApproveRequested: {
-            blockNumber,
-            returnValues: { requestId }
-          }
-        }
-      } = response;
+      const { blockNumber } = response;
 
       await new Promise(resolve => setTimeout(resolve, 50000));
 
@@ -127,15 +121,7 @@ export const requestChangeNFT = (web3: Web3, account: string, payload: any): Pro
         },
         (error, events) => {
           console.log("requestChangeNFT events", events);
-          const event = events
-            .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
-            .find(res => res.requestId === requestId);
-          console.log("requestChangeNFT event", event);
-          if (!event?.newOwner || event?.newOwner === "0x0000000000000000000000000000000000000000") {
-            resolve({ status: false });
-          } else {
-            resolve({ status: true });
-          }
+          resolve(true)
         }
       );
     } catch (err) {

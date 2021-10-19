@@ -7,7 +7,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     height: `calc(100vh - 80px)`,
     padding: "40px 60px 60px",
     width: "100%",
-    overflow: "auto"
+    overflow: "auto",
   },
   subContainer: {
     width: "100%",
@@ -161,7 +161,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     },
   },
   selectedTabBox: {
-    background: "#2D3047",
+    background: "#9EACF2",
     color: "#ffffff",
   },
   timeBox: {
@@ -199,19 +199,21 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   podSubPageHeader: {
     display: "flex",
     alignItems: "center",
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     borderBottom: "1px solid #00000022",
-    borderTop: "1px solid #00000022"
+    borderTop: "1px solid #00000022",
   },
   artistsBox: {
     display: "flex",
     alignItems: "center",
-    color: Color.Purple
+    color: Color.Purple,
   },
   artistsMainContent: {
     display: "flex",
     alignItems: "center",
     marginBottom: 32,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
   whiteBox: {
     display: "flex",
@@ -219,10 +221,10 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     background: "white",
     opacity: "0.8",
     justifyContent: "space-between",
-    padding: "16px 0"
+    padding: "16px 0",
   },
   podSubPageContent: {
-    padding: "32px 0"
+    padding: "32px 0",
   },
   valueBox: {
     display: "flex",
@@ -347,19 +349,19 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     margin: "0 8px",
 
     "& .podDiscordFullPage": {
-      height: "calc(100% - 40px)"
+      height: "calc(100% - 40px)",
     },
 
     "& .podDiscordChatGrid": {
-      background: "transparent"
+      background: "transparent",
     },
     "& .podInputDiscordChat": {
       border: "1px solid #431AB7",
       background: "white",
       "& input": {
-        color: "#181818"
-      }
-    }
+        color: "#181818",
+      },
+    },
   },
   comment: {
     display: "flex",
@@ -372,8 +374,8 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
       fontSize: "14px",
       lineHeight: "18px",
       color: "#431AB7",
-      marginLeft: "8px"
-    }
+      marginLeft: "8px",
+    },
   },
   ProposalPodCardContainer: {
     background: "#FFFFFF",
@@ -381,6 +383,6 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     borderRadius: "18px",
     width: 674,
     height: 229,
-    margin: "0 24px 10px 5px !important"
-  }
+    margin: "0 24px 10px 5px !important",
+  },
 }));

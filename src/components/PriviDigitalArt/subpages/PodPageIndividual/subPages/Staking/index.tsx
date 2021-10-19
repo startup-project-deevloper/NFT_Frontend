@@ -3,7 +3,7 @@ import { FormControl, Grid, makeStyles } from "@material-ui/core";
 import PrintChart from "shared/ui-kit/Chart/Chart";
 import { StyledMenuItem, StyledSelect } from "shared/ui-kit/Styled-components/StyledComponents";
 import Box from "shared/ui-kit/Box";
-import { Gradient, PrimaryButton, SecondaryButton } from "shared/ui-kit";
+import { Color, Gradient, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { formatNumber, generateMonthLabelsFromDate } from "shared/functions/commonFunctions";
 import { priviPodGetStaking, priviPodGetPriceHistory } from "shared/services/API";
 import StakingPodCard from "components/PriviDigitalArt/components/Cards/StakingPodCard";
@@ -162,7 +162,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: "22px",
     fontWeight: "bold",
     fontFamily: "Agrandir Grand",
-    color: "#2D3047",
+    color: "#431AB7",
   },
   header1: {
     fontFamily: "Montserrat",
@@ -177,7 +177,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     fontSize: "16px",
     lineHeight: "120%",
-    color: "#707582",
+    color: Color.White,
     textShadow: "2px 2px 12px rgba(0, 0, 0, 0.1)",
   },
   header3: {
@@ -195,10 +195,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 800,
     fontSize: "22px",
     lineHeight: "120%",
-    background: `linear-gradient(97.63deg, #A0D800 26.36%, #0DCC9E 80%)`,
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    textShadow: "2px 2px 12px rgba(0, 0, 0, 0.1)",
+    color: Color.GreenLight,
   },
   flexBoxHeader: {
     display: "flex",
@@ -212,6 +209,16 @@ const useStyles = makeStyles(theme => ({
     background: "linear-gradient(0deg, #F2FBF6, #F2FBF6), #17172D",
     padding: `${theme.spacing(2)}px ${theme.spacing(3)}px`,
     borderRadius: "12px",
+  },
+  stakeValueBox: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "30px 34px",
+    border: `1px solid #E0E4F3`,
+    borderRadius: "12px",
+    margin: theme.spacing(1),
+    position: "relative",
+    background: Color.Violet,
   },
   graphBox: {
     display: "flex",
@@ -305,33 +312,11 @@ const useStyles = makeStyles(theme => ({
 
   divider: {
     height: 1,
-    opacity: 0.1,
-    borderBottom: "1px dashed #181818",
+    borderBottom: `1px dashed ${Color.White}`,
     background: "transparent",
     width: "100%",
   },
 }));
-
-const mockStakings = [
-  {
-    position: "Staking Position",
-    amount: 1244456,
-    date: new Date().getTime() + 1000,
-    rewardsAccumulated: 245,
-  },
-  {
-    position: "Staking Position",
-    amount: 1244456,
-    date: new Date().getTime() + 1000,
-    rewardsAccumulated: 245,
-  },
-  {
-    position: "Staking Position",
-    amount: 1244456,
-    date: new Date().getTime() + 1000,
-    rewardsAccumulated: 245,
-  },
-];
 
 const TimRangeList: any[] = ["6 Months"];
 
@@ -413,9 +398,9 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
             setOpenStakingModal(true);
           }}
           style={{
-            background: Gradient.Green1,
+            background: Color.GreenLight,
             padding: "11px 48px",
-            borderRadius: "46px",
+            color: Color.Purple,
             fontFamily: "Montserrat",
             fontWeight: 600,
             fontSize: "14px",
@@ -423,7 +408,6 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
             border: "none",
             height: "auto",
           }}
-          isRounded
         >
           Stake Now
         </PrimaryButton>
@@ -431,7 +415,7 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
 
       <Grid container>
         <Grid item xs={12} sm={4} style={{ display: "flex", flexDirection: "column" }}>
-          <Box className={classes.graphBox} flex={1} justifyContent="space-between">
+          <Box className={classes.stakeValueBox} flex={1} justifyContent="space-between">
             <Box>
               <Box className={classes.header2}>Total staked</Box>
               <Box className={classes.header3green} mt={1}>
@@ -443,13 +427,13 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
 
             <Box>
               <Box className={classes.header2}>Total Rewards Accumulated</Box>
-              <Box className={classes.header3} mt={1}>
+              <Box className={classes.header3green} mt={1}>
                 ${(pod.totalRewards ?? 0).toLocaleString()}
               </Box>
             </Box>
           </Box>
 
-          <Box className={classes.graphBox}>
+          <Box className={classes.stakeValueBox}>
             <Box>
               <Box className={classes.header2}>Average Apr</Box>
               <Box className={classes.header3green} mt={1}>
@@ -461,7 +445,7 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
         <Grid item xs={12} sm={8}>
           <Box className={classes.graphBox} height="400px">
             <Box className={classes.graphHeader}>
-              <Box className={classes.header1}>Price History</Box>
+              <Box className={classes.header1}>Staked amount</Box>
               <FormControl variant="outlined">
                 <StyledSelect className={classes.select} value={selectedTimeRange} onChange={v => {}}>
                   {TimRangeList.map((item, index) => (
@@ -476,8 +460,10 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
               {priceChartConfig && <PrintChart config={priceChartConfig} />}
             </Box>
             <Box className={classes.valueBox}>
-              <Box className={classes.header1}>{formatNumber(lastPrice, "USD", 2)}</Box>
-              <Box className={classes.header2} color={lastPrice >= prevPrice ? "#0FCEA6" : "#F43E5F"}>
+              <Box className={classes.header1} style={{ color: Color.Purple }}>
+                {formatNumber(lastPrice, "USD", 2)}
+              </Box>
+              <Box className={classes.header2} color={lastPrice >= prevPrice ? Color.Purple : "#F43E5F"}>
                 {lastPrice > prevPrice ? "+" : ""}
                 {lastPrice - prevPrice} ({priceChange > 0 ? "+" : ""}
                 {priceChange * 100}%)
@@ -488,22 +474,21 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
       </Grid>
 
       <Box className={classes.flexBox} justifyContent="space-between" px={1} mb={3} mt={6}>
-        <Box className={classes.title}>POD Tokens</Box>
+        <Box className={classes.title}>Active</Box>
         <SecondaryButton
           size="small"
           onClick={() => {}}
           style={{
-            background: "transparent",
-            padding: "11px 16px 11px 48px",
+            background: Color.Violet,
+            padding: "11px 16px",
             display: "flex",
             alignItems: "center",
-            borderRadius: "46px",
             fontFamily: "Montserrat",
             fontWeight: 600,
             fontSize: "14px",
             lineHeight: "18px",
-            color: "#2D3047",
-            border: "1px solid #65CB63",
+            border: "none",
+            color: Color.White,
             height: "auto",
           }}
           isRounded
@@ -513,7 +498,7 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
       </Box>
       <MasonryGrid
         gutter={"21px"}
-        data={podStakings.filter((itm, i) => i < 3)}
+        data={podStakings.filter((_, i) => i < 3)}
         renderItem={(item, index) => (
           <StakingPodCard
             key={`pod-${index}`}
@@ -530,22 +515,21 @@ const Staking = ({ pod, podInfo, handleRefresh }) => {
       />
 
       <Box className={classes.flexBox} justifyContent="space-between" px={1} mb={3} mt={6}>
-        <Box className={classes.title}>Copyright Fractions</Box>
+        <Box className={classes.title}>Expired</Box>
         <SecondaryButton
           size="small"
           onClick={() => {}}
           style={{
-            background: "transparent",
-            padding: "11px 16px 11px 48px",
+            background: Color.Violet,
+            padding: "11px 16px",
             display: "flex",
             alignItems: "center",
-            borderRadius: "46px",
             fontFamily: "Montserrat",
             fontWeight: 600,
             fontSize: "14px",
             lineHeight: "18px",
-            color: "#2D3047",
-            border: "1px solid #65CB63",
+            border: "none",
+            color: Color.White,
             height: "auto",
           }}
           isRounded
@@ -600,7 +584,7 @@ const Arrow = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 14 12" fill="none">
     <path
       d="M7.90262 11.5441C8.09347 11.5441 8.26423 11.4713 8.4149 11.3256L13.1384 6.60965C13.2941 6.46401 13.3719 6.28571 13.3719 6.07478C13.3719 5.86886 13.2941 5.69057 13.1384 5.5399L8.4375 0.84654C8.35212 0.761161 8.26549 0.699637 8.1776 0.66197C8.0897 0.624302 7.99805 0.605469 7.90262 0.605469C7.70173 0.605469 7.53348 0.670759 7.39788 0.801339C7.26228 0.93192 7.19448 1.09766 7.19448 1.29855C7.19448 1.399 7.21205 1.49316 7.24721 1.58105C7.28237 1.66895 7.33259 1.74554 7.39788 1.81083L9.00251 3.43806L11.2139 5.45996L9.53739 5.3591L0.723214 5.3591C0.512277 5.3591 0.339007 5.42564 0.203404 5.55873C0.0678013 5.69182 0 5.86384 0 6.07478C0 6.29074 0.0678013 6.46526 0.203404 6.59835C0.339007 6.73145 0.512277 6.79799 0.723214 6.79799L9.53739 6.79799L11.2203 6.69811L9.00251 8.71903L7.39788 10.3463C7.33259 10.4116 7.28237 10.4881 7.24721 10.576C7.21205 10.6639 7.19448 10.7581 7.19448 10.8585C7.19448 11.0544 7.26228 11.2176 7.39788 11.3482C7.53348 11.4788 7.70173 11.5441 7.90262 11.5441Z"
-      fill="#2D3047"
+      fill={Color.White}
     />
   </svg>
 );

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { useHistory } from "react-router";
 
-import { useMediaQuery } from "@material-ui/core";
+import { useTheme, useMediaQuery } from "@material-ui/core";
 
 import URL from "shared/functions/getURL";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -20,6 +20,10 @@ import { useNFTLoansPageStyles } from "../../index.styles";
 import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
 
 const FractionalLoans = ({ loading, loans }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
+
   const classes = useNFTLoansPageStyles();
 
   const history = useHistory();
@@ -222,22 +226,43 @@ const FractionalLoans = ({ loading, loans }) => {
   return (
     <div style={{ width: "100%" }}>
       <div>
-        <Box className={classes.loanTopButtonBox}>
-          <button
-            className={classes.greenButton}
-            style={{ color: "white", background: "#431AB7" }}
-            onClick={() => history.push("/loan/positions")}
-          >
-            Manage positions
-          </button>
-          <SecondaryButton
-            size="medium"
-            onClick={() => setOpenHowModal(true)}
-            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px" }}
-          >
-            How it works?
-          </SecondaryButton>
-        </Box>
+        {isMobile ? (
+          <Box className={classes.loanTopButtonBox}>
+            <Box className={classes.btnGroup}>
+              <button
+                className={classes.greenButton}
+                style={{ color: "white", background: "#431AB7" }}
+                onClick={() => history.push("/loan/positions")}
+              >
+                Manage positions
+              </button>
+              <SecondaryButton
+                size="medium"
+                onClick={() => setOpenHowModal(true)}
+                style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px", marginTop:"16px" }}
+              >
+                How it works?
+              </SecondaryButton>
+            </Box>
+          </Box>
+        ) : (
+          <Box className={classes.loanTopButtonBox}>
+            <button
+              className={classes.greenButton}
+              style={{ color: "white", background: "#431AB7" }}
+              onClick={() => history.push("/loan/positions")}
+            >
+              Manage positions
+            </button>
+            <SecondaryButton
+              size="medium"
+              onClick={() => setOpenHowModal(true)}
+              style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px" }}
+            >
+              How it works?
+            </SecondaryButton>
+          </Box>
+        )}
       </div>
       <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>

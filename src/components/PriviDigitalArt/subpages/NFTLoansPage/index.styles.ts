@@ -229,7 +229,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
         borderTopLeftRadius: 16,
         borderBottomLeftRadius: 16,
       },
-      
+
       "& td:last-child": {
         borderTopRightRadius: 16,
         borderBottomRightRadius: 16,
@@ -326,10 +326,9 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
   },
   positionTitle: {
-    color: "#431AB7",
     fontSize: "30px",
-    marginBottom: "32px",
-    marginTop: "40px",
+    marginBottom: "16px",
+    paddingTop: "50px",
 
     [theme.breakpoints.down("sm")]: {
       fontSize: 26,
@@ -471,15 +470,16 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   loanMediaNameId: {
     fontSize: 14,
     lineHeight: "104.5%",
-    
+
     textAlign: "justify",
-    
+
     color: "#431AB7",
-    
+
     textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
   },
   loanTopButtonBox: {
     display: "flex",
+    alignItems: "center",
     justifyContent: "space-between",
     margin: "36px 42px",
     [theme.breakpoints.down("xs")]: {

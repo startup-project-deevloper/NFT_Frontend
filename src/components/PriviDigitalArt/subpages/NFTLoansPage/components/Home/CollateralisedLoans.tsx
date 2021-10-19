@@ -55,14 +55,14 @@ export default ({
           <SecondaryButton
             size="medium"
             onClick={() => setOpenHowModal(true)}
-            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px" }}
+            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px" }}
           >
             How it works?
           </SecondaryButton>
         </Box>
       </div>
-      <div style={{ width: "100%", padding: "0 24px", paddingTop:"32px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }} onScroll={handleScroll}>
-        <h3>✨ Hottest Loans.</h3>
+      <div style={{ width: "100%", padding: "0 24px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }} onScroll={handleScroll}>
+        <div className={classes.positionTitle}>✨ Hottest Loans.</div>
         <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
           <div className={classes.artCards}>
             <MasonryGrid
@@ -83,7 +83,7 @@ export default ({
             />
           </div>
         </LoadingWrapper>
-        <h3>✨ All</h3>
+        <div className={classes.positionTitle}>✨ All</div>
         <LoadingWrapper loading={loadingLoans} theme={"blue"}>
           <div className={classes.artCards}>
             <MasonryGrid

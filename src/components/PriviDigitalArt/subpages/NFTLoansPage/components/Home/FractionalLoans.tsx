@@ -233,7 +233,7 @@ const FractionalLoans = ({ loading, loans }) => {
           <SecondaryButton
             size="medium"
             onClick={() => setOpenHowModal(true)}
-            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px" }}
+            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px" }}
           >
             How it works?
           </SecondaryButton>

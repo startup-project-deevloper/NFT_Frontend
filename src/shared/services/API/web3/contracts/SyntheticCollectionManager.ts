@@ -635,9 +635,9 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        const gas = await contract.methods.buyBack(SyntheticID).estimateGas({ from: account });
+        const gas = await contract.methods.buyback(SyntheticID).estimateGas({ from: account });
         const response = await contract.methods
-          .buyBack(SyntheticID)
+          .buyback(SyntheticID)
           .send({ from: account, gas: gas })
           .on("transactionHash", function (hash) {
             if (setHash) setHash(hash);
@@ -682,7 +682,7 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
-  const getRequiredFundingForBuyBack = (web3: Web3, payload: any): Promise<any> => {
+  const getBuybackRequiredAmount = (web3: Web3, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { nft } = payload;
@@ -690,7 +690,7 @@ const syntheticCollectionManager = (network: string) => {
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
-        contract.methods.getRequiredFundingForBuyBack(SyntheticID).call((err, result) => {
+        contract.methods.buybackRequiredAmount(SyntheticID).call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
@@ -726,7 +726,7 @@ const syntheticCollectionManager = (network: string) => {
     exitProtocol,
     buyBack,
     getAvailableBuyback,
-    getRequiredFundingForBuyBack,
+    getBuybackRequiredAmount,
   };
 };
 

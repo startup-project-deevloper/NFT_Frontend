@@ -176,7 +176,8 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const [availableJots, setAvailableJots] = useState<number>(0);
-  const PRICE = 20;
+  const [buybackRequiredAmount, setBuybackRequiredAmount] = useState<number>(0);
+  const PRICE = 1;
 
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
@@ -191,6 +192,11 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
         const payload = {
           nft,
         };
+        const buybackRequiredAmount = await web3APIHandler.SyntheticCollectionManager.getBuybackRequiredAmount(
+          web3,
+          payload
+        );
+        setBuybackRequiredAmount(+buybackRequiredAmount);
         const availableBuyback = await web3APIHandler.SyntheticCollectionManager.getAvailableBuyback(
           web3,
           payload
@@ -219,7 +225,7 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
       const web3APIHandler = selectedChain.apiHandler;
       const web3 = new Web3(library.provider);
       const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
-      const amount = toNDecimals((10000 - availableJots) * PRICE, decimals);
+      const amount = toNDecimals(buybackRequiredAmount, decimals);
 
       const approveResponse = await web3APIHandler.Erc20["USDT"].approve(
         web3,
@@ -242,16 +248,16 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
       const response = await web3APIHandler.SyntheticCollectionManager.buyBack(web3, account!, payload);
       setIsProceeding(false);
       if (response.success) {
-        // const params = {
-        //   collectionAddress: nft.collection_id,
-        //   syntheticID: nft.SyntheticID,
-        // };
-        // const { data } = await axios.post(`${URL()}/syntheticFractionalize/withdrawNFT`, params);
-        // if (data.success) {
-        onCompleted();
-        // } else {
-        //   showAlertMessage(`Got failed buyback `, { variant: "error" });
-        // }
+        const params = {
+          collectionAddress: nft.collection_id,
+          syntheticID: nft.SyntheticID,
+        };
+        const { data } = await axios.post(`${URL()}/syntheticFractionalize/withdrawNFT`, params);
+        if (data.success) {
+          onCompleted();
+        } else {
+          showAlertMessage(`Got failed buyback `, { variant: "error" });
+        }
       } else {
         showAlertMessage(`Got failed buyback `, { variant: "error" });
       }
@@ -331,7 +337,7 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
                 <div className={classes.detailRow}>
                   <p>Total to pay</p>
                   <div>
-                    {(10000 - availableJots) * PRICE}&nbsp;<span className={classes.unit}>USDT</span>
+                    {buybackRequiredAmount}&nbsp;<span className={classes.unit}>USDT</span>
                   </div>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const shareQRCodeModalStyles = makeStyles(() => ({
+export const shareQRCodeModalStyles = makeStyles((theme) => ({
   root: {
     width: "500px !important",
   },
@@ -10,6 +10,9 @@ export const shareQRCodeModalStyles = makeStyles(() => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
+    [theme.breakpoints.down("xs")]: {
+      padding: 0,
+    },
   },
   mainContent: {
     display: "flex",

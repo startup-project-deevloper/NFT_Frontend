@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 import URL from "shared/functions/getURL";
 
 import cls from "classnames";
@@ -11,6 +12,10 @@ import FractionalLoans from "./FractionalLoans";
 const Tabs = ["Collateralised Loans", "Fractional Loans"];
 
 const NFTLoansHome = ({ setOpenDepositPage }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
+
   const classes = useNFTLoansPageStyles();
   const [selectedTab, setSelectedTab] = useState<number>(0);
 
@@ -120,11 +125,11 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
     <>
       <Ellipse />
       <div className={classes.content}>
-        <Box display="flex" alignItems="center" width="100%" pl={10}>
+        <Box display="flex" alignItems="center" width="100%" pl={isMobile ? 0 : "42px"} justifyContent={isMobile ? "center" : "flex-start"}>
           <h2>✨ NFT Loans</h2>
         </Box>
         
-        <Box mt={7} width="100%" padding="0 80px" style={{ borderBottom: "1px solid #431AB720"}}>
+        <Box mt={isMobile ? 5:7} width="100%" padding={isMobile ? "0 15px" : "0 42px"} style={{ borderBottom: "1px solid #431AB720"}}>
           <Box display="flex" width="100%">
             {Tabs.map((tab, index) => (
               <div

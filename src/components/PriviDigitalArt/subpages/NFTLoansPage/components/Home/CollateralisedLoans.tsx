@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useHistory } from "react-router";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { useNFTLoansPageStyles } from "../../index.styles";
 import LoanCard from "components/PriviDigitalArt/components/Cards/LoanCard";
@@ -23,6 +24,10 @@ export default ({
   loadingHotLoans,
   handleScroll
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
+
   const classes = useNFTLoansPageStyles();
   const [openDepositNFTModal, setOpenDepositNFTModal] = useState<boolean>(false);
   const history = useHistory();
@@ -37,7 +42,7 @@ export default ({
   };
 
   return (
-    <div style={{width: "100%", fontFamily: "Agrandir"}}>
+    <div style={{ width: "100%", fontFamily: "Agrandir" }}>
       <div>
         <Box className={classes.loanTopButtonBox}>
           <Box className={classes.btnGroup}>
@@ -51,18 +56,29 @@ export default ({
             >
               Manage positions
             </button>
+            {isMobile && (
+              <SecondaryButton
+                size="medium"
+                onClick={() => setOpenHowModal(true)}
+                style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px", marginTop:"16px" }}
+              >
+                How it works?
+              </SecondaryButton>
+            )}
           </Box>
-          <SecondaryButton
-            size="medium"
-            onClick={() => setOpenHowModal(true)}
-            style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px" }}
-          >
-            How it works?
-          </SecondaryButton>
+          {!isMobile && (
+            <SecondaryButton
+              size="medium"
+              onClick={() => setOpenHowModal(true)}
+              style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px" }}
+            >
+              How it works?
+            </SecondaryButton>
+          )}
         </Box>
       </div>
-      <div style={{ width: "100%", padding: "0 24px", paddingTop:"32px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }} onScroll={handleScroll}>
-        <h3>✨ Hottest Loans.</h3>
+      <div style={{ width: "100%", padding: "0 24px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }} onScroll={handleScroll}>
+        <div className={classes.positionTitle}>✨ Hottest Loans</div>
         <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
           <div className={classes.artCards}>
             <MasonryGrid
@@ -83,7 +99,7 @@ export default ({
             />
           </div>
         </LoadingWrapper>
-        <h3>✨ All</h3>
+        <div className={classes.positionTitle}>✨ All</div>
         <LoadingWrapper loading={loadingLoans} theme={"blue"}>
           <div className={classes.artCards}>
             <MasonryGrid

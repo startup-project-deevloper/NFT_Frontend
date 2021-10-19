@@ -28,6 +28,9 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       lineHeight: "104.5%",
       margin: 0,
       color: "#431AB7",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "28px",
+      },
       "& span": {
         fontSize: "18px",
         lineHeight: "23px",
@@ -46,7 +49,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       padding: "63px 20px",
     },
     [theme.breakpoints.down("sm")]: {
-      padding: "35px 8px",
+      padding: "35px 0px",
     },
   },
   ellipse: {
@@ -194,7 +197,11 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   tableContainerWithAbsoluteImage: {
     width: "100%",
     background: "#F6F5F8",
-    padding: "0 36px"
+    padding: "0 36px",
+
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 16px",
+    },
   },
   tableLoansContainer: {
 
@@ -229,7 +236,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
         borderTopLeftRadius: 16,
         borderBottomLeftRadius: 16,
       },
-      
+
       "& td:last-child": {
         borderTopRightRadius: 16,
         borderBottomRightRadius: 16,
@@ -326,10 +333,9 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
   },
   positionTitle: {
-    color: "#431AB7",
     fontSize: "30px",
-    marginBottom: "32px",
-    marginTop: "40px",
+    marginBottom: "16px",
+    paddingTop: "50px",
 
     [theme.breakpoints.down("sm")]: {
       fontSize: 26,
@@ -384,7 +390,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
         height: 20,
         lineHeight: '20px',
         minWidth: 'unset',
-        padding: '0px 3px'
+        padding: '0px 12px'
       },
       [theme.breakpoints.down(370)]: {
         fontSize: 8,
@@ -440,9 +446,18 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     cursor: "pointer",
     border: "none",
     padding: "0 12px 12px",
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 50,
+    },
     [theme.breakpoints.down("xs")]: {
-      fontSize: 16,
-      marginRight: 18,
+      fontSize: 12,
+      padding: "0 0 10px",
+      "&:first-child": {
+        marginRight: "30px"
+      },
+      "&:last-child": {
+        marginRight: "0px"
+      }
     },
   },
   selectedTab: {
@@ -457,9 +472,15 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     fontSize: 10,
     color: "white",
     padding: "5px 9px",
-    width: "fit-content"
+    width: "fit-content",
+    marginBottom: 8,
+    
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 5px",
+      marginBottom: 4,
+    },
   },
-  loanMediaNameName: {
+  loanMediaName: {
     fontWeight: "bold",
     fontSize: 18,
     lineHeight: "104.5%",
@@ -467,25 +488,36 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     textAlign: "justify",
 
     color: "#431AB7",
+    marginBottom: 8,
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 12,
+      marginBottom: 4,
+    },
   },
   loanMediaNameId: {
     fontSize: 14,
     lineHeight: "104.5%",
-    
+
     textAlign: "justify",
-    
+
     color: "#431AB7",
-    
+
     textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 10,
+    },
   },
   loanTopButtonBox: {
     display: "flex",
+    alignItems: "center",
     justifyContent: "space-between",
     margin: "36px 42px",
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
-      marginTop: 46,
-      marginBottom: 64,
+      marginTop: 24,
+      marginBottom: 32,
     },
   },
   btnGroup: {
@@ -495,4 +527,11 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       marginBottom: theme.spacing(2),
     },
   },
+  loanMediaTextWrapper: {
+    marginLeft: 16,
+
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: 8
+    },
+  }
 }));

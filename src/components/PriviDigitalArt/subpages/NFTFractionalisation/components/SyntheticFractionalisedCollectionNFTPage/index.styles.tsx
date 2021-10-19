@@ -127,7 +127,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     color: Color.White,
     marginTop: 6,
-    cursor: 'pointer'
+    cursor: "pointer",
   },
   typo3: {
     fontSize: 38,
@@ -504,6 +504,10 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
         fontSize: "10px !important",
       },
     },
+  },
+  disabledFlip: {
+    opacity: 0.4,
+    cursor: "not-allowed",
   },
 }));
 

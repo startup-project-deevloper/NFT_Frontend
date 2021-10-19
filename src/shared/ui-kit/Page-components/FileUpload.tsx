@@ -322,7 +322,7 @@ const FileUpload = ({
                     display="flex"
                   >
                     Drag and drop your photo or
-                    <Box color="#34C759" ml="8px">
+                    <Box color="#431AB7" ml="8px">
                       browse on your device
                     </Box>
                   </Box>

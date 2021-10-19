@@ -26,6 +26,8 @@ import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { onUploadNonEncrypt } from "../../../../../../shared/ipfs/upload";
 import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
 import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
+import SkeletonBox from "shared/ui-kit/SkeletonBox";
+import { usePageRefreshContext } from "shared/contexts/PageRefreshContext";
 
 const arePropsEqual = (prevProps, currProps) => {
   return (
@@ -78,20 +80,25 @@ const InfoPane = React.memo(
     const [profileBG, setProfileBG] = useState<string>("");
     const [anonAvatar, setAnonAvatar] = useState<string>("");
 
-    const [changeImageTimestamp, setChangeImageTimestamp] = useState<number>(0);
     const inputRef = useRef<any>();
 
     const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
 
     const [imageIPFS, setImageIPFS] = useState<any>(null);
+    const { profileAvatarChanged, setProfileAvatarChanged } = usePageRefreshContext();
 
     useEffect(() => {
       setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
     }, []);
 
     useEffect(() => {
-      getPhotoUser();
-    }, [ipfs, user, changeImageTimestamp]);
+      if (ipfs && Object.entries(userProfile).length) {
+        setImageIPFS(null);
+        getPhotoUser();
+      } else if (!Object.entries(userProfile).length) {
+        setImageIPFS(null);
+      }
+    }, [ipfs, userProfile, profileAvatarChanged]);
 
     useEffect(() => {
       if (user.backgroundURL) {
@@ -116,6 +123,8 @@ const InfoPane = React.memo(
         userProfile.infoImage.newFileCID
       ) {
         setImageIPFS(await getPhotoIPFS(userProfile.infoImage.newFileCID, downloadWithNonDecryption));
+      } else {
+        setImageIPFS(getDefaultAvatar());
       }
     };
 
@@ -276,11 +285,15 @@ const InfoPane = React.memo(
               let setterUser: any = { ...user, infoImage: res.data.data };
               setterUser.hasPhoto = true;
               if (setterUser.id) {
-                if(setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
-                  setterUser.ipfsImage = await getPhotoIPFS(setterUser.infoImage.newFileCID, downloadWithNonDecryption)
+                if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
+                  setterUser.ipfsImage = await getPhotoIPFS(
+                    setterUser.infoImage.newFileCID,
+                    downloadWithNonDecryption
+                  );
                 }
                 dispatch(setUser(setterUser));
               }
+              setProfileAvatarChanged(Date.now());
             }
           })
           .catch(error => {
@@ -329,7 +342,7 @@ const InfoPane = React.memo(
     const userName = useMemo(() => {
       const user = userProfile.urlSlug ?? userProfile.id ?? userId ?? "";
       return user.length > 17 ? user.substr(0, 13) + "..." + user.substr(user.length - 3, 3) : user;
-    }, [userProfile])
+    }, [userProfile]);
 
     return (
       <Card noPadding>
@@ -343,16 +356,16 @@ const InfoPane = React.memo(
             backgroundPosition: "center",
           }}
         />
-        <div
+        <SkeletonBox
           className={classes.avatar}
           style={{
-            backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getDefaultAvatar()})`,
-            // backgroundImage: userProfile && userProfile.id ? `url(${userAvatar})` : "none",
             cursor: ownUser ? "pointer" : "auto",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
+          image={imageIPFS}
+          loading={!imageIPFS}
           onClick={() => {
             if (ownUser) {
               if (userProfile.anon) {
@@ -373,7 +386,7 @@ const InfoPane = React.memo(
           onInputValueChange={fileInput}
           reference={inputRef}
         />
-        <LoadingWrapper loading={!userProfile} theme="blue">
+        <LoadingWrapper loading={!Object.keys(userProfile).length} theme="blue">
           <Box
             display="flex"
             flexDirection={isMobile ? "column" : "row"}

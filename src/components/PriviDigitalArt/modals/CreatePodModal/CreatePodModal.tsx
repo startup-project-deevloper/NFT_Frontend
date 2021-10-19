@@ -128,14 +128,14 @@ const CreatePodModal = (props: any) => {
       onClose={props.onClose}
       showCloseIcon
       style={{
-        maxWidth: acceptWarning ? "755px" : "653px",
+        maxWidth: "514px",
         padding: acceptWarning
           ? isMobile
-            ? "32px 12px 50px"
-            : "32px 39px 50px"
+            ? "22px 25px 32px"
+            : "22px 25px 32px"
           : isMobile
-          ? "20px 22px 63px"
-          : "20px 58px 63px",
+          ? "26px 35px 46px"
+          : "26px 35px 46px",
       }}
     >
       <div>
@@ -153,10 +153,11 @@ const CreatePodModal = (props: any) => {
             <p>
               Keep in mind that this collection is a Smart Contract.
               <br />
-              Once you’ve created the media planning for your collection{" "}
-              <b>you wont be able to change it in the future!</b>
+              Once you’ve created the media planning for your
+              <br />
+              collection you wont be able to change it in the future
             </p>
-            <PrimaryButton size="medium" onClick={() => setAcceptWarning(true)}>
+            <PrimaryButton size="medium" style={{ height: 40, width: "calc(100% - 24px)"}} onClick={() => setAcceptWarning(true)}>
               Continue
             </PrimaryButton>
           </div>
@@ -185,7 +186,7 @@ const CreatePodModal = (props: any) => {
             {pod && (
               <>
                 <div style={{ display: tabCreateNFTMedia === 0 ? "block" : "none" }}>
-                  <div className={classes.headerCreatePod}>Create Pix Collection</div>
+                  <div className={classes.headerCreatePod}>Create Video Collection</div>
                   <GeneralNFTMediaTab
                     pod={pod}
                     setPod={nv => setPod(nv)}
@@ -199,7 +200,7 @@ const CreatePodModal = (props: any) => {
                   />
                 </div>
                 <div style={{ display: tabCreateNFTMedia === 1 ? "block" : "none" }}>
-                  <div className={classes.headerCreatePod}>Select Artists to collab with</div>
+                  <div className={classes.headerCreatePod}>Select artists to collab with</div>
                   <CollabsTab pod={pod} setPod={nv => setPod(nv)} />
                 </div>
                 <Box display="flex" alignItems="center" className={classes.buttons}>
@@ -212,6 +213,7 @@ const CreatePodModal = (props: any) => {
                       }
                     }}
                     size="medium"
+                    style={{ height: 40, width: '44%' }}
                   >
                     {tabCreateNFTMedia !== 0 ? "Back" : "Cancel"}
                   </SecondaryButton>
@@ -228,7 +230,7 @@ const CreatePodModal = (props: any) => {
                         }
                       }}
                       size="medium"
-                      style={{ width: "40%" }}
+                      style={{ height: 40, width: '51%' }}
                     >
                       {tabCreateNFTMedia === 1 ? "Create" : "Next"}
                     </PrimaryButton>

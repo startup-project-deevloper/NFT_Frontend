@@ -314,11 +314,14 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
     const web3 = new Web3(library.provider);
     const decimals = 18;
 
-    const contractRes = await web3APIHandler.SocialERC20.getTokenStats(web3, {
-      contractAddress: token.id,
-    });
+    let contractRes: any = null;
+    if (web3APIHandler && web3APIHandler.SocialERC20) {
+      contractRes = await web3APIHandler.SocialERC20.getTokenStats(web3, {
+        contractAddress: token.id,
+      });
+    }
 
-    if (contractRes.success) {
+    if (contractRes && contractRes.success) {
       setAvailableReserves(toDecimals(contractRes.data.availableReserves, decimals));
       setTotalSupply(toDecimals(contractRes.data.totalSupply, 18));
     }

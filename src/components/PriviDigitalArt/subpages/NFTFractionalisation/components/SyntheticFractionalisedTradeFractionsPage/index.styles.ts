@@ -37,8 +37,8 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     position: "relative",
 
     [theme.breakpoints.down(1080)]: {
-      width: '100%',
-      borderRight: 'none',
+      width: "100%",
+      borderRight: "none",
     },
   },
   ownerInfo: {
@@ -49,10 +49,10 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     [theme.breakpoints.down(1080)]: {
       alignItems: "flex-start",
 
-      '& .MuiIconButton-root': {
-        paddingBottom: '0 !important',
-        paddingTop: '0 !important',
-        height: 'auto',
+      "& .MuiIconButton-root": {
+        paddingBottom: "0 !important",
+        paddingTop: "0 !important",
+        height: "auto",
       },
     },
   },
@@ -94,15 +94,15 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   },
   ownerPriceBtn: {
     [theme.breakpoints.down(1080)]: {
-      display: 'flex',
-      justifyContent: 'center',
-      width: '100%',
+      display: "flex",
+      justifyContent: "center",
+      width: "100%",
       margin: 0,
       marginLeft: "0 !important",
       marginTop: 15,
       borderRadius: "2px !important",
       boxShadow: "0px 4.93997px 12.3499px -7.40995px rgba(79, 95, 17, 0.54)",
-    }
+    },
   },
   h1: {
     display: "flex",
@@ -119,6 +119,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontStyle: "normal",
     fontSize: 22,
     lineHeight: "100%",
+    fontWeight: 800,
 
     [theme.breakpoints.down(1080)]: {
       fontSize: 18,
@@ -140,8 +141,8 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontSize: 14,
     lineHeight: "100%",
     "& img": {
-      margin: '0px 8px'
-    }
+      margin: "0px 8px",
+    },
   },
   h5: {
     display: "flex",
@@ -160,15 +161,15 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     boxShadow: "0px 3.40102px 6.80203px #9EACF2",
     background: Color.Purple,
     overflow: "hidden",
-    position: 'relative',
+    position: "relative",
     "& .no-data": {
-      position: 'absolute',
-      left: '50%',
-      top: '55%',
-      transform: 'translate(-50%, 0)',
+      position: "absolute",
+      left: "50%",
+      top: "55%",
+      transform: "translate(-50%, 0)",
       fontSize: 16,
-      color: '#ffffff'
-    }
+      color: "#ffffff",
+    },
   },
   controlParentBox: {
     display: "flex",
@@ -183,8 +184,8 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   ownershipTitle: {
     fontWeight: 800,
     fontSize: 18,
-    lineHeight: '120%',
-    color: '#FFFFFF',
+    lineHeight: "120%",
+    color: "#FFFFFF",
   },
   controlBox: {
     display: "flex",
@@ -256,7 +257,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   priceInnerContent: {
     justifyContent: "center",
     [theme.breakpoints.down("sm")]: {
-      justifyContent: "space-around"
+      justifyContent: "space-around",
     },
   },
   priceSecondaryContent: {
@@ -276,8 +277,8 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
       padding: "0 8px !important",
     },
     [theme.breakpoints.down("xs")]: {
-      width: '100% !important',
-      borderRadius: '2px !important',
+      width: "100% !important",
+      borderRadius: "2px !important",
       boxShadow: "0px 4.93997px 12.3499px -7.40995px rgba(79, 95, 17, 0.54)",
     },
   },
@@ -286,21 +287,21 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontSize: 24,
     color: "#431AB7",
     marginTop: 12,
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       fontSize: 20,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       fontSize: 18,
     },
   },
   table: {
     marginTop: 24,
     minHeight: 400,
-    width: '100%',
+    width: "100%",
     "& .MuiTableCell-root": {
       fontFamily: "Agrandir",
-      textAlign: 'center !important',
-      [theme.breakpoints.down('xs')]: {
+      textAlign: "center !important",
+      [theme.breakpoints.down("xs")]: {
         padding: 8,
       },
       [theme.breakpoints.down(350)]: {
@@ -316,31 +317,31 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
         fontWeight: "bold",
         color: Color.Purple,
         lineHeight: "104%",
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           fontSize: 12,
         },
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down("xs")]: {
           fontSize: 9,
         },
       },
     },
     "& .MuiTableCell-body": {
       fontSize: 14,
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down("sm")]: {
         fontSize: 12,
       },
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down("xs")]: {
         fontSize: 9,
       },
       "& img": {
         width: 24,
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           width: 18,
         },
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down("xs")]: {
           width: 12,
         },
-      }
+      },
     },
 
     [theme.breakpoints.down("sm")]: {
@@ -373,7 +374,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontSize: 18,
     "& span + span": {
       marginLeft: 6,
-    }
+    },
   },
   progressContainer: {
     padding: "25px 25px 16px 20px",
@@ -388,7 +389,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   progressGrid: {
     "& div:last-child": {
       borderRight: "1px solid #717171",
-    }
+    },
   },
   jotButton: {
     background: "linear-gradient(91.78deg, #AA26C2 11.04%, #F84B4B 74.92%)",
@@ -429,6 +430,17 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontWeight: 800,
     background: "linear-gradient(91.78deg, #AA26C2 11.04%, #F84B4B 74.92%)",
     WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent"
-  }
+    WebkitTextFillColor: "transparent",
+  },
+  boxBuyBack: {
+    borderRadius: "12px",
+    backgroundColor: "#DDFF57",
+    padding: "60px 32px",
+    flexDirection: "row",
+    [theme.breakpoints.down("xs")]: {
+      padding: "24px 12px",
+      display: "flex",
+      flexDirection: "column",
+    },
+  },
 }));

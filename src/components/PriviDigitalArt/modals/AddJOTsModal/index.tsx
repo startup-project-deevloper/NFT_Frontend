@@ -174,7 +174,7 @@ export default function AddJotsModal({
             required
             type="number"
             theme="light"
-            endAdornment={<div className={classes.purpleText}>JOTS</div>}
+            endAdornment={<div className={classes.purpleText}>JOTs</div>}
             disabled={disabled}
           />
           <Grid container>
@@ -213,6 +213,7 @@ export default function AddJotsModal({
               size="medium"
               style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
               onClick={handleAddJots}
+              disabled={jotBalance <= 0}
             >
               Confirm
             </PrimaryButton>

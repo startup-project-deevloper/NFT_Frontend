@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 
-import URL from "shared/functions/getURL";
 import { switchNetwork } from "shared/functions/metamask";
 
 import { Grid, makeStyles } from "@material-ui/core";
@@ -15,10 +13,7 @@ import { useTypedSelector } from "store/reducers/Reducer";
 import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
-import PolygonAPI from "shared/services/API/polygon";
-import PolygonConfig from "shared/connectors/polygon/config";
 import { BlockchainNets } from "shared/constants/constants";
-import { placeBid } from "shared/services/API/FractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { bidSyntheticNFTAuction } from "shared/services/API/SyntheticFractionalizeAPI";
 
@@ -146,7 +141,6 @@ const SyntheticAuctionBidModal = ({ open, onClose, previousBid, nft, handleRefre
 
       let balance = await web3APIHandler.Erc20["JOT"].balanceOf(web3, nft?.JotAddress, { account });
       let decimals = await web3APIHandler.Erc20["JOT"].decimals(web3, nft?.JotAddress);
-      console.log(+toDecimals(balance, decimals), amount);
       if (+toDecimals(balance, decimals) < amount) {
         showAlertMessage(`Insufficient balance to place bid`, { variant: "error" });
         return;
@@ -169,13 +163,20 @@ const SyntheticAuctionBidModal = ({ open, onClose, previousBid, nft, handleRefre
         amount: toNDecimals(amount, decimals),
         setHash,
       }).then(async res => {
-        if (res) {
+        if (res.success) {
           setHash(res.data.hash);
           setTransactionInProgress(false);
           setTransactionSuccess(true);
           const response = await bidSyntheticNFTAuction({
-            amount,
-            bidder: account!,
+            collectionId: nft.collection_id,
+            syntheticId: nft.SyntheticID,
+            bidAmount: amount,
+            bidderAddress: account!,
+            bidderInfo: {
+              id: user.id,
+              avatar: user.anonAvatar,
+              username: `${user.firstName} ${user.lastName}`,
+            },
             hash: res.data.hash,
           });
           if (response.success) {

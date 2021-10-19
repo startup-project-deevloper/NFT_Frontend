@@ -29,7 +29,7 @@ export default function NFTPodCard({ item }) {
   const [podData, setPodData] = React.useState<any>({});
   const user = useTypedSelector(state => state.user);
   const usersList = useSelector((state: RootState) => state.usersInfoList);
-  
+
   const [endTime, setEndTime] = useState<any>({ days: 22, hours: 22, minutes: 12, seconds: 10 });
 
   const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
@@ -63,13 +63,13 @@ export default function NFTPodCard({ item }) {
         getImageIPFS(pod.InfoImage.newFileCID);
       }
       if (pod && pod.Creator) {
-        getImageCreatorIPFS(pod.Creator);
+        getImageCreatorIPFS(pod.Creator || '', pod.CreatorId || '');
       }
     }
   }, [item, ipfs]);
 
-  const getImageCreatorIPFS = async (userId: string) => {
-    let creatorFound = usersList.find(user => user.id === userId);
+  const getImageCreatorIPFS = async (userId: string, userId2: string) => {
+    let creatorFound = usersList.find(user => user.id === userId || user.id === userId2);
 
     if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
@@ -137,7 +137,7 @@ export default function NFTPodCard({ item }) {
     const body = {
       userId: user.id,
       fruitId: type,
-      podAddress: podData.PodAddress ?? podData.id,
+      podAddress: podData.PodAddress ?? podData.Id,
     };
 
     Axios.post(`${URL()}/mediaPod/fruit`, body).then(res => {
@@ -153,7 +153,6 @@ export default function NFTPodCard({ item }) {
     });
   };
 
-  console.log(podData)
   return (
     <Box className={styles.podCard}>
       <Box className={styles.podImageContent}>
@@ -183,7 +182,7 @@ export default function NFTPodCard({ item }) {
             onLoad={() => setImageLoaded(true)}
             alt={podData.Name}
             onClick={() => {
-              history.push(`/pix/pods/${podData.PodAddress}`);
+              history.push(`/pix/pods/${podData.Id}`);
             }}
           /> */}
         </div>
@@ -229,7 +228,7 @@ export default function NFTPodCard({ item }) {
       <Box
         className={styles.podMainInfo}
         onClick={() => {
-          history.push(`/pods/${podData.PodAddress}`);
+          history.push(`/pods/${podData.Id}`);
         }}
       >
         <Box className={styles.flexBox}>

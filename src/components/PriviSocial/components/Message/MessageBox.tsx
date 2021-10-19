@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MessageList } from "./MessageList";
 import { MessageContent } from "./MessageContent";
-import { MessageProfile } from "./MessageProfile";
 import axios from "axios";
 import io from "socket.io-client";
 import URL from "shared/functions/getURL";
@@ -10,8 +9,6 @@ import { RootState } from "store/reducers/Reducer";
 import { openMessageBox, sentMessage } from "store/actions/MessageActions";
 import { getMessageBox } from "store/selectors/user";
 import "./MessageBox.css";
-import { setSelectedUser } from "../../../../store/actions/SelectedUser";
-import { useHistory } from "react-router-dom";
 import { socket, setSocket } from "components/Login/Auth";
 import { PixMessageProfile } from "./PixMessageProfile";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
@@ -19,7 +16,6 @@ import { Box } from "@material-ui/core";
 
 export const MessageBox = ({ type = "social" }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const userSelector = useSelector((state: RootState) => state.user);
   const usersInfo = useSelector((state: RootState) => state.usersInfoList);
@@ -34,12 +30,14 @@ export const MessageBox = ({ type = "social" }) => {
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const width = useWindowDimensions().width;
-  let pathName = window.location.href;
   const [mobileShowRoom, setMobileShowRoom] = useState<boolean>(false);
 
   useEffect(() => {
     if (!socket && localStorage.getItem("userId")) {
-      const sock = io(URL(), { query: { token: localStorage.getItem("token")?.toString() || "" } });
+      const sock = io(URL(), {
+        query: { token: localStorage.getItem("token")?.toString() || "" },
+        transports: ["websocket"],
+      });
       sock.connect();
       setSocket(sock);
       sock.emit("add user", localStorage.getItem("userId")?.toString() || "");

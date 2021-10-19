@@ -18,7 +18,7 @@ import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
 
 export default function ArtistCard({ item, currentIndex }) {
   const classes = artistCardStyles();
-
+  const users = useTypedSelector(state => state.usersInfoList);
   const user = useTypedSelector(state => state.user);
   const history = useHistory();
   const { isSignedin } = useAuth();
@@ -45,7 +45,14 @@ export default function ArtistCard({ item, currentIndex }) {
     if (user && user.infoImage && user.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
       setImageIPFS(imageUrl);
-    } else {
+    } else if (user && user.id) {
+      const userFound = users.find(usr => usr.id === user.id);
+
+      if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+        let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+        setImageIPFS(imageUrl);
+      }
+    } else{
       setImageIPFS(require(`assets/anonAvatars/${artist.anonAvatar ?? "ToyFaces_Colored_BG_001.jpg"}`));
     }
   };

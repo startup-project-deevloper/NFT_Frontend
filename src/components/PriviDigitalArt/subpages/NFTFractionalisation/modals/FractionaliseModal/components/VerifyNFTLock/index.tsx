@@ -20,7 +20,6 @@ const isProd = process.env.REACT_APP_ENV === "prod";
 export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
   const classes = useVerifyNFTLockStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const [isVerified, setVerified] = useState<boolean>(false);
 
@@ -38,13 +37,11 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
     }
     const selectedChain = BlockchainNets.find(b => b.name === "POLYGON");
     if (!selectedChain) return;
-    setIsLoading(true);
     setIsProceeding(true);
     try {
       const web3APIHandler = selectedChain.apiHandler;
       const web3 = new Web3(library.provider);
       const setHash_ = hash => {
-        setIsLoading(false);
         setHash(hash);
       };
       const response = await web3APIHandler.SyntheticCollectionManager.verifyToken(web3, account!, nft, {
@@ -52,7 +49,6 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
         setHash: setHash_,
       });
       if (!response.success) {
-        setIsLoading(false);
         setIsProceeding(false);
         showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
         return;
@@ -63,19 +59,16 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
       };
       const { data } = await axios.post(`${URL()}/syntheticFractionalize/verifyNFT`, params);
       if (!data.success) {
-        setIsLoading(false);
         setIsProceeding(false);
         showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
         return;
       }
       onCompleted();
       setVerified(true);
-      setIsLoading(false);
       setIsProceeding(false);
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);
-      setIsLoading(false);
       showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
     }
   };
@@ -111,7 +104,7 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
               Transaction is proceeding on Polygon Chain. <br />
               This can take a moment, please be patient...
             </p>
-            {!isLoading && (
+            {hash && (
               <CopyToClipboard text={hash}>
                 <Box
                   mt="20px"

@@ -33,27 +33,27 @@ const syntheticFractionalisationAuctionsManager = (network: string) => {
         const gas = await contract.methods
           .startAuction(SyntheticCollectionManagerAddress, tokenId, toNDecimals(price, decimals))
           .estimateGas({ from: account });
-        contract.methods
+        const response = await contract.methods
           .startAuction(SyntheticCollectionManagerAddress, tokenId, toNDecimals(price, decimals))
           .send({ from: account, gas })
           .on("transactionHash", function (hash) {
             setHash(hash);
-          })
-          .on("receipt", function (receipt) {
-            resolve({
-              success: true,
-              data: {
-                auctionContract: receipt.events.AuctionStarted.returnValues.auctionContract,
-                collection: receipt.events.AuctionStarted.returnValues.collection,
-                nftId: receipt.events.AuctionStarted.returnValues.nftId,
-                openingBid: toDecimals(receipt.events.AuctionStarted.returnValues.openingBid, decimals),
-              },
-            });
-          })
-          .on("error", e => {
-            console.log(e);
-            resolve({ success: false });
           });
+
+        console.log(response)
+        if (response) {
+          resolve({
+            success: true,
+            data: {
+              auctionContract: response.events.AuctionStarted.returnValues.auctionContract,
+              collection: response.events.AuctionStarted.returnValues.collection,
+              nftId: response.events.AuctionStarted.returnValues.nftId,
+              openingBid: toDecimals(response.events.AuctionStarted.returnValues.openingBid, decimals),
+            },
+          });
+        } else {
+          resolve({ success: false });
+        }
       } catch (e) {
         console.log(e);
         resolve({ success: false });

@@ -5,7 +5,12 @@ const exchange = network => {
   const contractAddress = config[network].CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE;
   const metadata = require("shared/connectors/web3/contracts/ERC721TokenExchange.json");
 
-  const CreateERC721TokenExchange = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const CreateERC721TokenExchange = async (
+    web3: Web3,
+    account: string,
+    payload: any,
+    setHash: (hash: string) => void
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
@@ -14,7 +19,10 @@ const exchange = network => {
           .estimateGas({ from: account });
         const response = await contract.methods
           .CreateERC721TokenExchange(payload.input, payload.caller)
-          .send({ from: account, gas: gas });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            setHash(hash);
+          });
         console.log("transaction succeed ", response);
         const result = {
           data: {

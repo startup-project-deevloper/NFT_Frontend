@@ -71,7 +71,7 @@ export default function ProfileCard({
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
-  const [imageIPFS, setImageIPFS] = useState('');
+  const [imageIPFS, setImageIPFS] = useState("");
 
   // get 24h change for auction
   useEffect(() => {
@@ -80,15 +80,16 @@ export default function ProfileCard({
         if (resp?.success) {
           let startPrice;
           let found = false;
-          const startTime = Date.now()-1000*3600*24;
+          const startTime = Date.now() - 1000 * 3600 * 24;
           const data = resp.data;
           for (let i = 0; i < data.length && !found; i++) {
             if (data[i]?.date >= startTime) {
               startPrice = data[i].price;
               found = true;
             }
-          };
-          if (startPrice && data[data.length-1].price) setChange24h((data[data.length-1].price-startPrice)/startPrice)
+          }
+          if (startPrice && data[data.length - 1].price)
+            setChange24h((data[data.length - 1].price - startPrice) / startPrice);
         }
       });
     }
@@ -96,17 +97,25 @@ export default function ProfileCard({
 
   useEffect(() => {
     if (item) {
-      setChain(item.TokenChain ? (item.TokenChain === "" ? "PRIVI" : item.TokenChain) : item.tag ?? "PRIVI");
+      setChain(
+        item.TokenChain
+          ? item.TokenChain === ""
+            ? "PRIVI"
+            : item.TokenChain
+          : item.tag ?? item.chainsFullName ?? "PRIVI"
+      );
       setBookmarked(true);
       setTotalView(item.TotalView);
       axios.get(`${URL()}/user/getBasicUserInfo/${item.CreatorAddress}`).then(res => {
         const resp = res.data;
         if (resp?.success) {
           const data = resp.data;
-          setCreatorsData([{
-            ...data,
-            name: data.name ?? `${data.firstName} ${data.lastName}`,
-          }])
+          setCreatorsData([
+            {
+              ...data,
+              name: data.name ?? `${data.firstName} ${data.lastName}`,
+            },
+          ]);
         }
       });
 
@@ -337,7 +346,6 @@ export default function ProfileCard({
             )}
           </Box>
           <div className={classes.chain}>{chain}</div>
-
         </div>
         <div
           className={classes.header}
@@ -363,7 +371,7 @@ export default function ProfileCard({
             }
           >
             <div className={classes.aspectRatioWrapper}>
-              {(!item.cid) || type === "Social" ? (
+              {!item.cid || type === "Social" ? (
                 <div
                   className={classes.image}
                   style={
@@ -374,7 +382,8 @@ export default function ProfileCard({
                           justifyContent: "center",
                         }
                       : {
-                          backgroundImage: `url(${getRandomImageUrl()})`,
+                          backgroundImage: `url(${item?.metadata?.image ?? getRandomImageUrl()})`,
+                          backgroundSize: "cover",
                         }
                   }
                 >
@@ -383,9 +392,11 @@ export default function ProfileCard({
                   )}
                 </div>
               ) : (
-                <object data={item.cid ? imageIPFS : ""}
-                        type="image/png"
-                        className={cls(classes.image, classes.img)}>
+                <object
+                  data={item.cid ? imageIPFS : ""}
+                  type="image/png"
+                  className={cls(classes.image, classes.img)}
+                >
                   <div className={classes.image} />
                 </object>
               )}
@@ -443,17 +454,18 @@ export default function ProfileCard({
                     <Box fontSize="14px">Price</Box>
                     <Box>
                       {`${
-                        item && item.NftConditions && item.NftConditions.Price ? item.NftConditions.Price : "Free"
+                        item && item.NftConditions && item.NftConditions.Price
+                          ? item.NftConditions.Price
+                          : "Free"
                       } ${
                         item && item.NftConditions && item.NftConditions.Price > 0
                           ? (item.NftConditions.FundingToken ||
-                            item.NftConditions.NftToken ||
-                            item.ViewConditions.ViewingToken) ??
+                              item.NftConditions.NftToken ||
+                              item.ViewConditions.ViewingToken) ??
                             ""
                           : ""
                       }`}
                     </Box>
-
                   </Box>
                   <Box>
                     <Box fontSize="14px">Bid</Box>
@@ -463,11 +475,16 @@ export default function ProfileCard({
                           item.Auctions.TokenSymbol
                         }`}
                       </Box>
-                    ) : 0}
+                    ) : (
+                      0
+                    )}
                   </Box>
                   <Box>
                     <Box fontSize="14px">24h Change</Box>
-                    <Box>{change24h > 0? "+":""}{(change24h*100).toFixed(2)}%</Box>
+                    <Box>
+                      {change24h > 0 ? "+" : ""}
+                      {(change24h * 100).toFixed(2)}%
+                    </Box>
                   </Box>
                 </Box>
                 {item.ExchangeData > 0 && (
@@ -497,7 +514,9 @@ export default function ProfileCard({
                             backgroundImage: `url(${
                               creator?.url
                                 ? creator.url
-                                : creator?.anonAvatar? `${require(`assets/anonAvatars/${user.anonAvatar}`)}` : getRandomAvatarForUserIdWithMemoization(creator.id)
+                                : creator?.anonAvatar
+                                ? `${require(`assets/anonAvatars/${user.anonAvatar}`)}`
+                                : getRandomAvatarForUserIdWithMemoization(creator.id)
                             })`,
                           }}
                         />
@@ -508,7 +527,6 @@ export default function ProfileCard({
                     )}
                   </Box>
                 )}
-
               </div>
             </div>
           </div>
@@ -523,10 +541,12 @@ export default function ProfileCard({
                   src={require(`assets/mediaIcons/small/digital_art.png`)}
                 />
               )}
-              <Box style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{item?.MediaName}</Box>
+              <Box style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {item?.MediaName || item?.metadata?.name}
+              </Box>
             </Box>
 
-            <FruitSelect fruitObject={item} members={type === "Crew" ? item.Members : []}/>
+            <FruitSelect fruitObject={item} members={type === "Crew" ? item.Members : []} />
           </Box>
           {item && item.Fraction && (
             <Box className={classes.fraction}>Fractionalized {Math.round(item.Fraction.Fraction * 100)}%</Box>
@@ -561,7 +581,7 @@ export default function ProfileCard({
           handleRefresh={handleRefresh}
           media={item}
           mediaViews={totalView}
-          cidUrl={(item?.cid) ? imageIPFS : ""}
+          cidUrl={item?.cid ? imageIPFS : ""}
         />
       )}
     </>

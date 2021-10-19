@@ -39,7 +39,7 @@ export const collabsTabStyles = makeStyles(() => ({
     margin: "50px 0px 0px",
     background: "#F0F5F8",
     borderRadius: "41px",
-    color: "#2D3047",
+    color: "#431AB7",
     fontSize: "14px",
     fontWeight: 800,
     "& svg": {

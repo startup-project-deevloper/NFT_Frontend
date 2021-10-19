@@ -290,6 +290,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const ownershipJot = +nft.OwnerSupply;
   const maxSupplyJot = +nft.SellingSupply;
 
+  const [ownerSupply, setOwnerSupply] = React.useState<number>(-1);
+  const [sellingSupply, setSellingSupply] = React.useState<number>(-1);
+
   React.useEffect(() => {
     let labels: any[] = [];
     let data: any[] = [];
@@ -377,6 +380,31 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       if (ownerHisotryResponse.success) {
         setOwnerHistory(ownerHisotryResponse.data.reverse());
       }
+
+      try {
+        const targetChain = BlockchainNets[1];
+
+        const web3APIHandler = targetChain.apiHandler;
+        const web3 = new Web3(library.provider);
+
+        const ownerSup = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(web3, nft, {
+          tokenId: nft.SyntheticID,
+        });
+
+        if (ownerSup) {
+          setOwnerSupply(ownerSup);
+        }
+
+        const sellingSup = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft, {
+          tokenId: nft.SyntheticID,
+        });
+
+        if (sellingSup) {
+          setSellingSupply(sellingSup);
+        }
+      } catch (err) {
+        console.log("error", err);
+      }
     })();
   }, [collectionId, nft]);
 
@@ -426,10 +454,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     history.push(`/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
+  const handleBuyBack = () => {};
+
   const totalJot = 10000;
   const percentage = useMemo(
-    () => Number((ownershipJot / totalJot).toFixed(2)) * 100,
-    [ownershipJot, totalJot]
+    () => Number(((ownerSupply || ownershipJot) / totalJot).toFixed(2)) * 100,
+    [ownerSupply, ownershipJot, totalJot]
   );
 
   React.useEffect(() => {
@@ -486,7 +516,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       {isOwnerShipTab ? (
         <Box className={classes.outBox}>
           <Box display="flex" flexDirection="column">
-            {ownershipJot === 0 ? (
+            {ownerSupply === 0 || (ownerSupply === -1 && ownershipJot === 0) ? (
               isMobileScreen ? (
                 <>
                   <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -542,7 +572,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     <Box className={classes.timeBox}>{remainingSec}s</Box>
                   </Box>
                   <Box className={classes.descBox} mt={4.5}>
-                    Your position has been liquidated, you can buy back your NFT at 10k JOTS for next 7 days.
+                    Your position has been liquidated, you can buy back your NFT at 10k JOTs for next 7 days.
                     After that time the NFT will go for an auction.
                   </Box>
                 </>
@@ -559,7 +589,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     <Box className={classes.progressTitle} display="flex" alignItems="center">
                       <span>Margin left before Liquidation</span>
                       <span>
-                        {ownershipJot} / <b>{totalJot} JOTs</b>
+                        {ownerSupply === -1 ? ownershipJot : ownerSupply} / <b>{totalJot} JOTs</b>
                       </span>
                     </Box>
                     <Box
@@ -644,7 +674,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         </HtmlTooltip>
                       </Box>
                       <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        {ownershipJot} JOTs
+                        {ownerSupply === -1 ? ownershipJot : ownerSupply} JOTs
                       </Box>
                       <Box
                         sx={{
@@ -682,7 +712,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           }}
                           onClick={handleOpenAddJOTsModal}
                         >
-                          Add more JOTS
+                          Add "JOTs"
                         </PrimaryButton>
                       </Box>
                     </Box>
@@ -696,7 +726,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         Current supply
                       </Box>
                       <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        {maxSupplyJot} JOTs
+                        {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
                       </Box>
                       <PrimaryButton
                         className={classes.h4}
@@ -721,7 +751,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         Current supply
                       </Box>
                       <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        {maxSupplyJot} JOTs
+                        {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
                       </Box>
                       <PrimaryButton
                         className={classes.h4}
@@ -743,6 +773,30 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       </PrimaryButton>
                     </Box>
                   </Box>
+                </Box>
+                <Box
+                  className={classes.boxBuyBack}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box>
+                    Current Reserve Price to Buy Back
+                    <Box className={classes.h2}>10,000 USDT</Box>
+                  </Box>
+                  <PrimaryButton
+                    className={classes.h4}
+                    size="medium"
+                    style={{
+                      background: Color.Purple,
+                      color: Color.White,
+                      padding: "0px 25px",
+                      borderRadius: 4,
+                    }}
+                    onClick={handleBuyBack}
+                  >
+                    Buy Back to Withdraw
+                  </PrimaryButton>
                 </Box>
               </>
             )}

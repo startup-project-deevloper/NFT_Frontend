@@ -6,7 +6,7 @@ import { InputBase } from "@material-ui/core";
 import { RootState } from "store/reducers/Reducer";
 import { Avatar } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
-import { getRandomAvatar } from "shared/services/user/getUserAvatar";
+import { getRandomAvatar, useUserAvatar } from "shared/services/user/getUserAvatar";
 import { getMatchingUsers, IAutocompleteUsers } from "shared/services/API";
 
 const searchIcon = require("assets/icons/search.png");
@@ -37,6 +37,7 @@ const CollabsTab = ({ pod, setPod }) => {
     setPod({ ...pod, Collabs: newCollabs });
   };
 
+  const avatar = useUserAvatar(user.id);
   return (
     <>
       <div className={classes.inputContainer}>
@@ -52,56 +53,60 @@ const CollabsTab = ({ pod, setPod }) => {
             }
           }}
           options={autocompleteUsers}
-          renderOption={option => (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              padding="14px 26px"
-              width="100%"
-              style={{
-                borderBottom: "1px solid #00000021",
-              }}
-            >
-              <Box display="flex" alignItems="center">
-                <Avatar noBorder
-                        url={option.imageUrl ? option.imageUrl : getRandomAvatar()}
-                        size="medium" />
-                <Box ml="11px" fontFamily="Montserrat" color="#404658" fontSize="16px">
-                  @
-                  {option.urlSlug && !option.urlSlug.startsWith("Px")
-                    ? option.urlSlug
-                    : option?.name ?? "User name"}
-                </Box>
-              </Box>
+          renderOption={option => {
+            let userName = '@' + option.urlSlug && !option.urlSlug.startsWith("Px")
+              ? option.urlSlug
+              : option?.name ?? "User name";
+
+            userName = userName.length > 17 ? userName.substr(0, 14) + "..." + userName.substr(userName.length - 2, 2) : userName;
+            return (
               <Box
                 display="flex"
-                color="#65CB63"
-                fontFamily="Montserrat"
-                fontWeight={600}
                 alignItems="center"
+                justifyContent="space-between"
+                padding="0 6px 6px"
+                width="100%"
+                style={{
+                  borderBottom: "1px solid #00000021",
+                }}
               >
-                Invite Artist
-                <div className={classes.addRound}>
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 13 13"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6.5 11.5V1.5M1.5 6.5L11.5 6.5"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
+                <Box display="flex" alignItems="center">
+                  <Avatar noBorder
+                          url={option.imageUrl ? option.imageUrl : avatar!}
+                          size="medium" />
+                  <Box ml="11px" fontFamily="Montserrat" color="#404658" fontSize="16px">
+                    {userName}
+                  </Box>
+                </Box>
+                <Box
+                  display="flex"
+                  color="#65CB63"
+                  fontFamily="Montserrat"
+                  fontWeight={600}
+                  alignItems="center"
+                >
+                  Invite Artist
+                  <div className={classes.addRound}>
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 13 13"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6.5 11.5V1.5M1.5 6.5L11.5 6.5"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </Box>
               </Box>
-            </Box>
-          )}
+            )
+          }}
           getOptionLabel={option =>
             option.urlSlug && option.urlSlug.startsWith("Px") ? `@${option.urlSlug}` : `@${option.name}`
           }
@@ -160,7 +165,7 @@ const CollabsTab = ({ pod, setPod }) => {
         <svg width="10" height="10" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M6.5 11.5V1.5M1.5 6.5L11.5 6.5"
-            stroke="#2D3047"
+            stroke="#431AB7"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -175,6 +180,14 @@ const CollabsTab = ({ pod, setPod }) => {
 const UserTile = ({ user }) => {
   const classes = collabsTabStyles();
 
+  let userName = user.name && user.imageUrl 
+    ? "@" + user.urlSlug && !user.urlSlug.startsWith("Px") 
+      ? user.urlSlug 
+      : user.name ?? "User name"
+    : user.address ?? "";
+
+  userName = userName.length > 17 ? userName.substr(0, 14) + "..." + userName.substr(userName.length - 2, 2) : userName;
+  
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" className={classes.userTile}>
       {user.name && user.imageUrl ? (
@@ -185,11 +198,11 @@ const UserTile = ({ user }) => {
             size="medium"
           />
           <Box ml="11px" color="#404658" fontSize="16px">
-            @{user.urlSlug && !user.urlSlug.startsWith("Px") ? user.urlSlug : user.name ?? "User name"}
+            {userName}
           </Box>
         </Box>
       ) : (
-        user.address ?? ""
+        userName
       )}
       <div className={classes.invitationSentBtn}>Invitation sent</div>
     </Box>

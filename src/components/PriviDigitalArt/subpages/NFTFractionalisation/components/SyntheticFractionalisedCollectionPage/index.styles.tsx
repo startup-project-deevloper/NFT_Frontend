@@ -379,6 +379,9 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     },
   },
   tabSection: {
+    fontFamily: "Agrandir GrandHeavy",
+    color: "#431AB7",
+    opacity: 0.5,
     height: 54,
     display: "flex",
     justifyContent: "center",
@@ -386,6 +389,7 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
   },
   selectedTabSection: {
     borderBottom: "4px solid #431AB7",
+    opacity: 1,
   },
   allNFTSection: {
     width: "100%",
@@ -399,12 +403,16 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     cursor: "pointer",
     backgroundColor: "#431AB7",
     borderRadius: 8,
-    padding: "9px 18px 9px 6px",
+    padding: "9px 18px",
     [theme.breakpoints.down("xs")]: {
       padding: "13px 11px",
     },
     color: "white",
     fontWeight: 800,
+
+    '& img': {
+      marginRight: "8px !important"
+    }
   },
 }));
 
@@ -446,6 +454,9 @@ export const PlusIcon = () => (
 );
 export const MetamaskPlusIcon = () => (
   <svg width="10" height="11" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8.43344 5.41567V0.877441H5.08511V5.41567H0.546875V8.764H5.08511V13.3299H8.43344V8.764H12.9993V5.41567H8.43344Z" fill="white" />
+    <path
+      d="M8.43344 5.41567V0.877441H5.08511V5.41567H0.546875V8.764H5.08511V13.3299H8.43344V8.764H12.9993V5.41567H8.43344Z"
+      fill="white"
+    />
   </svg>
 );

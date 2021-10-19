@@ -28,6 +28,9 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       lineHeight: "104.5%",
       margin: 0,
       color: "#431AB7",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "28px",
+      },
       "& span": {
         fontSize: "18px",
         lineHeight: "23px",
@@ -46,7 +49,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       padding: "63px 20px",
     },
     [theme.breakpoints.down("sm")]: {
-      padding: "35px 8px",
+      padding: "35px 0px",
     },
   },
   ellipse: {
@@ -439,9 +442,18 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     cursor: "pointer",
     border: "none",
     padding: "0 12px 12px",
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 50,
+    },
     [theme.breakpoints.down("xs")]: {
-      fontSize: 16,
-      marginRight: 18,
+      fontSize: 12,
+      padding: "0 0 10px",
+      "&:first-child": {
+        marginRight: "30px"
+      },
+      "&:last-child": {
+        marginRight: "0px"
+      }
     },
   },
   selectedTab: {
@@ -484,8 +496,8 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     margin: "36px 42px",
     [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
-      marginTop: 46,
-      marginBottom: 64,
+      marginTop: 24,
+      marginBottom: 32,
     },
   },
   btnGroup: {

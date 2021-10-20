@@ -18,19 +18,21 @@ import {
 } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
-import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getRandomAvatarForUserIdWithMemoization, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMediaModal";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { SharePopup } from "shared/ui-kit/SharePopup";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
 
 const MediaDetailsModal = (props: any) => {
   const classes = mediaDetailsModalStyles();
   const mobileMatches = useMediaQuery("(max-width:375px)");
+  const { showAlertMessage } = useAlertMessage();
   const history = useHistory();
   const [media, setMedia] = useState<any>(props.media);
   const usersList = useTypedSelector(state => state.usersInfoList);
@@ -41,7 +43,6 @@ const MediaDetailsModal = (props: any) => {
   const [creatorsImages, setCreatorsImages] = useState<any[]>([]);
   const [creator, setCreator] = useState<any>();
   const [isFollowing, setIsFollowing] = useState<number>(0);
-  const [status, setStatus] = useState<any>("");
 
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
@@ -58,16 +59,20 @@ const MediaDetailsModal = (props: any) => {
 
   useEffect(() => {
     let cts = [] as any;
-    const isFollowing = media ? userConnections.isUserFollowed(media.CreatorId) : 0;
-    setIsFollowing(isFollowing);
     const foundUser = usersList.find(
       user =>
         user.id === media.Creator ||
         user.id === media.CreatorId ||
         user.address === media.Creator ||
         user.address === media.CreatorId ||
-        user.address === media.CreatorAddress
+        user.address === media.CreatorAddress ||
+        user.id === media.owner_of ||
+        user.address === media.owner_of
     );
+
+    const isFollowing =
+      media.CreatorId ?? foundUser?.id ? userConnections.isUserFollowed(media.CreatorId ?? foundUser?.id) : 0;
+    setIsFollowing(isFollowing);
 
     if (foundUser) {
       cts.push(foundUser);
@@ -183,19 +188,9 @@ const MediaDetailsModal = (props: any) => {
     try {
       await userConnections.followUser(id);
 
-      setStatus({
-        msg: "Follow success",
-        key: Math.random(),
-        variant: "success",
-      });
-
       setIsFollowing(1);
     } catch (err) {
-      setStatus({
-        msg: "Follow failed",
-        key: Math.random(),
-        variant: "error",
-      });
+      showAlertMessage("Follow failed", { variant: "error" });
     }
   };
 
@@ -203,19 +198,9 @@ const MediaDetailsModal = (props: any) => {
     try {
       await userConnections.unfollowUser(id);
 
-      setStatus({
-        msg: "Unfollow success",
-        key: Math.random(),
-        variant: "success",
-      });
-
       setIsFollowing(0);
     } catch (err) {
-      setStatus({
-        msg: "Unfollow failed",
-        key: Math.random(),
-        variant: "error",
-      });
+      showAlertMessage("Unfollow failed", { variant: "error" });
     }
   };
 
@@ -228,30 +213,10 @@ const MediaDetailsModal = (props: any) => {
   };
 
   const getChainImage = () => {
-    if (media?.BlockchainNetwork === "Polygon Chain") {
-      return "polygon";
-    }
-    switch (media?.tag) {
-      case "wax":
-        return "wax_icon";
-      case "binance":
-        return "binance-logo";
-      case "hicetnunc":
-        return "hicetnunc";
-      case "mirror":
-        return "mirror_icon";
-      case "opensea":
-        return "opensea_icon";
-      // case "sorare":
-      //   return "sorare_icon";
-      case "showtime":
-        return "showtime_icon";
-      case "zora":
-        return "zora_icon";
-      case "topshot":
-        return "top_shot_icon";
-      default:
-        return "privi_icon";
+    if (media?.metadata) {
+      return require("assets/tokenImages/POLYGON-SYMBOL.png");
+    } else {
+      return getLoanChainImageUrl(media?.Chain, media?.BlockchainNetwork);
     }
   };
 
@@ -264,35 +229,29 @@ const MediaDetailsModal = (props: any) => {
       className={classes.content}
     >
       <Header3 noMargin fontWeight={800}>
-        {media?.MediaName || media?.title}
+        {media?.MediaName || media?.title || media?.metadata?.name}
       </Header3>
       <Grid container spacing={2} style={{ marginTop: "16px", marginBottom: "16px" }}>
-        <Grid item xs={12} sm={6}>
-          <object
-            data={
-              props.cidUrl ??
-              media.imageURL ??
-              media.UrlMainPhoto ??
-              media.Url ??
-              media.url ??
-              `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
-            }
-            type="image/png"
-            className={classes.detailImg}
-            style={{ height: "100%" }}
-            width="100%"
-          ></object>
-          {/* <img
-            src={
-              media.imageURL ??
-              media.UrlMainPhoto ??
-              media.Url ??
-              media.url ??
-              `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
-            }
-            className={classes.detailImg}
-            width="100%"
-          /> */}
+        <Grid item xs={12} sm={6} style={{ textAlign: "center" }}>
+          {media.metadata?.image ? (
+            <img src={media.metadata?.image} alt={media.metadata?.name || ""} className={classes.detailImg} />
+          ) : (
+            <object
+              data={
+                props.cidUrl ??
+                media.imageURL ??
+                media.UrlMainPhoto ??
+                media.Url ??
+                media.url ??
+                media.metadata?.image ??
+                `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
+              }
+              type="image/png"
+              className={classes.detailImg}
+              style={{ height: "100%" }}
+              width="100%"
+            />
+          )}
         </Grid>
         <Grid
           item
@@ -306,16 +265,9 @@ const MediaDetailsModal = (props: any) => {
         >
           <div className={classes.infoSection}>
             <Box display="flex" flexDirection="row" alignItems="center">
-              <Avatar
-                size="medium"
-                url={creator && creator.ipfsImage
-                  ? creator.ipfsImage
-                  : ""}
-              />
+              <Avatar size="medium" url={creator && creator.ipfsImage ? creator.ipfsImage : ""} />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
-                <Text color={Color.Black}
-                      className={classes.creatorName}
-                      style={{ marginBottom: 4 }}>
+                <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                   {creator?.name || media?.CreatorName || media?.creator}
                 </Text>
                 {creator?.urlSlug && <Text className={classes.creatorName}>{`@${creator?.urlSlug}`}</Text>}
@@ -357,12 +309,12 @@ const MediaDetailsModal = (props: any) => {
             handleCloseMenu={handleCloseShareMenu}
           />
           {/* <ShareMenu
-                        openMenu={openOptionsMenu}
-                        anchorRef={anchorOptionsMenuRef}
-                        item={media}
-                        handleCloseMenu={() => setOpenOptionsMenu(false)}
-                        isLeftAligned={true}
-                    /> */}
+            openMenu={openOptionsMenu}
+            anchorRef={anchorOptionsMenuRef}
+            item={media}
+            handleCloseMenu={() => setOpenOptionsMenu(false)}
+            isLeftAligned={true}
+          /> */}
           <Box display="flex" alignItems="center" justifyContent="space-between" my={2}>
             {creatorsImages.length > 0 && (
               <Box display="flex" alignItems="center" mr={2}>
@@ -371,9 +323,7 @@ const MediaDetailsModal = (props: any) => {
                     key={`artist-${owner.id}`}
                     className={classes.artist}
                     size="small"
-                    url={owner.ipfsImage
-                      ? owner.ipfsImage
-                      : ""}
+                    url={owner.ipfsImage ? owner.ipfsImage : ""}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>
@@ -390,44 +340,60 @@ const MediaDetailsModal = (props: any) => {
               </Text>
             </div>
           </Box>
-          <hr className={classes.divider} />
-          <Header5>Collection</Header5>
-          {renderCollection()}
+          {!media.metadata && (
+            <>
+              <hr className={classes.divider} />
+              <Header5>Collection</Header5>
+              {renderCollection()}
+            </>
+          )}
           <hr className={classes.divider} />
           <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
-            {media && <img src={require(`assets/priviIcons/${getChainImage()}.png`)} width="32px" />}
-            <Box ml={2}>{media?.tag?.toUpperCase() || "Privi Chain"}</Box>
+            {media && <img src={getChainImage()} width="32px" />}
+            <Box ml={2}>{media.chainsFullName ?? (media?.tag?.toUpperCase() || "Polygon")}</Box>
           </Box>
-          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">
-            <Text color={Color.Black} size={FontSize.XL}>
-              Price
-            </Text>
-            <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-              {media.tag
-                ? `${media?.price || 0}`
-                : `ETH ${media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0}`}
-            </Text>
-            {!media.tag && (
-              <Text color={Color.Black} size={FontSize.S}>
-                {`$(${convertTokenToUSD(
-                  media?.ExchangeData
-                    ? media?.ExchangeData.OfferToken
-                    : media?.NftConditions?.FundingToken ?? "ETH",
-                  media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0
-                ).toFixed(6)})`}
+          {!media.metadata && (
+            <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">
+              <Text color={Color.Black} size={FontSize.XL}>
+                Price
               </Text>
-            )}
-          </Box>
+              <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
+                {media.tag
+                  ? `${media?.price || 0}`
+                  : `ETH ${
+                      media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0
+                    }`}
+              </Text>
+              {!media.tag && (
+                <Text color={Color.Black} size={FontSize.S}>
+                  {`$(${convertTokenToUSD(
+                    media?.ExchangeData
+                      ? media?.ExchangeData.OfferToken
+                      : media?.NftConditions?.FundingToken ?? "ETH",
+                    media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0
+                  ).toFixed(6)})`}
+                </Text>
+              )}
+            </Box>
+          )}
           <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={2}>
             <PrimaryButton
               size={mobileMatches ? "small" : "medium"}
               onClick={() => {
                 props.handleClose();
-                let queryParam = "";
-                if (media.tag) queryParam += (queryParam ? "" : "&") + `blockchainTag=${media.tag}`;
-                if (media.collection)
-                  queryParam += (queryParam ? "" : "&") + `collectionTag=${media.collection}`;
-                history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
+                if (media.metadata) {
+                  if (media.metadata?.external_url || media.metadata?.external_link) {
+                    window.open(media.metadata?.external_url || media.metadata?.external_link, "_blank");
+                  } else {
+                    showAlertMessage("There is no valid url.", { variant: "error" });
+                  }
+                } else {
+                  let queryParam = "";
+                  if (media.tag) queryParam += (queryParam ? "" : "&") + `blockchainTag=${media.tag}`;
+                  if (media.collection)
+                    queryParam += (queryParam ? "" : "&") + `collectionTag=${media.collection}`;
+                  history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
+                }
               }}
               style={{
                 background: "#DDFF57",
@@ -461,7 +427,6 @@ const MediaDetailsModal = (props: any) => {
           media={media}
         />
       )}
-      {status ? <AlertMessage key={status.key} message={status.msg} variant={status.variant} /> : ""}
     </Modal>
   );
 };

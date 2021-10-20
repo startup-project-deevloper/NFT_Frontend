@@ -22,12 +22,16 @@ export const useNFTPositionManagerPageStyles = makeStyles(theme => ({
     position: "relative",
     padding: "45px 0",
     "& > div > h2": {
+      paddingTop: 30,
       fontFamily: "Agrandir GrandHeavy",
       fontWeight: "800",
       fontSize: "40px",
       lineHeight: "104.5%",
       margin: 0,
       color: "#431AB7",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "20px",
+      },
       "& span": {
         fontSize: "18px",
         lineHeight: "23px",
@@ -46,7 +50,7 @@ export const useNFTPositionManagerPageStyles = makeStyles(theme => ({
       padding: '63px 20px',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: '35px 8px',
+      padding: '15px 0px',
     },
   },
   absoluteImage: {
@@ -70,9 +74,18 @@ export const useNFTPositionManagerPageStyles = makeStyles(theme => ({
     cursor: "pointer",
     border: "none",
     padding: "0 12px 12px",
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 50,
+    },
     [theme.breakpoints.down("xs")]: {
-      fontSize: 16,
-      marginRight: 18,
+      fontSize: 10,
+      padding: "0 0 10px",
+      "&:first-child": {
+        marginRight: "30px"
+      },
+      "&:last-child": {
+        marginRight: "0px"
+      }
     },
   },
   selectedTab: {

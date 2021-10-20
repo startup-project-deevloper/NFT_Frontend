@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
     fontSize: "22px",
     lineHeight: "130%",
     textAlign: "center",
-    color: "#2D3047",
+    color: Color.Black,
   },
   desc: {
     fontStyle: "normal",
@@ -47,7 +47,7 @@ const useStyles = makeStyles(() => ({
     fontSize: "16px",
     lineHeight: "150%",
     textAlign: "center",
-    color: "#54658F",
+    color: Color.GrayDark,
     padding: "0 48px",
   },
   label: {
@@ -70,9 +70,8 @@ const useStyles = makeStyles(() => ({
     lineHeight: "120%",
     color: "#181818",
     padding: "9px 20px",
-    background: "rgba(218, 230, 229, 0.4)",
-    border: "1px solid #7BCBB7",
-    borderRadius: "55px",
+    border: "1px solid #A4A4A4",
+    borderRadius: "8px",
     height: 50,
     "& input": {
       padding: 0,
@@ -89,7 +88,7 @@ const useStyles = makeStyles(() => ({
     lineHeight: "120%",
     color: "#181818",
     padding: "9px 20px",
-    background: "rgba(218, 230, 229, 0.4)",
+    border: "1px solid #A4A4A4",
     borderRadius: "8px",
     height: 50,
   },
@@ -97,7 +96,7 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    background: "linear-gradient(0deg, #F2FBF6, #F2FBF6), #17172D",
+    background: Color.Violet,
     borderRadius: "12px",
     padding: "32px 48px",
     textAlign: "center",
@@ -110,7 +109,7 @@ const useStyles = makeStyles(() => ({
     fontSize: "28px",
     lineHeight: "104.5%",
     textTransform: "uppercase",
-    color: Color.MusicDAOLightBlue,
+    color: Color.GreenLight,
   },
   amount: {
     fontFamily: "Agrandir",
@@ -118,7 +117,7 @@ const useStyles = makeStyles(() => ({
     fontWeight: 800,
     fontSize: "22px",
     lineHeight: "104.5%",
-    color: Color.Green,
+    color: Color.White,
   },
   inputContainerWhite: {
     fontFamily: "Agrandir Grand",
@@ -126,11 +125,11 @@ const useStyles = makeStyles(() => ({
     fontWeight: 700,
     fontSize: "28px",
     lineHeight: "120%",
-    color: Color.MusicDAODark,
+    color: Color.Purple,
     padding: "9px 20px",
-    border: "1px solid #F0F5F8",
+    border: "1px solid #A4A4A4",
     textAlign: "end",
-    borderRadius: "55px",
+    borderRadius: "8px",
     height: 50,
   },
   fees: {
@@ -138,7 +137,7 @@ const useStyles = makeStyles(() => ({
     fontStyle: "normal",
     fontSize: "14px",
     lineHeight: "120%",
-    color: "#707582",
+    color: Color.GrayDark,
   },
   divider: {
     width: 1,
@@ -164,7 +163,6 @@ export default function PodStakingModal({ open, onClose, handleRefresh, podInfo,
   const { showAlertMessage } = useAlertMessage();
 
   const [amount, setAmount] = useState<number>(0);
-  const [valueUSD, setValueUSD] = useState<number>(0);
   const [fees, setFees] = useState<number>(0);
   const [selectedToken, setSelectedToken] = useState<string>(TOKENLIST[0].value);
 
@@ -338,7 +336,7 @@ export default function PodStakingModal({ open, onClose, handleRefresh, podInfo,
               />
             </Box>
             <Box flex={1} textAlign="right">
-              <Box className={classes.label} color="#65CB63 !important">
+              <Box className={classes.label} style={{ color: Color.Violet }}>
                 USD Value
               </Box>
               <div className={classes.inputContainerWhite}>{podInfo.fundingTokenPrice * amount}</div>
@@ -354,7 +352,6 @@ export default function PodStakingModal({ open, onClose, handleRefresh, podInfo,
               size="small"
               style={{
                 mixBlendMode: "normal",
-                borderRadius: "48px",
                 height: "59px",
                 padding: "19.5px",
                 fontFamily: "Montserrat",
@@ -364,10 +361,9 @@ export default function PodStakingModal({ open, onClose, handleRefresh, podInfo,
                 lineHeight: "20px",
                 letterSpacing: "-0.04em",
                 textAlign: "center",
-                background: "#2D3047",
-                width: "352px",
+                background: Color.Purple,
+                width: "100%",
               }}
-              isRounded
             >
               Confirm Purchase
             </PrimaryButton>

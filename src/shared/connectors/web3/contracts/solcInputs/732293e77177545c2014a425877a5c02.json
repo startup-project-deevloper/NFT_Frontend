@@ -21,7 +21,9 @@
           "devdoc",
           "userdoc",
           "storageLayout",
-          "evm.gasEstimates"
+          "evm.gasEstimates",
+          "devdoc",
+          "userdoc"
         ],
         "": [
           "ast"

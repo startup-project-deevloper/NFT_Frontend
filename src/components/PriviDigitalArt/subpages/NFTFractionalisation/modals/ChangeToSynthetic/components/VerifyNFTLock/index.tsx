@@ -20,15 +20,57 @@ const isProd = process.env.REACT_APP_ENV === "prod";
 export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
   const classes = useVerifyNFTLockStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const [isVerified, setVerified] = useState<boolean>(false);
 
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
 
-  const handleVerify = () => {
-    onClose()
+  const handleVerify = async () => {
+    console.log("chainId", chainId);
+    if (chainId !== 80001 && chainId !== 137) {
+      let changed = await switchNetwork(isProd ? 137 : 80001);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+    const selectedChain = BlockchainNets.find(b => b.name === "POLYGON");
+    if (!selectedChain) return;
+    setIsProceeding(true);
+    try {
+      const web3APIHandler = selectedChain.apiHandler;
+      const web3 = new Web3(library.provider);
+      const setHash_ = hash => {
+        setHash(hash);
+      };
+      const response = await web3APIHandler.SyntheticCollectionManager.verifyToken(web3, account!, nft, {
+        tokenId: nft.SyntheticID,
+        setHash: setHash_,
+      });
+      if (!response.success) {
+        setIsProceeding(false);
+        showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
+        return;
+      }
+      const params = {
+        collectionAddress: nft.collection_id,
+        syntheticID: nft.SyntheticID,
+      };
+      const { data } = await axios.post(`${URL()}/syntheticFractionalize/verifyNFT`, params);
+      if (!data.success) {
+        setIsProceeding(false);
+        showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
+        return;
+      }
+      onCompleted();
+      setVerified(true);
+      setIsProceeding(false);
+    } catch (err) {
+      console.log("error", err);
+      setIsProceeding(false);
+      showAlertMessage(`Got failed while verify NFT`, { variant: "error" });
+    }
   };
 
   const handleLater = () => {
@@ -45,7 +87,7 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
         {isVerified ? (
           <Box className={classes.result}>
             <img className={classes.icon} src={require("assets/icons/lock-success-icon.png")} alt="" />
-            <h1 className={classes.title}>Your NFT is Locked!</h1>
+            <h1 className={classes.title}>Your NFT is verified!</h1>
             <p className={classes.description}>
               Your NFT has been verified successfully. <br />
               You can see it in My NFT Panel now.
@@ -62,7 +104,7 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
               Transaction is proceeding on Polygon Chain. <br />
               This can take a moment, please be patient...
             </p>
-            {!isLoading && (
+            {hash && (
               <CopyToClipboard text={hash}>
                 <Box
                   mt="20px"
@@ -87,7 +129,7 @@ export default function VerifyNFTLock({ onClose, onCompleted, nft }) {
           <>
             <img className={classes.icon} src={require("assets/icons/verify-nft-icon.png")} alt="" />
             <h1 className={classes.title}>
-              Almost there !<br /> Verify your new NFT lock{" "}
+              Almost there !<br /> Verify your NFT lock{" "}
             </h1>
             <p className={classes.description}>
               Please verify if your NFT has been locked <br />

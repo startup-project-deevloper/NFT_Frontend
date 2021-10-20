@@ -85,7 +85,7 @@ const CreateMediaModal = (props: any) => {
   const userSelector = useSelector((state: RootState) => state.user);
   const allUsers = useSelector(getUsersInfoList);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [tokens, setTokens] = useState<any[]>([]);
 
   const [status, setStatus] = useState<any>("");
@@ -164,7 +164,7 @@ const CreateMediaModal = (props: any) => {
   const mediaTypeItem = MEDIA_TYPES.find(type => type.value === mediaData.type);
 
   const initForm = () => {
-    setPage(0);
+    setPage(1);
     setUpload1(null);
     setUploadImg1(null);
     setUpload2(null);
@@ -1195,7 +1195,7 @@ const CreateMediaModal = (props: any) => {
               </MuiPickersUtilsProvider>
             ) : null}
             <Box width={1} display="flex" justifyContent="space-between" mt={4}>
-              <SecondaryButton size="medium" onClick={() => setPage(0)}>
+              <SecondaryButton size="medium" onClick={() => setPage(1)}>
                 Cancel
               </SecondaryButton>
               <LoadingWrapper loading={loading}>

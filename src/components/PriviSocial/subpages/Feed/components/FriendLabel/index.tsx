@@ -19,7 +19,7 @@ export default function FriendLabel({ friend }) {
       onClick={() => history.push(`/social/${friend.urlSlug}`)}
     >
       <Box display="flex" alignItems="center">
-        <Avatar url={friend.imageURL ?? ""} size="small" />
+        <Avatar url={friend.ipfsImage ? friend.ipfsImage : ""} size="small" />
         <Box ml="14px">
           <Box color="#707582" fontSize="16px" mb="4px">
             {friend.name ?? <Skeleton width={120} animation="wave" />}

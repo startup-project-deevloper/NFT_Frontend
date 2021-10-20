@@ -10,6 +10,7 @@ import Box from "shared/ui-kit/Box";
 import { artistCardStyles } from "./index.styles";
 import { CircularLoadingIndicator } from "shared/ui-kit";
 
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "../../../../../shared/ipfs/get";
 import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
@@ -29,6 +30,7 @@ export default function ArtistCard({ item, currentIndex }) {
   const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
@@ -41,6 +43,7 @@ export default function ArtistCard({ item, currentIndex }) {
   }, [item, ipfs]);
 
   const getUserPhoto = async (user: any) => {
+    setLoading(true);
     if (user && user.infoImage && user.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
       setImageIPFS(imageUrl);
@@ -54,6 +57,7 @@ export default function ArtistCard({ item, currentIndex }) {
     } else{
       setImageIPFS(require(`assets/anonAvatars/${artist.anonAvatar ?? "ToyFaces_Colored_BG_001.jpg"}`));
     }
+    setLoading(false);
   };
 
   const handleFollow = e => {
@@ -81,9 +85,9 @@ export default function ArtistCard({ item, currentIndex }) {
       }}
     >
       {
-        imageIPFS
-          ? <img src={imageIPFS} />
-          : <StyledSkeleton width="100%" height="100%" variant="rect" />
+        loading
+          ? <StyledSkeleton width="100%" height="100%" variant="rect" />
+          : <img src={imageIPFS ? imageIPFS : getDefaultAvatar()} />
       }
       <div className={classes.filter}>
         <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">

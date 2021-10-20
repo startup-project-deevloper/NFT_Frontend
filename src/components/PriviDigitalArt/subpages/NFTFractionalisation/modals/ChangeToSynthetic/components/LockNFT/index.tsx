@@ -28,13 +28,15 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
-  const [approveBtn, setApproveBtn] = useState<boolean>(false);
+  const [approveBtn, setApproveBtn] = useState<number>(0);
 
   const handleProceed = () => {
-    setApproveBtn(true)
+    setApproveBtn(1)
   }
 
-  const handleApprove = async () => {
+  const handleChange = async () => {
+    if (approveBtn !== 2) return;
+
     console.log("chainId", chainId);
     if (chainId !== 1 && chainId !== 4) {
       let changed = await switchNetwork(isProd ? 1 : 4);
@@ -46,27 +48,8 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
     setIsProceeding(true);
 
     try {
-      const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
-      const web3APIHandler = targetChain.apiHandler;
-
       const web3 = new Web3(library.provider);
-      const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
-      const response = await web3APIHandler.Erc721.setApprovalForToken(
-        web3,
-        account!,
-        {
-          to: contractAddress,
-          tokenId: tokenToId,
-        },
-        tokenAddress
-      );
-
-      if (!response.success) {
-        setIsProceeding(false);
-        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
-        return;
-      }
-
+      
       const requestChangeRes = await requestChangeNFT(web3, account!, {
         tokenAddress,
         tokenFromId,
@@ -98,9 +81,50 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
       });
       onCompleted();
       setIsProceeding(false);
+      setApproveBtn(0)
     } catch (err) {
       console.log("error", err);
       setIsProceeding(false);
+      showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+    }
+  }
+
+  const handleApprove = async () => {
+    if (approveBtn !== 1) return;
+
+    console.log("chainId", chainId);
+    if (chainId !== 1 && chainId !== 4) {
+      let changed = await switchNetwork(isProd ? 1 : 4);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to ethereum network`, { variant: "error" });
+        return;
+      }
+    }
+
+    try {
+      const targetChain = BlockchainNets.find(net => net.value === "Ethereum Chain");
+      const web3APIHandler = targetChain.apiHandler;
+
+      const web3 = new Web3(library.provider);
+      const contractAddress = config.CONTRACT_ADDRESSES.NFT_VAULT_MANAGER;
+      const response = await web3APIHandler.Erc721.setApprovalForToken(
+        web3,
+        account!,
+        {
+          to: contractAddress,
+          tokenId: tokenToId,
+        },
+        tokenAddress
+      );
+
+      if (!response.success) {
+        showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
+        return;
+      }
+
+      setApproveBtn(2)
+    } catch (err) {
+      console.log("error", err);
       showAlertMessage(`Lock NFT is failed, please try again later`, { variant: "error" });
     }
   };
@@ -187,10 +211,23 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
               Your NFT will be locked in a Vault on Ethereum smart contract. <br />
               Please keep in mind this process can take x time so be patient.
             </p>
-            {approveBtn ? (
-              <button className={classes.proceedBtn} style={{ backgroundColor: "#EB3B65"}} onClick={handleApprove}>
-                Approve to lock your NFT
-              </button>
+            {approveBtn !== 0 ? (
+              <Box display="flex" justifyContent="space-evenly">
+                <button 
+                  className={classes.btn}
+                  style={{ padding: "8px 60px", backgroundColor: approveBtn === 1 ? "#431AB7" : "#431AB750" }}
+                  onClick={handleApprove}
+                >
+                  Approve
+                </button>
+                <button
+                  className={classes.btn}
+                  onClick={handleChange}
+                  style={{ padding: "8px 60px", backgroundColor: approveBtn === 1 ? "#431AB750" : "#431AB7" }}
+                >
+                  Change
+                </button>
+              </Box>
             ) : (
               <Box className={classes.buttonWrapper}>
                 <button className={classes.laterBtn} onClick={handleLater}>

@@ -15,6 +15,7 @@ import { ReactComponent as InfoIcon } from "assets/icons/info.svg";
 import { useTypedSelector } from "store/reducers/Reducer";
 
 import { newVoteModalStyles } from "./index.styles";
+import { priviPodCreatePoll } from "shared/services/API";
 
 const CreateNewVoteModal = (props: any) => {
   const classes = newVoteModalStyles();
@@ -54,18 +55,19 @@ const CreateNewVoteModal = (props: any) => {
         startDate: startDate.getTime(),
         endDate: endDate.getTime(),
         creatorAddress: user.id,
-        podId: props.pod.Id
+        podId: props.pod.Id,
+        type: "PIX",
       };
-      await Axios.post(`${URL()}/musicDao/governance/polls/addNew`, body)
+      priviPodCreatePoll(body)
         .then(res => {
-          if (res.data.success) {
-            if (props.postCreated)
-              props.postCreated({ ...body, votes: [], created: new Date().getTime(), numbVotes: 0 });
+          console.log(res);
+          if (res.success) {
+            if (props.postCreated) props.handleRefresh();
             props.handleClose();
           }
         })
         .catch(error => {
-          showAlertMessage("Failed to create new discussion.", { variant: "error" });
+          showAlertMessage("Failed to create new poll.", { variant: "error" });
         });
     }
   };
@@ -106,12 +108,7 @@ const CreateNewVoteModal = (props: any) => {
             onInputValueChange={e => setDescription(e.target.value)}
           />
         </Box>
-        <Box
-          width={1}
-          borderTop="1px solid #35385622"
-          borderBottom="1px solid #35385622"
-          pb={5}
-        >
+        <Box width={1} borderTop="1px solid #35385622" borderBottom="1px solid #35385622" pb={5}>
           {answers.map((item, index) => (
             <Box mt={4.5} width={1}>
               <Box className={classes.flexBox} justifyContent="space-between">

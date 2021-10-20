@@ -69,6 +69,8 @@ export default function Discussion(props) {
         setDiscussions(props.pod.Discussions);
       }
 
+      setPolls(props.pod.Polls || []);
+
       getWallPosts();
     }
   }, [props.podId, users]);
@@ -291,7 +293,7 @@ export default function Discussion(props) {
                           : poll !== undefined
                       )
                       .map((item, index) => {
-                        return <PollItem key={`poll-detail-${index}`} item={item} />;
+                        return <PollItem key={`poll-detail-${index}`} item={item} pod={props.pod} />;
                       })}
                   </Box>
                 </>

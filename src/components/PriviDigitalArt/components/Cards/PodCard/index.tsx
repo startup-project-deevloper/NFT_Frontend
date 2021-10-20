@@ -42,6 +42,7 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
           });
         } else {
           const getCreatorData = async () => {
+            // console.log("=====creatorId - pod card=====")
             await Axios.get(`${URL()}/user/getBasicUserInfo/${media.Creator ?? media.CreatorAddress}`)
               .then(response => {
                 if (response.data.success) {

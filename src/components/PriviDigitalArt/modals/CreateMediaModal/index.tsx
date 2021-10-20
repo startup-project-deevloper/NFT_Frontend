@@ -37,7 +37,8 @@ import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2IPFS";
 import getIPFSURL from "shared/functions/getIPFSURL";
-import TransactionResultModal from "../TransactionResultModal";
+import TransactionResultModal, { CopyIcon } from "../TransactionResultModal";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
@@ -48,6 +49,8 @@ const videoLiveIcon = require("assets/mediaIcons/small/video_live.png");
 const digitalArtIcon = require("assets/mediaIcons/small/digital_art.png");
 const BlogIcon = require("assets/mediaIcons/small/blog.png");
 const BlogSnapIcon = require("assets/mediaIcons/small/blog_snap.png");
+
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 enum MediaType {
   Video = "VIDEO_TYPE",
@@ -691,15 +694,42 @@ const CreateMediaModal = (props: any) => {
       </React.Fragment>
     );
   };
+  
+  const handleCheck = () => {
+    if (mediaData.blockchainNet.replace(" Chain", "") === 'Polygon') {
+      window.open(`https://mumbai.polygonscan.com/tx/${hash}`, "_blank");
+    } else {
+      window.open(`https://rinkeby.etherscan.io/tx/${hash}`, "_blank");
+    }
+  };
 
   return (
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on ${mediaData.blockchainNet.replace(
-        " Chain",
-        ""
-      )} Chain.\nThis can take a moment, please be patient...`}
+      SubTitleRender={() => (
+        <>
+          <span>Transaction is proceeding on {mediaData.blockchainNet.replace(" Chain", "")} Chain.</span><br />
+          <span>This can take a moment, please be patient...</span>
+          {hash && (
+            <CopyToClipboard text={hash}>
+              <Box mt="20px" display="flex" alignItems="center" justifyContent="center" className={classes.hash}>
+                Hash:
+                <Box color="#4218B5" mr={1} ml={1}>
+                  {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                </Box>
+                <CopyIcon />
+              </Box>
+            </CopyToClipboard>
+          )}
+
+          {hash && (
+            <button className={classes.buttonCheck} onClick={handleCheck}>
+              Check on {mediaData.blockchainNet.replace(" Chain", "")} Scan
+            </button>
+          )}
+        </>
+      )}
       handleClose={props.handleClose}
     >
       <Modal

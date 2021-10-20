@@ -18,6 +18,7 @@ export const useLockNFTStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
     },
     title: {
+      fontFamily: "Agrandir GrandHeavy",
       fontSize: 20,
       fontWeight: 800,
       lineHeight: '104.5%',

@@ -51,9 +51,8 @@ export default ({
           <LockNFT
             onClose={onClose}
             onCompleted={() => handleCompleteStep(1)}
-            tokenAddress={selectedNFT.tokenAddress}
-            tokenToId={+selectedNFT?.BlockchainId}
-            tokenFromId={+currentNFT?.NftId}
+            selectedNFT={selectedNFT}
+            currentNFT={currentNFT}
           />
         ) : (
           <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} nft={syntheticNFT} />

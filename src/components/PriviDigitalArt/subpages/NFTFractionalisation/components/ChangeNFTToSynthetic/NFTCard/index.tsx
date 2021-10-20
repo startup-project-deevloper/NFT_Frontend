@@ -3,17 +3,17 @@ import Box from "shared/ui-kit/Box";
 import { normalNFTCardStyles } from "../index.styles";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 
-export default function NFTCard({ item, handleSelect }) {
+export default function NFTCard({ item, handleSelect, isSmall = false }) {
   const classes = normalNFTCardStyles();
   const [imageIPFS, setImageIPFS] = useState({});
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
-      <div className={classes.selectedOuterBox}>
+      <div className={isSmall ? classes.selectedSmallOuterBox : classes.selectedOuterBox}>
         <div className={`${classes.card} ${item.selected ? classes.selected : ""}`}>
-          <div className={classes.innerBox}>
+          <div className={classes.innerBox} style={{ padding: isSmall ? 6 : 16 }}>
             <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} className={classes.nftNameContainer}>
-              <div className={classes.ntfName}>{item.MediaName}</div>
+              <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{item.MediaName}</div>
             </Box>
             <img
               src={
@@ -29,13 +29,13 @@ export default function NFTCard({ item, handleSelect }) {
               alt={item.MediaName}
             />
             <div className={classes.starGroup}>
-              <Box fontSize={10.5} mr={"2px"}>
+              <Box fontSize={8.5} mr={"2px"}>
                 🌟{" "}
               </Box>
-              <Box fontSize={15.74} mr={"2px"} pt={1}>
+              <Box fontSize={13.74} mr={"2px"} pt={1}>
                 🌟{" "}
               </Box>
-              <Box fontSize={10.5}>🌟 </Box>
+              <Box fontSize={8.5}>🌟 </Box>
             </div>
           </div>
         </div>

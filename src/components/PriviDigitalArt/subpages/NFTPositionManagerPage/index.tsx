@@ -17,7 +17,7 @@ const NFTPositionManagerPage = () => {
 
   const { setOpenFilters } = useContext(DigitalArtContext);
 
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<number>(1);
 
   React.useEffect(() => {
     setOpenFilters(false);

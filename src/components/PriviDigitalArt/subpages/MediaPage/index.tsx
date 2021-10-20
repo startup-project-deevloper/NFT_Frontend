@@ -2311,9 +2311,9 @@ const MediaPage = () => {
                   mb={2}
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
-                    {media && (
+                    {media?.BlockchainNetwork && (
                       <img
-                        src={getChainImageUrl(media?.chain ?? media?.BlockchainNetwork ?? media?.blockchain)}
+                        src={getChainImageUrl(media?.BlockchainNetwork)}
                         width="32px"
                         style={{ borderRadius: "50%" }}
                       />

@@ -204,12 +204,14 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
           <div className={cls(classes.black, classes.title)}>
             {media.Name ?? media.MediaName ?? media.TokenName}
           </div>
-          <img
-            src={getChainImageUrl(item?.chain ?? item?.BlockchainNetwork ?? item?.blockchain)}
-            alt={"chain"}
-            className={classes.chain}
-            width="24px"
-          />
+          {item?.BlockchainNetwork && (
+            <img
+              src={getChainImageUrl(item?.BlockchainNetwork)}
+              alt={"chain"}
+              className={classes.chain}
+              width="24px"
+            />
+          )}
         </Box>
       </div>
       <Box className={classes.viewsBox} onClick={handleOpenDigitalArtModal}></Box>

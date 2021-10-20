@@ -10,14 +10,14 @@ import { getRandomAvatar, useUserAvatar } from "shared/services/user/getUserAvat
 import { getMatchingUsers, IAutocompleteUsers } from "shared/services/API";
 import { useTypedSelector } from "store/reducers/Reducer";
 import useIPFS from "shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "shared/functions/getPhotoIPFS";
-import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { getUserIpfsAvatar } from "shared/services/user/getUserAvatar";
 
 const searchIcon = require("assets/icons/search.png");
 
 const CollabsTab = ({ pod, setPod }) => {
   const classes = collabsTabStyles();
   const user = useSelector((state: RootState) => state.user);
+  const users = useTypedSelector(state => state.usersInfoList);
 
   const autocompleteStyle = useAutocompleteStyles();
   const [autocompleteKey, setAutocompleteKey] = useState<number>(new Date().getTime());
@@ -25,7 +25,6 @@ const CollabsTab = ({ pod, setPod }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [autocompleteUsers, setAutocompleteUsers] = useState<IAutocompleteUsers[]>([]);
 
-  const users = useTypedSelector(state => state.usersInfoList);
   const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
@@ -34,13 +33,13 @@ const CollabsTab = ({ pod, setPod }) => {
 
   // refresh autocomplete user list when searchValue changed
   useEffect(() => {
-    if (searchValue) {
-      getMatchingUsers(searchValue, ["firstName", "address"]).then( async resp => {
+    if (searchValue && users.length && user && ipfs && Object.keys(ipfs).length !== 0) {
+      getMatchingUsers(searchValue, ["firstName", "address"]).then(async resp => {
         if (resp?.success) {
           const filteredUsers = resp.data.filter(u => u.address && u.address != user.address);
           const usersWithIPFS: IAutocompleteUsers[] = await Promise.all(
             filteredUsers.map(async (user): Promise<IAutocompleteUsers> => {
-              const avatar = await getUserPhoto(user);
+              const avatar = await getUserIpfsAvatar(user, users, downloadWithNonDecryption);
               return {
                 ...user,
                 avatar,
@@ -51,16 +50,7 @@ const CollabsTab = ({ pod, setPod }) => {
         }
       });
     } else setAutocompleteUsers([]);
-  }, [searchValue, ipfs]);
-
-  const getUserPhoto = async (user: any) => {
-    if (user && user.infoImage && user.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
-      return imageUrl;
-    } else {
-      return getDefaultAvatar();
-    }
-  };
+  }, [searchValue, ipfs, user, users]);
 
   const addAddressToSelectedList = user => {
     const newCollabs = [...pod.Collabs];

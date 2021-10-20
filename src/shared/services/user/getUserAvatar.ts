@@ -3,6 +3,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import { getUserPhoto } from "./getUserPhoto";
 
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+import { useTypedSelector } from "store/reducers/Reducer";
+import { UserInfo } from "store/actions/UsersInfo";
+
 export type UserAvatarMetadata = {
   id: string;
   anon?: boolean;
@@ -54,6 +59,24 @@ export const useUserAvatar = (userId: string | undefined) => {
   }, [userId, users]);
 
   return avatar;
+};
+
+export const getUserIpfsAvatar = async (user: any, users: UserInfo[], downloadWithNonDecryption: () => void) => {
+  if (user && user.infoImage && user.infoImage.newFileCID) {
+    let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
+    return imageUrl;
+  } else if (user && user.id) {
+    const userFound = users.find(usr => usr.id === user.id);
+
+    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+      return imageUrl;
+    } else {
+      return getDefaultAvatar();
+    }
+  } else {
+    return getDefaultAvatar();
+  }
 };
 
 export const getDefaultAvatar = () => (require("assets/anonAvatars/ToyFaces_Colored_BG_111.jpg"));

@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import Web3 from "web3";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BlockchainNets } from "shared/constants/constants";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Avatar from "shared/ui-kit/Avatar";
@@ -12,6 +12,10 @@ import { priviPodVoteForWithdrawProposal } from "shared/services/API";
 import { RootState } from "store/reducers/Reducer";
 import TransactionProgressModal from "../../../modals/TransactionProgressModal";
 import { Typography } from "@material-ui/core";
+
+import { useTypedSelector } from "store/reducers/Reducer";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { getUserIpfsAvatar } from "shared/services/user/getUserAvatar";
 
 require("dotenv").config();
 
@@ -30,6 +34,19 @@ export const FundCard = props => {
   const [hash, setHash] = useState<string>("");
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
   const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
+
+  const [imageIPFS, setImageIPFS] = useState<any>(null);
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const users = useTypedSelector(state => state.usersInfoList);
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  useEffect(() => {
+    if(proposal.creator && users.length && ipfs && Object.keys(ipfs).length !== 0)
+    setImageIPFS(getUserIpfsAvatar(proposal.creator, users, downloadWithNonDecryption));
+  }, [ipfs, proposal.creator]);
 
   const handleVote = async vote => {
     setOpenTransactionModal(true);
@@ -116,7 +133,7 @@ export const FundCard = props => {
             size={34}
             rounded
             bordered
-            image={require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")}
+            image={imageIPFS}
           />
           <Box ml={1}>
             <Box className={classes.header2}>{proposal.creator}</Box>

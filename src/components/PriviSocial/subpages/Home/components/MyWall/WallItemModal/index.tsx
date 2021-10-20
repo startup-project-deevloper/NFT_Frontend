@@ -69,7 +69,7 @@ const ResponseWallPost = ({ response }) => {
         <div
           className={styles.authorPhotoWallPost}
           style={{
-            backgroundImage: response && response.url ? `url(${response.url}?${Date.now()})` : "none",
+            backgroundImage: response && response.url ? `url(${response.url})` : "none",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -376,9 +376,8 @@ export const WallPostModalContent = ({
         <Box className={styles.userInfo} onClick={() => history.push(`/social/${item.createdBy}`)}>
           <Avatar
             url={
-              item?.userImageURL ??
-              users.find(u => u.id === item?.createdBy)?.imageURL ??
-              getRandomAvatarForUserIdWithMemoization(item?.createdBy)
+              users.find(({ id }) => id === userSelector.id)?.ipfsImage ??
+              `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)})`
             }
             size={"large"}
           />

@@ -9,12 +9,11 @@ import Box from "shared/ui-kit/Box";
 
 import { artistCardStyles } from "./index.styles";
 import { CircularLoadingIndicator } from "shared/ui-kit";
-import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 
-import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "../../../../../shared/ipfs/get";
 import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
+import {StyledSkeleton} from "shared/ui-kit/Styled-components/StyledComponents";
 
 export default function ArtistCard({ item, currentIndex }) {
   const classes = artistCardStyles();
@@ -80,10 +79,12 @@ export default function ArtistCard({ item, currentIndex }) {
       onClick={() => {
         history.push(`/${item.urlSlug}/profile`);
       }}
-      style={{
-        backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getDefaultAvatar()})`
-      }}
     >
+      {
+        imageIPFS
+          ? <img src={imageIPFS} />
+          : <StyledSkeleton width="100%" height="100%" variant="rect" />
+      }
       <div className={classes.filter}>
         <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">
           {<b>{`${item.firstName || ""} ${item.lastName || ""}`}</b>}

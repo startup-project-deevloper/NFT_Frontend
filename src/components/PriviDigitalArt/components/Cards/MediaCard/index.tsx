@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Avatar, Color, PrimaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
@@ -10,6 +10,9 @@ import { SignatureRequestModal } from "shared/ui-kit/Modal/Modals";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { useTypedSelector } from "store/reducers/Reducer";
 import Moment from "react-moment";
+
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { getUserIpfsAvatar } from "shared/services/user/getUserAvatar";
 
 const videoPhoto = require("assets/backgrounds/video.png");
 const videoLivePhoto = require("assets/backgrounds/live_video.png");
@@ -28,6 +31,34 @@ export const MediaCard = ({ media, pod, handleRefresh }) => {
   const payloadRef = useRef<any>({});
   const [openSignRequestModal, setOpenSignRequestModal] = useState<boolean>(false);
   const [signRequestModalDetail, setSignRequestModalDetail] = useState<any>(null);
+
+  const [creators, setCreators] = useState<any[]>([]);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const users = useTypedSelector(state => state.usersInfoList);
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  useEffect(() => {
+    const setAvarts = async () => {
+      if (pod.CreatorsData?.length && users.length && ipfs && Object.keys(ipfs).length !== 0) {
+        setCreators(
+          await Promise.all(
+            pod.CreatorsData.map(async (user) => {
+              const avatar = await getUserIpfsAvatar(user, users, downloadWithNonDecryption);
+              return {
+                ...user,
+                avatar,
+              };
+            })
+          )
+        )
+      }
+    }
+    setAvarts();
+  }, [ipfs, pod.CreatorsData, users]);
 
   const getDefaultImage = type => {
     switch (type) {
@@ -97,16 +128,16 @@ export const MediaCard = ({ media, pod, handleRefresh }) => {
         />
       </Box>
       <Box className={`${classes.flexBox} ${classes.avatarBox}`}>
-        {pod.CreatorsData.map((item, index) => (
+        {creators.map((item, index) => (
           <Box ml={item > 1 ? "-16px" : 0} key={index} className={classes.flexBox}>
             <Avatar
               size="small"
-              url={item.imageUrl ? item.imageUrl : require("assets/anonAvatars/ToyFaces_Colored_BG_035.jpg")}
+              url={item.avatar}
               alt=""
             />
           </Box>
         ))}
-        {pod.CreatorsData.length > 3 && <Box className={classes.moreBox}>{pod.CreatorsData.length - 3}</Box>}
+        {creators.length > 3 && <Box className={classes.moreBox}>{creators.length - 3}</Box>}
       </Box>
       <Box
         className={classes.fractionBox}

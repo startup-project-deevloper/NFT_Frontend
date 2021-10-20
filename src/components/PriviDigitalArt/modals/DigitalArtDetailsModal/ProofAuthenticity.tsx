@@ -78,7 +78,7 @@ const ProofAuthenticity = ({ media }) => {
                 style={{ borderRadius: "50%" }}
               />
             )}
-            <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || "Privi Chain"}</Box>
+            <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || media?.blockchain}</Box>
           </Box>
         </>
         // <SecondaryButton size="medium" className={classes.transparentBtn}>

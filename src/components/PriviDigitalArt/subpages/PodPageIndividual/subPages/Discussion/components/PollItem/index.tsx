@@ -6,10 +6,16 @@ import Box from "shared/ui-kit/Box";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { getUser } from "store/selectors";
 import StyledCheckbox from "shared/ui-kit/Checkbox";
-import { Color } from "shared/ui-kit";
+import { Color, SecondaryButton } from "shared/ui-kit";
 import URL from "shared/functions/getURL";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { pollItemStyles } from "./index.styles";
+import { BlockchainNets } from "shared/constants/constants";
+import { switchNetwork } from "shared/functions/metamask";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import { toDecimals } from "shared/functions/web3";
+import { priviPodVotePoll } from "shared/services/API";
 
 const arePropsEqual = (prevProps, currProps) => {
   return prevProps.item === currProps.item && prevProps.type === currProps.type;
@@ -59,11 +65,15 @@ const PollItem = React.memo((props: any) => {
   const { showAlertMessage } = useAlertMessage();
 
   const [endingTime, setEndingTime] = useState<any>();
-  const [registeredVotes, setRegisteredVotes] = useState<any>(props.item.votesList || []);
+  const [registeredVotes, setRegisteredVotes] = useState<any>(props.item.votes || []);
 
-  const getMyAnswer = () => {
+  const { account, library, chainId } = useWeb3React();
+
+  const getMyAnswer = React.useMemo(() => {
     return registeredVotes?.find(vote => vote.userId === user.id)?.answer || "";
-  };
+  }, [registeredVotes, user]);
+
+  const [currentAnswer, setCurrentAnswer] = useState<any>(getMyAnswer);
 
   const isEnded = () => {
     return !(new Date().getTime() < new Date(props.item.endDate).getTime());
@@ -107,25 +117,51 @@ const PollItem = React.memo((props: any) => {
     return () => clearInterval(timerId);
   }, []);
 
-  const handleVote = answer => {
-    if (getMyAnswer()) return;
+  const handleVote = async () => {
+    if (getMyAnswer) return;
+
+    const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
+    if (chainId && chainId !== targetChain?.chainId) {
+      const isHere = await switchNetwork(targetChain?.chainId || 0);
+      if (!isHere) {
+        showAlertMessage("Got failed while switching over to target network", { variant: "error" });
+        return;
+      }
+    }
+    const web3APIHandler = targetChain.apiHandler;
+    const web3 = new Web3(library.provider);
+    const podDecimals = await web3APIHandler.Erc20["POD"].decimals(web3, props.pod?.PodAddress);
+    const podBalance = await web3APIHandler.Erc20["POD"].balanceOf(web3, props.pod?.PodAddress, {
+      account,
+    });
+
+    if (Number(toDecimals(podBalance, podDecimals)) === 0) {
+      showAlertMessage("You don't have any Pod Tokens.", { variant: "error" });
+      return;
+    }
 
     const body = {
+      podId: props.pod?.Id,
       pollId: props.item?.id,
-      answer: answer,
+      answer: currentAnswer,
       userId: user.id,
       userAddress: user.address,
+      type: "PIX",
     };
-    axios
-      .post(`${URL()}/mediaPod/polls/vote`, body)
-      .then(res => {
-        const data = res.data;
-        if (data.success) {
-          setRegisteredVotes([...registeredVotes, { answer, userId: user.id }]);
-          showAlertMessage("Vote successfully", { variant: "success" });
-        }
-      })
-      .catch(e => showAlertMessage("Failed to vote", { variant: "error" }));
+
+    try {
+      priviPodVotePoll(body)
+        .then(res => {
+          if (res.success) {
+            setRegisteredVotes([...registeredVotes, { answer: currentAnswer, userId: user.id }]);
+            showAlertMessage("Vote successfully", { variant: "success" });
+          }
+        })
+        .catch(e => showAlertMessage("Failed to vote", { variant: "error" }));
+    } catch (e) {
+      console.log(e);
+      showAlertMessage("Failed to vote", { variant: "error" });
+    }
   };
 
   return (
@@ -183,11 +219,6 @@ const PollItem = React.memo((props: any) => {
                   </Box>
                 </Box>
               ))}
-            <Box className={classes.lineBar}></Box>
-            <Box display="flex" alignItems="center" marginY="21px">
-              <IconTriangle />
-              <Box className={`${classes.header3} ${classes.gradientTxt}`}>4 votes of 100 required.</Box>
-            </Box>
           </>
         ) : (
           <>
@@ -198,9 +229,10 @@ const PollItem = React.memo((props: any) => {
                   <StyledCheckbox
                     buttonType="round"
                     buttonColor={Color.Violet}
-                    checked={answer === getMyAnswer()}
-                    onClick={() => handleVote(answer)}
+                    checked={answer === currentAnswer}
+                    onClick={() => setCurrentAnswer(answer)}
                     className={classes.checkbox}
+                    disabled={getMyAnswer}
                   />
                   <Box className={classes.name} color="#181818" ml={1}>
                     {answer}
@@ -251,8 +283,41 @@ const PollItem = React.memo((props: any) => {
                 </div>
               </Box>
             )}
+            {!getMyAnswer && (
+              <SecondaryButton
+                size="medium"
+                isRounded
+                onClick={handleVote}
+                disabled={!currentAnswer}
+                style={{
+                  background: Color.Black,
+                  color: Color.White,
+                  border: "none",
+                  width: "100%",
+                  marginBottom: 16,
+                }}
+              >
+                Post Voting
+              </SecondaryButton>
+            )}
           </>
         )}
+        <Box className={classes.lineBar}></Box>
+        <Box display="flex" alignItems="center" marginY="21px">
+          {registeredVotes && registeredVotes.find(vote => vote.userId === user.id) ? (
+            <Box display="flex" alignItems="center">
+              <img src={require("assets/icons/smile.svg")} />
+              &nbsp;You’ve already voted
+            </Box>
+          ) : (
+            <>
+              <IconTriangle />
+              <Box className={`${classes.header3} ${classes.gradientTxt}`}>
+                {registeredVotes.length || 0} votes of {props.pod?.Collabs?.length || 0} required.
+              </Box>
+            </>
+          )}
+        </Box>
         <Box className={classes.header1} fontSize={14} fontWeight={800}>
           Close results
         </Box>

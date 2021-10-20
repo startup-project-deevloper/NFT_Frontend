@@ -81,7 +81,6 @@ export default function PodHeader({
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [podData, setPodData] = useState<any>(pod);
-  const { convertTokenToUSD } = useTokenConversion();
   const { shareMediaToSocial, shareMediaWithQrCode } = useShareMedia();
   const { showAlertMessage } = useAlertMessage();
 
@@ -367,7 +366,7 @@ export default function PodHeader({
                 flexWrap="wrap"
                 flexDirection={!pod.distributionProposalAccepted && !isLgTablet ? "row-reverse" : "row"}
               >
-                <Box className={classes.flexBox} mb={isLgTablet ? 2 : 0} ml={16}>
+                <Box className={classes.flexBox} mb={isLgTablet ? 2 : 0}>
                   <div
                     ref={anchorShareMenuRef}
                     className={classes.svgBox}

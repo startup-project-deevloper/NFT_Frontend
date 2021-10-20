@@ -92,7 +92,7 @@ const useStyles = makeStyles(() => ({
       padding: "9px 45px",
       fontSize: 16,
       height: 50,
-      background: "#431AB7"
+      background: "#431AB7",
     },
   },
   valueBox: {
@@ -351,7 +351,9 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on Privi Chain.\nThis can take a moment, please be patient...`}
+      subTitle={`Transaction is proceeding on ${
+        pod.BlockchainNetwork || pod.blockchain || "Polygon"
+      }.\nThis can take a moment, please be patient...`}
       handleClose={() => {}}
     >
       <Modal size="medium" isOpen={open} onClose={handleClose} className={classes.root} showCloseIcon>

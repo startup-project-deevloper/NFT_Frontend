@@ -1,11 +1,14 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const shareMediaToPriviModalStyles = makeStyles(() => ({
+export const shareMediaToPriviModalStyles = makeStyles((theme) => ({
   root: {
     width: "550px !important",
   },
   modalContent: {
     padding: 30,
+    [theme.breakpoints.down("xs")]: {
+      padding: 0,
+    },
   },
   mainContent: {
     display: "flex",

@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const shareMediaToSocialModalStyles = makeStyles(() => ({
+export const shareMediaToSocialModalStyles = makeStyles((theme) => ({
   root: {
     width: "600px !important",
   },
@@ -24,6 +24,9 @@ export const shareMediaToSocialModalStyles = makeStyles(() => ({
       textAlign: "center",
       color: "#181818",
     },
+    [theme.breakpoints.down("xs")]: {
+      padding: "0px 0px"
+    }
   },
   shareSocialMedia: {
     fontSize: 30,

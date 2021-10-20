@@ -531,24 +531,24 @@ const MediaPage = () => {
 
   useEffect(() => {
     if (media) {
-      console.log('media', media);
+      console.log("media", media);
       sumTotalViews(media);
       if (media?.CreatorId) {
-        getCreatorPhotoIpfs(media.CreatorId)
+        getCreatorPhotoIpfs(media.CreatorId);
 
         setIsFollowing(isUserFollowed(media?.CreatorId));
       }
     }
   }, [media?.id]);
 
-  const getCreatorPhotoIpfs = async (creatorId) => {
+  const getCreatorPhotoIpfs = async creatorId => {
     const userFound = usersList.find(usr => usr.id === creatorId);
 
     if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
       setImageCreatorIPFS(imageUrl);
     }
-  }
+  };
 
   useEffect(() => {
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))
@@ -2155,7 +2155,12 @@ const MediaPage = () => {
                 }}
               >
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
-                  <Box display="flex" flexDirection="row" alignItems="center" className={classes.mediaUserInfo}>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    className={classes.mediaUserInfo}
+                  >
                     <Box display="flex" alignItems="center">
                       <div
                         className={classes.avatarImg}
@@ -2166,11 +2171,7 @@ const MediaPage = () => {
                         <Avatar
                           key={`creator-${media?.CreatorAddress}`}
                           size="small"
-                          url={
-                            imageCreatorIPFS
-                              ? imageCreatorIPFS
-                              : getRandomAvatar()
-                          }
+                          url={imageCreatorIPFS ? imageCreatorIPFS : getRandomAvatar()}
                         />
                       </div>
                       <Box display="flex" flexDirection="column" ml={1} mr={4}>
@@ -2317,7 +2318,7 @@ const MediaPage = () => {
                         style={{ borderRadius: "50%" }}
                       />
                     )}
-                    <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || "Privi Chain"}</Box>
+                    <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || "Polygon"}</Box>
                   </Box>
                   {media?.link && (
                     <PrimaryButton
@@ -2952,12 +2953,7 @@ const MediaPage = () => {
                   alignItems="center"
                   mb={2}
                 >
-                  <Avatar
-                    size="medium"
-                    url={user && user.ipfsImage ?
-                      user.ipfsImage : getRandomAvatar()
-                    }
-                  />
+                  <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getRandomAvatar()} />
                   <InputWithLabelAndTooltip
                     transparent
                     overriedClasses=""

@@ -184,6 +184,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     fontWeight: 800,
     fontFamily: "Agrandir",
     lineHeight: "130%",
+    color: Color.Purple,
   },
   title3: {
     fontSize: 18,

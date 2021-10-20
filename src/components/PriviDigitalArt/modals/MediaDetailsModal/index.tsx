@@ -20,7 +20,7 @@ import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getRandomAvatarForUserIdWithMemoization, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMediaModal";
@@ -58,16 +58,20 @@ const MediaDetailsModal = (props: any) => {
 
   useEffect(() => {
     let cts = [] as any;
-    const isFollowing = media ? userConnections.isUserFollowed(media.CreatorId) : 0;
-    setIsFollowing(isFollowing);
     const foundUser = usersList.find(
       user =>
         user.id === media.Creator ||
         user.id === media.CreatorId ||
         user.address === media.Creator ||
         user.address === media.CreatorId ||
-        user.address === media.CreatorAddress
+        user.address === media.CreatorAddress ||
+        user.id === media.owner_of ||
+        user.address === media.owner_of
     );
+
+    const isFollowing =
+      media.CreatorId ?? foundUser?.id ? userConnections.isUserFollowed(media.CreatorId ?? foundUser?.id) : 0;
+    setIsFollowing(isFollowing);
 
     if (foundUser) {
       cts.push(foundUser);
@@ -228,7 +232,7 @@ const MediaDetailsModal = (props: any) => {
   };
 
   const getChainImage = () => {
-    if (media?.BlockchainNetwork === "Polygon Chain") {
+    if (media?.BlockchainNetwork === "Polygon Chain" || media?.metadata) {
       return "polygon";
     }
     switch (media?.tag) {
@@ -264,35 +268,29 @@ const MediaDetailsModal = (props: any) => {
       className={classes.content}
     >
       <Header3 noMargin fontWeight={800}>
-        {media?.MediaName || media?.title}
+        {media?.MediaName || media?.title || media?.metadata?.name}
       </Header3>
       <Grid container spacing={2} style={{ marginTop: "16px", marginBottom: "16px" }}>
         <Grid item xs={12} sm={6}>
-          <object
-            data={
-              props.cidUrl ??
-              media.imageURL ??
-              media.UrlMainPhoto ??
-              media.Url ??
-              media.url ??
-              `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
-            }
-            type="image/png"
-            className={classes.detailImg}
-            style={{ height: "100%" }}
-            width="100%"
-          ></object>
-          {/* <img
-            src={
-              media.imageURL ??
-              media.UrlMainPhoto ??
-              media.Url ??
-              media.url ??
-              `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
-            }
-            className={classes.detailImg}
-            width="100%"
-          /> */}
+          {media.metadata?.image ? (
+            <img src={media.metadata?.image} alt={media.metadata?.name || ""} className={classes.detailImg} />
+          ) : (
+            <object
+              data={
+                props.cidUrl ??
+                media.imageURL ??
+                media.UrlMainPhoto ??
+                media.Url ??
+                media.url ??
+                media.metadata?.image ??
+                `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
+              }
+              type="image/png"
+              className={classes.detailImg}
+              style={{ height: "100%" }}
+              width="100%"
+            />
+          )}
         </Grid>
         <Grid
           item
@@ -306,16 +304,9 @@ const MediaDetailsModal = (props: any) => {
         >
           <div className={classes.infoSection}>
             <Box display="flex" flexDirection="row" alignItems="center">
-              <Avatar
-                size="medium"
-                url={creator && creator.ipfsImage
-                  ? creator.ipfsImage
-                  : ""}
-              />
+              <Avatar size="medium" url={creator && creator.ipfsImage ? creator.ipfsImage : ""} />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
-                <Text color={Color.Black}
-                      className={classes.creatorName}
-                      style={{ marginBottom: 4 }}>
+                <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                   {creator?.name || media?.CreatorName || media?.creator}
                 </Text>
                 {creator?.urlSlug && <Text className={classes.creatorName}>{`@${creator?.urlSlug}`}</Text>}
@@ -371,9 +362,7 @@ const MediaDetailsModal = (props: any) => {
                     key={`artist-${owner.id}`}
                     className={classes.artist}
                     size="small"
-                    url={owner.ipfsImage
-                      ? owner.ipfsImage
-                      : ""}
+                    url={owner.ipfsImage ? owner.ipfsImage : ""}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>
@@ -396,7 +385,7 @@ const MediaDetailsModal = (props: any) => {
           <hr className={classes.divider} />
           <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
             {media && <img src={require(`assets/priviIcons/${getChainImage()}.png`)} width="32px" />}
-            <Box ml={2}>{media?.tag?.toUpperCase() || "Privi Chain"}</Box>
+            <Box ml={2}>{media?.tag?.toUpperCase() || (media.metadata ? "Polygon Chain" : "Privi Chain")}</Box>
           </Box>
           <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">
             <Text color={Color.Black} size={FontSize.XL}>

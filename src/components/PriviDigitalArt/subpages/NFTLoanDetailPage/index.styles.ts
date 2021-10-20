@@ -18,12 +18,11 @@ export const useLoanViewStyles = makeStyles(theme => ({
       borderRadius: "8px",
     },
     [theme.breakpoints.down('xs')]: {
-      padding: "45px 16px",
+      padding: "16px 16px 45px 16px",
     }
   },
   detailImg: {
     width: "100%",
-    height: "100%",
     objectFit: "fill",
     borderRadius: 16,
     cursor: 'pointer'

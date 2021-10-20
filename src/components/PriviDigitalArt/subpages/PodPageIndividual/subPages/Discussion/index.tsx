@@ -36,8 +36,6 @@ export default function Discussion(props) {
   const users = useTypedSelector(state => state.usersInfoList);
   const userSelector = useSelector((state: RootState) => state.user);
 
-  const pageDiscussionRef = useRef();
-
   const [pod, setPod] = useState<any>({});
 
   const width = useWindowDimensions().width;

@@ -99,7 +99,7 @@ export default function ProfileCard({
     if (item) {
       setChain(
         item.BlockchainNetwork ??
-          (item.chainsFullName ? (item.chainsFullName === "Mumbai" ? "Polygon" : "Ethereum") : "")
+          (item.chainsFullName ? (item.chainsFullName === "Mumbai" || item.chainsFullName === "Polygon" ? "Polygon" : "Ethereum") : "")
       );
       setBookmarked(true);
       setTotalView(item.TotalView);

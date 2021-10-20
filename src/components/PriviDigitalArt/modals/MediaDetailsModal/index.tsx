@@ -214,7 +214,7 @@ const MediaDetailsModal = (props: any) => {
 
   const getChainImage = () => {
     if (media?.metadata) {
-      if (media?.chainsFullName === "Mumbai")
+      if (media?.chainsFullName === "Mumbai" || media?.chainsFullName === "Polygon")
         return require("assets/tokenImages/POLYGON-SYMBOL.png");
       else return require("assets/tokenImages/ETH.png");
     } else {
@@ -362,7 +362,7 @@ const MediaDetailsModal = (props: any) => {
               <img src={getChainImage()} width="32px" />
               <Box ml={2}>
                 {media.chainsFullName
-                  ? media.chainsFullName === "Mumbai"
+                  ? media.chainsFullName === "Mumbai" || media.chainsFullName === "Polygon"
                     ? "Polygon"
                     : "Ethereum"
                   : media.BlockchainNetwork}

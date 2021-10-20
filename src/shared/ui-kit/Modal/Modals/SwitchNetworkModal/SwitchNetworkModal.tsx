@@ -29,7 +29,7 @@ export const SwitchNetworkModal: FC<IProps> = props => {
   }, [open]);
 
   React.useEffect(() => {
-    if (chainId === 80001 && isSubmitted) {
+    if (chainId === 4 && isSubmitted) {
       onNext && onNext();
     }
   }, [chainId]);
@@ -70,8 +70,8 @@ export const SwitchNetworkModal: FC<IProps> = props => {
   };
   
   const onSuccess = async () => {
-    if (chainId != 80001) {
-      await switchNetwork(80001);
+    if (chainId != 4) {
+      await switchNetwork(4);
       setSubmitted(true);
     } else {
       onNext && onNext();

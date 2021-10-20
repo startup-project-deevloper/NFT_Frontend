@@ -99,7 +99,7 @@ const CreateMediaModal = (props: any) => {
     setMultiAddr(multiAddr);
   }, []);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [tokens, setTokens] = useState<string[]>(priviTokenList);
 
   const [disableButton, setDisableButton] = useState<boolean>(false);
@@ -153,7 +153,7 @@ const CreateMediaModal = (props: any) => {
   const mediaTypeItem = MEDIA_TYPES.find(type => type.value === mediaData.type);
 
   const initForm = () => {
-    setPage(0);
+    setPage(1);
     setUpload1(null);
     setUploadImg1(null);
     setUpload2(null);
@@ -871,7 +871,7 @@ const CreateMediaModal = (props: any) => {
                   </Box>
                 </Box>
                 <Box className={classes.tagsBoxSmall}>{getHashTags()}</Box>
-                {mediaData.purpose !== "4" ? (
+                {/* {mediaData.purpose !== "4" ? (
                   <Box className={classes.controlBoxLeft}>
                     <Box width={1} display="flex" alignItems="center">
                       <Box>
@@ -906,12 +906,12 @@ const CreateMediaModal = (props: any) => {
                       />
                     </Box>
                   </Box>
-                ) : null}
+                ) : null} */}
               </Box>
               <Box className={classes.tagsBox}>{getHashTags()}</Box>
               {mediaData.purpose === "1" && (
                 <>
-                  <Box mt={2} width={1} display="flex" alignItems="center">
+                  {/* <Box mt={2} width={1} display="flex" alignItems="center">
                     <Box
                       width={1}
                       fontSize={18}
@@ -932,7 +932,7 @@ const CreateMediaModal = (props: any) => {
                         </Tooltip>
                       </Box>
                     </Box>
-                  </Box>
+                  </Box> */}
                   {/* <Box className={classes.formBox}>
                     <Box className={classes.controlBox} mt={"0px !important"} width={1}>
                       <h5 className={classes.controlLabel}>Price</h5>
@@ -962,7 +962,7 @@ const CreateMediaModal = (props: any) => {
                       </Box>
                     </Box>
                   </Box> */}
-                  <Box className={classes.formBox} mt={1}>
+                  {/* <Box className={classes.formBox} mt={1}>
                     <Box className={classes.controlBox} display="flex" width={1}>
                       <Box>
                         <h5 className={classes.controlLabel}>Royalty (%)</h5>
@@ -995,11 +995,11 @@ const CreateMediaModal = (props: any) => {
                         onChange={onMediaDataChange("NftRoyalty")}
                       />
                     </Box>
-                  </Box>
+                  </Box> */}
                 </>
-              )}
+                )}
               <Box width={1} display="flex" justifyContent="space-between" mt={4}>
-                <SecondaryButton size="medium" onClick={() => setPage(0)}>
+                <SecondaryButton size="medium" onClick={() => setPage(1)}>
                   Cancel
                 </SecondaryButton>
                 <LoadingWrapper loading={loading} theme={"blue"}>

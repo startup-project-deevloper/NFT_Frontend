@@ -8,7 +8,10 @@ import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import URL from "shared/functions/getURL";
-import { getDefaultAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import {
+  getDefaultAvatar,
+  getRandomAvatarForUserIdWithMemoization,
+} from "shared/services/user/getUserAvatar";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { digitalArtCardStyles } from "./index.styles";
 import ReactPlayer from "react-player";
@@ -70,7 +73,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
 
               data.infoImage = creatorData.infoImage || null;
               if (ipfs && Object.keys(ipfs).length !== 0 && data && data.infoImage) {
-                data.ipfsImage = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption)
+                data.ipfsImage = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
               }
 
               if (!data.ipfsImage) {
@@ -233,17 +236,13 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   };
 
   return (
-    <div className={classes.card}
-      style={{ marginBottom: heightFixed === "auction" ? 100 : 0 }}>
+    <div className={classes.card} style={{ marginBottom: heightFixed === "auction" ? 100 : 0 }}>
       <div className={classes.header}>
-        <Box display="flex"
-          alignItems="center">
+        <Box display="flex" alignItems="center">
           {creator.ipfsImage ? (
             <Avatar
               size="small"
-              url={
-                creator.ipfsImage
-              }
+              url={creator.ipfsImage}
               alt={creator.id}
               title={`${creator.name}`}
               onClick={() => {
@@ -309,12 +308,13 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           <div
             className={cls(classes.media, classes.fixed)}
             style={{
-              backgroundImage: `url(${media.cid
+              backgroundImage: `url(${
+                media.cid
                   ? imageIPFS
                   : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                    ? media.UrlMainPhoto
-                    : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-                })`,
+                  ? media.UrlMainPhoto
+                  : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
+              })`,
             }}
             onClick={handleOpenDigitalArtModal}
           />
@@ -327,12 +327,13 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             </Box>
           )}
           <img
-            src={`${media.cid
+            src={`${
+              media.cid
                 ? imageIPFS
                 : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                  ? media.UrlMainPhoto
-                  : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-              }`}
+                ? media.UrlMainPhoto
+                : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
+            }`}
             onLoad={() => setImageLoaded(true)}
             alt={media.MediaSymbol ?? media.id}
             onClick={handleOpenDigitalArtModal}
@@ -344,11 +345,9 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
       <div className={classes.info} onClick={handleOpenDigitalArtModal}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px">
           <div className={cls(classes.black, classes.title)}>{media.MediaName ?? media.title}</div>
-          <img
-            src={getChainImageUrl(item?.chain ?? item?.BlockchainNetwork ?? item?.blockchain)}
-            alt={"chain"}
-            className={classes.chain}
-          />
+          {item?.BlockchainNetwork && (
+            <img src={getChainImageUrl(item?.BlockchainNetwork)} alt={"chain"} className={classes.chain} />
+          )}
           {media.Fraction ? (
             <Box className={classes.fraction}>
               Fractionalized {Math.round(media.Fraction.Fraction * 100)}%
@@ -362,8 +361,9 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               {(media.Auctions.Gathered ?? 0) > (media.Auctions.ReservePrice ?? 0)
                 ? "Current bid"
                 : "Reserve price"}
-              <span>{`${Math.max(media.Auctions.Gathered ?? 0, media.Auctions.ReservePrice ?? 0) || ""} ${media.Auctions.TokenSymbol
-                }`}</span>
+              <span>{`${Math.max(media.Auctions.Gathered ?? 0, media.Auctions.ReservePrice ?? 0) || ""} ${
+                media.Auctions.TokenSymbol
+              }`}</span>
             </div>
           ) : media.ExchangeData ? (
             <div className={classes.gray}>

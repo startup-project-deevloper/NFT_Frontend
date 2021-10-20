@@ -361,7 +361,7 @@ const CreateMediaModal = (props: any) => {
   const validateMediaInfo = async () => {
     if (mediaData.MediaName.length <= 5) {
       setStatus({
-        msg: "Name field invalid. Minimum 5 characters required.",
+        msg: "Title field invalid. Minimum 5 characters required.",
         key: Math.random(),
         variant: "error",
       });

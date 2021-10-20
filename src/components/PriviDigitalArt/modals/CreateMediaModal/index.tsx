@@ -490,7 +490,7 @@ const CreateMediaModal = (props: any) => {
 
   const validateMediaInfo = () => {
     if (mediaData.MediaName.length <= 5) {
-      showAlertMessage("Name field invalid. Minimum 5 characters required.", { variant: "error" });
+      showAlertMessage("Title field invalid. Minimum 5 characters required.", { variant: "error" });
       return false;
     } else if (!mediaData.Hashtags || mediaData.Hashtags.length <= 0) {
       showAlertMessage("Minimum 1 Hashtag", { variant: "error" });

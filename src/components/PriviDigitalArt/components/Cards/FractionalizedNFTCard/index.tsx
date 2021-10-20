@@ -41,6 +41,7 @@ export default function FractionalizedNFTCard({ item, heightFixed, index = 0 }) 
   useEffect(() => {
     if (item) {
       const getCreatorData = async () => {
+        // console.log("=====creatorId - nft fractional card=====")
         await Axios.get(`${URL()}/user/getBasicUserInfo/${item.Creator ?? item.CreatorAddress}`)
           .then(response => {
             if (response?.data?.success) {

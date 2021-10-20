@@ -106,19 +106,22 @@ export default function ProfileCard({
       );
       setBookmarked(true);
       setTotalView(item.TotalView);
-      axios.get(`${URL()}/user/getBasicUserInfo/${item.CreatorAddress}`).then(res => {
-        const resp = res.data;
-        if (resp?.success) {
-          const data = resp.data;
-          setCreatorsData([
-            {
-              ...data,
-              name: data.name ?? `${data.firstName} ${data.lastName}`,
-            },
-          ]);
-        }
-      });
 
+      if(item.CreatorAddress) {
+        axios.get(`${URL()}/user/getBasicUserInfo/${item.CreatorAddress}`).then(res => {
+          const resp = res.data;
+          if (resp?.success) {
+            const data = resp.data;
+            setCreatorsData([
+              {
+                ...data,
+                name: data.name ?? `${data.firstName} ${data.lastName}`,
+              },
+            ]);
+          }
+        });
+      }
+      
       if (item.cid) {
         getImageIPFS(item.cid);
       }

@@ -1,9 +1,9 @@
 export const getLoanChainImageUrl = (chain, blockchainNetwork) => {
   if (chain) {
     return require(`assets/tokenImages/${chain}.png`);
-  } else if (blockchainNetwork.includes("Polygon")) {
+  } else if (blockchainNetwork?.includes("Polygon")) {
     return require("assets/tokenImages/POLYGON-SYMBOL.png");
-  } else if (blockchainNetwork.includes("Ethereum")) {
+  } else if (blockchainNetwork?.includes("Ethereum")) {
     return require("assets/tokenImages/ETH.png");
   }
   return require("assets/tokenImages/POLYGON-SYMBOL.png");

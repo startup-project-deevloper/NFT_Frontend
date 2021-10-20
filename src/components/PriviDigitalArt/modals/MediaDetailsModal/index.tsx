@@ -27,7 +27,7 @@ import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
+import { getChainImageUrl } from "shared/functions/chainFucntions";
 
 const MediaDetailsModal = (props: any) => {
   const classes = mediaDetailsModalStyles();
@@ -63,11 +63,11 @@ const MediaDetailsModal = (props: any) => {
       user =>
         user.id === media.Creator ||
         user.id === media.CreatorId ||
-        user.address === media.Creator ||
-        user.address === media.CreatorId ||
-        user.address === media.CreatorAddress ||
+        user.address?.toLowerCase() === media.Creator?.toLowerCase() ||
+        user.address?.toLowerCase() === media.CreatorId?.toLowerCase() ||
+        user.address?.toLowerCase() === media.CreatorAddress?.toLowerCase() ||
         user.id === media.owner_of ||
-        user.address === media.owner_of
+        user.address?.toLowerCase() === media.owner_of?.toLowerCase()
     );
 
     const isFollowing =
@@ -115,7 +115,7 @@ const MediaDetailsModal = (props: any) => {
         TotalViews: props.mediaViews ? props.mediaViews - 1 : media.TotalViews,
       });
     }
-  }, []);
+  }, [usersList]);
 
   const handleOpenShareMenu = () => {
     setOpenShareMenu(!openShareMenu);
@@ -214,9 +214,11 @@ const MediaDetailsModal = (props: any) => {
 
   const getChainImage = () => {
     if (media?.metadata) {
-      return require("assets/tokenImages/POLYGON-SYMBOL.png");
+      if (media?.chainsFullName === "Mumbai")
+        return require("assets/tokenImages/POLYGON-SYMBOL.png");
+      else return require("assets/tokenImages/ETH.png");
     } else {
-      return getLoanChainImageUrl(media?.Chain, media?.BlockchainNetwork);
+      return getChainImageUrl(media?.BlockchainNetwork);
     }
   };
 
@@ -347,11 +349,26 @@ const MediaDetailsModal = (props: any) => {
               {renderCollection()}
             </>
           )}
+          {!!media.metadata?.description && (
+            <>
+              <hr className={classes.divider} />
+              <Header5>Description</Header5>
+              <Box>{media.metadata?.description}</Box>
+            </>
+          )}
           <hr className={classes.divider} />
-          <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
-            {media && <img src={getChainImage()} width="32px" />}
-            <Box ml={2}>{media.chainsFullName ?? (media?.tag?.toUpperCase() || "Polygon")}</Box>
-          </Box>
+          {(media.BlockchainNetwork || media.chainsFullName) && (
+            <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
+              <img src={getChainImage()} width="32px" />
+              <Box ml={2}>
+                {media.chainsFullName
+                  ? media.chainsFullName === "Mumbai"
+                    ? "Polygon"
+                    : "Ethereum"
+                  : media.BlockchainNetwork}
+              </Box>
+            </Box>
+          )}
           {!media.metadata && (
             <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">
               <Text color={Color.Black} size={FontSize.XL}>

@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Axios from "axios";
-import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { useHistory } from "react-router";
 
 import { useTheme, useMediaQuery } from "@material-ui/core";
 
-import URL from "shared/functions/getURL";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { getUser } from "store/selectors";
-import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../index.styles";
 import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
@@ -22,37 +16,23 @@ import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
 const FractionalLoans = ({ loading, loans }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
   const classes = useNFTLoansPageStyles();
 
   const history = useHistory();
-  const userSelector = useSelector(getUser);
 
   const [positions, setPositions] = useState<any[]>([]);
-  const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
   const [tableData, setTableData] = useState<Array<Array<CustomTableCellInfo>>>([]);
   const isMediumScreen = useMediaQuery("(max-width: 1000px)");
   const [openDepositModal, setOpenDepositModal] = useState<boolean>(false);
   const [openBorrowModal, setOpenBorrowModal] = useState<boolean>(false);
   const [openHowModal, setOpenHowModal] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      return "data:image/png;base64," + base64String;
-    }
-    return "";
-  };
 
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
@@ -169,7 +149,12 @@ const FractionalLoans = ({ loading, loans }) => {
                     }}
                   />
                 </Box>
-                <Box display="flex" flexDirection="column" justifyContent="space-between" className={classes.loanMediaTextWrapper}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="space-between"
+                  className={classes.loanMediaTextWrapper}
+                >
                   <span className={classes.loanMediaNameTag}>collection</span>
                   <span className={classes.loanMediaName}>{row?.media?.MediaName ?? ""}</span>
                   <span className={classes.loanMediaNameId}>ID #24556</span>
@@ -230,19 +215,29 @@ const FractionalLoans = ({ loading, loans }) => {
               <button
                 className={classes.greenButton}
                 style={{ color: "white", background: "#431AB7" }}
-                onClick={() => history.push({
-                  pathname: "/loan/positions",
-                  state: {
-                    tabId: 1,
-                  }
-                })}
+                onClick={() =>
+                  history.push({
+                    pathname: "/loan/positions",
+                    state: {
+                      tabId: 1,
+                    },
+                  })
+                }
               >
                 Manage positions
               </button>
               <SecondaryButton
                 size="medium"
                 onClick={() => setOpenHowModal(true)}
-                style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px", marginTop:"16px" }}
+                style={{
+                  color: "#431AB7",
+                  border: "0.7px solid #431AB7",
+                  boxSizing: "border-box",
+                  boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
+                  borderRadius: "4px",
+                  padding: "0 32px",
+                  marginTop: "16px",
+                }}
               >
                 How it works?
               </SecondaryButton>
@@ -253,19 +248,28 @@ const FractionalLoans = ({ loading, loans }) => {
             <button
               className={classes.greenButton}
               style={{ color: "white", background: "#431AB7" }}
-              onClick={() => history.push({
-                pathname: "/loan/positions",
-                state: {
-                  tabId: 1,
-                }
-              })}
+              onClick={() =>
+                history.push({
+                  pathname: "/loan/positions",
+                  state: {
+                    tabId: 1,
+                  },
+                })
+              }
             >
               Manage positions
             </button>
             <SecondaryButton
               size="medium"
               onClick={() => setOpenHowModal(true)}
-              style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px" }}
+              style={{
+                color: "#431AB7",
+                border: "0.7px solid #431AB7",
+                boxSizing: "border-box",
+                boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
+                borderRadius: "4px",
+                padding: "0 32px",
+              }}
             >
               How it works?
             </SecondaryButton>

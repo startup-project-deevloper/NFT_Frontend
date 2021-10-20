@@ -98,11 +98,8 @@ export default function ProfileCard({
   useEffect(() => {
     if (item) {
       setChain(
-        item.TokenChain
-          ? item.TokenChain === ""
-            ? "PRIVI"
-            : item.TokenChain
-          : item.tag ?? item.chainsFullName ?? "PRIVI"
+        item.BlockchainNetwork ??
+          (item.chainsFullName ? (item.chainsFullName === "Mumbai" ? "Polygon" : "Ethereum") : "")
       );
       setBookmarked(true);
       setTotalView(item.TotalView);
@@ -348,7 +345,7 @@ export default function ProfileCard({
               </Popper>
             )}
           </Box>
-          <div className={classes.chain}>{chain}</div>
+          {!!chain && <div className={classes.chain}>{chain}</div>}
         </div>
         <div
           className={classes.header}

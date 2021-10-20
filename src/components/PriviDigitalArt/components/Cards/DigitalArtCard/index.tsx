@@ -66,6 +66,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
       if (media.CreatorId || media.CreatorAddress) {
         const getCreatorData = async creatorId => {
           try {
+            // console.log("=====creatorId - digital art card=====", creatorId)
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
               let data = response.data.data;

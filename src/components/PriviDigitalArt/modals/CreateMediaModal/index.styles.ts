@@ -232,4 +232,28 @@ export const createMediaModalStyles = makeStyles(theme => ({
       flexDirection: "column",
     },
   },
+  hash: {
+    cursor: "pointer",
+  },
+  buttonCheck: {
+    fontFamily: "Agrandir",
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: "16px",
+    lineHeight: "21px",
+    textAlign: "center",
+    letterSpacing: "-0.04em",
+    color: "white",
+    flex: "none",
+    order: 0,
+    flexGrow: 0,
+    margin: "0px 4px",
+    mixBlendMode: "normal",
+    border: "1px solid #4218B5",
+    boxSizing: "border-box",
+    borderRadius: "4px",
+    background: "white",
+    marginTop: "28px",
+    backgroundColor: "#431AB7",
+  }
 }));

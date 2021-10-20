@@ -5,7 +5,7 @@ import { useTransactionResultModalStyles } from "./index.styles";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 require("dotenv").config();
-const isProd = process.env.REACT_APP_ENV === "dev";
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default function TransactionResultModal({
   open,

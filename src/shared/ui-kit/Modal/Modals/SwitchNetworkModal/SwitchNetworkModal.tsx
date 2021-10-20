@@ -28,11 +28,11 @@ export const SwitchNetworkModal: FC<IProps> = props => {
     }
   }, [open]);
 
-  React.useEffect(() => {
-    if (chainId === 80001 && isSubmitted) {
-      onNext && onNext();
-    }
-  }, [chainId]);
+  // React.useEffect(() => {
+  //   if (chainId === 80001 && isSubmitted) {
+  //     onNext && onNext();
+  //   }
+  // }, [chainId]);
 
   const handleClose = () => {
     onClose && onClose();
@@ -70,12 +70,12 @@ export const SwitchNetworkModal: FC<IProps> = props => {
   };
   
   const onSuccess = async () => {
-    if (chainId != 80001) {
-      await switchNetwork(80001);
-      setSubmitted(true);
-    } else {
+    // if (chainId != 80001) {
+    //   await switchNetwork(80001);
+    //   setSubmitted(true);
+    // } else {
       onNext && onNext();
-    }
+    // }
   };
 
   return (

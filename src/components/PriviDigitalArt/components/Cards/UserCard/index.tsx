@@ -48,7 +48,6 @@ const UserCard = props => {
       const getCreatorData = async () => {
         if (userId === userSelector.id) setUser(userSelector);
         else {
-          // console.log("=====user card=====")
           Axios.get(`${URL()}/user/getBasicUserInfo/${userId}`)
             .then(response => {
               if (response.data.success) {

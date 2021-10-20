@@ -69,6 +69,7 @@ export interface IAutocompleteUsers {
   address: string;
   imageUrl: string;
   anonAvatar: string;
+  avatar: string,
 }
 
 export async function getMatchingUsers(searchValue: string, properties: string[]): Promise<any> {

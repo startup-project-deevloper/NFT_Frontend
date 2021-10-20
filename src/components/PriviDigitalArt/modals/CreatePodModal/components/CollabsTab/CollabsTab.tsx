@@ -8,6 +8,10 @@ import { Avatar } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { getRandomAvatar, useUserAvatar } from "shared/services/user/getUserAvatar";
 import { getMatchingUsers, IAutocompleteUsers } from "shared/services/API";
+import { useTypedSelector } from "store/reducers/Reducer";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const searchIcon = require("assets/icons/search.png");
 
@@ -21,15 +25,42 @@ const CollabsTab = ({ pod, setPod }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [autocompleteUsers, setAutocompleteUsers] = useState<IAutocompleteUsers[]>([]);
 
+  const users = useTypedSelector(state => state.usersInfoList);
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
   // refresh autocomplete user list when searchValue changed
   useEffect(() => {
     if (searchValue) {
-      getMatchingUsers(searchValue, ["firstName", "address"]).then(resp => {
-        if (resp?.success)
-          setAutocompleteUsers(resp.data.filter(u => u.address && u.address != user.address));
+      getMatchingUsers(searchValue, ["firstName", "address"]).then( async resp => {
+        if (resp?.success) {
+          const filteredUsers = resp.data.filter(u => u.address && u.address != user.address);
+          const usersWithIPFS: IAutocompleteUsers[] = await Promise.all(
+            filteredUsers.map(async (user): Promise<IAutocompleteUsers> => {
+              const avatar = await getUserPhoto(user);
+              return {
+                ...user,
+                avatar,
+              };
+            })
+          );
+          setAutocompleteUsers(usersWithIPFS);
+        }
       });
     } else setAutocompleteUsers([]);
-  }, [searchValue]);
+  }, [searchValue, ipfs]);
+
+  const getUserPhoto = async (user: any) => {
+    if (user && user.infoImage && user.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
+      return imageUrl;
+    } else {
+      return getDefaultAvatar();
+    }
+  };
 
   const addAddressToSelectedList = user => {
     const newCollabs = [...pod.Collabs];
@@ -72,8 +103,8 @@ const CollabsTab = ({ pod, setPod }) => {
               >
                 <Box display="flex" alignItems="center">
                   <Avatar noBorder
-                          url={option.imageUrl ? option.imageUrl : avatar!}
-                          size="medium" />
+                    url={option.avatar}
+                    size="medium" />
                   <Box ml="11px" fontFamily="Montserrat" color="#404658" fontSize="16px">
                     {userName}
                   </Box>
@@ -180,21 +211,22 @@ const CollabsTab = ({ pod, setPod }) => {
 const UserTile = ({ user }) => {
   const classes = collabsTabStyles();
 
-  let userName = user.name && user.imageUrl 
-    ? "@" + user.urlSlug && !user.urlSlug.startsWith("Px") 
-      ? user.urlSlug 
+  let userName = user.name
+    ? "@" + user.urlSlug && !user.urlSlug.startsWith("Px")
+      ? user.urlSlug
       : user.name ?? "User name"
     : user.address ?? "";
 
   userName = userName.length > 17 ? userName.substr(0, 14) + "..." + userName.substr(userName.length - 2, 2) : userName;
-  
+
+  console.log(user)
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" className={classes.userTile}>
       {user.name && user.imageUrl ? (
         <Box display="flex" alignItems="center">
           <Avatar
             noBorder
-            url={typeof user !== "string" && user.imageUrl ? user.imageUrl : getRandomAvatar()}
+            url={user.avatar}
             size="medium"
           />
           <Box ml="11px" color="#404658" fontSize="16px">

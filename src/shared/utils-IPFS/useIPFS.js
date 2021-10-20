@@ -18,24 +18,25 @@ const useIPFS = () => {
   const [ipfs, setIpfs] = useState({});
   const [isConnected, setConnected] = useState(false);
   const [multiAddr, setMultiAddr] = useState("");
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (!multiAddr) return;
-    if(multiAddr && ipfsHttpClient(multiAddr)) {
+    if (multiAddr && ipfsHttpClient(multiAddr)) {
       setIpfs(ipfsHttpClient(multiAddr));
     }
     setConnected(true);
   }, [multiAddr]);
 
   const getFiles = async (fileCID) => {
-    if(ipfs && Object.keys(ipfs).length !== 0) {
+    if (ipfs && Object.keys(ipfs).length !== 0) {
       const files = [];
       for await (let file of ipfs.ls(fileCID)) {
         files.push(file);
       }
       return files;
     } else {
-      return([]);
+      return ([]);
     }
   };
 
@@ -47,13 +48,18 @@ const useIPFS = () => {
 
     const options = {
       wrapWithDirectory: true,
-      progress: (prog) => {},
+      progress: prog => {
+        const value = ((100.0 * prog) / file.size).toFixed(0);
+        setProgress(value);
+      },
     };
 
     try {
       const added = await ipfs.add(fileDetails, options);
+      setProgress(0);
       return added;
     } catch (err) {
+      setProgress(0);
       console.error(err);
     }
   };
@@ -84,7 +90,7 @@ const useIPFS = () => {
   const downloadWithDecryption = async (fileCID, isEncrypted = false, keyData, download, peerNumber) => {
     // setMultiAddr(mapGatewayPeers[peerNumber || 1]);
     const files = await getFiles(fileCID);
-    for await(const file of files) {
+    for await (const file of files) {
       TimeLogger.start("DownloadFromIPFS");
       const ipfsPath = `/ipfs/${file.path}`;
       const chunks = [];
@@ -103,10 +109,10 @@ const useIPFS = () => {
         fileName = fileName.replace(".enc", "");
       }
       const blob = getBlob(content);
-      if(download) {
+      if (download) {
         saveAs(blob, fileName);
       } else {
-        return({blob, content})
+        return ({ blob, content })
       }
     };
   };
@@ -114,7 +120,7 @@ const useIPFS = () => {
   const downloadWithNonDecryption = async (fileCID, download) => {
     // setMultiAddr(mapGatewayPeers[peerNumber]);
     const files = await getFiles(fileCID);
-    for await(const file of files) {
+    for await (const file of files) {
       TimeLogger.start("DownloadFromIPFS");
       const ipfsPath = `/ipfs/${file.path}`;
       const chunks = [];
@@ -126,10 +132,10 @@ const useIPFS = () => {
       TimeLogger.end("DownloadFromIPFS");
       const blob = getBlob(content);
 
-      if(download) {
+      if (download) {
         saveAs(blob, fileName);
       } else {
-        return({blob, fileName, content});
+        return ({ blob, fileName, content });
       }
     };
   };
@@ -137,7 +143,7 @@ const useIPFS = () => {
   const upload = async (file) => {
     try {
       const added = await ipfs.add(file, {
-        progress: (prog) => {},
+        progress: (prog) => { },
         pin: false,
       });
       return added;
@@ -148,6 +154,7 @@ const useIPFS = () => {
 
   return {
     ipfs,
+    progress,
     setMultiAddr,
     isConnected,
     getFiles,

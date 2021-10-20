@@ -39,6 +39,7 @@ import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2I
 import getIPFSURL from "shared/functions/getIPFSURL";
 import TransactionResultModal, { CopyIcon } from "../TransactionResultModal";
 import CopyToClipboard from "react-copy-to-clipboard";
+import FileUploadingModal from "../FileUploadingModal";
 
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
@@ -96,7 +97,7 @@ const CreateMediaModal = (props: any) => {
   const userSelector = useSelector((state: RootState) => state.user);
   const allUsers = useSelector(getUsersInfoList);
 
-  const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
+  const { progress, setMultiAddr, uploadWithNonEncryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr(multiAddr);
@@ -1060,6 +1061,11 @@ const CreateMediaModal = (props: any) => {
           " Chain",
           ""
         )}
+      />
+      <FileUploadingModal
+        open={!!progress}
+        progress={progress}
+        isUpload
       />
     </LoadingScreen>
   );

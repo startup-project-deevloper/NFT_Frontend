@@ -66,7 +66,6 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
       if (media.CreatorId || media.CreatorAddress) {
         const getCreatorData = async creatorId => {
           try {
-            // console.log("=====creatorId - digital art card=====", creatorId)
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
               let data = response.data.data;
@@ -100,7 +99,8 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               // If all not working, set default one
               if (!tryWithId) {
                 setCreator({
-                  imageUrl: getRandomAvatarForUserIdWithMemoization(media.creator),
+                  imageUrl: getDefaultAvatar(),
+                  // imageUrl: getRandomAvatarForUserIdWithMemoization(media.creator),
                   name: media.blockchain,
                   urlSlug: "",
                   id: "",

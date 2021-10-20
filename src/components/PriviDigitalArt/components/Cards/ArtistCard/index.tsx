@@ -81,9 +81,7 @@ export default function ArtistCard({ item, currentIndex }) {
         history.push(`/${item.urlSlug}/profile`);
       }}
       style={{
-        backgroundImage: imageIPFS ? `url(${imageIPFS})` : item.url
-          ? `url(${item.url})`
-          : `url(${getDefaultAvatar()})`
+        backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getDefaultAvatar()})`
       }}
     >
       <div className={classes.filter}>

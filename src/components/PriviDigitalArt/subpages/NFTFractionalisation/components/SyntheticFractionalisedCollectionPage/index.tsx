@@ -332,7 +332,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   };
 
   const handleTradeDerivatives = () => {
-    window.open("https://juice.privi.store/nft-derivatives#/", "_blank");
+    window.open("https://juice.privi.store/#/nft-derivatives", "_blank");
   };
 
   const auctionNFTs = React.useMemo(

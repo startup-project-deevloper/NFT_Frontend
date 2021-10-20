@@ -92,6 +92,12 @@ const InfoPane = React.memo(
     }, []);
 
     useEffect(() => {
+      if (userId) {
+        setIsFollowing(isUserFollowed(userId));
+      }
+    }, [userId, isUserFollowed]);
+
+    useEffect(() => {
       if (ipfs && Object.entries(userProfile).length) {
         setImageIPFS(null);
         getPhotoUser();

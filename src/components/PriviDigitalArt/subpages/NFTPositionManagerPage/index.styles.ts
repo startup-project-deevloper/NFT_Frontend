@@ -421,5 +421,9 @@ export const useNFTPositionManagerPageStyles = makeStyles(theme => ({
       color: Color.Purple,
       marginTop: 7
     }
+  },
+  border: {
+    height: 1,
+    background: "#DCE2FA",
   }
 }));

@@ -19,6 +19,7 @@ import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTPositionManagerPageStyles } from "../../index.styles";
 import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+import RangeSlider from "shared/ui-kit/RangeSlider";
 
 const FractionalLoans = () => {
   const theme = useTheme();
@@ -294,6 +295,7 @@ const FractionalLoans = () => {
 
 const TableCollapse = ({ open }) => {
   const [jots, setJots] = useState(0);
+  const [range, setRange] = useState(0);
   const classes = useNFTPositionManagerPageStyles();
 
   return (
@@ -302,7 +304,7 @@ const TableCollapse = ({ open }) => {
         <Box sx={{ margin: 1 }} className={classes.collapse}>
           <p>Deposit controls</p>
           <span>Adjust the funds you would like to borrow,  change your collateral and control the risk by adjusting LTV and risk level </span>
-          <Box display="flex" alignItems="center" flex={1} justifyContent="space-between" mt={4}>
+          <Box display="flex" alignItems="center" flex={1} justifyContent="space-between" mt={4} mb={3}>
             <Box display="flex" flexDirection="column" flex={0.4}>
               <Box fontSize="14px" fontWeight="400">
                 How much you want to borrow
@@ -341,6 +343,21 @@ const TableCollapse = ({ open }) => {
             <PrimaryButton className={classes.primary} size="medium">
               Deposit Collateral
             </PrimaryButton>
+          </Box>
+          <div className={classes.border} />
+          <Box mt={5}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+              <span>Adjust collateral to change your LTV</span>
+              <span>Your Current LTV<span style={{ color: "#431AB7", marginLeft: 6 }}>50%</span></span>
+              <span>Your Current LTV<span style={{ color: "#D30401", marginLeft: 6 }}>80%</span></span>
+            </Box>
+            <RangeSlider value={range} onChange={(event, newValue) => setRange(newValue)}/>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+              <span><strong>Low Risk</strong></span>
+              <span>Medium Risk</span>
+              <span>High Risk</span>
+              <span><strong>Liquidation</strong></span>
+            </Box>
           </Box>
         </Box>
       </Collapse>

@@ -55,7 +55,13 @@ const MediaUploadModal = ({ open, handleClose, pod, media, handleRefresh }) => {
   const [upload1, setUpload1] = useState<any>(null);
   const [uploadImg1, setUploadImg1] = useState<any>(null);
 
-  const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption, upload: upload2IPFS } = useIPFS();
+  const {
+    ipfs,
+    setMultiAddr,
+    uploadWithNonEncryption,
+    downloadWithNonDecryption,
+    upload: upload2IPFS,
+  } = useIPFS();
 
   useEffect(() => {
     setMultiAddr(multiAddr);
@@ -101,13 +107,13 @@ const MediaUploadModal = ({ open, handleClose, pod, media, handleRefresh }) => {
       });
 
     const metaData = {
-      "name": media.Title,
-      "description": "",
-      "external_url": `${window.location.href}`,
-      "image": `${getURLfromCID(infoImage?.newFileCID)}/${upload.name}` //FIXME
+      name: media.Title,
+      description: "",
+      external_url: `${window.location.href}`,
+      image: `${getURLfromCID(infoImage?.newFileCID)}/${upload.name}`, //FIXME
     };
     const uri = getURLfromCID((await uploadNFTMetaData(metaData)).cid);
-    console.log({uri, metaData, audioIPFSURL: `${getURLfromCID(infoSong?.newFileCID)}/${upload1.name}`}); //FIXME
+    console.log({ uri, metaData, audioIPFSURL: `${getURLfromCID(infoSong?.newFileCID)}/${upload1.name}` }); //FIXME
     // audio ipfs url
     setTimeout(() => {
       setIsSaving(false);
@@ -192,7 +198,7 @@ const MediaUploadModal = ({ open, handleClose, pod, media, handleRefresh }) => {
         Adding Song in Progress
       </Box>
       <Box className={classes.header1} textAlign="center" mt={2}>
-        Transaction is proceeding on Privi Chain.
+        Transaction is proceeding on {media.BlockchainNetwork || media.blockchain || "Polygon"}.
         <br /> This can take a moment, please be patient...
       </Box>
       <CopyToClipboard text={user.address}>
@@ -221,7 +227,7 @@ const MediaUploadModal = ({ open, handleClose, pod, media, handleRefresh }) => {
         Song NFT Created and added
       </Box>
       <Box className={classes.header1} textAlign="center" mt={2}>
-        Transaction is proceeding on Privi Chain.
+        Transaction is proceeding on {media.BlockchainNetwork || media.blockchain || "Polygon"}.
         <br /> This can take a moment, please be patient...
       </Box>
       <CopyToClipboard text={user.address}>

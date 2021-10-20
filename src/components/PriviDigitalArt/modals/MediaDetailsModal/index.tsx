@@ -27,6 +27,7 @@ import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
 
 const MediaDetailsModal = (props: any) => {
   const classes = mediaDetailsModalStyles();
@@ -212,30 +213,10 @@ const MediaDetailsModal = (props: any) => {
   };
 
   const getChainImage = () => {
-    if (media?.BlockchainNetwork === "Polygon Chain" || media?.metadata) {
-      return "polygon";
-    }
-    switch (media?.tag) {
-      case "wax":
-        return "wax_icon";
-      case "binance":
-        return "binance-logo";
-      case "hicetnunc":
-        return "hicetnunc";
-      case "mirror":
-        return "mirror_icon";
-      case "opensea":
-        return "opensea_icon";
-      // case "sorare":
-      //   return "sorare_icon";
-      case "showtime":
-        return "showtime_icon";
-      case "zora":
-        return "zora_icon";
-      case "topshot":
-        return "top_shot_icon";
-      default:
-        return "privi_icon";
+    if (media?.metadata) {
+      return require("assets/tokenImages/POLYGON-SYMBOL.png");
+    } else {
+      return getLoanChainImageUrl(media?.Chain, media?.BlockchainNetwork);
     }
   };
 
@@ -368,8 +349,8 @@ const MediaDetailsModal = (props: any) => {
           )}
           <hr className={classes.divider} />
           <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
-            {media && <img src={require(`assets/priviIcons/${getChainImage()}.png`)} width="32px" />}
-            <Box ml={2}>{media.chainsFullName ?? (media?.tag?.toUpperCase() || "Privi Chain")}</Box>
+            {media && <img src={getChainImage()} width="32px" />}
+            <Box ml={2}>{media.chainsFullName ?? (media?.tag?.toUpperCase() || "Polygon")}</Box>
           </Box>
           {!media.metadata && (
             <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">

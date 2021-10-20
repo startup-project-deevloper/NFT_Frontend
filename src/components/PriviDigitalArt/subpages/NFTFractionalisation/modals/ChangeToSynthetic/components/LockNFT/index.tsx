@@ -19,7 +19,6 @@ declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT }) {
-  console.log('39393993', selectedNFT)
   const tokenAddress = selectedNFT.tokenAddress
   const tokenToId = selectedNFT?.BlockchainId
   const tokenFromId = currentNFT?.NftId

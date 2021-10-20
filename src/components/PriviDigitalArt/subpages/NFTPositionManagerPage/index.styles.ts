@@ -425,5 +425,20 @@ export const useNFTPositionManagerPageStyles = makeStyles(theme => ({
   border: {
     height: 1,
     background: "#DCE2FA",
+  },
+  collapseGap: {
+    backgroundColor: "white",
+    position: "absolute",
+    width: "100%",
+    height: 30,
+    top: -20,
+    left: 0,
+    "& div": {
+      height: 1,
+      width: "100%",
+      backgroundColor: "#DCE2FA",
+      marginTop: 10
+    }
+
   }
 }));

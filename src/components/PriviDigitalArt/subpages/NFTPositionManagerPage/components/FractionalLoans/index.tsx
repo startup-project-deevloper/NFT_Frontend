@@ -299,8 +299,11 @@ const TableCollapse = ({ open }) => {
   const classes = useNFTPositionManagerPageStyles();
 
   return (
-    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+    <TableCell style={{ paddingBottom: 0, paddingTop: 0, position: "relative" }} colSpan={7}>
       <Collapse in={open} timeout="auto" unmountOnExit>
+        <Box className={classes.collapseGap} style={{ display: open ? "block" : "none"}}>
+          <div />
+        </Box>
         <Box sx={{ margin: 1 }} className={classes.collapse}>
           <p>Deposit controls</p>
           <span>Adjust the funds you would like to borrow,  change your collateral and control the risk by adjusting LTV and risk level </span>

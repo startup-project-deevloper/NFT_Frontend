@@ -244,3 +244,23 @@ export async function priviPodGetDistributionInfo(payload): Promise<any> {
     throw new Error(e.message);
   }
 }
+
+export async function priviPodCreatePoll(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/polls/create`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function priviPodVotePoll(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/priviPod/polls/vote`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}

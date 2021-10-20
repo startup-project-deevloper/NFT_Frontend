@@ -953,11 +953,13 @@ const MediaPage = () => {
                         <Avatar
                           size="medium"
                           url={
-                            u?.imageUrl
-                              ? u?.imageUrl
-                              : u?.anonAvatar
-                              ? require(`assets/anonAvatars/${user.anonAvatar}`)
-                              : "none"
+                            u?.ipfsImage
+                            ? u?.ipfsImage
+                            : u?.imageUrl
+                            ? u?.imageUrl
+                            : u?.anonAvatar
+                            ? require(`assets/anonAvatars/${user.anonAvatar}`)
+                            : "none"
                           }
                         />
                         <Box display="flex" flexDirection="column" alignItems="center">
@@ -2284,7 +2286,7 @@ const MediaPage = () => {
                     </Hidden>
                   </Box>
                 </Box>
-                {!media?.Fraction && !media?.chain ? (
+                {/* {!media?.Fraction && !media?.chain ? (
                   <>
                     <hr className={classes.divider} />
                     {media?.BidHistory && media?.BidHistory.length > 0 ? (
@@ -2301,7 +2303,7 @@ const MediaPage = () => {
                       </>
                     )}
                   </>
-                ) : null}
+                ) : null} */}
                 <hr className={classes.divider} />
                 <Box
                   display="flex"
@@ -2311,14 +2313,11 @@ const MediaPage = () => {
                   mb={2}
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
-                    {media?.BlockchainNetwork && (
-                      <img
-                        src={getChainImageUrl(media?.BlockchainNetwork)}
-                        width="32px"
-                        style={{ borderRadius: "50%" }}
-                      />
-                    )}
-                    <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || "Polygon"}</Box>
+                    <img
+                      src={getChainImageUrl(media?.BlockchainNetwork || 'polygon')}
+                      width="32px"
+                      style={{ borderRadius: "50%" }}
+                    />
                   </Box>
                   {media?.link && (
                     <PrimaryButton

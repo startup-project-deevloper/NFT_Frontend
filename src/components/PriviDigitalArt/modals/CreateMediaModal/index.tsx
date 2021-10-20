@@ -495,19 +495,19 @@ const CreateMediaModal = (props: any) => {
     } else if (!mediaData.Hashtags || mediaData.Hashtags.length <= 0) {
       showAlertMessage("Minimum 1 Hashtag", { variant: "error" });
       return false;
-    } else if (
-      (mediaData.purpose === "1" && !mediaData.NftRoyalty) ||
-      mediaData.NftRoyalty < 0 ||
-      mediaData.NftRoyalty > 100
-    ) {
-      showAlertMessage("Invalid royalty", { variant: "error" });
-      return false;
-    } else if (
-      (mediaData.purpose === "1" && !mediaData.SharingPct) ||
-      mediaData.SharingPct < 0 ||
-      mediaData.SharingPct > 100
-    ) {
-      showAlertMessage("Sharing % invalid. Must be between 0 and 100", { variant: "error" });
+    // } else if (
+    //   (mediaData.purpose === "1" && !mediaData.NftRoyalty) ||
+    //   mediaData.NftRoyalty < 0 ||
+    //   mediaData.NftRoyalty > 100
+    // ) {
+    //   showAlertMessage("Invalid royalty", { variant: "error" });
+    //   return false;
+    // } else if (
+    //   (mediaData.purpose === "1" && !mediaData.SharingPct) ||
+    //   mediaData.SharingPct < 0 ||
+    //   mediaData.SharingPct > 100
+    // ) {
+    //   showAlertMessage("Sharing % invalid. Must be between 0 and 100", { variant: "error" });
     } else if (!upload1 && !upload2) {
       showAlertMessage("Media Image is required.", { variant: "error" });
       return false;

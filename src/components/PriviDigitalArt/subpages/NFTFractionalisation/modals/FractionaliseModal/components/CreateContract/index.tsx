@@ -169,6 +169,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             JotAddress: collection.jotAddress,
             JotPoolAddress: collection.jotPoolAddress,
             SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
+            RedemptionPoolAddress: collection.redemptionPoolAddress,
             SyntheticNFTAddress: collection.syntheticNFTAddress,
             Price: priceFraction,
             OwnerSupply: supplyToKeep,

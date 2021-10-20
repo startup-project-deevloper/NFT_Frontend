@@ -99,7 +99,6 @@ const InfoPane = React.memo(
 
     useEffect(() => {
       if (ipfs && Object.entries(userProfile).length) {
-        setImageIPFS(null);
         getPhotoUser();
       } else if (!Object.entries(userProfile).length) {
         setImageIPFS(null);

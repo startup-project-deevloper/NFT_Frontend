@@ -18,7 +18,6 @@ import {
 } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
-import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
@@ -27,10 +26,12 @@ import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMedia
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { SharePopup } from "shared/ui-kit/SharePopup";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 const MediaDetailsModal = (props: any) => {
   const classes = mediaDetailsModalStyles();
   const mobileMatches = useMediaQuery("(max-width:375px)");
+  const { showAlertMessage } = useAlertMessage();
   const history = useHistory();
   const [media, setMedia] = useState<any>(props.media);
   const usersList = useTypedSelector(state => state.usersInfoList);
@@ -41,7 +42,6 @@ const MediaDetailsModal = (props: any) => {
   const [creatorsImages, setCreatorsImages] = useState<any[]>([]);
   const [creator, setCreator] = useState<any>();
   const [isFollowing, setIsFollowing] = useState<number>(0);
-  const [status, setStatus] = useState<any>("");
 
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
@@ -187,19 +187,9 @@ const MediaDetailsModal = (props: any) => {
     try {
       await userConnections.followUser(id);
 
-      setStatus({
-        msg: "Follow success",
-        key: Math.random(),
-        variant: "success",
-      });
-
       setIsFollowing(1);
     } catch (err) {
-      setStatus({
-        msg: "Follow failed",
-        key: Math.random(),
-        variant: "error",
-      });
+      showAlertMessage("Follow failed", { variant: "error" });
     }
   };
 
@@ -207,19 +197,9 @@ const MediaDetailsModal = (props: any) => {
     try {
       await userConnections.unfollowUser(id);
 
-      setStatus({
-        msg: "Unfollow success",
-        key: Math.random(),
-        variant: "success",
-      });
-
       setIsFollowing(0);
     } catch (err) {
-      setStatus({
-        msg: "Unfollow failed",
-        key: Math.random(),
-        variant: "error",
-      });
+      showAlertMessage("Unfollow failed", { variant: "error" });
     }
   };
 
@@ -271,7 +251,7 @@ const MediaDetailsModal = (props: any) => {
         {media?.MediaName || media?.title || media?.metadata?.name}
       </Header3>
       <Grid container spacing={2} style={{ marginTop: "16px", marginBottom: "16px" }}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} style={{ textAlign: "center" }}>
           {media.metadata?.image ? (
             <img src={media.metadata?.image} alt={media.metadata?.name || ""} className={classes.detailImg} />
           ) : (
@@ -348,12 +328,12 @@ const MediaDetailsModal = (props: any) => {
             handleCloseMenu={handleCloseShareMenu}
           />
           {/* <ShareMenu
-                        openMenu={openOptionsMenu}
-                        anchorRef={anchorOptionsMenuRef}
-                        item={media}
-                        handleCloseMenu={() => setOpenOptionsMenu(false)}
-                        isLeftAligned={true}
-                    /> */}
+            openMenu={openOptionsMenu}
+            anchorRef={anchorOptionsMenuRef}
+            item={media}
+            handleCloseMenu={() => setOpenOptionsMenu(false)}
+            isLeftAligned={true}
+          /> */}
           <Box display="flex" alignItems="center" justifyContent="space-between" my={2}>
             {creatorsImages.length > 0 && (
               <Box display="flex" alignItems="center" mr={2}>
@@ -379,44 +359,60 @@ const MediaDetailsModal = (props: any) => {
               </Text>
             </div>
           </Box>
-          <hr className={classes.divider} />
-          <Header5>Collection</Header5>
-          {renderCollection()}
+          {!media.metadata && (
+            <>
+              <hr className={classes.divider} />
+              <Header5>Collection</Header5>
+              {renderCollection()}
+            </>
+          )}
           <hr className={classes.divider} />
           <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
             {media && <img src={require(`assets/priviIcons/${getChainImage()}.png`)} width="32px" />}
-            <Box ml={2}>{media?.tag?.toUpperCase() || (media.metadata ? "Polygon Chain" : "Privi Chain")}</Box>
+            <Box ml={2}>{media.chainsFullName ?? (media?.tag?.toUpperCase() || "Privi Chain")}</Box>
           </Box>
-          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">
-            <Text color={Color.Black} size={FontSize.XL}>
-              Price
-            </Text>
-            <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-              {media.tag
-                ? `${media?.price || 0}`
-                : `ETH ${media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0}`}
-            </Text>
-            {!media.tag && (
-              <Text color={Color.Black} size={FontSize.S}>
-                {`$(${convertTokenToUSD(
-                  media?.ExchangeData
-                    ? media?.ExchangeData.OfferToken
-                    : media?.NftConditions?.FundingToken ?? "ETH",
-                  media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0
-                ).toFixed(6)})`}
+          {!media.metadata && (
+            <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">
+              <Text color={Color.Black} size={FontSize.XL}>
+                Price
               </Text>
-            )}
-          </Box>
+              <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
+                {media.tag
+                  ? `${media?.price || 0}`
+                  : `ETH ${
+                      media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0
+                    }`}
+              </Text>
+              {!media.tag && (
+                <Text color={Color.Black} size={FontSize.S}>
+                  {`$(${convertTokenToUSD(
+                    media?.ExchangeData
+                      ? media?.ExchangeData.OfferToken
+                      : media?.NftConditions?.FundingToken ?? "ETH",
+                    media?.ExchangeData ? media?.ExchangeData.Price : media?.NftConditions?.Price ?? 0
+                  ).toFixed(6)})`}
+                </Text>
+              )}
+            </Box>
+          )}
           <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={2}>
             <PrimaryButton
               size={mobileMatches ? "small" : "medium"}
               onClick={() => {
                 props.handleClose();
-                let queryParam = "";
-                if (media.tag) queryParam += (queryParam ? "" : "&") + `blockchainTag=${media.tag}`;
-                if (media.collection)
-                  queryParam += (queryParam ? "" : "&") + `collectionTag=${media.collection}`;
-                history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
+                if (media.metadata) {
+                  if (media.metadata?.external_url || media.metadata?.external_link) {
+                    window.open(media.metadata?.external_url || media.metadata?.external_link, "_blank");
+                  } else {
+                    showAlertMessage("There is no valid url.", { variant: "error" });
+                  }
+                } else {
+                  let queryParam = "";
+                  if (media.tag) queryParam += (queryParam ? "" : "&") + `blockchainTag=${media.tag}`;
+                  if (media.collection)
+                    queryParam += (queryParam ? "" : "&") + `collectionTag=${media.collection}`;
+                  history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
+                }
               }}
               style={{
                 background: "#DDFF57",
@@ -450,7 +446,6 @@ const MediaDetailsModal = (props: any) => {
           media={media}
         />
       )}
-      {status ? <AlertMessage key={status.key} message={status.msg} variant={status.variant} /> : ""}
     </Modal>
   );
 };

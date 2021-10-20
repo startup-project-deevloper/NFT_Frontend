@@ -3,10 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { formatNumber } from "shared/functions/commonFunctions";
 import { Modal } from "shared/ui-kit";
-import {
-  buyFraction,
-  sellFraction,
-} from "shared/services/API";
+import { buyFraction, sellFraction } from "shared/services/API";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
@@ -131,10 +128,7 @@ const StablecoinRow = ({ offer, userBalances, amount, setAmount }) => {
       <Box width={1} mr={1}>
         <Box className={classes.squareContainerLabel}>Stablecoin</Box>
         <Box className={classes.squareContainerInput}>
-          <img
-            src={offer.Token ? require(`assets/tokenImages/${offer.Token}.png`) : "none"}
-            alt="ETH"
-          />
+          <img src={offer.Token ? require(`assets/tokenImages/${offer.Token}.png`) : "none"} alt="ETH" />
           <InputWithLabelAndTooltip
             type="text"
             overriedClasses={classes.imageInput}
@@ -158,7 +152,7 @@ const StablecoinRow = ({ offer, userBalances, amount, setAmount }) => {
           inputValue={amount}
           placeHolder={"0"}
           onInputValueChange={v => {
-            setAmount(Math.min(Number(v.target.value), offer.Amount*(offer.Price*100)).toString());
+            setAmount(Math.min(Number(v.target.value), offer.Amount * (offer.Price * 100)).toString());
           }}
         />
       </Box>
@@ -222,11 +216,11 @@ export default function TradePodTokenModal({ open, offerType, offer, media, hand
   const payloadRef = useRef<any>({});
 
   useEffect(() => {
-    setFundingTokenAmount((Number(mediaAmount)*(offer.Price*100)).toString());
+    setFundingTokenAmount((Number(mediaAmount) * (offer.Price * 100)).toString());
   }, [mediaAmount]);
 
   useEffect(() => {
-    setMediaAmount((Number(fundingTokenAmount)/(offer.Price*100)).toString());
+    setMediaAmount((Number(fundingTokenAmount) / (offer.Price * 100)).toString());
   }, [fundingTokenAmount]);
 
   const closeAndRefresh = () => {
@@ -284,12 +278,16 @@ export default function TradePodTokenModal({ open, offerType, offer, media, hand
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on Privi Chain.\nThis can take a moment, please be patient...`}
+      subTitle={`Transaction is proceeding on ${
+        media.BlockchainNetwork || media.blockchain || "Polygon"
+      }.\nThis can take a moment, please be patient...`}
       handleClose={() => {}}
     >
       <Modal size="medium" isOpen={open} onClose={handleClose} className={classes.root} showCloseIcon>
         <Box className={classes.modalContent}>
-          <Box className={classes.title}>{offerType.charAt(0).toUpperCase() + offerType.slice(1)} Media Token</Box>
+          <Box className={classes.title}>
+            {offerType.charAt(0).toUpperCase() + offerType.slice(1)} Media Token
+          </Box>
           {offerType === "buy" ? (
             <StablecoinRow
               offer={offer}
@@ -324,9 +322,7 @@ export default function TradePodTokenModal({ open, offerType, offer, media, hand
             <Box className={classes.squareContainerLabel}>Estimated fee</Box>
             <Box textAlign="end">
               <Box className={classes.squareContainerLabel}>{`0 USDT`}</Box>
-              <Box className={classes.balance}>
-                ({formatNumber(0, "USDT", 4)})
-              </Box>
+              <Box className={classes.balance}>({formatNumber(0, "USDT", 4)})</Box>
             </Box>
           </Box>
           <Box className={classes.valueBox} style={{ borderBottom: "2px solid #18181822" }}>
@@ -342,7 +338,7 @@ export default function TradePodTokenModal({ open, offerType, offer, media, hand
           </Box>
 
           <Box className={classes.submit}>
-            <button onClick={handleBuyOrSell} style={{background: "#431AB7"}}>
+            <button onClick={handleBuyOrSell} style={{ background: "#431AB7" }}>
               {offerType == "buy" ? "Buy To Invest" : "Sell Position"}
             </button>
           </Box>

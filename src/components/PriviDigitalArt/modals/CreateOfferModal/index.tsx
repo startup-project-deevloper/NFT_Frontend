@@ -226,7 +226,9 @@ const CreateOfferModal = ({ open, handleClose, handleRefresh, media, offerType }
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on Privi Chain.\nThis can take a moment, please be patient...`}
+      subTitle={`Transaction is proceeding on ${
+        media.BlockchainNetwork || media.blockchain || "Polygon"
+      }.\nThis can take a moment, please be patient...`}
       handleClose={() => {}}
     >
       <Modal

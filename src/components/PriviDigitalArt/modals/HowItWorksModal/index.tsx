@@ -17,7 +17,7 @@ export default function HowItWorksModal({ open, handleClose = () => {} }) {
           <Box className={classes.header2}>Deposit your NFT as collateral to get a loan.</Box>
         </Box>
       </Box>
-      <Box display="flex" justifyContent="center" my={1}>
+      <Box display="flex" justifyContent="center" my={2}>
         <Box className={classes.lineBox} />
       </Box>
       <Box display="flex" textAlign="start">
@@ -27,7 +27,7 @@ export default function HowItWorksModal({ open, handleClose = () => {} }) {
           <Box className={classes.header2}>Users can bid for your NFT, the higher bid the more funds!</Box>
         </Box>
       </Box>
-      <Box display="flex" justifyContent="center" my={1}>
+      <Box display="flex" justifyContent="center" my={2}>
         <Box className={classes.lineBox} />
       </Box>
       <Box display="flex" textAlign="start">
@@ -39,7 +39,7 @@ export default function HowItWorksModal({ open, handleClose = () => {} }) {
           </Box>
         </Box>
       </Box>
-      <Box display="flex" justifyContent="center" my={1}>
+      <Box display="flex" justifyContent="center" my={2}>
         <Box className={classes.lineBox} />
       </Box>
       <Box display="flex" textAlign="start">

@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 export const HowItWorksModalStyles = makeStyles(theme => ({
   root: {
     textAlign: "center",
+    maxWidth: "755px !important",
+    padding: "32px 114px 64px 107px !important"
   },
   title: {
     fontSize: 32,
@@ -10,6 +12,7 @@ export const HowItWorksModalStyles = makeStyles(theme => ({
     color: "#431AB7",
   },
   header1: {
+    fontFamily: "Agrandir GrandHeavy",
     fontSize: 16,
     fontWeight: 800,
     lineHeight: "150%",

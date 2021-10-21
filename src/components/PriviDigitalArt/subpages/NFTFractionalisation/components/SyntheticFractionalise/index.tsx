@@ -480,6 +480,10 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           open={openFractionaliseModal}
           onClose={fractionaliseClose}
           onSuccess={fractionaliseSuccess}
+          onComplete={() => {
+            fractionaliseClose()
+            goBack()
+          }}
           selectedNFT={selectedNFT}
           supplyToKeep={supply}
           priceFraction={initialPrice}

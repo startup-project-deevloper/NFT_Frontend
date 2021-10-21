@@ -200,21 +200,15 @@ const SyntheticFractionalisePage = ({
             </Box>
             <div className={classes.topNFTContent}>
               {featuredCollections && featuredCollections.length ? (
-                !isMobile && featuredCollections.length === 2 ? (
-                  <Box display="flex" alignItems="center">
-                    {featuredCollections.map((item: any) => (
-                      <div
-                        key={item.id}
-                        style={{
-                          width: "100%",
-                          paddingBottom: "15px",
-                          margin: "0 20px",
-                        }}
-                      >
-                        <SyntheticCollectionCard item={item} />
-                      </div>
-                    ))}
-                  </Box>
+                !isMobile && (featuredCollections.length === 2 || featuredCollections.length === 3) ? (
+                  <div className={classes.allNFTSection}>
+                    <MasonryGrid
+                      gutter={"24px"}
+                      data={featuredCollections}
+                      renderItem={(item, index) => <SyntheticCollectionCard item={item} />}
+                      columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                    />
+                  </div>
                 ) : (
                   <Carousel
                     isRTL={false}

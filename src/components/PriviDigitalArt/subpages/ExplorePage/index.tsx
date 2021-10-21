@@ -189,7 +189,7 @@ export default function ExplorePage() {
               handleSearchChange={e => {
                 setValue(e.target.value);
               }}
-              searchPlaceholder="Search Privi Pix"
+              searchPlaceholder="Search Pix"
               autoFocus={false}
             />
           </div>

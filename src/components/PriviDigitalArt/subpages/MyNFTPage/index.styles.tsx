@@ -124,5 +124,25 @@ export const myNFTStyles = makeStyles(theme => ({
         width: 160,
       },
     }
-  }
+  },
+  detailsLabel: {
+    color: "#431AB7",
+    fontStyle: "normal",
+    fontWeight: 800,
+    fontSize: "14px",
+    lineHeight: "120%",
+    marginBottom: "16px",
+  },
+  emptyBox: {
+    background: "#EFF2FD",
+    border: "1px solid rgba(67, 26, 183, 0.24)",
+    boxSizing: "border-box",
+    borderRadius: "20px",
+    paddingTop: "16px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1
+  },
 }));

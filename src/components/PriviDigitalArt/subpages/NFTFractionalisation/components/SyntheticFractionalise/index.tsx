@@ -321,18 +321,18 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                     <Grid item xs={12} md={12}>
                       <InputWithLabelAndTooltip
                         labelName="Initial Fraction Price (USD)"
-                        inputValue={!initialPrice ? "" : initialPrice.toString()}
+                        inputValue={!initialPrice ? "" : Math.abs(Number(initialPrice as string)).toString()}
                         minValue={0}
                         required
                         type="number"
-                        onInputValueChange={e => setInitialPrice(e.target.value)}
+                        onInputValueChange={e => setInitialPrice(e.target.value.replace('-', ''))}
                         theme="light"
                       />
                     </Grid>
                     <Grid item xs={12} md={12} className={classes.shortLabel}>
                       <InputWithLabelAndTooltip
                         labelName="Your NFT will be fractionalised in 10000 JOTs. How many of them do you want to keep?"
-                        inputValue={!supply ? "" : supply.toString()}
+                        inputValue={!supply ? "" : Math.abs(Number(supply as string)).toString()}
                         minValue={0}
                         required
                         type="number"
@@ -426,7 +426,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                 <Grid item xs={12} md={12}>
                   <InputWithLabelAndTooltip
                     labelName="Initial Fraction Price (USD)"
-                    inputValue={!initialPrice ? "" : initialPrice.toString()}
+                    inputValue={!initialPrice ? "" : Math.abs(Number(initialPrice as string)).toString()}
                     minValue={0}
                     required
                     type="number"
@@ -437,7 +437,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                 <Grid item xs={12} md={12} className={classes.shortLabel}>
                   <InputWithLabelAndTooltip
                     labelName="Your NFT will be fractionalised in 10000 JOTs. How many of them do you want to keep?"
-                    inputValue={!supply ? "" : supply.toString()}
+                    inputValue={!supply ? "" : Math.abs(Number(supply as string)).toString()}
                     minValue={0}
                     required
                     type="number"

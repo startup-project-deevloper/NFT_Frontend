@@ -278,6 +278,7 @@ export const digitalArtModalStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       width: "100%",
       maxHeight: 500,
+      minHeight: 300,
     },
   },
   leftImage: {

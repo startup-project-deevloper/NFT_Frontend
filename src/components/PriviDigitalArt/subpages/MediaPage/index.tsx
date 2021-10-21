@@ -2123,7 +2123,7 @@ const MediaPage = () => {
                   >
                     {!mediaImageLoaded && (
                       <Box my={1} position="absolute" top="0" left="0" width={1} maxWidth="450px">
-                        <StyledSkeleton width="100%" height={450} variant="rect" />
+                        <StyledSkeleton width="100%" style={{minHeight: isMobileScreen ? "280px" : "180px"}} variant="rect" />
                       </Box>
                     )}
                     <img
@@ -2955,7 +2955,7 @@ const MediaPage = () => {
                       if (e.key === "Enter") addComment();
                     }}
                     placeHolder="Add comment..."
-                    style={{ marginBottom: 4 }}
+                    style={{ marginBottom: 4, flex:"1", width:"auto" }}
                   />
                   <Text
                     size={FontSize.S}

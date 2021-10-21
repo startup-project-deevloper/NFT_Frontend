@@ -1,7 +1,5 @@
-import React, { useEffect, useState, useRef, useCallback, useContext } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import { useDispatch } from "react-redux";
 import clsx from "clsx";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -10,16 +8,12 @@ import { getRaisedTrendingPods, getPods, getPodsProposal } from "shared/services
 import NFTPodCard from "components/PriviDigitalArt/components/Cards/NFTPodCard";
 import CreatePodModal from "components/PriviDigitalArt/modals/CreatePodModal/CreatePodModal";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
-import URL from "shared/functions/getURL";
 import { PrimaryButton, CircularLoadingIndicator, Color } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
-import { preloadImageAndGetDimenstions } from "shared/hooks/useMediaPreloader";
-import { setTrendingPodsList } from "store/actions/PodsManager";
 import useWindowDimensions from "../../../../shared/hooks/useWindowDimensions";
 import { useNFTPodsPageStyles } from "./index.styles";
-import DigitalArtContext from "shared/contexts/DigitalArtContext";
 import { ReactComponent as GovernanceImg } from "assets/icons/governance.svg";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { SearchIcon } from "../../components/Icons/SvgIcons";
@@ -32,7 +26,7 @@ import PodProposalCard from "components/PriviDigitalArt/components/Cards/PodProp
 
 import { getPodStatus } from "shared/functions/utilsPriviPod";
 
-const apiType = 'pix';
+const apiType = "pix";
 const LoadingIndicatorWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -46,12 +40,9 @@ const filterTagMorOptions = ["MoreOption1", "MoreOption2", "MoreOption3", "MoreO
 
 const PodPage = () => {
   const classes = useNFTPodsPageStyles();
-  const dispatch = useDispatch();
   const width = useWindowDimensions().width;
 
   const user = useTypedSelector(getUser);
-
-  const { setOpenFilters } = useContext(DigitalArtContext);
 
   const [filterOption, setFilterOption] = useState<string>("Trending");
   const [filterMore, setFilterMore] = useState<string>("More");
@@ -68,9 +59,6 @@ const PodPage = () => {
 
   // pods
   const [pods, setPods] = useState<any[]>([]);
-  const [hasMorePods, setHasMorePods] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<number>(1);
-
   const [proposals, setProposals] = useState<any[]>([]);
   const [isLoadingProposals, setIsLoadingProposals] = useState<boolean>(false);
   const [hasMoreProposals, setHasMoreProposals] = useState<boolean>(true);
@@ -81,7 +69,6 @@ const PodPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const lastIdRef = useRef<string>("undefined");
-
 
   useEffect(() => {
     getTopPodsList();
@@ -97,26 +84,25 @@ const PodPage = () => {
     }
   }, [user?.address, debouncedSearchValue]);
 
-  const getTopPodsList = ()=>{
-    if(filterMore !== "More" && filterMore.length > 0 ) {
+  const getTopPodsList = () => {
+    if (filterMore !== "More" && filterMore.length > 0) {
       // TODO: get pods by more filter option
-    } else if(filterOption === "Trending") {
+    } else if (filterOption === "Trending") {
       getRaisedTrendingPods(apiType)
-      .then(resp => {
-        if (resp?.success) {
-          const data = resp.data;
-          const nextPagePods = data
-            .filter(p => getPodStatus(p))
-            .map(p => ({ ...p, status: getPodStatus(p) }));
+        .then(resp => {
+          if (resp?.success) {
+            const data = resp.data;
+            const nextPagePods = data
+              .filter(p => getPodStatus(p))
+              .map(p => ({ ...p, status: getPodStatus(p) }));
 
-          setTrendingPods(nextPagePods);
-        }
-      })
-      .catch(err => console.log(err));
-    } else if(filterOption === "Hot") {
+            setTrendingPods(nextPagePods);
+          }
+        })
+        .catch(err => console.log(err));
+    } else if (filterOption === "Hot") {
       // TODO:
-    } else if(filterOption === "New") {
-
+    } else if (filterOption === "New") {
     }
   };
 
@@ -159,18 +145,18 @@ const PodPage = () => {
       .catch(_ => setProposals([]))
       .finally(() => setIsLoadingProposals(false));
   };
-  const onClickFilterTag = (tag) => {
+  const onClickFilterTag = tag => {
     setFilterOption(tag);
     setFilterMore("More");
   };
-  const onChangeFilterMore = (val) => {
+  const onChangeFilterMore = val => {
     setFilterMore(val);
     setFilterOption("");
   };
 
   const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
-      if (hasMorePods) {
+      if (hasMore) {
         // getMediaPodsInformation(pods);
         loadMore(true);
       }
@@ -191,7 +177,9 @@ const PodPage = () => {
           <GovernanceImg />
         </div>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
-          <h2>✨ <span>NFT</span> Pods</h2>
+          <h2>
+            ✨ <span>NFT</span> Pods
+          </h2>
           <h5
             style={
               width < 1100
@@ -272,12 +260,23 @@ const PodPage = () => {
           <>
             {/* filter tags */}
             <Box display="flex" alignItems="flex-end" pb={3} pt={1} flexWrap="wrap">
-              {filterTagOptions.map((tag) => (
+              {filterTagOptions.map(tag => (
                 <>
-                  <Box className={`${classes.filterTag} ${filterOption === tag ? classes.filterActive : ''}`} onClick={()=>{onClickFilterTag(tag)}}>{tag}</Box>
+                  <Box
+                    className={`${classes.filterTag} ${filterOption === tag ? classes.filterActive : ""}`}
+                    onClick={() => {
+                      onClickFilterTag(tag);
+                    }}
+                  >
+                    {tag}
+                  </Box>
                 </>
               ))}
-              <Box className={`${classes.filterTag} ${filterMore.length > 0 && filterMore !== 'More' ? classes.filterActive : ''}`}>
+              <Box
+                className={`${classes.filterTag} ${
+                  filterMore.length > 0 && filterMore !== "More" ? classes.filterActive : ""
+                }`}
+              >
                 <CustomPopup
                   items={filterTagMorOptions}
                   onSelect={onChangeFilterMore}
@@ -322,7 +321,7 @@ const PodPage = () => {
           </>
         ) : (
           <>
-            <div style={{ zIndex: 1, width: '100%' }}>
+            <div style={{ zIndex: 1, width: "100%" }}>
               <InfiniteScroll
                 hasChildren={proposals.length > 0}
                 dataLength={proposals.length}
@@ -340,15 +339,15 @@ const PodPage = () => {
                 <Box mt={4}>
                   {proposals.length > 0
                     ? proposals.map((pod, index) => (
-                      <Box key={index} width={1} mb={2}>
-                        <PodProposalCard pod={pod} />
-                      </Box>
-                    ))
+                        <Box key={index} width={1} mb={2}>
+                          <PodProposalCard pod={pod} />
+                        </Box>
+                      ))
                     : !isLoadingProposals && (
-                      <Box className={classes.header5} textAlign="center" width={1}>
-                        You are not a collab in any pod.
-                      </Box>
-                    )}
+                        <Box className={classes.header5} textAlign="center" width={1}>
+                          You are not a collab in any pod.
+                        </Box>
+                      )}
                 </Box>
               </InfiniteScroll>
             </div>

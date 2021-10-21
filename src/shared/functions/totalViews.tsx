@@ -19,9 +19,16 @@ export async function sumTotalViews(obj, isMediaPod = false) {
     path = "/social/sumTotalViews";
   } else if (obj.ProfileAddress) {
     path = "/user/sumTotalViews";
-  } else if (obj.MediaSymbol || (obj.eth && obj.id) || obj.type === "playList") {
+  } else if (
+    obj.MediaSymbol ||
+    (obj.eth && obj.id) ||
+    obj.type === "playList" ||
+    (obj.token_address && obj.token_id)
+  ) {
     path = "/media/sumTotalViews";
   }
+
+  if (!path) return;
 
   axios
     .post(`${URL()}` + path, body)

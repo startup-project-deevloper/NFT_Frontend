@@ -42,7 +42,7 @@ export default function SyntheticCollectionCard({ item }) {
       <div
         className={cls(classes.image, classes.fixed)}
         style={{
-          backgroundImage: `url(${item.imageUrl ?? require(`assets/collectionImages/async-art.png`)})`,
+          backgroundImage: `url(${item.imageUrl || require(`assets/collectionImages/async-art.png`)})`,
         }}
       />
       <div className={classes.info}>

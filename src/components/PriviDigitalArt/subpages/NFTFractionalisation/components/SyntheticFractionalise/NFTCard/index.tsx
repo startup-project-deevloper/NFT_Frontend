@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Box from "shared/ui-kit/Box";
 import { normalNFTCardStyles } from "../index.styles";
 import useIPFS from "shared/utils-IPFS/useIPFS";
@@ -33,6 +33,27 @@ export default function NFTCard({ item, handleSelect }) {
     }
   };
 
+  const imgSrc = useMemo(() => {
+    const sanitizeIfIpfsUrl = (url) => {
+      if (url.includes('ipfs://')) {
+        return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+      }
+      return url;
+    };
+
+    let src = 
+      item?.cid
+        ? imageIPFS
+        : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
+        ? item?.UrlMainPhoto
+        : item?.UrlMainPhoto ??
+          item?.Url ??
+          item?.url ??
+          require(`assets/backgrounds/digital_art_1.png`)
+      src = "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq"
+    return sanitizeIfIpfsUrl(src)
+  }, [item, imageIPFS])
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
       <div
@@ -52,16 +73,7 @@ export default function NFTCard({ item, handleSelect }) {
               <div className={classes.ntfName}>{item.MediaName}</div>
             </Box>
             <img
-              src={
-                item?.cid
-                  ? imageIPFS
-                  : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
-                  ? item?.UrlMainPhoto
-                  : item?.UrlMainPhoto ??
-                    item?.Url ??
-                    item?.url ??
-                    require(`assets/backgrounds/digital_art_1.png`)
-              }
+              src={imgSrc}
               alt={item.MediaName}
             />
             <div className={classes.starGroup}>

@@ -284,40 +284,6 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                   <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
                   <div className={classes.detailsLabel}>NFT Fractions details</div>
                   <Grid container spacing={2} style={{ display: "flex", alignItems: "flex-end" }}>
-                    {/* <Grid item xs={12} md={6}>
-                    <InputWithLabelAndTooltip
-                      labelName="Name"
-                      inputValue={name}
-                      placeHolder={"Name..."}
-                      required
-                      type="text"
-                      onInputValueChange={e => setName(e.target.value)}
-                      theme="light"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <InputWithLabelAndTooltip
-                      labelName="Symbol"
-                      inputValue={symbol}
-                      placeHolder={"Symbol..."}
-                      required
-                      type="text"
-                      onInputValueChange={e => setSymbol(e.target.value)}
-                      theme="light"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <label>Blockchain</label>
-                    <Dropdown
-                      value={selectedChain.value}
-                      menuList={filteredBlockchainNets}
-                      onChange={e => {
-                        setPrevSelectedChain(selectedChain);
-                        setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
-                      }}
-                      hasImage
-                    />
-                  </Grid> */}
                     <Grid item xs={12} md={12}>
                       <InputWithLabelAndTooltip
                         labelName="Initial Fraction Price (USD)"
@@ -340,18 +306,6 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                         theme="light"
                       />
                     </Grid>
-                    {/* <Grid item xs={12} md={12}>
-                    <div className={classes.label}>Minimum Unlocking Date</div>
-                    <DateInput
-                      minDate={new Date()}
-                      format="MM.dd.yyyy"
-                      value={minUnlockingDate}
-                      onChange={e => {
-                        setMinUnlockingDate(e);
-                      }}
-                    />
-                  </Grid>
-                  <Box className={classes.description}>Early withdrawal will have a penalty</Box> */}
                     <Grid item xs={12} md={12}>
                       <Box className={classes.borderBox}>
                         A Synthetic NFT will be received when the NFT gets locked and validated.

@@ -34,3 +34,10 @@ export const parsePrice = (price: string): string => {
 export function getUnixEpochTimeStamp(value) {
   return Math.floor(value.getTime() / 1000);
 }
+
+export const sanitizeIfIpfsUrl = url => {
+  if (url.includes("ipfs://")) {
+    return url.replace("ipfs://", "https://ipfs.io/ipfs/");
+  }
+  return url;
+};

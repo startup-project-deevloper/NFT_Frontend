@@ -109,7 +109,8 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     position: "absolute",
     zIndex: 0,
     top: 0,
-    right: 0
+    right: 0,
+    pointerEvents: "none",
   },
   purpleBox: {
     background: "#E2E6FB",

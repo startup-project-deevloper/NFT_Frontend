@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import cls from "classnames";
 import { ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper, withStyles } from "@material-ui/core";
-import { formatNumber, _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { SocialPrimaryButton } from "components/PriviSocial/index.styles";
 import URL from "shared/functions/getURL";
 import { Color, StyledDivider } from "shared/ui-kit";
@@ -17,6 +17,7 @@ import { getBidHistory } from "shared/services/API";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
+import { getChainImageUrl } from "shared/functions/chainFucntions";
 
 enum MediaType {
   Video = "VIDEO_TYPE",
@@ -58,7 +59,6 @@ export default function ProfileCard({
   const { shareMediaToSocial, shareMediaWithQrCode } = useShareMedia();
 
   const [totalView, setTotalView] = useState<number>(0);
-  const [chain, setChain] = useState<string>("PRIVI");
   const [bookmarked, setBookmarked] = useState<boolean>(false);
   const [change24h, setChange24h] = useState<number>(0);
   const [creatorsData, setCreatorsData] = useState<any[]>([]);
@@ -97,14 +97,10 @@ export default function ProfileCard({
 
   useEffect(() => {
     if (item) {
-      setChain(
-        item.BlockchainNetwork ??
-          (item.chainsFullName ? (item.chainsFullName === "Mumbai" || item.chainsFullName === "Polygon" ? "Polygon" : "Ethereum") : "")
-      );
       setBookmarked(true);
       setTotalView(item.TotalView);
 
-      if(item.CreatorAddress) {
+      if (item.CreatorAddress) {
         axios.get(`${URL()}/user/getBasicUserInfo/${item.CreatorAddress}`).then(res => {
           const resp = res.data;
           if (resp?.success) {
@@ -118,7 +114,7 @@ export default function ProfileCard({
           }
         });
       }
-      
+
       if (item.cid) {
         getImageIPFS(item.cid);
       }
@@ -345,7 +341,17 @@ export default function ProfileCard({
               </Popper>
             )}
           </Box>
-          {!!chain && <div className={classes.chain}>{chain}</div>}
+          {(item?.BlockchainNetwork || item.chainsFullName) && (
+            <img
+              src={getChainImageUrl(
+                item.BlockchainNetwork ??
+                  (item.chainsFullName === "Mumbai" || item.chainsFullName === "Polygon"
+                    ? "Polygon"
+                    : "Ethereum")
+              )}
+              alt={"chain"}
+            />
+          )}
         </div>
         <div
           className={classes.header}

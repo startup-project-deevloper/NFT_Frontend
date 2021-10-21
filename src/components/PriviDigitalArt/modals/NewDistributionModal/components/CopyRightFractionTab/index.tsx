@@ -6,7 +6,7 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import Box from "shared/ui-kit/Box";
 import { copyRightFractionTabStyles } from "./index.styles";
 import Avatar from "shared/ui-kit/Avatar";
-import { getRandomAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getRandomAvatar } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
 import {useEffect, useState} from "react";
 import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
@@ -135,7 +135,7 @@ const CopyRightFractionTab = (props: any) => {
             <Box display="flex">
               <Avatar size={34}
                       image={mediasPhotos && mediasPhotos[index + '-photo'] ?
-                        mediasPhotos[index + '-photo'] : getRandomAvatar()}
+                        mediasPhotos[index + '-photo'] : getDefaultAvatar()}
                       radius={25}
                       bordered
                       rounded />

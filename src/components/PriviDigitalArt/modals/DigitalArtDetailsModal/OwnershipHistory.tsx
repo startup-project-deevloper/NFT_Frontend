@@ -8,7 +8,7 @@ import Box from "shared/ui-kit/Box";
 
 import { ExternalLinkIcon } from "./index.styles";
 import { getBidHistory } from "shared/services/API";
-import { getRandomAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getRandomAvatar } from "shared/services/user/getUserAvatar";
 
 const OwnershipHistory = ({ media }) => {
   const allUsers = useTypedSelector(state => state.usersInfoList);
@@ -45,10 +45,7 @@ const OwnershipHistory = ({ media }) => {
                 <Avatar
                   size="medium"
                   url={
-                    history.user?.url ||
-                    history.user?.imageUrl ||
-                    require(`assets/anonAvatars/${history.user?.anonAvatar}`) ||
-                    getRandomAvatar()
+                    history.user?.ipfsImage || getDefaultAvatar()
                   }
                 />
                 <Box ml={2} display="flex" flexDirection="column">

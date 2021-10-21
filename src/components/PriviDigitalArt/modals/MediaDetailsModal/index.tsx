@@ -19,7 +19,7 @@ import {
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMediaModal";
@@ -267,7 +267,7 @@ const MediaDetailsModal = (props: any) => {
         >
           <div className={classes.infoSection}>
             <Box display="flex" flexDirection="row" alignItems="center">
-              <Avatar size="medium" url={creator && creator.ipfsImage ? creator.ipfsImage : ""} />
+              <Avatar size="medium" url={creator && creator.ipfsImage ? creator.ipfsImage : getDefaultAvatar()} />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
                 <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                   {creator?.name || media?.CreatorName || media?.creator}
@@ -325,7 +325,7 @@ const MediaDetailsModal = (props: any) => {
                     key={`artist-${owner.id}`}
                     className={classes.artist}
                     size="small"
-                    url={owner.ipfsImage ? owner.ipfsImage : ""}
+                    url={owner.ipfsImage ? owner.ipfsImage : getDefaultAvatar()}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>

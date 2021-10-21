@@ -296,6 +296,8 @@ const Header = props => {
               for (let usr of uList) {
                 if (usr && usr.infoImage && usr.infoImage.newFileCID && (!usr.ipfsImage || usr.ipfsImage === "")) {
                   usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption)
+                } else {
+                  usr.ipfsImage = getDefaultAvatar();
                 }
               }
               dispatch(setUsersInfoList(uList));
@@ -398,6 +400,8 @@ const Header = props => {
               for (let usr of u) {
                 if (usr && usr.infoImage && usr.infoImage.newFileCID) {
                   usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
+                } else {
+                  usr.ipfsImage = getDefaultAvatar();
                 }
               }
               await dispatch(setUsersInfoList(u));

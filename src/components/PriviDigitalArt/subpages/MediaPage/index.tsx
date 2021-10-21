@@ -43,7 +43,7 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import PrintChart from "shared/ui-kit/Chart/Chart";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { getUser } from "store/selectors";
 import {
@@ -955,11 +955,7 @@ const MediaPage = () => {
                           url={
                             u?.ipfsImage
                             ? u?.ipfsImage
-                            : u?.imageUrl
-                            ? u?.imageUrl
-                            : u?.anonAvatar
-                            ? require(`assets/anonAvatars/${user.anonAvatar}`)
-                            : "none"
+                            : getDefaultAvatar()
                           }
                         />
                         <Box display="flex" flexDirection="column" alignItems="center">
@@ -1033,11 +1029,9 @@ const MediaPage = () => {
                       <Avatar
                         size="medium"
                         url={
-                          u?.imageUrl
-                            ? u?.imageUrl
-                            : u?.anonAvatar
-                            ? require(`assets/anonAvatars/${user.anonAvatar}`)
-                            : "none"
+                          u?.ipfsImage
+                            ? u?.ipfsImage
+                            : getDefaultAvatar()
                         }
                       />
                       <Box display="flex" flexDirection="column" alignItems="center">
@@ -2173,7 +2167,7 @@ const MediaPage = () => {
                         <Avatar
                           key={`creator-${media?.CreatorAddress}`}
                           size="small"
-                          url={imageCreatorIPFS ? imageCreatorIPFS : getRandomAvatar()}
+                          url={imageCreatorIPFS ? imageCreatorIPFS : getDefaultAvatar()}
                         />
                       </div>
                       <Box display="flex" flexDirection="column" ml={1} mr={4}>
@@ -2238,7 +2232,7 @@ const MediaPage = () => {
                             key={`artist-${owner.id}`}
                             className={classes.artist}
                             size="small"
-                            url={owner.hasPhoto ? owner.url : owner.imageUrl}
+                            url={owner.ipfsImage ? owner.ipfsImage : getDefaultAvatar()}
                           />
                         </div>
                       ))}
@@ -2836,11 +2830,9 @@ const MediaPage = () => {
                           <Avatar
                             size="small"
                             url={
-                              bidder?.imageUrl
-                                ? bidder?.imageUrl
-                                : bidder?.anonAvatar
-                                ? require(`assets/anonAvatars/${bidder.anonAvatar}`)
-                                : "none"
+                              bidder?.ipfsImage
+                                ? bidder?.ipfsImage
+                                : getDefaultAvatar()
                             }
                           />
                           <Box
@@ -2952,7 +2944,7 @@ const MediaPage = () => {
                   alignItems="center"
                   mb={2}
                 >
-                  <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getRandomAvatar()} />
+                  <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getDefaultAvatar()} />
                   <InputWithLabelAndTooltip
                     transparent
                     overriedClasses=""
@@ -3012,13 +3004,14 @@ const MediaPage = () => {
                             size="medium"
                             url={
                               comment.user &&
-                              getUserAvatar({
-                                id: comment.user.id,
-                                anon: comment.user.anon,
-                                hasPhoto: comment.user.hasPhoto,
-                                anonAvatar: comment.user.anonAvatar,
-                                url: comment.user.url,
-                              })
+                              comment.user.ipfsImage
+                              // getUserAvatar({
+                              //   id: comment.user.id,
+                              //   anon: comment.user.anon,
+                              //   hasPhoto: comment.user.hasPhoto,
+                              //   anonAvatar: comment.user.anonAvatar,
+                              //   url: comment.user.url,
+                              // })
                             }
                           />
                         </div>

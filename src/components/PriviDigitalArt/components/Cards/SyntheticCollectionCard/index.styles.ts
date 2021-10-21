@@ -17,10 +17,9 @@ export const syntheticCollectionCardStyles = makeStyles(theme => ({
   },
   image: {
     width: '100%',
+    height: '330px',
     borderRadius: 16,
-    height: 'auto',
-    minHeight: 276,
-    zIndex: 1
+    objectFit: 'cover'
   },
   fixed: {
     backgroundRepeat: 'no-repeat',

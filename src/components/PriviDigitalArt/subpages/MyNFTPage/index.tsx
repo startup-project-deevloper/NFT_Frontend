@@ -119,7 +119,7 @@ const MyNFT = () => {
             <LoadingWrapper theme={"blue"} loading={loading}>
               <div className={classes.cardsGrid}>
                 {myNFTs
-                  .filter(nft => nft.isVerified)
+                  .filter(nft => nft.isVerified && !nft.isWithdrawn)
                   .map((item, index) => (
                     <MyNFTCard key={index} item={item} />
                   ))}

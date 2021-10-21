@@ -32,7 +32,7 @@ const parseMoralisData = async (data, address, selectedChain) => {
     if (tokenURI && tokenURI.startsWith("http")) {
       try {
         const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
-          url: data.token_uri,
+          url: tokenURI,
         });
         console.log("tokenResp", tokenResp);
         if (tokenResp.success) {

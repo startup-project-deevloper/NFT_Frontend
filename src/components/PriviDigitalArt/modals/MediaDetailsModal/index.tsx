@@ -274,16 +274,20 @@ const MediaDetailsModal = (props: any) => {
                 </Text>
                 {creator?.urlSlug && <Text className={classes.creatorName}>{`@${creator?.urlSlug}`}</Text>}
               </Box>
-              {user && !media?.tag && media?.CreatorId !== user.id && (
-                <SecondaryButton
-                  size="small"
-                  onClick={() => handleFollowing(media?.CreatorId)}
-                  className={classes.followBtn}
-                  style={{ background: "transparent" }}
-                >
-                  {isFollowing === 2 ? "Unfollow" : isFollowing === 1 ? "Requested" : "Follow"}
-                </SecondaryButton>
-              )}
+              {user &&
+                !media?.tag &&
+                media?.CreatorId !== user.id &&
+                media?.CreatorAddress?.toLowerCase() !== user.address?.toLowerCase() &&
+                media.owner_of?.toLowerCase() !== user.address?.toLowerCase() && (
+                  <SecondaryButton
+                    size="small"
+                    onClick={() => handleFollowing(media?.CreatorId)}
+                    className={classes.followBtn}
+                    style={{ background: "transparent" }}
+                  >
+                    {isFollowing === 2 ? "Unfollow" : isFollowing === 1 ? "Requested" : "Follow"}
+                  </SecondaryButton>
+                )}
             </Box>
             <div className={classes.fruitSection}>
               <Box mr={2} style={{ background: "#9EACF2", borderRadius: "50%" }}>

@@ -4,7 +4,10 @@ export const HowItWorksModalStyles = makeStyles(theme => ({
   root: {
     textAlign: "center",
     maxWidth: "755px !important",
-    padding: "32px 114px 64px 107px !important"
+    padding: "32px 114px 64px 107px !important",
+    [theme.breakpoints.down("xs")]: {
+      padding: "32px 32px !important"
+    },
   },
   title: {
     fontSize: 32,

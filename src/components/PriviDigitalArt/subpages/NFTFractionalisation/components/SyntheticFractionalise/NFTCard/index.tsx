@@ -4,6 +4,7 @@ import { normalNFTCardStyles } from "../index.styles";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
 
 export default function NFTCard({ item, handleSelect }) {
   const classes = normalNFTCardStyles();
@@ -34,25 +35,13 @@ export default function NFTCard({ item, handleSelect }) {
   };
 
   const imgSrc = useMemo(() => {
-    const sanitizeIfIpfsUrl = (url) => {
-      if (url.includes('ipfs://')) {
-        return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
-      }
-      return url;
-    };
-
-    let src = 
-      item?.cid
-        ? imageIPFS
-        : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
-        ? item?.UrlMainPhoto
-        : item?.UrlMainPhoto ??
-          item?.Url ??
-          item?.url ??
-          require(`assets/backgrounds/digital_art_1.png`)
-      src = "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq"
-    return sanitizeIfIpfsUrl(src)
-  }, [item, imageIPFS])
+    let src = item?.cid
+      ? imageIPFS
+      : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
+      ? item?.UrlMainPhoto
+      : item?.UrlMainPhoto ?? item?.Url ?? item?.url ?? require(`assets/backgrounds/digital_art_1.png`);
+    return sanitizeIfIpfsUrl(src);
+  }, [item, imageIPFS]);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
@@ -72,10 +61,7 @@ export default function NFTCard({ item, handleSelect }) {
             <Box display="flex" justifyContent="center" width={1}>
               <div className={classes.ntfName}>{item.MediaName}</div>
             </Box>
-            <img
-              src={imgSrc}
-              alt={item.MediaName}
-            />
+            <img src={imgSrc} alt={item.MediaName} />
             <div className={classes.starGroup}>
               <Box fontSize={10} mr={"2px"}>
                 🌟{" "}

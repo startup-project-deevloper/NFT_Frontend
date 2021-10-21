@@ -19,6 +19,7 @@ import { getBidHistory } from "shared/services/API";
 
 import { useStyles } from "./index.styles";
 import { useMediaQuery } from "@material-ui/core";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 export const OfferTable = ({ offers, token }) => {
   const classes = useStyles();
@@ -49,7 +50,7 @@ export const OfferTable = ({ offers, token }) => {
           {
             cell: (
               <Box display="flex" flexDirection="row" alignItems="center">
-                <Avatar size="medium" url={user?.imageUrl ? user?.imageUrl: user?.anonAvatar ? require(`assets/anonAvatars/${user.anonAvatar}`) : "none"} />
+                <Avatar size="medium" url={user?.ipfsImage ? user?.ipfsImage: getDefaultAvatar()} />
                 <Text ml={1.5}>{user?.name}</Text>
               </Box>
             ),

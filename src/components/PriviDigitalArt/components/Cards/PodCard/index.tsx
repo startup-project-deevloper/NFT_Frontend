@@ -6,7 +6,7 @@ import { useTypedSelector } from "store/reducers/Reducer";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import URL from "shared/functions/getURL";
-import { getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
 import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { podCardStyles } from "./index.styles";
@@ -35,38 +35,46 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
   useEffect(() => {
     if (media && user) {
       if (media.Creator || media.CreatorAddress) {
+        const allUsers = useTypedSelector(state => state.usersInfoList);
         if (media.Creator === user?.id) {
           setCreator({
             ...user,
             name: `${user.firstName} ${user.lastName}`,
           });
         } else {
-          const getCreatorData = async () => {
-            await Axios.get(`${URL()}/user/getBasicUserInfo/${media.Creator ?? media.CreatorAddress}`)
-              .then(response => {
-                if (response.data.success) {
-                  let data = response.data.data;
-                  setCreator({
-                    ...data,
-                    name: data.name ?? `${data.firstName} ${data.lastName}`,
-                  });
-                } else {
-                  setCreator({
-                    imageUrl: getRandomAvatarForUserIdWithMemoization(media.creator),
-                    name: "User name",
-                    urlSlug: "",
-                  });
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
-          };
+          const u = allUsers.find(user => user.address === media.CreatorAddress)
+          setCreator({
+            ...u,
+            // name: `${u.firstName} ${u.lastName}`,
+          });
+          // const getCreatorData = async () => {
+          //   await Axios.get(`${URL()}/user/getBasicUserInfo/${media.Creator ?? media.CreatorAddress}`)
+          //     .then(response => {
+          //       if (response.data.success) {
+          //         let data = response.data.data;
+          //         setCreator({
+          //           ...data,
+          //           name: data.name ?? `${data.firstName} ${data.lastName}`,
+          //         });
+          //       } else {
+          //         setCreator({
+          //           ipfsImage: getDefaultAvatar(),
+          //           imageUrl: getRandomAvatarForUserIdWithMemoization(media.creator),
+          //           name: "User name",
+          //           urlSlug: "",
+          //         });
+          //       }
+          //     })
+          //     .catch(error => {
+          //       console.log(error);
+          //     });
+          // };
 
-          getCreatorData();
+          // getCreatorData();
         }
       } else {
         setCreator({
+          ipfsImage: getDefaultAvatar(),
           imageUrl: getRandomAvatarForUserIdWithMemoization(media.creator),
           name: media.creator,
           urlSlug: media.creator,
@@ -121,15 +129,16 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
             <div
               className={classes.avatar}
               style={{
-                backgroundImage: creator
-                  ? `url(${getUserAvatar({
-                      id: creator.id,
-                      anon: creator.anon,
-                      hasPhoto: creator.hasPhoto,
-                      anonAvatar: creator.anonAvatar,
-                      url: creator.url,
-                    })})`
-                  : "none",
+                backgroundImage: creator.ipfsImage
+                // backgroundImage: creator
+                //   ? `url(${getUserAvatar({
+                //       id: creator.id,
+                //       anon: creator.anon,
+                //       hasPhoto: creator.hasPhoto,
+                //       anonAvatar: creator.anonAvatar,
+                //       url: creator.url,
+                //     })})`
+                //   : "none",
               }}
               onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
             />

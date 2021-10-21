@@ -21,13 +21,21 @@ import { FractionaliseModal } from "../../modals/FractionaliseModal";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 
+const sanitizeIfIpfsUrl = (url) => {
+  if (url.includes('ipfs://')) {
+    return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+  }
+  return url;
+};
+
 // parse it to same format as fb collection
 const parseMoralisData = async (data, address, selectedChain) => {
   let metadata: any = {};
   if (data.metadata) {
     metadata = JSON.parse(data.metadata);
   } else {
-    if (data.token_uri && data.token_uri.startsWith("http")) {
+    const tokenURI = sanitizeIfIpfsUrl(data.token_uri ?? '')
+    if (tokenURI && tokenURI.startsWith("http")) {
       try {
         const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
           url: data.token_uri,

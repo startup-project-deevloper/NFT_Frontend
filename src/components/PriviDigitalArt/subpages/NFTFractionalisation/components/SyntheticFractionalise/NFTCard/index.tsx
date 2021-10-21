@@ -50,7 +50,6 @@ export default function NFTCard({ item, handleSelect }) {
           item?.Url ??
           item?.url ??
           require(`assets/backgrounds/digital_art_1.png`)
-      src = "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq"
     return sanitizeIfIpfsUrl(src)
   }, [item, imageIPFS])
 

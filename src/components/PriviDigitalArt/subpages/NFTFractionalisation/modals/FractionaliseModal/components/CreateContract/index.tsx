@@ -18,6 +18,7 @@ import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import SyntheticProtocolRouter from "shared/connectors/web3/contracts/SyntheticProtocolRouter.json";
+import {sanitizeIfIpfsUrl} from "shared/helpers/utils";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -163,7 +164,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticID: nftInfo.syntheticTokenId,
             NFTId: selectedNFT.BlockchainId,
             NFTName: selectedNFT.MediaName,
-            NFTImageUrl: selectedNFT.Url,
+            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.Url),
             JotName: `Privi Jot ${selectedNFT.MediaName}`,
             JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
             JotAddress: collection.jotAddress,
@@ -176,7 +177,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             collectionName: collectionInfo.data.name,
             collectionSymbol: collectionInfo.data.symbol,
             description: collectionInfo.data.description,
-            imageUrl: collectionInfo.data.imageUrl ?? selectedNFT.Url,
+            imageUrl: sanitizeIfIpfsUrl(collectionInfo.data.imageUrl ?? selectedNFT.Url),
             quickSwapAddress: collection.jotPairAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
@@ -192,7 +193,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticID: nftInfo.syntheticTokenId,
             NFTId: selectedNFT.BlockchainId,
             NFTName: selectedNFT.MediaName,
-            NFTImageUrl: selectedNFT.Url,
+            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.Url),
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
             isAddCollection: false,

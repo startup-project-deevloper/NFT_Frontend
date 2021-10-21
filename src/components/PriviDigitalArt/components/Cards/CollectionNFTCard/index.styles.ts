@@ -67,7 +67,10 @@ export const collectionNFTCardStyles = makeStyles(theme => ({
     textTransform: "capitalize",
     color: '#1A1B1C',
     paddingLeft: 6,
-    margin: ({ hiddenHeader }: any) => hiddenHeader ? "auto" : "initial",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    margin: ({ hiddenHeader }: any) => hiddenHeader ? "auto" : "0 10px 0 0",
     [theme.breakpoints.down("sm")]: {
       fontSize: 11,
       lineHeight: "12px",

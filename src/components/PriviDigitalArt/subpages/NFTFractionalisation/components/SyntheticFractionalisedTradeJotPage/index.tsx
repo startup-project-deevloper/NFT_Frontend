@@ -80,8 +80,8 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
     <Box className={classes.root}>
       <Box className={classes.infoWrap}>
         <Grid container spacing={2}>
-          <Grid item md={3} xs={12}>
-            <LoadingWrapper loading={loadingTradingInfo}>
+          <LoadingWrapper loading={loadingTradingInfo}>
+            <Grid item md={3} xs={12}>
               <Box className={classes.leftJots}>
                 <Box className={classes.jotWrapper}>
                   <Box className={classes.jotLabel}>TVL</Box>
@@ -98,16 +98,16 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
                   <Box className={classes.jotTitle}>${formatNumber(volume7h)}</Box>
                 </Box>
               </Box>
-            </LoadingWrapper>
-          </Grid>
-          {/* chart gird */}
-          <Grid item md={9} xs={12}>
-            <PriceGraph
-              jotAddress={collection.JotAddress}
-              title={unit === "BTC" ? `${formatNumber(token1Price)}USDC` : `${formatNumber(token0Price, 8)}BTC`}
-              subTitle={moment().format("YYYY MMM DD")}
-            />
-          </Grid>
+            </Grid>
+            {/* chart gird */}
+            <Grid item md={9} xs={12}>
+              <PriceGraph
+                jotAddress={collection.JotAddress}
+                title={unit === "BTC" ? `${formatNumber(token1Price)}USDC` : `${formatNumber(token0Price, 8)}BTC`}
+                subTitle={moment().format("YYYY MMM DD")}
+              />
+            </Grid>
+          </LoadingWrapper>
         </Grid>
       </Box>
       <Box className={classes.outBox}>

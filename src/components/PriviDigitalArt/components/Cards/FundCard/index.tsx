@@ -44,7 +44,7 @@ export const FundCard = props => {
   }, []);
 
   useEffect(() => {
-    if(proposal.creator && users.length && ipfs && Object.keys(ipfs).length !== 0)
+    if(proposal.creator && users.length && ipfs )
     setImageIPFS(getUserIpfsAvatar(proposal.creator, users, downloadWithNonDecryption));
   }, [ipfs, proposal.creator]);
 

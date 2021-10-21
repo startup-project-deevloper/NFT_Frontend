@@ -55,7 +55,7 @@ const NFTPositionManagerPage = () => {
   };
 
   React.useEffect(() => {
-    if (userSelector?.id && Object.keys(ipfs).length) {
+    if (userSelector?.id && ipfs) {
       loadData();
     }
   }, [userSelector, ipfs]);
@@ -63,7 +63,8 @@ const NFTPositionManagerPage = () => {
   const loadData = () => {
     setIsDataLoading(true);
     Axios.get(
-      `${URL()}/nftLoan/getUserNFTLoans/${"0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
+      `${URL()}/nftLoan/getUserNFTLoans/${
+        "0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
       }`
     )
       .then(async ({ data }) => {
@@ -98,7 +99,12 @@ const NFTPositionManagerPage = () => {
             <h2>✨ Manage Your Loans</h2>
           </Box>
 
-          <Box mt={isMobile ? 5 : 7} width="100%" padding={isMobile ? "0 15px" : "0 42px"} style={{ borderBottom: "1px solid #431AB720" }}>
+          <Box
+            mt={isMobile ? 5 : 7}
+            width="100%"
+            padding={isMobile ? "0 15px" : "0 42px"}
+            style={{ borderBottom: "1px solid #431AB720" }}
+          >
             <Box display="flex" width="100%">
               {Tabs.map((tab, index) => (
                 <div
@@ -115,15 +121,9 @@ const NFTPositionManagerPage = () => {
           </Box>
 
           {selectedTab === 0 && (
-            <CollateralisedLoans
-              positions={positions}
-              isDataLoading={isDataLoading}
-              loadData={loadData}
-            />
+            <CollateralisedLoans positions={positions} isDataLoading={isDataLoading} loadData={loadData} />
           )}
-          {selectedTab === 1 && (
-            <FractionalLoans />
-          )}
+          {selectedTab === 1 && <FractionalLoans />}
         </div>
       </div>
     </>

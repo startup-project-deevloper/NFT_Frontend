@@ -38,7 +38,7 @@ const UserCard = props => {
   }, [ipfs, user]);
 
   const getPhotoUser = async (user: any) => {
-    if (ipfs && Object.keys(ipfs).length !== 0 && user && user.infoImage && user.infoImage.newFileCID) {
+    if (ipfs  && user && user.infoImage && user.infoImage.newFileCID) {
       setImageIPFS(await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption));
     }
   };

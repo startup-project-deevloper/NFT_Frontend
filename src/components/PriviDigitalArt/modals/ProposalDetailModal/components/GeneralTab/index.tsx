@@ -20,7 +20,7 @@ const GeneralTab = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if(ipfs && Object.keys(ipfs).length !== 0) {
+    if(ipfs ) {
       getImages()
     }
   }, [proposal, ipfs]);

@@ -14,7 +14,7 @@ import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "../../../../../shared/ipfs/get";
 import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
-import {StyledSkeleton} from "shared/ui-kit/Styled-components/StyledComponents";
+import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 
 export default function ArtistCard({ item, currentIndex }) {
   const classes = artistCardStyles();
@@ -37,7 +37,7 @@ export default function ArtistCard({ item, currentIndex }) {
   }, []);
 
   useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0 && item) {
+    if (ipfs && item) {
       getUserPhoto(item);
     }
   }, [item, ipfs]);
@@ -54,7 +54,7 @@ export default function ArtistCard({ item, currentIndex }) {
         let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
         setImageIPFS(imageUrl);
       }
-    } else{
+    } else {
       setImageIPFS(require(`assets/anonAvatars/${artist.anonAvatar ?? "ToyFaces_Colored_BG_001.jpg"}`));
     }
     setLoading(false);
@@ -84,11 +84,11 @@ export default function ArtistCard({ item, currentIndex }) {
         history.push(`/${item.urlSlug}/profile`);
       }}
     >
-      {
-        loading
-          ? <StyledSkeleton width="100%" height="100%" variant="rect" />
-          : <img src={imageIPFS ? imageIPFS : getDefaultAvatar()} />
-      }
+      {loading ? (
+        <StyledSkeleton width="100%" height="100%" variant="rect" />
+      ) : (
+        <img src={imageIPFS ? imageIPFS : getDefaultAvatar()} />
+      )}
       <div className={classes.filter}>
         <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">
           {<b>{`${item.firstName || ""} ${item.lastName || ""}`}</b>}
@@ -113,12 +113,13 @@ export default function ArtistCard({ item, currentIndex }) {
             <b>🌟 Collections</b>
             <Box marginTop="8px">
               {item.myMediasCount
-                ? `${item.myMediasCount > 1000000
-                  ? (item.myMediasCount / 1000000).toFixed(1)
-                  : item.myMediasCount > 1000
-                    ? (item.myMediasCount / 1000).toFixed(1)
-                    : item.myMediasCount
-                }${item.myMediasCount > 1000000 ? "M" : item.myMediasCount > 1000 ? "K" : ""}`
+                ? `${
+                    item.myMediasCount > 1000000
+                      ? (item.myMediasCount / 1000000).toFixed(1)
+                      : item.myMediasCount > 1000
+                      ? (item.myMediasCount / 1000).toFixed(1)
+                      : item.myMediasCount
+                  }${item.myMediasCount > 1000000 ? "M" : item.myMediasCount > 1000 ? "K" : ""}`
                 : 0}
             </Box>
           </Box>
@@ -127,12 +128,13 @@ export default function ArtistCard({ item, currentIndex }) {
             <b>🌟 Followers</b>
             <Box marginTop="8px">
               {item.numFollowers && item.numFollowers > 0
-                ? `${item.numFollowers > 1000000
-                  ? (item.numFollowers / 1000000).toFixed(1)
-                  : item.numFollowers > 1000
-                    ? (item.numFollowers / 1000).toFixed(1)
-                    : item.numFollowers
-                }${item.numFollowers > 1000000 ? "M" : item.numFollowers > 1000 ? "K" : ""}`
+                ? `${
+                    item.numFollowers > 1000000
+                      ? (item.numFollowers / 1000000).toFixed(1)
+                      : item.numFollowers > 1000
+                      ? (item.numFollowers / 1000).toFixed(1)
+                      : item.numFollowers
+                  }${item.numFollowers > 1000000 ? "M" : item.numFollowers > 1000 ? "K" : ""}`
                 : 0}
             </Box>
           </Box>

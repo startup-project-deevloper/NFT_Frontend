@@ -60,7 +60,7 @@ export default function NewDistributionModal(props: any) {
   }, []);
 
   useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0 && tokenPhoto) {
+    if (ipfs  && tokenPhoto) {
       uploadPhoto();
     }
   }, [tokenPhoto, ipfs]);

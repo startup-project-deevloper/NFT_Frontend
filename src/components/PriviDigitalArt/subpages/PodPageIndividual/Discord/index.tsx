@@ -187,7 +187,7 @@ const Discord = React.memo((props: any) => {
   }, [messages, ipfs]);
 
   const checkMessagesFile = async (msgs : any[]) => {
-    if(ipfs && Object.keys(ipfs).length !== 0) {
+    if(ipfs ) {
       for(let i = 0; i < msgs.length; i++) {
         if(msgs[i] && msgs[i].type !== 'text' && msgs[i].url && msgs[i].url.newFileCID) {
           let file = await onDownloadNonDecrypt(msgs[i].url.newFileCID, fileCID => downloadWithNonDecryption(fileCID, false));

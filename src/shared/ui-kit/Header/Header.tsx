@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 
 import {
@@ -29,10 +29,9 @@ import CreatePixMediaModal from "components/PriviDigitalArt/modals/CreateMediaMo
 import PodCreateNFTMediaModal from "shared/ui-kit/Modal/Modals/Pod-Create-NFTMedia-Modal/PodCreateNFTMediaModal";
 import CreateCommunityModal from "shared/ui-kit/Modal/Modals/CreateCommunity";
 import CreateImportSocialTokenModal from "shared/ui-kit/Modal/Modals/Create-social-token/CreateImportSocialTokenModal";
-import { CreatePriviWalletModal } from "shared/ui-kit/Modal/Modals";
 import { capitalize } from "shared/helpers/string";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
-import { getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getUserAvatar } from "shared/services/user/getUserAvatar";
 import { createUserInfo, setUsersInfoList } from "store/actions/UsersInfo";
 import CommunityContributionModal from "shared/ui-kit/Modal/Modals/CommunityContributionModal";
 import ShareContributionModal from "shared/ui-kit/Modal/Modals/ShareContributionModal";
@@ -49,10 +48,8 @@ import { ToolbarButtonWithPopper } from "./components/Toolbar/ToolbarButtonWithP
 import { MessageNotifications } from "./components/Message/MessageNotifications";
 import { NotificationsPopperContent } from "./components/Notifications/NotificationsPopperContent";
 import { PrimaryButton, SecondaryButton } from "../Buttons";
-import PriviAppIcon from "./components/PriviAppIcon";
 import { headerStyles } from "./Header.styles";
 
-import { ReactComponent as NavigationIcon } from "assets/icons/navigation.svg";
 import { ReactComponent as SubStratIcon } from "assets/icons/substrat_card.svg";
 import { ReactComponent as PriviIcon } from "assets/icons/privi_wallet_card.svg";
 import { ReactComponent as GovernanceIcon } from "assets/icons/governance_card.svg";
@@ -99,7 +96,7 @@ const Header = props => {
   } = useNotifications();
 
   const { unreadMessages } = useMessages();
-  const { activate, account } = useWeb3React();
+  const { account } = useWeb3React();
 
   const [userId, setUserId] = useState<string>("");
   const [ownUser, setOwnUser] = useState<boolean>(idUrl === localStorage.getItem("userId"));
@@ -150,13 +147,7 @@ const Header = props => {
   }, [ipfs, userSelector.id, profileAvatarChanged]);
 
   const getPhotoUser = async () => {
-    if (
-      ipfs &&
-      Object.keys(ipfs).length !== 0 &&
-      userSelector &&
-      userSelector.infoImage &&
-      userSelector.infoImage.newFileCID
-    ) {
+    if (ipfs && userSelector && userSelector.infoImage && userSelector.infoImage.newFileCID) {
       setImageIPFS(await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption));
     }
   };
@@ -272,14 +263,15 @@ const Header = props => {
   }, [idUrl, ipfs]);
 
   const setUserWithIpfsImage = async () => {
-    if (ipfs && Object.keys(ipfs).length !== 0 &&
-      userSelector && userSelector.infoImage &&
-      userSelector.infoImage.newFileCID) {
-      userSelector.ipfsImage = await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption);
+    if (ipfs && userSelector && userSelector.infoImage && userSelector.infoImage.newFileCID) {
+      userSelector.ipfsImage = await getPhotoIPFS(
+        userSelector.infoImage.newFileCID,
+        downloadWithNonDecryption
+      );
     }
 
     dispatch(setUser(userSelector));
-  }
+  };
 
   useEffect(() => {
     if (userId && userId.length > 0) {
@@ -294,8 +286,13 @@ const Header = props => {
               const uList = [...usersInfoList.slice(0, index), user, ...usersInfoList.slice(index + 1)];
 
               for (let usr of uList) {
-                if (usr && usr.infoImage && usr.infoImage.newFileCID && (!usr.ipfsImage || usr.ipfsImage === "")) {
-                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption)
+                if (
+                  usr &&
+                  usr.infoImage &&
+                  usr.infoImage.newFileCID &&
+                  (!usr.ipfsImage || usr.ipfsImage === "")
+                ) {
+                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
                 } else {
                   usr.ipfsImage = getDefaultAvatar();
                 }
@@ -318,7 +315,7 @@ const Header = props => {
   }, [unreadMessages]);
 
   useEffect(() => {
-    if (!usersInfoList || (usersInfoList.length === 0 && ipfs && Object.keys(ipfs).length !== 0)) {
+    if (!usersInfoList || (usersInfoList.length === 0 && ipfs)) {
       axios
         .post(`${URL()}/chat/getUsers`)
         .then(response => {
@@ -336,7 +333,7 @@ const Header = props => {
                 user.anonAvatar.length > 0
               ) {
                 image = `${require(`assets/anonAvatars/${user.anonAvatar}`)}`;
-              }/* else {
+              } /* else {
                 if (user.hasPhoto && user.url) {
                   image = `${user.url}?${Date.now()}`;
                 }
@@ -358,7 +355,7 @@ const Header = props => {
                   user.creds.length ?? 0,
                   user.badges ?? [],
                   user.urlSlug ??
-                  `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
+                    `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
                   user.twitter ?? "",
                   user.anon ?? false,
                   user.verified ?? false,
@@ -382,7 +379,7 @@ const Header = props => {
                   user.email ?? "",
                   user.infoImage ?? {},
                   false,
-                  user.ipfsImage ?? "",
+                  user.ipfsImage ?? ""
                 )
               );
             });
@@ -519,10 +516,10 @@ const Header = props => {
             >
               <div>My apps</div>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <PrimaryButton size="small" onClick={() => { }}>
+                <PrimaryButton size="small" onClick={() => {}}>
                   See All
                 </PrimaryButton>
-                <SecondaryButton size="small" onClick={() => { }}>
+                <SecondaryButton size="small" onClick={() => {}}>
                   Edit
                 </SecondaryButton>
               </div>
@@ -610,7 +607,7 @@ const Header = props => {
                 justifyContent: "center",
               }}
             >
-              <SecondaryButton size="medium" onClick={() => { }} style={{ marginTop: "16px" }}>
+              <SecondaryButton size="medium" onClick={() => {}} style={{ marginTop: "16px" }}>
                 Discover More Apps
               </SecondaryButton>
             </div>
@@ -747,10 +744,10 @@ const Header = props => {
                         tooltip="Notifications"
                         icon={
                           !props.openTab ||
-                            !pathName.toLowerCase().includes("privi-music") ||
-                            !pathName.toLowerCase().includes("pods") ||
-                            (props.openTab &&
-                              (props.openTab.type === OpenType.Search || props.openTab.type === OpenType.Home))
+                          !pathName.toLowerCase().includes("privi-music") ||
+                          !pathName.toLowerCase().includes("pods") ||
+                          (props.openTab &&
+                            (props.openTab.type === OpenType.Search || props.openTab.type === OpenType.Home))
                             ? IconNotifications
                             : IconNotificationsWhite
                         }
@@ -977,12 +974,12 @@ const Header = props => {
               </Hidden>
             </>
           ) : // <div className="header-buttons">
-            //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
-            //     Get Privi Wallet
-            //   </button>
-            //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
-            // </div>
-            null}
+          //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
+          //     Get Privi Wallet
+          //   </button>
+          //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
+          // </div>
+          null}
         </div>
         <SignInModal open={openSignInModal} handleClose={() => setOpenSignInModal(false)} />
         <Popper
@@ -1111,7 +1108,7 @@ const Header = props => {
             user={userSelector}
             handleClose={handleCloseSocialTokenModal}
             type={"FT"}
-            handleRefresh={() => { }}
+            handleRefresh={() => {}}
             open={openCreateSocialTokenModal}
           />
         )}

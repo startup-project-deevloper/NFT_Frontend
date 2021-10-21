@@ -104,7 +104,7 @@ const PodPageIndividual = () => {
   }, []);
 
   useEffect(() => {
-    if (podId && ipfs && Object.keys(ipfs).length !== 0) {
+    if (podId && ipfs ) {
       loadData();
     }
   }, [podId, ipfs]);
@@ -159,7 +159,7 @@ const PodPageIndividual = () => {
     if (!pod || !pod.PodAddress) return;
 
     (async () => {
-      if (ipfs && Object.keys(ipfs).length !== 0) {
+      if (ipfs ) {
         const web3APIHandler = BlockchainNets[1].apiHandler;
         const web3 = new Web3(library.provider);
 

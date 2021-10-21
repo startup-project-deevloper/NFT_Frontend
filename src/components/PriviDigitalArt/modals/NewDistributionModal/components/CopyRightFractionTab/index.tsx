@@ -28,7 +28,7 @@ const CopyRightFractionTab = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if(ipfs && Object.keys(ipfs).length !== 0 && props.pod) {
+    if(ipfs  && props.pod) {
       getImages()
     }
   }, [props.pod]);

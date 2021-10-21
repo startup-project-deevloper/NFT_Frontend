@@ -32,7 +32,9 @@ const FractionalLoans = () => {
 
   const [positions, setPositions] = useState<any[]>([]);
   const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
-  const [tableData, setTableData] = useState<Array<{ data: Array<CustomTableCellInfo>, collapse: ReactNode }>>([]);
+  const [tableData, setTableData] = useState<
+    Array<{ data: Array<CustomTableCellInfo>; collapse: ReactNode }>
+  >([]);
   const isMediumScreen = useMediaQuery("(max-width: 1000px)");
   const [openDepositModal, setOpenDepositModal] = useState<boolean>(false);
   const [openBorrowModal, setOpenBorrowModal] = useState<boolean>(false);
@@ -57,7 +59,7 @@ const FractionalLoans = () => {
   };
 
   useEffect(() => {
-    if (userSelector?.id && Object.keys(ipfs).length) {
+    if (userSelector?.id && ipfs) {
       loadData();
     }
   }, [userSelector, ipfs]);
@@ -133,7 +135,7 @@ const FractionalLoans = () => {
 
   useEffect(() => {
     if (positions) {
-      const data: Array<{ data: Array<CustomTableCellInfo>, collapse: ReactNode }> = positions.map(row => {
+      const data: Array<{ data: Array<CustomTableCellInfo>; collapse: ReactNode }> = positions.map(row => {
         let endTime: any = {
           days: 0,
           hours: 0,
@@ -203,7 +205,12 @@ const FractionalLoans = () => {
                       }}
                     />
                   </Box>
-                  <Box display="flex" flexDirection="column" justifyContent="space-between" className={classes.loanMediaTextWrapper}>
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between"
+                    className={classes.loanMediaTextWrapper}
+                  >
                     <span className={classes.loanMediaNameTag}>collection</span>
                     <span className={classes.loanMediaName}>{row?.media?.MediaName ?? ""}</span>
                     <span className={classes.loanMediaNameId}>ID #24556</span>
@@ -250,12 +257,12 @@ const FractionalLoans = () => {
                   <div
                     onClick={() => {
                       if (!openCollapse.includes(row.id)) {
-                        setOpenCollapse([...openCollapse, row.id])
+                        setOpenCollapse([...openCollapse, row.id]);
                       } else {
                         const updateCollapse = openCollapse.filter(i => i !== row.id);
-                        setOpenCollapse([...updateCollapse])}
+                        setOpenCollapse([...updateCollapse]);
                       }
-                    }
+                    }}
                   >
                     <ArrowIcon isOpen={openCollapse.includes(row.id)} />
                   </div>
@@ -264,10 +271,8 @@ const FractionalLoans = () => {
               cellAlign: "center",
             },
           ],
-          collapse: (
-            <TableCollapse open={openCollapse.includes(row.id)} />
-          )
-        }
+          collapse: <TableCollapse open={openCollapse.includes(row.id)} />,
+        };
       });
       setTableData(data);
     } else return;
@@ -278,11 +283,7 @@ const FractionalLoans = () => {
       <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
           <div className={`${classes.tableLoansContainer} position-table`}>
-            <CustomTable
-              theme="art green"
-              headers={tableHeaders}
-              rows={tableData}
-            />
+            <CustomTable theme="art green" headers={tableHeaders} rows={tableData} />
           </div>
         </div>
       </LoadingWrapper>
@@ -300,12 +301,15 @@ const TableCollapse = ({ open }) => {
   return (
     <TableCell style={{ paddingBottom: 0, paddingTop: 0, position: "relative" }} colSpan={7}>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <Box className={classes.collapseGap} style={{ display: open ? "block" : "none"}}>
+        <Box className={classes.collapseGap} style={{ display: open ? "block" : "none" }}>
           <div />
         </Box>
         <Box sx={{ margin: 1 }} className={classes.collapse}>
           <p>Deposit controls</p>
-          <span>Adjust the funds you would like to borrow,  change your collateral and control the risk by adjusting LTV and risk level </span>
+          <span>
+            Adjust the funds you would like to borrow, change your collateral and control the risk by
+            adjusting LTV and risk level{" "}
+          </span>
           <Box display="flex" alignItems="center" flex={1} justifyContent="space-between" mt={4} mb={3}>
             <Box display="flex" flexDirection="column" flex={0.4}>
               <Box fontSize="14px" fontWeight="400">
@@ -327,7 +331,13 @@ const TableCollapse = ({ open }) => {
                 <span>Min. Collateral you need to deposit</span>
                 <span>(adjustable)</span>
               </Box>
-              <Box display="flex" justifyContent="space-between" className={classes.purpleBg} alignItems="center" padding="0 13px">
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                className={classes.purpleBg}
+                alignItems="center"
+                padding="0 13px"
+              >
                 <span>JOTs</span>
                 <span>24555</span>
               </Box>
@@ -335,11 +345,13 @@ const TableCollapse = ({ open }) => {
                 <Box display="flex" alignItems="center" gridColumnGap="10px" fontSize="14px">
                   <Box className={classes.usdWrap} display="flex" alignItems="center">
                     <Box className={classes.point}></Box>
-                    <Box fontWeight="700">{0.00} JOTs</Box>
+                    <Box fontWeight="700">{0.0} JOTs</Box>
                   </Box>
                   <span>Wallet Balance</span>
                 </Box>
-                <Box display="flex" alignItems="center" fontSize="16px">MAX</Box>
+                <Box display="flex" alignItems="center" fontSize="16px">
+                  MAX
+                </Box>
               </Box>
             </Box>
             <PrimaryButton className={classes.primary} size="medium">
@@ -350,39 +362,59 @@ const TableCollapse = ({ open }) => {
           <Box mt={5}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
               <span>Adjust collateral to change your LTV</span>
-              <span>Your Current LTV<span style={{ color: "#431AB7", marginLeft: 6 }}>50%</span></span>
-              <span>Your Current LTV<span style={{ color: "#D30401", marginLeft: 6 }}>80%</span></span>
+              <span>
+                Your Current LTV<span style={{ color: "#431AB7", marginLeft: 6 }}>50%</span>
+              </span>
+              <span>
+                Your Current LTV<span style={{ color: "#D30401", marginLeft: 6 }}>80%</span>
+              </span>
             </Box>
-            <RangeSlider value={range} onChange={(event, newValue) => setRange(newValue)}/>
+            <RangeSlider value={range} onChange={(event, newValue) => setRange(newValue)} />
             <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
-              <span><strong>Low Risk</strong></span>
+              <span>
+                <strong>Low Risk</strong>
+              </span>
               <span>Medium Risk</span>
               <span>High Risk</span>
-              <span><strong>Liquidation</strong></span>
+              <span>
+                <strong>Liquidation</strong>
+              </span>
             </Box>
           </Box>
         </Box>
       </Collapse>
     </TableCell>
-  )
-} 
+  );
+};
 
 const ArrowIcon = ({ isOpen }: any) => {
   if (!isOpen) {
     return (
       <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle opacity="0.1" cx="18" cy="18" r="18" fill="#431AB7"/>
-        <path d="M12 16L18 22L24 16" stroke="#431AB7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle opacity="0.1" cx="18" cy="18" r="18" fill="#431AB7" />
+        <path
+          d="M12 16L18 22L24 16"
+          stroke="#431AB7"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
-    )
+    );
   }
 
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle r="14" transform="matrix(1 0 0 -1 14 14)" fill="#431AB7"/>
-      <path d="M9.33203 15.8887L13.9987 11.8491L18.6654 15.8887" stroke="white" stroke-width="1.55556" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle r="14" transform="matrix(1 0 0 -1 14 14)" fill="#431AB7" />
+      <path
+        d="M9.33203 15.8887L13.9987 11.8491L18.6654 15.8887"
+        stroke="white"
+        stroke-width="1.55556"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </svg>
-  )
-}
+  );
+};
 
 export default React.memo(FractionalLoans);

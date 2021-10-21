@@ -46,13 +46,13 @@ export const ProposalPodCard = props => {
   }, []);
 
   useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0) {
+    if (ipfs ) {
       getImages();
     }
   }, [pod, ipfs]);
 
   useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0 && creator && creator.id) {
+    if (ipfs  && creator && creator.id) {
       getUserPhoto(creator);
     }
   }, [ipfs, creator]);

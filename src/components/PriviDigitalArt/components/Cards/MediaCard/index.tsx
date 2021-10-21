@@ -43,7 +43,7 @@ export const MediaCard = ({ media, pod, handleRefresh }) => {
 
   useEffect(() => {
     const setAvarts = async () => {
-      if (pod.CreatorsData?.length && users.length && ipfs && Object.keys(ipfs).length !== 0) {
+      if (pod.CreatorsData?.length && users.length && ipfs ) {
         setCreators(
           await Promise.all(
             pod.CreatorsData.map(async (user) => {

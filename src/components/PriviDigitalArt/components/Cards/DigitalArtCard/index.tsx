@@ -72,7 +72,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               const creatorData: any = users.find(u => u.address === creatorId || u.id === creatorId);
 
               data.infoImage = creatorData.infoImage || null;
-              if (ipfs && Object.keys(ipfs).length !== 0 && data && data.infoImage) {
+              if (ipfs && data && data.infoImage) {
                 data.ipfsImage = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
               }
 

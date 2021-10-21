@@ -33,7 +33,7 @@ const CollabsTab = ({ pod, setPod }) => {
 
   // refresh autocomplete user list when searchValue changed
   useEffect(() => {
-    if (searchValue && users.length && user && ipfs && Object.keys(ipfs).length !== 0) {
+    if (searchValue && users.length && user && ipfs ) {
       getMatchingUsers(searchValue, ["firstName", "address"]).then(async resp => {
         if (resp?.success) {
           const filteredUsers = resp.data.filter(u => u.address && u.address != user.address);

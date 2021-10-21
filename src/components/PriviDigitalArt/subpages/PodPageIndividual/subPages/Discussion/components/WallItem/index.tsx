@@ -41,13 +41,13 @@ const WallItem = React.memo((props: any) => {
 
   useEffect(() => {
     let item = props.item;
-    if (ipfs && Object.keys(ipfs).length !== 0 && item && item.infoImage && item.infoImage.newFileCID) {
+    if (ipfs  && item && item.infoImage && item.infoImage.newFileCID) {
       getImageIPFS(item.infoImage?.newFileCID);
     }
-    if (ipfs && Object.keys(ipfs).length !== 0 && item && item.infoVideo && item.infoVideo.newFileCID) {
+    if (ipfs  && item && item.infoVideo && item.infoVideo.newFileCID) {
       getVideoIPFS(item.infoVideo?.newFileCID);
     }
-    if (ipfs && Object.keys(ipfs).length !== 0 && item && item.author) {
+    if (ipfs  && item && item.author) {
       getAuthorImage(item.author)
     }
   }, [props.item, ipfs]);

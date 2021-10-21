@@ -55,7 +55,7 @@ export default function WallFeedCard({
   }, []);
 
   useEffect(() => {
-    if (feedData && feedData.createdBy && ipfs && Object.keys(ipfs).length !== 0) {
+    if (feedData && feedData.createdBy && ipfs ) {
       getUserPhotoIpfs(feedData.createdBy);
     }
   }, [feedData, ipfs]);

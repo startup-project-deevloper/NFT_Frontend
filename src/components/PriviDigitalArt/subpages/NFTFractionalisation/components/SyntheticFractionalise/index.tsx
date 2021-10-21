@@ -20,6 +20,7 @@ import NFTCard from "./NFTCard";
 import { FractionaliseModal } from "../../modals/FractionaliseModal";
 import axios from "axios";
 import URL from "shared/functions/getURL";
+import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
 
 // parse it to same format as fb collection
 const parseMoralisData = async (data, address, selectedChain) => {
@@ -27,7 +28,8 @@ const parseMoralisData = async (data, address, selectedChain) => {
   if (data.metadata) {
     metadata = JSON.parse(data.metadata);
   } else {
-    if (data.token_uri && data.token_uri.startsWith("http")) {
+    const tokenURI = sanitizeIfIpfsUrl(data.token_uri ?? '')
+    if (tokenURI && tokenURI.startsWith("http")) {
       try {
         const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
           url: data.token_uri,

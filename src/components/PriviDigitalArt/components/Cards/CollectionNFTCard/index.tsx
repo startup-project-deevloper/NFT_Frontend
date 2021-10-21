@@ -16,12 +16,12 @@ export default function CollectionNFTCard({
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
       <div className={classes.card}>
         <div className={classes.innerBox}>
-          {!hiddenHeader && (
             <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={"8px"}>
               <div className={classes.ntfName}>{item.name || item.NftId}</div>
-              <div className={classes.verifiedSection}>{item.isVerified ? "Verified" : "Unverified"}</div>
+              {!hiddenHeader && (
+                <div className={classes.verifiedSection}>{item.isVerified ? "Verified" : "Unverified"}</div>
+              )}
             </Box>
-          )}
           <img
             src={item?.Url ? item.Url : require(`assets/backgrounds/digital_art_1.png`)}
             alt={item.MediaName}

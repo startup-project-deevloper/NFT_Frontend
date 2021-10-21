@@ -305,7 +305,7 @@ const PriviPixConnect = () => {
             <Box position="relative">
               <img
                 src={require("assets/logos/privi_pix_black_3x.svg")}
-                alt="Privi Pix"
+                alt="Pix"
                 className={classes.pixLogo}
               />
               <span id="earlyAccessPix" className={classes.earlyAccess}>
@@ -349,15 +349,15 @@ const PriviPixConnect = () => {
                   </Box>
                   <Box className={classes.twitterShareContainer}>
                     <span>
-                      I just joined the @priviprotocol waitlist for <b>Privi Pix</b> with {account}! Join me
-                      to be one of the first people on <b>Privi Pix</b> and a chance to win up to 200 USDC!{" "}
+                      I just joined the @priviprotocol waitlist for <b>Pix</b> with {account}! Join me
+                      to be one of the first people on <b>Pix</b> and a chance to win up to 200 USDC!{" "}
                       <a href="https://bit.ly/3jaCBue" target="_blank">
                         https://bit.ly/3jaCBue
                       </a>
                     </span>
                     <LoadingWrapper loading={tweetWaitlistLoading}>
                       <TwitterShareButton
-                        title={`I just joined the @priviprotocol waitlist for Privi Pix with ${account}! Join me to be one of the first people on Privi Pix and a chance to win up to 200 USDC!`}
+                        title={`I just joined the @priviprotocol waitlist for Pix with ${account}! Join me to be one of the first people on Pix and a chance to win up to 200 USDC!`}
                         url="https://bit.ly/3jaCBue"
                         style={{ height: "100%" }}
                         ref={twitterButton}

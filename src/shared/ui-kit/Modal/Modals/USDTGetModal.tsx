@@ -47,7 +47,7 @@ export const USDTGetModal: FC<IProps> = (props) => {
   return (
     <Modal isOpen={open} onClose={handleClose} showCloseIcon size="small" className={classes.container}>
       <Box display="flex" flexDirection="column" alignItems="center" pt={4} pb={4}>
-        <img src={require("assets/pixImages/usdt.png")} alt="PRIVI PIX" width={70} />
+        <img src={require("assets/pixImages/usdt.png")} alt="PIX" width={70} />
         <h1 className={classes.title}>Received {amount}<br /> Test USDT Token</h1>
         <p className={classes.description}>
           You have just received&nbsp;<span>{amount} USDT Test Tokens</span>&nbsp;to try out the Pix App features before we rollout the Mainnet version shortly.
@@ -58,7 +58,7 @@ export const USDTGetModal: FC<IProps> = (props) => {
           <span>{USDT_ADDRESS}</span>
         </p>
         <PrimaryButton size="medium" className={classes.button} onClick={onAddTrax}>
-          Add USDT to Metamask + 
+          Add USDT to Metamask +
           <img
             src={require("assets/walletImages/metamask.svg")}
             alt=""

@@ -9,7 +9,7 @@ import { useResizeObserver } from "./useResizeObserver";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 
 export default function PriceGraph({ jotAddress, title, subTitle }) {
-    const classes = PriceGraphStyles();
+  const classes = PriceGraphStyles();
 	const containerRef = useRef(null);
 
 	const [seriesesData, setSeriesData] = useState<any>(null)
@@ -58,7 +58,7 @@ export default function PriceGraph({ jotAddress, title, subTitle }) {
 		})();
 	}, [])
 
-    useEffect(() => {
+  useEffect(() => {
 		const createSimpleSwitcher = (items, activeItem, activeItemChangedCallback) => {
 			var switcherElement = document.createElement('div');
 			switcherElement.classList.add('switcher');
@@ -93,34 +93,33 @@ export default function PriceGraph({ jotAddress, title, subTitle }) {
 			return switcherElement;
 		}
 
-        var switcherElement = createSimpleSwitcher(intervals, intervals[0], syncToInterval);
+    var switcherElement = createSimpleSwitcher(intervals, intervals[0], syncToInterval);
 
-		var chartElement = document.createElement('div');
-		  
-        var chart = LightweightCharts.createChart(chartElement, {
-            width,
-            height,
-            layout: {
-                backgroundColor: Color.Purple,
-                textColor: '#d1d4dc',
-            },
-            grid: {
-                vertLines: {
-                    visible: false,
-                },
-                horzLines: {
-                    color: 'rgba(42, 46, 57, 0.5)',
-                },
-            },
-            rightPriceScale: {
-                borderVisible: false,
-            },
-            timeScale: {
+		var chartElement = document.createElement('div');  
+		var chart = LightweightCharts.createChart(chartElement, {
+			width,
+			height,
+			layout: {
+				backgroundColor: Color.Purple,
+				textColor: '#d1d4dc',
+			},
+			grid: {
+				vertLines: {
+					visible: false,
+				},
+				horzLines: {
+					color: 'rgba(42, 46, 57, 0.5)',
+				},
+			},
+			rightPriceScale: {
+				borderVisible: false,
+			},
+			timeScale: {
 				timeVisible: true,
 				borderVisible: false,
 				fixLeftEdge: true,
 				fixRightEdge: true
-            },
+			},
 		});
 		
 		if (document.getElementById('price_chart')?.getElementsByClassName("tv-lightweight-charts").length) {
@@ -128,36 +127,35 @@ export default function PriceGraph({ jotAddress, title, subTitle }) {
 			if (child) child.innerHTML = '';
 		}
         
-        document?.getElementById('price_chart')?.appendChild(chartElement);
-        document?.getElementById('price_chart')?.appendChild(switcherElement);
+		document?.getElementById('price_chart')?.appendChild(chartElement);
+		document?.getElementById('price_chart')?.appendChild(switcherElement);
 
-        var areaSeries: any = null;
-        function syncToInterval(interval) {
-            if (areaSeries) {
-                chart.removeSeries(areaSeries!);
-                areaSeries = null;
-            }
-            areaSeries = chart.addAreaSeries({
-                topColor: '#DDFF57',
-                bottomColor: '#DDFF5704',
-                lineColor: '#DDFF57',
-                lineWidth: 4,
-            });
-            areaSeries.setData(seriesesData.get(interval));
-        }
+		var areaSeries: any = null;
+		function syncToInterval(interval) {
+			if (areaSeries) {
+				chart.removeSeries(areaSeries!);
+				areaSeries = null;
+			}
+			areaSeries = chart.addAreaSeries({
+				topColor: '#DDFF57',
+				bottomColor: '#DDFF5704',
+				lineColor: '#DDFF57',
+				lineWidth: 4,
+			});
+			areaSeries.setData(seriesesData.get(interval));
+		}
 
 		if (seriesesData) {
 			syncToInterval(intervals[0]);
 		}
-    }, [seriesesData, width, height])
+  }, [seriesesData, width, height])
 
-    return (
-		
+	return (
 		<div ref={containerRef} id="price_chart" className={classes.root} style={{ width: '100%' }}>
-            <Box display="flex" flexDirection="column" className={classes.titleBox}>
-                <span className={classes.title}>{title}</span>
-                <span className={classes.date}>{subTitle}</span>
-            </Box>
-        </div>
-    )
+			<Box display="flex" flexDirection="column" className={classes.titleBox}>
+				<span className={classes.title}>{title}</span>
+				<span className={classes.date}>{subTitle}</span>
+			</Box>
+		</div>
+	)
 }

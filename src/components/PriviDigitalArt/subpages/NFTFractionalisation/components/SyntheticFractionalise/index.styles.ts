@@ -334,8 +334,11 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     lineHeight: "13px",
     textTransform: "capitalize",
     letterSpacing: "0.02em",
-    marginBottom: 4,
+    margin: "0 20px 4px",
     textAlign: "center",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap"
   },
   priceSection: {
     display: "flex",

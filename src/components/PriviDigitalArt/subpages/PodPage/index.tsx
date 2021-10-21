@@ -177,9 +177,10 @@ const PodPage = () => {
     }
   };
 
-  const handleRefresh = React.useCallback(() => {
+  const handleRefresh = () => {
     loadMore(true);
-  }, []);
+    loadMoreProposals(true);
+  };
 
   return (
     <>

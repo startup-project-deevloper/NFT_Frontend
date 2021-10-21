@@ -15,6 +15,7 @@ export const getChainImageUrl = blockchain => {
     return "";
   }
   if (blockchain.toLowerCase().includes("privi")) {
+    return require("assets/tokenImages/ETH.png");
     // return require('assets/tokenImages/PRIVI.png');
     return "";
   } else if (blockchain.toLowerCase().includes("polygon")) {
@@ -29,5 +30,6 @@ export const getChainImageUrl = blockchain => {
     return require("assets/tokenImages/BNB.png");
   }
   // return require("assets/tokenImages/PRIVI.png");
-  return "";
+
+  return require("assets/tokenImages/ETH.png");
 };

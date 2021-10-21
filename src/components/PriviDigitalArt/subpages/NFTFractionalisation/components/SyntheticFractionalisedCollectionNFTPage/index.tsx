@@ -316,6 +316,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           follows: [...resp.follows],
         };
         setNft(itemCopy);
+        showAlertMessage(`Follow Successfully!`, { variant: "success" });
       }
     });
   };
@@ -335,6 +336,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           follows: [...resp.follows],
         };
         setNft(itemCopy);
+        showAlertMessage(`Unfollow Successfully!`, { variant: "success" });
       }
     });
   };

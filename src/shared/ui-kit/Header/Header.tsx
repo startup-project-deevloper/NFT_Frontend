@@ -209,8 +209,11 @@ const Header = props => {
   const handleLogout = () => {
     setSignedin(false);
     dispatch(signOut());
+    const isNotifiedTestnet = localStorage.getItem(`PixTestNetNotify${account}`);
     localStorage.clear();
-    localStorage.clear();
+    if (isNotifiedTestnet) {
+      localStorage.setItem(`PixTestNetNotify${account}`, "true");
+    }
     history.push("/");
     window.location.reload();
   };
@@ -270,8 +273,8 @@ const Header = props => {
 
   const setUserWithIpfsImage = async () => {
     if (ipfs && Object.keys(ipfs).length !== 0 &&
-        userSelector && userSelector.infoImage &&
-        userSelector.infoImage.newFileCID) {
+      userSelector && userSelector.infoImage &&
+      userSelector.infoImage.newFileCID) {
       userSelector.ipfsImage = await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption);
     }
 
@@ -290,8 +293,8 @@ const Header = props => {
               user.connected = connectStatus.connected;
               const uList = [...usersInfoList.slice(0, index), user, ...usersInfoList.slice(index + 1)];
 
-              for(let usr of uList) {
-                if(usr && usr.infoImage && usr.infoImage.newFileCID && (!usr.ipfsImage || usr.ipfsImage === "")) {
+              for (let usr of uList) {
+                if (usr && usr.infoImage && usr.infoImage.newFileCID && (!usr.ipfsImage || usr.ipfsImage === "")) {
                   usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption)
                 } else {
                   usr.ipfsImage = getDefaultAvatar();
@@ -355,7 +358,7 @@ const Header = props => {
                   user.creds.length ?? 0,
                   user.badges ?? [],
                   user.urlSlug ??
-                    `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
+                  `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
                   user.twitter ?? "",
                   user.anon ?? false,
                   user.verified ?? false,
@@ -516,10 +519,10 @@ const Header = props => {
             >
               <div>My apps</div>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <PrimaryButton size="small" onClick={() => {}}>
+                <PrimaryButton size="small" onClick={() => { }}>
                   See All
                 </PrimaryButton>
-                <SecondaryButton size="small" onClick={() => {}}>
+                <SecondaryButton size="small" onClick={() => { }}>
                   Edit
                 </SecondaryButton>
               </div>
@@ -607,7 +610,7 @@ const Header = props => {
                 justifyContent: "center",
               }}
             >
-              <SecondaryButton size="medium" onClick={() => {}} style={{ marginTop: "16px" }}>
+              <SecondaryButton size="medium" onClick={() => { }} style={{ marginTop: "16px" }}>
                 Discover More Apps
               </SecondaryButton>
             </div>
@@ -744,10 +747,10 @@ const Header = props => {
                         tooltip="Notifications"
                         icon={
                           !props.openTab ||
-                          !pathName.toLowerCase().includes("privi-music") ||
-                          !pathName.toLowerCase().includes("pods") ||
-                          (props.openTab &&
-                            (props.openTab.type === OpenType.Search || props.openTab.type === OpenType.Home))
+                            !pathName.toLowerCase().includes("privi-music") ||
+                            !pathName.toLowerCase().includes("pods") ||
+                            (props.openTab &&
+                              (props.openTab.type === OpenType.Search || props.openTab.type === OpenType.Home))
                             ? IconNotifications
                             : IconNotificationsWhite
                         }
@@ -974,12 +977,12 @@ const Header = props => {
               </Hidden>
             </>
           ) : // <div className="header-buttons">
-          //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
-          //     Get Privi Wallet
-          //   </button>
-          //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
-          // </div>
-          null}
+            //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
+            //     Get Privi Wallet
+            //   </button>
+            //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
+            // </div>
+            null}
         </div>
         <SignInModal open={openSignInModal} handleClose={() => setOpenSignInModal(false)} />
         <Popper
@@ -1108,7 +1111,7 @@ const Header = props => {
             user={userSelector}
             handleClose={handleCloseSocialTokenModal}
             type={"FT"}
-            handleRefresh={() => {}}
+            handleRefresh={() => { }}
             open={openCreateSocialTokenModal}
           />
         )}

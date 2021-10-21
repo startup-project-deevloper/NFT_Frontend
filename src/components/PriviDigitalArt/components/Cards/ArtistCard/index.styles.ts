@@ -13,11 +13,30 @@ export const artistCardStyles = makeStyles(theme => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    position: "relative",
     '& button': {
       border: '1.5px solid #ffffff',
       fontStyle: 'normal',
       fontWeight: 800,
       fontSize: 14,
+    },
+
+    "& > img": {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      borderRadius: 16,
+      zIndex: -1
+    },
+
+    "& > span": {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      borderRadius: 16,
+      zIndex: -1
     }
   },
   filter: {

@@ -108,10 +108,8 @@ const NFTFractionalisation = () => {
   return (
     <>
       {openFractionalize ? (
-        selectedTab !== "pure" ? (
+        selectedTab !== "pure" && (
           <SyntheticFractionalise goBack={() => setOpenFractionalize(false)} isSynthetic={true} />
-        ) : (
-          <Fractionalize goBack={() => setOpenFractionalize(false)} isSynthetic={false} />
         )
       ) : (
         <div className={classes.content} onScroll={handleScroll}>
@@ -154,7 +152,10 @@ const NFTFractionalisation = () => {
               <div className={classes.headerButtonGroup}>
                 {/* fractionalize button */}
                 {!isMobile && (
-                  <div className={classes.fractionalizeBtn} onClick={() => setOpenFractionalize(true)}>
+                  <div
+                    className={classes.fractionalizeBtn}
+                    onClick={() => history.push("/fractionalise/fractionalise")}
+                  >
                     Fractionalize
                   </div>
                 )}
@@ -179,7 +180,10 @@ const NFTFractionalisation = () => {
                 </div>
                 {/* fractionalize button */}
                 {isMobile && (
-                  <div className={classes.fractionalizeBtn} onClick={() => setOpenFractionalize(true)}>
+                  <div
+                    className={classes.fractionalizeBtn}
+                    onClick={() => history.push("/fractionalise/fractionalise")}
+                  >
                     Fractionalize
                   </div>
                 )}

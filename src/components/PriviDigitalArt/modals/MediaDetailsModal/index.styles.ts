@@ -22,6 +22,7 @@ export const mediaDetailsModalStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 4,
     [theme.breakpoints.down('sm')]: {
       marginTop: 16
     },
@@ -30,6 +31,7 @@ export const mediaDetailsModalStyles = makeStyles(theme => ({
     }
   },
   detailImg: {
+    width: "100%",
     maxHeight: 448,
     borderRadius: 16,
     cursor: "pointer",

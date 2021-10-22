@@ -23,6 +23,7 @@ import NFTPositionManagerPage from "./subpages/NFTPositionManagerPage";
 import MyNFTPage from "./subpages/MyNFTPage";
 
 import TradeOnQuickSwap from "./subpages/NFTFractionalisation/components/SyntheticFractionalisedTradeJotPage/TradeOnQuickSwap";
+import MarketplaceDetailPage from "./subpages/MarketplacePage/components/MarketplaceDetailPage";
 import Fractionalise from "./subpages/NFTFractionalisation/components/Fractionalise";
 
 export const useStyles = makeStyles(theme => ({
@@ -37,7 +38,7 @@ export const useStyles = makeStyles(theme => ({
 export default function PriviPixRouter(props) {
   const { container } = useStyles();
   return (
-    <Switch>      
+    <Switch>
       <Route exact path="/mynft" component={MyNFTPage} />
       <Route exact path="/explorer" component={ExplorePage} />
       <Route exact path="/explorer/:collectionName" component={CollectionPage} />
@@ -78,6 +79,7 @@ export default function PriviPixRouter(props) {
       />
       <Route exact path="/pods/:id" component={PodPageIndividual} />
       <Route exact path="/nft/:id" component={MediaPage} />
+      <Route exact path="/marketplace/:tokenAddress/:tokenId" component={MarketplaceDetailPage} />
       <Route path="/" component={HomePage} />
     </Switch>
   );

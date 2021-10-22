@@ -677,22 +677,22 @@ export const getPixUserMediasToSell = async (userAdrress): Promise<any> => {
   }
 };
 
-export const getMarketplaceMedias = async (userId, filter, lastId): Promise<any> => {
-  try {
-    const config = {
-      params: {
-        userId,
-        filter,
-        lastId,
-        forceRefreshCache: true,
-      },
-    };
-    const res = await axios.get(`${URL()}/media/getMarketplaceMedias`, config);
-    return res.data;
-  } catch (e) {
-    console.log(e);
-  }
-};
+// export const getMarketplaceMedias = async (userId, filter, lastId): Promise<any> => {
+//   try {
+//     const config = {
+//       params: {
+//         userId,
+//         filter,
+//         lastId,
+//         forceRefreshCache: true,
+//       },
+//     };
+//     const res = await axios.get(`${URL()}/media/getMarketplaceMedias`, config);
+//     return res.data;
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 
 export const savePixUserMedias = async (medias: any[]) => {
   try {

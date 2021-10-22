@@ -11,13 +11,9 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { BlockchainNets } from "shared/constants/constants";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { getNFTBalanceFromMoralis } from "shared/services/API/balances/externalAPI";
-import { switchNetwork } from "shared/functions/metamask";
 import { useStyles } from "./index.styles";
-import { saveExternallyFetchedNfts, getNftDataByTokenIds } from "shared/services/API/FractionalizeAPI";
-import axios from "axios";
 import URL from "shared/functions/getURL";
-import NFTCard from "components/PriviDigitalArt/subpages/NFTFractionalisation/components/SyntheticFractionalise/NFTCard";
+import NFTCard from "../NFTCard";
 import { Dropdown } from "shared/ui-kit/Select/Select";
 import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import { DateInput } from "shared/ui-kit/DateTimeInput";
@@ -27,42 +23,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import Axios from "axios";
 import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
+import { v4 as uuidv4 } from "uuid";
+import { getNfts } from "shared/services/API";
+import { switchNetwork } from "shared/functions/metamask";
 
-// parse it to same format as fb collection
-const parseMoralisData = async (data, address, selectedChain) => {
-  let metadata: any = {};
-  if (data.metadata) {
-    metadata = JSON.parse(data.metadata);
-  } else {
-    if (data.token_uri && data.token_uri.startsWith("http")) {
-      try {
-        const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
-          url: data.token_uri,
-        });
-        if (tokenResp.success) {
-          metadata = tokenResp.data;
-        }
-      } catch (err) {}
-    }
-  }
-  return {
-    BlockchainId: data.token_id,
-    BlockchainNetwork: selectedChain.value,
-    Collabs: {},
-    CreatorAddress: address,
-    HasPhoto: metadata.image != undefined,
-    Hashtags: [],
-    MediaDescription: metadata.description,
-    MediaName: metadata.name ? metadata.name : data.name ? data.name : data.symbol,
-    MediaSymbol: data.symbol ? data.symbol : data.name,
-    Type: "DIGITAL_ART_TYPE",
-    Url: metadata.image,
-    chainId: selectedChain.chainId,
-    contractType: data.contract_type,
-    tokenAddress: data.token_address,
-    tokenURI: data.token_uri,
-  };
-};
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -80,15 +45,12 @@ const NFTAuctionPage = ({ goBack }) => {
   const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
   const isMobile = useMediaQuery(theme.breakpoints.down(700));
 
-  const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
+  const [loadingNFTS, setLoadingNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [selectedNFT, setSelectedNFT] = useState<any>();
   const { account, library, chainId } = useWeb3React();
   const [walletConnected, setWalletConnected] = useState<boolean>(!!account);
 
-  const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
-
-  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(filteredBlockchainNets[1]);
   const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
 
   const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
@@ -105,6 +67,9 @@ const NFTAuctionPage = ({ goBack }) => {
 
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
+  const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
+  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(filteredBlockchainNets[1]);
+
   // set token list according chain
   useEffect(() => {
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
@@ -113,56 +78,33 @@ const NFTAuctionPage = ({ goBack }) => {
 
   useEffect(() => {
     loadNFT();
-  }, [chainIdCopy, selectedChain, account, walletConnected]);
+  }, [chainIdCopy, walletConnected]);
 
-  // sync selected chain with metamask chain
-  const handleSyncChain = async () => {
-    if (chainId != selectedChain.chainId) {
-      const changed = await switchNetwork(selectedChain.chainId);
-      if (!changed) setSelectedChain(prevSelectedChain);
-      else setChainIdCopy(selectedChain.chainId);
-      return changed;
-    }
-    return true;
-  };
+  useEffect(() => {
+    (async () => {
+      if (chainId != selectedChain.chainId) {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) setSelectedChain(prevSelectedChain);
+        else setChainIdCopy(selectedChain.chainId);
+      }
+    })();
+  }, [chainId, selectedChain]);
 
   // sync metamask chain with dropdown chain selection and load nft balance from wallet
   const loadNFT = async () => {
     if (walletConnected) {
-      const changed = await handleSyncChain();
-      if (changed) {
-        setLoadingnNFTS(true);
-        const { result } = await getNFTBalanceFromMoralis(account!, selectedChain.chainId!);
-        if (result) {
-          const pixCreatedNftMap = {};
-          const externallyCreatedNft: any[] = [];
-          for (let obj of result) {
-            const data = await parseMoralisData(obj, account, selectedChain);
-            if (["PRIVIERC721", "PNR"].includes(data.MediaSymbol)) pixCreatedNftMap[data.BlockchainId] = data;
-            else externallyCreatedNft.push(data);
-          }
-          // get pix created nft data from backend
-          if (Object.keys(pixCreatedNftMap).length) {
-            const resp = await getNftDataByTokenIds(Object.keys(pixCreatedNftMap));
-            if (resp?.success) {
-              let data = resp.data;
-              Object.keys(data).forEach(k => {
-                pixCreatedNftMap[k] = {
-                  ...data[k],
-                  tokenAddress: selectedChain.config.CONTRACT_ADDRESSES.PRIVIERC721,
-                };
-              });
-            }
-          }
-          // save externally created nft to backend
-          saveExternallyFetchedNfts(externallyCreatedNft);
-          // set user nfts
-          setUserNFTs([...Object.values(pixCreatedNftMap), ...externallyCreatedNft]);
-        }
-        setLoadingnNFTS(false);
+      setLoadingNFTS(true);
+
+      const response = await getNfts({
+        mode: isProd ? "main" : "test",
+        network: selectedChain.chainName,
+      });
+      if (response.success) {
+        setUserNFTs(response.data);
       } else {
-        setUserNFTs([]);
+        showAlertMessage(`Can't fetch nfts`);
       }
+      setLoadingNFTS(false);
     }
   };
 
@@ -201,21 +143,18 @@ const NFTAuctionPage = ({ goBack }) => {
     }
     let endDateTimeInMs = endDate.getTime();
 
-    const payload = {
-      MediaSymbol: selectedNFT.mediaSymbol,
-      TokenSymbol: token,
-      Owner: user.address,
-      BidIncrement: "0",
-      StartTime: Math.floor(startDateTimeInMs / 1000),
-      EndTime: Math.floor(endDateTimeInMs / 1000),
-      ReservePrice: price,
-      IpfHash: "",
-      BlockchainNetwork: selectedChain.value,
-    };
-
     const web3APIHandler = selectedChain.apiHandler;
     const web3Config = selectedChain.config;
     const web3 = new Web3(library.provider);
+
+    const payload = {
+      tokenAddress: selectedNFT.nftCollection.address,
+      tokenId: +selectedNFT.nftTokenId,
+      reservePrice: price,
+      startTime: Math.floor(startDateTimeInMs / 1000),
+      endTime: Math.floor(endDateTimeInMs / 1000),
+      bidToken: web3Config.TOKEN_ADDRESSES[token],
+    };
 
     setOpenTransactionModal(true);
     setTransactionInProgress(true);
@@ -227,48 +166,31 @@ const NFTAuctionPage = ({ goBack }) => {
         operator: web3Config.CONTRACT_ADDRESSES.ERC721_AUCTION,
         approve: true,
       },
-      selectedNFT.tokenAddress
+      selectedNFT.nftCollection.address
     ).then(resp => {
       if (resp.success) {
-        const createAuctionRequest = {
-          tokenAddress: selectedNFT.tokenAddress,
-          tokenId: +selectedNFT.BlockchainId,
-          mediaSymbol: selectedNFT.MediaSymbol,
-          tokenSymbol: payload.TokenSymbol,
-          bidToken: web3Config.TOKEN_ADDRESSES[token],
-          reservePrice: payload.ReservePrice,
-          ipfsHash: "0x7465737400000000000000000000000000000000000000000000000000000000",
-          bidIncrement: payload.BidIncrement,
-          startTime: payload.StartTime,
-          endTime: payload.EndTime,
-        };
-        web3APIHandler.Auction.createAuction(web3, account!, createAuctionRequest, setHash).then(
-          async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Auctions: {}, Transactions: {} } };
-              blockchainRes.output.Auctions[selectedNFT.MediaSymbol] = payload;
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  MediaSymbol: selectedNFT.MediaSymbol,
-                  MediaType: selectedNFT.Type,
-                },
-              };
+        web3APIHandler.Auction.createAuction(web3, account!, payload, setHash).then(async res => {
+          if (res) {
+            setTransactionInProgress(false);
+            setTransactionSuccess(true);
 
-              setTransactionInProgress(false);
-              setTransactionSuccess(true);
+            const tx = res.transaction;
 
-              const response = await Axios.post(`${URL()}/auction/createAuction/v2_p`, body);
+            const uniqueId = uuidv4();
+            const body = {
+              auction: { id: uniqueId, owner: user.id, ...payload },
+              transaction: tx,
+              type: "PIX",
+            };
 
-              onAfterCreateAuction(response.data);
-            } else {
-              setTransactionInProgress(false);
-              setTransactionSuccess(false);
-            }
+            const response = await Axios.post(`${URL()}/marketplace/createAuction`, body);
+
+            onAfterCreateAuction(response.data);
+          } else {
+            setTransactionInProgress(false);
+            setTransactionSuccess(false);
           }
-        );
+        });
       } else {
         onAfterCreateAuction(resp);
 
@@ -299,7 +221,7 @@ const NFTAuctionPage = ({ goBack }) => {
           <Box display="flex" flexDirection="column" height="100%">
             <div className={classes.text}>Select Media to make an Auction</div>
             {walletConnected ? (
-              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
+              <LoadingWrapper loading={loadingNFTS} theme={"blue"}>
                 {userNFTs && userNFTs.length > 0 ? (
                   <Box
                     width={1}

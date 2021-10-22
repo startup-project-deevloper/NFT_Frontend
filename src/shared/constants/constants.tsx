@@ -130,6 +130,7 @@ export const BlockchainNets: any =
           value: "Polygon Chain",
           image: "tokenImages/POLYGON-SYMBOL.png",
           chainId: 137,
+          chainName: "Matic",
           scan: { name: "POLYGONSCAN", url: "https://polygonscan.com" },
         },
         {
@@ -137,6 +138,7 @@ export const BlockchainNets: any =
           value: "Ethereum Chain",
           image: "tokenImages/ETH.png",
           chainId: 1,
+          chainName: "Mainnet",
           scan: { name: "ETHERSCAN", url: "https://etherscan.io" },
         },
       ]
@@ -153,6 +155,7 @@ export const BlockchainNets: any =
           value: "Polygon Chain",
           image: "tokenImages/POLYGON-SYMBOL.png",
           chainId: 80001,
+          chainName: "Mumbai",
           config: Web3Config.Polygon,
           apiHandler: polygonAPI,
           scan: { name: "POLYGONSCAN", url: "https://mumbai.polygonscan.com" },
@@ -162,6 +165,7 @@ export const BlockchainNets: any =
           value: "Ethereum Chain",
           image: "tokenImages/ETH.png",
           chainId: 4,
+          chainName: "Rinkeby",
           config: Web3Config.Ethereum,
           apiHandler: ethAPI,
           scan: { name: "ETHERSCAN", url: "https://rinkeby.etherscan.io" },

@@ -6,11 +6,13 @@ import DigitalArtContext, { initialDigitalArtFilters } from "shared/contexts/Dig
 import Box from "shared/ui-kit/Box";
 import { CircularLoadingIndicator, PrimaryButton } from "shared/ui-kit";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "../ExplorePage";
-import DigitalArtCard from "../../components/Cards/DigitalArtCard";
+import DigitalArtCard from "./components/DigitalArtCard";
 import { subPageStyles } from "../index.styles";
 import { getMarketplaceMedias } from "shared/services/API";
 import SellNFTPage from "./components/SellNFTPage";
 import NFTAuctionPage from "./components/NFTAuctionPage";
+
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default function MarketplacePage() {
   const classes = subPageStyles();
@@ -35,39 +37,32 @@ export default function MarketplacePage() {
     initialLoad();
   }, [filters.Status]);
 
-  const initialLoad = () => {
+  const initialLoad = async () => {
     setIsLoading(true);
-    getMarketplaceMedias(user.id, filters.Status, "").then(resp => {
-      setIsLoading(false);
-      if (resp?.success) {
-        const data = resp.data;
-        const medias = data.data;
-        setFilteredData([...medias]);
-        hasMoreRef.current = data.hasMore;
-        lastIdRef.current = medias.length ? medias[medias.length - 1].MediaSymbol : "";
-      } else {
-        setFilteredData([]);
-        hasMoreRef.current = false;
-        lastIdRef.current = "";
-      }
+    const response = await getMarketplaceMedias({
+      type: "PIX",
+      mode: isProd ? "main" : "test",
     });
+    if (response.success) {
+      setFilteredData(response.data);
+    }
   };
 
   const loadMore = () => {
     setIsLoading(true);
-    getMarketplaceMedias(user.id, filters.Status, lastIdRef.current).then(resp => {
-      setIsLoading(false);
-      if (resp?.success) {
-        const data = resp.data;
-        const medias = data.data;
-        setFilteredData([...filteredData, ...medias]);
-        hasMoreRef.current = data.hasMore;
-        lastIdRef.current = medias.length ? medias[medias.length - 1].MediaSymbol : "";
-      } else {
-        hasMoreRef.current = false;
-        lastIdRef.current = "";
-      }
-    });
+    // getMarketplaceMedias(user.id, filters.Status, lastIdRef.current).then(resp => {
+    //   setIsLoading(false);
+    //   if (resp?.success) {
+    //     const data = resp.data;
+    //     const medias = data.data;
+    //     setFilteredData([...filteredData, ...medias]);
+    //     hasMoreRef.current = data.hasMore;
+    //     lastIdRef.current = medias.length ? medias[medias.length - 1].MediaSymbol : "";
+    //   } else {
+    //     hasMoreRef.current = false;
+    //     lastIdRef.current = "";
+    //   }
+    // });
   };
 
   const reload = () => {

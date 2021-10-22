@@ -12,7 +12,7 @@ export default function PodArtists({ pod }) {
 
   return (
     <>
-      <Box className={classes.artistsBox} justifyContent="space-between" mt={4} mb={3}>
+      <Box className={classes.artistsBox} justifyContent="space-between" pt={4} mb={3}>
         <Box className={classes.title2}>Artists</Box>
         <Box
           className={classes.title3}

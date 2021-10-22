@@ -45,7 +45,7 @@ export const Media = ({ medias, pod, handleRefresh }) => {
           <ResponsiveMasonry columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS}>
             <Masonry gutter={GUTTER}>
               {podMedias.map((media, index) => (
-                <Box key={index}>
+                <Box key={index} style={{boxShadow: "0px 4px 8px #9EACF2", borderRadius:"14px"}}>
                   <MediaSimpleCard media={media} pod={pod} handleRefresh={handleRefresh} />
                 </Box>
               ))}

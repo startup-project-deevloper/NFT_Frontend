@@ -8,6 +8,9 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     padding: "40px 60px 60px",
     width: "100%",
     overflow: "auto",
+    [theme.breakpoints.down("xs")]: {
+      padding: "16px 16px"
+    },
   },
   subContainer: {
     width: "100%",
@@ -31,6 +34,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
     fontFamily: "Agrandir GrandHeavy",
     color: "#431AB7",
+    textShadow: "0px 0px 20px rgba(255, 255, 255, 0.3)",
     marginTop: 16,
     [theme.breakpoints.down("xs")]: {
       fontSize: 20,
@@ -39,6 +43,23 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   flexBox: {
     display: "flex",
     alignItems: "center",
+  },
+  addPodTokenBtn: {
+    background: "#181818 !important", 
+    color: "#fff !important", 
+    border: "none !important",
+    [theme.breakpoints.down("xs")]: {
+      width: "100% !important",
+      marginLeft: "0 !important",
+      marginTop: "15px !important",
+      height: "38px !important",
+      padding: "0px 45px !important",
+    },
+  },
+  addCopyRightBtn: {
+    [theme.breakpoints.down("xs")]: {
+      height: "38px !important",
+    }
   },
   header1: {
     fontSize: 14,
@@ -68,7 +89,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     backgroundRepeat: "none",
   },
   backgroundBox: {
-    padding: "32px 32px 64px",
+    padding: 32,
     backgroundSize: "cover",
     backdropFilter: "blur(60px)",
     [theme.breakpoints.down("md")]: {
@@ -154,7 +175,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
       },
     },
     [theme.breakpoints.down("xs")]: {
-      padding: "6px 2px",
+      padding: "2px 3px",
       "& + &": {
         marginLeft: 8,
       },
@@ -200,12 +221,13 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   podSubPageHeader: {
     display: "flex",
     alignItems: "center",
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(2),
     borderBottom: "1px solid #00000022",
     borderTop: "1px solid #00000022",
   },
   artistsBox: {
+    borderTop: "1px solid #00000022",
     display: "flex",
     alignItems: "center",
     color: Color.Purple,
@@ -213,7 +235,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
   artistsMainContent: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 48,
     paddingLeft: 5,
   },
   whiteBox: {
@@ -223,6 +245,11 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     opacity: "0.8",
     justifyContent: "space-between",
     padding: "16px 0",
+    borderTop: "1px solid #00000022",
+    marginTop: "24px",
+    [theme.breakpoints.down("xs")]:{
+      flexDirection: "column",
+    },
   },
   podSubPageContent: {
     padding: "32px 0",

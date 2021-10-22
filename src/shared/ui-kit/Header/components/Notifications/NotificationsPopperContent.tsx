@@ -70,6 +70,8 @@ export const NotificationsPopperContent: React.FunctionComponent<NotificationsPo
   }, [notifications]);
 
   const renderNotification = (notification: Notification) => {
+    if (notification.podType && notification.podType !== 'PIX') return null
+
     const notificationUserId =
       notification.typeItemId === "user" ? notification.itemId : notification.follower;
     let user: any = users.find(usr => usr.id === notificationUserId);

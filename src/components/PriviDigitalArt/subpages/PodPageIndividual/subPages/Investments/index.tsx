@@ -613,14 +613,14 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                 <Box className={classes.greenBox} justifyContent="space-between">
                   <Box display="flex" alignItems="center">
                     <Box display="flex" flexDirection="column">
-                      <Box className={classes.header2} style={{ textAlign: "center", color: Color.White }}>
+                      <Box className={classes.header2} style={{ color: Color.White }}>
                         Amount of Pod purchased
                       </Box>
                       <Box className={classes.header3} mt={1} style={{ color: Color.White }}>
                         {formatNumber(+podTokenBalance || 0, pod.TokenSymbol, 4)}
                       </Box>
                     </Box>
-                    <Box display="flex" flexDirection="column" ml={3}>
+                    <Box display="flex" flexDirection="column" ml={10}>
                       <Box className={classes.header2} style={{ color: Color.White }}>
                         Amount paid
                       </Box>

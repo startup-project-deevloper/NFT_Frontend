@@ -108,7 +108,7 @@ export const investmentStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     background: Color.Violet,
-    padding: "19px 8px",
+    padding: "19px 16px",
     borderRadius: "12px",
     marginTop: 25,
     color: Color.White,
@@ -126,6 +126,7 @@ export const investmentStyles = makeStyles(theme => ({
     borderRadius: "4px !important",
     fontSize: "14px !important",
     lineHeight: "18px !important",
+    padding: "0 48px !important",
 
     [theme.breakpoints.down("xs")]: {
       marginTop: 13

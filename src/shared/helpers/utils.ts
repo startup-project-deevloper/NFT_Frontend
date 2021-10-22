@@ -41,3 +41,24 @@ export const sanitizeIfIpfsUrl = url => {
   }
   return url;
 };
+
+export const roundFloat = (value: number, precision: number) => parseFloat(value.toFixed(precision));
+
+export const typeUnitValue = (value: any, precision: number) => {
+    let num_str = value.toString()
+    let int_str = num_str.split('.')[0]
+    let direction = true
+    if (int_str[0] == '-') {
+        direction = false
+        int_str = int_str.split('-')[1]
+    }
+    if (int_str.length > 6) {
+        return `${direction ? '' : '-'}${int_str.substring(0, int_str.length - 6)},${int_str.substring(int_str.length - 6, int_str.length - 6 - 3)}M`
+    } else if (int_str.length > 5) {
+        return `${direction ? '' : '-'}${int_str.substring(0, int_str.length - 3)},${int_str.substring(int_str.length - 3, int_str.length)}K`
+    } else if (int_str.length >= 4) {
+        return `${direction ? '' : '-'}${int_str.substring(0, int_str.length - 3)},${int_str.substring(int_str.length - 3, int_str.length)}`
+    } else {
+        return roundFloat(Number(value), precision)
+    }
+}

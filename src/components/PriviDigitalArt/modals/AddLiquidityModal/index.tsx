@@ -12,6 +12,7 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { AddLiquidityModalStyles } from "./index.style";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import {typeUnitValue} from "shared/helpers/utils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -108,12 +109,12 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
             <span>Wallet Balance</span>
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
-              <Box fontWeight="700">{jotsBalance} JOTs</Box>
+              <Box fontWeight="700">{typeUnitValue(jotsBalance, 1)} JOTs</Box>
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">
             <span>
-              MAX: <b>{maxJots}</b>
+              MAX: <b>{typeUnitValue(maxJots, 1)}</b>
             </span>
             <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => setLiquidity(jotsBalance)}>
               Add All

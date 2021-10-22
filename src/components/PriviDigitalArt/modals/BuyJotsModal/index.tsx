@@ -17,6 +17,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import TransactionResultModal from "../TransactionResultModal";
+import {typeUnitValue} from "shared/helpers/utils";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
@@ -233,7 +234,7 @@ export default function BuyJotsModal({
               <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
                 <Box className={classes.point}></Box>
                 <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
-                  {usdtBalance.toFixed(2)} USDT
+                  {typeUnitValue(usdtBalance, 1)} USDT
                 </Header5>
               </Box>
             </Box>
@@ -246,7 +247,7 @@ export default function BuyJotsModal({
               alignItems="center"
               justifyContent="flex-end"
             >
-              <Box>MAX: {maxJot.toFixed(2)}</Box>
+              <Box>MAX: {typeUnitValue(maxJot, 1)}</Box>
               <Box color="rgba(67,26, 183, 0.4)" paddingX="15px" onClick={() => setJOTs(maxJot)}>
                 Buy Max
               </Box>

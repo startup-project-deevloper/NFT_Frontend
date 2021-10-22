@@ -31,8 +31,9 @@ export const NotificationsContextProvider: React.FunctionComponent<Notifications
     if (currentUserId) {
       getNotifications().then(result => {
         if (result.success) {
-          setNotifications(sortNotifications(result.data));
-          setUnreadNotifications(result.data.length);
+          const podNotifications = result.data.filter((item) => !item.podType || item.podType === 'PIX')
+          setNotifications(sortNotifications(podNotifications));
+          setUnreadNotifications(podNotifications.length);
         }
       });
     }

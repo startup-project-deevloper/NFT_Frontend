@@ -1542,7 +1542,7 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
           proposalId={notification.itemId}
         />
       )}
-      {notification.type === 216 && (
+      {notification.type === 216 && notification.podType === 'PIX' && (
         <>
           <PrimaryButton
             className={theme === "dark" ? classes.darkButton : classes.blueButton}
@@ -1561,7 +1561,7 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
         </>
       )}
 
-      {notification.type === 217 && (
+      {notification.type === 217 && notification.podType === 'PIX' && (
         <PrimaryButton
           className={theme === "dark" ? classes.darkButton : classes.blueButton}
           size="small"

@@ -9,7 +9,7 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     width: "100%",
     overflow: "auto",
     [theme.breakpoints.down("xs")]: {
-      padding: "40px 16px"
+      padding: "16px 16px"
     },
   },
   subContainer: {

@@ -84,6 +84,10 @@ export const investmentStyles = makeStyles(theme => ({
     lineHeight: "120%",
     color: "#707582",
     textShadow: "2px 2px 12px rgba(0, 0, 0, 0.1)",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: '14px',
+      fontWeight: 400
+    },
   },
   header3: {
     fontFamily: "Agrandir",
@@ -108,6 +112,24 @@ export const investmentStyles = makeStyles(theme => ({
     borderRadius: "12px",
     marginTop: 25,
     color: Color.White,
+    [theme.breakpoints.down("sm")]: {
+    },
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: 'column'
+    },
+  },
+  greenboxButton: {
+    background: `${Color.GreenLight} !important`,
+    color: `${Color.Purple} !important` ,
+    border: "none !important",
+    marginTop: 0,
+    borderRadius: "4px !important",
+    fontSize: "14px !important",
+    lineHeight: "18px !important",
+
+    [theme.breakpoints.down("xs")]: {
+      marginTop: 13
+    },
   },
   timeBox: {
     display: "flex",
@@ -115,8 +137,10 @@ export const investmentStyles = makeStyles(theme => ({
     background: Color.Violet,
     padding: theme.spacing(1),
     borderRadius: "12px",
-    marginTop: 25,
     color: Color.White,
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 12
+    },
   },
   graphBox: {
     display: "flex",

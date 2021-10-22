@@ -259,7 +259,7 @@ const PodPage = () => {
         {activeTab === 0 ? (
           <>
             {/* filter tags */}
-            <Box display="flex" alignItems="flex-end" pb={3} pt={1} flexWrap="wrap">
+            {/* <Box display="flex" alignItems="flex-end" pb={3} pt={1} flexWrap="wrap">
               {filterTagOptions.map(tag => (
                 <>
                   <Box
@@ -284,9 +284,9 @@ const PodPage = () => {
                   theme="light"
                 />
               </Box>
-            </Box>
+            </Box> */}
             <LoadingWrapper loading={loadingTrendingPods} theme={"blue"}>
-              <div className={classes.artCards}>
+              <div className={classes.artCards} style={{ marginTop: 10 }}>
                 <MasonryGrid
                   gutter={"24px"}
                   data={trendingPods}

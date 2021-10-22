@@ -158,9 +158,10 @@ const SellNFTPage = ({ goBack }) => {
             const body = {
               exchange: {
                 id: uniqueId,
-                creatorAddress: user.address,
+                owner: user.id,
                 exchangeId: exchange.exchangeId,
                 tokenId: tokenId,
+                tokenAddress: selectedNFT.nftCollection.address,
                 initialOfferId: exchange.initialOfferId,
                 ...payload,
               },

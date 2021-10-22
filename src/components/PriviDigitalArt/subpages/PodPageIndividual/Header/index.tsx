@@ -31,6 +31,7 @@ import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const checkValidate = value => {
   if (value && value >= 0) {
@@ -311,7 +312,7 @@ export default function PodHeader({
             <Hidden smUp>
               <Grid item xs={12}>
                 <img
-                  src={podData?.url ?? randomImage}
+                  src={imageIPFS ? imageIPFS : getDefaultAvatar()}
                   style={{
                     objectFit: "cover",
                     borderRadius: "10px",
@@ -328,10 +329,10 @@ export default function PodHeader({
                     podData.status === "Funding"
                       ? styles.orangeBox
                       : podData.status === "Funding Failed"
-                      ? styles.redBox
-                      : podData.status === "Funded"
-                      ? styles.blueBox
-                      : styles.blueBox
+                        ? styles.redBox
+                        : podData.status === "Funded"
+                          ? styles.blueBox
+                          : styles.blueBox
                   }
                   style={{ fontWeight: "bold" }}
                   px={1}
@@ -340,10 +341,10 @@ export default function PodHeader({
                   {podData.status === "Funding"
                     ? "Funding"
                     : podData.status === "Funding Failed"
-                    ? "Funding Failed"
-                    : podData.status === "Funded"
-                    ? "Funded"
-                    : "Under formation"}
+                      ? "Funding Failed"
+                      : podData.status === "Funded"
+                        ? "Funded"
+                        : "Under formation"}
                 </Box>
               </Box>
               <div className={classes.title}>{podData.Name || "Untitled Pod"}</div>
@@ -428,7 +429,7 @@ export default function PodHeader({
                     {!followed ? <PlusIcon /> : <MinusIcon />}
                     <Box
                       mt={"4px"}
-                      ml={1}
+                      mx={1}
                       onClick={handleFollow}
                       fontSize="14px"
                       color="#081831"
@@ -451,6 +452,7 @@ export default function PodHeader({
                       size="small"
                       isRounded
                       onClick={handleAddCopyright}
+                      className={classes.addCopyRightBtn}
                       style={{ background: Color.MusicDAOGreen }}
                     >
                       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -462,6 +464,7 @@ export default function PodHeader({
                       size="small"
                       isRounded
                       onClick={handleAddPodToken}
+                      className={classes.addPodTokenBtn}
                       style={{ background: Color.Black, color: Color.White, border: "none" }}
                     >
                       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -509,7 +512,7 @@ export default function PodHeader({
               <div>
                 <Box height={240} overflow={"hidden"}>
                   <img
-                    src={imageIPFS ? imageIPFS : randomImage}
+                    src={imageIPFS ? imageIPFS : getDefaultAvatar()}
                     style={{
                       objectFit: "cover",
                       borderRadius: "10px",
@@ -578,7 +581,7 @@ export default function PodHeader({
             </>
           ) : (
             <>
-              <Box px={2} sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+              <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
                 <Box>
                   <Box className={classes.header1}>Price</Box>
                   <Box className={classes.header2} mt={1}>
@@ -606,7 +609,7 @@ export default function PodHeader({
                 </Box>
               </Box>
               <Box my={2} sx={{ width: "100%", height: "1px", bgcolor: "#ccc" }} />
-              <Box px={2} sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+              <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
                 <Box>
                   <Box className={classes.header1}>Supply Released</Box>
                   <Box className={classes.header2} mt={1}>

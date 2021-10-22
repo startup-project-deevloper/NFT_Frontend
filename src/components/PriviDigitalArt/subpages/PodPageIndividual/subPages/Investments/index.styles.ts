@@ -104,6 +104,13 @@ export const investmentStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     padding: `${theme.spacing(1)}px ${theme.spacing(1)}px`,
   },
+  amountPaid: {
+    marginLeft: 80,
+    
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: 24,
+    },
+  },
   greenBox: {
     display: "flex",
     alignItems: "center",
@@ -113,6 +120,7 @@ export const investmentStyles = makeStyles(theme => ({
     marginTop: 25,
     color: Color.White,
     [theme.breakpoints.down("sm")]: {
+      flexDirection: 'column'
     },
     [theme.breakpoints.down("xs")]: {
       flexDirection: 'column'
@@ -127,6 +135,10 @@ export const investmentStyles = makeStyles(theme => ({
     fontSize: "14px !important",
     lineHeight: "18px !important",
     padding: "0 48px !important",
+
+    [theme.breakpoints.down("md")]: {
+      padding: "0 21px !important",
+    },
 
     [theme.breakpoints.down("xs")]: {
       marginTop: 13

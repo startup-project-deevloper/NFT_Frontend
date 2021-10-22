@@ -620,7 +620,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                         {formatNumber(+podTokenBalance || 0, pod.TokenSymbol, 4)}
                       </Box>
                     </Box>
-                    <Box display="flex" flexDirection="column" ml={10}>
+                    <Box display="flex" flexDirection="column" className={classes.amountPaid}>
                       <Box className={classes.header2} style={{ color: Color.White }}>
                         Amount paid
                       </Box>

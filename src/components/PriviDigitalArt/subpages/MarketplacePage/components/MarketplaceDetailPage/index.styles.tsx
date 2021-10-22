@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Color } from "shared/ui-kit";
 
-export const digitalArtModalStyles = makeStyles(theme => ({
+export const marketplaceDetailPageStyles = makeStyles(theme => ({
   root: {
     overflow: "visible",
   },
@@ -278,6 +278,7 @@ export const digitalArtModalStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       width: "100%",
       maxHeight: 500,
+      minHeight: 300,
     },
   },
   leftImage: {

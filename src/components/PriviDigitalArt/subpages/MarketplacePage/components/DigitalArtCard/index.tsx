@@ -37,8 +37,6 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
-  const [imageIPFS, setImageIPFS] = useState("");
-
   const fixedUrlItem = useMemo(() => {
     const GENERATOR_ARTBLOCK_URL = "https://generator.artblocks.io/";
     const API_ARTBLOCK_URL = "https://api.artblocks.io/image/";
@@ -52,7 +50,6 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   const [creator, setCreator] = useState<any>({});
   const [auctionEnded, setAuctionEnded] = React.useState<boolean>(false);
   const [endTime, setEndTime] = useState<any>();
-  const [openDigitalArtModal, setOpenDigitalArtModal] = useState<boolean>(false);
   const [openOptionsMenu, setOpenOptionsMenu] = useState<boolean>(false);
   const anchorShareMenuRef = React.useRef<HTMLButtonElement>(null);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
@@ -157,7 +154,9 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
 
   const handleOpenDigitalArtModal = () => {
     if (isSignedin && media && creator) {
-      history.push(`/marketplace/${encodeURIComponent(media.token_address)}/${encodeURIComponent(media.token_id)}`);
+      history.push(
+        `/marketplace/${encodeURIComponent(media.token_address)}/${encodeURIComponent(media.token_id)}`
+      );
     }
   };
 
@@ -245,7 +244,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           </Box>
         </div>
       ) : heightFixed ? (
-        media?.cid && !imageIPFS ? (
+        media?.cid ? (
           <Box my={1}>
             <StyledSkeleton width="100%" height={226} variant="rect" />
           </Box>

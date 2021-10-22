@@ -21,6 +21,7 @@ import { FractionaliseModal } from "../../modals/FractionaliseModal";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
+import {getMySyntheticFractionalisedNFT} from "shared/services/API/SyntheticFractionalizeAPI";
 
 // parse it to same format as fb collection
 const parseMoralisData = async (data, address, selectedChain) => {
@@ -86,10 +87,29 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
   const [openFractionaliseModal, setOpenFractionaliseModal] = useState<boolean>(false);
   const [fractionaliseSuccessed, setFractionaliseSuccessed] = useState<boolean>(false);
+  const [myNFTs, setMyNFTs] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     loadNFT();
-  }, [chainIdCopy, selectedChain, account, walletConnected]);
+  }, [chainIdCopy, selectedChain, account, walletConnected, myNFTs]);
+
+  useEffect(() => {
+    try {
+      setLoading(true);
+      getMySyntheticFractionalisedNFT()
+        .then(res => {
+          if (res.success) {
+            setMyNFTs(res.nfts ?? []);
+          }
+          setLoading(false);
+        })
+        .catch(console.log);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  }, []);
 
   // sync selected chain with metamask chain
   const handleSyncChain = async () => {
@@ -133,7 +153,8 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           // save externally created nft to backend
           saveExternallyFetchedNfts(externallyCreatedNft);
           // set user nfts
-          setUserNFTs([...Object.values(pixCreatedNftMap), ...externallyCreatedNft]);
+          const nfts = [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(item => !(myNFTs.map(nft => nft.NftId).includes(item.BlockchainId)));
+          setUserNFTs(nfts);
         }
         setLoadingnNFTS(false);
       } else {
@@ -207,7 +228,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                 : "Lock your NFT, get a synthetic copy, fractionalise it, create a derivative and get interest out of the trading fees."}
             </div>
             {walletConnected ? (
-              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
+              <LoadingWrapper loading={loadingnNFTS || loading} theme={"blue"}>
                 {userNFTs && userNFTs.length > 0 ? (
                   <Box
                     width={1}

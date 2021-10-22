@@ -46,6 +46,7 @@ export default function MarketplacePage() {
     if (response.success) {
       setFilteredData(response.data);
     }
+    setIsLoading(false);
   };
 
   const loadMore = () => {

@@ -11,13 +11,9 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { BlockchainNets } from "shared/constants/constants";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { getNFTBalanceFromMoralis } from "shared/services/API/balances/externalAPI";
-import { switchNetwork } from "shared/functions/metamask";
 import { useStyles } from "./index.styles";
-import { saveExternallyFetchedNfts, getNftDataByTokenIds } from "shared/services/API/FractionalizeAPI";
-import axios from "axios";
 import URL from "shared/functions/getURL";
-import NFTCard from "components/PriviDigitalArt/subpages/NFTFractionalisation/components/SyntheticFractionalise/NFTCard";
+import NFTCard from "../NFTCard";
 import { Dropdown } from "shared/ui-kit/Select/Select";
 import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import Web3 from "web3";
@@ -25,42 +21,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import Axios from "axios";
 import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
+import { getNfts } from "shared/services/API";
+import { v4 as uuidv4 } from "uuid";
 
-// parse it to same format as fb collection
-const parseMoralisData = async (data, address, selectedChain) => {
-  let metadata: any = {};
-  if (data.metadata) {
-    metadata = JSON.parse(data.metadata);
-  } else {
-    if (data.token_uri && data.token_uri.startsWith("http")) {
-      try {
-        const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
-          url: data.token_uri,
-        });
-        if (tokenResp.success) {
-          metadata = tokenResp.data;
-        }
-      } catch (err) {}
-    }
-  }
-  return {
-    BlockchainId: data.token_id,
-    BlockchainNetwork: selectedChain.value,
-    Collabs: {},
-    CreatorAddress: address,
-    HasPhoto: metadata.image != undefined,
-    Hashtags: [],
-    MediaDescription: metadata.description,
-    MediaName: metadata.name ? metadata.name : data.name ? data.name : data.symbol,
-    MediaSymbol: data.symbol ? data.symbol : data.name,
-    Type: "DIGITAL_ART_TYPE",
-    Url: metadata.image,
-    chainId: selectedChain.chainId,
-    contractType: data.contract_type,
-    tokenAddress: data.token_address,
-    tokenURI: data.token_uri,
-  };
-};
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -75,17 +39,14 @@ const SellNFTPage = ({ goBack }) => {
   const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
   const isMobile = useMediaQuery(theme.breakpoints.down(700));
 
-  const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
+  const [loadingNFTS, setLoadingNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [selectedNFT, setSelectedNFT] = useState<any>();
   const { account, library, chainId } = useWeb3React();
   const [walletConnected, setWalletConnected] = useState<boolean>(!!account);
+  const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
 
   const [price, setPrice] = useState<number>(0);
-  const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
-
-  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(filteredBlockchainNets[1]);
-  const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
 
   const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
   const [token, setToken] = useState<string>("USDT");
@@ -96,7 +57,6 @@ const SellNFTPage = ({ goBack }) => {
 
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
-  // set token list according chain
   useEffect(() => {
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
     setToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);
@@ -104,56 +64,23 @@ const SellNFTPage = ({ goBack }) => {
 
   useEffect(() => {
     loadNFT();
-  }, [chainIdCopy, selectedChain, account, walletConnected]);
-
-  // sync selected chain with metamask chain
-  const handleSyncChain = async () => {
-    if (chainId != selectedChain.chainId) {
-      const changed = await switchNetwork(selectedChain.chainId);
-      if (!changed) setSelectedChain(prevSelectedChain);
-      else setChainIdCopy(selectedChain.chainId);
-      return changed;
-    }
-    return true;
-  };
+  }, [chainId, walletConnected, selectedChain]);
 
   // sync metamask chain with dropdown chain selection and load nft balance from wallet
   const loadNFT = async () => {
     if (walletConnected) {
-      const changed = await handleSyncChain();
-      if (changed) {
-        setLoadingnNFTS(true);
-        const { result } = await getNFTBalanceFromMoralis(account!, selectedChain.chainId!);
-        if (result) {
-          const pixCreatedNftMap = {};
-          const externallyCreatedNft: any[] = [];
-          for (let obj of result) {
-            const data = await parseMoralisData(obj, account, selectedChain);
-            if (["PRIVIERC721", "PNR"].includes(data.MediaSymbol)) pixCreatedNftMap[data.BlockchainId] = data;
-            else externallyCreatedNft.push(data);
-          }
-          // get pix created nft data from backend
-          if (Object.keys(pixCreatedNftMap).length) {
-            const resp = await getNftDataByTokenIds(Object.keys(pixCreatedNftMap));
-            if (resp?.success) {
-              let data = resp.data;
-              Object.keys(data).forEach(k => {
-                pixCreatedNftMap[k] = {
-                  ...data[k],
-                  tokenAddress: selectedChain.config.CONTRACT_ADDRESSES.PRIVIERC721,
-                };
-              });
-            }
-          }
-          // save externally created nft to backend
-          saveExternallyFetchedNfts(externallyCreatedNft);
-          // set user nfts
-          setUserNFTs([...Object.values(pixCreatedNftMap), ...externallyCreatedNft]);
-        }
-        setLoadingnNFTS(false);
+      setLoadingNFTS(true);
+
+      const response = await getNfts({
+        mode: isProd ? "main" : "test",
+        network: selectedChain.chainName,
+      });
+      if (response.success) {
+        setUserNFTs(response.data);
       } else {
-        setUserNFTs([]);
+        showAlertMessage(`Can't fetch nfts`);
       }
+      setLoadingNFTS(false);
     }
   };
 
@@ -183,11 +110,11 @@ const SellNFTPage = ({ goBack }) => {
     }
 
     const payload = {
-      Address: user.address,
-      ExchangeToken: selectedNFT.MediaSymbol,
-      InitialAmount: 1,
-      OfferToken: token,
-      Price: price.toString(),
+      address: user.address,
+      exchangeToken: selectedNFT.nftCollection.symbol,
+      initialAmount: 1,
+      offerToken: token,
+      price: price.toString(),
     };
 
     const web3APIHandler = selectedChain.apiHandler;
@@ -204,14 +131,14 @@ const SellNFTPage = ({ goBack }) => {
         operator: web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
         approve: true,
       },
-      selectedNFT.tokenAddress
+      selectedNFT.nftCollection.address
     ).then(resp => {
       if (resp.success) {
-        const tokenId = selectedNFT.BlockchainId;
+        const tokenId = +selectedNFT.nftTokenId;
         const createExchangeRequest = {
           input: {
             exchangeName: "erc721exchange",
-            exchangeTokenAddress: selectedNFT.tokenAddress,
+            exchangeTokenAddress: selectedNFT.nftCollection.address,
             offerTokenAddress: web3Config.TOKEN_ADDRESSES[token],
             tokenId: tokenId,
             price: price,
@@ -227,26 +154,24 @@ const SellNFTPage = ({ goBack }) => {
           if (res) {
             const exchange = res.data;
             const tx = res.transaction;
-            const blockchainRes = { output: { Exchanges: {}, Transactions: {} } };
-            blockchainRes.output.Exchanges[exchange.exchangeId] = {
-              ...payload,
-              CreatorAddress: user.address,
-              Id: exchange.exchangeId,
-              TokenId: tokenId,
-              InitialOfferId: exchange.initialOfferId,
-            };
-            blockchainRes.output.Transactions[tx.Id] = [tx];
+            const uniqueId = uuidv4();
             const body = {
-              BlockchainRes: blockchainRes,
-              AdditionalData: {
-                MediaType: selectedNFT.Type,
-                MediaSymbol: selectedNFT.MediaSymbol,
+              exchange: {
+                id: uniqueId,
+                creatorAddress: user.address,
+                exchangeId: exchange.exchangeId,
+                tokenId: tokenId,
+                initialOfferId: exchange.initialOfferId,
+                ...payload,
               },
+              transaction: tx,
+              type: "PIX",
             };
+
             setTransactionInProgress(false);
             setTransactionSuccess(true);
 
-            const response = await Axios.post(`${URL()}/exchange/createExchange/v2_p`, body);
+            const response = await Axios.post(`${URL()}/marketplace/createExchange`, body);
             onAfterCreateExchange(response.data);
           } else {
             setTransactionInProgress(false);
@@ -283,7 +208,7 @@ const SellNFTPage = ({ goBack }) => {
           <Box display="flex" flexDirection="column" height="100%">
             <div className={classes.text}>Select Media to Sell</div>
             {walletConnected ? (
-              <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
+              <LoadingWrapper loading={loadingNFTS} theme={"blue"}>
                 {userNFTs && userNFTs.length > 0 ? (
                   <Box
                     width={1}
@@ -358,7 +283,6 @@ const SellNFTPage = ({ goBack }) => {
                       value={selectedChain.value}
                       menuList={filteredBlockchainNets}
                       onChange={e => {
-                        setPrevSelectedChain(selectedChain);
                         setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
                       }}
                       hasImage
@@ -413,7 +337,6 @@ const SellNFTPage = ({ goBack }) => {
                   value={selectedChain.value}
                   menuList={filteredBlockchainNets}
                   onChange={e => {
-                    setPrevSelectedChain(selectedChain);
                     setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
                   }}
                   hasImage

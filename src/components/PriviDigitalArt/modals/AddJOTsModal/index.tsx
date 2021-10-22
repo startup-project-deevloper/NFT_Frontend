@@ -14,6 +14,7 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { addJots } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import TransactionResultModal from "../TransactionResultModal";
+import {typeUnitValue} from "shared/helpers/utils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -184,7 +185,7 @@ export default function AddJotsModal({
                 <Box className={classes.usdWrap} display="flex" alignItems="center" ml={2}>
                   <Box className={classes.point}></Box>
                   <Header5 style={{ fontWeight: 800, paddingLeft: "10px", marginBottom: 0 }}>
-                    {jotBalance.toFixed(2)} JOTs
+                    {typeUnitValue(jotBalance, 1)} JOTs
                   </Header5>
                 </Box>
               </Box>
@@ -197,7 +198,7 @@ export default function AddJotsModal({
                 alignItems="center"
                 justifyContent="flex-end"
               >
-                <Box onClick={() => setJOTs(maxJot)}>MAX: {maxJot.toFixed(2)}</Box>
+                <Box onClick={() => setJOTs(maxJot)}>MAX: {typeUnitValue(maxJot, 1)}</Box>
               </Box>
             </Grid>
           </Grid>

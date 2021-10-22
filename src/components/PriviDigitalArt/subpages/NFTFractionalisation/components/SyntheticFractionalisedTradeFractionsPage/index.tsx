@@ -1061,6 +1061,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           size="medium"
                           style={{ background: "#431AB7", color: Color.White }}
                           onClick={handleBuyOnQuickSwap}
+                          disabled={!(+nft.totalLiquidity)}
                         >
                           Buy on Quickswap
                         </PrimaryButton>

@@ -6,6 +6,7 @@ import Box from "shared/ui-kit/Box";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { RedeemJotsModalStyles } from "./index.style";
+import {typeUnitValue} from "shared/helpers/utils";
 
 export default function RedeemJotsModal({ open, handleClose = () => {}, onConfirm }) {
   const classes = RedeemJotsModalStyles();
@@ -37,12 +38,12 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, onConfir
             <span>Wallet Balance</span>
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
-              <Box fontWeight="700">{jotsBalance} JOTs</Box>
+              <Box fontWeight="700">{typeUnitValue(jotsBalance, 1)} JOTs</Box>
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">
             <span>
-              MAX: <b>{maxJots}</b>
+              MAX: <b>{typeUnitValue(maxJots, 1)}</b>
             </span>
           </Box>
         </Box>

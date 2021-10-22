@@ -8,7 +8,7 @@ import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import URL from "shared/functions/getURL";
-import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { useStyles } from "./index.styles";
 import ReactPlayer from "react-player";
@@ -186,7 +186,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           {creator ? (
             <Avatar
               size="small"
-              url={creator.ipfsImage ? creator.ipfsImage : getRandomAvatar()}
+              url={creator.ipfsImage ? creator.ipfsImage : require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}
               alt={creator.id}
               title={`${creator.name}`}
               onClick={() => {

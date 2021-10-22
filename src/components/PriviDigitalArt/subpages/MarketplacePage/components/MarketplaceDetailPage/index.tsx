@@ -1,5 +1,7 @@
 import React from "react";
 
-const MarketplaceDetailPage = () => {};
+const MarketplaceDetailPage = () => {
+  return <div></div>;
+};
 
 export default MarketplaceDetailPage;

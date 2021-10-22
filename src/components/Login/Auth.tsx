@@ -12,6 +12,7 @@ import { PageRefreshContextProvider } from "shared/contexts/PageRefreshContext";
 // import { StreamingContextProvider } from "shared/contexts/StreamingContext";
 import { MessagesContextProvider } from "shared/contexts/MessagesContext";
 import { AuthContextProvider } from "shared/contexts/AuthContext";
+import { IPFSContextProvider } from "shared/contexts/IPFSContext";
 import NavBar from "shared/ui-kit/Navigation/NavBar";
 import URL from "shared/functions/getURL";
 import { setLoginBool } from "store/actions/LoginBool";
@@ -24,8 +25,6 @@ import {
   getAddressStreamingsOfTokensHLF,
   getStreamingsInfoHLF,
 } from "shared/services/API";
-import useIPFS from "../../shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "../../shared/functions/getPhotoIPFS";
 
 export let socket: SocketIOClient.Socket;
 export const setSocket = (sock: SocketIOClient.Socket) => {
@@ -35,20 +34,10 @@ export const setSocket = (sock: SocketIOClient.Socket) => {
 const Auth = () => {
   const dispatch = useDispatch();
   const [numberOfMessages, setNumberOfMessages] = useState<number>(0);
-
-  // --------- for balance ---------
-  const tokenTypeMap = useRef({}); // ref to tokenTypeMap given that setInterval cant get current state of useState hook
-
   // -------------------------------
 
   const user = useTypedSelector(state => state.user);
   const selectedUserSelector = useSelector((state: RootState) => state.selectedUser);
-
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
 
   // NOTE: this hack is required to trigger re-render
   const [internalSocket, setInternalSocket] = useState<SocketIOClient.Socket | null>(null);
@@ -212,11 +201,6 @@ const Auth = () => {
               socket.connect();
               setInternalSocket(socket);
               socket.emit("add user", data.id);
-
-              if (data && data.infoImage && data.infoImage.newFileCID) {
-                data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
-              }
-
               loadDataToReduxStore(data); //load data to redux store
               dispatch(setUser(data));
               axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -234,23 +218,25 @@ const Auth = () => {
   return (
     <Router>
       <AuthContextProvider>
-        <PageRefreshContextProvider>
-          <ShareMediaContextProvider>
-            <MessagesContextProvider socket={internalSocket} numberMessages={numberOfMessages}>
-              <NotificationsContextProvider socket={internalSocket}>
-                {/* <StreamingContextProvider> */}
-                <UserConnectionsContextProvider>
-                  <TokenConversionContextProvider>
-                    <>
-                      <NavBar />
-                    </>
-                  </TokenConversionContextProvider>
-                </UserConnectionsContextProvider>
-                {/* </StreamingContextProvider> */}
-              </NotificationsContextProvider>
-            </MessagesContextProvider>
-          </ShareMediaContextProvider>
-        </PageRefreshContextProvider>
+        <IPFSContextProvider>
+          <PageRefreshContextProvider>
+            <ShareMediaContextProvider>
+              <MessagesContextProvider socket={internalSocket} numberMessages={numberOfMessages}>
+                <NotificationsContextProvider socket={internalSocket}>
+                  {/* <StreamingContextProvider> */}
+                  <UserConnectionsContextProvider>
+                    <TokenConversionContextProvider>
+                      <>
+                        <NavBar />
+                      </>
+                    </TokenConversionContextProvider>
+                  </UserConnectionsContextProvider>
+                  {/* </StreamingContextProvider> */}
+                </NotificationsContextProvider>
+              </MessagesContextProvider>
+            </ShareMediaContextProvider>
+          </PageRefreshContextProvider>
+        </IPFSContextProvider>
       </AuthContextProvider>
     </Router>
   );

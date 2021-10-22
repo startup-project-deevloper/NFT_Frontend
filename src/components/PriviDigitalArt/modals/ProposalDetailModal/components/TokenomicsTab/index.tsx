@@ -21,7 +21,7 @@ const TokenomicsTab = (props: any) => {
 
   useEffect(() => {
     console.log('proposal', proposal);
-    if(ipfs && Object.keys(ipfs).length !== 0 &&
+    if(ipfs  &&
       proposal && proposal.TokenInfoImage &&
       proposal.TokenInfoImage.newFileCID) {
       getImageIPFS(proposal.TokenInfoImage.newFileCID);

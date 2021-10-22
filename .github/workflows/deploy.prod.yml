@@ -36,9 +36,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: export NODE_OPTIONS=--max_old_space_size=8192
-    # - run: yarn install
-    # - run: yarn build
-    - run: rm yarn.lock
     - run: yarn
     - run: yarn build
       env:

@@ -328,7 +328,9 @@ const CreateFraction = (props: any) => {
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on Privi Chain.\nThis can take a moment, please be patient...`}
+      subTitle={`Transaction is proceeding on ${
+        media.BlockchainNetwork || media.blockchain || "Polygon"
+      }.\nThis can take a moment, please be patient...`}
       handleClose={() => {}}
     >
       <Modal className={classes.modalContainer} open={props.open} onClose={props.handleClose}>

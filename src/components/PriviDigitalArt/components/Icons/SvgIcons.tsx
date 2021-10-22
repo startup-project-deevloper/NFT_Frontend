@@ -289,7 +289,7 @@ export const UnstakeIcon = () => (
 
 export const AddIcon = () => (
   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-    <circle cx="14" cy="14" r="14" fill="#65CB63" />
+    <circle cx="14" cy="14" r="14" fill="#431AB7" />
     <path d="M14 9V19" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
     <path d="M19 14L9 14" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
   </svg>

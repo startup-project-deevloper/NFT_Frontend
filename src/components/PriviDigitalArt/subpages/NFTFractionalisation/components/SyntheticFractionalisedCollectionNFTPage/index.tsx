@@ -268,7 +268,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   if (openChangeNFTToSynthetic) {
     return (
       <div className={classes.root}>
-        <ChangeNFTToSynthetic goBack={() => setOpenChangeNFTToSynthetic(false)} />
+        <ChangeNFTToSynthetic goBack={() => setOpenChangeNFTToSynthetic(false)} nft={nft}/>
       </div>
     );
   }
@@ -316,6 +316,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           follows: [...resp.follows],
         };
         setNft(itemCopy);
+        showAlertMessage(`Follow Successfully!`, { variant: "success" });
       }
     });
   };
@@ -335,6 +336,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
           follows: [...resp.follows],
         };
         setNft(itemCopy);
+        showAlertMessage(`Unfollow Successfully!`, { variant: "success" });
       }
     });
   };

@@ -204,6 +204,13 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     padding: "8px 32px",
     minHeight: 0,
     width: 230,
+
+    "&:disabled": {
+      border: "1px solid rgba(67, 26, 183, 0.24)",
+      background: "rgb(239, 242, 253)",
+      color: "#431AB7",
+      cursor: "not-allowed"
+    }
   },
   sliderContainer: { width: "100%" },
   borderBox: {
@@ -288,7 +295,6 @@ export const PurpleSlider = withStyles({
 export const normalNFTCardStyles = makeStyles(theme => ({
   card: {
     background: "#431AB7",
-    backdropFilter: "blur(4.82073px)",
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 91%, 0% 80%, 0% 0%)",
     padding: 8,
@@ -298,6 +304,24 @@ export const normalNFTCardStyles = makeStyles(theme => ({
   },
   selected: {
     background: "#DDFF57",
+  },
+  selectedSmallOuterBox: {
+    background: "#431AB7",
+    boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
+    borderRadius: 11.3,
+    clipPath: "polygon(100% 0%, 100% 81%,  50% 92%, 0% 81%, 0% 0%)",
+    height: '100%',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    color: "#fff",
+    padding: 2,
+    maxWidth: 150,
+    "& img": {
+      width: "100%",
+      height: "100%",
+      maxHeight: 250,
+    },
   },
   selectedOuterBox: {
     background: "#431AB7",
@@ -357,6 +381,13 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     lineHeight: "21px",
     textTransform: "capitalize",
     marginBottom: 8,
+    width: "100%",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    color: "#1A1B1C",
+    textAlign: "center",
+
     [theme.breakpoints.down("xs")]: {
       fontSize: 12,
       color: "#1A1B1C",

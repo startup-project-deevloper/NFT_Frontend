@@ -18,7 +18,6 @@ import CreateNewTopicModal from "components/PriviDigitalArt/modals/CreateNewTopi
 import CreateNewWallPostModal from "components/PriviDigitalArt/modals/CreateNewWallPostModal";
 import WallItem from "./components/WallItem";
 import PollItem from "./components/PollItem";
-import DiscussionPage from "./components/DiscussionPage";
 import ListChats from "../Chat/ListChats";
 import Discord from "../../Discord";
 import { socket } from "../../../../../Login/Auth";
@@ -36,8 +35,6 @@ export default function Discussion(props) {
 
   const users = useTypedSelector(state => state.usersInfoList);
   const userSelector = useSelector((state: RootState) => state.user);
-
-  const pageDiscussionRef = useRef();
 
   const [pod, setPod] = useState<any>({});
 
@@ -71,6 +68,8 @@ export default function Discussion(props) {
         setPod(props.pod);
         setDiscussions(props.pod.Discussions);
       }
+
+      setPolls(props.pod.Polls || []);
 
       getWallPosts();
     }
@@ -294,7 +293,7 @@ export default function Discussion(props) {
                           : poll !== undefined
                       )
                       .map((item, index) => {
-                        return <PollItem key={`poll-detail-${index}`} item={item} />;
+                        return <PollItem key={`poll-detail-${index}`} item={item} pod={props.pod} />;
                       })}
                   </Box>
                 </>

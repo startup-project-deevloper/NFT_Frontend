@@ -71,14 +71,14 @@ const ProofAuthenticity = ({ media }) => {
       {media.BlockchainNetwork && (
         <>
           <Box display="flex" alignItems="center" width={"50%"}>
-            {media && (
+            {media?.BlockchainNetwork && (
               <img
-                src={getChainImageUrl(media?.chain ?? media?.BlockchainNetwork ?? media?.blockchain)}
+                src={getChainImageUrl(media?.BlockchainNetwork)}
                 width="32px"
                 style={{ borderRadius: "50%" }}
               />
             )}
-            <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || "Privi Chain"}</Box>
+            <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || media?.blockchain}</Box>
           </Box>
         </>
         // <SecondaryButton size="medium" className={classes.transparentBtn}>

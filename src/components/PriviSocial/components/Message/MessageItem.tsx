@@ -129,7 +129,7 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
   }, []);
 
   useEffect(() => {
-    if(ipfs && Object.keys(ipfs).length !== 0 &&
+    if(ipfs  &&
       message && message.type && message.type !== "text" &&
       message.message && message.message.newFileCID) {
       getUserFileIpfs(message.message.newFileCID, message.type);

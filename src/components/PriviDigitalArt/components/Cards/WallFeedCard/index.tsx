@@ -59,7 +59,7 @@ export default function WallFeedCard({
   }, []);
 
   useEffect(() => {
-    if (feedData && ipfs && Object.keys(ipfs).length !== 0) {
+    if (feedData && ipfs ) {
       getPhotos(feedData);
 
       if (feedData.comments && feedData.responses?.length > 0) {

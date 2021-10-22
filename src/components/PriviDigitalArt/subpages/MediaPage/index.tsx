@@ -43,7 +43,7 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import PrintChart from "shared/ui-kit/Chart/Chart";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { getUser } from "store/selectors";
 import {
@@ -531,24 +531,24 @@ const MediaPage = () => {
 
   useEffect(() => {
     if (media) {
-      console.log('media', media);
+      console.log("media", media);
       sumTotalViews(media);
       if (media?.CreatorId) {
-        getCreatorPhotoIpfs(media.CreatorId)
+        getCreatorPhotoIpfs(media.CreatorId);
 
         setIsFollowing(isUserFollowed(media?.CreatorId));
       }
     }
   }, [media?.id]);
 
-  const getCreatorPhotoIpfs = async (creatorId) => {
+  const getCreatorPhotoIpfs = async creatorId => {
     const userFound = usersList.find(usr => usr.id === creatorId);
 
     if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
       setImageCreatorIPFS(imageUrl);
     }
-  }
+  };
 
   useEffect(() => {
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))
@@ -953,11 +953,9 @@ const MediaPage = () => {
                         <Avatar
                           size="medium"
                           url={
-                            u?.imageUrl
-                              ? u?.imageUrl
-                              : u?.anonAvatar
-                              ? require(`assets/anonAvatars/${user.anonAvatar}`)
-                              : "none"
+                            u?.ipfsImage
+                            ? u?.ipfsImage
+                            : getDefaultAvatar()
                           }
                         />
                         <Box display="flex" flexDirection="column" alignItems="center">
@@ -1031,11 +1029,9 @@ const MediaPage = () => {
                       <Avatar
                         size="medium"
                         url={
-                          u?.imageUrl
-                            ? u?.imageUrl
-                            : u?.anonAvatar
-                            ? require(`assets/anonAvatars/${user.anonAvatar}`)
-                            : "none"
+                          u?.ipfsImage
+                            ? u?.ipfsImage
+                            : getDefaultAvatar()
                         }
                       />
                       <Box display="flex" flexDirection="column" alignItems="center">
@@ -2127,7 +2123,7 @@ const MediaPage = () => {
                   >
                     {!mediaImageLoaded && (
                       <Box my={1} position="absolute" top="0" left="0" width={1} maxWidth="450px">
-                        <StyledSkeleton width="100%" height={450} variant="rect" />
+                        <StyledSkeleton width="100%" style={{minHeight: isMobileScreen ? "280px" : "180px"}} variant="rect" />
                       </Box>
                     )}
                     <img
@@ -2155,7 +2151,12 @@ const MediaPage = () => {
                 }}
               >
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
-                  <Box display="flex" flexDirection="row" alignItems="center" className={classes.mediaUserInfo}>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    className={classes.mediaUserInfo}
+                  >
                     <Box display="flex" alignItems="center">
                       <div
                         className={classes.avatarImg}
@@ -2166,11 +2167,7 @@ const MediaPage = () => {
                         <Avatar
                           key={`creator-${media?.CreatorAddress}`}
                           size="small"
-                          url={
-                            imageCreatorIPFS
-                              ? imageCreatorIPFS
-                              : getRandomAvatar()
-                          }
+                          url={imageCreatorIPFS ? imageCreatorIPFS : getDefaultAvatar()}
                         />
                       </div>
                       <Box display="flex" flexDirection="column" ml={1} mr={4}>
@@ -2235,7 +2232,7 @@ const MediaPage = () => {
                             key={`artist-${owner.id}`}
                             className={classes.artist}
                             size="small"
-                            url={owner.hasPhoto ? owner.url : owner.imageUrl}
+                            url={owner.ipfsImage ? owner.ipfsImage : getDefaultAvatar()}
                           />
                         </div>
                       ))}
@@ -2283,7 +2280,7 @@ const MediaPage = () => {
                     </Hidden>
                   </Box>
                 </Box>
-                {!media?.Fraction && !media?.chain ? (
+                {/* {!media?.Fraction && !media?.chain ? (
                   <>
                     <hr className={classes.divider} />
                     {media?.BidHistory && media?.BidHistory.length > 0 ? (
@@ -2300,7 +2297,7 @@ const MediaPage = () => {
                       </>
                     )}
                   </>
-                ) : null}
+                ) : null} */}
                 <hr className={classes.divider} />
                 <Box
                   display="flex"
@@ -2310,14 +2307,11 @@ const MediaPage = () => {
                   mb={2}
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
-                    {media && (
-                      <img
-                        src={getChainImageUrl(media?.chain ?? media?.BlockchainNetwork ?? media?.blockchain)}
-                        width="32px"
-                        style={{ borderRadius: "50%" }}
-                      />
-                    )}
-                    <Box ml={2}>{media?.tag?.toUpperCase() || media?.BlockchainNetwork || "Privi Chain"}</Box>
+                    <img
+                      src={getChainImageUrl(media?.BlockchainNetwork || 'polygon')}
+                      width="32px"
+                      style={{ borderRadius: "50%" }}
+                    />
                   </Box>
                   {media?.link && (
                     <PrimaryButton
@@ -2836,11 +2830,9 @@ const MediaPage = () => {
                           <Avatar
                             size="small"
                             url={
-                              bidder?.imageUrl
-                                ? bidder?.imageUrl
-                                : bidder?.anonAvatar
-                                ? require(`assets/anonAvatars/${bidder.anonAvatar}`)
-                                : "none"
+                              bidder?.ipfsImage
+                                ? bidder?.ipfsImage
+                                : getDefaultAvatar()
                             }
                           />
                           <Box
@@ -2952,12 +2944,7 @@ const MediaPage = () => {
                   alignItems="center"
                   mb={2}
                 >
-                  <Avatar
-                    size="medium"
-                    url={user && user.ipfsImage ?
-                      user.ipfsImage : getRandomAvatar()
-                    }
-                  />
+                  <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getDefaultAvatar()} />
                   <InputWithLabelAndTooltip
                     transparent
                     overriedClasses=""
@@ -2968,7 +2955,7 @@ const MediaPage = () => {
                       if (e.key === "Enter") addComment();
                     }}
                     placeHolder="Add comment..."
-                    style={{ marginBottom: 4 }}
+                    style={{ marginBottom: 4, flex:"1", width:"auto" }}
                   />
                   <Text
                     size={FontSize.S}
@@ -3017,13 +3004,14 @@ const MediaPage = () => {
                             size="medium"
                             url={
                               comment.user &&
-                              getUserAvatar({
-                                id: comment.user.id,
-                                anon: comment.user.anon,
-                                hasPhoto: comment.user.hasPhoto,
-                                anonAvatar: comment.user.anonAvatar,
-                                url: comment.user.url,
-                              })
+                              comment.user.ipfsImage
+                              // getUserAvatar({
+                              //   id: comment.user.id,
+                              //   anon: comment.user.anon,
+                              //   hasPhoto: comment.user.hasPhoto,
+                              //   anonAvatar: comment.user.anonAvatar,
+                              //   url: comment.user.url,
+                              // })
                             }
                           />
                         </div>

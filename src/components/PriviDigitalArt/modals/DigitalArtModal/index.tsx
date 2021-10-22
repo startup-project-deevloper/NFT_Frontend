@@ -583,7 +583,7 @@ export default function DigitalArtModal({ open, handleClose, selectedMedia, crea
           <Box width={1} ml={1} py={media.Auctions ? 0 : 2}>
             <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
               <Box display="flex" flexDirection="row" alignItems="center">
-                <Avatar size="medium" url={creator.imageUrl || creator.anonAvatar} />
+                <Avatar size="medium" url={creator.ipfsImage} />
                 <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
                   <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                     {creator.name}
@@ -654,7 +654,7 @@ export default function DigitalArtModal({ open, handleClose, selectedMedia, crea
                     key={`artist-${owner.id}`}
                     className={classes.artist}
                     size="small"
-                    url={owner.url}
+                    url={owner.ipfsImage}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>
@@ -825,7 +825,7 @@ export default function DigitalArtModal({ open, handleClose, selectedMedia, crea
         <hr className={classes.divider} />
         <Header5>Comments</Header5>
         <Box className={classes.message} display="flex" flexDirection="row" alignItems="center" mb={2}>
-          <Avatar size="medium" url={user.url} />
+          <Avatar size="medium" url={user.ipfsImage} />
           <InputWithLabelAndTooltip
             transparent
             overriedClasses=""

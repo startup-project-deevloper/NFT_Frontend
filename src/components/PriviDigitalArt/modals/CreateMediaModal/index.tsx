@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Web3 from "web3";
-import path from "path";
 import VideoThumbnail from "react-video-thumbnail";
 import { useWeb3React } from "@web3-react/core";
 import { TextField, Tooltip, Fade } from "@material-ui/core";
@@ -13,7 +12,7 @@ import FileUpload from "shared/ui-kit/Page-components/FileUpload";
 import CustomImageUploadAdapter from "shared/services/CustomImageUploadAdapter";
 import { usePageRefreshContext } from "shared/contexts/PageRefreshContext";
 import URL from "shared/functions/getURL";
-import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
+// import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import { UsersMultiselect } from "shared/ui-kit/Select/UserMultiSelect/UsersMultiselect";
 import { Dropdown } from "shared/ui-kit/Select/Select";
 import QuillEditor from "shared/ui-kit/QuillEditor";
@@ -37,7 +36,9 @@ import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2IPFS";
 import getIPFSURL from "shared/functions/getIPFSURL";
-import TransactionResultModal from "../TransactionResultModal";
+import TransactionResultModal, { CopyIcon } from "../TransactionResultModal";
+import CopyToClipboard from "react-copy-to-clipboard";
+import FileUploadingModal from "../../../../shared/ui-kit/Modal/Modals/FileUploadingModal";
 
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
@@ -48,6 +49,8 @@ const videoLiveIcon = require("assets/mediaIcons/small/video_live.png");
 const digitalArtIcon = require("assets/mediaIcons/small/digital_art.png");
 const BlogIcon = require("assets/mediaIcons/small/blog.png");
 const BlogSnapIcon = require("assets/mediaIcons/small/blog_snap.png");
+
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 enum MediaType {
   Video = "VIDEO_TYPE",
@@ -93,13 +96,13 @@ const CreateMediaModal = (props: any) => {
   const userSelector = useSelector((state: RootState) => state.user);
   const allUsers = useSelector(getUsersInfoList);
 
-  const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
+  const { progress, setMultiAddr, uploadWithNonEncryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr(multiAddr);
   }, []);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [tokens, setTokens] = useState<string[]>(priviTokenList);
 
   const [disableButton, setDisableButton] = useState<boolean>(false);
@@ -153,7 +156,7 @@ const CreateMediaModal = (props: any) => {
   const mediaTypeItem = MEDIA_TYPES.find(type => type.value === mediaData.type);
 
   const initForm = () => {
-    setPage(0);
+    setPage(1);
     setUpload1(null);
     setUploadImg1(null);
     setUpload2(null);
@@ -338,33 +341,35 @@ const CreateMediaModal = (props: any) => {
       uri = getURLfromCID((await uploadNFTMetaData(metaData)).cid);
       console.log({ uri });
     } catch (err) {
-      console.error('Error-UploadNFTMetaData', { err });
+      console.error("Error-UploadNFTMetaData", { err });
     }
     const payload = {
       to: account!,
       tokenId: tokenId,
-      uri: uri
+      uri: uri,
     };
-    console.log('CreateMediaModal', { payload });
-    web3APIHandler.Erc721.mint(web3, account!, payload).then(async (res) => {
-      setHash(res)
-      if (tokenId) {
-        const body = {
-          main: {
-            ...mediaPayloadRef.current,
-            BlockchainId: tokenId,
-            TokenContractAddress: web3Config.CONTRACT_ADDRESSES.ERC721WithRoyalty,
-            cid: metadataID,
-          },
-          extra: mediaAdditionalDataRef.current,
-        };
-        const response = await axios.post(`${URL()}/media/createMedia/p1`, body);
-        afterCreateMedia(response.data);
-      } else {
-        setLoading(false);
-      }
-      setDisableButton(false);
-    }).catch(console.log);
+    console.log("CreateMediaModal", { payload });
+    web3APIHandler.Erc721.mint(web3, account!, payload)
+      .then(async res => {
+        setHash(res);
+        if (tokenId) {
+          const body = {
+            main: {
+              ...mediaPayloadRef.current,
+              BlockchainId: tokenId,
+              TokenContractAddress: web3Config.CONTRACT_ADDRESSES.ERC721WithRoyalty,
+              cid: metadataID,
+            },
+            extra: mediaAdditionalDataRef.current,
+          };
+          const response = await axios.post(`${URL()}/media/createMedia/p1`, body);
+          afterCreateMedia(response.data);
+        } else {
+          setLoading(false);
+        }
+        setDisableButton(false);
+      })
+      .catch(console.log);
   };
 
   const afterCreateMedia = async resp => {
@@ -490,24 +495,24 @@ const CreateMediaModal = (props: any) => {
 
   const validateMediaInfo = () => {
     if (mediaData.MediaName.length <= 5) {
-      showAlertMessage("Name field invalid. Minimum 5 characters required.", { variant: "error" });
+      showAlertMessage("Title field invalid. Minimum 5 characters required.", { variant: "error" });
       return false;
     } else if (!mediaData.Hashtags || mediaData.Hashtags.length <= 0) {
       showAlertMessage("Minimum 1 Hashtag", { variant: "error" });
       return false;
-    } else if (
-      (mediaData.purpose === "1" && !mediaData.NftRoyalty) ||
-      mediaData.NftRoyalty < 0 ||
-      mediaData.NftRoyalty > 100
-    ) {
-      showAlertMessage("Invalid royalty", { variant: "error" });
-      return false;
-    } else if (
-      (mediaData.purpose === "1" && !mediaData.SharingPct) ||
-      mediaData.SharingPct < 0 ||
-      mediaData.SharingPct > 100
-    ) {
-      showAlertMessage("Sharing % invalid. Must be between 0 and 100", { variant: "error" });
+      // } else if (
+      //   (mediaData.purpose === "1" && !mediaData.NftRoyalty) ||
+      //   mediaData.NftRoyalty < 0 ||
+      //   mediaData.NftRoyalty > 100
+      // ) {
+      //   showAlertMessage("Invalid royalty", { variant: "error" });
+      //   return false;
+      // } else if (
+      //   (mediaData.purpose === "1" && !mediaData.SharingPct) ||
+      //   mediaData.SharingPct < 0 ||
+      //   mediaData.SharingPct > 100
+      // ) {
+      //   showAlertMessage("Sharing % invalid. Must be between 0 and 100", { variant: "error" });
     } else if (!upload1 && !upload2) {
       showAlertMessage("Media Image is required.", { variant: "error" });
       return false;
@@ -611,8 +616,8 @@ const CreateMediaModal = (props: any) => {
             {mediaData.type === "DIGITAL_ART_TYPE"
               ? "Image"
               : mediaData.type === "VIDEO_TYPE"
-                ? "Video File"
-                : "Cover Image"}
+              ? "Video File"
+              : "Cover Image"}
           </h5>
           <Box width={1} style={{ position: "relative" }}>
             <FileUpload
@@ -692,14 +697,48 @@ const CreateMediaModal = (props: any) => {
     );
   };
 
+  const handleCheck = () => {
+    if (mediaData.blockchainNet.replace(" Chain", "") === "Polygon") {
+      window.open(`https://mumbai.polygonscan.com/tx/${hash}`, "_blank");
+    } else {
+      window.open(`https://rinkeby.etherscan.io/tx/${hash}`, "_blank");
+    }
+  };
+
   return (
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on ${mediaData.blockchainNet.replace(
-        " Chain",
-        ""
-      )} Chain.\nThis can take a moment, please be patient...`}
+      SubTitleRender={() => (
+        <>
+          <span>Transaction is proceeding on {mediaData.blockchainNet.replace(" Chain", "")} Chain.</span>
+          <br />
+          <span>This can take a moment, please be patient...</span>
+          {hash && (
+            <CopyToClipboard text={hash}>
+              <Box
+                mt="20px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                className={classes.hash}
+              >
+                Hash:
+                <Box color="#4218B5" mr={1} ml={1}>
+                  {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                </Box>
+                <CopyIcon />
+              </Box>
+            </CopyToClipboard>
+          )}
+
+          {hash && (
+            <button className={classes.buttonCheck} onClick={handleCheck}>
+              Check on {mediaData.blockchainNet.replace(" Chain", "")} Scan
+            </button>
+          )}
+        </>
+      )}
       handleClose={props.handleClose}
     >
       <Modal
@@ -871,7 +910,7 @@ const CreateMediaModal = (props: any) => {
                   </Box>
                 </Box>
                 <Box className={classes.tagsBoxSmall}>{getHashTags()}</Box>
-                {mediaData.purpose !== "4" ? (
+                {/* {mediaData.purpose !== "4" ? (
                   <Box className={classes.controlBoxLeft}>
                     <Box width={1} display="flex" alignItems="center">
                       <Box>
@@ -906,12 +945,12 @@ const CreateMediaModal = (props: any) => {
                       />
                     </Box>
                   </Box>
-                ) : null}
+                ) : null} */}
               </Box>
               <Box className={classes.tagsBox}>{getHashTags()}</Box>
               {mediaData.purpose === "1" && (
                 <>
-                  <Box mt={2} width={1} display="flex" alignItems="center">
+                  {/* <Box mt={2} width={1} display="flex" alignItems="center">
                     <Box
                       width={1}
                       fontSize={18}
@@ -932,7 +971,7 @@ const CreateMediaModal = (props: any) => {
                         </Tooltip>
                       </Box>
                     </Box>
-                  </Box>
+                  </Box> */}
                   {/* <Box className={classes.formBox}>
                     <Box className={classes.controlBox} mt={"0px !important"} width={1}>
                       <h5 className={classes.controlLabel}>Price</h5>
@@ -962,7 +1001,7 @@ const CreateMediaModal = (props: any) => {
                       </Box>
                     </Box>
                   </Box> */}
-                  <Box className={classes.formBox} mt={1}>
+                  {/* <Box className={classes.formBox} mt={1}>
                     <Box className={classes.controlBox} display="flex" width={1}>
                       <Box>
                         <h5 className={classes.controlLabel}>Royalty (%)</h5>
@@ -995,11 +1034,11 @@ const CreateMediaModal = (props: any) => {
                         onChange={onMediaDataChange("NftRoyalty")}
                       />
                     </Box>
-                  </Box>
+                  </Box> */}
                 </>
               )}
               <Box width={1} display="flex" justifyContent="space-between" mt={4}>
-                <SecondaryButton size="medium" onClick={() => setPage(0)}>
+                <SecondaryButton size="medium" onClick={() => setPage(1)}>
                   Cancel
                 </SecondaryButton>
                 <LoadingWrapper loading={loading} theme={"blue"}>
@@ -1026,11 +1065,9 @@ const CreateMediaModal = (props: any) => {
         }}
         isSuccess={tnxSuccess}
         hash={hash}
-        network={mediaData.blockchainNet.replace(
-          " Chain",
-          ""
-        )}
+        network={mediaData.blockchainNet.replace(" Chain", "")}
       />
+      <FileUploadingModal open={!!progress} progress={progress} isUpload />
     </LoadingScreen>
   );
 };

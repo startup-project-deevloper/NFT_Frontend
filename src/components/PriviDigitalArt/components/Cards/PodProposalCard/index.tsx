@@ -42,7 +42,7 @@ export default function PodProposalCard({ pod }) {
   }, []);
 
   useEffect(() => {
-    if (pod && ipfs && Object.keys(ipfs).length !== 0) {
+    if (pod && ipfs ) {
       if (pod && pod.InfoImage && pod.InfoImage.newFileCID) {
         getImageIPFS(pod.InfoImage.newFileCID);
       }

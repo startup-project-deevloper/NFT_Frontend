@@ -9,7 +9,9 @@ import { TwitterShareButton, InstapaperShareButton, FacebookShareButton } from "
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import WallItemModal from "../../../subpages/Home/components/MyWall/WallItemModal";
 import { wallFeedCardStyles } from "./index.styles";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getRandomAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
+import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
 
 const twitterIcon = require("assets/snsIcons/twitter_gray.png");
 const instagramIcon = require("assets/snsIcons/instagram_gray.png");
@@ -44,6 +46,28 @@ export default function WallFeedCard({
   const handleCloseWallItemModal = () => {
     setOpenWallItemModal(false);
   };
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const [imageAuthorIPFS, setImageAuthorIPFS] = useState<any>(null);
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  useEffect(() => {
+    if (feedData && feedData.createdBy && ipfs ) {
+      getUserPhotoIpfs(feedData.createdBy);
+    }
+  }, [feedData, ipfs]);
+
+  const getUserPhotoIpfs = async (userId: any) => {
+    const author = users.find(user => user.id == userId);
+
+    if (author && author.infoImage && author.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(author.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageAuthorIPFS(imageUrl);
+    }
+  };
 
   useEffect(() => {
     if (feedData.comments && feedData.responses?.length > 0) {
@@ -54,17 +78,19 @@ export default function WallFeedCard({
         let thisUser = users.find(u => u.id === response.userId);
         if (thisUser) {
           slug = thisUser.urlSlug;
-          image = thisUser.url ?? thisUser.imageURL;
-        } else {
-          image = getRandomAvatarForUserIdWithMemoization(response.userId);
         }
 
-        r.push({ ...response, urlSlug: slug, url: image });
+        r.push({
+          ...response,
+          urlSlug: slug,
+          url: thisUser?.ipfsImage ?? `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)})`,
+        });
       });
 
       setComments && setComments(r);
     }
   }, [feedData, users]);
+
 
   useEffect(() => {
     if (userSelector.id === userProfile.id) {
@@ -131,15 +157,8 @@ export default function WallFeedCard({
   return (
     <div className={classes.wallItem}>
       <Box mb={"16px"} display="flex" alignItems="center">
-        <Avatar
-          size={"small"}
-          url={
-            feedData.imageURL ??
-            userProfile.imageURL ??
-            users.find(u => u.id === feedData.createdBy)?.imageURL ??
-            getRandomAvatarForUserIdWithMemoization(feedData.createdBy)
-          }
-        />
+        <Avatar size={"small"} url={imageAuthorIPFS ? imageAuthorIPFS : getRandomAvatar()} />
+
         <Box ml="8px" fontSize="12px">
           {userSelector.id !== feedData.createdBy ? <span>{feedData.userName}</span> : "You"}
           {!feedItem

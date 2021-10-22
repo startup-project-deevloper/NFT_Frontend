@@ -10,7 +10,6 @@ import URL from "shared/functions/getURL";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
-import { toNDecimals } from "shared/functions/web3";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
@@ -83,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, supplyToKeep, priceFraction }) {
+export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, currentNFT }) {
   const classes = useStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -92,11 +91,95 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, su
   const { showAlertMessage } = useAlertMessage();
 
   const handleProceed = async () => {
-    onCompleted();
-  };
+    console.log("chainId", chainId);
+    if (chainId !== 80001 && chainId !== 137) {
+      let changed = await switchNetwork(isProd ? 137 : 80001);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
+        return;
+      }
+    }
+    setIsLoading(true);
+    setIsProceeding(true);
 
-  const handleCheck = () => {
-    onClose();
+    try {
+      const { data: collectionInfo } = await axios.get(
+        `${PriceFeed_URL()}/nft/collection-address?contract=${selectedNFT.tokenAddress}${
+          !isProd ? "&network=rinkeby" : ""
+        }`,
+        {
+          headers: {
+            Authorization: `Basic ${PriceFeed_Token()}`,
+          },
+        }
+      );
+
+      const web3 = new Web3(library.provider);
+      const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
+      const web3APIHandler = targetChain.apiHandler;
+      const network = "Polygon";
+      const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_PROTOCOL_ROUTER;
+      const jotContractAddress = config[network].CONTRACT_ADDRESSES.JOT;
+
+      const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
+      const tokenURI = selectedNFT.tokenURI || '';
+      console.log('token data', currentNFT.collection_id,
+      currentNFT.SyntheticID,
+      selectedNFT.BlockchainId,
+      tokenURI)
+      const gas = await contract.methods
+        .changeNFT(
+          currentNFT.collection_id,
+          currentNFT.SyntheticID,
+          selectedNFT.BlockchainId,
+          tokenURI
+        )
+        .estimateGas({ from: account });
+      console.log('gas... ', gas)
+      const response = await contract.methods
+        .changeNFT(
+          currentNFT.collection_id,
+          currentNFT.SyntheticID,
+          selectedNFT.BlockchainId,
+          tokenURI
+        )
+        .send({ from: account, gas })
+        .on("transactionHash", hash => {
+          setHash(hash);
+          setIsLoading(false);
+        });
+
+      console.log('response... ', response)
+      if (!response) {
+        setIsProceeding(false);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        const nftInfo = response.events?.TokenChanged?.returnValues;
+
+        let params = {
+          collectionAddress: selectedNFT.tokenAddress,
+          SyntheticID: currentNFT.SyntheticID,
+          NFTId: selectedNFT.BlockchainId,
+          NFTName: selectedNFT.MediaName,
+          NFTImageUrl: selectedNFT.Url,
+          isAddCollection: false,
+          Price: currentNFT.Price,
+          OwnerSupply: currentNFT.OwnerSupply,
+        };
+
+        const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);
+        if (data.success) {
+          onCompleted(data.nft);
+        } else {
+          showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
+        }
+      }
+    } catch (err) {
+      console.log("error", err);
+      setIsProceeding(false);
+      setIsLoading(false);
+    }
   };
 
   const handlePolygonScan = () => {

@@ -97,12 +97,14 @@ const PodPageIndividual = () => {
     [pod]
   );
 
+  const [isExpired, setExpired] = useState<boolean>(true);
+
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
   useEffect(() => {
-    if (podId && ipfs && Object.keys(ipfs).length !== 0) {
+    if (podId && ipfs ) {
       loadData();
     }
   }, [podId, ipfs]);
@@ -157,7 +159,7 @@ const PodPageIndividual = () => {
     if (!pod || !pod.PodAddress) return;
 
     (async () => {
-      if (ipfs && Object.keys(ipfs).length !== 0) {
+      if (ipfs ) {
         const web3APIHandler = BlockchainNets[1].apiHandler;
         const web3 = new Web3(library.provider);
 
@@ -205,6 +207,15 @@ const PodPageIndividual = () => {
         const resp = await getPod(podId, apiType);
         if (resp?.success) {
           let podData = resp.data;
+
+          const cur = new Date().getTime() - podData.Created;
+          const deadline = podData.ProposalDeadline._seconds*1000 - podData.Created;
+          if(cur > deadline) {
+            setExpired(true)
+          } else {
+            setExpired(false)
+          }
+
           podData = getPodState(podData);
 
           if (!podData.distributionProposalAccepted) {
@@ -392,6 +403,7 @@ const PodPageIndividual = () => {
                   size="medium"
                   onClick={() => setOpenDistributionTopic(true)}
                   isRounded
+                  disabled = {isExpired}
                   style={{
                     border: "none",
                     background: "#DDFF57",

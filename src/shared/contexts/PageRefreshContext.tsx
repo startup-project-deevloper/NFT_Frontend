@@ -5,6 +5,8 @@ type PageRefreshContextType = {
   setRequireMediaPageReload: (val: boolean) => void;
   requireMarketPlacePageReload: boolean;
   setRequireMarketPlacePageReload: (val: boolean) => void;
+  profileAvatarChanged: number;
+  setProfileAvatarChanged: (val: number) => void;
 };
 
 const PageRefreshContext = React.createContext<PageRefreshContextType | null>(null);
@@ -12,12 +14,15 @@ const PageRefreshContext = React.createContext<PageRefreshContextType | null>(nu
 export const PageRefreshContextProvider: React.FC = ({ children }) => {
   const [requireMediaPageReload, setRequireMediaPageReload] = React.useState<boolean>(false);
   const [requireMarketPlacePageReload, setRequireMarketPlacePageReload] = React.useState<boolean>(false);
+  const [profileAvatarChanged, setProfileAvatarChanged] = React.useState<number>(0);
 
   const context = {
     requireMediaPageReload,
     setRequireMediaPageReload,
     requireMarketPlacePageReload,
     setRequireMarketPlacePageReload,
+    profileAvatarChanged,
+    setProfileAvatarChanged,
   };
   return <PageRefreshContext.Provider value={context}>{children}</PageRefreshContext.Provider>;
 };

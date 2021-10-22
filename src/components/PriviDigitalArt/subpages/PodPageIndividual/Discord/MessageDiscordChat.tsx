@@ -153,7 +153,7 @@ const MessageDiscordChat = React.memo((props: any) => {
   };
 
   useEffect(() => {
-    if(props.message.from && ipfs && Object.keys(ipfs).length !== 0 &&
+    if(props.message.from && ipfs  &&
       usersList && usersList.length > 0) {
       getImage(props.message.from);
     }

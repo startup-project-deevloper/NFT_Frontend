@@ -8,7 +8,6 @@ import URL from "shared/functions/getURL";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import Box from "shared/ui-kit/Box";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
-import { ARTWORK_MEDIA_TYPES } from "components/PriviDigitalArt/productUtils";
 import ArtistCard from "../../components/Cards/ArtistCard";
 import CollectionCard from "../../components/Cards/CollectionCard";
 import DigitalArtCard from "../../components/Cards/DigitalArtCard";
@@ -21,7 +20,6 @@ import { RootState } from "store/reducers/Reducer";
 export default function HomePage() {
   const classes = subPageStyles();
   const users = useSelector((state: RootState) => state.usersInfoList);
-  const history = useHistory();
   const { setOpenFilters } = useContext(DigitalArtContext);
   const [showMoreArtists, setShowMoreArtists] = useState<boolean>(false);
   const [loadingDigitalArts, setLoadingDigitalArts] = useState<boolean>(false);

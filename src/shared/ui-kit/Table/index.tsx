@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   makeStyles,
   createStyles,
@@ -10,10 +10,11 @@ import {
   TableBody,
 } from "@material-ui/core";
 import { Color, FontSize, Variant } from "shared/constants/const";
+import { isArray } from "lodash";
 
 export type CustomTableProps = {
   headers: Array<CustomTableHeaderInfo>;
-  rows: Array<Array<CustomTableCellInfo>>;
+  rows: Array<Array<CustomTableCellInfo>> | Array<{ data: Array<CustomTableCellInfo>, collapse: ReactNode }>
   placeholderText?: string;
   variant?: Variant;
   theme?:
@@ -393,7 +394,7 @@ export const CustomTable = ({
   variant = Variant.Primary,
   onSort,
   sorted,
-  radius,
+  radius
 }: CustomTableProps) => {
   const classes = useStyles({ radius: radius });
 
@@ -475,15 +476,28 @@ export const CustomTable = ({
         </TableHead>
         <TableBody style={{ background: variant === Variant.Tertiary ? "white" : "inherit" }}>
           {rows?.length > 0 ? (
-            rows?.map((row, i) => (
-              <TableRow key={i} style={theme === "transCards" ? { background: getBackground(i + 1) } : {}}>
-                {row?.map((cellData, index) => (
-                  <TableCell align={cellData.cellAlign || "inherit"} key={cellData.cell + "-" + index}>
-                    {cellData.cell}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            // @ts-ignore
+            rows?.map((row, i) => {
+              const rowData = isArray(row) ? row : row?.data
+              return (
+                <React.Fragment>
+                  <TableRow key={i} style={theme === "transCards" ? { background: getBackground(i + 1) } : {}}>
+                    {rowData?.map((cellData, index) => (
+                      <TableCell align={cellData.cellAlign || "inherit"} key={cellData.cell + "-" + index}>
+                        {cellData.cell}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {
+                    row?.collapse && (
+                      <TableRow>
+                        {row.collapse}
+                      </TableRow>
+                    )
+                  }
+                </React.Fragment>
+              )
+            })
           ) : (
             <TableRow>
               <TableCell align="center" colSpan={headers.length}>

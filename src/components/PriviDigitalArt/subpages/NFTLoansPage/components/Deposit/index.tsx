@@ -142,9 +142,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
             priviNFTData = [];
           }
 
-          if (Object.keys(ipfs).length === 0) {
-            setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-          }
+          setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
 
           priviNFTData = await Promise.all(
             priviNFTData.map(async nft => {

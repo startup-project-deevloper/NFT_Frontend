@@ -29,6 +29,7 @@ export const profilePageStyles = makeStyles(theme => ({
     columnGap: 32,
     [theme.breakpoints.down("xs")]: {
       justifyContent: "space-between",
+      columnGap: 12,
     },
   },
   tabCard: {
@@ -189,8 +190,9 @@ export const profilePageStyles = makeStyles(theme => ({
     fontSize: 22,
     fontWeight: 400,
     cursor: "pointer",
+    whiteSpace: "nowrap",
     [theme.breakpoints.down("xs")]: {
-      fontSize: 18,
+      fontSize: 16,
     },
   },
   tabItemActive: {

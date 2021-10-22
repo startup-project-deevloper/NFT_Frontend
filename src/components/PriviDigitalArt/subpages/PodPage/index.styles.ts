@@ -24,6 +24,9 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
         fontFamily: "Agrandir GrandHeavy",
         fontWeight: 800,
       },
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 30,
+      },
     },
     "& > div > h5": {
       color: "#431AB7",
@@ -39,24 +42,24 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
       },
     },
     "& > h3": {
-      marginTop: "64px",
+      marginTop: "24px",
       fontSize: "30px",
       lineHeight: "104.5%",
       marginBottom: "16px",
-      fontWeight: 400
+      fontWeight: 400,
     },
     "& > div > h3": {
       marginTop: "64px",
       fontSize: "30px",
       lineHeight: "104.5%",
       marginBottom: "16px",
-      fontWeight: 400
+      fontWeight: 400,
     },
     [theme.breakpoints.down("sm")]: {
       padding: "63px 64px",
     },
     [theme.breakpoints.down("xs")]: {
-      padding: "63px 40px",
+      padding: "63px 16px",
     },
   },
   img1: {
@@ -65,12 +68,10 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     position: "absolute",
     top: "10%",
     left: "5%",
-    // marginBottom: "24px",
-    // marginLeft: "16px",
     transform: "rotate(-12.57deg)",
     "& svg": {
-      width: '100%',
-      height: '100%',
+      width: "100%",
+      height: "100%",
     },
     [theme.breakpoints.down("sm")]: {
       width: "118px",
@@ -78,8 +79,9 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
       marginLeft: theme.spacing(1),
     },
     [theme.breakpoints.down("xs")]: {
-      width: "76px",
-      height: "70px",
+      width: "56px",
+      height: "56px",
+      left: '0px',
       marginLeft: theme.spacing(1),
     },
   },
@@ -109,7 +111,8 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     position: "absolute",
     zIndex: 0,
     top: 0,
-    right: 0
+    right: 0,
+    pointerEvents: "none",
   },
   purpleBox: {
     background: "#E2E6FB",
@@ -262,6 +265,6 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     cursor: "pointer",
   },
   filterActive: {
-    background : "#431AB7",
+    background: "#431AB7",
   },
 }));

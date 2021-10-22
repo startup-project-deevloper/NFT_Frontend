@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 
 import {
@@ -29,10 +29,9 @@ import CreatePixMediaModal from "components/PriviDigitalArt/modals/CreateMediaMo
 import PodCreateNFTMediaModal from "shared/ui-kit/Modal/Modals/Pod-Create-NFTMedia-Modal/PodCreateNFTMediaModal";
 import CreateCommunityModal from "shared/ui-kit/Modal/Modals/CreateCommunity";
 import CreateImportSocialTokenModal from "shared/ui-kit/Modal/Modals/Create-social-token/CreateImportSocialTokenModal";
-import { CreatePriviWalletModal } from "shared/ui-kit/Modal/Modals";
 import { capitalize } from "shared/helpers/string";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
-import { getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getUserAvatar } from "shared/services/user/getUserAvatar";
 import { createUserInfo, setUsersInfoList } from "store/actions/UsersInfo";
 import CommunityContributionModal from "shared/ui-kit/Modal/Modals/CommunityContributionModal";
 import ShareContributionModal from "shared/ui-kit/Modal/Modals/ShareContributionModal";
@@ -49,10 +48,8 @@ import { ToolbarButtonWithPopper } from "./components/Toolbar/ToolbarButtonWithP
 import { MessageNotifications } from "./components/Message/MessageNotifications";
 import { NotificationsPopperContent } from "./components/Notifications/NotificationsPopperContent";
 import { PrimaryButton, SecondaryButton } from "../Buttons";
-import PriviAppIcon from "./components/PriviAppIcon";
 import { headerStyles } from "./Header.styles";
 
-import { ReactComponent as NavigationIcon } from "assets/icons/navigation.svg";
 import { ReactComponent as SubStratIcon } from "assets/icons/substrat_card.svg";
 import { ReactComponent as PriviIcon } from "assets/icons/privi_wallet_card.svg";
 import { ReactComponent as GovernanceIcon } from "assets/icons/governance_card.svg";
@@ -61,6 +58,7 @@ import { ReactComponent as FiberManualRecordIcon } from "assets/icons/fiber_manu
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import useIPFS from "../../utils-IPFS/useIPFS";
 import getPhotoIPFS from "../../functions/getPhotoIPFS";
+import { usePageRefreshContext } from "shared/contexts/PageRefreshContext";
 
 enum OpenType {
   Home = "HOME",
@@ -98,7 +96,7 @@ const Header = props => {
   } = useNotifications();
 
   const { unreadMessages } = useMessages();
-  const { activate, account } = useWeb3React();
+  const { account } = useWeb3React();
 
   const [userId, setUserId] = useState<string>("");
   const [ownUser, setOwnUser] = useState<boolean>(idUrl === localStorage.getItem("userId"));
@@ -138,22 +136,18 @@ const Header = props => {
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
+  const { profileAvatarChanged } = usePageRefreshContext();
+
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
   useEffect(() => {
     getPhotoUser();
-  }, [ipfs, userSelector.id]);
+  }, [ipfs, userSelector.id, profileAvatarChanged]);
 
   const getPhotoUser = async () => {
-    if (
-      ipfs &&
-      Object.keys(ipfs).length !== 0 &&
-      userSelector &&
-      userSelector.infoImage &&
-      userSelector.infoImage.newFileCID
-    ) {
+    if (ipfs && userSelector && userSelector.infoImage && userSelector.infoImage.newFileCID) {
       setImageIPFS(await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption));
     }
   };
@@ -206,8 +200,11 @@ const Header = props => {
   const handleLogout = () => {
     setSignedin(false);
     dispatch(signOut());
+    const isNotifiedTestnet = localStorage.getItem(`PixTestNetNotify${account}`);
     localStorage.clear();
-    localStorage.clear();
+    if (isNotifiedTestnet) {
+      localStorage.setItem(`PixTestNetNotify${account}`, "true");
+    }
     history.push("/");
     window.location.reload();
   };
@@ -266,14 +263,15 @@ const Header = props => {
   }, [idUrl, ipfs]);
 
   const setUserWithIpfsImage = async () => {
-    if (ipfs && Object.keys(ipfs).length !== 0 &&
-        userSelector && userSelector.infoImage &&
-        userSelector.infoImage.newFileCID) {
-      userSelector.ipfsImage = await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption);
+    if (ipfs && userSelector && userSelector.infoImage && userSelector.infoImage.newFileCID) {
+      userSelector.ipfsImage = await getPhotoIPFS(
+        userSelector.infoImage.newFileCID,
+        downloadWithNonDecryption
+      );
     }
 
     dispatch(setUser(userSelector));
-  }
+  };
 
   useEffect(() => {
     if (userId && userId.length > 0) {
@@ -287,9 +285,16 @@ const Header = props => {
               user.connected = connectStatus.connected;
               const uList = [...usersInfoList.slice(0, index), user, ...usersInfoList.slice(index + 1)];
 
-              for(let usr of uList) {
-                if(usr && usr.infoImage && usr.infoImage.newFileCID && (!usr.ipfsImage || usr.ipfsImage === "")) {
-                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption)
+              for (let usr of uList) {
+                if (
+                  usr &&
+                  usr.infoImage &&
+                  usr.infoImage.newFileCID &&
+                  (!usr.ipfsImage || usr.ipfsImage === "")
+                ) {
+                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
+                } else {
+                  usr.ipfsImage = getDefaultAvatar();
                 }
               }
               dispatch(setUsersInfoList(uList));
@@ -310,7 +315,7 @@ const Header = props => {
   }, [unreadMessages]);
 
   useEffect(() => {
-    if (!usersInfoList || (usersInfoList.length === 0 && ipfs && Object.keys(ipfs).length !== 0)) {
+    if (!usersInfoList || (usersInfoList.length === 0 && ipfs)) {
       axios
         .post(`${URL()}/chat/getUsers`)
         .then(response => {
@@ -328,7 +333,7 @@ const Header = props => {
                 user.anonAvatar.length > 0
               ) {
                 image = `${require(`assets/anonAvatars/${user.anonAvatar}`)}`;
-              }/* else {
+              } /* else {
                 if (user.hasPhoto && user.url) {
                   image = `${user.url}?${Date.now()}`;
                 }
@@ -374,7 +379,7 @@ const Header = props => {
                   user.email ?? "",
                   user.infoImage ?? {},
                   false,
-                  user.ipfsImage ?? "",
+                  user.ipfsImage ?? ""
                 )
               );
             });
@@ -392,6 +397,8 @@ const Header = props => {
               for (let usr of u) {
                 if (usr && usr.infoImage && usr.infoImage.newFileCID) {
                   usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
+                } else {
+                  usr.ipfsImage = getDefaultAvatar();
                 }
               }
               await dispatch(setUsersInfoList(u));

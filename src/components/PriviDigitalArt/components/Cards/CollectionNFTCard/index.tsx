@@ -2,6 +2,7 @@ import React from "react";
 import Box from "shared/ui-kit/Box";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { collectionNFTCardStyles } from "./index.styles";
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default function CollectionNFTCard({
   item,
@@ -16,12 +17,14 @@ export default function CollectionNFTCard({
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
       <div className={classes.card}>
         <div className={classes.innerBox}>
-          {!hiddenHeader && (
             <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} mb={"8px"}>
-              <div className={classes.ntfName}>{item.name || item.NftId}</div>
-              <div className={classes.verifiedSection}>{item.isVerified ? "Verified" : "Unverified"}</div>
+              <Tooltip title={`${item.name} #${item.NftId}`}>
+                <div className={classes.ntfName}>{`${item.name} #${item.NftId}`}</div>
+              </Tooltip>
+              {!hiddenHeader && (
+                <div className={classes.verifiedSection}>{item.isVerified ? "Verified" : "Unverified"}</div>
+              )}
             </Box>
-          )}
           <img
             src={item?.Url ? item.Url : require(`assets/backgrounds/digital_art_1.png`)}
             alt={item.MediaName}

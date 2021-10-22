@@ -5,7 +5,7 @@ import { useTransactionResultModalStyles } from "./index.styles";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 require("dotenv").config();
-const isProd = process.env.REACT_APP_ENV === "dev";
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default function TransactionResultModal({
   open,
@@ -41,7 +41,7 @@ export default function TransactionResultModal({
 
       <Box marginX={10} className={classes.text}>
         {isSuccess ? (
-          "Everything wen’t well. You can chack your transaction link below."
+          "Everything went well. You can check your transaction link below."
         ) : (
           <>
             Unfortunatelly transaction didn’t went through, please try again later.

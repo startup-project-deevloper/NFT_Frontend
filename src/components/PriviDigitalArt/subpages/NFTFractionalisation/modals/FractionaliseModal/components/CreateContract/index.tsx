@@ -18,6 +18,7 @@ import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import SyntheticProtocolRouter from "shared/connectors/web3/contracts/SyntheticProtocolRouter.json";
+import {sanitizeIfIpfsUrl} from "shared/helpers/utils";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -130,26 +131,18 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const tSupply = toNDecimals(+supplyToKeep, decimals);
       const tokenURI = selectedNFT.tokenURI;
       const gas = await contract.methods
-        .registerNFT(
-          selectedNFT.tokenAddress,
-          selectedNFT.BlockchainId,
-          tSupply,
-          price,
-          collectionInfo.data.name,
-          collectionInfo.data.symbol,
-          tokenURI
-        )
+        .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
+          originalName: collectionInfo.data.name,
+          originalSymbol: collectionInfo.data.symbol,
+          metadata: tokenURI,
+        })
         .estimateGas({ from: account });
       const response = await contract.methods
-        .registerNFT(
-          selectedNFT.tokenAddress,
-          selectedNFT.BlockchainId,
-          tSupply,
-          price,
-          collectionInfo.data.name,
-          collectionInfo.data.symbol,
-          tokenURI
-        )
+        .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
+          originalName: collectionInfo.data.name,
+          originalSymbol: collectionInfo.data.symbol,
+          metadata: tokenURI,
+        })
         .send({ from: account, gas })
         .on("transactionHash", hash => {
           setHash(hash);
@@ -171,25 +164,27 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticID: nftInfo.syntheticTokenId,
             NFTId: selectedNFT.BlockchainId,
             NFTName: selectedNFT.MediaName,
-            NFTImageUrl: selectedNFT.Url,
+            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.Url),
             JotName: `Privi Jot ${selectedNFT.MediaName}`,
             JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
             JotAddress: collection.jotAddress,
             JotPoolAddress: collection.jotPoolAddress,
             SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
+            RedemptionPoolAddress: collection.redemptionPoolAddress,
             SyntheticNFTAddress: collection.syntheticNFTAddress,
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
             collectionName: collectionInfo.data.name,
             collectionSymbol: collectionInfo.data.symbol,
             description: collectionInfo.data.description,
-            imageUrl: collectionInfo.data.imageUrl ?? selectedNFT.Url,
+            imageUrl: sanitizeIfIpfsUrl(collectionInfo.data.imageUrl ?? selectedNFT.Url),
             quickSwapAddress: collection.jotPairAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
             lTokenLite: collection.lTokenLite_,
             pTokenLite: collection.pTokenLite_,
             perpetualPoolLiteAddress: collection.perpetualPoolLiteAddress_,
+            poolInfo: collection.poolInfo,
             isAddCollection: true,
           };
         } else {
@@ -198,7 +193,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticID: nftInfo.syntheticTokenId,
             NFTId: selectedNFT.BlockchainId,
             NFTName: selectedNFT.MediaName,
-            NFTImageUrl: selectedNFT.Url,
+            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.Url),
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
             isAddCollection: false,

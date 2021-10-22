@@ -102,7 +102,7 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
       setLoading(false);
       showAlertMessage("Offer placing failed: " + e, { variant: "error" });
     }
-  }
+  };
 
   const placeOfferOnPolygon = async () => {
     setLoading(true);
@@ -118,27 +118,25 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
       caller: account!,
     };
 
-    PolygonAPI.Exchange.PlaceERC721TokenBuyingOffer(web3, account!, placeOfferRequest).then(
-      async res => {
-        if (res) {
-          const offerId = res.data.offerId;
-          const tx = res.transaction
-          const blockchainRes = { output: { UpdateOffers: {}, Transactions: {} } };
-          blockchainRes.output.UpdateOffers[offerId] = { ...payload, Id: offerId };
-          blockchainRes.output.Transactions[tx.Id] = [tx];
-          const body = {
-            BlockchainRes: blockchainRes,
-            AdditionalData: {
-              ExchangeId: media.ExchangeData.Id,
-            },
-          };
+    PolygonAPI.Exchange.PlaceERC721TokenBuyingOffer(web3, account!, placeOfferRequest).then(async res => {
+      if (res) {
+        const offerId = res.data.offerId;
+        const tx = res.transaction;
+        const blockchainRes = { output: { UpdateOffers: {}, Transactions: {} } };
+        blockchainRes.output.UpdateOffers[offerId] = { ...payload, Id: offerId };
+        blockchainRes.output.Transactions[tx.Id] = [tx];
+        const body = {
+          BlockchainRes: blockchainRes,
+          AdditionalData: {
+            ExchangeId: media.ExchangeData.Id,
+          },
+        };
 
-          const response = await axios.post(`${URL()}/exchange/placeBuyingOffer/v2_p`, body);
-          onAfterPlaceBuyOffer(response.data);
-        }
+        const response = await axios.post(`${URL()}/exchange/placeBuyingOffer/v2_p`, body);
+        onAfterPlaceBuyOffer(response.data);
       }
-    );
-  }
+    });
+  };
 
   const onAfterPlaceBuyOffer = (resp: any) => {
     setLoading(false);
@@ -169,7 +167,9 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
     <LoadingScreen
       loading={loading}
       title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on Privi Chain.\nThis can take a moment, please be patient...`}
+      subTitle={`Transaction is proceeding on ${
+        media.BlockchainNetwork || media.blockchain || "Polygon"
+      }.\nThis can take a moment, please be patient...`}
       handleClose={() => {}}
     >
       <Modal size="medium" isOpen={open} onClose={handleClose} className={classes.modal} showCloseIcon={true}>

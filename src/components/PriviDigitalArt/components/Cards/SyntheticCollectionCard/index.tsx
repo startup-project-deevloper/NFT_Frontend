@@ -39,12 +39,7 @@ export default function SyntheticCollectionCard({ item }) {
         history.push(`/fractionalisation/collection/${item.id}`);
       }}
     >
-      <div
-        className={cls(classes.image, classes.fixed)}
-        style={{
-          backgroundImage: `url(${item.imageUrl ?? require(`assets/collectionImages/async-art.png`)})`,
-        }}
-      />
+      <img src={item.imageUrl || require(`assets/collectionImages/async-art.png`)} className={classes.image} />
       <div className={classes.info}>
         <Box className={classes.infoWrapper}>
           <Box className={classes.titleContainer}>

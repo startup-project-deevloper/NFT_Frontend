@@ -46,7 +46,7 @@ export default function NFTPodCard({ item }) {
   }, []);
 
   useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0) {
+    if (ipfs ) {
       let pod = { ...item };
       console.log("pod: ", pod)
       if (pod && pod.FundingDate && pod.FundingDate > Math.trunc(Date.now() / 1000)) {

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Box from "shared/ui-kit/Box";
 import { normalNFTCardStyles } from "../index.styles";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default function NFTCard({ item, handleSelect }) {
   const classes = normalNFTCardStyles();
@@ -33,6 +35,15 @@ export default function NFTCard({ item, handleSelect }) {
     }
   };
 
+  const imgSrc = useMemo(() => {
+    let src = item?.cid
+      ? imageIPFS
+      : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
+      ? item?.UrlMainPhoto
+      : item?.UrlMainPhoto ?? item?.Url ?? item?.url ?? require(`assets/backgrounds/digital_art_1.png`);
+    return sanitizeIfIpfsUrl(src);
+  }, [item, imageIPFS]);
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
       <div
@@ -49,21 +60,11 @@ export default function NFTCard({ item, handleSelect }) {
         <div className={item.selected ? classes.selectedCard : ""}>
           <div className={classes.innerBox}>
             <Box display="flex" justifyContent="center" width={1}>
-              <div className={classes.ntfName}>{item.MediaName}</div>
+              <Tooltip title={`${item.MediaName} #${item.BlockchainId}`}>
+                <div className={classes.ntfName}>{`${item.MediaName} #${item.BlockchainId}`}</div>
+              </Tooltip>
             </Box>
-            <img
-              src={
-                item?.cid
-                  ? imageIPFS
-                  : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
-                  ? item?.UrlMainPhoto
-                  : item?.UrlMainPhoto ??
-                    item?.Url ??
-                    item?.url ??
-                    require(`assets/backgrounds/digital_art_1.png`)
-              }
-              alt={item.MediaName}
-            />
+            <img src={imgSrc} alt={item.MediaName} />
             <div className={classes.starGroup}>
               <Box fontSize={10} mr={"2px"}>
                 🌟{" "}

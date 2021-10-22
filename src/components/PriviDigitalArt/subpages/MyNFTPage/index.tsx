@@ -84,6 +84,21 @@ const MyNFT = () => {
     setMyNFTs(newNFTs);
   };
 
+  const ownedNFTs = myNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn)
+  const toLockNFTs = myNFTs.filter(nft => !nft.isLocked)
+  const toVerifyNFTs = myNFTs.filter(nft => nft.isLocked && !nft.isVerified)
+  const toUnlockNFTs = myNFTs.filter(nft => nft.isWithdrawn && !nft.isUnlocked)
+
+  const EmptySection = () => (
+    <Box className={classes.emptyBox}>
+      {/* <Box>😞</Box> */}
+      <img src={require("assets/pixImages/not_found_wallet.png")} />
+      <Box className={classes.detailsLabel} mt={1}>
+        Not NFT found on your wallet.
+      </Box>
+    </Box>
+  )
+
   return (
     <>
       <div className={classes.content}>
@@ -117,68 +132,96 @@ const MyNFT = () => {
         <div className={classes.cardsGroup}>
           {selectedTab === "owned" && (
             <LoadingWrapper theme={"blue"} loading={loading}>
-              <div className={classes.cardsGrid}>
-                {myNFTs
-                  .filter(nft => nft.isVerified)
-                  .map((item, index) => (
-                    <MyNFTCard key={index} item={item} />
-                  ))}
-              </div>
+              {
+                !loading && !ownedNFTs.length ? (
+                  <EmptySection />
+                ) : (
+                  <div className={classes.cardsGrid}>
+                    {myNFTs
+                      .filter(nft => nft.isVerified && !nft.isWithdrawn)
+                      .map((item, index) => (
+                        <MyNFTCard key={index} item={item} />
+                    ))}
+                  </div> 
+                )
+              }
             </LoadingWrapper>
           )}
           {selectedTab === "synthetic" && (
             <Box display="flex" flexDirection="column" gridRowGap={50}>
-              <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
-                <Box className={classes.sectionTitle} color="#431AB7">
-                  NFT To Lock
-                </Box>
-                <LoadingWrapper theme={"blue"} loading={loading}>
-                  <div className={classes.cardsGrid}>
-                    {myNFTs
-                      .filter(nft => !nft.isLocked)
-                      .map((item, index) => (
-                        <MyNFTCard
-                          key={index}
-                          item={item}
-                          onLockCompleted={() => onMyNFTLocked(item)}
-                          onVerifyCompleted={() => onMyNFTVerified(item)}
-                        />
-                      ))}
-                  </div>
-                </LoadingWrapper>
-              </Box>
-              <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
-                <Box className={classes.sectionTitle} color="#F2604C">
-                  NFT To Verify
-                </Box>
-                <LoadingWrapper theme={"blue"} loading={loading}>
-                  <div className={classes.cardsGrid}>
-                    {myNFTs
-                      .filter(nft => nft.isLocked && !nft.isVerified)
-                      .map((item, index) => (
-                        <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(item)} />
-                      ))}
-                  </div>
-                </LoadingWrapper>
-              </Box>
+              {
+                !loading && !toVerifyNFTs.length && !toLockNFTs.length
+                  ? <EmptySection />
+                  : (
+                    <>
+                      {
+                        (loading || !!toLockNFTs.length) && (
+                          <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                            <Box className={classes.sectionTitle} color="#431AB7">
+                              NFT To Lock
+                            </Box>
+                            <LoadingWrapper theme={"blue"} loading={loading}>
+                              <div className={classes.cardsGrid}>
+                                {myNFTs
+                                  .filter(nft => !nft.isLocked)
+                                  .map((item, index) => (
+                                    <MyNFTCard
+                                      key={index}
+                                      item={item}
+                                      onLockCompleted={() => onMyNFTLocked(item)}
+                                      onVerifyCompleted={() => onMyNFTVerified(item)}
+                                    />
+                                  ))}
+                              </div>
+                            </LoadingWrapper>
+                          </Box>
+                        )
+                      }
+                      {
+                        (loading || !!toVerifyNFTs.length) && (
+                          <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                            <Box className={classes.sectionTitle} color="#F2604C">
+                              NFT To Verify
+                            </Box>
+                            <LoadingWrapper theme={"blue"} loading={loading}>
+                              <div className={classes.cardsGrid}>
+                                {myNFTs
+                                  .filter(nft => nft.isLocked && !nft.isVerified)
+                                  .map((item, index) => (
+                                    <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(item)} />
+                                  ))}
+                              </div>
+                            </LoadingWrapper>
+                          </Box>
+                        )
+                      }
+                    </>
+                  )
+                }
             </Box>
           )}
           {selectedTab === "withdraw" && (
             <Box display="flex" flexDirection="column" gridRowGap={50}>
-              <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
-                <Box className={classes.sectionTitle} color="#1DCC00">
-                  NFT To Unlock
-                </Box>
-                <LoadingWrapper theme={"blue"} loading={loading}>
-                  <div className={classes.cardsGrid}>
-                    {myNFTs
-                      .filter(nft => nft.isWithdrawn && !nft.isUnlocked)
-                      .map((item, index) => (
-                        <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(item)} />
-                      ))}
-                  </div>
-                </LoadingWrapper>
-              </Box>
+              {
+                !loading && !toUnlockNFTs.length ? (
+                  <EmptySection />
+                ) : (
+                  <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                    <Box className={classes.sectionTitle} color="#1DCC00">
+                      NFT To Unlock
+                    </Box>
+                    <LoadingWrapper theme={"blue"} loading={loading}>
+                      <div className={classes.cardsGrid}>
+                        {myNFTs
+                          .filter(nft => nft.isWithdrawn && !nft.isUnlocked)
+                          .map((item, index) => (
+                            <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(item)} />
+                          ))}
+                      </div>
+                    </LoadingWrapper>
+                  </Box>
+                )
+              }
             </Box>
           )}
         </div>

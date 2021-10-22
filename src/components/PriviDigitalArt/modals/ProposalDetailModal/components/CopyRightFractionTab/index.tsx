@@ -3,7 +3,7 @@ import { Box } from "@material-ui/core";
 
 import Avatar from "shared/ui-kit/Avatar";
 import { copyRightFractionTabStyles } from "./index.styles";
-import { getRandomAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getRandomAvatar } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
 import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
 import {useTypedSelector} from "../../../../../../store/reducers/Reducer";
@@ -23,7 +23,7 @@ const CopyRightFractionTab = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if(ipfs && Object.keys(ipfs).length !== 0) {
+    if(ipfs ) {
       getImages()
     }
   }, [pod, ipfs]);
@@ -61,7 +61,7 @@ const CopyRightFractionTab = (props: any) => {
             <Avatar size={34}
                     image={mediasPhotos && mediasPhotos[index + '-photo'] ?
                       mediasPhotos[index + '-photo'] :
-                      getRandomAvatar()}
+                      getDefaultAvatar()}
                     radius={25}
                     bordered
                     rounded />

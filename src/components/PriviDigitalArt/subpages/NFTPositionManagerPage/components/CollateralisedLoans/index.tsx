@@ -1,53 +1,26 @@
 import React, { useEffect, useState } from "react";
-import Axios from "axios";
-import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { useHistory } from "react-router";
 
 import { useMediaQuery } from "@material-ui/core";
 
-import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import RepayLoanModal from "components/PriviDigitalArt/modals/RepayLoanModal";
 import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundsModal";
-import URL from "shared/functions/getURL";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { getUser } from "store/selectors";
 import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
-import useIPFS from "shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../../NFTLoansPage/index.styles";
 
-const PositionsManager = () => {
+const CollateralisedLoans = (props) => {
   const classes = useNFTLoansPageStyles();
 
   const history = useHistory();
-  const userSelector = useSelector(getUser);
-
-  const [positions, setPositions] = useState<any[]>([]);
-  const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
+  const {positions, isDataLoading, loadData} = props;
   const [tableData, setTableData] = useState<Array<Array<CustomTableCellInfo>>>([]);
   const isMediumScreen = useMediaQuery("(max-width: 1000px)");
-
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      return "data:image/png;base64," + base64String;
-    }
-    return "";
-  };
 
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
@@ -80,41 +53,6 @@ const PositionsManager = () => {
       headerWidth: isMediumScreen ? 50 : 200,
     },
   ];
-
-  useEffect(() => {
-    if (userSelector?.id && Object.keys(ipfs).length) {
-      loadData();
-    }
-  }, [userSelector, ipfs]);
-
-  const loadData = () => {
-    setIsDataLoading(true);
-    Axios.get(
-      `${URL()}/nftLoan/getUserNFTLoans/${
-        "0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
-      }`
-    )
-      .then(async ({ data }) => {
-        if (data.success) {
-          const postionsData = await Promise.all(
-            data.data?.map(async nft => {
-              const cidUrl = nft.media?.cid ? await getImageIPFS(nft.media?.cid) : "";
-              if (cidUrl) {
-                nft.media["cidUrl"] = cidUrl;
-              }
-              return nft;
-            })
-          );
-          setPositions(postionsData || []);
-        }
-      })
-      .catch(e => {
-        console.log(e);
-      })
-      .finally(() => {
-        setIsDataLoading(false);
-      });
-  };
 
   const [openRepayLoanModal, setOpenRepayLoanModal] = useState<any | boolean>(false);
   const [openWithdrawFundsModal, setOpenWithdrawFundsModal] = useState<any | boolean>(false);
@@ -281,16 +219,12 @@ const PositionsManager = () => {
   }, [positions]);
 
   return (
-    <div className={classes.content}>
-      <Ellipse />
-
-      <BackButton dark overrideFunction={() => history.push("/loan")} />
-
-      <Box className={classes.positionTitle}>✨ Manage your positions</Box>
+    <div className={classes.content} style={{background:"#F6F5F8"}}>
+      {/* <Ellipse /> */}
 
       <LoadingWrapper loading={isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
-          <img src={require("assets/icons3d/vault.png")} alt="" className={classes.absoluteImage} />
+          {/* <img src={require("assets/icons3d/vault.png")} alt="" className={classes.absoluteImage} /> */}
           <div className={`${classes.tableContainer} position-table`}>
             <CustomTable theme="art green" headers={tableHeaders} rows={tableData} />
           </div>
@@ -316,38 +250,38 @@ const PositionsManager = () => {
   );
 };
 
-export default React.memo(PositionsManager);
+export default React.memo(CollateralisedLoans);
 
-const Ellipse = () => {
-  const classes = useNFTLoansPageStyles();
+// const Ellipse = () => {
+//   const classes = useNFTLoansPageStyles();
 
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="698"
-      height="649"
-      viewBox="0 0 698 649"
-      fill="none"
-      className={classes.ellipse2}
-    >
-      <g filter="url(#filter0_f)">
-        <ellipse cx="349" cy="300.5" rx="169" ry="168.5" fill="#DDFF57" />
-      </g>
-      <defs>
-        <filter
-          id="filter0_f"
-          x="0"
-          y="-48"
-          width="698"
-          height="697"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-          <feGaussianBlur stdDeviation="90" result="effect1_foregroundBlur" />
-        </filter>
-      </defs>
-    </svg>
-  );
-};
+//   return (
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       width="698"
+//       height="649"
+//       viewBox="0 0 698 649"
+//       fill="none"
+//       className={classes.ellipse2}
+//     >
+//       <g filter="url(#filter0_f)">
+//         <ellipse cx="349" cy="300.5" rx="169" ry="168.5" fill="#DDFF57" />
+//       </g>
+//       <defs>
+//         <filter
+//           id="filter0_f"
+//           x="0"
+//           y="-48"
+//           width="698"
+//           height="697"
+//           filterUnits="userSpaceOnUse"
+//           colorInterpolationFilters="sRGB"
+//         >
+//           <feFlood floodOpacity="0" result="BackgroundImageFix" />
+//           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+//           <feGaussianBlur stdDeviation="90" result="effect1_foregroundBlur" />
+//         </filter>
+//       </defs>
+//     </svg>
+//   );
+// };

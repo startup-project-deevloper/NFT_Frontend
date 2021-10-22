@@ -104,13 +104,7 @@ const InfoPane = React.memo(
     }, [ipfs, user, changeImageTimestamp]);
 
     const getPhotoUser = async () => {
-      if (
-        ipfs &&
-        Object.keys(ipfs).length !== 0 &&
-        userProfile &&
-        userProfile.infoImage &&
-        userProfile.infoImage.newFileCID
-      ) {
+      if (ipfs && userProfile && userProfile.infoImage && userProfile.infoImage.newFileCID) {
         setImageIPFS(await getPhotoIPFS(userProfile.infoImage.newFileCID, downloadWithNonDecryption));
       }
     };

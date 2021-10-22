@@ -257,7 +257,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   }, []);
 
   useEffect(() => {
-    if (token && token.infoImage && token.infoImage.newFileCID && ipfs && Object.keys(ipfs).length !== 0) {
+    if (token && token.infoImage && token.infoImage.newFileCID && ipfs ) {
       getImageIpfs(token.infoImage.newFileCID);
     }
   }, [token, ipfs]);

@@ -296,43 +296,18 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [sellingSupply, setSellingSupply] = React.useState<number>(-1);
 
   React.useEffect(() => {
-    let labels: any[] = [];
-    let data: any[] = [];
-    const curDate = new Date().getDate();
-    if (ownerHistory && ownerHistory.length) {
-      ownerHistory
-        .filter((item, index) => {
-          return index < curDate;
-        })
-        .map((item, index) => {
-          labels.push(index + 1);
-          data.push(item.supply);
-        });
-
-      setCurrentSupply({
-        price: ownerHistory[0].supply,
-        date: ownerHistory[0].timestamp,
-      });
-    } else {
-      labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    }
-    const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
-    newRewardConfig.configurer = configurer;
-    newRewardConfig.config.data.labels = labels;
-    newRewardConfig.config.data.datasets[0].data = data;
-    newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
-    newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
-    newRewardConfig.config.options.scales.xAxes[0].offset = false;
-    newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
-
-    setRewardConfig(newRewardConfig);
-  }, [ownerHistory]);
+    fetchOwnerHistory()
+  }, [])
 
   React.useEffect(() => {
-    handleRefresh();
+    const interval = setInterval(() => {
+      fetchOwnerHistory();
+    }, 30000);
     getJotPrice();
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [collectionId, nft]);
 
   const getJotPrice = async () => {
@@ -357,31 +332,70 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     nft.JotAddress;
   };
 
+  const fetchOwnerHistory = async () => {
+    const response = await getSyntheticNFTTransactions(collectionId, nft.SyntheticID);
+    if (response.success) {
+      setTransList(
+        response.data
+          .map(txn => ({
+            type: "Buy",
+            tokenAmount: txn.Amount,
+            value: +txn.Amount * (+nft.Price || 1),
+            account: txn.To
+              ? isMobileScreen
+                ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
+                : txn.To
+              : "",
+            time: txn.Date,
+            hash: txn.Id,
+          }))
+          .reverse()
+      );
+    }
+    const ownerHisotryResponse = await getSyntheticNFTOwnerHistory(collectionId, nft.SyntheticID);
+    if (ownerHisotryResponse.success) {
+      const ownerHistoryRes = ownerHisotryResponse.data.reverse();
+
+      let labels: any[] = [];
+      let data: any[] = [];
+      const curDate = new Date().getDate();
+      if (ownerHistoryRes && ownerHistoryRes.length !== ownerHistory.length) {
+        if (ownerHistoryRes && ownerHistoryRes.length) {
+          ownerHistoryRes
+            .filter((item, index) => {
+              return index < curDate;
+            })
+            .forEach((item, index) => {
+              labels.push(index + 1);
+              data.push(item.supply);
+            });
+
+          setCurrentSupply({
+            price: ownerHistoryRes[0].supply,
+            date: ownerHistoryRes[0].timestamp,
+          });
+        } else {
+          labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        }
+        const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
+        newRewardConfig.configurer = configurer;
+        newRewardConfig.config.data.labels = labels;
+        newRewardConfig.config.data.datasets[0].data = data;
+        newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
+        newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
+        newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
+        newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
+        newRewardConfig.config.options.scales.xAxes[0].offset = false;
+        newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
+
+        setOwnerHistory(ownerHistoryRes);
+        setRewardConfig(newRewardConfig);
+      }
+    }
+  }
+
   const handleRefresh = React.useCallback(() => {
     (async () => {
-      const response = await getSyntheticNFTTransactions(collectionId, nft.SyntheticID);
-      if (response.success) {
-        setTransList(
-          response.data
-            .map(txn => ({
-              type: "Buy",
-              tokenAmount: txn.Amount,
-              value: +txn.Amount * (+nft.Price || 1),
-              account: txn.To
-                ? isMobileScreen
-                  ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
-                  : txn.To
-                : "",
-              time: txn.Date,
-              hash: txn.Id,
-            }))
-            .reverse()
-        );
-      }
-      const ownerHisotryResponse = await getSyntheticNFTOwnerHistory(collectionId, nft.SyntheticID);
-      if (ownerHisotryResponse.success) {
-        setOwnerHistory(ownerHisotryResponse.data.reverse());
-      }
 
       try {
         const targetChain = BlockchainNets[1];

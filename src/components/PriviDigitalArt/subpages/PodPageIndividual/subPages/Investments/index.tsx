@@ -613,14 +613,14 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                 <Box className={classes.greenBox} justifyContent="space-between">
                   <Box display="flex" alignItems="center">
                     <Box display="flex" flexDirection="column">
-                      <Box className={classes.header2} style={{ textAlign: "center", color: Color.White }}>
-                        Amount of Pod Tokens purchased
+                      <Box className={classes.header2} style={{ color: Color.White }}>
+                        Amount of Pod purchased
                       </Box>
                       <Box className={classes.header3} mt={1} style={{ color: Color.White }}>
                         {formatNumber(+podTokenBalance || 0, pod.TokenSymbol, 4)}
                       </Box>
                     </Box>
-                    <Box display="flex" flexDirection="column" ml={3}>
+                    <Box display="flex" flexDirection="column" className={classes.amountPaid}>
                       <Box className={classes.header2} style={{ color: Color.White }}>
                         Amount paid
                       </Box>
@@ -633,7 +633,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                     <SecondaryButton
                       size="medium"
                       onClick={onClaimPodTokens}
-                      style={{ background: Color.GreenLight, color: Color.Purple, border: "none" }}
+                      className={classes.greenboxButton}
                       disabled={!fundingEnded}
                     >
                       CLAIM YOUR POD TOKENS
@@ -643,7 +643,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                     <SecondaryButton
                       size="medium"
                       onClick={onRedeemBack}
-                      style={{ background: Color.GreenLight, color: Color.Purple, border: "none" }}
+                      className={classes.greenboxButton}
                     >
                       REDEEM BACK THE FUNDS
                     </SecondaryButton>
@@ -653,13 +653,13 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                   <Box className={classes.header2}>Time to finish funding</Box>
                   <Box className={classes.flexBox}>
                     <Box className={classes.timeBox}>
-                      {fundingEndTime.days} Day{fundingEndTime.days > 1 ? "s" : ""}
+                      {fundingEndTime.days} d{fundingEndTime.days > 1 ? "s" : ""}
                     </Box>
                     <Box className={classes.timeBox} ml={1}>
                       {fundingEndTime.hours} h
                     </Box>
                     <Box className={classes.timeBox} ml={1}>
-                      {fundingEndTime.minutes} min
+                      {fundingEndTime.minutes} m
                     </Box>
                     <Box className={classes.timeBox} ml={1}>
                       {fundingEndTime.seconds} s

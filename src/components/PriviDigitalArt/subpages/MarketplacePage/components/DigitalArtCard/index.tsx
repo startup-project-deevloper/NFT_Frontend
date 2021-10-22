@@ -157,7 +157,9 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
 
   const handleOpenDigitalArtModal = () => {
     if (isSignedin && media && creator) {
-      history.push(`/marketplace/${encodeURIComponent(media.token_address)}/${encodeURIComponent(media.token_id)}`);
+      history.push(
+        `/marketplace/${encodeURIComponent(media.token_address)}/${encodeURIComponent(media.token_id)}`
+      );
     }
   };
 
@@ -299,6 +301,8 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               media.exchange.price !== undefined
                 ? media.exchange.price
                 : ""}
+              &nbsp;
+              {media.exchange?.offerToken || "USDT"}
             </span>
           </div>
         )}

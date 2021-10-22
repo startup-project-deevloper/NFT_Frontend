@@ -67,6 +67,8 @@ export const ShareMediaContextProvider: React.FunctionComponent<ShareMediaContex
           setShareLink(`${getPrefixURL()}${link}`);
         } else if (subType === "NEW-PRIVI-PODS") {
           setShareLink(`${getPrefixURL()}${link}`);
+        } else if (subType === "MARKETPLACE") {
+          setShareLink(`${getPrefixURL()}${link}`);
         } else {
           setShareLink(`https://pix.privi.store/#/media/${id}`);
         }

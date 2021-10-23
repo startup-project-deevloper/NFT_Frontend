@@ -116,7 +116,7 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
             <span>
               MAX: <b>{typeUnitValue(maxJots, 1)}</b>
             </span>
-            <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => setLiquidity(jotsBalance)}>
+            <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => setLiquidity(maxJots)}>
               Add All
             </Box>
           </Box>
@@ -133,6 +133,7 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
             size="medium"
             style={{ background: "#D9F66F", color: "#431AB7", minWidth: "56%" }}
             onClick={() => onConfirm(liquidity)}
+            disabled={liquidity > maxJots}
           >
             Confirm
           </PrimaryButton>

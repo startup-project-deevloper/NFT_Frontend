@@ -295,7 +295,6 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                     fontSize: "18px",
                     color: "#431AB7",
                   }}
-                  disabled={!!collection.totalLiquidity}
                 >
                   Stake JOTs
                 </PrimaryButton>
@@ -418,8 +417,8 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
         collection={collection}
         amount={amount}
         isAdd={isAdd}
-        onCompleted={(liquidity) => {
-          setTotalLiquidity(liquidity)
+        onCompleted={liquidity => {
+          setTotalLiquidity(liquidity);
         }}
       />
     </Box>

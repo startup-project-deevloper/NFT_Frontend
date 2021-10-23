@@ -230,7 +230,7 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
       const approveResponse = await web3APIHandler.Erc20["USDT"].approve(
         web3,
         account!,
-        nft.RedemptionPoolAddress,
+        nft.SyntheticCollectionManagerAddress,
         amount
       );
       if (!approveResponse) {

@@ -36,8 +36,9 @@ export function getUnixEpochTimeStamp(value) {
 }
 
 export const sanitizeIfIpfsUrl = url => {
-  if (!url) return;
-
+  if (!url) {
+    return null;
+  }
   if (url.includes("ipfs://")) {
     return url.replace("ipfs://", "https://ipfs.io/ipfs/");
   }

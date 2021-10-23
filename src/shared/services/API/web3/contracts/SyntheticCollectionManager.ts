@@ -250,7 +250,7 @@ const syntheticCollectionManager = (network: string) => {
         console.log("Is Allowed to flip? --", isAllowedToFlip);
 
         if (!isAllowedToFlip) {
-          resolve(null);
+          resolve('not allowed');
         }
 
         console.log("Getting gas... ", prediction, tokenId);

@@ -470,6 +470,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
     const response = await web3APIHandler.SyntheticCollectionManager.addLiquidityToPool(web3, account!, nft);
     if (response.success) {
+      getJotPrice();
     } else {
     }
     setLoading(false);
@@ -968,7 +969,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          ${jotPrice}
+                          { jotPrice ? `$${jotPrice}` : 'N/A' }
                         </Box>
                       </Box>
                       <Box
@@ -1055,7 +1056,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          ${jotPrice}
+                          { jotPrice ? `$${jotPrice}` : 'N/A' }
                         </Box>
                       </Box>
                       <Box

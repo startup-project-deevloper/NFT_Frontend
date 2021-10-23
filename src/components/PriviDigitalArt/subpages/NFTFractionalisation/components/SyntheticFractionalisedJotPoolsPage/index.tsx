@@ -280,11 +280,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 </Box>
               </Grid>
               <Grid item md={9} xs={12}>
-                <PriceGraph
-                  data={jotPoolBalanceHistory}
-                  title="4245,24 USDC"
-                  subTitle="12 Sep 2021"
-                />
+                <PriceGraph data={jotPoolBalanceHistory} title="4245,24 USDC" subTitle="12 Sep 2021" />
               </Grid>
             </Grid>
             {shareAmount === 0 && (
@@ -299,6 +295,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                     fontSize: "18px",
                     color: "#431AB7",
                   }}
+                  disabled={!!collection.totalLiquidity}
                 >
                   Stake JOTs
                 </PrimaryButton>

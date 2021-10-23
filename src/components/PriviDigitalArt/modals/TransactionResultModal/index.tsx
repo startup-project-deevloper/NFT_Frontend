@@ -45,7 +45,7 @@ export default function TransactionResultModal({
         ) : (
           <>
             Unfortunatelly transaction didn’t went through, please try again later.
-            <br /> You can check your transaction link below
+            <br /> {hash ? "You can check your transaction link below" : ""}
           </>
         )}
       </Box>

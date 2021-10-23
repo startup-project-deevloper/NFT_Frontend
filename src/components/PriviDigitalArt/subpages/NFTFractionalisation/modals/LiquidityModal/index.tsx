@@ -10,6 +10,7 @@ import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { Modal } from "shared/ui-kit";
+import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
 
 export default function LiquidityModal({ open, onClose, onCompleted, amount, collection, isAdd = false }) {
   const classes = LiquidityModalStyles();
@@ -18,6 +19,7 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
   const [hash, setHash] = useState<string>("");
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const handleProceed = async () => {
     setIsLoading(true);
@@ -43,10 +45,13 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
 
         if (!contractResponse) {
           setIsLoading(false);
+          setIsSuccess(false);
+          setHash(contractResponse?.data?.hash);
           showAlertMessage("Failed to approve. Please try again", { variant: "error" });
           return;
         }
 
+        setIsSuccess(true);
         showAlertMessage("You added liquidity successuflly", { variant: "success" });
         setHash(contractResponse?.data?.hash);
         setIsLoading(false);
@@ -76,6 +81,20 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
     onClose();
   };
 
+  if (isProceeding && !isLoading) {
+    return (
+      <TransactionResultModal
+        open={true}
+        onClose={() => {
+          setIsProceeding(false);
+          onClose();
+        }}
+        isSuccess={isSuccess}
+        hash={hash}
+      />
+    )
+  }
+
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.modal}>
       <Box display="flex" flexDirection="column">
@@ -84,32 +103,12 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
             {isProceeding ? (
               <>
                 <LoadingWrapper loading={isLoading} theme="blue" iconWidth="80px" iconHeight="80px" />
-                {isLoading ? (
-                  <>
-                    <h1 className={classes.title}>{isAdd ? "Adding" : "Removing"} Liquidity</h1>
-                    <p className={classes.description}>
-                      Proceeding on Polygon Chain. <br />
-                      This can take a moment, please be patient...
-                    </p>
-                  </>
-                ) : (
-                  <Box className={classes.result}>
-                    <h1 className={classes.title}>{isAdd ? "Adding" : "Removing"} Liquidity</h1>
-                    <CopyToClipboard text={hash}>
-                      <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
-                        Hash:
-                        <Box color="#4218B5" mr={1} ml={1}>
-                          {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
-                        </Box>
-                        <CopyIcon />
-                      </Box>
-                    </CopyToClipboard>
-                    <button className={classes.checkBtn} onClick={handleLater}>
-                      Check on Polygon Scan
-                    </button>
-                  </Box>
-                )}
-              </>
+                  <h1 className={classes.title}>{isAdd ? "Adding" : "Removing"} Liquidity</h1>
+                  <p className={classes.description}>
+                    Proceeding on Polygon Chain. <br />
+                    This can take a moment, please be patient...
+                  </p>
+                </>
             ) : (
               <>
                 <img className={classes.icon} src={require("assets/icons/lock-nft-icon.png")} alt="" />

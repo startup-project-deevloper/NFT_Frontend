@@ -188,6 +188,14 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         return;
       }
 
+      if (contractResponse === 'not allowed') {
+        setOpenFlipCoinModal(false);
+        setIsFlipping(false);
+        setFlipDisabled(true);
+        showAlertMessage(`Flipping coin is not allowed`, { variant: "error" });
+        return;
+      }
+
       console.log("contractResponse... ", contractResponse);
       const { prediction, tokenId, randomResult, hash } = contractResponse;
 

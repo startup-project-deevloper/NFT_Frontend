@@ -18,7 +18,7 @@ import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import SyntheticProtocolRouter from "shared/connectors/web3/contracts/SyntheticProtocolRouter.json";
-import {sanitizeIfIpfsUrl} from "shared/helpers/utils";
+import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";

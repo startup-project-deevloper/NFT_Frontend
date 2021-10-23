@@ -272,6 +272,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     price: 0,
     date: new Date().getTime(),
   });
+  const [soldSupply, setSoldSupply] = React.useState<number>(nft.SoldSupply);
 
   const [jotPrice, setJotPrice] = React.useState<number>(0);
   const [transList, setTransList] = React.useState<any[]>(tempHistory);
@@ -417,6 +418,14 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
         if (sellingSup) {
           setSellingSupply(sellingSup);
+        }
+
+        const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
+          tokenId: nft.SyntheticID,
+        });
+
+        if (soldSupply) {
+          setSoldSupply(soldSupply);
         }
       } catch (err) {
         console.log("error", err);
@@ -834,7 +843,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     JOTs SOLD
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    {nft.SoldSupply} JOTs
+                    {soldSupply} JOTs
                   </Box>
                 </Box>
               </Box>

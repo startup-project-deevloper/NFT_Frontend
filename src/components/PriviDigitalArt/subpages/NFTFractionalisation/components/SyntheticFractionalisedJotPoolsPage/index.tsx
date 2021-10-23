@@ -169,6 +169,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const [amount, setAmount] = useState<number>(0);
   const [isAdd, setIsAdd] = useState<boolean>(false);
   const [openProceedModal, setOpenProceedModal] = useState<boolean>(false);
+  const [totalLiquidity, setTotalLiquidity] = useState<number>(collection.totalLiquidity ?? 0);
 
   const { account, library, chainId } = useWeb3React();
 
@@ -259,7 +260,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
               <Grid item md={3} xs={12}>
                 <Box className={classes.leftJots}>
                   <Box className={classes.hWrap1}>
-                    <Box className={classes.h1}>{collection.totalLiquidity ?? 0} JOTS</Box>
+                    <Box className={classes.h1}>{totalLiquidity ?? 0} JOTS</Box>
                     <Box className={classes.h5} paddingY={1}>
                       POOL TOTAL LIQUIDITY
                     </Box>
@@ -420,7 +421,9 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
         collection={collection}
         amount={amount}
         isAdd={isAdd}
-        onCompleted={() => {}}
+        onCompleted={(liquidity) => {
+          setTotalLiquidity(liquidity)
+        }}
       />
     </Box>
   );

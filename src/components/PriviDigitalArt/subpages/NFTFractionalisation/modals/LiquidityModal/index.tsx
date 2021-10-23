@@ -51,10 +51,14 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
           return;
         }
 
+        const totalLiquidityRes = await web3APIHandler.JotPool.getTotalLiquidity(web3, collection);
+        console.log('total liquidity ...', totalLiquidityRes)
+
         setIsSuccess(true);
         showAlertMessage("You added liquidity successuflly", { variant: "success" });
         setHash(contractResponse?.data?.hash);
         setIsLoading(false);
+        onCompleted(totalLiquidityRes)
       } else {
         // const gas = await contract.methods.removeLiquidity(Number(amount)).estimateGas({ from: account });
         // console.log("polygon gas", gas);

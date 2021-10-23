@@ -1101,7 +1101,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               Ownership over time
             </Box>
             <Box display="flex" flexDirection="column">
-              <h2 className={classes.graphTitle}>{currentSupply.price} USDC</h2>
+              <h2 className={classes.graphTitle}>{currentSupply.price} USDT</h2>
               <Moment format="DD MMM YYYY" className={classes.graphDesc}>
                 {currentSupply.date}
               </Moment>

@@ -103,6 +103,26 @@ const jotPool = (network: string) => {
     });
   };
 
+  const getTotalLiquidity = async (web3: Web3, collection: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { JotPoolAddress } = collection;
+        const contract = ContractInstance(web3, metadata.abi, JotPoolAddress);
+
+        const response = await contract.methods.totalLiquidity().call();
+
+        if (response) {
+          resolve(response);
+        } else {
+          resolve(null);
+        }
+      } catch (e) {
+        console.log(e);
+        resolve(null);
+      }
+    });
+  };
+
   const getReward = async (web3: Web3, collection: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
@@ -128,6 +148,7 @@ const jotPool = (network: string) => {
     getPosition,
     getLiquidityValue,
     getReward,
+    getTotalLiquidity,
   };
 };
 

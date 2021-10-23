@@ -10,6 +10,14 @@ import MyNFTCard from "components/PriviDigitalArt/components/Cards/MyNFTCard";
 import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import { myNFTStyles } from "./index.styles";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
+
+const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
+  400: 1,
+  750: 2,
+  1100: 3,
+  1420: 4,
+};
 
 const MyNFT = () => {
   const classes = myNFTStyles();
@@ -84,7 +92,8 @@ const MyNFT = () => {
     setMyNFTs(newNFTs);
   };
 
-  const ownedNFTs = myNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn)
+  // const ownedNFTs = myNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn)
+  const ownedNFTs = myNFTs
   const toLockNFTs = myNFTs.filter(nft => !nft.isLocked)
   const toVerifyNFTs = myNFTs.filter(nft => nft.isLocked && !nft.isVerified)
   const toUnlockNFTs = myNFTs.filter(nft => nft.isWithdrawn && !nft.isUnlocked)
@@ -130,12 +139,12 @@ const MyNFT = () => {
                 !loading && !ownedNFTs.length ? (
                   <EmptySection />
                 ) : (
-                  <div className={classes.cardsGrid}>
-                    {ownedNFTs
-                      .map((item, index) => (
-                        <MyNFTCard key={index} item={item} />
-                    ))}
-                  </div> 
+                  <MasonryGrid
+                    gutter={"16px"}
+                    data={ownedNFTs}
+                    renderItem={(item, index) => <MyNFTCard key={index} item={item} />}
+                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                  />
                 )
               }
             </LoadingWrapper>
@@ -153,18 +162,20 @@ const MyNFT = () => {
                             <Box className={classes.sectionTitle} color="#431AB7">
                               NFT To Lock
                             </Box>
-                            <LoadingWrapper theme={"blue"} loading={loading}>
-                              <div className={classes.cardsGrid}>
-                                {toLockNFTs
-                                  .map((item, index) => (
-                                    <MyNFTCard
-                                      key={index}
-                                      item={item}
-                                      onLockCompleted={() => onMyNFTLocked(item)}
-                                      onVerifyCompleted={() => onMyNFTVerified(item)}
-                                    />
-                                  ))}
-                              </div>
+                            <LoadingWrapper theme={"blue"} loading={loading}>                              
+                              <MasonryGrid
+                                gutter={"16px"}
+                                data={toLockNFTs}
+                                renderItem={(item, index) => (
+                                  <MyNFTCard
+                                    key={index}
+                                    item={item}
+                                    onLockCompleted={() => onMyNFTLocked(item)}
+                                    onVerifyCompleted={() => onMyNFTVerified(item)}
+                                  />
+                                )}
+                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                              />
                             </LoadingWrapper>
                           </Box>
                         )
@@ -176,12 +187,14 @@ const MyNFT = () => {
                               NFT To Verify
                             </Box>
                             <LoadingWrapper theme={"blue"} loading={loading}>
-                              <div className={classes.cardsGrid}>
-                                {toVerifyNFTs
-                                  .map((item, index) => (
-                                    <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(item)} />
-                                  ))}
-                              </div>
+                              <MasonryGrid
+                                gutter={"16px"}
+                                data={toVerifyNFTs}
+                                renderItem={(item, index) => (
+                                  <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(item)} />
+                                )}
+                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                              />
                             </LoadingWrapper>
                           </Box>
                         )
@@ -193,12 +206,14 @@ const MyNFT = () => {
                               NFT To Unlock
                             </Box>
                             <LoadingWrapper theme={"blue"} loading={loading}>
-                              <div className={classes.cardsGrid}>
-                                {toUnlockNFTs
-                                  .map((item, index) => (
-                                    <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(item)} />
-                                  ))}
-                              </div>
+                              <MasonryGrid
+                                gutter={"16px"}
+                                data={toUnlockNFTs}
+                                renderItem={(item, index) => (
+                                  <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(item)} />
+                                )}
+                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                              />
                             </LoadingWrapper>
                           </Box>
                         )

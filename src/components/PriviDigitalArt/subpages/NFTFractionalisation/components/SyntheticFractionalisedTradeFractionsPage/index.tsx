@@ -1138,6 +1138,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         onClose={() => setOpenEditSupplyModal(false)}
         collectionId={collectionId}
         nft={nft}
+        handleRefresh={handleRefresh}
       />
       <AddJOTsModal
         open={openAddJOTsModal}

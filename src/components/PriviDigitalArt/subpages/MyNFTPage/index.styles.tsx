@@ -88,6 +88,11 @@ export const myNFTStyles = makeStyles(theme => ({
   cardsGroup: {
     marginTop: 64,
     width: "100%",
+
+    "& > div": {
+      width: "100%",
+    },
+
     [theme.breakpoints.down("sm")]: {
       marginBottom: 50
     },

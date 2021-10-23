@@ -11,6 +11,7 @@ export const myNFTCardStyles = makeStyles(theme => ({
     width: "100%",
     cursor: "pointer",
     minWidth: 250,
+    maxWidth: 325,
 
     [theme.breakpoints.down(880)]: {
       minWidth: 230,

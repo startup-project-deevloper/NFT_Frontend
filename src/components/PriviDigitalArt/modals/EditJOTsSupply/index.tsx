@@ -18,7 +18,7 @@ import { CopyIcon } from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
-export default function EditJOTsModal({ open, onClose, collectionId, nft }) {
+export default function EditJOTsModal({ open, onClose, collectionId, nft, handleRefresh }) {
   const classes = EditJOTsSupplyModalStyles();
 
   const [maxSupply, setMaxSupply] = useState<number>(0);
@@ -107,12 +107,14 @@ export default function EditJOTsModal({ open, onClose, collectionId, nft }) {
       showAlertMessage("Failed to update selling supply. Please try again", { variant: "error" });
       return;
     }
-
+    
     const response = await updateSellingSupply({
       collectionId,
       syntheticId: nft.SyntheticID,
       supply: sellingSupply,
     });
+
+    await handleRefresh();
 
     setLoading(false);
 

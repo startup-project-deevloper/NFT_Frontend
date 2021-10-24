@@ -240,21 +240,17 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
     <div className={classes.card} style={{ marginBottom: heightFixed === "auction" ? 100 : 0 }}>
       <div className={classes.header}>
         <Box display="flex" alignItems="center">
-          {creator.ipfsImage ? (
-            <Avatar
-              size="small"
-              url={creator.ipfsImage}
-              alt={creator.id}
-              title={`${creator.name}`}
-              onClick={() => {
-                if (creator.id ?? creator.urlSlug) {
-                  history.push(`/${creator.urlSlug}/profile`);
-                }
-              }}
-            />
-          ) : (
-            <SkeletonAvatar width={40} height={40} animation="wave" variant="circle" />
-          )}
+          <Avatar
+            size="small"
+            url={creator.ipfsImage ?? getDefaultAvatar()}
+            alt={creator.id}
+            title={`${creator.name}`}
+            onClick={() => {
+              if (creator.id ?? creator.urlSlug) {
+                history.push(`/${creator.urlSlug}/profile`);
+              }
+            }}
+          />
           <Box display="flex" flexDirection="column" ml={1}>
             <div
               className={cls(classes.black, classes.creatorName)}

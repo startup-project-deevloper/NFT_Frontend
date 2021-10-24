@@ -950,14 +950,7 @@ const MediaPage = () => {
                   {
                     cell: (
                       <Box display="flex" flexDirection="row" alignItems="center">
-                        <Avatar
-                          size="medium"
-                          url={
-                            u?.ipfsImage
-                            ? u?.ipfsImage
-                            : getDefaultAvatar()
-                          }
-                        />
+                        <Avatar size="medium" url={u?.ipfsImage ? u?.ipfsImage : getDefaultAvatar()} />
                         <Box display="flex" flexDirection="column" alignItems="center">
                           <Text ml={1.5}>{u?.name}</Text>
                           <Text ml={1.5}>@{u?.urlSlug}</Text>
@@ -1026,14 +1019,7 @@ const MediaPage = () => {
                 {
                   cell: (
                     <Box display="flex" flexDirection="row" alignItems="center">
-                      <Avatar
-                        size="medium"
-                        url={
-                          u?.ipfsImage
-                            ? u?.ipfsImage
-                            : getDefaultAvatar()
-                        }
-                      />
+                      <Avatar size="medium" url={u?.ipfsImage ? u?.ipfsImage : getDefaultAvatar()} />
                       <Box display="flex" flexDirection="column" alignItems="center">
                         <Text ml={1.5}>{u?.name}</Text>
                         <Text ml={1.5}>@{u?.urlSlug}</Text>
@@ -2123,7 +2109,11 @@ const MediaPage = () => {
                   >
                     {!mediaImageLoaded && (
                       <Box my={1} position="absolute" top="0" left="0" width={1} maxWidth="450px">
-                        <StyledSkeleton width="100%" style={{minHeight: isMobileScreen ? "280px" : "180px"}} variant="rect" />
+                        <StyledSkeleton
+                          width="100%"
+                          style={{ minHeight: isMobileScreen ? "280px" : "180px" }}
+                          variant="rect"
+                        />
                       </Box>
                     )}
                     <img
@@ -2308,7 +2298,7 @@ const MediaPage = () => {
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
                     <img
-                      src={getChainImageUrl(media?.BlockchainNetwork || 'polygon')}
+                      src={getChainImageUrl(media?.BlockchainNetwork || media?.tag)}
                       width="32px"
                       style={{ borderRadius: "50%" }}
                     />
@@ -2829,11 +2819,7 @@ const MediaPage = () => {
                         <Grid item sm={12} md={6} lg={4} className={classes.bidderInfoItem}>
                           <Avatar
                             size="small"
-                            url={
-                              bidder?.ipfsImage
-                                ? bidder?.ipfsImage
-                                : getDefaultAvatar()
-                            }
+                            url={bidder?.ipfsImage ? bidder?.ipfsImage : getDefaultAvatar()}
                           />
                           <Box
                             display="flex"
@@ -2915,7 +2901,7 @@ const MediaPage = () => {
             {/* <Header5>{`About ${media?.CreatorName || media?.creator}`}</Header5> */}
             {/* <Text>{media?.CreatorBio}</Text> */}
             {/* <hr className={classes.divider} /> */}
-            <Header5>Rate this Digital Art</Header5>
+            <Header5>Rate this Digital Art2</Header5>
             <Grid container spacing={2}>
               {mediaRatings.map((rating, index) => (
                 <Grid item={true} key={`rating - ${index}`} xs={6} md={4} lg={2}>
@@ -2955,7 +2941,7 @@ const MediaPage = () => {
                       if (e.key === "Enter") addComment();
                     }}
                     placeHolder="Add comment..."
-                    style={{ marginBottom: 4, flex:"1", width:"auto" }}
+                    style={{ marginBottom: 4, flex: "1", width: "auto" }}
                   />
                   <Text
                     size={FontSize.S}
@@ -3003,8 +2989,7 @@ const MediaPage = () => {
                           <Avatar
                             size="medium"
                             url={
-                              comment.user &&
-                              comment.user.ipfsImage
+                              comment.user && comment.user.ipfsImage
                               // getUserAvatar({
                               //   id: comment.user.id,
                               //   anon: comment.user.anon,

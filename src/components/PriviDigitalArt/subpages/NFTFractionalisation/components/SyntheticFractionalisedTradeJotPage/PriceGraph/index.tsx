@@ -1,14 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import Box from "shared/ui-kit/Box";
-import Axios from 'axios';
 import { PriceGraphStyles } from "./index.styles";
 import * as LightweightCharts from 'lightweight-charts';
 import { Color } from "shared/ui-kit";
 import { useResizeObserver } from "./useResizeObserver";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 
-export default function PriceGraph({ jotAddress, title, subTitle }) {
+export default function PriceGraph({ graphData, title, subTitle }) {
   const classes = PriceGraphStyles();
 	const containerRef = useRef(null);
 
@@ -17,46 +15,17 @@ export default function PriceGraph({ jotAddress, title, subTitle }) {
 	const intervals = ['1H', '1D', '7D'];
 	
 	useEffect(() => {
-		(async () => {
-			const promises = [
-				Axios.get(
-					`${PriceFeed_URL()}/jot/price/hours?jotAddress=${jotAddress}`,
-					{
-						headers: {
-						Authorization: `Basic ${PriceFeed_Token()}`,
-						},
-					}
-				),
-				Axios.get(
-					`${PriceFeed_URL()}/jot/price/days?jotAddress=${jotAddress}`,
-					{
-						headers: {
-						Authorization: `Basic ${PriceFeed_Token()}`,
-						},
-					}
-				),
-				Axios.get(
-					`${PriceFeed_URL()}/jot/price/weeks?jotAddress=${jotAddress}`,
-					{
-						headers: {
-						Authorization: `Basic ${PriceFeed_Token()}`,
-						},
-					}
-				),
-			]
-			const resp = await Promise.all(promises)
-			console.log('graph data', resp)
-
+		if (graphData) {
 			const mapData: any = [
-				['1H', resp[0].data.data],
-				['1D', resp[1].data.data],
-				['7D', resp[2].data.data]
+				['1H', graphData[0].data.data],
+				['1D', graphData[1].data.data],
+				['7D', graphData[2].data.data]
 			];
 
 			// @ts-ignore
 			setSeriesData(new Map(mapData))
-		})();
-	}, [])
+		}
+	}, [graphData])
 
   useEffect(() => {
 		const createSimpleSwitcher = (items, activeItem, activeItemChangedCallback) => {
@@ -149,6 +118,10 @@ export default function PriceGraph({ jotAddress, title, subTitle }) {
 			syncToInterval(intervals[0]);
 		}
   }, [seriesesData, width, height])
+
+	if (!graphData) {
+		return null;
+	}
 
 	return (
 		<div ref={containerRef} id="price_chart" className={classes.root} style={{ width: '100%' }}>

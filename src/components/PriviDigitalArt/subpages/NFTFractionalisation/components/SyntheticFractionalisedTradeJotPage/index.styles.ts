@@ -306,4 +306,24 @@ export const syntheticFractionalisedTradeJotPageStyles = makeStyles(theme => ({
     color: "#FFF",
     margin: 0,
   },
+  noData: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 28,
+    color: "#431AB7",
+    margin: "auto",
+
+    "& img": {
+      width: "100%",
+      height: "100%",
+      maxWidth: 430,
+      marginBottom: 35,
+    },
+
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 18,
+    },
+  }
 }));

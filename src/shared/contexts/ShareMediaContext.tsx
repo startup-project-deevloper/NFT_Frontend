@@ -56,7 +56,11 @@ export const ShareMediaContextProvider: React.FunctionComponent<ShareMediaContex
     () => ({
       shareMediaToSocial(id: string, type: string = "Media", subType?: string, link?: string) {
         if (subType === "DIGITAL_ART_TYPE") {
-          setShareLink(`https://pix.privi.store/#/nft/${id}`);
+          if (link) {
+            setShareLink(`https://pix.privi.store/#/${link}`);
+          } else {
+            setShareLink(`https://pix.privi.store/#/nft/${id}`);
+          }
         } else if (subType === "DIGITAL_ART_TYPE_LOAN") {
           setShareLink(`https://pix.privi.store/#/loan/${id}`);
         } else if (subType === "SYNTHETIC_FRACTIONALISATION") {

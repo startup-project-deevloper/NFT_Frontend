@@ -153,7 +153,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           // save externally created nft to backend
           saveExternallyFetchedNfts(externallyCreatedNft);
           // set user nfts
-          const nfts = [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(item => item.Url && !(myNFTs.map(nft => nft.NftId).includes(item.BlockchainId)));
+          const nfts = [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(item => !(myNFTs.map(nft => nft.NftId).includes(item.BlockchainId)));
           setUserNFTs(nfts);
         }
         setLoadingnNFTS(false);

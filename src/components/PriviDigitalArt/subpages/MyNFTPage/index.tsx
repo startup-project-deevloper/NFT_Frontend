@@ -92,8 +92,7 @@ const MyNFT = () => {
     setMyNFTs(newNFTs);
   };
 
-  // const ownedNFTs = myNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn)
-  const ownedNFTs = myNFTs
+  const ownedNFTs = myNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn)
   const toLockNFTs = myNFTs.filter(nft => !nft.isLocked)
   const toVerifyNFTs = myNFTs.filter(nft => nft.isLocked && !nft.isVerified)
   const toUnlockNFTs = myNFTs.filter(nft => nft.isWithdrawn && !nft.isUnlocked)

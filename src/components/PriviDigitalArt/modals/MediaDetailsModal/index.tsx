@@ -19,7 +19,10 @@ import {
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getDefaultAvatar, getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import {
+  getDefaultAvatar,
+  getRandomAvatarForUserIdWithMemoization,
+} from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMediaModal";
@@ -45,8 +48,9 @@ const MediaDetailsModal = (props: any) => {
   const [isFollowing, setIsFollowing] = useState<number>(0);
 
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
-  const [openShareMenu, setOpenShareMenu] = React.useState(false);
-  const [openFractionalise, setOpenFractionalise] = React.useState(false);
+  const [openShareMenu, setOpenShareMenu] = useState(false);
+  const [openFractionalise, setOpenFractionalise] = useState(false);
+  const [showDetailsBtn, setShowDetailsBtn] = useState<boolean>(false);
 
   const { convertTokenToUSD } = useTokenConversion();
 
@@ -222,6 +226,34 @@ const MediaDetailsModal = (props: any) => {
     }
   };
 
+  useEffect(() => {
+    if (media) {
+      if (media.metadata) {
+        if (media.metadata?.external_url || media.metadata?.external_link) {
+          setShowDetailsBtn(true);
+        } else {
+          setShowDetailsBtn(false);
+        }
+      } else {
+        setShowDetailsBtn(true);
+      }
+    }
+  }, [media]);
+
+  const handleDetails = () => {
+    props.handleClose();
+    if (media.metadata) {
+      if (media.metadata?.external_url || media.metadata?.external_link) {
+        window.open(media.metadata?.external_url || media.metadata?.external_link, "_blank");
+      }
+    } else {
+      let queryParam = "";
+      if (media.tag) queryParam = `blockchainTag=${media.tag}`;
+      if (media.collection) queryParam += (queryParam ? "&" : "") + `collectionTag=${media.collection}`;
+      history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
+    }
+  };
+
   return (
     <Modal
       size="medium"
@@ -267,7 +299,10 @@ const MediaDetailsModal = (props: any) => {
         >
           <div className={classes.infoSection}>
             <Box display="flex" flexDirection="row" alignItems="center">
-              <Avatar size="medium" url={creator && creator.ipfsImage ? creator.ipfsImage : getDefaultAvatar()} />
+              <Avatar
+                size="medium"
+                url={creator && creator.ipfsImage ? creator.ipfsImage : getDefaultAvatar()}
+              />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
                 <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                   {creator?.name || media?.CreatorName || media?.creator}
@@ -398,33 +433,21 @@ const MediaDetailsModal = (props: any) => {
             </Box>
           )}
           <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={2}>
-            <PrimaryButton
-              size={mobileMatches ? "small" : "medium"}
-              onClick={() => {
-                props.handleClose();
-                if (media.metadata) {
-                  if (media.metadata?.external_url || media.metadata?.external_link) {
-                    window.open(media.metadata?.external_url || media.metadata?.external_link, "_blank");
-                  } else {
-                    showAlertMessage("There is no valid url.", { variant: "error" });
-                  }
-                } else {
-                  let queryParam = "";
-                  if (media.tag) queryParam += (queryParam ? "" : "&") + `blockchainTag=${media.tag}`;
-                  if (media.collection)
-                    queryParam += (queryParam ? "" : "&") + `collectionTag=${media.collection}`;
-                  history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
-                }
-              }}
-              style={{
-                background: "#DDFF57",
-                color: Color.Purple,
-                width: "50%",
-                marginRight: !media.Fraction && media.CreatorAddress == user.address ? "8px" : 0,
-              }}
-            >
-              See More Details
-            </PrimaryButton>
+            {showDetailsBtn && (
+              <PrimaryButton
+                size={mobileMatches ? "small" : "medium"}
+                onClick={handleDetails}
+                style={{
+                  background: "#DDFF57",
+                  color: Color.Purple,
+                  width: "50%",
+                  marginRight: !media.Fraction && media.CreatorAddress == user.address ? "8px" : 0,
+                }}
+              >
+                See More Details
+              </PrimaryButton>
+            )}
+
             {!media.Fraction && media.CreatorAddress == user.address && (
               <PrimaryButton
                 size={mobileMatches ? "small" : "medium"}

@@ -63,9 +63,7 @@ const NFTPositionManagerPage = () => {
   const loadData = () => {
     setIsDataLoading(true);
     Axios.get(
-      `${URL()}/nftLoan/getUserNFTLoans/${
-        "0xB3865aeB5ef792DD395650314C3D85e78B78B1c9" || userSelector.address
-      }`
+      `${URL()}/nftLoan/getUserNFTLoans/${userSelector.address}`
     )
       .then(async ({ data }) => {
         if (data.success) {

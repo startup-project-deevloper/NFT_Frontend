@@ -112,19 +112,16 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
       });
   };
   
-  const handleScroll = React.useCallback(
-    async e => {
-      if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
-        if (hasMoreRef.current) loadMore();
-      }
-    },
-    [hasMoreRef.current]
-  );
+  const handleScroll = async (e) => {
+    if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
+      if (hasMoreRef.current) loadMore();
+    }
+  }
 
   return (
     <>
       <Ellipse />
-      <div className={classes.content}>
+      <div className={classes.content} onScroll={handleScroll}>
         <Box display="flex" alignItems="center" width="100%" pl={isMobile ? 0 : "42px"} justifyContent={isMobile ? "center" : "flex-start"}>
           <h2>✨ NFT Loans</h2>
         </Box>

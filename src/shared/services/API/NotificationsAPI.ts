@@ -16,6 +16,7 @@ export enum NotificationItemType {
 
 export type Notification = {
   amount: number;
+  avatar?: string;
   itemId: string;
   id: string;
   onlyInformation: boolean;
@@ -24,6 +25,7 @@ export type Notification = {
   typeItemId: NotificationItemType;
   pod: string;
   follower: string;
+  user: any;
   date: number; // timestamp
   otherItemId: string;
   comment: string;

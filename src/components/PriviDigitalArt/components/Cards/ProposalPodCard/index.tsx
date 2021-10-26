@@ -9,7 +9,7 @@ import Avatar from "shared/ui-kit/Avatar";
 import Box from "shared/ui-kit/Box";
 import { ProposalPodCardStyles } from "./index.styles";
 import { useSelector } from "react-redux";
-import { priviPodVoteForPodProposal, priviPodExecutePod } from "shared/services/API";
+import { priviPodVoteForPodProposal } from "shared/services/API";
 import { RootState } from "store/reducers/Reducer";
 import TransactionProgressModal from "../../../modals/TransactionProgressModal";
 import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
@@ -39,26 +39,35 @@ export const ProposalPodCard = props => {
   const [mediasPhotos, setMediasPhotos] = useState<any[]>([]);
   const [creatorImage, setCreatorImage] = useState<any>(null);
 
-  const voteStatus = proposal && proposal.Votes && proposal.Votes[userSelector.id];
+  const [voteStatus, setVoteStatus] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setVoteStatus(proposal && proposal.Votes && proposal.Votes[userSelector.id]);
+  }, [proposal]);
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
   useEffect(() => {
-    if (ipfs ) {
+    if (ipfs) {
       getImages();
     }
   }, [pod, ipfs]);
 
   useEffect(() => {
-    if (ipfs  && creator && creator.id) {
+    if (ipfs && creator && creator.id) {
       getUserPhoto(creator);
     }
   }, [ipfs, creator]);
 
   const handleAccept = async () => {
     setOpenTransactionModal(true);
+
+    if (!library) {
+      showAlertMessage("Connect your metamask.", { variant: "error" });
+      return;
+    }
 
     const web3APIHandler = BlockchainNets[1].apiHandler;
     const web3 = new Web3(library.provider);
@@ -82,62 +91,28 @@ export const ProposalPodCard = props => {
       podId,
       id: proposal.Id,
       voter: userSelector.id,
+      podAddress: voteContractResponse.data.podAddress,
       status: true,
       type: "PIX",
     });
 
+    setVoteStatus(true);
+
     if (!voteAPIresponse.success) {
       showAlertMessage("Failed to accept the proposal", { variant: "error" });
+      setTransactionSuccess(false);
       setOpenDetailModal(false);
       return;
     }
 
-    showAlertMessage("Accepted the proposal successfully", { variant: "success" });
-
-    if (!voteAPIresponse.data.accepted) {
-      return;
-    }
-
-    // TODO: Send notification to all collabs
-
-    showAlertMessage("The Proposal has been accepted.", { variant: "success" });
-
-    handleExecute();
-  };
-
-  const handleExecute = async () => {
-    const web3APIHandler = BlockchainNets[1].apiHandler;
-    const web3 = new Web3(library.provider);
-
-    const executeContractResponse = await web3APIHandler.PodManager.executePodProposal(
-      web3,
-      account!,
-      {
-        id: parseInt(proposal.Id),
-      },
-      setHash
-    );
-
-    if (!executeContractResponse) {
-      showAlertMessage("Failed to execute the proposal. Trying again now. Please wait.", {
-        variant: "error",
-      });
-      setTransactionSuccess(false);
-      return;
-    }
     setTransactionSuccess(true);
 
-    const podAddress = executeContractResponse.data.podAddress;
+    showAlertMessage("Accepted the proposal successfully", { variant: "success" });
 
-    const executeResponse = await priviPodExecutePod({
-      podId,
-      podAddress,
-      proposalId: proposal.Id,
-      type: "PIX",
-    });
-
-    if (executeResponse.success) {
-      showAlertMessage("The Proposal has been executed.", { variant: "success" });
+    if (voteContractResponse.data.podAddress) {
+      showAlertMessage("The Proposal has been accepted.", { variant: "success" });
+      handleRefresh();
+    } else {
       handleRefresh();
     }
   };
@@ -152,6 +127,7 @@ export const ProposalPodCard = props => {
     });
 
     if (response.success) {
+      setVoteStatus(false);
       showAlertMessage("Declined the proposal successfully", { variant: "success" });
       setOpenDetailModal(false);
       handleRefresh();
@@ -191,7 +167,16 @@ export const ProposalPodCard = props => {
   return (
     <Box className={classes.root}>
       <Box className={classes.flexBox} style={{ borderBottom: "1px dashed #18181822" }} pb={2}>
-        <PrimaryButton size="small" style={{ background: Color.Purple, fontWeight: 'normal', height: 22, borderRadius: 6, lineHeight: "13px" }}>
+        <PrimaryButton
+          size="small"
+          style={{
+            background: Color.Purple,
+            fontWeight: "normal",
+            height: 22,
+            borderRadius: 6,
+            lineHeight: "13px",
+          }}
+        >
           Copyright Distribution
         </PrimaryButton>
         <Box display="flex" alignItems="center">
@@ -276,6 +261,7 @@ export const ProposalPodCard = props => {
         onClose={() => setOpenDetailModal(false)}
         handleAccept={handleAccept}
         handleDecline={handleDecline}
+        voteStatus={voteStatus}
         handleNewDistributionProposalModal={() => {
           setOpenDetailModal(false);
           handleNewProposalModal();

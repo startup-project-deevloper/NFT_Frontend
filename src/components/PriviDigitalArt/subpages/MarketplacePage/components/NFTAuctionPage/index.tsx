@@ -26,6 +26,7 @@ import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProg
 import { v4 as uuidv4 } from "uuid";
 import { getNfts } from "shared/services/API";
 import { switchNetwork } from "shared/functions/metamask";
+import { toDecimals, toNDecimals } from "shared/functions/web3";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 
@@ -147,13 +148,17 @@ const NFTAuctionPage = ({ goBack }) => {
     const web3Config = selectedChain.config;
     const web3 = new Web3(library.provider);
 
+    const decimals = await web3APIHandler.Erc20[token].decimals(web3);
     const payload = {
       tokenAddress: selectedNFT.nftCollection.address,
       tokenId: +selectedNFT.nftTokenId,
-      reservePrice: price,
+      reservePrice: toNDecimals(price, decimals),
       startTime: Math.floor(startDateTimeInMs / 1000),
       endTime: Math.floor(endDateTimeInMs / 1000),
       bidToken: web3Config.TOKEN_ADDRESSES[token],
+    };
+    const additionalData = {
+      token,
     };
 
     setOpenTransactionModal(true);
@@ -169,28 +174,36 @@ const NFTAuctionPage = ({ goBack }) => {
       selectedNFT.nftCollection.address
     ).then(resp => {
       if (resp.success) {
-        web3APIHandler.Auction.createAuction(web3, account!, payload, setHash).then(async res => {
-          if (res) {
-            setTransactionInProgress(false);
-            setTransactionSuccess(true);
+        web3APIHandler.Auction.createAuction(web3, account!, payload, additionalData, setHash).then(
+          async res => {
+            if (res) {
+              setTransactionInProgress(false);
+              setTransactionSuccess(true);
 
-            const tx = res.transaction;
+              const tx = res.transaction;
 
-            const uniqueId = uuidv4();
-            const body = {
-              auction: { id: uniqueId, owner: user.id, ...payload },
-              transaction: tx,
-              type: "PIX",
-            };
+              const uniqueId = uuidv4();
+              const body = {
+                auction: {
+                  id: uniqueId,
+                  owner: user.id,
+                  bidTokenSymbol: token,
+                  bidIncrement: Number(toDecimals(res.data?.bidIncrement, decimals)),
+                  ...payload,
+                },
+                transaction: tx,
+                type: "PIX",
+              };
 
-            const response = await Axios.post(`${URL()}/marketplace/createAuction`, body);
+              const response = await Axios.post(`${URL()}/marketplace/createAuction`, body);
 
-            onAfterCreateAuction(response.data);
-          } else {
-            setTransactionInProgress(false);
-            setTransactionSuccess(false);
+              onAfterCreateAuction(response.data);
+            } else {
+              setTransactionInProgress(false);
+              setTransactionSuccess(false);
+            }
           }
-        });
+        );
       } else {
         onAfterCreateAuction(resp);
 

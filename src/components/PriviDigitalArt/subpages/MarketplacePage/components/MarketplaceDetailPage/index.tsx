@@ -54,7 +54,7 @@ import {
   deleteSellOrder,
   cancelAuction,
   withdrawAuction,
-  getBidHistory,
+  getAuctionBidHistory,
   getAuctionTransactions,
   cancelSellingOffer,
   buyFromOffer,
@@ -84,6 +84,7 @@ import Moment from "react-moment";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { switchNetwork } from "shared/functions/metamask";
 
 const removeIcon = require("assets/icons/remove_red.png");
 const editIcon = require("assets/icons/edit_icon.svg");
@@ -471,6 +472,7 @@ const MarketplaceDetailPage = () => {
 
   const [mediaCreator, setMediaCreator] = useState<any>();
 
+  console.log(media);
   useEffect(() => {
     setOpenFilters(false);
   }, []);
@@ -692,7 +694,11 @@ const MarketplaceDetailPage = () => {
       }
       // AUCTION
       else if (media.auction) {
-        getBidHistory(media.symbol, media.Type).then(resp => {
+        getAuctionBidHistory({
+          tokenAddress: media.auction.tokenAddress,
+          tokenId: media.auction.tokenId,
+          type: "PIX",
+        }).then(resp => {
           if (resp?.success) {
             const data = resp.data;
             // set graph data
@@ -1269,17 +1275,6 @@ const MarketplaceDetailPage = () => {
     });
   };
 
-  const handleCurrentMediaAction = () => {
-    const netType = media.BlockchainNetwork;
-    if (netType === BlockchainNets[0].value) {
-      // MEDIA ACTION ON PRIVI CHAIN
-      interactOnPrivi();
-    } else if (netType === BlockchainNets[1].value) {
-      // MEDIA ACTION ON POLYGON CHAIN
-      interactOnPolygon();
-    }
-  };
-
   const handleOpenSignatureDeleteBuyOffer = offer => {
     const payload = {
       OrderId: offer.OrderId,
@@ -1288,7 +1283,7 @@ const MarketplaceDetailPage = () => {
     };
     payloadRef.current = payload;
     operationRef.current = 4;
-    handleCurrentMediaAction();
+    interactOnChain();
   };
 
   const handleOpenSignatureDeleteSellOffer = offer => {
@@ -1299,77 +1294,36 @@ const MarketplaceDetailPage = () => {
     };
     payloadRef.current = payload;
     operationRef.current = 5;
-    handleCurrentMediaAction();
-  };
-
-  // AUCTION: open wallet selection modal
-  const handleOpenWalletSelectionModal = (price: number, topBidPrice: number | "N/A") => {
-    if (topBidPrice !== "N/A" && price < topBidPrice + media?.auction.BidIncrement) {
-      showAlertMessage(
-        `Bid Amount should be higher than Top Bid Amount(${media?.auction.bidToken}${
-          topBidPrice + media?.auction.BidIncrement
-        })`,
-        { variant: "error" }
-      );
-      return;
-    }
-    setDisableBidBtn(true);
-    priceRef.current = price;
-    handlePlaceBid();
+    interactOnChain();
   };
 
   // AUCTION: bid nft with own wallet
-  const handlePlaceBid = () => {
-    const price = priceRef.current;
-    if (price > Math.max(media?.auction?.Gathered ?? 0, media?.auction?.ReservePrice ?? 0)) {
-      // setOpenConfirmPaymentModal(false);
-      const payload = {
-        MediaSymbol: media?.auction.MediaSymbol,
-        TokenSymbol: media?.auction.bidToken,
-        MediaType: media?.Type,
-        Owner: media?.auction.Owner,
-        Address: user.address,
-        Amount: price,
-      };
-      payloadRef.current = payload;
-      operationRef.current = 6;
+  const handlePlaceBid = (price: number) => {
+    const topBidPrice =
+      (media.auction.topBidInfo?.price || media.auction.reservePrice) + media.auction.bidIncrement;
+    if (price >= topBidPrice) {
       setDisableBidBtn(true);
-      handleCurrentMediaAction();
+      priceRef.current = price;
+      operationRef.current = 6;
+      interactOnChain();
     } else {
-      showAlertMessage(
-        `Bid should be greater than ${Math.max(
-          media?.auction?.Gathered ?? 0,
-          media?.auction?.ReservePrice ?? 0
-        )} ${media?.auction?.TokenSymbol}`,
-        { variant: "error" }
-      );
+      showAlertMessage(`Bid should be greater than ${topBidPrice} ${media?.auction?.bidTokenSymbol}`, {
+        variant: "error",
+      });
       setDisableBidBtn(false);
     }
   };
 
   // AUCTION: cancel auction
-  const handleOpenSignatureCancelAuction = () => {
-    const payload = {
-      MediaSymbol: media?.auction.MediaSymbol,
-      TokenSymbol: media?.auction.bidToken,
-      MediaType: media?.Type,
-      Owner: media?.auction.Owner,
-    };
-    payloadRef.current = payload;
+  const handleCancelAuction = () => {
     operationRef.current = 7;
-    handleCurrentMediaAction();
+    interactOnChain();
   };
 
   // AUCTION: withdraw auction
   const handleOpenSignatureWithdrawAuction = () => {
-    const payload = {
-      MediaSymbol: media?.auction.MediaSymbol,
-      TokenSymbol: media?.auction.bidToken,
-      Owner: media?.auction.Owner,
-    };
-    payloadRef.current = payload;
     operationRef.current = 8;
-    handleCurrentMediaAction();
+    interactOnChain();
   };
 
   // EXCHANGE: cancel selling offer (cancel exchange)
@@ -1380,7 +1334,7 @@ const MarketplaceDetailPage = () => {
     };
     payloadRef.current = payload;
     operationRef.current = 9;
-    handleCurrentMediaAction();
+    interactOnChain();
   };
 
   // EXCHANGE: buy from selling offer
@@ -1393,7 +1347,7 @@ const MarketplaceDetailPage = () => {
     };
     payloadRef.current = payload;
     operationRef.current = 10;
-    handleCurrentMediaAction();
+    interactOnChain();
   };
 
   // EXCHANGE: sell
@@ -1406,7 +1360,7 @@ const MarketplaceDetailPage = () => {
     };
     payloadRef.current = payload;
     operationRef.current = 11;
-    handleCurrentMediaAction();
+    interactOnChain();
   };
 
   // EXCHANGE: cancel buying Offer
@@ -1417,148 +1371,7 @@ const MarketplaceDetailPage = () => {
     };
     payloadRef.current = payload;
     operationRef.current = 12;
-    handleCurrentMediaAction();
-  };
-
-  // media relevant contract interaction on privi chain
-  const interactOnPrivi = () => {
-    const payload = payloadRef.current;
-    const operation = operationRef.current;
-    if (payload && operation) {
-      setLoading(true);
-      switch (operation) {
-        // FRACTIONALISE: buy fraction
-        case 1:
-          buyFraction(user.address, payload, { MediaType: media?.Type }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Fraction bought successfully", { variant: "success" });
-              loadData();
-            } else showAlertMessage("Fraction purchase failed", { variant: "error" });
-            setLoading(false);
-          });
-          break;
-        // FRACTIONALISE: delete buy offer
-        case 4:
-          deleteBuyOrder(user.address, payload, { MediaType: media.Type }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Fraction bought successfully", { variant: "success" });
-              loadData();
-            } else showAlertMessage("Fraction purchase failed", { variant: "error" });
-            setLoading(false);
-          });
-          break;
-        // FRACTIONALISE: delete sell offer
-        case 5:
-          deleteSellOrder(user.address, payload, { MediaType: media.Type }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Fraction sold successfully", { variant: "success" });
-              loadData();
-            } else showAlertMessage("Fraction selling failed", { variant: "error" });
-            setLoading(false);
-          });
-          break;
-        // AUCTION: place bid
-        case 6:
-          placeBid(user.address, payload, { MediaType: media?.Type }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Bid placed successfully", { variant: "success" });
-              handleCloseBidModal();
-              loadData();
-            } else {
-              showAlertMessage("Failed to Place a Bid", { variant: "error" });
-            }
-            setDisableBidBtn(false);
-            setLoading(false);
-          });
-          break;
-        // AUCTION: cancel
-        case 7:
-          cancelAuction(user.address, payload, { MediaType: media?.Type }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Auction cancelled successfully", { variant: "success" });
-              loadData();
-            } else {
-              showAlertMessage("Failed to cancel the auction", { variant: "error" });
-            }
-            setLoading(false);
-          });
-          break;
-        // AUCTION: withdraw
-        case 8:
-          withdrawAuction(user.address, payload, { MediaType: media?.Type }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Auction withdrawn successfully", { variant: "success" });
-              loadData();
-            } else {
-              showAlertMessage("Failed to withdraw the auction", { variant: "error" });
-            }
-            setLoading(false);
-          });
-          break;
-        // EXCHANGE: cancel
-        case 9:
-          cancelSellingOffer(user.address, payload, {
-            MediaSymbol: media.symbol,
-            MediaType: media?.Type,
-          }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Exchange cancelled successfully", { variant: "success" });
-              loadData();
-            } else {
-              showAlertMessage("Failed to cancel the exchange", { variant: "error" });
-            }
-            setLoading(false);
-          });
-          break;
-        // EXCHANGE: buy
-        case 10:
-          buyFromOffer(user.address, payload, {
-            MediaSymbol: media.symbol,
-            MediaType: media?.Type,
-          }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("NFT bought successfully", { variant: "success" });
-              loadData();
-            } else {
-              showAlertMessage("Failed to buy NFT", { variant: "error" });
-            }
-            setLoading(false);
-          });
-          break;
-        // EXCHANGE: sell
-        case 11:
-          sellFromOffer(user.address, payload, {
-            MediaSymbol: media.symbol,
-            MediaType: media?.Type,
-          }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("NFT sold successfully", { variant: "success" });
-              loadData();
-            } else {
-              showAlertMessage("Failed to sell NFT", { variant: "error" });
-            }
-            setLoading(false);
-          });
-          break;
-        // EXCHANGE: cancel buy offer
-        case 12:
-          cancelBuyingOffer(user.address, payload, {
-            MediaSymbol: media.symbol,
-            MediaType: media?.Type,
-          }).then(resp => {
-            if (resp?.success) {
-              showAlertMessage("Cancelled successfully", { variant: "success" });
-              loadData();
-            } else {
-              showAlertMessage("Failed to cancel", { variant: "error" });
-            }
-            setLoading(false);
-          });
-          break;
-      }
-    } else {
-      setDisableBidBtn(false);
-    }
+    interactOnChain();
   };
 
   const approveToken = async (apiHandler, spender, token, amount) => {
@@ -1585,17 +1398,28 @@ const MarketplaceDetailPage = () => {
   };
 
   // media relevant contract interaction on polygon chain
-  const interactOnPolygon = async () => {
+  const interactOnChain = async () => {
+    const targetChain = BlockchainNets.find(n => n.chainName === media.chainsFullName);
+
+    if (chainId != targetChain.chainId) {
+      const changed = await switchNetwork(targetChain.chainId);
+      if (!changed) {
+        showAlertMessage(`Got failed while switching over to taret network`, { variant: "error" });
+        return;
+      }
+    }
+
     const payload = payloadRef.current;
     const operation = operationRef.current;
 
-    const web3APIHandler = BlockchainNets[1].apiHandler;
-    const web3Config = BlockchainNets[1].config;
+    const web3APIHandler = targetChain.apiHandler;
+    const web3Config = targetChain.config;
 
-    if (payload && operation) {
+    if (operation) {
       setLoading(true);
       if (!web3) return;
       let request;
+      let contractParams;
       switch (operation) {
         case 1:
           break;
@@ -1608,31 +1432,33 @@ const MarketplaceDetailPage = () => {
         case 5: // FRACTIONALISE: Delete sell offer
           break;
         case 6: // AUCTION: Place bid
-          request = {
-            mediaSymbol: payload.MediaSymbol,
-            tokenSymbol: payload.TokenSymbol,
-            _address: payload.Address,
-            amount: payload.Amount,
-            fromAddress: payload.Address,
+          let decimals = await web3APIHandler.Erc20[media.auction.bidTokenSymbol].decimals(web3);
+
+          contractParams = {
+            tokenAddress: media.auction.tokenAddress,
+            tokenId: media.auction.tokenId,
+            _address: user.address,
+            amount: toNDecimals(priceRef.current, decimals),
+            fromAddress: user.address,
           };
 
           await approveToken(
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_AUCTION,
-            payload.TokenSymbol,
-            payload.Amount
+            media.auction.bidTokenSymbol,
+            priceRef.current
           );
 
-          web3APIHandler.Auction.placeBid(web3, account!, request).then(async res => {
+          web3APIHandler.Auction.placeBid(web3, account!, contractParams).then(async res => {
             if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: payload,
+              request = {
+                id: media.auction.id,
+                amount: priceRef.current,
+                bidder: user.id,
+                hash: res.transactionHash,
+                type: "PIX",
               };
-              const response = await axios.post(`${URL()}/auction/placeBid/v2_p`, body);
+              const response = await axios.post(`${URL()}/marketplace/placeBid`, request);
               if (response?.data?.success) {
                 showAlertMessage("Bid placed successfully", { variant: "success" });
                 handleCloseBidModal();
@@ -1650,20 +1476,17 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 7: // AUCTION: Cancel auction
-          request = {
-            mediaSymbol: payload.MediaSymbol,
-            tokenSymbol: payload.TokenSymbol,
+          contractParams = {
+            tokenAddress: media.auction.tokenAddress,
+            tokenId: media.auction.tokenId,
           };
-          web3APIHandler.Auction.cancelAuction(web3, account!, request).then(async res => {
+          web3APIHandler.Auction.cancelAuction(web3, account!, contractParams).then(async res => {
             if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: payload,
+              request = {
+                id: media.auction.id,
+                type: "PIX",
               };
-              const response = await axios.post(`${URL()}/auction/cancelAuction/v2_p`, body);
+              const response = await axios.post(`${URL()}/marketplace/cancelAuction`, request);
               if (response?.data?.success) {
                 showAlertMessage("Auction cancelled successfully", { variant: "success" });
                 loadData();
@@ -1679,31 +1502,28 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 8: // AUCTION: Withdraw auction
-          request = {
-            mediaSymbol: payload.MediaSymbol,
-            tokenSymbol: payload.TokenSymbol,
+          contractParams = {
+            tokenAddress: media.auction.tokenAddress,
+            tokenId: media.auction.tokenId,
           };
-          web3APIHandler.Auction.withdrawAuction(web3, account!, request).then(async res => {
+          web3APIHandler.Auction.withdrawAuction(web3, account!, contractParams).then(async res => {
             if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: payload,
+              request = {
+                id: media.auction.id,
+                type: "PIX",
               };
-              const response = await axios.post(`${URL()}/auction/withdrawAuction/v2_p`, body);
+              const response = await axios.post(`${URL()}/marketplace/withdrawAuction`, request);
               if (response?.data?.success) {
                 showAlertMessage("Auction withdrawn successfully", { variant: "success" });
                 loadData();
               } else {
-                showAlertMessage("Failed to withdraw the auction", { variant: "error" });
+                showAlertMessage("Failed to Withdraw the auction", { variant: "error" });
               }
               setLoading(false);
             } else {
               setLoading(false);
               setDisableBidBtn(false);
-              showAlertMessage("Failed to withdraw the auction", { variant: "error" });
+              showAlertMessage("Failed to Withdraw the auction", { variant: "error" });
             }
           });
           break;
@@ -2217,16 +2037,16 @@ const MarketplaceDetailPage = () => {
                             Top bid
                           </Text>
                           <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                            {`${media?.auction.bidToken} ${topBidPrice}`}
+                            {`${media?.auction.bidTokenSymbol} ${topBidPrice}`}
                           </Text>
                           <Text color={Color.Black} size={FontSize.S}>
-                            {`$(${convertTokenToUSD(media?.auction.bidToken, topBidPrice).toFixed(6)})`}
+                            {`$(${convertTokenToUSD(media?.auction.bidTokenSymbol, topBidPrice).toFixed(6)})`}
                           </Text>
                         </Box>
                       )}
                       <Box mb={1}>
                         <Text size={FontSize.S} color={Color.Black}>
-                          {`Bidding token is ${media?.auction.bidToken}`}
+                          {`Bidding token is ${media?.auction.bidTokenSymbol}`}
                         </Text>
                       </Box>
                     </>
@@ -2255,9 +2075,7 @@ const MarketplaceDetailPage = () => {
                             size={FontSize.XL}
                             bold
                             style={{ width: "100%", overflow: "hidden", textOverflow: "ellipsis" }}
-                          >{`${Math.max(media.auction.Gathered ?? 0, media.auction.resevePrice ?? 0)} ${
-                            media.auction.bidToken
-                          }`}</Text>
+                          >{`${media.auction.reservePrice ?? 0} ${media.auction.bidTokenSymbol}`}</Text>
                         </Box>
                         <Box display="flex" flexDirection="column" alignItems="flex-end" width="50%">
                           <Text color={Color.Purple} mb={0.5}>
@@ -2331,7 +2149,7 @@ const MarketplaceDetailPage = () => {
                   gridRowGap={12}
                 >
                   {media?.auction ? (
-                    media.auction.Owner !== user.address ? (
+                    media.auction.owner !== user.id ? (
                       !auctionEnded && (
                         <PrimaryButton
                           size="medium"
@@ -2348,7 +2166,7 @@ const MarketplaceDetailPage = () => {
                       )
                     ) : (
                       <div>
-                        {media.auction.Gathered ? (
+                        {media.auction.gathered ? (
                           <PrimaryButton
                             size="medium"
                             onClick={handleOpenSignatureWithdrawAuction}
@@ -2364,7 +2182,7 @@ const MarketplaceDetailPage = () => {
                         ) : null}
                         <PrimaryButton
                           size="medium"
-                          onClick={handleOpenSignatureCancelAuction}
+                          onClick={handleCancelAuction}
                           className={classes.primaryBtn}
                           style={{
                             background: "#DDFF57",
@@ -2875,9 +2693,7 @@ const MarketplaceDetailPage = () => {
             <PlaceBidModal
               isOpen={openBidModal}
               onClose={handleCloseBidModal}
-              placeBid={(price: number, topBidPrice: number | "N/A") => {
-                handleOpenWalletSelectionModal(price, topBidPrice);
-              }}
+              placeBid={handlePlaceBid}
               viewDetails={() => {
                 handleCloseBidModal();
                 handleOpenDetailModal();
@@ -2917,14 +2733,14 @@ const MarketplaceDetailPage = () => {
               onAccept={() => {}}
             />
           )}
-          {openConfirmPaymentModal && (
+          {/* {openConfirmPaymentModal && (
             <ConfirmPayment
               open={openConfirmPaymentModal}
               handleClose={() => setOpenConfirmPaymentModal(false)}
               payWithOwnWallet={handlePlaceBid}
               payWithCommunity={() => {}}
             />
-          )}
+          )} */}
           {isShowingMediaPhotoDetailModal && (
             <MediaPhotoDetailsModal
               isOpen={isShowingMediaPhotoDetailModal}
@@ -2955,7 +2771,7 @@ const MarketplaceDetailPage = () => {
             <LoadingScreen
               loading={loading}
               title={`Transaction \nin progress`}
-              subTitle={`Transaction is proceeding on ${media.BlockchainNetwork}.\nThis can take a moment, please be patient...`}
+              subTitle={`Transaction is proceeding on ${media.chainsFullName} Chain.\nThis can take a moment, please be patient...`}
               handleClose={() => setLoading(false)}
             />
           )}

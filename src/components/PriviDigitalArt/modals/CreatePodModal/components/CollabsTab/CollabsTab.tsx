@@ -6,11 +6,11 @@ import { InputBase } from "@material-ui/core";
 import { RootState } from "store/reducers/Reducer";
 import { Avatar } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
-import { getRandomAvatar, useUserAvatar } from "shared/services/user/getUserAvatar";
 import { getMatchingUsers, IAutocompleteUsers } from "shared/services/API";
 import { useTypedSelector } from "store/reducers/Reducer";
 import useIPFS from "shared/utils-IPFS/useIPFS";
-import { getUserIpfsAvatar } from "shared/services/user/getUserAvatar";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const searchIcon = require("assets/icons/search.png");
 
@@ -39,7 +39,7 @@ const CollabsTab = ({ pod, setPod }) => {
           const filteredUsers = resp.data.filter(u => u.address && u.address != user.address);
           const usersWithIPFS: IAutocompleteUsers[] = await Promise.all(
             filteredUsers.map(async (user): Promise<IAutocompleteUsers> => {
-              const avatar = await getUserIpfsAvatar(user, users, downloadWithNonDecryption);
+              const avatar = await getUserPhoto(user);
               return {
                 ...user,
                 avatar,
@@ -52,13 +52,26 @@ const CollabsTab = ({ pod, setPod }) => {
     } else setAutocompleteUsers([]);
   }, [searchValue, ipfs, user, users]);
 
+  const getUserPhoto = async (user: any) => {
+    if (user && user.infoImage && user.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
+      return imageUrl;
+    } else {
+      return getDefaultAvatar();
+    }
+  };
+
   const addAddressToSelectedList = user => {
     const newCollabs = [...pod.Collabs];
     newCollabs.push(user);
     setPod({ ...pod, Collabs: newCollabs });
   };
 
-  const avatar = useUserAvatar(user.id);
+  const removeAddressFromSelectedList = user => {
+    const newCollabs = pod.Collabs.filter(u => user.address !== u.address);
+    setPod({ ...pod, Collabs: newCollabs });
+  };
+  
   return (
     <>
       <div className={classes.inputContainer}>
@@ -172,7 +185,7 @@ const CollabsTab = ({ pod, setPod }) => {
             <div>Status</div>
           </Box>
           {pod.Collabs.map((u, index) =>
-            u.address !== user.address ? <UserTile key={`user-${index}-tile`} user={u} /> : null
+            u.address !== user.address ? <UserTile key={`user-${index}-tile`} user={u} onClick={() => removeAddressFromSelectedList(u)}/> : null
           )}
         </>
       )}
@@ -198,20 +211,11 @@ const CollabsTab = ({ pod, setPod }) => {
   );
 };
 
-const UserTile = ({ user }) => {
+const UserTile = ({ user, onClick }) => {
   const classes = collabsTabStyles();
 
-  let userName = user.name
-    ? "@" + user.urlSlug && !user.urlSlug.startsWith("Px")
-      ? user.urlSlug
-      : user.name ?? "User name"
-    : user.address ?? "";
-
-  userName = userName.length > 17 ? userName.substr(0, 14) + "..." + userName.substr(userName.length - 2, 2) : userName;
-
-  console.log(user)
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between" className={classes.userTile}>
+    <Box display="flex" alignItems="center" justifyContent="space-between" className={classes.userTile} onClick={onClick}>
       {user.name && user.imageUrl ? (
         <Box display="flex" alignItems="center">
           <Avatar
@@ -220,11 +224,11 @@ const UserTile = ({ user }) => {
             size="medium"
           />
           <Box ml="11px" color="#404658" fontSize="16px">
-            {userName}
+            {user.name ?? "User name"}
           </Box>
         </Box>
       ) : (
-        userName
+        user.address ?? ""
       )}
       <div className={classes.invitationSentBtn}>Invitation sent</div>
     </Box>

@@ -204,17 +204,15 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
   },
   tableLoansContainer: {
-
     "& .MuiTable-root": {
       borderCollapse: "separate",
-      borderSpacing: "0 10px"
+      borderSpacing: "0 10px",
     },
 
     "& .MuiTableHead-root": {
-
       "& .MuiTableRow-root": {
         backgroundColor: "transparent",
-      }
+      },
     },
 
     "& .MuiTableCell-head": {
@@ -226,7 +224,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
 
       "&:first-child": {
         paddingLeft: 25,
-      }
+      },
     },
     "& .MuiTableRow-root": {
       backgroundColor: "#white",
@@ -240,7 +238,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
           width: "fit-content",
 
           "& > div": {
-            width: "fit-content"
+            width: "fit-content",
           },
         },
       },
@@ -248,7 +246,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       "& td:last-child": {
         borderTopRightRadius: 16,
         borderBottomRightRadius: 16,
-      }
+      },
     },
   },
   tableContainer: {
@@ -370,10 +368,10 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     rowGap: 4,
     flexDirection: "column",
     marginRight: 16,
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       marginRight: 8,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       flexDirection: "column",
       rowGap: 4,
     },
@@ -381,28 +379,28 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       whiteSpace: "nowrap",
       borderRadius: 4,
       padding: "0 40px",
-      marginLeft: '0 !important',
-      [theme.breakpoints.down('md')]: {
+      marginLeft: "0 !important",
+      [theme.breakpoints.down("md")]: {
         fontSize: 12,
       },
-      [theme.breakpoints.down('sm')]: {
-        marginLeft: '0 !important',
-        marginTop: '0 !important',
+      [theme.breakpoints.down("sm")]: {
+        marginLeft: "0 !important",
+        marginTop: "0 !important",
         height: 25,
-        width: '100%',
-        lineHeight: '25px',
+        width: "100%",
+        lineHeight: "25px",
       },
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down("xs")]: {
         fontSize: 9,
         fontWeight: 400,
         height: 20,
-        lineHeight: '20px',
-        minWidth: 'unset',
-        padding: '0px 12px'
+        lineHeight: "20px",
+        minWidth: "unset",
+        padding: "0px 12px",
       },
       [theme.breakpoints.down(370)]: {
         fontSize: 8,
-      }
+      },
     },
   },
   positionButtons: {
@@ -454,6 +452,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     cursor: "pointer",
     border: "none",
     padding: "0 12px 12px",
+    position: "relative",
     [theme.breakpoints.down("sm")]: {
       marginRight: 50,
     },
@@ -461,11 +460,11 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       fontSize: 12,
       padding: "0 0 10px",
       "&:first-child": {
-        marginRight: "30px"
+        marginRight: "30px",
       },
       "&:last-child": {
-        marginRight: "0px"
-      }
+        marginRight: "0px",
+      },
     },
   },
   selectedTab: {
@@ -482,7 +481,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     padding: "5px 9px",
     width: "fit-content",
     marginBottom: 8,
-    
+
     [theme.breakpoints.down("xs")]: {
       padding: "0 5px",
       marginBottom: 4,
@@ -498,7 +497,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     color: "#431AB7",
     marginBottom: 8,
     whiteSpace: "nowrap",
-    overflow: 'hidden',
+    overflow: "hidden",
     textOverflow: "ellipsis",
 
     [theme.breakpoints.down("xs")]: {
@@ -540,7 +539,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   },
   loanMediaTextWrapper: {
     marginLeft: 16,
-    maxWidth: '100%',
+    maxWidth: "100%",
 
     [theme.breakpoints.down("sm")]: {
       maxWidth: 120,
@@ -550,5 +549,26 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       marginLeft: 8,
       maxWidth: 75,
     },
-  }
+  },
+  comingSoon: {
+    padding: "6px 9px",
+    borderRadius: 38,
+    fontSize: 11,
+    height: 23,
+    boxSizing: "border-box",
+    marginTop: -26,
+    color: "#431AB7",
+    background: "#DDFF57",
+    left: 607,
+    position: "absolute",
+    [theme.breakpoints.down(1090)]: {
+      left: "66%",
+    },
+    [theme.breakpoints.down(600)]: {
+      left: "290px",
+    },
+    [theme.breakpoints.down(400)]: {
+      left: "280px",
+    },
+  },
 }));

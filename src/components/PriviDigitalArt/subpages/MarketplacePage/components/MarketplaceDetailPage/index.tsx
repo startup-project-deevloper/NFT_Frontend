@@ -72,7 +72,7 @@ import { SharePopup } from "shared/ui-kit/SharePopup";
 import { BackButton } from "../../../../components/BackButton";
 import { MediaPhotoDetailsModal } from "../../../../modals/MediaPhotoDetailsModal";
 import DigitalArtDetailsModal from "../../../../modals/DigitalArtDetailsModal";
-import { PlaceBidModal } from "../../../../modals/PlaceBidModal";
+import { PlaceBidModal } from "../../modals/PlaceBidModal";
 import BuyNFTModal from "../../../../modals/BuyNFTModal";
 import PlaceBuyingOfferModal from "../../../../modals/PlaceBuyingOfferModal";
 import ConfirmPayment from "../../../../modals/ConfirmPayment";

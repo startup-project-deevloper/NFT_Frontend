@@ -9,7 +9,7 @@ import { useMediaQuery } from "@material-ui/core";
 type PlaceBidModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  placeBid: (price: number, topBidPrice: number | "N/A") => void;
+  placeBid: (price: number) => void;
   viewDetails: () => void;
   media?: any;
   disableBidBtn?: boolean;
@@ -25,7 +25,7 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
 }) => {
   const classes = placeBidModalStyles();
 
-  const [auctions, setAuctions] = useState<any>({});
+  const [auction, setAuction] = useState<any>({});
   const [price, setPrice] = useState<string>("");
   const [auctionEnded, setAuctionEnded] = useState<boolean>(false);
   const { convertTokenToUSD } = useTokenConversion();
@@ -41,15 +41,16 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!media || !media.Auctions) return null;
+    const initPrice = Math.max(media.auction.reservePrice ?? 0).toString();
+    setPrice(initPrice);
 
-      setAuctions(media.Auctions)
-      const initPrice = Math.max(media.Auctions.Gathered ?? 0, media.Auctions.ReservePrice ?? 0).toString();
-      setPrice(initPrice);
+    const interval = setInterval(() => {
+      if (!media || !media.auction) return null;
+
+      setAuction(media.auction);
 
       const currentDate = new Date().getTime() / 1000;
-      const diff = media.Auctions.EndTime >= currentDate ? media.Auctions.EndTime - currentDate : 0;
+      const diff = media.auction.endTime >= currentDate ? media.auction.endTime - currentDate : 0;
       setTimeFrame({
         days: Math.floor(diff / 86400),
         hours: Math.floor((diff % 86400) / 3600),
@@ -68,14 +69,6 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
     };
   }, [media]);
 
-  const bidHistory = media.BidHistory || [];
-  const image = "none";
-
-  const topBidPrice = React.useMemo(() => {
-    if (bidHistory.length === 0) return "N/A";
-    return Math.max(...bidHistory.map((history: any) => parseInt(history.price)));
-  }, [bidHistory]);
-
   const isTableScreen = useMediaQuery("(max-width:768px)");
 
   return (
@@ -91,17 +84,11 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
           onChange={handleChangePrice}
           className={classes.priceInput}
           type="number"
-          placeholder={Math.max(auctions.Gathered ?? 0, auctions.ReservePrice ?? 0).toString()}
+          placeholder={Math.max(auction.ReservePrice ?? 0).toString()}
         />
-        {/* <img
-          src={image}
-          alt={auctions?.TokenSymbol}
-          width={24}
-          height={24}
-        /> */}
-        <span>{auctions?.TokenSymbol}</span>
+        <span>{auction?.bidTokenSymbol}</span>
       </div>
-      <p className={classes.hint}>${convertTokenToUSD(auctions.TokenSymbol, Number(price) ?? 0)}</p>
+      <p className={classes.hint}>${convertTokenToUSD(auction.bidTokenSymbol, Number(price) ?? 0)}</p>
 
       <hr className={classes.dividerDashed} />
 
@@ -113,9 +100,17 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
             </span>
             Top bid
           </div>
-          <span>{`${formatNumber(auctions?.Gathered ?? 0, auctions.TokenSymbol, 4)}`}</span>
+          <span>{`${formatNumber(
+            auction.topBidInfo?.price || auction.reservePrice || 0,
+            auction.bidTokenSymbol || "USDT",
+            4
+          )}`}</span>
           <div className={classes.hint}>
-            ${convertTokenToUSD(auctions.TokenSymbol, auctions?.TopBidInfo?.Amount ?? 0)}
+            $
+            {convertTokenToUSD(
+              auction.bidTokenSymbol || "USDT",
+              auction.topBidInfo?.price || auction.reservePrice || 0
+            )}
           </div>
         </div>
         <div className={classes.auctionEnding}>
@@ -158,9 +153,7 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
           size="medium"
           className={classes.primary}
           style={{ background: "#431AB7" }}
-          onClick={() => {
-            if (price) placeBid(Number(price) ?? 0, topBidPrice);
-          }}
+          onClick={() => placeBid(Number(price || 0))}
         >
           Place A Bid
         </PrimaryButton>

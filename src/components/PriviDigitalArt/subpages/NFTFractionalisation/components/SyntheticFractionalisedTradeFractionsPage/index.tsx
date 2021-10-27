@@ -485,7 +485,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const totalJot = 10000;
-  const percentage = useMemo(() => Number(((ownerSupply || ownershipJot) / totalJot).toFixed(2)) * 100, [
+  const percentage = useMemo(() => Number(((ownerSupply === -1 ? ownershipJot : ownerSupply) / totalJot).toFixed(2)) * 100, [
     ownerSupply,
     ownershipJot,
     totalJot,

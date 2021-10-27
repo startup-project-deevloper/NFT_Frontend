@@ -224,7 +224,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             <img src={require(`assets/icons/menu_dots.png`)} alt="like" />
           </button>
           <SharePopup
-            item={{ ...media, Type: "DIGITAL_ART_TYPE" }}
+            item={{ ...media, Type: "MARKETPLACE" }}
             openMenu={openOptionsMenu}
             anchorRef={anchorShareMenuRef}
             handleCloseMenu={handleCloseOptionsMenu}

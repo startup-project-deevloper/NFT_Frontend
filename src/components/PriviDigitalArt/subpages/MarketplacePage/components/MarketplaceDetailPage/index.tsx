@@ -1859,7 +1859,7 @@ const MarketplaceDetailPage = () => {
                   </Hidden>
                 </Box>
                 <SharePopup
-                  item={media}
+                  item={{ ...media, Type: "MARKETPLACE" }}
                   openMenu={openShareMenu}
                   anchorRef={anchorShareMenuRef}
                   handleCloseMenu={handleCloseShareMenu}

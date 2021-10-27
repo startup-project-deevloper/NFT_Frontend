@@ -17,7 +17,7 @@ import TransactionProgressModal from "../TransactionProgressModal";
 const startDate = Math.floor(Date.now() / 1000 + 3600 * 24 * 7); // one week later
 
 const ProposalDetailModal = (props: any) => {
-  const { pod, proposal, txnModalOpen, closeTxnModal, txnSuccess, hash } = props;
+  const { pod, proposal, txnModalOpen, closeTxnModal, txnSuccess, hash, voteStatus } = props;
 
   const userSelector = useSelector((state: RootState) => state.user);
 
@@ -41,8 +41,6 @@ const ProposalDetailModal = (props: any) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.open]);
-
-  const voteStatus = proposal && proposal.Votes && proposal.Votes[userSelector.id];
 
   return (
     <>

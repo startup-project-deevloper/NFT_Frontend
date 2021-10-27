@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict } from "date-fns/esm";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Notification } from "shared/services/API/NotificationsAPI";
 import { getUserPhoto } from "shared/services/user/getUserPhoto";
@@ -9,6 +9,8 @@ import { RootState } from "store/reducers/Reducer";
 import { NotificationButtons } from "./NotificationButtons";
 import { NotificationContent } from "./NotificationContent/NotificationContent";
 import { ReactComponent as RemoveIcon } from "assets/icons/close.svg";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+import useIPFS from "shared/utils-IPFS/useIPFS";
 
 type NotificationsPopperContentProps = {
   notifications: Notification[];
@@ -43,6 +45,8 @@ export const NotificationsPopperContent: React.FunctionComponent<NotificationsPo
   const users = useSelector((state: RootState) => state.usersInfoList);
   const userSelector = useSelector((state: RootState) => state.user);
 
+  const { downloadWithNonDecryption } = useIPFS();
+
   const handleClickNotification = event => {
     const tagName = event.target.tagName;
     //this function has been moved to the buttons notification, otherwise the onclick
@@ -70,24 +74,38 @@ export const NotificationsPopperContent: React.FunctionComponent<NotificationsPo
   }, [notifications]);
 
   const renderNotification = (notification: Notification) => {
-    if (notification.podType && notification.podType !== 'PIX') return null
+    if (notification.podType && notification.podType !== "PIX") return null;
 
     const notificationUserId =
       notification.typeItemId === "user" ? notification.itemId : notification.follower;
     let user: any = users.find(usr => usr.id === notificationUserId);
+
+    const [avatar, setAvatar] = useState<string | undefined>("");
+
+    if (!user || !user.url) {
+      user = userSelector;
+    }
+
+    useEffect(() => {
+      (async () => {
+        if (notification.user && notification.user.infoImage && notification.user.infoImage.newFileCID) {
+          const imageUrl = await getPhotoIPFS(
+            notification.user.infoImage.newFileCID,
+            downloadWithNonDecryption
+          );
+          setAvatar(imageUrl);
+        } else {
+          setAvatar(notification.avatar);
+        }
+      })();
+    }, [notification]);
 
     return (
       <NotificationContainer key={notification.date}>
         <AvatarContainer>
           <Avatar
             noBorder={theme === "dark"}
-            url={
-              user && user.ipfsImage ?
-                user.ipfsImage :
-                theme === "dark"
-                  ? require("assets/icons3d/SuperToroid-Iridescent.png")
-                  : getUserPhoto(notificationUserId, user?.url || "")
-            }
+            url={theme === "dark" ? require("assets/icons3d/SuperToroid-Iridescent.png") : avatar}
             size="medium"
           />
         </AvatarContainer>

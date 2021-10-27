@@ -1851,29 +1851,25 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         </div>
       ) : type === 216 && podType === "PIX" ? (
         <div>
-          <b>{`@${returnNameUserFromId(follower)}`}</b>
-          {`, just created `}
-          <b>{pod}</b>
-          {` and invited you.`}
+          Congratulations, the&nbsp;<b>{pod}</b> has been approved and created. Go to{" "}
+          <strong onClick={() => history.push(`/pods/${otherItemId}`)}>{pod}</strong>
         </div>
       ) : type === 217 && podType === "PIX" ? (
         <div>
-          <b>{`@${returnNameUserFromId(follower)}`}</b>
-          {`, just created a Pod Proposal in `}
-          <b>{pod}</b>
-          {` pod.`}
+          <strong>{follower}</strong>&nbsp;just created a Pod Proposal in&nbsp;
+          <strong onClick={() => history.push(`/pods/${itemId}`)}>{pod}</strong>&nbsp;pod.
         </div>
       ) : type === 218 && podType === "PIX" ? (
         <div>
-          {`Pod Proposal in `}
-          <b>{pod}</b>
-          {` has been accepted`}
+          Pod Proposal in <b>{pod}</b> has been accepted
         </div>
       ) : type === 219 && podType === "PIX" ? (
         <div>
-          {`Pod Proposal in `}
-          <b>{pod}</b>
-          {` has been declined`}
+          Pod Proposal in <b>{pod}</b> has been declined
+        </div>
+      ) : type === 221 && podType === "PIX" ? (
+        <div>
+          <b>News!</b> <b>{follower}</b> sent <b>{amount}</b> withdraw proposal on <b>{pod}</b>.
         </div>
       ) : type === 220 ? (
         <div>
@@ -1887,10 +1883,6 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           >
             Go to NFT
           </b>
-        </div>
-      ) : type === 221 && podType === "PIX" ? (
-        <div>
-          <b>{`News! ${follower} sent ${amount} withdraw proposal on ${pod}.`}</b>
         </div>
       ) : type === 222 ? (
         <div>
@@ -1920,6 +1912,16 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         <div>
           Congratulations! The you have won the {notification.externalData.nftName} auction. Claim your NFT
           whenever you are ready.
+        </div>
+      ) : type === 229 && podType === "PIX" ? (
+        <div>
+          {follower} accepted your Pod proposal on&nbsp;
+          <b onClick={() => history.push(`/pods/${itemId}`)}>{pod}</b>&nbsp;pod.
+        </div>
+      ) : type === 230 && podType === "PIX" ? (
+        <div>
+          {follower} rejected your Pod proposal on&nbsp;
+          <b onClick={() => history.push(`/pods/${itemId}`)}>{pod}</b>&nbsp;pod.
         </div>
       ) : null}
     </>

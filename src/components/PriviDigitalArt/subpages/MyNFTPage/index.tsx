@@ -10,6 +10,14 @@ import MyNFTCard from "components/PriviDigitalArt/components/Cards/MyNFTCard";
 import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
 import { myNFTStyles } from "./index.styles";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
+
+const COLUMNS_COUNT_BREAK_POINTS_FOUR = {
+  400: 1,
+  750: 2,
+  1100: 3,
+  1420: 4,
+};
 
 const MyNFT = () => {
   const classes = myNFTStyles();
@@ -114,19 +122,13 @@ const MyNFT = () => {
             className={cls({ [classes.selectedTabSection]: selectedTab === "owned" }, classes.tabSection)}
             onClick={() => setSelectedTab("owned")}
           >
-            <span>Synthetic NFT Owned</span>
+            <span>Owned NFT</span>
           </div>
           <div
             className={cls({ [classes.selectedTabSection]: selectedTab === "synthetic" }, classes.tabSection)}
             onClick={() => setSelectedTab("synthetic")}
           >
             <span>Synthetic NFT proposal</span>
-          </div>
-          <div
-            className={cls({ [classes.selectedTabSection]: selectedTab === "withdraw" }, classes.tabSection)}
-            onClick={() => setSelectedTab("withdraw")}
-          >
-            <span>NFT withdrawals</span>
           </div>
         </div>
         <div className={classes.cardsGroup}>
@@ -136,13 +138,12 @@ const MyNFT = () => {
                 !loading && !ownedNFTs.length ? (
                   <EmptySection />
                 ) : (
-                  <div className={classes.cardsGrid}>
-                    {myNFTs
-                      .filter(nft => nft.isVerified && !nft.isWithdrawn)
-                      .map((item, index) => (
-                        <MyNFTCard key={index} item={item} />
-                    ))}
-                  </div> 
+                  <MasonryGrid
+                    gutter={"16px"}
+                    data={ownedNFTs}
+                    renderItem={(item, index) => <MyNFTCard key={index} item={item} />}
+                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                  />
                 )
               }
             </LoadingWrapper>
@@ -150,7 +151,7 @@ const MyNFT = () => {
           {selectedTab === "synthetic" && (
             <Box display="flex" flexDirection="column" gridRowGap={50}>
               {
-                !loading && !toVerifyNFTs.length && !toLockNFTs.length
+                !loading && !toVerifyNFTs.length && !toLockNFTs.length && !toUnlockNFTs.length
                   ? <EmptySection />
                   : (
                     <>
@@ -160,19 +161,20 @@ const MyNFT = () => {
                             <Box className={classes.sectionTitle} color="#431AB7">
                               NFT To Lock
                             </Box>
-                            <LoadingWrapper theme={"blue"} loading={loading}>
-                              <div className={classes.cardsGrid}>
-                                {myNFTs
-                                  .filter(nft => !nft.isLocked)
-                                  .map((item, index) => (
-                                    <MyNFTCard
-                                      key={index}
-                                      item={item}
-                                      onLockCompleted={() => onMyNFTLocked(item)}
-                                      onVerifyCompleted={() => onMyNFTVerified(item)}
-                                    />
-                                  ))}
-                              </div>
+                            <LoadingWrapper theme={"blue"} loading={loading}>                              
+                              <MasonryGrid
+                                gutter={"16px"}
+                                data={toLockNFTs}
+                                renderItem={(item, index) => (
+                                  <MyNFTCard
+                                    key={index}
+                                    item={item}
+                                    onLockCompleted={() => onMyNFTLocked(item)}
+                                    onVerifyCompleted={() => onMyNFTVerified(item)}
+                                  />
+                                )}
+                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                              />
                             </LoadingWrapper>
                           </Box>
                         )
@@ -184,13 +186,33 @@ const MyNFT = () => {
                               NFT To Verify
                             </Box>
                             <LoadingWrapper theme={"blue"} loading={loading}>
-                              <div className={classes.cardsGrid}>
-                                {myNFTs
-                                  .filter(nft => nft.isLocked && !nft.isVerified)
-                                  .map((item, index) => (
-                                    <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(item)} />
-                                  ))}
-                              </div>
+                              <MasonryGrid
+                                gutter={"16px"}
+                                data={toVerifyNFTs}
+                                renderItem={(item, index) => (
+                                  <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(item)} />
+                                )}
+                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                              />
+                            </LoadingWrapper>
+                          </Box>
+                        )
+                      }
+                      {
+                        (loading || !!toUnlockNFTs.length) && (
+                          <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                            <Box className={classes.sectionTitle} color="#1DCC00">
+                              NFT To Unlock
+                            </Box>
+                            <LoadingWrapper theme={"blue"} loading={loading}>
+                              <MasonryGrid
+                                gutter={"16px"}
+                                data={toUnlockNFTs}
+                                renderItem={(item, index) => (
+                                  <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(item)} />
+                                )}
+                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                              />
                             </LoadingWrapper>
                           </Box>
                         )
@@ -198,30 +220,6 @@ const MyNFT = () => {
                     </>
                   )
                 }
-            </Box>
-          )}
-          {selectedTab === "withdraw" && (
-            <Box display="flex" flexDirection="column" gridRowGap={50}>
-              {
-                !loading && !toUnlockNFTs.length ? (
-                  <EmptySection />
-                ) : (
-                  <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
-                    <Box className={classes.sectionTitle} color="#1DCC00">
-                      NFT To Unlock
-                    </Box>
-                    <LoadingWrapper theme={"blue"} loading={loading}>
-                      <div className={classes.cardsGrid}>
-                        {myNFTs
-                          .filter(nft => nft.isWithdrawn && !nft.isUnlocked)
-                          .map((item, index) => (
-                            <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(item)} />
-                          ))}
-                      </div>
-                    </LoadingWrapper>
-                  </Box>
-                )
-              }
             </Box>
           )}
         </div>

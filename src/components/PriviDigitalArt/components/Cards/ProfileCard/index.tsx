@@ -456,7 +456,7 @@ export default function ProfileCard({
                 </Box>
 
                 <Box display="flex" alignItems="flex-start" justifyContent="space-between" width="100%">
-                  <Box>
+                  {/* <Box>
                     <Box fontSize="14px">Price</Box>
                     <Box>
                       {`${
@@ -472,7 +472,7 @@ export default function ProfileCard({
                           : ""
                       }`}
                     </Box>
-                  </Box>
+                  </Box> */}
                   <Box>
                     <Box fontSize="14px">Bid</Box>
                     {item.Auctions ? (

@@ -82,7 +82,7 @@ export default ({
           )}
         </Box>
       </div>
-      <div style={{ width: "100%", padding: "0 24px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }} onScroll={handleScroll}>
+      <div style={{ width: "100%", padding: "0 24px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }}>
         <div className={classes.positionTitle}>✨ Hottest Loans</div>
         <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
           <div className={classes.artCards}>

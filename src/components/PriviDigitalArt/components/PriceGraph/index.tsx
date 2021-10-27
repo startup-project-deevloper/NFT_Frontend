@@ -8,7 +8,7 @@ import { Color } from "shared/ui-kit";
 import { format, addDays, setMinutes, setHours, setSeconds, setMilliseconds } from "date-fns";
 import { useResizeObserver } from "./useResizeObserver";
 
-export default function PriceGraph({ data, title, subTitle }) {
+export default function PriceGraph({ data, title, subTitle, filterDisable = false }) {
     const classes = PriceGraphStyles();
 	const containerRef = useRef(null);
 
@@ -27,9 +27,6 @@ export default function PriceGraph({ data, title, subTitle }) {
 		let month = '';
 		let week = '';
 		let year = '';
-		const yesterday = addDays(new Date(), -1);
-		const start = setSeconds(setMinutes(setHours(yesterday, 0), 0), 0);
-		const end = setMilliseconds(setSeconds(setMinutes(setHours(yesterday, 23), 59), 59), 999);
 
 		data.forEach((m) => {
 			const dayFormat = format(new Date(m.timestamp), "yyyy-MM-dd");
@@ -157,7 +154,9 @@ export default function PriceGraph({ data, title, subTitle }) {
 		}
         
         document?.getElementById('price_chart')?.appendChild(chartElement);
-        document?.getElementById('price_chart')?.appendChild(switcherElement);
+				if (!filterDisable) {
+        	document?.getElementById('price_chart')?.appendChild(switcherElement);
+				}
 
         var areaSeries: any = null;
         function syncToInterval(interval) {
@@ -177,7 +176,7 @@ export default function PriceGraph({ data, title, subTitle }) {
 		if (seriesesData) {
 			syncToInterval(intervals[0]);
 		}
-    }, [seriesesData, intervals, width, height])
+    }, [seriesesData, intervals, width, height, filterDisable])
 
     return (
 		

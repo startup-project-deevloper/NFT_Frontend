@@ -272,6 +272,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     price: 0,
     date: new Date().getTime(),
   });
+  const [soldSupply, setSoldSupply] = React.useState<number>(nft.SoldSupply);
 
   const [jotPrice, setJotPrice] = React.useState<number>(0);
   const [transList, setTransList] = React.useState<any[]>(tempHistory);
@@ -296,43 +297,18 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [sellingSupply, setSellingSupply] = React.useState<number>(-1);
 
   React.useEffect(() => {
-    let labels: any[] = [];
-    let data: any[] = [];
-    const curDate = new Date().getDate();
-    if (ownerHistory && ownerHistory.length) {
-      ownerHistory
-        .filter((item, index) => {
-          return index < curDate;
-        })
-        .map((item, index) => {
-          labels.push(index + 1);
-          data.push(item.supply);
-        });
-
-      setCurrentSupply({
-        price: ownerHistory[0].supply,
-        date: ownerHistory[0].timestamp,
-      });
-    } else {
-      labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    }
-    const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
-    newRewardConfig.configurer = configurer;
-    newRewardConfig.config.data.labels = labels;
-    newRewardConfig.config.data.datasets[0].data = data;
-    newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
-    newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
-    newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
-    newRewardConfig.config.options.scales.xAxes[0].offset = false;
-    newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
-
-    setRewardConfig(newRewardConfig);
-  }, [ownerHistory]);
+    fetchOwnerHistory()
+  }, [])
 
   React.useEffect(() => {
-    handleRefresh();
+    const interval = setInterval(() => {
+      fetchOwnerHistory();
+    }, 30000);
     getJotPrice();
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [collectionId, nft]);
 
   const getJotPrice = async () => {
@@ -357,31 +333,70 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     nft.JotAddress;
   };
 
+  const fetchOwnerHistory = async () => {
+    const response = await getSyntheticNFTTransactions(collectionId, nft.SyntheticID);
+    if (response.success) {
+      setTransList(
+        response.data
+          .map(txn => ({
+            type: "Buy",
+            tokenAmount: txn.Amount,
+            value: +txn.Amount * (+nft.Price || 1),
+            account: txn.To
+              ? isMobileScreen
+                ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
+                : txn.To
+              : "",
+            time: txn.Date,
+            hash: txn.Id,
+          }))
+          .reverse()
+      );
+    }
+    const ownerHisotryResponse = await getSyntheticNFTOwnerHistory(collectionId, nft.SyntheticID);
+    if (ownerHisotryResponse.success) {
+      const ownerHistoryRes = ownerHisotryResponse.data.reverse();
+
+      let labels: any[] = [];
+      let data: any[] = [];
+      const curDate = new Date().getDate();
+      if (ownerHistoryRes && ownerHistoryRes.length !== ownerHistory.length) {
+        if (ownerHistoryRes && ownerHistoryRes.length) {
+          ownerHistoryRes
+            .filter((item, index) => {
+              return index < curDate;
+            })
+            .forEach((item, index) => {
+              labels.push(index + 1);
+              data.push(item.supply);
+            });
+
+          setCurrentSupply({
+            price: ownerHistoryRes[0].supply,
+            date: ownerHistoryRes[0].timestamp,
+          });
+        } else {
+          labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        }
+        const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
+        newRewardConfig.configurer = configurer;
+        newRewardConfig.config.data.labels = labels;
+        newRewardConfig.config.data.datasets[0].data = data;
+        newRewardConfig.config.data.datasets[0].backgroundColor = "#908D87";
+        newRewardConfig.config.data.datasets[0].borderColor = "#DDFF57";
+        newRewardConfig.config.data.datasets[0].pointBackgroundColor = "#DDFF57";
+        newRewardConfig.config.data.datasets[0].hoverBackgroundColor = "#DDFF57";
+        newRewardConfig.config.options.scales.xAxes[0].offset = false;
+        newRewardConfig.config.options.scales.yAxes[0].ticks.display = true;
+
+        setOwnerHistory(ownerHistoryRes);
+        setRewardConfig(newRewardConfig);
+      }
+    }
+  }
+
   const handleRefresh = React.useCallback(() => {
     (async () => {
-      const response = await getSyntheticNFTTransactions(collectionId, nft.SyntheticID);
-      if (response.success) {
-        setTransList(
-          response.data
-            .map(txn => ({
-              type: "Buy",
-              tokenAmount: txn.Amount,
-              value: +txn.Amount * (+nft.Price || 1),
-              account: txn.To
-                ? isMobileScreen
-                  ? `${txn.To.substr(0, 4)}...${txn.To.substr(txn.To.length - 4, 4)}`
-                  : txn.To
-                : "",
-              time: txn.Date,
-              hash: txn.Id,
-            }))
-            .reverse()
-        );
-      }
-      const ownerHisotryResponse = await getSyntheticNFTOwnerHistory(collectionId, nft.SyntheticID);
-      if (ownerHisotryResponse.success) {
-        setOwnerHistory(ownerHisotryResponse.data.reverse());
-      }
 
       try {
         const targetChain = BlockchainNets[1];
@@ -403,6 +418,14 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
         if (sellingSup) {
           setSellingSupply(sellingSup);
+        }
+
+        const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
+          tokenId: nft.SyntheticID,
+        });
+
+        if (soldSupply) {
+          setSoldSupply(soldSupply);
         }
       } catch (err) {
         console.log("error", err);
@@ -447,6 +470,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
     const response = await web3APIHandler.SyntheticCollectionManager.addLiquidityToPool(web3, account!, nft);
     if (response.success) {
+      getJotPrice();
     } else {
     }
     setLoading(false);
@@ -461,7 +485,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const totalJot = 10000;
-  const percentage = useMemo(() => Number(((ownerSupply || ownershipJot) / totalJot).toFixed(2)) * 100, [
+  const percentage = useMemo(() => Number(((ownerSupply === -1 ? ownershipJot : ownerSupply) / totalJot).toFixed(2)) * 100, [
     ownerSupply,
     ownershipJot,
     totalJot,
@@ -820,7 +844,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     JOTs SOLD
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    {nft.SoldSupply} JOTs
+                    {soldSupply} JOTs
                   </Box>
                 </Box>
               </Box>
@@ -945,7 +969,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          ${jotPrice}
+                          { jotPrice ? `$${jotPrice}` : 'N/A' }
                         </Box>
                       </Box>
                       <Box
@@ -1032,7 +1056,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          ${jotPrice}
+                          { jotPrice ? `$${jotPrice}` : 'N/A' }
                         </Box>
                       </Box>
                       <Box
@@ -1047,6 +1071,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           size="medium"
                           style={{ background: "#431AB7", color: Color.White }}
                           onClick={handleBuyOnQuickSwap}
+                          disabled={!(+nft.totalLiquidity)}
                         >
                           Buy on Quickswap
                         </PrimaryButton>
@@ -1077,7 +1102,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               Ownership over time
             </Box>
             <Box display="flex" flexDirection="column">
-              <h2 className={classes.graphTitle}>{currentSupply.price} USDC</h2>
+              <h2 className={classes.graphTitle}>{currentSupply.price} USDT</h2>
               <Moment format="DD MMM YYYY" className={classes.graphDesc}>
                 {currentSupply.date}
               </Moment>
@@ -1114,6 +1139,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         onClose={() => setOpenEditSupplyModal(false)}
         collectionId={collectionId}
         nft={nft}
+        handleRefresh={handleRefresh}
       />
       <AddJOTsModal
         open={openAddJOTsModal}

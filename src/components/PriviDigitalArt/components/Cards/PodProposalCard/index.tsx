@@ -10,10 +10,11 @@ import { Color, Gradient, PrimaryButton } from "shared/ui-kit";
 import Avatar from "shared/ui-kit/Avatar";
 import { getUsersInfoList } from "store/selectors";
 import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
-import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "../../../../../shared/ipfs/get";
-import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { onGetNonDecrypt } from "shared/ipfs/get";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 import { PodProposalCardStyles } from "./index.styles";
+import SkeletonBox from "shared/ui-kit/SkeletonBox";
 
 export default function PodProposalCard({ pod }) {
   const history = useHistory();
@@ -21,11 +22,8 @@ export default function PodProposalCard({ pod }) {
   const styles = PodProposalCardStyles();
 
   const users = useTypedSelector(getUsersInfoList);
-  const user = useTypedSelector(state => state.user);
 
-  const parentNode = useRef<any>();
-
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
   const [imageIPFS, setImageIPFS] = useState<any>(null);
   const [imageCreatorIPFS, setImageCreatorIPFS] = useState<any>(null);
 
@@ -42,16 +40,12 @@ export default function PodProposalCard({ pod }) {
   }, []);
 
   useEffect(() => {
-    if (pod && ipfs ) {
-      if (pod && pod.InfoImage && pod.InfoImage.newFileCID) {
-        getImageIPFS(pod.InfoImage.newFileCID);
-      }
-      if (pod && pod.CreatorId) {
-        getImageCreatorIPFS(pod.CreatorId);
-      }
+    if (pod && isIPFSAvailable) {
+      getImageIPFS(pod.InfoImage?.newFileCID);
+      getImageCreatorIPFS(pod.CreatorId);
       setPodData(pod);
     }
-  }, [pod, ipfs]);
+  }, [pod, isIPFSAvailable]);
 
   const getImageCreatorIPFS = async (userId: string) => {
     let creatorFound = users.find(user => user.id === userId);
@@ -59,6 +53,8 @@ export default function PodProposalCard({ pod }) {
     if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
       setImageCreatorIPFS(imageUrl);
+    } else {
+      setImageCreatorIPFS(getDefaultAvatar());
     }
   };
 
@@ -116,23 +112,26 @@ export default function PodProposalCard({ pod }) {
     if (files) {
       let base64String = _arrayBufferToBase64(files.content);
       setImageIPFS("data:image/png;base64," + base64String);
+    } else {
+      setImageIPFS(getDefaultBGImage());
     }
   };
 
   return (
     <Box className={styles.podCard}>
       <Box className={styles.podImageContent}>
-        <div
-          className={styles.podImage}
+        <SkeletonBox
+          image={imageIPFS}
+          loading={!imageIPFS}
+          width={1}
+          height={1}
           style={{
-            backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getDefaultBGImage()})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",
             overflow: "hidden",
           }}
-          ref={parentNode}
-        ></div>
+        />
       </Box>
       <Box width={1} ml={2}>
         <Box display="flex">
@@ -147,19 +146,23 @@ export default function PodProposalCard({ pod }) {
         </Box>
         {podData.Creator && (
           <Box display="flex" alignItems="center" mt={2}>
-            <Box
-              onClick={() => {
-                history.push(`/trax/profile/${podData.CreatorId}`);
-                dispatch(setSelectedUser(podData.CreatorId));
+            <SkeletonBox
+              className={styles.avatar}
+              loading={!imageCreatorIPFS}
+              image={imageCreatorIPFS}
+              style={{
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                cursor: "pointer",
               }}
-            >
-              <Avatar
-                size={36}
-                rounded
-                bordered
-                image={imageCreatorIPFS ? imageCreatorIPFS : getDefaultAvatar()}
-              />
-            </Box>
+              onClick={() => {
+                if (podData.CreatorId) {
+                  history.push(`/artists/${podData.CreatorId}`);
+                  dispatch(setSelectedUser(podData.CreatorId));
+                }
+              }}
+            />
             <Box ml={2} className={styles.header1} style={{ color: "#707582" }}>
               Sent by
             </Box>

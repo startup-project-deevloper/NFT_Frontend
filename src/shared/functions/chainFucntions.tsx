@@ -11,7 +11,6 @@ export const getLoanChainImageUrl = (chain, blockchainNetwork) => {
 
 export const getChainImageUrl = blockchain => {
   if (!blockchain) {
-    // return require('assets/tokenImages/PRIVI.png');
     return "";
   }
   if (blockchain.toLowerCase().includes("privi")) {
@@ -28,8 +27,17 @@ export const getChainImageUrl = blockchain => {
     return require("assets/tokenImages/HICETNUNC.png");
   } else if (blockchain.toLowerCase().includes("binance")) {
     return require("assets/tokenImages/BNB.png");
+  } else if (blockchain.toLowerCase().includes("zora")) {
+    return require("assets/priviIcons/zora_icon.png");
+  } else if (blockchain.toLowerCase().includes("opensea")) {
+    return require("assets/priviIcons/opensea_icon.png");
+  } else if (blockchain.toLowerCase().includes("mirror")) {
+    return require("assets/priviIcons/mirror_icon.png");
+  } else if (blockchain.toLowerCase().includes("topshot")) {
+    return require("assets/priviIcons/top_shot_icon.png");
+  } else if (blockchain.toLowerCase().includes("foundation")) {
+    return require("assets/priviIcons/foundation_icon.png");
   }
-  // return require("assets/tokenImages/PRIVI.png");
 
   return require("assets/tokenImages/ETH.png");
 };

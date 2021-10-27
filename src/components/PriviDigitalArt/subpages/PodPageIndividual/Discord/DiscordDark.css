@@ -63,9 +63,8 @@
 
 .podDiscordFullPage.dark .podInputDiscordChat {
   width: 100%;
-  background: rgba(218, 230, 229, 0.4);
   /* White */
-  border: 1px solid #DADADB;
+  border: 1px solid #431AB7;
   padding: 7px 16px;
   border-radius: 8px;
 }

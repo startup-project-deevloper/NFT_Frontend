@@ -7,12 +7,20 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(2.5),
     display: "flex",
     padding: theme.spacing(2),
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: "-16px",
+      marginRight:"-16px"
+    }
   },
   podImageContent: {
     width: "224px",
     height: "171px",
-    borderRadius: theme.spacing(2),
-    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.down("xs")]: {
+      width: "138px",
+      height: "100%"
+    },
   },
   podImage: {
     width: "100%",
@@ -26,6 +34,9 @@ export const PodProposalCardStyles = makeStyles(theme => ({
   header2: {
     fontSize: 18,
     fontWeight: 700,
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14
+    },
   },
   header3: {
     fontSize: 14,
@@ -46,5 +57,21 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  botWrap: {
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"space-between",
+    marginTop: 16,
+    [theme.breakpoints.down("sm")]: {
+      flexDirection:"column",
+      alignItems:"start",
+      marginTop: 0
+    },
+  },
+  username:{
+    [theme.breakpoints.down("xs")]: {
+      maxWidth: 80
+    }
   },
 }));

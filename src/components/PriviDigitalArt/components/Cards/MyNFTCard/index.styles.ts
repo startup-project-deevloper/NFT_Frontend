@@ -6,7 +6,7 @@ export const myNFTCardStyles = makeStyles(theme => ({
     backdropFilter: "blur(4.82073px)",
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 91%, 0% 80%, 0% 0%)",
-    padding: 16,
+    padding: 10,
     height: 516,
     width: "100%",
     cursor: "pointer",
@@ -29,7 +29,7 @@ export const myNFTCardStyles = makeStyles(theme => ({
     boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 90%, 0% 80%, 0% 0%)",
-    padding: 16,
+    padding: 10,
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -66,7 +66,6 @@ export const myNFTCardStyles = makeStyles(theme => ({
     lineHeight: "16px",
     textTransform: "capitalize",
     color: '#1A1B1C',
-    marginBottom: 8,
     marginRight: 8,
 
     [theme.breakpoints.down(880)]: {

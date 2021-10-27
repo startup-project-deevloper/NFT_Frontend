@@ -209,7 +209,7 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
             <h1 className={classes.title}>Lock {approveBtn ? 'new ' : ''}NFT on Ethereum</h1>
             <p className={classes.description}>
               Your NFT will be locked in a Vault on Ethereum smart contract. <br />
-              Please keep in mind this process can take x time so be patient.
+              Please keep in mind this process can take some time so be patient.
             </p>
             {approveBtn !== 0 ? (
               <Box display="flex" justifyContent="space-evenly">

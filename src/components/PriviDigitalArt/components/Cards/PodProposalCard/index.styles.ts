@@ -12,6 +12,7 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     width: "224px",
     height: "171px",
     borderRadius: theme.spacing(2),
+    overflow: "hidden",
   },
   podImage: {
     width: "100%",
@@ -32,6 +33,18 @@ export const PodProposalCardStyles = makeStyles(theme => ({
   },
   flexBox: {
     display: "flex",
+    alignItems: "center",
+  },
+  avatar: {
+    width: theme.spacing(4.5),
+    height: theme.spacing(4.5),
+    [theme.breakpoints.down("xs")]: {
+      width: 32,
+      height: 32
+    },
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
     alignItems: "center",
   },
 }));

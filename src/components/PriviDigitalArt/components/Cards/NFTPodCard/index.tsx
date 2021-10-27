@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import SvgIcon from "@material-ui/core/SvgIcon";
 import { setSelectedUser } from "store/actions/SelectedUser";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import Box from "shared/ui-kit/Box";
 import { podCardStyles } from "./index.styles";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import { ReactComponent as UserSolid } from "assets/icons/user-solid.svg";
 import { RootState, useTypedSelector } from "store/reducers/Reducer";
 import { _arrayBufferToBase64, formatNumber } from "shared/functions/commonFunctions";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
-import { getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import Axios from "axios";
 import URL from "shared/functions/getURL";
-import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
-import { Color } from "shared/ui-kit";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+import SkeletonImageBox from "shared/ui-kit/SkeletonBox";
 
 export default function NFTPodCard({ item }) {
   const { convertTokenToUSD } = useTokenConversion();
@@ -30,43 +26,85 @@ export default function NFTPodCard({ item }) {
   const user = useTypedSelector(state => state.user);
   const usersList = useSelector((state: RootState) => state.usersInfoList);
 
-  const [endTime, setEndTime] = useState<any>({ days: 22, hours: 22, minutes: 12, seconds: 10 });
-
-  const [imageLoaded, setImageLoaded] = React.useState<boolean>(false);
+  const [fundingEndTime, setFundingEndTime] = useState<any>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   const parentNode = React.useRef<any>();
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
   const [imageCreatorIPFS, setImageCreatorIPFS] = useState<any>(null);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
   useEffect(() => {
-    if (ipfs ) {
-      let pod = { ...item };
-      console.log("pod: ", pod)
-      if (pod && pod.FundingDate && pod.FundingDate > Math.trunc(Date.now() / 1000)) {
-        pod.status = 'Funding'
-      } else if (pod && pod.FundingDate && pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
-        (pod.RaisedFunds || 0) < pod.FundingTarget) {
-        pod.status = 'Funding Failed'
-      } else if (pod && pod.FundingDate && pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
-        (pod.RaisedFunds || 0) >= pod.FundingTarget) {
-        pod.status = 'Funded'
-      }
-      setPodData(pod);
-      if (pod && pod.InfoImage && pod.InfoImage.newFileCID) {
-        getImageIPFS(pod.InfoImage.newFileCID);
-      }
-      if (pod && pod.Creator) {
-        getImageCreatorIPFS(pod.Creator || '', pod.CreatorId || '');
-      }
+    let pod = { ...item };
+
+    if (pod && pod.FundingDate && pod.FundingDate > Math.trunc(Date.now() / 1000)) {
+      pod.status = 'Funding'
+    } else if (pod && pod.FundingDate && pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
+      (pod.RaisedFunds || 0) < pod.FundingTarget) {
+      pod.status = 'Funding Failed'
+    } else if (pod && pod.FundingDate && pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
+      (pod.RaisedFunds || 0) >= pod.FundingTarget) {
+      pod.status = 'Funded'
     }
-  }, [item, ipfs]);
+    setPodData(pod);
+
+    if (pod?.FundingDate) {
+      const timerId = setInterval(() => {
+        const now = new Date();
+        let delta = Math.floor(pod.FundingDate - now.getTime() / 1000);
+
+        if (delta < 0) {
+          setFundingEndTime({
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+          });
+          clearInterval(timerId);
+        } else {
+          let days = Math.floor(delta / 86400);
+          delta -= days * 86400;
+
+          // calculate (and subtract) whole hours
+          let hours = Math.floor(delta / 3600) % 24;
+          delta -= hours * 3600;
+
+          // calculate (and subtract) whole minutes
+          let minutes = Math.floor(delta / 60) % 60;
+          delta -= minutes * 60;
+
+          // what's left is seconds
+          let seconds = delta % 60;
+          setFundingEndTime({
+            days,
+            hours,
+            minutes,
+            seconds,
+          });
+        }
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    }
+
+  }, [item.Id]);
+
+  useEffect(() => {
+    if (isIPFSAvailable && item) {
+      getImageIPFS(item.InfoImage?.newFileCID);
+      getImageCreatorIPFS(item.Creator || '', item.CreatorId || '');
+    }
+  }, [isIPFSAvailable, item]);
 
   const getImageCreatorIPFS = async (userId: string, userId2: string) => {
     let creatorFound = usersList.find(user => user.id === userId || user.id === userId2);
@@ -74,6 +112,8 @@ export default function NFTPodCard({ item }) {
     if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
       setImageCreatorIPFS(imageUrl)
+    } else {
+      setImageCreatorIPFS(getDefaultAvatar())
     }
   };
 
@@ -84,54 +124,10 @@ export default function NFTPodCard({ item }) {
     if (files) {
       let base64String = _arrayBufferToBase64(files.content);
       setImageIPFS("data:image/png;base64," + base64String);
+    } else {
+      setImageIPFS(getDefaultBGImage());
     }
   };
-
-  // React.useEffect(() => {
-  //   if (item && user) {
-  //     let p = { ...item };
-
-  //     if (p.Creator || p.CreatorAddress) {
-  //       if (p.Creator === user?.id) {
-  //         p.CreatorImageUrl = getUserAvatar({
-  //           id: user.id,
-  //           anon: user.anon,
-  //           hasPhoto: user.hasPhoto,
-  //           anonAvatar: user.anonAvatar,
-  //           url: user.url,
-  //         });
-  //       } else {
-  //         const getCreatorData = async () => {
-  //           await Axios.get(`${URL()}/user/getBasicUserInfo/${item.Creator ?? item.CreatorAddress}`)
-  //             .then(response => {
-  //               if (response.data.success) {
-  //                 let data = response.data.data;
-
-  //                 p.CreatorImageUrl = getUserAvatar({
-  //                   id: data.id,
-  //                   anon: data.anon,
-  //                   hasPhoto: data.hasPhoto,
-  //                   anonAvatar: data.anonAvatar,
-  //                   url: data.url,
-  //                 });
-  //               } else {
-  //                 p.CreatorImageUrl = getRandomAvatarForUserIdWithMemoization(item.creator);
-  //               }
-  //             })
-  //             .catch(error => {
-  //               console.log(error);
-  //             });
-  //         };
-
-  //         getCreatorData();
-  //       }
-  //     } else {
-  //       p.CreatorImageUrl = getRandomAvatarForUserIdWithMemoization(item.creator);
-  //     }
-
-  //     setPodData(p);
-  //   }
-  // }, [item, user]);
 
   const handleFruit = type => {
     const body = {
@@ -156,72 +152,46 @@ export default function NFTPodCard({ item }) {
   return (
     <Box className={styles.podCard}>
       <Box className={styles.podImageContent}>
-        <div
-          className={styles.podImage}
-          style={{
-            // position: "relative", overflow: "hidden",
-            backgroundImage: imageIPFS ? `url(${imageIPFS})` : `url(${getRandomImageUrl()})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            overflow: "hidden",
-          }}
-          ref={parentNode}
-        >
-          {!imageLoaded && (
-            <Box my={1} position="absolute" top="0" left="0" width={1}>
-              <StyledSkeleton width="100%" height={264} variant="rect" />
-            </Box>
-          )}
-
-          {/* <img
-            src={`${podData.Type && podData.Type !== "DIGITAL_ART_TYPE"
-                ? podData.UrlMainPhoto
-                : podData.UrlMainPhoto ?? podData.Url ?? podData.url ?? getRandomImageUrl()
-              }`}
-            onLoad={() => setImageLoaded(true)}
-            alt={podData.Name}
-            onClick={() => {
-              history.push(`/pix/pods/${podData.Id}`);
+        <div className={styles.podImage} ref={parentNode}>
+          <SkeletonImageBox
+            loading={!imageIPFS}
+            image={imageIPFS}
+            className={styles.podImage}
+            style={{
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              overflow: "hidden",
             }}
-          /> */}
+          />
         </div>
         <Box display="flex" justifyContent="space-between" px={2} mt="-35px">
-          {imageCreatorIPFS ? (
-            <Box
-              className={styles.avatar}
+          <SkeletonImageBox
+            loading={!imageCreatorIPFS}
+            image={imageCreatorIPFS}
+            className={styles.avatar}
+            style={{
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              if (podData.CreatorId) {
+                history.push(`/profile/${podData.CreatorId}`);
+                dispatch(setSelectedUser(podData.CreatorId));
+              }
+            }}
+          />
+          <Box className={styles.socialButtons}>
+            <FruitSelect
+              fruitObject={podData}
+              parentNode={parentNode.current}
+              onGiveFruit={handleFruit}
               style={{
-                backgroundImage: imageCreatorIPFS ? `url(${imageCreatorIPFS})` : "",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                if (podData.CreatorId) {
-                  history.push(`/profile/${podData.CreatorId}`);
-                  dispatch(setSelectedUser(podData.CreatorId));
-                }
+                background: "#9EACF2"
               }}
             />
-          ) : (
-            <Box
-              className={styles.avatar}
-              onClick={() => {
-                if (podData.CreatorId) {
-                  history.push(`/profile/${podData.CreatorId}`);
-                  dispatch(setSelectedUser(podData.CreatorId));
-                }
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              <SvgIcon>
-                <UserSolid />
-              </SvgIcon>
-            </Box>
-          )}
-          <Box className={styles.socialButtons}>
-            <FruitSelect fruitObject={podData} parentNode={parentNode.current} onGiveFruit={handleFruit} />
           </Box>
         </Box>
       </Box>
@@ -254,28 +224,24 @@ export default function NFTPodCard({ item }) {
             <>
               <Box className={styles.divider} />
               <Box className={styles.flexBox}>
-                <Box style={{ marginRight: "10px", fontWeight: "bold" }}>
+                <Box mr="10px">
                   End of funding
                 </Box>
-                <Box style={{ color: "black" }}>
-                  <>
-                    <span style={{ color: Color.MusicDAODeepGreen }}>
-                      {endTime.days ? `${String(endTime.days).padStart(2, "0")}days ` : ""}
-                    </span>
-                    {`${String(endTime.hours).padStart(2, "0")}h ${String(endTime.minutes).padStart(
-                      2,
-                      "0"
-                    )}min ${String(endTime.seconds).padStart(2, "0")}s`}
-                  </>
+                <Box fontWeight={800}>
+                  {fundingEndTime.days ? `${String(fundingEndTime.days).padStart(2, "0")}d ` : ""}
+                  {`${String(fundingEndTime.hours).padStart(2, "0")}h ${String(fundingEndTime.minutes).padStart(
+                    2,
+                    "0"
+                  )}m ${String(fundingEndTime.seconds).padStart(2, "0")}s`}
                 </Box>
               </Box>
 
               <Box className={styles.divider} />
               <Box className={styles.flexBox}>
-                <Box style={{ marginRight: "10px", fontWeight: "bold" }}>
+                <Box mr="10px">
                   Raised Amount
                 </Box>
-                <Box style={{ color: Color.MusicDAODeepGreen, fontWeight: "bold" }}>
+                <Box fontWeight={800}>
                   ${podData.RaisedFunds || 0}
                 </Box>
               </Box>
@@ -300,24 +266,20 @@ export default function NFTPodCard({ item }) {
             <>
               <Box className={styles.divider} />
               <Box className={styles.flexBox}>
-                <Box style={{ marginRight: "10px", fontWeight: "bold" }}>
+                <Box mr="10px">
                   End of funding
                 </Box>
-                <Box style={{ color: "black" }}>
-                  <>
-                    <span style={{ color: Color.MusicDAODeepGreen }}>
-                      0 days
-                    </span> 0 min 0 s
-                  </>
+                <Box fontWeight={800}>
+                  0d 0h 0m 0s
                 </Box>
               </Box>
 
               <Box className={styles.divider} />
               <Box className={styles.flexBox}>
-                <Box style={{ marginRight: "10px", fontWeight: "bold" }}>
+                <Box mr="10px">
                   Raised Amount
                 </Box>
-                <Box style={{ color: Color.Red, fontWeight: "bold" }}>
+                <Box fontWeight={800}>
                   ${podData.RaisedFunds || 0}
                 </Box>
               </Box>
@@ -342,24 +304,20 @@ export default function NFTPodCard({ item }) {
             <>
               <Box className={styles.divider} />
               <Box className={styles.flexBox}>
-                <Box style={{ marginRight: "10px", fontWeight: "bold" }}>
+                <Box mr="10px">
                   Release Date
                 </Box>
-                <Box style={{ color: "black" }}>
-                  <>
-                    <span style={{ color: Color.MusicDAODeepGreen }}>
-                      0 days
-                    </span> 0 min 0 s
-                  </>
+                <Box fontWeight={800}>
+                  0d 0h 0m 0s
                 </Box>
               </Box>
 
               <Box className={styles.divider} />
               <Box className={styles.flexBox}>
-                <Box style={{ marginRight: "10px", fontWeight: "bold" }}>
+                <Box mr="10px">
                   Revenue Accured
                 </Box>
-                <Box style={{ color: Color.Red, fontWeight: "bold" }}>
+                <Box fontWeight={800}>
                   ${podData.RaisedFunds || 0}
                 </Box>
               </Box>
@@ -387,18 +345,16 @@ export default function NFTPodCard({ item }) {
               <Box>
                 {podData.released ? "Total staked:" : podData.investing ? "End of funding" : "Release date"}
               </Box>
-              <Box style={{ color: "black" }}>
+              <Box fontWeight={800}>
                 {podData.released ? (
                   `$${podData.totalStaked ?? 2803}`
                 ) : podData.investing ? (
                   <>
-                    <span style={{ color: Color.MusicDAODeepGreen }}>
-                      {endTime.days ? `${String(endTime.days).padStart(2, "0")}days ` : ""}
-                    </span>
-                    {`${String(endTime.hours).padStart(2, "0")}h ${String(endTime.minutes).padStart(
+                    {fundingEndTime.days ? `${String(fundingEndTime.days).padStart(2, "0")}d ` : ""}
+                    {`${String(fundingEndTime.hours).padStart(2, "0")}h ${String(fundingEndTime.minutes).padStart(
                       2,
                       "0"
-                    )}min ${String(endTime.seconds).padStart(2, "0")}s`}
+                    )}m ${String(fundingEndTime.seconds).padStart(2, "0")}s`}
                   </>
                 ) : (
                   "Unknown"
@@ -412,7 +368,7 @@ export default function NFTPodCard({ item }) {
             <Box className={styles.divider} />
             <Box className={styles.flexBox}>
               <Box>Reproductions:</Box>
-              <Box style={{ color: "black" }}>{podData.Reproductions ?? 0}</Box>
+              <Box fontWeight={800}>{podData.Reproductions ?? 0}</Box>
             </Box>
           </>
         ) : null}

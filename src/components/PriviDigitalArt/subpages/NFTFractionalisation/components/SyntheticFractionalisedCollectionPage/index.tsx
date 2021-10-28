@@ -608,7 +608,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         {selectedTab === "nft" ? (
           <div className={classes.allNFTSection}>
             <Grid container spacing={2}>
-              {syntheticNFTs.map((item, idx) => (
+              {syntheticNFTs.filter(nft => !nft.isWithdrawn).map((item, idx) => (
                 <Grid item xs={6} sm={4} md={4} lg={3}>
                   <CollectionNFTCard
                     item={item}

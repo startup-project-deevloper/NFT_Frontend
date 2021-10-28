@@ -534,7 +534,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {(isMobile || isTablet) && (
               <Box display="flex">
                 <Box display="flex" flexDirection="column">
-                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
+                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked && !nft.isWithdrawn).length}</div>
                   <div className={classes.typo4}>locked NFTs in</div>
                 </Box>
                 <Box display="flex" flexDirection="column">
@@ -546,7 +546,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {!isMobile && !isTablet && (
               <>
                 <Box display="flex" flexDirection="column">
-                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked).length}</div>
+                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked && !nft.isWithdrawn).length}</div>
                   <div className={classes.typo4}>locked NFTs in</div>
                 </Box>
                 <Box display="flex" flexDirection="column">

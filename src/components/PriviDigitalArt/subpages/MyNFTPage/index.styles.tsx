@@ -88,6 +88,7 @@ export const myNFTStyles = makeStyles(theme => ({
   cardsGroup: {
     marginTop: 64,
     width: "100%",
+    height: "100%",
 
     "& > div": {
       width: "100%",
@@ -148,6 +149,8 @@ export const myNFTStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
+    height: "calc(100% + 32px)",
+    marginTop: "-32px"
   },
 }));

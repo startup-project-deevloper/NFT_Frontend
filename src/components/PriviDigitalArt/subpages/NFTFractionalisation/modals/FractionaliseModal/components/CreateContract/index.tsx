@@ -199,6 +199,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
             isAddCollection: false,
+            SellingSupply: (10000 - Number(supplyToKeep)) / 2,
+            SoldSupply: 0,
           };
         }
         const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);

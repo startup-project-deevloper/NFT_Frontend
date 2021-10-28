@@ -395,43 +395,42 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     }
   }
 
-  const handleRefresh = React.useCallback(() => {
-    (async () => {
+  const handleRefresh = async () => {
+    try {
+      const targetChain = BlockchainNets[1];
 
-      try {
-        const targetChain = BlockchainNets[1];
+      const web3APIHandler = targetChain.apiHandler;
+      const web3 = new Web3(library.provider);
 
-        const web3APIHandler = targetChain.apiHandler;
-        const web3 = new Web3(library.provider);
+      const ownerSup = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(web3, nft, {
+        tokenId: nft.SyntheticID,
+      });
 
-        const ownerSup = await web3APIHandler.SyntheticCollectionManager.getOwnerSupply(web3, nft, {
-          tokenId: nft.SyntheticID,
-        });
-
-        if (ownerSup) {
-          setOwnerSupply(ownerSup);
-        }
-
-        const sellingSup = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft, {
-          tokenId: nft.SyntheticID,
-        });
-
-        if (sellingSup) {
-          setSellingSupply(sellingSup);
-        }
-
-        const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
-          tokenId: nft.SyntheticID,
-        });
-
-        if (soldSupply) {
-          setSoldSupply(soldSupply);
-        }
-      } catch (err) {
-        console.log("error", err);
+      if (ownerSup) {
+        setOwnerSupply(ownerSup);
       }
-    })();
-  }, [collectionId, nft]);
+
+      const sellingSup = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft, {
+        tokenId: nft.SyntheticID,
+      });
+
+      if (sellingSup) {
+        setSellingSupply(sellingSup);
+      }
+
+      const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
+        tokenId: nft.SyntheticID,
+      });
+
+      if (soldSupply) {
+        setSoldSupply(soldSupply);
+      }
+
+      return { ownerSupply: ownerSup, sellingSupply: sellingSup, soldSupply }
+    } catch (err) {
+      console.log("error", err);
+    }
+  }
 
   const handleOpenBuyJotsModal = () => {
     setOpenBuyJotsModal(true);
@@ -1031,6 +1030,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             color: Color.White,
                           }}
                           onClick={handleOpenBuyJotsModal}
+                          disabled={!nft.SellingSupply}
                         >
                           Buy
                         </PrimaryButton>

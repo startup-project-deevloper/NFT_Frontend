@@ -116,6 +116,15 @@ export async function buyJots(payload): Promise<any> {
   }
 }
 
+export async function addLiquidity(payload): Promise<any> {
+  try {
+    const response = await axios.post(`${URL()}/syntheticFractionalize/addLiquidity`, payload);
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
 export async function addJots(payload): Promise<any> {
   try {
     const response = await axios.post(`${URL()}/syntheticFractionalize/addJots`, payload);

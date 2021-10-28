@@ -120,16 +120,22 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       return;
     }
 
+    let nftData = {};
     const response = await getSyntheticNFT(params.collectionId, params.nftId);
     if (response?.success) {
-      setNft(response.data);
+      nftData = response.data;
       setLoadingData(false);
     }
 
     const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
     if (flipResp?.success) {
       setFlipHistory(flipResp.data);
+      nftData = {
+        ...nftData,
+        flipHistory: flipResp.data
+      };
     }
+    setNft(nftData)
   };
 
   const handleOpenChangeLockedNFTModal = () => {
@@ -211,7 +217,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         player: account,
         id: new Date().getTime().toString(),
       });
-      const histories = [...nft.flipHistory];
+      const histories = nft.flipHistory ? [...nft.flipHistory] : [];
       histories.concat({
         collectionAddress: params.collectionId,
         syntheticID: nft.SyntheticID,
@@ -569,7 +575,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                   headers={tableHeaders}
                   rows={flipHistory.map(item => [
                     {
-                      cell: item.winnerInfo.name || item.winnerAddress,
+                      cell: item.winnerInfo?.name || item.winnerAddress,
                     },
                     {
                       cell:

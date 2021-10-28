@@ -50,7 +50,7 @@ export default function MarketplacePage() {
   };
 
   const loadMore = () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     // getMarketplaceMedias(user.id, filters.Status, lastIdRef.current).then(resp => {
     //   setIsLoading(false);
     //   if (resp?.success) {
@@ -64,16 +64,6 @@ export default function MarketplacePage() {
     //     lastIdRef.current = "";
     //   }
     // });
-  };
-
-  const reload = () => {
-    setIsLoading(true);
-    setFilteredData([]);
-    hasMoreRef.current = true;
-    lastIdRef.current = "";
-    setTimeout(() => {
-      initialLoad();
-    }, 1000);
   };
 
   const handleScroll = React.useCallback(
@@ -115,15 +105,7 @@ export default function MarketplacePage() {
               </Box>
             </div>
             <div className={classes.artCards}>
-              <MasonryGrid
-                gutter={"24px"}
-                data={filteredData}
-                renderItem={(item, index) => (
-                  <DigitalArtCard heightFixed={false} item={item} key={`item-${index}`} />
-                )}
-                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-              />
-              {isLoading && (
+              {isLoading ? (
                 <div
                   style={{
                     width: "100%",
@@ -137,6 +119,19 @@ export default function MarketplacePage() {
                 >
                   <CircularLoadingIndicator theme="blue" />
                 </div>
+              ) : filteredData && filteredData.length > 0 ? (
+                <MasonryGrid
+                  gutter={"24px"}
+                  data={filteredData}
+                  renderItem={(item, index) => (
+                    <DigitalArtCard heightFixed={false} item={item} key={`item-${index}`} />
+                  )}
+                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                />
+              ) : (
+                <Box display="flex" justifyContent="center" mt={5}>
+                  No Data
+                </Box>
               )}
             </div>
           </div>

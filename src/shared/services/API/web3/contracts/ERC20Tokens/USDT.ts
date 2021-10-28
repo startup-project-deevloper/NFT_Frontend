@@ -6,7 +6,7 @@ import { toNDecimals } from "shared/functions/web3";
 
 const usdt = network => {
   const contractAddress = config[network].TOKEN_ADDRESSES.USDT;
-  const metadata = require("shared/connectors/polygon/contracts/USDT.json");
+  const metadata = require("shared/connectors/web3/contracts/USDT.json");
 
   const approve = async (web3: Web3, account: string, address: string, amount?: BigNumber): Promise<any> => {
     return new Promise(async resolve => {

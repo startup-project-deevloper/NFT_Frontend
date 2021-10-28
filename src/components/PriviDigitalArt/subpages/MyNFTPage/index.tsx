@@ -102,7 +102,7 @@ const MyNFT = () => {
       {/* <Box>😞</Box> */}
       <img src={require("assets/pixImages/not_found_wallet.png")} />
       <Box className={classes.detailsLabel} mt={1}>
-        Not {type} NFT found on your wallet.
+        Not {type} NFT found.
       </Box>
     </Box>
   )

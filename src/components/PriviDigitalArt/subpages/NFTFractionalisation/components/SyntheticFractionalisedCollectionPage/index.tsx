@@ -528,7 +528,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo6}>ACCRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>{jotPrice} </div>
+              <div className={classes.typo3}>{jotPrice || 'N/A'} </div>
               <div className={classes.typo4}>JOT PRICE</div>
             </Box>
             {(isMobile || isTablet) && (

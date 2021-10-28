@@ -67,6 +67,7 @@ const InfoPane = React.memo(
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isLoadingFollows, setIsLoadingFollows] = useState(false);
     const [isLoadingUser, setIsLoadingUser] = useState(false);
 
@@ -337,10 +338,17 @@ const InfoPane = React.memo(
       e.preventDefault();
       if (!userId) return;
 
+      setIsLoading(true);
       if (!isFollowing) {
-        followUser(userId).then(_ => setIsFollowing(1));
+        followUser(userId).then(_ => {
+          setIsFollowing(1);
+          setIsLoading(false);
+        });
       } else {
-        unfollowUser(userId).then(_ => setIsFollowing(0));
+        unfollowUser(userId).then(_ => {
+          setIsFollowing(0);
+          setIsLoading(false);
+        });
       }
     };
 
@@ -408,10 +416,14 @@ const InfoPane = React.memo(
                   </Box>
                   <Box fontWeight={800} fontSize={16} color="#9EACF2">{`@${userName}`}</Box>
                 </Box>
-                {!ownUser && (
-                  <Button className={classes.followButton} onClick={onFollowUser}>
-                    {isFollowing === 0 ? "Follow" : isFollowing === 1 ? "Cancel request" : "Unfollow"}
-                  </Button>
+                {isLoading ? (
+                  <CircularProgress style={{ color: "#431AB7" }} />
+                ) : (
+                  !ownUser && (
+                    <Button className={classes.followButton} onClick={onFollowUser}>
+                      {isFollowing === 0 ? "Follow" : isFollowing === 1 ? "Cancel request" : "Unfollow"}
+                    </Button>
+                  )
                 )}
               </Box>
               <Box mt={2} fontSize={14} fontWeight={400} color="#181818">
@@ -421,7 +433,7 @@ const InfoPane = React.memo(
             <Box flex={1}>
               <div className={classes.statLine}>
                 {isLoadingUser ? (
-                  <CircularProgress style={{ color: "#B1FF00" }} />
+                  <CircularProgress style={{ color: "#431AB7" }} />
                 ) : (
                   <>
                     <div

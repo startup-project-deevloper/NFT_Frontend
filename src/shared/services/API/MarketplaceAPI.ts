@@ -39,7 +39,7 @@ export async function getMarketplaceMedias(payload: any): Promise<any> {
 
 export async function getAuctionBidHistory(payload: any): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/marketplace/getMarketplaceMedias`, {
+    const response = await axios.get(`${URL()}/marketplace/getBidHistory`, {
       params: payload,
     });
     return response.data;

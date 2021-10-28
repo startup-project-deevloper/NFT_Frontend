@@ -1,7 +1,7 @@
 import { makeStyles, MenuItem, Select } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
-import { getBidHistory, getExchangePriceHistory } from "shared/services/API";
+import { getAuctionBidHistory, getBidHistory, getExchangePriceHistory } from "shared/services/API";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import PrintChart from "shared/ui-kit/Chart/Chart";
@@ -193,7 +193,7 @@ const PriceHistory = ({ media, makeOffer }) => {
 
   React.useEffect(() => {
     loadData();
-  }, [media.MediaSymbol]);
+  }, [media.tokenId]);
 
   React.useEffect(() => {
     // set graph data
@@ -220,16 +220,17 @@ const PriceHistory = ({ media, makeOffer }) => {
   }, [priceHistory]);
 
   const loadData = () => {
-    if (media?.MediaSymbol) {
-      if (media?.Auctions) {
-        getBidHistory(media.MediaSymbol, media.Type).then(resp => {
-          if (resp?.success) setPriceHistory(resp.data);
-        });
-      } else if (media?.ExchangeData) {
-        getExchangePriceHistory(media.ExchangeData.Id).then(resp => {
-          if (resp?.success) setPriceHistory(resp.data);
-        });
-      }
+    if (media?.auction) {
+      getAuctionBidHistory({
+        id: media.auction.id,
+        type: "PIX",
+      }).then(resp => {
+        if (resp?.success) setPriceHistory(resp.data);
+      });
+    } else if (media?.exchange) {
+      getExchangePriceHistory(media.exchange.id).then(resp => {
+        if (resp?.success) setPriceHistory(resp.data);
+      });
     }
   };
 
@@ -263,7 +264,7 @@ const PriceHistory = ({ media, makeOffer }) => {
               >
                 {bidPriceInfo.priceChange ?? 0 > 0 ? "+" : ""}
                 {convertTokenToUSD(
-                  media?.Auctions?.TokenSymbol ?? "USDT",
+                  media?.auction?.bidTokenSymbol ?? "USDT",
                   bidPriceInfo.priceChange ?? 0
                 ).toFixed(4)}{" "}
                 ({bidPriceInfo.priceChangePct ?? 0 > 0 ? "+" : ""}
@@ -279,7 +280,7 @@ const PriceHistory = ({ media, makeOffer }) => {
         )}
         <Box mt={3} display="flex" flexDirection="row" justifyContent="space-between" mb={1}>
           {/* <SecondaryButton size="medium">Cancel</SecondaryButton> */}
-          {media?.Auctions && media.Auctions.Owner !== user.address && (
+          {media?.auction && media.auction.owner !== user.id && (
             <PrimaryButton size="medium" onClick={makeOffer} style={{ background: "#431AB7" }}>
               Make offer
             </PrimaryButton>

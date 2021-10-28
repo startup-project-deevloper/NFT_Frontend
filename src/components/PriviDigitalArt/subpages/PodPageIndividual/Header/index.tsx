@@ -306,7 +306,10 @@ export default function PodHeader({
           BACK
         </Box>
       </Box>
-      <Box className={classes.headerBox} style={{ backgroundImage: "linear-gradient(to right, #DDFF57 , #9EACF2)" }}>
+      <Box
+        className={classes.headerBox}
+        style={{ backgroundImage: "linear-gradient(to right, #DDFF57 , #9EACF2)" }}
+      >
         <Box py={4} className={classes.backgroundBox}>
           <Grid container justifyContent="space-between">
             <Hidden smUp>
@@ -329,10 +332,10 @@ export default function PodHeader({
                     podData.status === "Funding"
                       ? styles.orangeBox
                       : podData.status === "Funding Failed"
-                        ? styles.redBox
-                        : podData.status === "Funded"
-                          ? styles.blueBox
-                          : styles.blueBox
+                      ? styles.redBox
+                      : podData.status === "Funded"
+                      ? styles.blueBox
+                      : styles.blueBox
                   }
                   style={{ fontWeight: "bold" }}
                   px={1}
@@ -341,17 +344,13 @@ export default function PodHeader({
                   {podData.status === "Funding"
                     ? "Funding"
                     : podData.status === "Funding Failed"
-                      ? "Funding Failed"
-                      : podData.status === "Funded"
-                        ? "Funded"
-                        : "Under formation"}
+                    ? "Funding Failed"
+                    : podData.status === "Funded"
+                    ? "Funded"
+                    : "Under formation"}
                 </Box>
               </Box>
               <div className={classes.title}>{podData.Name || "Untitled Pod"}</div>
-              <Box className={classes.flexBox} mt={1}>
-                <div className={classes.tagBox}>pop</div>
-                <div className={classes.tagBox}>electro</div>
-              </Box>
               <Box
                 mt={2}
                 className={classes.header1}

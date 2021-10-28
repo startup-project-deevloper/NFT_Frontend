@@ -133,10 +133,11 @@ export default function NFTPodCard({ item }) {
     const body = {
       userId: user.id,
       fruitId: type,
-      podAddress: podData.PodAddress ?? podData.Id,
+      podId: podData.Id,
+      type: "PIX",
     };
 
-    Axios.post(`${URL()}/mediaPod/fruit`, body).then(res => {
+    Axios.post(`${URL()}/priviPod/fruit`, body).then(res => {
       const resp = res.data;
       if (resp.success) {
         const itemCopy = { ...podData };

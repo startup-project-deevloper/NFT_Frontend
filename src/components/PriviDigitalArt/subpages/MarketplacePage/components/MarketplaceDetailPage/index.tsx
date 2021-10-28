@@ -463,7 +463,7 @@ const MarketplaceDetailPage = () => {
 
   const { account, library, chainId } = useWeb3React();
   const [web3, setWeb3] = useState<Web3 | null>(null);
-  const getUserInfo = (address: string) => usersList.find(u => u.address === address);
+  const getUserInfo = (id: string) => usersList.find(u => u.id === id);
   const [editedCommentId, setEditedCommentId] = useState<any>(null);
   const [editedComment, setEditedComment] = useState<any>(null);
   const isEditingComment = useRef<boolean>(false);
@@ -472,7 +472,6 @@ const MarketplaceDetailPage = () => {
 
   const [mediaCreator, setMediaCreator] = useState<any>();
 
-  console.log(media);
   useEffect(() => {
     setOpenFilters(false);
   }, []);
@@ -695,8 +694,7 @@ const MarketplaceDetailPage = () => {
       // AUCTION
       else if (media.auction) {
         getAuctionBidHistory({
-          tokenAddress: media.auction.tokenAddress,
-          tokenId: media.auction.tokenId,
+          id: media.auction.id,
           type: "PIX",
         }).then(resp => {
           if (resp?.success) {
@@ -724,11 +722,7 @@ const MarketplaceDetailPage = () => {
                 priceChangePct: ((100 * (p1 - p2)) / p2).toFixed(2),
               });
             }
-          }
-        });
-        getAuctionTransactions(media.symbol, media.Type).then(resp => {
-          if (resp?.success) {
-            //set auction history data
+
             setAuctionHistoryData(resp.data.filter((_, index) => index < 6) || []);
           }
         });
@@ -827,7 +821,6 @@ const MarketplaceDetailPage = () => {
           const web3APIHandler = BlockchainNets[1].apiHandler;
           web3APIHandler.Exchange.getErc721OfferAll(web3, account!).then(offers => {
             const newExchangeTableData: any[] = [];
-            console.log(offers);
             const buyOffers =
               offers
                 ?.map((offer, index) => ({ ...offer, id: index + 1 }))
@@ -2180,18 +2173,20 @@ const MarketplaceDetailPage = () => {
                             Withdraw
                           </PrimaryButton>
                         ) : null}
-                        <PrimaryButton
-                          size="medium"
-                          onClick={handleCancelAuction}
-                          className={classes.primaryBtn}
-                          style={{
-                            background: "#DDFF57",
-                            color: "#431AB7",
-                            marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                          }}
-                        >
-                          Stop Auction
-                        </PrimaryButton>
+                        {!media.auction.cancelled && (
+                          <PrimaryButton
+                            size="medium"
+                            onClick={handleCancelAuction}
+                            className={classes.primaryBtn}
+                            style={{
+                              background: "#DDFF57",
+                              color: "#431AB7",
+                              marginBottom: `${isTableScreen ? "5px" : "0px"}`,
+                            }}
+                          >
+                            Stop Auction
+                          </PrimaryButton>
+                        )}
                       </div>
                     )
                   ) : null}
@@ -2427,7 +2422,7 @@ const MarketplaceDetailPage = () => {
                         <Box mt={2}>
                           <Box style={{ fontSize: 18 }}>
                             {convertTokenToUSD(
-                              media?.auction?.TokenSymbol ?? "USDT",
+                              media?.auction?.bidTokenSymbol ?? "USDT",
                               bidPriceInfo.lastPrice ?? 0
                             ).toFixed(1)}{" "}
                             $
@@ -2439,7 +2434,7 @@ const MarketplaceDetailPage = () => {
                           >
                             {bidPriceInfo.priceChange ?? 0 > 0 ? "+" : ""}
                             {convertTokenToUSD(
-                              media?.auction?.TokenSymbol ?? "USDT",
+                              media?.auction?.bidTokenSymbol ?? "USDT",
                               bidPriceInfo.priceChange ?? 0
                             ).toFixed(4)}
                             {"$"}
@@ -2457,8 +2452,8 @@ const MarketplaceDetailPage = () => {
                   {auctionHistoryData &&
                     auctionHistoryData.length > 0 &&
                     auctionHistoryData.map(row => {
-                      const bidder = getUserInfo(row.From);
-                      const token = row.Token;
+                      const bidder = getUserInfo(row.bidder);
+                      const token = media.auction.bidTokenSymbol;
                       return (
                         <Grid item sm={12} md={6} lg={4} className={classes.bidderInfoItem}>
                           <Avatar
@@ -2475,22 +2470,25 @@ const MarketplaceDetailPage = () => {
                               Bid placed by <span className={classes.text1}>@{bidder?.name}</span>
                             </Box>
                             <Box fontSize={14} fontWeight={800} color="#9EACF2">
-                              {`${row.Amount?.toFixed(4)} ${token}`}{" "}
+                              {`${row.price?.toFixed(4)} ${token}`}{" "}
                               <span className={classes.text2}>{`On ${format(
-                                new Date(row.Date * 1000),
+                                new Date(row.date),
                                 "MMMM dd, yyyy"
-                              )} at ${format(new Date(row.Date * 1000), "p")}`}</span>
+                              )} at ${format(new Date(row.date), "p")}`}</span>
                             </Box>
                           </Box>
                           <Box
                             style={{ cursor: "pointer" }}
-                            onClick={() =>
+                            onClick={() => {
                               window.open(
-                                `https://priviscan.io/tx/${row.Id}`,
+                                `${
+                                  BlockchainNets.find(net => net.chainName === media.chainsFullName)?.scan
+                                    .url || "https://priviscan.io"
+                                }/tx/${row.hash}`,
                                 "_blank",
                                 "noopener,noreferrer"
-                              )
-                            }
+                              );
+                            }}
                           >
                             <LinkIcon />
                           </Box>

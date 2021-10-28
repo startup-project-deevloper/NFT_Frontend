@@ -130,7 +130,8 @@ const FractionalLoans = ({ loading, loans }) => {
                 display="flex"
                 alignItems="center"
                 className={classes.tableAvatarField}
-                onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
+                onClick={() => {}}
+                // onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
               >
                 <Box className={classes.mediaImageWrapper}>
                   <div
@@ -186,10 +187,11 @@ const FractionalLoans = ({ loading, loans }) => {
           {
             cell: (
               <Box className={classes.positionColumnButtons}>
-                <PrimaryButton className={classes.primary} size="medium">
+                <PrimaryButton disabled className={classes.primary} size="medium">
                   Deposit
                 </PrimaryButton>
                 <SecondaryButton
+                  disabled
                   className={classes.secondary}
                   size="medium"
                   onClick={() => handleOpenBorrowModal(row)}
@@ -207,12 +209,13 @@ const FractionalLoans = ({ loading, loans }) => {
   }, [positions]);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", filter: "blur(7px)" }}>
       <div>
         {isMobile ? (
           <Box className={classes.loanTopButtonBox}>
             <Box className={classes.btnGroup}>
               <button
+                disabled
                 className={classes.greenButton}
                 style={{ color: "white", background: "#431AB7" }}
                 onClick={() =>
@@ -228,6 +231,7 @@ const FractionalLoans = ({ loading, loans }) => {
               </button>
               <SecondaryButton
                 size="medium"
+                disabled
                 onClick={() => setOpenHowModal(true)}
                 style={{
                   color: "#431AB7",
@@ -246,6 +250,7 @@ const FractionalLoans = ({ loading, loans }) => {
         ) : (
           <Box className={classes.loanTopButtonBox}>
             <button
+              disabled
               className={classes.greenButton}
               style={{ color: "white", background: "#431AB7" }}
               onClick={() =>
@@ -260,6 +265,7 @@ const FractionalLoans = ({ loading, loans }) => {
               Manage positions
             </button>
             <SecondaryButton
+              disabled
               size="medium"
               onClick={() => setOpenHowModal(true)}
               style={{

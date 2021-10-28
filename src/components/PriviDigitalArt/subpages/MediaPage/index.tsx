@@ -97,6 +97,7 @@ import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
+import { CollectionsShowTime } from "shared/constants/collections";
 
 const removeIcon = require("assets/icons/remove_red.png");
 const editIcon = require("assets/icons/edit_icon.svg");
@@ -371,6 +372,7 @@ const MediaPage = () => {
   const query: { blockchainTag?: string; collectionTag?: string } = queryString.parse(location.search);
   const tag = query.blockchainTag ?? "privi";
   const collectionTag = query.collectionTag;
+  let collectionInfo = CollectionsShowTime.find(col => col.name === collectionTag);
 
   const classes = digitalArtModalStyles();
   const { showAlertMessage } = useAlertMessage();
@@ -2297,11 +2299,18 @@ const MediaPage = () => {
                   mb={2}
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
-                    <img
-                      src={getChainImageUrl(media?.BlockchainNetwork || media?.tag)}
-                      width="32px"
-                      style={{ borderRadius: "50%" }}
-                    />
+                    {tag === "showtime" && collectionInfo ? (
+                      <img
+                        src={require(`assets/collectionImages/${collectionInfo.imageURL}`)}
+                        width="32px"
+                      />
+                    ) : (
+                      <img
+                        src={getChainImageUrl(media?.BlockchainNetwork || media?.tag)}
+                        width="32px"
+                        style={{ borderRadius: "50%" }}
+                      />
+                    )}
                   </Box>
                   {media?.link && (
                     <PrimaryButton
@@ -2901,7 +2910,7 @@ const MediaPage = () => {
             {/* <Header5>{`About ${media?.CreatorName || media?.creator}`}</Header5> */}
             {/* <Text>{media?.CreatorBio}</Text> */}
             {/* <hr className={classes.divider} /> */}
-            <Header5>Rate this Digital Art2</Header5>
+            <Header5>Rate this Digital Art</Header5>
             <Grid container spacing={2}>
               {mediaRatings.map((rating, index) => (
                 <Grid item={true} key={`rating - ${index}`} xs={6} md={4} lg={2}>

@@ -17,17 +17,12 @@ const AuctionTabs = [
   "Proof of authenticity",
 ];
 
-const ExchangeTabs = [
-  "Price History",
-  "Market activity",
-  "Proof of authenticity",
-];
-
+const ExchangeTabs = ["Price History", "Market activity", "Proof of authenticity"];
 
 export default function DigitalArtDetailsModal({ open, handleClose, media, makeOffer }) {
   const [tabIndex, setTabIndex] = React.useState<number>(0);
 
-  if (media?.Auctions)
+  if (media?.auction)
     return (
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon>
         <Box>
@@ -40,7 +35,7 @@ export default function DigitalArtDetailsModal({ open, handleClose, media, makeO
             size="small"
           />
           <Box mt={4}>
-            {tabIndex === 0 &&  <AuctionInfo media={media} makeOffer={makeOffer} />}
+            {tabIndex === 0 && <AuctionInfo media={media} makeOffer={makeOffer} />}
             {tabIndex === 1 && <PriceHistory media={media} makeOffer={makeOffer} />}
             {tabIndex === 2 && <MarketActivity media={media} />}
             {tabIndex === 3 && <OwnershipHistory media={media} />}
@@ -48,8 +43,9 @@ export default function DigitalArtDetailsModal({ open, handleClose, media, makeO
           </Box>
         </Box>
       </Modal>
-    )
-    else if (media?.ExchangeData) return (
+    );
+  else if (media?.exchange)
+    return (
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon>
         <Box>
           <Header4>Details</Header4>
@@ -67,6 +63,6 @@ export default function DigitalArtDetailsModal({ open, handleClose, media, makeO
           </Box>
         </Box>
       </Modal>
-    )
-    else return null;
+    );
+  else return null;
 }

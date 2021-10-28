@@ -97,12 +97,12 @@ const MyNFT = () => {
   const toVerifyNFTs = myNFTs.filter(nft => nft.isLocked && !nft.isVerified)
   const toUnlockNFTs = myNFTs.filter(nft => nft.isWithdrawn && !nft.isUnlocked)
 
-  const EmptySection = () => (
+  const EmptySection = ({ type }) => (
     <Box className={classes.emptyBox}>
       {/* <Box>😞</Box> */}
       <img src={require("assets/pixImages/not_found_wallet.png")} />
       <Box className={classes.detailsLabel} mt={1}>
-        Not NFT found on your wallet.
+        Not {type} NFT found.
       </Box>
     </Box>
   )
@@ -136,7 +136,7 @@ const MyNFT = () => {
             <LoadingWrapper theme={"blue"} loading={loading}>
               {
                 !loading && !ownedNFTs.length ? (
-                  <EmptySection />
+                  <EmptySection type="Owned" />
                 ) : (
                   <MasonryGrid
                     gutter={"16px"}
@@ -149,10 +149,10 @@ const MyNFT = () => {
             </LoadingWrapper>
           )}
           {selectedTab === "synthetic" && (
-            <Box display="flex" flexDirection="column" gridRowGap={50}>
+            <Box display="flex" flexDirection="column" gridRowGap={50} height="100%">
               {
                 !loading && !toVerifyNFTs.length && !toLockNFTs.length && !toUnlockNFTs.length
-                  ? <EmptySection />
+                  ? <EmptySection type="Synthetic" />
                   : (
                     <>
                       {

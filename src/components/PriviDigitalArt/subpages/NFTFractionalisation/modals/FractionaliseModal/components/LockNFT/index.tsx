@@ -138,7 +138,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
             <h1 className={classes.title}>Lock NFT on Ethereum</h1>
             <p className={classes.description}>
               Your NFT will be locked in a Vault on Ethereum smart contract. <br />
-              Please keep in mind this process can take x time so be patient.
+              Please keep in mind this process can take some time so be patient.
             </p>
             {needLockLaterBtn ? (
               <Box className={classes.buttonWrapper}>

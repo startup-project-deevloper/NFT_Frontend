@@ -27,11 +27,6 @@ export const podCardStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    "& > img": {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    }
   },
 
   avatar: {
@@ -53,12 +48,7 @@ export const podCardStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-
-    "& span": {
-      fontSize: "14px",
-      fontWeight: 600,
-    },
-
+    fontSize: 14,
     "& p": {
       fontSize: "18px",
       fontWeight: 800,

@@ -528,7 +528,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo6}>ACCRUED REWARD</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>{jotPrice} </div>
+              <div className={classes.typo3}>{jotPrice || 'N/A'} </div>
               <div className={classes.typo4}>JOT PRICE</div>
             </Box>
             {(isMobile || isTablet) && (
@@ -608,7 +608,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         {selectedTab === "nft" ? (
           <div className={classes.allNFTSection}>
             <Grid container spacing={2}>
-              {syntheticNFTs.map((item, idx) => (
+              {syntheticNFTs.filter(nft => !nft.isWithdrawn).map((item, idx) => (
                 <Grid item xs={6} sm={4} md={4} lg={3}>
                   <CollectionNFTCard
                     item={item}

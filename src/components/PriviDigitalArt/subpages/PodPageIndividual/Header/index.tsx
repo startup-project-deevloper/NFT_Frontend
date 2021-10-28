@@ -325,7 +325,7 @@ export default function PodHeader({
                 />
               </Grid>
             </Hidden>
-            <div style={{ paddingRight: isLgTablet ? 0 : "64px" }}>
+            <div style={{ paddingRight: isLgTablet ? 0 : "64px", flex: 1, }}>
               <Box display="flex">
                 <Box
                   className={

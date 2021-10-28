@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import USDC from "shared/services/API/web3/contracts/ERC20Tokens/USDC";
+import USDT from "shared/services/API/web3/contracts/ERC20Tokens/USDT";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 
@@ -250,7 +251,7 @@ const syntheticCollectionManager = (network: string) => {
         console.log("Is Allowed to flip? --", isAllowedToFlip);
 
         if (!isAllowedToFlip) {
-          resolve('not allowed');
+          resolve("not allowed");
         }
 
         console.log("Getting gas... ", prediction, tokenId);
@@ -689,14 +690,16 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const USDTAPI = USDT(network);
+
+        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackPrice().call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result));
-            // resolve({ jots: toDecimals(result[0], decimals), funding: toDecimals(result[1], decimals) });
+            resolve(toDecimals(result, decimals));
           }
         });
       } catch (err) {
@@ -713,13 +716,16 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const USDTAPI = USDT(network);
+
+        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackRequiredAmount(SyntheticID).call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result?.buybackAmount));
+            resolve(toDecimals(result?.buybackAmount, decimals));
           }
         });
       } catch (err) {

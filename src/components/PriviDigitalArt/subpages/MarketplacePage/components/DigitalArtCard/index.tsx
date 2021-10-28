@@ -186,7 +186,11 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
           {creator ? (
             <Avatar
               size="small"
-              url={creator.ipfsImage ? creator.ipfsImage : require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}
+              url={
+                creator.ipfsImage
+                  ? creator.ipfsImage
+                  : require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
+              }
               alt={creator.id}
               title={`${creator.name}`}
               onClick={() => {
@@ -306,15 +310,21 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
 
         {media.auction && endTime && (
           <div className={classes.auction}>
-            <div>{!auctionEnded ? "Auction Ending In" : "Auction Ended"}</div>
-            {!auctionEnded && (
-              <h5>
-                {`${endTime.days ? `${String(endTime.days).padStart(2, "0")}d` : ""} ${String(
-                  endTime.hours
-                ).padStart(2, "0")}h ${String(endTime.minutes).padStart(2, "0")}m ${String(
-                  endTime.seconds
-                ).padStart(2, "0")}s`}
-              </h5>
+            {media.auction.cancelled === true ? (
+              "Auction Cancelled"
+            ) : (
+              <>
+                <div>{!auctionEnded ? "Auction Ending In" : "Auction Ended"}</div>
+                {!auctionEnded && (
+                  <h5>
+                    {`${endTime.days ? `${String(endTime.days).padStart(2, "0")}d` : ""} ${String(
+                      endTime.hours
+                    ).padStart(2, "0")}h ${String(endTime.minutes).padStart(2, "0")}m ${String(
+                      endTime.seconds
+                    ).padStart(2, "0")}s`}
+                  </h5>
+                )}
+              </>
             )}
           </div>
         )}

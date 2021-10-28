@@ -31,7 +31,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
     loadLoans();
     loadHottestLoans();
   }, []);
-  
+
   const reload = () => {
     setLoans([]);
     hasMoreRef.current = true;
@@ -111,37 +111,51 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
         setLoadingLoans(false);
       });
   };
-  
-  const handleScroll = async (e) => {
+
+  const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
       if (hasMoreRef.current) loadMore();
     }
-  }
+  };
 
   return (
     <>
       <Ellipse />
       <div className={classes.content} onScroll={handleScroll}>
-        <Box display="flex" alignItems="center" width="100%" pl={isMobile ? 0 : "42px"} justifyContent={isMobile ? "center" : "flex-start"}>
+        <Box
+          display="flex"
+          alignItems="center"
+          width="100%"
+          pl={isMobile ? 0 : "42px"}
+          justifyContent={isMobile ? "center" : "flex-start"}
+        >
           <h2>✨ NFT Loans</h2>
         </Box>
-        
-        <Box mt={isMobile ? 5:7} width="100%" padding={isMobile ? "0 15px" : "0 42px"} style={{ borderBottom: "1px solid #431AB720"}}>
+
+        <Box
+          mt={isMobile ? 5 : 7}
+          width="100%"
+          padding={isMobile ? "0 15px" : "0 42px"}
+          style={{ borderBottom: "1px solid #431AB720" }}
+        >
           <Box display="flex" width="100%">
             {Tabs.map((tab, index) => (
-              <div
-                key={`tab-${index}`}
-                className={cls({ [classes.selectedTab]: index === selectedTab }, classes.tab)}
-                onClick={() => {
-                  setSelectedTab(index);
-                }}
-              >
-                {tab}
-              </div>
+              <>
+                <div
+                  key={`tab-${index}`}
+                  className={cls({ [classes.selectedTab]: index === selectedTab }, classes.tab)}
+                  onClick={() => {
+                    setSelectedTab(index);
+                  }}
+                >
+                  {tab}
+                </div>
+                {tab === "Fractional Loans" && <span className={classes.comingSoon}>Coming Soon</span>}
+              </>
             ))}
           </Box>
         </Box>
-        
+
         {selectedTab === 0 && (
           <CollateralisedLoans
             setOpenDepositPage={setOpenDepositPage}
@@ -155,14 +169,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
             handleScroll={handleScroll}
           />
         )}
-        {
-          selectedTab === 1 && (
-            <FractionalLoans
-              loading={loadingLoans}
-              loans={loans}
-            />
-          )
-        }
+        {selectedTab === 1 && <FractionalLoans loading={loadingLoans} loans={loans} />}
       </div>
     </>
   );

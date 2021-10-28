@@ -172,7 +172,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   inputBoxPriviPix: {
-    color: "#A4A4A4",
+    color: "#1A1B1C",
     width: "100%",
     border: "1px solid #181818",
     height: "37px",
@@ -186,12 +186,10 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 400,
     "& input": {
       border: "none",
-      background: "#F7F9FE",
       margin: 0,
       padding: 0,
     },
     "& *": {
-      color: "rgba(45, 48, 71, 0.7)",
       fontWeight: 400,
     },
   },

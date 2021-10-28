@@ -36,3 +36,15 @@ export async function getMarketplaceMedias(payload: any): Promise<any> {
     throw new Error(e.message);
   }
 }
+
+export async function getAuctionBidHistory(payload: any): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/marketplace/getBidHistory`, {
+      params: payload,
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}

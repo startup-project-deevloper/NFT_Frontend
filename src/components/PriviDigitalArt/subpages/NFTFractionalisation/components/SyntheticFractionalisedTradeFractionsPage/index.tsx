@@ -1030,7 +1030,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             color: Color.White,
                           }}
                           onClick={handleOpenBuyJotsModal}
-                          disabled={!nft.SellingSupply}
+                          disabled={nft.SellingSupply <= nft.SoldSupply}
                         >
                           Buy
                         </PrimaryButton>

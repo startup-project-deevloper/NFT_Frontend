@@ -174,6 +174,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticNFTAddress: collection.syntheticNFTAddress,
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
+            SellingSupply: (10000 - Number(supplyToKeep)) / 2,
+            SoldSupply: 0,
             collectionName: collectionInfo.data.name,
             collectionSymbol: collectionInfo.data.symbol,
             description: collectionInfo.data.description,

@@ -893,7 +893,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             </td>
                             <td>
                               <Box ml={3} className={classes.h1} fontWeight={800}>
-                                {nft.OwnerSupply} JOTs
+                                {nft.SellingSupply} JOTs
                               </Box>
                             </td>
                           </tr>
@@ -1015,7 +1015,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Supply</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            {nft.OwnerSupply} JOTs
+                            {nft.SellingSupply} JOTs
                           </Box>
                         </Box>
                       </Box>

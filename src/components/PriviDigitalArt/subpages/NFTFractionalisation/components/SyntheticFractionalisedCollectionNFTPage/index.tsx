@@ -89,7 +89,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
 
   const userName = React.useMemo(() => {
     let name: string = "";
-    const ownerAddress: string = nft.OwnerAddress ?? "";
+    const ownerAddress: string = (nft.OwnerAddress ?? "").toLowerCase();
 
     if (ownerAddress) {
       name =

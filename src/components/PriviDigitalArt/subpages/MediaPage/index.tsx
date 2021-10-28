@@ -2297,11 +2297,18 @@ const MediaPage = () => {
                   mb={2}
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
-                    <img
-                      src={getChainImageUrl(media?.BlockchainNetwork || media?.tag)}
-                      width="32px"
-                      style={{ borderRadius: "50%" }}
-                    />
+                    {collectionTag === "async-art" ? (
+                      <img
+                        src={require("assets/collectionImages/async-art.png")}
+                        width="32px"
+                      />
+                    ) : (
+                      <img
+                        src={getChainImageUrl(media?.BlockchainNetwork || media?.tag)}
+                        width="32px"
+                        style={{ borderRadius: "50%" }}
+                      />
+                    )}
                   </Box>
                   {media?.link && (
                     <PrimaryButton
@@ -2901,7 +2908,7 @@ const MediaPage = () => {
             {/* <Header5>{`About ${media?.CreatorName || media?.creator}`}</Header5> */}
             {/* <Text>{media?.CreatorBio}</Text> */}
             {/* <hr className={classes.divider} /> */}
-            <Header5>Rate this Digital Art2</Header5>
+            <Header5>Rate this Digital Art</Header5>
             <Grid container spacing={2}>
               {mediaRatings.map((rating, index) => (
                 <Grid item={true} key={`rating - ${index}`} xs={6} md={4} lg={2}>

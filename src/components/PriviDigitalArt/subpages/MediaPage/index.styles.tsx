@@ -100,7 +100,6 @@ export const digitalArtModalStyles = makeStyles(theme => ({
     borderRadius: "4px !important",
   },
   primaryBtn: {
-    background: "#DDFF57",
     borderRadius: "4px !important",
     [theme.breakpoints.down("sm")]: {
       padding: "0 14px !important",

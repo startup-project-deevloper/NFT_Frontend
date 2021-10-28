@@ -97,6 +97,7 @@ import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
+import { CollectionsShowTime } from "shared/constants/collections";
 
 const removeIcon = require("assets/icons/remove_red.png");
 const editIcon = require("assets/icons/edit_icon.svg");
@@ -371,6 +372,7 @@ const MediaPage = () => {
   const query: { blockchainTag?: string; collectionTag?: string } = queryString.parse(location.search);
   const tag = query.blockchainTag ?? "privi";
   const collectionTag = query.collectionTag;
+  let collectionInfo = CollectionsShowTime.find(col => col.name === collectionTag);
 
   const classes = digitalArtModalStyles();
   const { showAlertMessage } = useAlertMessage();
@@ -2297,9 +2299,9 @@ const MediaPage = () => {
                   mb={2}
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
-                    {collectionTag === "async-art" ? (
+                    {tag === "showtime" && collectionInfo ? (
                       <img
-                        src={require("assets/collectionImages/async-art.png")}
+                        src={require(`assets/collectionImages/${collectionInfo.imageURL}`)}
                         width="32px"
                       />
                     ) : (

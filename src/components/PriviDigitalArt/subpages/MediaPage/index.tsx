@@ -2128,6 +2128,15 @@ const MediaPage = () => {
                       }
                       className={classes.detailImg}
                       onLoad={() => setMediaImageLoaded(true)}
+                      onError={e => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = media?.cid
+                          ? imageIPFS
+                          : media?.Type === "VIDEO_TYPE"
+                          ? media?.UrlMainPhoto
+                          : media?.Url || media?.url || require("assets/backgrounds/digital_art_1.png");
+                        setMediaImageLoaded(true);
+                      }}
                     />
                   </Box>
                 )}
@@ -2300,10 +2309,7 @@ const MediaPage = () => {
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
                     {tag === "showtime" && collectionInfo ? (
-                      <img
-                        src={require(`assets/collectionImages/${collectionInfo.imageURL}`)}
-                        width="32px"
-                      />
+                      <img src={require(`assets/collectionImages/${collectionInfo.imageURL}`)} width="32px" />
                     ) : (
                       <img
                         src={getChainImageUrl(media?.BlockchainNetwork || media?.tag)}

@@ -11,13 +11,14 @@ import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useShareMedia } from "shared/contexts/ShareMediaContext";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
-import { profileCardStyles } from "./index.styles";
 import MediaDetailsModal from "components/PriviDigitalArt/modals/MediaDetailsModal";
 import { getBidHistory } from "shared/services/API";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
+import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { profileCardStyles } from "./index.styles";
 
 enum MediaType {
   Video = "VIDEO_TYPE",
@@ -71,6 +72,7 @@ export default function ProfileCard({
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageIPFS, setImageIPFS] = useState("");
 
   // get 24h change for auction
@@ -170,6 +172,7 @@ export default function ProfileCard({
   }, [item]);
 
   const getImageIPFS = async (cid: string) => {
+    setIsLoading(true);
     let files = await onGetNonDecrypt(cid, (fileCID, download) =>
       downloadWithNonDecryption(fileCID, download)
     );
@@ -177,6 +180,7 @@ export default function ProfileCard({
       let base64String = _arrayBufferToBase64(files.content);
       setImageIPFS("data:image/png;base64," + base64String);
     }
+    setIsLoading(false);
   };
 
   const isBookmarked = () => {
@@ -397,6 +401,8 @@ export default function ProfileCard({
                     <img className={classes.socialTokenImg} src={item.imageURL} alt={"card"} />
                   )}
                 </div>
+              ) : isLoading ? (
+                <StyledSkeleton width="100%" height="100%" variant="rect" />
               ) : (
                 <object
                   data={item.cid ? imageIPFS : ""}

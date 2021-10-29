@@ -534,7 +534,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {(isMobile || isTablet) && (
               <Box display="flex">
                 <Box display="flex" flexDirection="column">
-                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked && !nft.isWithdrawn).length}</div>
+                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isVerified && !nft.isWithdrawn).length}</div>
                   <div className={classes.typo4}>locked NFTs in</div>
                 </Box>
                 <Box display="flex" flexDirection="column">
@@ -546,7 +546,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {!isMobile && !isTablet && (
               <>
                 <Box display="flex" flexDirection="column">
-                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isLocked && !nft.isWithdrawn).length}</div>
+                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isVerified && !nft.isWithdrawn).length}</div>
                   <div className={classes.typo4}>locked NFTs in</div>
                 </Box>
                 <Box display="flex" flexDirection="column">
@@ -608,7 +608,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         {selectedTab === "nft" ? (
           <div className={classes.allNFTSection}>
             <Grid container spacing={2}>
-              {syntheticNFTs.filter(nft => !nft.isWithdrawn).map((item, idx) => (
+              {syntheticNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn).map((item, idx) => (
                 <Grid item xs={6} sm={4} md={4} lg={3}>
                   <CollectionNFTCard
                     item={item}

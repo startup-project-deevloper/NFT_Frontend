@@ -47,7 +47,7 @@ export default function SyntheticCollectionCard({ item }) {
             <Box className={classes.detailLabel} flexDirection="row">
               Locked NFTs
               <Box className={classes.detailInfo} display="inline-flex" ml={1}>
-                {item.nfts?.filter(nft => nft.isLocked).length}
+                {item.nfts?.filter(nft => nft.isVerified && !nft.isWithdrawn).length}
               </Box>
             </Box>
           </Box>

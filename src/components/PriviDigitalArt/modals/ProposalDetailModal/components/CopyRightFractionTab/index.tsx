@@ -3,10 +3,11 @@ import { Box } from "@material-ui/core";
 
 import Avatar from "shared/ui-kit/Avatar";
 import { copyRightFractionTabStyles } from "./index.styles";
-import { getDefaultAvatar, getRandomAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
 import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
 import {useTypedSelector} from "../../../../../../store/reducers/Reducer";
+import { Color } from "shared/ui-kit";
 
 const CopyRightFractionTab = (props: any) => {
   const { proposal, pod } = props;
@@ -85,8 +86,33 @@ const CopyRightFractionTab = (props: any) => {
               </div>
             </Box>
           </Box>
-          <Box className={classes.percentageBox}>
-            {proposal.CopyRightAllocation[index]}%
+          <Box textAlign="end">
+            <Box>
+              {proposal.Votes && proposal.Votes[user.id] === true ? (
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  style={{ color: Color.MusicDAOGreen, fontSize: 14, lineHeight: "15px" }}
+                >
+                  Accepted&nbsp;
+                  <img src={require("assets/icons/accepted_green.png")} />
+                </Box>
+              ) : proposal.Votes && proposal.Votes[user.id] === false ? (
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  style={{ color: Color.Red, fontSize: 14, lineHeight: "15px" }}
+                >
+                  Declined&nbsp;
+                  <img src={require("assets/icons/declined_red.png")} />
+                </Box>
+              ) : (
+                <></>
+              )}
+            </Box>
+            <Box className={classes.percentageBox}>{`${
+              proposal.Distribution ? proposal.Distribution[index] : "0"
+            }%`}</Box>
           </Box>
         </Box>
       ))}

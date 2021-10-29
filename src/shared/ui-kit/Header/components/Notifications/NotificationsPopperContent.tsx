@@ -1,16 +1,15 @@
 import { formatDistanceToNowStrict } from "date-fns/esm";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Notification } from "shared/services/API/NotificationsAPI";
-import { getUserPhoto } from "shared/services/user/getUserPhoto";
 import { Avatar, Color, FontSize, grid, HeaderBold4, HeaderBold6 } from "shared/ui-kit";
 import styled from "styled-components";
 import { RootState } from "store/reducers/Reducer";
 import { NotificationButtons } from "./NotificationButtons";
 import { NotificationContent } from "./NotificationContent/NotificationContent";
 import { ReactComponent as RemoveIcon } from "assets/icons/close.svg";
-import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 import useIPFS from "shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 
 type NotificationsPopperContentProps = {
   notifications: Notification[];
@@ -30,6 +29,80 @@ const getDateDistance = (start: number, end: number) => {
   return distanceDays;
 };
 
+const NotificationItem = ({
+  notification,
+  onDismissNotification,
+  onRefreshAllProfile,
+  removeNotification,
+  viewMore,
+  setSelectedNotification,
+  handleClosePopper,
+  handleShowContributionModal,
+  handleHidePopper,
+  theme,
+}) => {
+  const users = useSelector((state: RootState) => state.usersInfoList);
+  const userSelector = useSelector((state: RootState) => state.user);
+  const { downloadWithNonDecryption } = useIPFS();
+
+  const notificationUserId = notification.typeItemId === "user" ? notification.itemId : notification.follower;
+  let user: any = users.find(usr => usr.id === notificationUserId);
+
+  const [avatar, setAvatar] = useState<string | undefined>("");
+
+  if (!user || !user.url) {
+    user = userSelector;
+  }
+
+  useEffect(() => {
+    (async () => {
+      if (notification.user && notification.user.infoImage && notification.user.infoImage.newFileCID) {
+        const imageUrl = await getPhotoIPFS(
+          notification.user.infoImage.newFileCID,
+          downloadWithNonDecryption
+        );
+        setAvatar(imageUrl);
+      } else {
+        setAvatar(notification.avatar);
+      }
+    })();
+  }, [notification]);
+
+  return (
+    <NotificationContainer key={notification.date}>
+      <AvatarContainer>
+        <Avatar
+          noBorder={theme === "dark"}
+          url={theme === "dark" ? require("assets/icons3d/SuperToroid-Iridescent.png") : avatar}
+          size="medium"
+        />
+      </AvatarContainer>
+      <ContentContainer>
+        <NotificationMessage theme={theme}>
+          <NotificationContent notification={notification} />
+        </NotificationMessage>
+        <NotificationButtons
+          theme={theme}
+          notification={notification}
+          onDismissNotification={() => {
+            onDismissNotification(notification.id);
+          }}
+          refreshAllProfile={onRefreshAllProfile}
+          viewMore={viewMore}
+          setSelectedNotification={setSelectedNotification}
+          handleShowContributionModal={handleShowContributionModal}
+          handleClosePopper={handleClosePopper}
+          handleHidePopper={handleHidePopper}
+        />
+        <TimeLabel>{formatDistanceToNowStrict(new Date(notification.date), { addSuffix: true })}</TimeLabel>
+        {/* <RemoveButtonWrapper onClick={() => { removeNotification(notification.id) }}>
+    </RemoveButtonWrapper> */}
+      </ContentContainer>
+      <RemoveButton onClick={() => removeNotification(notification.id)} />
+    </NotificationContainer>
+  );
+};
+
 export const NotificationsPopperContent: React.FunctionComponent<NotificationsPopperContentProps> = ({
   notifications,
   onDismissNotification,
@@ -42,23 +115,7 @@ export const NotificationsPopperContent: React.FunctionComponent<NotificationsPo
   handleHidePopper,
   theme = "light",
 }) => {
-  const users = useSelector((state: RootState) => state.usersInfoList);
-  const userSelector = useSelector((state: RootState) => state.user);
-
-  const { downloadWithNonDecryption } = useIPFS();
-
-  const handleClickNotification = event => {
-    const tagName = event.target.tagName;
-    //this function has been moved to the buttons notification, otherwise the onclick
-    //callback doesn't work in there because the notification is closed first
-    /*if (tagName === "b" || tagName === "B" || tagName === "button" || tagName === "BUTTON") {
-      console.log(tagName);
-
-      handleClosePopper();
-    }*/
-  };
-
-  const [newNotifications, pastNotifications] = useMemo(() => {
+  const [newNotifications, _] = useMemo(() => {
     const newN: Notification[] = [];
     const pastN: Notification[] = [];
 
@@ -73,76 +130,27 @@ export const NotificationsPopperContent: React.FunctionComponent<NotificationsPo
     return [newN, pastN];
   }, [notifications]);
 
-  const renderNotification = (notification: Notification) => {
-    if (notification.podType && notification.podType !== "PIX") return null;
-
-    const notificationUserId =
-      notification.typeItemId === "user" ? notification.itemId : notification.follower;
-    let user: any = users.find(usr => usr.id === notificationUserId);
-
-    const [avatar, setAvatar] = useState<string | undefined>("");
-
-    if (!user || !user.url) {
-      user = userSelector;
-    }
-
-    useEffect(() => {
-      (async () => {
-        if (notification.user && notification.user.infoImage && notification.user.infoImage.newFileCID) {
-          const imageUrl = await getPhotoIPFS(
-            notification.user.infoImage.newFileCID,
-            downloadWithNonDecryption
-          );
-          setAvatar(imageUrl);
-        } else {
-          setAvatar(notification.avatar);
-        }
-      })();
-    }, [notification]);
-
-    return (
-      <NotificationContainer key={notification.date}>
-        <AvatarContainer>
-          <Avatar
-            noBorder={theme === "dark"}
-            url={theme === "dark" ? require("assets/icons3d/SuperToroid-Iridescent.png") : avatar}
-            size="medium"
-          />
-        </AvatarContainer>
-        <ContentContainer>
-          <NotificationMessage theme={theme}>
-            <NotificationContent notification={notification} />
-          </NotificationMessage>
-          <NotificationButtons
-            theme={theme}
-            notification={notification}
-            onDismissNotification={() => {
-              onDismissNotification(notification.id);
-            }}
-            refreshAllProfile={onRefreshAllProfile}
-            viewMore={viewMore}
-            setSelectedNotification={setSelectedNotification}
-            handleShowContributionModal={handleShowContributionModal}
-            handleClosePopper={handleClosePopper}
-            handleHidePopper={handleHidePopper}
-          />
-          <TimeLabel>{formatDistanceToNowStrict(new Date(notification.date), { addSuffix: true })}</TimeLabel>
-          {/* <RemoveButtonWrapper onClick={() => { removeNotification(notification.id) }}>
-      </RemoveButtonWrapper> */}
-        </ContentContainer>
-        <RemoveButton onClick={() => removeNotification(notification.id)} />
-      </NotificationContainer>
-    );
-  };
-
   return (
-    <div onClick={handleClickNotification}>
+    <div>
       <HeaderBold4 theme={theme}>Notifications</HeaderBold4>
       <NewPastWrapper>
         <HeaderBold6>New</HeaderBold6>
       </NewPastWrapper>
       <TimeDivider theme={theme} />
-      {newNotifications.map(renderNotification)}
+      {newNotifications.map(n => (
+        <NotificationItem
+          notification={n}
+          onDismissNotification={onDismissNotification}
+          onRefreshAllProfile={onRefreshAllProfile}
+          removeNotification={removeNotification}
+          viewMore={viewMore}
+          setSelectedNotification={setSelectedNotification}
+          handleClosePopper={handleClosePopper}
+          handleShowContributionModal={handleShowContributionModal}
+          handleHidePopper={handleHidePopper}
+          theme={theme}
+        />
+      ))}
       {/* <NewPastWrapper>
         <HeaderBold6 theme={theme}>Past</HeaderBold6>
       </NewPastWrapper>

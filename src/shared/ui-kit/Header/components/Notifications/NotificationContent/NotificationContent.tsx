@@ -1923,6 +1923,11 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
           {follower} rejected your Pod proposal on&nbsp;
           <b onClick={() => history.push(`/pods/${itemId}`)}>{pod}</b>&nbsp;pod.
         </div>
+      ) : type === 232 && podType === "PIX" ? (
+        <div>
+          {follower} has created <b onClick={() => history.push(`/pods/${itemId}`)}>{pod}</b>&nbsp;pod and
+          invited you.&nbsp;
+        </div>
       ) : null}
     </>
   );

@@ -23,7 +23,7 @@ const TokenomicsTab = (props: any) => {
 
   const [isCreator, setIsCreator] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
+  const { setMultiAddr } = useIPFS();
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");

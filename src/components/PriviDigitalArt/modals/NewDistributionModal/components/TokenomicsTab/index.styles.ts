@@ -154,7 +154,6 @@ export const tokenomicsTabStyles = makeStyles(() => ({
     fontFamily: "Montserrat",
   },
   datePicker: {
-    paddingTop: "25px",
     fontFamily: "Montserrat",
     width: "100%",
     "& .MuiInput-root::before": {

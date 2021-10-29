@@ -23,7 +23,7 @@ import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import TransactionProgressModal from "../TransactionProgressModal";
 
 // const startDate = Math.floor(Date.now() / 1000 + 3600 * 24 * 7); // one week later
-const startDate = Math.floor(Date.now() / 1000 + 1200); // 20 mins later
+const startDate = Math.floor(Date.now() / 1000 + 3600 * 25); // 20 mins later
 
 export default function NewDistributionModal(props: any) {
   const userSelector = useSelector((state: RootState) => state.user);

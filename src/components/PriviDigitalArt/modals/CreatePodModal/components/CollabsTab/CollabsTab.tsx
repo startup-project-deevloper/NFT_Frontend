@@ -88,7 +88,7 @@ const CollabsTab = ({ pod, setPod }) => {
           }}
           options={autocompleteUsers}
           renderOption={option => {
-            let userName = option?.name ?? `@${option.urlSlug}`;
+            let userName = `@${option.urlSlug}`;
             userName =
               userName.length > 17
                 ? userName.substr(0, 14) + "..." + userName.substr(userName.length - 2, 2)
@@ -139,7 +139,7 @@ const CollabsTab = ({ pod, setPod }) => {
               </Box>
             );
           }}
-          getOptionLabel={option => option?.name ?? `@${option.urlSlug}`}
+          getOptionLabel={option => `@${option.urlSlug}`}
           filterOptions={(options, _) =>
             options.filter(option => !pod.Collabs.find(collab => collab.address === option.address))
           }
@@ -224,14 +224,12 @@ const UserTile = ({ user, onClick }) => {
       className={classes.userTile}
       onClick={onClick}
     >
-      {user.name && user.imageUrl ? (
-        <Box display="flex" alignItems="center">
-          {user.avatar && <Avatar noBorder url={user.avatar} size="medium" />}
-          <Box className={classes.urlSlug}>{user.name ?? `@${user.urlSlug}` ?? user.address}</Box>
+      <Box display="flex" alignItems="center">
+        {user.avatar && <Avatar noBorder url={user.avatar} size="medium" />}
+        <Box className={classes.urlSlug}>
+          {`@${user.urlSlug}` ?? user.address}
         </Box>
-      ) : (
-        user.address ?? ""
-      )}
+      </Box>
       <Box display="flex" alignItems="center">
         <Box className={classes.invitationSentBtn}>Invitation sent</Box>
         <button className={classes.removeButton} onClick={onClick}>

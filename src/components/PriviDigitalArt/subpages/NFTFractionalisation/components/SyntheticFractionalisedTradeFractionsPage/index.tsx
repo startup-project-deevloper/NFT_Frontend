@@ -408,6 +408,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (ownerSup) {
         setOwnerSupply(ownerSup);
+        setNft({
+          ...nft,
+          OwnerSupply: ownerSup
+        });
       }
 
       const sellingSup = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft, {
@@ -416,6 +420,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (sellingSup) {
         setSellingSupply(sellingSup);
+        setNft({
+          ...nft,
+          SellingSupply: sellingSup
+        });
       }
 
       const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
@@ -424,7 +432,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (soldSupply) {
         setSoldSupply(soldSupply);
+        setNft({
+          ...nft,
+          SoldSupply: soldSupply
+        });
       }
+
 
       return { ownerSupply: ownerSup, sellingSupply: sellingSup, soldSupply }
     } catch (err) {
@@ -843,7 +856,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     JOTs SOLD
                   </Box>
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                    {soldSupply} JOTs
+                    {soldSupply ?? 0} JOTs
                   </Box>
                 </Box>
               </Box>

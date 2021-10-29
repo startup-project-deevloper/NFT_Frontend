@@ -26,7 +26,7 @@ export default function BuyJotsModal({
   open,
   collectionId,
   nft,
-  handleRefresh = () => {},
+  handleRefresh,
   handleClose = () => {},
 }) {
   const classes = BuyJotsModalStyles();
@@ -133,12 +133,17 @@ export default function BuyJotsModal({
       return;
     }
 
+    const { sellingSupply, soldSupply } = await handleRefresh();
+    console.log('sellingsupply, soldsupply... ', sellingSupply, soldSupply)
+
     setLoading(false);
     const response = await buyJots({
       collectionId,
       syntheticId: nft.SyntheticID,
       amount: jots,
       investor: account!,
+      sellingSupply,
+      soldSupply,
       hash: contractResponse.data.hash,
     });
 
@@ -148,7 +153,6 @@ export default function BuyJotsModal({
     }
 
     setResult(1);
-    handleRefresh();
   };
 
   const handlePolygonScan = () => {

@@ -3,7 +3,7 @@ import { ContractInstance } from "shared/connectors/web3/functions";
 import { StepIconClasskey } from "@material-ui/core";
 import config from "shared/connectors/web3/config";
 import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
-import { toNDecimals } from "shared/functions/web3";
+import { toNDecimals, toDecimals } from "shared/functions/web3";
 
 const jotPool = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/JotPool.json");
@@ -143,12 +143,39 @@ const jotPool = (network: string) => {
     });
   };
 
+  const getTotalStake = async (web3: Web3, collection: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { JotPoolAddress, JotAddress } = collection;
+        const contract = ContractInstance(web3, metadata.abi, JotPoolAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+
+        contract.methods.totalStaked().call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            console.log("transaction succeed ", result);
+            resolve(toDecimals(result, decimals));
+          }
+        });
+      } catch (e) {
+        console.log(e);
+        resolve(null);
+      }
+    });
+  }
+
   return {
     addLiquidity,
     getPosition,
     getLiquidityValue,
     getReward,
     getTotalLiquidity,
+    getTotalStake
   };
 };
 

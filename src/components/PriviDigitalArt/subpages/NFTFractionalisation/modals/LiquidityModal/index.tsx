@@ -11,6 +11,7 @@ import { switchNetwork } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { Modal } from "shared/ui-kit";
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
+import { addLiquidity } from "shared/services/API/SyntheticFractionalizeAPI";
 
 export default function LiquidityModal({ open, onClose, onCompleted, amount, collection, isAdd = false }) {
   const classes = LiquidityModalStyles();
@@ -52,7 +53,11 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
         }
 
         const totalLiquidityRes = await web3APIHandler.JotPool.getTotalLiquidity(web3, collection);
-        console.log('total liquidity ...', totalLiquidityRes)
+        const totalStake = await web3APIHandler.JotPool.getTotalStake(web3, collection);
+
+        await addLiquidity({ collectionId: collection.collectionAddress, totalLiquidity: totalLiquidityRes, totalStaked: totalStake })
+        
+        console.log('total liquidity ...', totalLiquidityRes, totalStake)
 
         setIsSuccess(true);
         showAlertMessage("You added liquidity successuflly", { variant: "success" });

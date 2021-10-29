@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const collabsTabStyles = makeStyles(() => ({
+export const collabsTabStyles = makeStyles((theme) => ({
   inputContainer: {
     background: "rgba(255, 255, 255, 0.4)",
     border: "1px solid #DADADB",
@@ -55,6 +55,30 @@ export const collabsTabStyles = makeStyles(() => ({
     fontFamily: "Montserrat",
     fontSize: "16px",
     borderBottom: "1px solid #00000021",
+  },
+  removeButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 0,
+    marginLeft: theme.spacing(1),
+    border: "1.5px solid red",
+    borderRadius: "50%",
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+    background: "none",
+    "& svg": {
+      width: "10px",
+      height: "10px",
+    },
+  },
+  urlSlug: {
+    fontSize: 16,
+    color: "#404658",
+    maxWidth: 120,
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    marginLeft: 10,
   },
   invitationSentBtn: {
     fontSize: 14,

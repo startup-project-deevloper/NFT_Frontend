@@ -33,7 +33,7 @@ const CollabsTab = ({ pod, setPod }) => {
 
   // refresh autocomplete user list when searchValue changed
   useEffect(() => {
-    if (searchValue && users.length && user && ipfs ) {
+    if (searchValue && users.length && user && ipfs) {
       getMatchingUsers(searchValue, ["firstName", "address"]).then(async resp => {
         if (resp?.success) {
           const filteredUsers = resp.data.filter(u => u.address && u.address != user.address);
@@ -71,7 +71,7 @@ const CollabsTab = ({ pod, setPod }) => {
     const newCollabs = pod.Collabs.filter(u => user.address !== u.address);
     setPod({ ...pod, Collabs: newCollabs });
   };
-  
+
   return (
     <>
       <div className={classes.inputContainer}>
@@ -88,11 +88,11 @@ const CollabsTab = ({ pod, setPod }) => {
           }}
           options={autocompleteUsers}
           renderOption={option => {
-            let userName = '@' + option.urlSlug && !option.urlSlug.startsWith("Px")
-              ? option.urlSlug
-              : option?.name ?? "User name";
-
-            userName = userName.length > 17 ? userName.substr(0, 14) + "..." + userName.substr(userName.length - 2, 2) : userName;
+            let userName = option?.name ?? `@${option.urlSlug}`;
+            userName =
+              userName.length > 17
+                ? userName.substr(0, 14) + "..." + userName.substr(userName.length - 2, 2)
+                : userName;
             return (
               <Box
                 display="flex"
@@ -105,9 +105,7 @@ const CollabsTab = ({ pod, setPod }) => {
                 }}
               >
                 <Box display="flex" alignItems="center">
-                  <Avatar noBorder
-                    url={option.avatar}
-                    size="medium" />
+                  <Avatar noBorder url={option.avatar} size="medium" />
                   <Box ml="11px" fontFamily="Montserrat" color="#404658" fontSize="16px">
                     {userName}
                   </Box>
@@ -139,11 +137,9 @@ const CollabsTab = ({ pod, setPod }) => {
                   </div>
                 </Box>
               </Box>
-            )
+            );
           }}
-          getOptionLabel={option =>
-            option.urlSlug && option.urlSlug.startsWith("Px") ? `@${option.urlSlug}` : `@${option.name}`
-          }
+          getOptionLabel={option => option?.name ?? `@${option.urlSlug}`}
           filterOptions={(options, _) =>
             options.filter(option => !pod.Collabs.find(collab => collab.address === option.address))
           }
@@ -185,7 +181,13 @@ const CollabsTab = ({ pod, setPod }) => {
             <div>Status</div>
           </Box>
           {pod.Collabs.map((u, index) =>
-            u.address !== user.address ? <UserTile key={`user-${index}-tile`} user={u} onClick={() => removeAddressFromSelectedList(u)}/> : null
+            u.address !== user.address ? (
+              <UserTile
+                key={`user-${index}-tile`}
+                user={u}
+                onClick={() => removeAddressFromSelectedList(u)}
+              />
+            ) : null
           )}
         </>
       )}
@@ -215,22 +217,35 @@ const UserTile = ({ user, onClick }) => {
   const classes = collabsTabStyles();
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between" className={classes.userTile} onClick={onClick}>
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      className={classes.userTile}
+      onClick={onClick}
+    >
       {user.name && user.imageUrl ? (
         <Box display="flex" alignItems="center">
-          <Avatar
-            noBorder
-            url={user.avatar}
-            size="medium"
-          />
-          <Box ml="11px" color="#404658" fontSize="16px">
-            {user.name ?? "User name"}
-          </Box>
+          {user.avatar && <Avatar noBorder url={user.avatar} size="medium" />}
+          <Box className={classes.urlSlug}>{user.name ?? `@${user.urlSlug}` ?? user.address}</Box>
         </Box>
       ) : (
         user.address ?? ""
       )}
-      <div className={classes.invitationSentBtn}>Invitation sent</div>
+      <Box display="flex" alignItems="center">
+        <Box className={classes.invitationSentBtn}>Invitation sent</Box>
+        <button className={classes.removeButton} onClick={onClick}>
+          <svg width="10" height="10" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M1.5 6.5L11.5 6.5"
+              stroke="red"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </Box>
     </Box>
   );
 };

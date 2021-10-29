@@ -12,6 +12,7 @@ import { SharePopup } from "shared/ui-kit/SharePopup";
 import { podCardStyles } from "./index.styles";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 const getRandomImageUrl = () => {
   return require(`assets/podImages/3.png`);
@@ -20,6 +21,7 @@ const getRandomImageUrl = () => {
 export default function PodCard({ item, heightFixed, index = 0 }) {
   const classes = podCardStyles();
   const user = useTypedSelector(state => state.user);
+  const { showAlertMessage } = useAlertMessage();
   const history = useHistory();
   const [media, setMedia] = React.useState<any>(item);
   const [creator, setCreator] = React.useState<any>({
@@ -102,6 +104,11 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
   };
 
   const handleFruit = type => {
+    if (media.fruits?.filter(f => f.fruitId === type)?.find(f => f.userId === user.id)) {
+      showAlertMessage("You had already given this fruit.", { variant: "info" });
+      return;
+    }
+
     const body = {
       userId: user.id,
       fruitId: type,

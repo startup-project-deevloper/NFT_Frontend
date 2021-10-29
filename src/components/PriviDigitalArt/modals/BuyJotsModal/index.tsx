@@ -66,6 +66,12 @@ export default function BuyJotsModal({
   }, [chainId, selectedChain, open]);
 
   useEffect(() => {
+    if (!open) {
+      setJOTs(0)
+    }
+  }, [open])
+
+  useEffect(() => {
     if (!open) return;
 
     (async () => {
@@ -252,7 +258,7 @@ export default function BuyJotsModal({
               justifyContent="flex-end"
             >
               <Box>MAX: {typeUnitValue(maxJot, 1)}</Box>
-              <Box color="rgba(67,26, 183, 0.4)" pl="15px" onClick={() => setJOTs(maxJot)}>
+              <Box color="rgba(67,26, 183, 0.4)" pl="15px" onClick={() => setJOTs(maxJot)} style={{ cursor: "pointer" }}>
                 Buy Max
               </Box>
             </Box>

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import cls from "classnames";
-
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
-import { RootState } from "store/reducers/Reducer";
 import { getCryptosRateAsList } from "shared/services/API";
 import { Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -18,8 +15,6 @@ const startDate = Math.floor(Date.now() / 1000 + 3600 * 24 * 7); // one week lat
 
 const ProposalDetailModal = (props: any) => {
   const { pod, proposal, txnModalOpen, closeTxnModal, txnSuccess, hash, voteStatus } = props;
-
-  const userSelector = useSelector((state: RootState) => state.user);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
@@ -102,6 +97,15 @@ const ProposalDetailModal = (props: any) => {
             <div style={{ display: currentTab === 2 ? "block" : "none" }}>
               <CopyRightFractionTab proposal={proposal} pod={pod} />
             </div>
+            {isMobile && !voteStatus && (
+              <PrimaryButton
+                size="medium"
+                onClick={props.handleNewDistributionProposalModal}
+                style={{ marginTop: theme.spacing(4) }}
+              >
+                Place counter Proposal
+              </PrimaryButton>
+            )}
             <Box
               display="flex"
               alignItems="center"
@@ -121,7 +125,11 @@ const ProposalDetailModal = (props: any) => {
                         Decline
                       </SecondaryButton>
                       <Box display="flex" alignItems="center">
-                        <PrimaryButton size="medium">Place counter Proposal</PrimaryButton>
+                        {!isMobile && (
+                          <PrimaryButton size="medium" onClick={props.handleNewDistributionProposalModal}>
+                            Place counter Proposal
+                          </PrimaryButton>
+                        )}
                         <PrimaryButton size="medium" onClick={props.handleAccept}>
                           Accept & Sign
                         </PrimaryButton>

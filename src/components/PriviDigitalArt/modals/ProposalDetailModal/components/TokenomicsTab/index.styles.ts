@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const tokenomicsTabStyles = makeStyles(() => ({
+export const tokenomicsTabStyles = makeStyles((theme) => ({
   tokenomicsTab: {
     margin: 0,
     padding: 0,
@@ -19,6 +19,10 @@ export const tokenomicsTabStyles = makeStyles(() => ({
       height: 140,
       borderRadius: "100%",
       marginRight: 28,
+      [theme.breakpoints.down("xs")]: {
+        width: 80,
+        height: 80,
+      },
     },
     "& span": {
       fontSize: 14,
@@ -44,6 +48,9 @@ export const tokenomicsTabStyles = makeStyles(() => ({
       fontSize: 16,
       fontWeight: 600,
       color: "#54658F",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 14,
+      },
     },
     "& p:last-child": {
       margin: 0,
@@ -51,6 +58,9 @@ export const tokenomicsTabStyles = makeStyles(() => ({
       fontSize: 24,
       fontWeight: 800,
       color: "#2D3047",
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 18,
+      },
     }
   },
   valueBox: {

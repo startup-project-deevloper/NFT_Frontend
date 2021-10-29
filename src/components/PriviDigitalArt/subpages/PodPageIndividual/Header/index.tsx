@@ -176,6 +176,10 @@ export default function PodHeader({
   };
 
   const handleFruit = type => {
+    if (podData.fruits?.filter(f => f.fruitId === type)?.find(f => f.userId === user.id)) {
+      showAlertMessage("You had already given this fruit.", { variant: "info" });
+      return;
+    }
     musicDaoFruitPod(user.id, podData.Id, type).then(res => {
       if (res.success) {
         const itemCopy = { ...podData };
@@ -183,7 +187,6 @@ export default function PodHeader({
           ...(itemCopy.fruits || []),
           { userId: user.id, fruitId: type, date: new Date().getTime() },
         ];
-        console.log("itemCopy", itemCopy, itemCopy.status);
         setPodData(itemCopy);
       }
     });

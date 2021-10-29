@@ -49,7 +49,12 @@ const auction = network => {
         console.log("transaction succeed ", response);
         const result = {
           data: response.events.Bid.returnValues,
-          transactionHash: response.transactionHash,
+          transaction: {
+            From: response.from,
+            To: response.to,
+            Id: response.transactionHash,
+            Date: new Date().getTime(),
+          },
         };
         resolve(result);
       } catch (e) {
@@ -121,7 +126,12 @@ const auction = network => {
         console.log("transaction succeed ", response);
         const result = {
           data: response.events.AuctionCanceled.returnValues,
-          transactionHash: response.transactionHash,
+          transaction: {
+            From: response.from,
+            To: response.to,
+            Id: response.transactionHash,
+            Date: new Date().getTime(),
+          },
         };
         resolve(result);
       } catch (e) {

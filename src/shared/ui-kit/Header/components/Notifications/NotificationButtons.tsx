@@ -1542,36 +1542,21 @@ export const NotificationButtons: React.FunctionComponent<NotificationButtonsPro
           proposalId={notification.itemId}
         />
       )}
-      {notification.type === 216 && notification.podType === 'PIX' && (
-        <>
-          <PrimaryButton
-            className={theme === "dark" ? classes.darkButton : classes.blueButton}
-            size="small"
-            onClick={() => acceptInvitationPodCollab(notification)}
-          >
-            Accept
-          </PrimaryButton>
-          <PrimaryButton
-            className={theme === "dark" ? classes.darkButton : classes.blueButton}
-            size="small"
-            onClick={() => declineInvitationPodCollab(notification)}
-          >
-            Decline
-          </PrimaryButton>
-        </>
-      )}
-
-      {notification.type === 217 && notification.podType === 'PIX' && (
+      {notification.type === 216 ||
+      notification.type === 217 ||
+      notification.type === 218 ||
+      notification.type === 219 ||
+      notification.type === 232 ? (
         <PrimaryButton
           className={theme === "dark" ? classes.darkButton : classes.blueButton}
           size="small"
           onClick={() => {
-            history.push(`/trax/pods/${notification.itemId}`);
+            history.push(`/pods/${notification.otherItemId}`);
           }}
         >
           See Pod
         </PrimaryButton>
-      )}
+      ) : null}
 
       {(notification.type === 222 || notification.type === 224 || notification.type === 227) && (
         <PrimaryButton

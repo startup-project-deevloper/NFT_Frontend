@@ -430,7 +430,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         tokenId: nft.SyntheticID,
       });
 
-      console.log('39393939399393', soldSupply)
       if (soldSupply) {
         setSoldSupply(soldSupply);
         setNft({

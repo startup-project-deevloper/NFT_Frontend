@@ -1448,7 +1448,12 @@ const MarketplaceDetailPage = () => {
                 id: media.auction.id,
                 amount: priceRef.current,
                 bidder: user.id,
-                hash: res.transactionHash,
+                hash: res.transaction.Id,
+                transaction: {
+                  ...res.transaction,
+                  Event: 'Bid',
+                  Price: priceRef.current
+                },
                 type: "PIX",
               };
               const response = await axios.post(`${URL()}/marketplace/placeBid`, request);

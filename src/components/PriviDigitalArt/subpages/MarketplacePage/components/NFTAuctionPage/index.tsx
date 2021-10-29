@@ -191,7 +191,11 @@ const NFTAuctionPage = ({ goBack }) => {
                   bidIncrement: Number(toDecimals(res.data?.bidIncrement, decimals)),
                   ...payload,
                 },
-                transaction: tx,
+                transaction: {
+                  ...tx,
+                  Event: "Auction Created",
+                  Price: price,
+                },
                 type: "PIX",
               };
 

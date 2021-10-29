@@ -173,7 +173,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
 
   const { account, library, chainId } = useWeb3React();
 
-  const [shareAmount, setShareAmount] = React.useState(0);
+  const [shareAmount, setShareAmount] = React.useState(1);
   const [poolOwnership, setPoolOwnership] = React.useState(0);
   const [liquidityValue, setLiquidityValue] = React.useState(0);
   const [rewardValue, setRewardValue] = React.useState(0);
@@ -196,7 +196,6 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
 
       const position = await web3APIHandler.JotPool.getPosition(web3, collection);
       if (position) {
-        setShareAmount(position.shareAmount);
         setPoolOwnership(position.poolOwnership);
       }
     })();
@@ -305,52 +304,54 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
       </Box>
       {shareAmount !== 0 && (
         <Box className={classes.outBox}>
-          <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 50px" }}>
-            MY STAKING
-          </Box>
-          <Grid container className={classes.botRow} style={{ padding: "0 50px 30px 50px" }}>
-            <Grid item md={3} xs={12}>
-              <Box className={classes.infoItem}>
-                <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                  SHARE AMOUNT
+          <Grid container direction="row" justifyContent="space-between" className={classes.botRow1}>
+            <Box className={classes.sectionTitle} style={{ padding: "35px 0 30px 0", width: "100%" }}>
+              MY STAKING
+            </Box>
+            <Grid container item md={8} xs={12}>
+              <Grid item md={4} xs={12}>
+                <Box className={classes.infoItem}>
+                  <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                    SHARE AMOUNT
+                  </Box>
+                  <Box className={classes.h3} mt={1}>
+                    {shareAmount} SHARES
+                  </Box>
                 </Box>
-                <Box className={classes.h3} mt={1}>
-                  {shareAmount} SHARES
+              </Grid>
+              <Grid item md={4} xs={12}>
+                <Box className={classes.infoItem}>
+                  <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                    POOL OWNERSHIP
+                  </Box>
+                  <Box className={classes.h3} mt={1}>
+                    {poolOwnership}%
+                  </Box>
                 </Box>
-              </Box>
+              </Grid>
+              <Grid item md={4} xs={12}>
+                <Box className={classes.infoItem}>
+                  <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                    MY LIQUIDITY VALUE
+                  </Box>
+                  <Box className={classes.h3} mt={1}>
+                    {liquidityValue} USD
+                  </Box>
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item md={3} xs={12}>
-              <Box className={classes.infoItem}>
-                <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                  POOL OWNERSHIP
-                </Box>
-                <Box className={classes.h3} mt={1}>
-                  {poolOwnership}%
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Box className={classes.infoItem}>
-                <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                  MY LIQUIDITY VALUE
-                </Box>
-                <Box className={classes.h3} mt={1}>
-                  {liquidityValue} USD
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Box display="flex" alignItems="center">
+            <Grid item md={4} xs={12}>
+              <Box display="flex" flex="1" alignItems="center" justifyContent="space-between">
                 <SecondaryButton
                   size="medium"
-                  style={{ color: Color.Purple, width: "100%", border: "2px solid #9EACF2", height: 60 }}
+                  className={classes.secondaryButton}
                   onClick={() => setOpenRemoveLiquidityModal(true)}
                 >
                   REMOVE
                 </SecondaryButton>
                 <PrimaryButton
                   size="medium"
-                  style={{ background: Color.Purple, width: "100%", height: 60 }}
+                  className={classes.primaryButton}
                   onClick={() => setOpenLiquidityModal(true)}
                 >
                   ADD MORE
@@ -358,26 +359,28 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
               </Box>
             </Grid>
           </Grid>
-          <Grid container className={classes.botRow} style={{ padding: "0 50px 30px 50px" }}>
-            <Grid item md={4} xs={12}>
-              <Box className={classes.infoItem}>
-                <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                  YIELD FROM TRADING FEES
+          {/* <Grid container className={classes.botRow2}>
+            <Grid container item md={8} xs={12}>
+              <Grid item xs={6}>
+                <Box className={classes.infoItem}>
+                  <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                    YIELD FROM TRADING FEES
+                  </Box>
+                  <Box className={classes.h3} mt={1}>
+                    5%
+                  </Box>
                 </Box>
-                <Box className={classes.h3} mt={1}>
-                  5%
+              </Grid>
+              <Grid item xs={6}>
+                <Box className={classes.infoItem}>
+                  <Box className={classes.h1} style={{ fontWeight: 800 }}>
+                    ACCUMULATED YEIDL REWARDS
+                  </Box>
+                  <Box className={classes.h3} mt={1}>
+                    {rewardValue} USDT
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
-            <Grid item md={4} xs={12}>
-              <Box className={classes.infoItem}>
-                <Box className={classes.h1} style={{ fontWeight: 800 }}>
-                  ACCUMULATED YEIDL REWARDS
-                </Box>
-                <Box className={classes.h3} mt={1}>
-                  {rewardValue} USDT
-                </Box>
-              </Box>
+              </Grid>
             </Grid>
             <Grid item md={4} xs={12}>
               <Box display="flex" alignItems="center">
@@ -390,7 +393,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 </SecondaryButton>
               </Box>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Box>
       )}
 

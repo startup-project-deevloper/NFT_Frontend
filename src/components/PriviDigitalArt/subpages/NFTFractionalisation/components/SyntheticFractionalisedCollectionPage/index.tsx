@@ -49,7 +49,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const userSelector = useSelector((state: RootState) => state.user);
 
   const [selectedTab, setSelectedTab] = useState<
-    "nft" | "jots_pool" | "trade_jots" | "auctions" | "redemption"
+    "nft" | "stake" | "trade_jots" | "auctions" | "redemption"
   >("nft");
 
   const [collection, setCollection] = useState<any>({});
@@ -569,12 +569,12 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             </div>
             <div
               className={cls(
-                { [classes.selectedTabSection]: selectedTab === "jots_pool" },
+                { [classes.selectedTabSection]: selectedTab === "stake" },
                 classes.tabSection
               )}
-              onClick={() => setSelectedTab("jots_pool")}
+              onClick={() => setSelectedTab("stake")}
             >
-              <span>JOT POOL</span>
+              <span>STAKE</span>
             </div>
             <div
               className={cls(
@@ -634,7 +634,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               </div>
             )}
           </div>
-        ) : selectedTab === "jots_pool" ? (
+        ) : selectedTab === "stake" ? (
           <div className={classes.jotPoolSection}>
             <SyntheticFractionalisedJotPoolsPage
               collection={{

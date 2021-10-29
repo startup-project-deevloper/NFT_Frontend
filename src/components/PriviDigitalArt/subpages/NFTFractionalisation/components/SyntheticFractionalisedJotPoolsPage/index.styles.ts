@@ -160,8 +160,22 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     margin: 0,
   },
 
-  botRow: {
-    padding: "20px 0",
+  botRow1: {
+    padding: "0 20px 30px 50px",
+    borderBottom: "1px solid #9EACF224",
+
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 20px 30px 30px",
+      border: "none"
+    },
+  },
+
+  botRow2: {
+    padding: "35px 20px 30px 50px",
+
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 20px 30px 30px",
+    },
   },
   infoItem: {
     [theme.breakpoints.down("sm")]: {
@@ -170,11 +184,11 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
   },
 
   h1: {
-    fontFamily: "Agrandir GrandHeavy",
+    fontFamily: "Agrandir",
     fontStyle: "normal",
     fontWeight: 800,
     fontSize: "18px",
-    lineHeight: "104.5%",
+    lineHeight: "24px",
   },
   h2: {
     fontFamily: "Agrandir",
@@ -184,7 +198,7 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
     lineHeight: "104.5%",
   },
   sectionTitle: {
-    fontFamily: "Agrandir",
+    fontFamily: "Agrandir GrandHeavy",
     fontStyle: "normal",
     fontWeight: 800,
     fontSize: "24px",
@@ -296,4 +310,25 @@ export const SyntheticFractionalisedJotPoolsPageStyles = makeStyles(theme => ({
       minHeight: 200,
     },
   },
+  secondaryButton: {
+    color: `${Color.Purple} !important`,
+    width: "100% !important",
+    height: "60px !important",
+    border: "2px solid #9EACF2 !important",
+    flex: "0.3",
+
+    [theme.breakpoints.down("xs")]: {
+      flex: "0.45",
+    },
+  },
+  primaryButton: {
+    background: `${Color.Purple} !important`,
+    width: "100% !important",
+    height: "60px !important",
+    flex: "0.6",
+
+    [theme.breakpoints.down("xs")]: {
+      flex: "0.45",
+    },
+  }
 }));

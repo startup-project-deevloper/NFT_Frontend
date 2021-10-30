@@ -44,7 +44,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   ownerInfo: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "flex-start",
 
     [theme.breakpoints.down(1080)]: {
       alignItems: "flex-start",
@@ -77,10 +77,8 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     },
   },
   ownerTitle: {
-    marginBottom: "29px",
+    fontSize: "18px",
     [theme.breakpoints.down(1080)]: {
-      marginBottom: "10px",
-
       "& $h4": {
         paddingBottom: 0,
       },
@@ -115,6 +113,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     },
   },
   h2: {
+    fontFamily: "Agrandir GrandHeavy",
     display: "flex",
     fontStyle: "normal",
     fontSize: 22,
@@ -142,6 +141,11 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     lineHeight: "100%",
     "& img": {
       margin: "0px 8px",
+    },
+    "& button": {
+      padding: 0,
+      paddingLeft: 12,
+      height: "auto"
     },
   },
   h5: {

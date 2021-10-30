@@ -28,6 +28,8 @@ import { BlockchainNets } from "shared/constants/constants";
 import Axios from "axios";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { SwitchButton } from "shared/ui-kit/SwitchButton";
+import AddLiquidityOnQuickswap from "components/PriviDigitalArt/modals/AddLiquidityToQuickswap";
+import LiquidityOnQuickswapModal from "../../modals/LiquidityOnQuickswapModal";
 
 const FreeHoursChartConfig = {
   config: {
@@ -286,6 +288,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openBuyBackModal, setOpenBuyBackModal] = React.useState<boolean>(false);
   const [remainingTime, setRemainingTime] = React.useState<number>(-1);
   const [intervalId, setIntervalId] = React.useState<any>(null);
+  const [openAddLiquidityOnQuickswap, setOpenAddLiquidityOnQuickswap] = React.useState<boolean>(false);
+  const [openProceedModal, setOpenProceedModal] = useState<boolean>(false);
+  const [amount, setAmount] = useState<number>(0);
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -553,6 +558,14 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const remainingHour = remainingTime >= 0 ? Math.floor((remainingTime % (3600 * 24)) / 3600) : 0;
   const remainingMin = remainingTime >= 0 ? Math.floor((remainingTime % 3600) / 60) : 0;
   const remainingSec = remainingTime >= 0 ? Math.floor(remainingTime % 60) : 0;
+
+  const handleConfirmAddLiquidityOnQuickswap = (amount) => {
+    console.log('Add liquidity on quickswap result... ', amount)
+    setAmount(amount);
+    setOpenProceedModal(true);
+
+    setOpenAddLiquidityOnQuickswap(false);
+  }
 
   return (
     <Box className={classes.root}>
@@ -1193,7 +1206,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           marginTop: 14,
                           borderRadius: 4,
                         }}
-                        onClick={() => {}}
+                        onClick={() => setOpenAddLiquidityOnQuickswap(true)}
                       >
                         Add Liquidity
                       </PrimaryButton>
@@ -1298,6 +1311,21 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         handleClose={() => setOpenQuickSwapModal(false)}
         collectionId={collectionId}
         nft={nft}
+      />
+      <AddLiquidityOnQuickswap
+        open={openAddLiquidityOnQuickswap}
+        handleClose={() => setOpenAddLiquidityOnQuickswap(false)}
+        JotAddress={nft.JotAddress}
+        usdtBalance={liquidity}
+        onConfirm={handleConfirmAddLiquidityOnQuickswap}
+        jotsBalance={nft.OwnerSupply}
+      />
+      <LiquidityOnQuickswapModal
+        open={openProceedModal}
+        onClose={() => setOpenProceedModal(false)}
+        collection={nft}
+        amount={amount}
+        isAdd
       />
       <BuyBackModel open={openBuyBackModal} onClose={() => setOpenBuyBackModal(false)} nft={nft} />
       <LoadingScreen

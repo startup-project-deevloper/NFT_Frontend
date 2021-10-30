@@ -97,7 +97,7 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
           // save externally created nft to backend
           saveExternallyFetchedNfts(externallyCreatedNft);
           // set user nfts
-          setUserNFTs([...Object.values(pixCreatedNftMap), ...externallyCreatedNft]);
+          setUserNFTs([...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter((item) => item.BlockchainId !== nft.NftId));
         }
         setLoadingnNFTS(false);
       } else {

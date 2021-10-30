@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, StyledDivider } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import RequestChangeNFT from "./components/RequestChangeNFT";
@@ -18,6 +18,7 @@ export default ({
   const [step, setStep] = useState<number>(0);
   const [syntheticNFT, setSyntheticNFT] = useState<any>();
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [curNFT, setCurNFT] = useState<any>();
 
   const handleCompleteStep = stepIndex => {
     setStep(stepIndex + 1);
@@ -29,6 +30,12 @@ export default ({
       onSuccess();
     }
   };
+
+  useEffect(() => {
+    if (currentNFT.NftId !== selectedNFT.BlockchainId) {
+      setCurNFT(currentNFT)
+    }
+  }, [currentNFT])
 
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
@@ -45,14 +52,14 @@ export default ({
               handleCompleteStep(0);
             }}
             selectedNFT={selectedNFT}
-            currentNFT={currentNFT}
+            currentNFT={curNFT}
           />
         ) : step === 1 ? (
           <LockNFT
             onClose={onClose}
             onCompleted={() => handleCompleteStep(1)}
             selectedNFT={selectedNFT}
-            currentNFT={currentNFT}
+            currentNFT={curNFT}
           />
         ) : (
           <VerifyNFTLock onClose={onClose} onCompleted={() => handleCompleteStep(2)} nft={syntheticNFT} />

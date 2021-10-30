@@ -270,14 +270,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       headerAlign: "center",
     },
   ];
-  const dummyAuction = {
-    id: 4,
-    image: require("assets/backgrounds/digital_art_1.png"),
-    name: "NFT NAME",
-    isLive: true,
-    price: 100,
-    started_at: 1631747005555,
-  };
 
   if (openChangeNFTToSynthetic) {
     return (
@@ -384,7 +376,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             ) : (
               <></>
             )}
-            <PrimaryButton
+            {isOwner ? (
+              <PrimaryButton
               size="medium"
               onClick={() => handleOpenChangeLockedNFTModal()}
               style={{
@@ -395,10 +388,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
                 display: "flex",
                 alignItems: "center",
               }}
-            >
+              >
               CHANGE LOCKED NFT
               <img src={require("assets/icons/change.png")} className={classes.btnIcon} />
-            </PrimaryButton>
+              </PrimaryButton>
+            ): null}
           </Box>
         </Box>
         <div className={classes.nftInfoMainContent}>

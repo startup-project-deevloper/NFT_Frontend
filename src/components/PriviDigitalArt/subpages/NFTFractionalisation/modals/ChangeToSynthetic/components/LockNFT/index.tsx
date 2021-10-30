@@ -19,6 +19,7 @@ declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT }) {
+  console.log('In lockNFT modal... ', selectedNFT, currentNFT)
   const tokenAddress = selectedNFT.tokenAddress
   const tokenToId = selectedNFT?.BlockchainId
   const tokenFromId = currentNFT?.NftId
@@ -37,7 +38,6 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
   const handleChange = async () => {
     if (approveBtn !== 2) return;
 
-    console.log("chainId", chainId);
     if (chainId !== 1 && chainId !== 4) {
       let changed = await switchNetwork(isProd ? 1 : 4);
       if (!changed) {
@@ -47,6 +47,7 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
     }
     setIsProceeding(true);
 
+    console.log("chainId", chainId, library);
     try {
       const web3 = new Web3(library.provider);
       
@@ -144,12 +145,6 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
           <>
             <Box display="flex" alignItems="center" justifyContent="space-evenly">
               <NFTCard
-                item={selectedNFT}
-                handleSelect={() => {}}
-                isSmall
-              />
-              <CircleSVG />
-              <NFTCard
                 item={{
                   tokenAddress: currentNFT.collectionAddress,
                   BlockchainId: currentNFT.NftId,
@@ -157,6 +152,12 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
                   Url: currentNFT.Url,
                   BlockchainNetwork: "Ethereum Chain"
                 }}
+                handleSelect={() => {}}
+                isSmall
+              />
+              <CircleSVG />
+              <NFTCard
+                item={selectedNFT}
                 handleSelect={() => {}}
                 isSmall
               />
@@ -189,12 +190,6 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
           <>
             <Box display="flex" alignItems="center" justifyContent="space-evenly">
               <NFTCard
-                item={selectedNFT}
-                handleSelect={() => {}}
-                isSmall
-              />
-              <ArrowSVG />
-              <NFTCard
                 item={{
                   tokenAddress: currentNFT.collectionAddress,
                   BlockchainId: currentNFT.NftId,
@@ -202,6 +197,12 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
                   Url: currentNFT.Url,
                   BlockchainNetwork: "Ethereum Chain"
                 }}
+                handleSelect={() => {}}
+                isSmall
+              />
+              <ArrowSVG />
+              <NFTCard
+                item={selectedNFT}
                 handleSelect={() => {}}
                 isSmall
               />

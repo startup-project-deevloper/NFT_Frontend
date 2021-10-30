@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Web3 from "web3";
 import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -27,6 +27,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import Axios from "axios";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import { SwitchButton } from "shared/ui-kit/SwitchButton";
 
 const FreeHoursChartConfig = {
   config: {
@@ -288,6 +289,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [isAllowFlipCoin, setIsAllowFlipCoin] = useState<boolean>(false)
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
   const ownershipJot = +nft.OwnerSupply;
@@ -620,6 +622,143 @@ export default function SyntheticFractionalisedTradeFractionsPage({
               )
             ) : (
               <>
+                <Box display="flex" flexDirection="column">
+                  <Box
+                    className={`${classes.h1} ${classes.ownerTitle}`}
+                    sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
+                  >
+                    Ownership management
+                  </Box>
+                  <Box className={classes.boxBody}>
+                    <Box
+                      className={classes.col_half}
+                      sx={{ borderRight: "1px solid #ECE8F8", marginY: "15px", paddingY: "5px" }}
+                    >
+                      <Box className={classes.ownerInfo}>
+                        <Box
+                          className={classes.h4}
+                          pb={1}
+                          sx={{ justifyContent: "center", alignItems: "center" }}
+                        >
+                          Your current ownership
+                          <HtmlTooltip
+                            title="If your ownership reaches 0, you will loose your NFT"
+                            TransitionComponent={Fade}
+                            TransitionProps={{ timeout: 600 }}
+                            placement="bottom-start"
+                            arrow
+                          >
+                            <IconButton>
+                              <InfoIcon />
+                            </IconButton>
+                          </HtmlTooltip>
+                        </Box>
+                        <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                          {ownerSupply === -1 ? ownershipJot : ownerSupply} JOTs
+                        </Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 14,
+                          }}
+                        >
+                          <PrimaryButton
+                            className={classes.h4}
+                            size="medium"
+                            style={{
+                              background: Color.White,
+                              color: Color.Purple,
+                              border: "solid 0.7px",
+                              borderColor: Color.Purple,
+                              padding: "0px 25px",
+                              maxWidth: 170,
+                              borderRadius: 4,
+                            }}
+                            onClick={handleOpenWithdrawJOTsModal}
+                          >
+                            Withdraw JOTs
+                          </PrimaryButton>
+                          <PrimaryButton
+                            className={classes.h4}
+                            size="medium"
+                            style={{
+                              background: Color.Purple,
+                              color: Color.White,
+                              padding: "0px 25px",
+                              maxWidth: 170,
+                              borderRadius: 4,
+                            }}
+                            onClick={handleOpenAddJOTsModal}
+                          >
+                            Add more JOTs
+                          </PrimaryButton>
+                        </Box>
+                      </Box>
+                    </Box>
+                    <Box
+                      className={classes.col_half}
+                      sx={{ borderRight: "1px solid #ECE8F8", marginY: "15px", paddingY: "5px" }}
+                    >
+                      <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
+                        <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                          Selling supply
+                        </Box>
+                        <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                          {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
+                        </Box>
+                        <PrimaryButton
+                          className={classes.h4}
+                          size="medium"
+                          style={{
+                            background: Color.Purple,
+                            color: Color.White,
+                            padding: "0px 25px",
+                            maxWidth: 215,
+                            marginTop: 14,
+                            borderRadius: 4,
+                          }}
+                          onClick={handleOpenEditSupplyModal}
+                        >
+                          Increase Supply
+                        </PrimaryButton>
+                      </Box>
+                    </Box>
+                    <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
+                      <Box className={classes.ownerInfo} style={{
+                        background: "#DDFF57",
+                        borderRadius: 12,
+                        padding: "21px 0 18px 31px",
+                        marginLeft: 18
+                      }}>
+                        <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                          Current Reserve Price to Buy Back
+                        </Box>
+                        <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                          {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
+                        </Box>
+                        <PrimaryButton
+                          className={classes.h4}
+                          size="medium"
+                          style={{
+                            color: Color.White,
+                            background: Color.Purple,
+                            padding: "0px 25px",
+                            maxWidth: 250,
+                            marginTop: 14,
+                            display: "flex",
+                            alignItems: "center",
+                            borderRadius: 4,
+                          }}
+                          onClick={() => setOpenQuickSwapModal(true)}
+                        >
+                          Buy Back to Withdraw
+                        </PrimaryButton>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
                 <Box
                   className={classes.progressContainer}
                   style={{
@@ -689,155 +828,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       Low Risk
                     </Box>
                   </Box>
-                </Box>
-                <Box className={classes.boxBody}>
-                  <Box
-                    className={classes.col_half}
-                    sx={{ borderRight: "1px solid #ECE8F8", marginY: "15px", paddingY: "5px" }}
-                  >
-                    <Box className={classes.ownerInfo}>
-                      <Box
-                        className={classes.h4}
-                        pb={1}
-                        sx={{ justifyContent: "center", alignItems: "center" }}
-                      >
-                        Your current ownership
-                        <HtmlTooltip
-                          title="If your ownership reaches 0, you will loose your NFT"
-                          TransitionComponent={Fade}
-                          TransitionProps={{ timeout: 600 }}
-                          placement="bottom-start"
-                          arrow
-                        >
-                          <IconButton>
-                            <InfoIcon />
-                          </IconButton>
-                        </HtmlTooltip>
-                      </Box>
-                      <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        {ownerSupply === -1 ? ownershipJot : ownerSupply} JOTs
-                      </Box>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginTop: 28,
-                        }}
-                      >
-                        <PrimaryButton
-                          className={classes.h4}
-                          size="medium"
-                          style={{
-                            background: Color.White,
-                            color: Color.Purple,
-                            border: "solid 0.7px",
-                            borderColor: Color.Purple,
-                            padding: "0px 25px",
-                            maxWidth: 170,
-                            borderRadius: 4,
-                          }}
-                          onClick={handleOpenWithdrawJOTsModal}
-                        >
-                          Withdraw JOTs
-                        </PrimaryButton>
-                        <PrimaryButton
-                          className={classes.h4}
-                          size="medium"
-                          style={{
-                            background: Color.Purple,
-                            color: Color.White,
-                            padding: "0px 25px",
-                            maxWidth: 170,
-                            borderRadius: 4,
-                          }}
-                          onClick={handleOpenAddJOTsModal}
-                        >
-                          Add JOTs
-                        </PrimaryButton>
-                      </Box>
-                    </Box>
-                  </Box>
-                  <Box
-                    className={classes.col_half}
-                    sx={{ borderRight: "1px solid #ECE8F8", marginY: "15px", paddingY: "5px" }}
-                  >
-                    <Box className={classes.ownerInfo}>
-                      <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                        Current supply
-                      </Box>
-                      <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
-                      </Box>
-                      <PrimaryButton
-                        className={classes.h4}
-                        size="medium"
-                        style={{
-                          background: "#DDFF57",
-                          color: Color.Purple,
-                          padding: "0px 25px",
-                          maxWidth: 215,
-                          marginTop: 28,
-                          borderRadius: 4,
-                        }}
-                        onClick={handleOpenEditSupplyModal}
-                      >
-                        Increase JOTS to Sale
-                      </PrimaryButton>
-                    </Box>
-                  </Box>
-                  <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-                    <Box className={classes.ownerInfo}>
-                      <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                        Current supply
-                      </Box>
-                      <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
-                      </Box>
-                      <PrimaryButton
-                        className={classes.h4}
-                        size="medium"
-                        style={{
-                          background: "#DDFF57",
-                          color: Color.Purple,
-                          padding: "0px 25px",
-                          maxWidth: 250,
-                          marginTop: 28,
-                          display: "flex",
-                          alignItems: "center",
-                          borderRadius: 4,
-                        }}
-                        onClick={() => setOpenQuickSwapModal(true)}
-                      >
-                        Swap on <img src={require("assets/pixImages/swap_icon.png")} alt="quick swap" />{" "}
-                        Quickswap
-                      </PrimaryButton>
-                    </Box>
-                  </Box>
-                </Box>
-                <Box
-                  className={classes.boxBuyBack}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Box>
-                    Current Reserve Price to Buy Back
-                    <Box className={classes.h2}>10,000 USDT</Box>
-                  </Box>
-                  <PrimaryButton
-                    className={classes.h4}
-                    size="medium"
-                    style={{
-                      background: Color.Purple,
-                      color: Color.White,
-                      padding: "0px 25px",
-                      borderRadius: 4,
-                    }}
-                    onClick={handleBuyBack}
-                  >
-                    Buy Back to Withdraw
-                  </PrimaryButton>
                 </Box>
               </>
             )}
@@ -1107,6 +1097,140 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           )}
         </>
       )}
+      {
+        isOwner && (
+          <>
+            <Box className={classes.outBox}>
+              <Box className={classes.boxBody} justifyContent="space-between">
+                <Box
+                  className={`${classes.h1} ${classes.ownerTitle}`}
+                  alignItems="center"
+                  sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
+                >
+                  <img src={require(`assets/pixImages/coin.PNG`)} width={24} height={24} style={{ marginRight: 8, marginBottom: 4 }} />
+                  Coin Flip Settings
+                </Box>
+                <Box display="flex" alignItems="center">
+                  <Box
+                    className={classes.h4}
+                    sx={{ justifyContent: "center", alignItems: "center" }}
+                    mr={3}
+                  >
+                    Your current ownership
+                    <HtmlTooltip
+                      title=""
+                      TransitionComponent={Fade}
+                      TransitionProps={{ timeout: 600 }}
+                      placement="bottom-start"
+                      arrow
+                    >
+                      <IconButton>
+                        <InfoIcon />
+                      </IconButton>
+                    </HtmlTooltip>
+                  </Box>
+                  <SwitchButton state={isAllowFlipCoin} setState={setIsAllowFlipCoin} />
+                </Box>
+              </Box>
+            </Box>
+            <Box className={classes.outBox}>
+              <Box display="flex" flexDirection="column">
+                <Box
+                  className={`${classes.h1} ${classes.ownerTitle}`}
+                  sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
+                >
+                  Revenue
+                </Box>
+                <Box className={classes.boxBody} style={{ alignItems: "flex-start" }}>
+                  <Box
+                    className={classes.col_half}
+                    sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
+                  >
+                    <Box className={classes.ownerInfo}>
+                      <Box
+                        className={classes.h4}
+                        pb={1}
+                        sx={{ justifyContent: "center", alignItems: "center" }}
+                      >
+                        Revenue raised from sales
+                      </Box>
+                      <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                        10240 JOTs
+                      </Box>
+                      <PrimaryButton
+                        className={classes.h4}
+                        size="medium"
+                        style={{
+                          background: Color.GreenLight,
+                          color: Color.Purple,
+                          padding: "0px 117px",
+                          borderRadius: 4,
+                          marginTop: 18
+                        }}
+                        onClick={() => {}}
+                      >
+                        Withdraw Funds
+                      </PrimaryButton>
+                    </Box>
+                  </Box>
+                  <Box
+                    className={classes.col_half}
+                    sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
+                  >
+                    <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
+                      <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                        Liquidity on Quickswap
+                      </Box>
+                      <PrimaryButton
+                        className={classes.h4}
+                        size="medium"
+                        style={{
+                          background: Color.White,
+                          color: Color.Purple,
+                          border: "solid 0.7px",
+                          borderColor: Color.Purple,
+                          padding: "0px 60px",
+                          marginTop: 14,
+                          borderRadius: 4,
+                        }}
+                        onClick={() => {}}
+                      >
+                        Add Liquidity
+                      </PrimaryButton>
+                    </Box>
+                  </Box>
+                  <Box
+                    className={classes.col_half}
+                    sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
+                  >
+                    <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
+                      <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                        Liquidity on Derivatives
+                      </Box>
+                      <PrimaryButton
+                        className={classes.h4}
+                        size="medium"
+                        style={{
+                          background: Color.White,
+                          color: Color.Purple,
+                          border: "solid 0.7px",
+                          borderColor: Color.Purple,
+                          padding: "0px 80px",
+                          marginTop: 14,
+                          borderRadius: 4,
+                        }}
+                        onClick={() => {}}
+                      >
+                        Add Liquidity
+                      </PrimaryButton>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+          </>
+        )
+      }
       <Box className={classes.boxBody} width={1} mb="10px">
         <Box className={classes.chart}>
           {(!ownerHistory || !ownerHistory.length) && <div className="no-data">There are no data yet.</div>}

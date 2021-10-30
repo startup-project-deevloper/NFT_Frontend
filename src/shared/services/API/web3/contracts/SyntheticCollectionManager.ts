@@ -788,7 +788,7 @@ const syntheticCollectionManager = (network: string) => {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result?.liquiditySold, decimals));
+            resolve(toDecimals(result?.liquiditySold ?? 0, decimals));
           }
         });
       } catch (err) {

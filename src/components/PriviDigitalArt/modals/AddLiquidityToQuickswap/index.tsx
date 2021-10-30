@@ -88,7 +88,7 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
           onInputValueChange={e => {
             const input = +e.target.value; 
             setInputUsdt(input)
-            setJots(input / jotPrice)
+            setJots(jotPrice ? input / jotPrice : 0)
           }}
           overriedClasses={classes.inputLiquidity}
           required
@@ -108,7 +108,7 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
           <Box display="flex" alignItems="center" fontSize="16px">
             <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => {
                 setInputUsdt(usdtBalance);
-                setJots(usdtBalance / jotPrice);
+                setJots(jotPrice ? usdtBalance / jotPrice : 0);
               }}>
               Max
             </Box>

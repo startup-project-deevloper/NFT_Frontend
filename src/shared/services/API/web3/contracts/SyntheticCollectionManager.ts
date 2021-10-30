@@ -798,6 +798,134 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const addLiquidityToQuickswap = async (web3: Web3, account: string, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { quickSwapAddress, tokenId, amount, setHash } = payload;
+
+        const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
+
+        const gas = await contract.methods
+          .addLiquidityToQuickswap(tokenId, amount)
+          .estimateGas({ from: account });
+        const response = await contract.methods
+          .addLiquidityToQuickswap(tokenId, amount)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          });;;
+        const liquidityResponse = response.events?.LiquidiyAdded?.returnValues;
+
+        if (liquidityResponse) {
+          resolve({ success: true, share: liquidityResponse.share, shareOff: liquidityResponse.shareOff, amount: liquidityResponse.amount });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const withdrawLiquidityFromQuickswap = async (web3: Web3, account: string, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { quickSwapAddress, tokenId, amount, setHash } = payload;
+
+        const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
+
+        const gas = await contract.methods
+          .withdrawLiquidityFromQuickswap(tokenId, amount)
+          .estimateGas({ from: account });
+        const response = await contract.methods
+          .withdrawLiquidityFromQuickswap(tokenId, amount)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          });;;
+        const liquidityResponse = response.events?.LiquidiyAdded?.returnValues;
+
+        if (liquidityResponse) {
+          resolve({ success: true, share: liquidityResponse.share, shareOff: liquidityResponse.shareOff, amount: liquidityResponse.amount });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const AddLiquidityToFuturePool = async (web3: Web3, account: string, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { perpetualPoolLiteAddress, tokenId, amount, setHash } = payload;
+
+        const contract = ContractInstance(web3, metadata.abi, perpetualPoolLiteAddress);
+
+        const gas = await contract.methods
+          .AddLiquidityToFuturePool(tokenId, amount)
+          .estimateGas({ from: account });
+        const response = await contract.methods
+          .AddLiquidityToFuturePool(tokenId, amount)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          });
+        const liquidityResponse = response.events?.LiquidiyAdded?.returnValues;
+
+        if (liquidityResponse) {
+          resolve({ success: true, share: liquidityResponse.share, shareOff: liquidityResponse.shareOff, amount: liquidityResponse.amount });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const withdrawLiquidityFromFuturePool = async (web3: Web3, account: string, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { perpetualPoolLiteAddress, tokenId, amount, setHash } = payload;
+
+        const contract = ContractInstance(web3, metadata.abi, perpetualPoolLiteAddress);
+
+        const gas = await contract.methods
+          .withdrawLiquidityFromFuturePool(tokenId, amount)
+          .estimateGas({ from: account });
+        const response = await contract.methods
+          .withdrawLiquidityFromFuturePool(tokenId, amount)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          });;
+        const liquidityResponse = response.events?.LiquidiyAdded?.returnValues;
+
+        if (liquidityResponse) {
+          resolve({ success: true, share: liquidityResponse.share, shareOff: liquidityResponse.shareOff, amount: liquidityResponse.amount });
+        } else {
+          resolve({ success: false });
+        }
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     depositJots,
@@ -823,6 +951,10 @@ const syntheticCollectionManager = (network: string) => {
     getBuybackRequiredAmount,
     withdrawFundingTokens,
     getliquiditySold,
+    addLiquidityToQuickswap,
+    withdrawLiquidityFromQuickswap,
+    AddLiquidityToFuturePool,
+    withdrawLiquidityFromFuturePool,
   };
 };
 

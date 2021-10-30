@@ -11,8 +11,6 @@ import podManager from "./contracts/PodManager";
 import podWithdrawManager from "./contracts/PodWithdrawManager";
 import distributionManager from "./contracts/DistributionManager";
 import syntheticCollectionManager from "./contracts/SyntheticCollectionManager";
-import quickSwapAddress from "./contracts/QuickSwapAddress";
-import perpetualPoolLiteAddress from "./contracts/PerpetualPoolLiteAddress";
 import syntheticProtocolRouter from "./contracts/SyntheticProtocolRouter";
 import jotPool from "./contracts/JotPool";
 import syntheticFractionalisationAuctionsManager from "./contracts/SyntheticFractionalisationAuctionsManager";
@@ -31,8 +29,6 @@ const api = network => {
     SyntheticCollectionManager: syntheticCollectionManager(network),
     SyntheticProtocolRouter: syntheticProtocolRouter(network),
     SyntheticFractionalisationAuctionsManager: syntheticFractionalisationAuctionsManager(network),
-    QuickSwapAddress: quickSwapAddress(network),
-    PerpetualPoolLiteAddress: perpetualPoolLiteAddress(network),
     SyntheticNFTAuction: syntheticNFTAuction(network),
     JotPool: jotPool(network),
     QuickSwap: quickswap(network),

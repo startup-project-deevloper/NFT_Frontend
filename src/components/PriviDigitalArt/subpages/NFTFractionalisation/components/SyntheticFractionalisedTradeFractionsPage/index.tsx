@@ -28,6 +28,7 @@ import { BlockchainNets } from "shared/constants/constants";
 import Axios from "axios";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { SwitchButton } from "shared/ui-kit/SwitchButton";
+import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundModal";
 
 const FreeHoursChartConfig = {
   config: {
@@ -286,6 +287,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [openBuyBackModal, setOpenBuyBackModal] = React.useState<boolean>(false);
   const [remainingTime, setRemainingTime] = React.useState<number>(-1);
   const [intervalId, setIntervalId] = React.useState<any>(null);
+  const [openWithdrawFundsModal, setOpenWithdrawFundsModal] = useState<boolean>(false);
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -297,6 +299,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const [ownerSupply, setOwnerSupply] = React.useState<number>(-1);
   const [sellingSupply, setSellingSupply] = React.useState<number>(-1);
+  const [liquidity, setLiquidity] = useState<any>(0);
 
   React.useEffect(() => {
     fetchOwnerHistory()
@@ -307,11 +310,31 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       fetchOwnerHistory();
     }, 30000);
     getJotPrice();
+    getLiquidity()
 
     return () => {
       clearInterval(interval);
     };
   }, [collectionId, nft]);
+
+  const getLiquidity = async () => {
+    try {
+      const targetChain = BlockchainNets[1];
+
+      const web3APIHandler = targetChain.apiHandler;
+      const web3 = new Web3(library.provider);
+
+      const liquidity = await web3APIHandler.SyntheticCollectionManager.getliquiditySold(web3, {
+        nft,
+      });
+
+      if (liquidity) {
+        setLiquidity(liquidity);
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const getJotPrice = async () => {
     const targetChain = BlockchainNets[1];
@@ -395,6 +418,23 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setRewardConfig(newRewardConfig);
       }
     }
+  }
+
+  const handleWithdrawFunds = async () => {
+    setOpenWithdrawFundsModal(true)
+    // try {
+    //   const targetChain = BlockchainNets[1];
+
+    //   const web3APIHandler = targetChain.apiHandler;
+    //   const web3 = new Web3(library.provider);
+      
+    //   const response = await web3APIHandler.SyntheticCollectionManager.withdrawFundingTokens(web3, {
+    //     nft,
+    //     amount: 3000
+    //   });
+    // } catch (err) {
+    //   console.log("error", err);
+    // }
   }
 
   const handleRefresh = async () => {
@@ -504,6 +544,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     ownershipJot,
     totalJot,
   ]);
+
+  const handleCloseWithdrawFunds = () => {
+    setOpenWithdrawFundsModal(false)
+  }
 
   React.useEffect(() => {
     if (ownershipJot === 0) {
@@ -1155,7 +1199,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         Revenue raised from sales
                       </Box>
                       <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        10240 JOTs
+                        { liquidity } JOTs
                       </Box>
                       <PrimaryButton
                         className={classes.h4}
@@ -1167,7 +1211,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           borderRadius: 4,
                           marginTop: 18
                         }}
-                        onClick={() => {}}
+                        disabled={liquidity <= 0}
+                        onClick={handleWithdrawFunds}
                       >
                         Withdraw Funds
                       </PrimaryButton>
@@ -1292,6 +1337,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         collectionId={collectionId}
         nft={nft}
         setNft={setNft}
+      />
+      <WithdrawFundsModal
+        open={openWithdrawFundsModal}
+        handleClose={handleCloseWithdrawFunds}
+        nft={nft}
       />
       <QuickSwapModal
         open={openQuickSwapModal}

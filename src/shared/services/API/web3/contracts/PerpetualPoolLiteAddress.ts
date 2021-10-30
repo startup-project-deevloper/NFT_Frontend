@@ -4,14 +4,14 @@ import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
 
 const perpetualPoolLiteAddress = (network: string) => {
-  const metadata = require("shared/connectors/web3/contracts/QUICKSWAP_ROUTER_MANAGER.json");
+  const metadata = require("shared/connectors/web3/contracts/PerpetualPoolLite.json");
 
-  const AddLiquidityToFuturePool = async (web3: Web3, account: string, nft: any): Promise<any> => {
+  const AddLiquidityToFuturePool = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { quickSwapAddress, SyntheticID: tokenId, amount, setHash } = nft;
+        const { perpetualPoolLiteAddress, tokenId, amount, setHash } = payload;
 
-        const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
+        const contract = ContractInstance(web3, metadata.abi, perpetualPoolLiteAddress);
 
         const gas = await contract.methods
           .AddLiquidityToFuturePool(tokenId, amount)
@@ -38,12 +38,12 @@ const perpetualPoolLiteAddress = (network: string) => {
     });
   };
 
-  const withdrawLiquidityFromFuturePool = async (web3: Web3, account: string, nft: any): Promise<any> => {
+  const withdrawLiquidityFromFuturePool = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { quickSwapAddress, SyntheticID: tokenId, amount, setHash } = nft;
+        const { perpetualPoolLiteAddress, tokenId, amount, setHash } = payload;
 
-        const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
+        const contract = ContractInstance(web3, metadata.abi, perpetualPoolLiteAddress);
 
         const gas = await contract.methods
           .withdrawLiquidityFromFuturePool(tokenId, amount)

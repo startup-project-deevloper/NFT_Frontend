@@ -6,10 +6,10 @@ import { ContractInstance } from "shared/connectors/web3/functions";
 const quickSwapAddress = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/QUICKSWAP_ROUTER_MANAGER.json");
 
-  const addLiquidityToQuickswap = async (web3: Web3, account: string, nft: any): Promise<any> => {
+  const addLiquidityToQuickswap = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { quickSwapAddress, SyntheticID: tokenId, amount, setHash } = nft;
+        const { quickSwapAddress, tokenId, amount, setHash } = payload;
 
         const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
 
@@ -38,10 +38,10 @@ const quickSwapAddress = (network: string) => {
     });
   };
 
-  const withdrawLiquidityFromQuickswap = async (web3: Web3, account: string, nft: any): Promise<any> => {
+  const withdrawLiquidityFromQuickswap = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { quickSwapAddress, SyntheticID: tokenId, amount, setHash } = nft;
+        const { quickSwapAddress, tokenId, amount, setHash } = payload;
 
         const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
 

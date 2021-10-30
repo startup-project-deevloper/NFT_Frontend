@@ -735,6 +735,69 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const withdrawFundingTokens = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { tokenId, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+
+        const USDTAPI = USDT(network);
+        const decimals = await USDTAPI.decimals(web3);
+
+        const gas = await contract.methods
+          .withdrawFundingTokens(tokenId, toNDecimals(amount, decimals))
+          .estimateGas({ from: account });
+        const response = contract.methods
+          .withdrawFundingTokens(tokenId, toNDecimals(amount, decimals))
+          .send({ from: account, gas: gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          })
+          .on("receipt", function (receipt) {
+            resolve({
+              success: true,
+              data: {
+                hash: receipt.transactionHash,
+              },
+            });
+          });
+      } catch (e) {
+        console.log(e);
+        resolve({ success: false });
+      }
+    });
+  };
+
+  const getliquiditySold = (web3: Web3, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { nft } = payload;
+        const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
+
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const USDTAPI = USDT(network);
+
+        const decimals = await USDTAPI.decimals(web3);
+
+        contract.methods.getliquiditySold(SyntheticID).call((err, result) => {
+          if (err) {
+            console.log(err);
+            resolve(null);
+          } else {
+            resolve(toDecimals(result?.liquiditySold, decimals));
+          }
+        });
+      } catch (err) {
+        console.log(err);
+        resolve(null);
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     depositJots,
@@ -758,6 +821,8 @@ const syntheticCollectionManager = (network: string) => {
     getAvailableBuyback,
     getBuybackPrice,
     getBuybackRequiredAmount,
+    withdrawFundingTokens,
+    getliquiditySold,
   };
 };
 

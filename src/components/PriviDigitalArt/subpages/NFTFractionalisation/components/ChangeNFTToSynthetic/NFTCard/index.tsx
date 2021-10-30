@@ -13,7 +13,7 @@ export default function NFTCard({ item, handleSelect, isSmall = false }) {
         <div className={`${classes.card} ${item.selected ? classes.selected : ""}`}>
           <div className={classes.innerBox} style={{ padding: isSmall ? 6 : 16 }}>
             <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} className={classes.nftNameContainer}>
-              <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{item.MediaName}</div>
+              <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{`${item.MediaName} #${item.BlockchainId}`}</div>
             </Box>
             <img
               src={

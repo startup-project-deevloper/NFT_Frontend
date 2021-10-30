@@ -111,7 +111,7 @@ export const requestChangeNFT = (web3: Web3, account: string, payload: any): Pro
 
       const { blockNumber } = response;
 
-      await new Promise(resolve => setTimeout(resolve, 50000));
+      await new Promise(resolve => setTimeout(resolve, 70000));
 
       await contract.getPastEvents(
         "ChangeResponseReceived",

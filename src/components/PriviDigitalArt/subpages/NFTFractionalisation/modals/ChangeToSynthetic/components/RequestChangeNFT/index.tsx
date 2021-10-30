@@ -155,8 +155,6 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
         setIsLoading(false);
       } else {
         setIsLoading(false);
-        const nftInfo = response.events?.TokenChanged?.returnValues;
-
         let params = {
           collectionAddress: selectedNFT.tokenAddress,
           SyntheticID: currentNFT.SyntheticID,

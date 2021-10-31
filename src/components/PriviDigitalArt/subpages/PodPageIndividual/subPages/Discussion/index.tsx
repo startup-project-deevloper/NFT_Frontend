@@ -93,7 +93,7 @@ export default function Discussion(props) {
       podId: props.podId,
       topicId: val.id,
       userId: userSelector.id,
-      podType: "TRAX",
+      podType: "PIX",
     });
     setSelectedChatId(val.id);
     setSelectedChat(val);
@@ -106,7 +106,7 @@ export default function Discussion(props) {
         description,
         podId: props.podId,
         createdBy: userSelector.id,
-        podType: "TRAX",
+        podType: "PIX",
       })
       .then(response => {
         const resp = response.data.data;

@@ -192,7 +192,7 @@ const PodPageIndividual = () => {
         description,
         podId,
         createdBy: user.id,
-        podType: "TRAX",
+        podType: "PIX",
       })
       .then(response => {
         const resp = response.data.data;

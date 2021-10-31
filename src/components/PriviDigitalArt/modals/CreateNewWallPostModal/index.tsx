@@ -131,7 +131,7 @@ const CreateNewWallPostModal = (props: any) => {
       body.podId = props.pod.Id;
       body.author = user.address;
       body.userId = user.id;
-      body.podType = "TRAX";
+      body.podType = "PIX";
       body.infoImage = infoImage;
       body.infoVideo = infoVideo;
 

@@ -126,7 +126,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
                     </Box>
                   </CopyToClipboard>
                   <button className={classes.checkBtn} onClick={handleEtherScan}>
-                    Check on Ethereum Scan
+                    Check on Etherscan
                   </button>
                 </>
               )}

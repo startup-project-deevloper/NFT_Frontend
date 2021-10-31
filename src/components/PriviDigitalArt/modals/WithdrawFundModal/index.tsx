@@ -16,6 +16,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import TransactionResultModal from "../TransactionResultModal";
+import { typeUnitValue } from "shared/helpers/utils";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
@@ -23,20 +24,21 @@ const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 export default function WithdrawFundModal({
   open,
   nft,
+  maxAmount,
   handleClose = () => {},
+  onCompleted = () => {},
 }) {
   const classes = useWithdrawFundModalStyles();
 
   const { showAlertMessage } = useAlertMessage();
 
-  const [jots, setJOTs] = React.useState<number>(0);
+  const [amount, setAmount] = React.useState<number>(0);
   const [loading, setLoading] = React.useState<boolean>(false);
   const { account, library, chainId } = useWeb3React();
 
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
 
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
-  const [maxJot, setMaxJot] = React.useState<number>(0);
   const [hash, setHash] = React.useState<string>("");
 
   const [result, setResult] = React.useState<number>(0);
@@ -63,9 +65,9 @@ export default function WithdrawFundModal({
 
   useEffect(() => {
     if (!open) {
-      setJOTs(0)
+      setAmount(0);
     }
-  }, [open])
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -79,14 +81,13 @@ export default function WithdrawFundModal({
       if (balance) {
         const usdt = parseInt(toDecimals(balance, decimals));
         setUsdtBalance(usdt);
-        setMaxJot(Math.max(nft.SellingSupply - nft.SoldSupply, 0));
       }
     })();
   }, [open, nft, selectedChain]);
 
   const handleWithdraw = async () => {
-    if (+jots > maxJot) {
-      showAlertMessage(`Can't be exceed the max JOTs.`, { variant: "error" });
+    if (+amount > maxAmount) {
+      showAlertMessage(`Can't be exceed the max amount.`, { variant: "error" });
       return;
     }
 
@@ -108,8 +109,8 @@ export default function WithdrawFundModal({
       account!,
       {
         nft: nft,
-        amount: +jots,
-        setHash
+        amount: +amount,
+        setHash,
       }
     );
     if (!contractResponse.success) {
@@ -118,9 +119,9 @@ export default function WithdrawFundModal({
       return;
     }
 
-
     setLoading(false);
     setResult(1);
+    onCompleted();
   };
 
   const handlePolygonScan = () => {
@@ -190,16 +191,16 @@ export default function WithdrawFundModal({
       <Box>
         <Header3>Withdraw funds</Header3>
         <InputWithLabelAndTooltip
-          inputValue={jots}
-          onInputValueChange={e => setJOTs(e.target.value)}
+          inputValue={amount}
+          onInputValueChange={e => setAmount(e.target.value)}
           overriedClasses={classes.inputJOTs}
-          maxValue={maxJot}
+          maxValue={maxAmount}
           required
           type="number"
           theme="light"
-          endAdornment={<div className={classes.purpleText}>JOTs</div>}
+          endAdornment={<div className={classes.purpleText}>USDT</div>}
         />
-        {/* <Grid container>
+        <Grid container>
           <Grid item md={7} xs={5}>
             <Box className={classes.leftBalance} display="flex" alignItems="center">
               <Header5 style={{ marginBottom: 0 }}>Wallet Balance</Header5>
@@ -219,13 +220,18 @@ export default function WithdrawFundModal({
               alignItems="center"
               justifyContent="flex-end"
             >
-              <Box>MAX: {typeUnitValue(maxJot, 1)}</Box>
-              <Box color="rgba(67,26, 183, 0.4)" pl="15px" onClick={() => setJOTs(maxJot)} style={{ cursor: "pointer" }}>
+              <Box>MAX: {typeUnitValue(maxAmount, 1)}</Box>
+              <Box
+                color="rgba(67,26, 183, 0.4)"
+                pl="15px"
+                onClick={() => setAmount(maxAmount)}
+                style={{ cursor: "pointer" }}
+              >
                 Buy Max
               </Box>
             </Box>
           </Grid>
-        </Grid> */}
+        </Grid>
         <Box display="flex" alignItems="center" mt={6} justifyContent="space-between">
           <SecondaryButton
             size="medium"

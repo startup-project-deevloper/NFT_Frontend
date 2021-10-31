@@ -428,10 +428,6 @@ const PodPageIndividual = () => {
                     theme="dark"
                   />
                 </LoadingWrapper>
-                <Box className={classes.comment}>
-                  <MessageIcon />
-                  <span>3 Comments</span>
-                </Box>
               </Box>
             </Box>
           )}

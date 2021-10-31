@@ -112,11 +112,11 @@ const CreatePodModal = (props: any) => {
   };
 
   const validateNFTMediaInfoCreate = () => {
-    if (pod.Name.length <= 5) {
-      showAlertMessage(`Name field invalid. Minimum 5 characters required`, { variant: "error" });
+    if (!pod.Name) {
+      showAlertMessage(`Name field invalid.`, { variant: "error" });
       return false;
-    } else if (pod.Description.length <= 20) {
-      showAlertMessage(`Description field invalid. Minimum 20 characters required`, { variant: "error" });
+    } else if (!pod.Description) {
+      showAlertMessage(`Description field invalid.`, { variant: "error" });
       return false;
     } else return true;
   };

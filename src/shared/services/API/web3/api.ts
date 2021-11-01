@@ -15,6 +15,7 @@ import syntheticProtocolRouter from "./contracts/SyntheticProtocolRouter";
 import jotPool from "./contracts/JotPool";
 import syntheticFractionalisationAuctionsManager from "./contracts/SyntheticFractionalisationAuctionsManager";
 import syntheticNFTAuction from "./contracts/SyntheticNFTAuction";
+import redemptionPool from "./contracts/RedemptionPool";
 
 const api = network => {
   return {
@@ -31,6 +32,7 @@ const api = network => {
     SyntheticFractionalisationAuctionsManager: syntheticFractionalisationAuctionsManager(network),
     SyntheticNFTAuction: syntheticNFTAuction(network),
     JotPool: jotPool(network),
+    RedemptionPool: redemptionPool(network),
     QuickSwap: quickswap(network),
     PodManager: podManager(network),
     PodWithdrawManager: podWithdrawManager(network),

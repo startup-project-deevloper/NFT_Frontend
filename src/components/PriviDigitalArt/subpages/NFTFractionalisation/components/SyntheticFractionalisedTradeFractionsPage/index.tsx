@@ -306,6 +306,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [ownerSupply, setOwnerSupply] = React.useState<number>(-1);
   const [sellingSupply, setSellingSupply] = React.useState<number>(-1);
   const [liquiditySold, setLiquiditySold] = useState<any>(0);
+  const [buybackPrice, setBuybackPrice] = useState<number>(0);
 
   React.useEffect(() => {
     fetchOwnerHistory();
@@ -333,7 +334,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       const liquiditySold = await web3APIHandler.SyntheticCollectionManager.getliquiditySold(web3, {
         nft,
       });
-
+      web3APIHandler.SyntheticCollectionManager.getBuybackPrice(web3, { nft }).then(price =>
+        setBuybackPrice(price)
+      );
       if (liquiditySold) {
         setLiquiditySold(liquiditySold);
       }
@@ -787,7 +790,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           Current Reserve Price to Buy Back
                         </Box>
                         <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                          {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
+                          {buybackPrice} USDT
                         </Box>
                         <PrimaryButton
                           className={classes.h4}

@@ -31,6 +31,7 @@ import { SwitchButton } from "shared/ui-kit/SwitchButton";
 import AddLiquidityOnQuickswap from "components/PriviDigitalArt/modals/AddLiquidityToQuickswap";
 import LiquidityOnQuickswapModal from "../../modals/LiquidityOnQuickswapModal";
 import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundModal";
+import RemoveLiquidityQuickswap from "components/PriviDigitalArt/modals/RemoveLiquidityQuickswap";
 
 const FreeHoursChartConfig = {
   config: {
@@ -290,6 +291,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [remainingTime, setRemainingTime] = React.useState<number>(-1);
   const [intervalId, setIntervalId] = React.useState<any>(null);
   const [openAddLiquidityOnQuickswap, setOpenAddLiquidityOnQuickswap] = React.useState<boolean>(false);
+  const [openRemoveLiquidityOnQuickswap, setOpenRemoveLiquidityOnQuickswap] = React.useState<boolean>(false);
   const [openProceedModal, setOpenProceedModal] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
   const [openWithdrawFundsModal, setOpenWithdrawFundsModal] = useState<boolean>(false);
@@ -609,6 +611,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     setOpenProceedModal(true);
 
     setOpenAddLiquidityOnQuickswap(false);
+  }
+
+  const handleConfirmRemoveLiquidityOnQuickswap = (amount) => {
+    console.log('Remove Liquidity on quickswap result... ', amount)
   }
 
   return (
@@ -1368,6 +1374,14 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         JotAddress={nft.JotAddress}
         usdtBalance={liquidity}
         onConfirm={handleConfirmAddLiquidityOnQuickswap}
+        jotsBalance={nft.OwnerSupply}
+      />
+      <RemoveLiquidityQuickswap
+        open={openRemoveLiquidityOnQuickswap}
+        handleClose={() => setOpenRemoveLiquidityOnQuickswap(false)}
+        JotAddress={nft.JotAddress}
+        usdtBalance={liquidity}
+        onConfirm={handleConfirmRemoveLiquidityOnQuickswap}
         jotsBalance={nft.OwnerSupply}
       />
       <LiquidityOnQuickswapModal

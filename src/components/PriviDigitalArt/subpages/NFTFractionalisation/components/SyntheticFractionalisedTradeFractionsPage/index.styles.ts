@@ -119,6 +119,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontSize: 22,
     lineHeight: "100%",
     fontWeight: 800,
+    color: "#431AB7",
 
     [theme.breakpoints.down(1080)]: {
       fontSize: 18,
@@ -139,6 +140,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     fontStyle: "normal",
     fontSize: 14,
     lineHeight: "100%",
+    color: "#431AB7",
     "& img": {
       margin: "0px 8px",
     },
@@ -447,4 +449,8 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
       flexDirection: "column",
     },
   },
+  popoverWrapper: {
+    padding: "46px 46px 36px 46px",
+
+  }
 }));

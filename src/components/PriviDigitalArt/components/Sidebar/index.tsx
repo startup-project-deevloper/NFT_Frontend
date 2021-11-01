@@ -19,6 +19,7 @@ const TABS = [
   "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
+  "NFT OPTIONS",
   "NFT FRACTIONALISATION",
 ];
 
@@ -48,11 +49,13 @@ const SidebarContent = ({ handleRefresh }) => {
       return TABS[4];
     } else if (location.pathname.includes("like")) {
       return TABS[5];
+    } else if (location.pathname.includes("option")) {
+      return TABS[6];
     } else if (
       location.pathname.includes("fractionalisation") ||
       location.pathname.includes("fractionalise")
     ) {
-      return TABS[6];
+      return TABS[7];
     }
 
     return TABS[0];
@@ -72,6 +75,8 @@ const SidebarContent = ({ handleRefresh }) => {
     } else if (value === TABS[5]) {
       history.push("/like");
     } else if (value === TABS[6]) {
+      history.push("/option/explore");
+    } else if (value === TABS[7]) {
       history.push("/fractionalise");
     }
   };

@@ -29,6 +29,7 @@ import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 const ManageOptionDetailPage = () => {
   const classes = manageOptionDetailPageStyles();
   const { img_id } = useParams();
+  const history = useHistory();
 
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
@@ -43,10 +44,6 @@ const ManageOptionDetailPage = () => {
 
 
   const { setMultiAddr } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
 
   const [imageIPFS, setImageIPFS] = useState({});
   
@@ -105,11 +102,15 @@ const ManageOptionDetailPage = () => {
   const handleConfirmOrderBook = () => {
       setOpenOrderBookModal(false);
   }
+
+  const goBack = () => {
+    history.push('/option/manage');
+  }
   return (
     <Box style={{ position: "relative", width: "100%" }}>
       <div className={classes.content}>
         <Box display="flex" justifyContent="space-between" width="100%">
-          <BackButton purple/>
+          <BackButton purple overrideFunction={goBack}/>
           <div style={{display:'flex'}}>
             <div 
                 className={classes.secondaryButton}

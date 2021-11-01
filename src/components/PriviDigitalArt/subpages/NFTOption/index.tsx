@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMediaQuery, useTheme } from "@material-ui/core";
 import cls from "classnames";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 
 import { useNFTOptionsStyles } from './index.styles';
 import Box from 'shared/ui-kit/Box';
@@ -13,9 +13,18 @@ import ManagefuturesOption from './components/Managefutures/ManagefuturesOption'
 const NFTOption = () => {
     const theme = useTheme();
     const history = useHistory();
+    const { id } = useParams();
+    console.log("id----", id);
     const classes = useNFTOptionsStyles();
     const [selectedTab, setSelectedTab] = useState<"explore" | "managefutures">("explore");
-
+    
+    useEffect(()=>{
+        if(id === "explore") {
+            setSelectedTab("explore");
+        } else {
+            setSelectedTab("managefutures");
+        }
+    }, id)
     const handleManagefuturesClick = () => {
         setSelectedTab("managefutures");
         // history.push("/fractionalise/synthetic-derivative");
@@ -38,7 +47,7 @@ const NFTOption = () => {
                             history.push("/option/create_nft_option");
                             }}
                         >
-                            <span style={{ margin: 'auto', paddingTop: '10px'}}>Sell NFT in Futures</span>
+                            <span style={{ margin: 'auto', paddingTop: '6px'}}>Sell NFT in Futures</span>
                         </SecondaryButton>
                     </div>
                     <Box width="100%" borderBottom="2px solid rgba(196,196,196,0.4)">

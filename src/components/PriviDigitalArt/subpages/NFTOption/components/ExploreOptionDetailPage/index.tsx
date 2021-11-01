@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory} from 'react-router-dom'
 import {  useMediaQuery } from "@material-ui/core";
 
 import { Avatar, Color, SecondaryButton, Text } from "shared/ui-kit";
@@ -19,7 +19,7 @@ import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 const ExploreOptionDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
   const { img_id } = useParams();
-
+  const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
 
@@ -84,10 +84,13 @@ const ExploreOptionDetailPage = () => {
   const handleConfirmOrderBook = () => {
       setOpenOrderBookModal(false);
   }
+  const goBack = () => {
+    history.push('/option/explore');
+  }
   return (
     <Box style={{ position: "relative", width: "100%" }}>
       <div className={classes.content}>
-        <BackButton purple/>
+        <BackButton purple overrideFunction={goBack}/>
         {loan && loanMedia ? (
           <LoadingWrapper loading={loadingLoan} theme={"blue"} height="calc(100vh - 100px)">
 
@@ -190,7 +193,7 @@ const ExploreOptionDetailPage = () => {
                         className={classes.primaryButton} 
                         onClick={() => setOpenReserveNftModal(true)}
                     >
-                        Reserve NFT
+                        <span>Reserve NFT</span>
                     </div>
                     <div 
                         className={classes.secondaryButton}

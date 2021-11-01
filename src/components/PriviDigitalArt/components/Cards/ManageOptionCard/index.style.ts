@@ -56,7 +56,7 @@ export const optionCardStyles = makeStyles(theme => ({
         fontSize: '8.26741px',
     },
     cardImg: {
-        marginBottom:'-30px'
+        marginBottom:'-20px'
     },
     cardContent: {
         padding: '0px 8px'

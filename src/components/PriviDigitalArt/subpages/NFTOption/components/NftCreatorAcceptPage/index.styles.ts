@@ -443,7 +443,6 @@ export const nftCreatorAcceptPageStyles = makeStyles(theme => ({
     background: "#ffffff",
     marginTop: 11,
     borderRadius: 20,
-    padding:'37px'
   },
   typo8: {
     fontSize: 18,
@@ -484,16 +483,7 @@ export const nftCreatorAcceptPageStyles = makeStyles(theme => ({
         padding: "8px",
       },
       "&:first-child": {
-        paddingLeft: 50,
-        [theme.breakpoints.down("md")]: {
-          paddingLeft: 30,
-        },
-        [theme.breakpoints.down("sm")]: {
-          paddingLeft: 12,
-        },
-        [theme.breakpoints.down("xs")]: {
-          paddingLeft: 8,
-        },
+        textAlign:'left'
       },
     },
     "& .MuiTableRow-head": {

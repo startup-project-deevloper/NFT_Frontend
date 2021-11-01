@@ -211,11 +211,11 @@ const NftCreatorAcceptPage = () => {
               >
                 <img
                   src={
-                    loanMedia.cid
-                      ? imageIPFS
-                      : loanMedia.Type === "VIDEO_TYPE"
-                      ? loanMedia.UrlMainPhoto
-                      : loanMedia.Url || loanMedia.url || require('assets/backgrounds/nft-card-img.png')
+										loanMedia.cid
+										? imageIPFS
+										: loanMedia.Type === "VIDEO_TYPE"
+										? loanMedia.UrlMainPhoto
+										: loanMedia.Url || loanMedia.url || require('assets/backgrounds/nft-card-img.png')
                   }
                   className={classes.detailImg}
                   width="100%"
@@ -229,7 +229,6 @@ const NftCreatorAcceptPage = () => {
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                   <Box display="flex" flexDirection={isMobileScreen ? "column" : "row"} alignItems="center">
                     <Box display="flex" flexDirection="row" alignItems="center">
-                      
                       <Box display="flex" flexDirection="column" ml={0.25} mr={1.25}>
                         <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                           Test
@@ -238,179 +237,179 @@ const NftCreatorAcceptPage = () => {
                     </Box>
                   </Box>
                   <Box display="flex" flexDirection="row" alignItems="center">
-                        <SecondaryButton 
-                            size="small" 
-                            // onClick={handleFollow} 
-                            className={classes.checkOnBtn}
-                        >
-                          Check on
-                          <img
-                                src={require("assets/walletImages/contract.svg")}
-                                alt=""
-                                style={{ position: 'absolute', top: '6px', right: '8px' }}
-                            />
-                        </SecondaryButton>
+										<SecondaryButton 
+											size="small" 
+											// onClick={handleFollow} 
+											className={classes.checkOnBtn}
+										>
+											Check on
+											<img
+												src={require("assets/walletImages/contract.svg")}
+												alt=""
+												style={{ position: 'absolute', top: '6px', right: '8px' }}
+											/>
+										</SecondaryButton>
                   </Box>
                 </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-start">
-                    <Avatar  
-                        url={require("assets/anonAvatars/ToyFaces_Colored_BG_066.jpg")}
-                        size="small"
-                    />
-                    <Text style={{margin:'0px 9px'}}>Owned by</Text>
-                    <Text>0xeec9...82f8</Text>
+									<Avatar  
+											url={require("assets/anonAvatars/ToyFaces_Colored_BG_066.jpg")}
+											size="small"
+									/>
+									<Text style={{margin:'0px 9px'}}>Owned by</Text>
+									<Text>0xeec9...82f8</Text>
                 </Box>
                 <hr className={classes.divider} />
                 <Box display="flex">
-                    <Text style={{fontSize: '18px', color:'#1A1B1C', fontWeight: 800}}>Details</Text>
+									<Text style={{fontSize: '18px', color:'#1A1B1C', fontWeight: 800}}>Details</Text>
                 </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box>
-                        <Text className={classes.detailHeaderText}>Option Time</Text>
-                        <br />
-                        <Text className={classes.detailBodyText}>20 days (15.11.2021)</Text>
+											<Text className={classes.detailHeaderText}>Option Time</Text>
+											<br />
+											<Text className={classes.detailBodyText}>20 days (15.11.2021)</Text>
                     </Box>
                     <Box style={{ borderRight: '1px solid rgb(158 172 242 / 30%)', height: '45px'}}></Box>
                     <Box>
-                        <Text className={classes.detailHeaderText}>Collateral</Text>
-                        <br />
-                        <Text className={classes.detailBodyText}>20%</Text>
+											<Text className={classes.detailHeaderText}>Collateral</Text>
+											<br />
+											<Text className={classes.detailBodyText}>20%</Text>
                     </Box>
                     <Box style={{ borderRight: '1px solid rgb(158 172 242 / 30%)', height: '45px'}}></Box>
                     <Box>
-                        <SecondaryButton 
-                            size="small" 
-                            className={classes.checkOrderbookBtn}
-                            onClick={()=>setOpenOrderBookModal(true)} 
-                        >
-                            Check Orderbook
-                        </SecondaryButton>
+											<SecondaryButton 
+												size="small" 
+												className={classes.checkOrderbookBtn}
+												onClick={()=>setOpenOrderBookModal(true)} 
+											>
+												Check Orderbook
+											</SecondaryButton>
                     </Box>
                 </Box>
                 <Box className={classes.priceBox}>
-                    <Box display="flex" justifyContent="space-between">
-                      <div className={classes.priceBoxName}>Future price</div>
-                      <div className={classes.priceBoxPrice}>2545 USDT</div>
-                    </Box>
-                    <hr className={classes.priceDivider} />
-                    <Box className={classes.payingDate}>
-                      Paying Date
-                    </Box>
-                    <Box display="flex" marginTop="12px" justifyContent="space-around">
-                        <PrimaryButton
-                          size="small"
-                          style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
-                        >
-                          4 Days
-                        </PrimaryButton>
-                        <PrimaryButton
-                          size="small"
-                          style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
-                        >
-                          22h
-                        </PrimaryButton>
-                        <PrimaryButton
-                          size="small"
-                          style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
-                        >
-                          12min
-                        </PrimaryButton>
-                        <PrimaryButton
-                          size="small"
-                          style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
-                        >
-                          10s
-                        </PrimaryButton>
-                    </Box>
+									<Box display="flex" justifyContent="space-between">
+										<div className={classes.priceBoxName}>Future price</div>
+										<div className={classes.priceBoxPrice}>2545 USDT</div>
+									</Box>
+									<hr className={classes.priceDivider} />
+									<Box className={classes.payingDate}>
+										Paying Date
+									</Box>
+									<Box display="flex" marginTop="12px" justifyContent="space-around">
+											<PrimaryButton
+												size="small"
+												style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
+											>
+												4 Days
+											</PrimaryButton>
+											<PrimaryButton
+												size="small"
+												style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
+											>
+												22h
+											</PrimaryButton>
+											<PrimaryButton
+												size="small"
+												style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
+											>
+												12min
+											</PrimaryButton>
+											<PrimaryButton
+												size="small"
+												style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
+											>
+												10s
+											</PrimaryButton>
+									</Box>
                 </Box>                
               </Box>
             </Box>           
             <CancelReserveModal
-                open={openCancelReserveModal}
-                handleClose={() => setOpenCancelReserveModal(false)}
-                onConfirm={handleConfirmCancelReserve}
+							open={openCancelReserveModal}
+							handleClose={() => setOpenCancelReserveModal(false)}
+							onConfirm={handleConfirmCancelReserve}
             />
             <OrderBookModal
-                open={openOrderBookModal}
-                handleClose={() => setOpenOrderBookModal(false)}
-                onConfirm={handleConfirmOrderBook}
+							open={openOrderBookModal}
+							handleClose={() => setOpenOrderBookModal(false)}
+							onConfirm={handleConfirmOrderBook}
             />
             
-                <div className={classes.transactionsSection}>
-                    <div className={classes.coinFlipHistorySection}>
-                        <Box display="flex" justifyContent="space-between">
-                          <Box>
-                            <div className={classes.typo8}>Buyer status of reservance </div>
-                            <div className={classes.subTypo8}>If buyer is collaterall is too small you can claim liquidation and cancel reservation.</div>
-                          </Box>
-                          <Box>
-                            <PrimaryButton
-                              size="large"
-                              style={{ background: "#F2604C", color: "#ffffff", padding:'5px 30px'}}
-                            >
-                              claim liquidation
-                            </PrimaryButton>
-                          </Box>
-                        </Box>
-                        <Box display="flex" justifyContent="space-between" marginTop="37px">
-                          <Box className={classes.collateralText}>Collaterall status <span style={{color:'#431AB7'}}>50%</span></Box>
-                          <Box className={classes.collateralText}>Collateral  needed <span style={{color:'#D30401'}}>100%</span></Box>
-                        </Box>
-                        <CustomSlider
-                          value={sliderValue}
-                          onChange={handleChange}
-                          aria-labelledby="continuous-slider"
-                          defaultValue={0}
-                          step={1}
-                          marks={marks}
-                          min={0}
-                          max={100}
-                          valueLabelDisplay="auto"
-                        />
-                        <div className={classes.typo8}>Ccollateral available </div>
-                        <div className={classes.table}>
-                            <CustomTable
-                            headers={tableHeaders}
-                            rows={flipHistory.map(item => [
-                                {
-                                  cellAlign: "center",
-                                cell: item.account,
-                                },
-                                {
-                                  cellAlign: "center",
-                                cell: (
-                                  <div>
-                                  <img src={require("assets/tokenImages/USDT.png")} style={{width:'17%'}}/>
-                                  </div>
-                                ),
-                                },
-                                {
-                                  cellAlign: "center",
-                                cell: item.amount
-                                },
-                                {
-                                cellAlign: "center",
-                                cell: item.of,
-                                },
-                                {
-                                  cellAlign: "center",
-                                  cell: (
-                                      <Box display="flex">
-                                        <SecondaryButton
-                                          size="small"
-                                          style={{ color: "#431AB7", minWidth: "100%", border: "2px solid #431AB7" }}
-                                        >
-                                          Withdraw 
-                                        </SecondaryButton>
-                                      </Box>
-                                  ),
-                                  },
-                            ])}
-                            placeholderText="No history"
-                            />
-                        </div>
-                    </div>
-                </div>
+						<div className={classes.transactionsSection}>
+							<div className={classes.coinFlipHistorySection}>
+								<Box sx={{padding:'37px 37px 0px 37px'}}>
+									<Box display="flex" justifyContent="space-between">
+										<Box>
+											<div className={classes.typo8}>Buyer status of reservance </div>
+											<div className={classes.subTypo8}>If buyer is collaterall is too small you can claim liquidation and cancel reservation.</div>
+										</Box>
+										<Box>
+											<PrimaryButton
+												size="large"
+												style={{ background: "#F2604C", color: "#ffffff", padding:'5px 30px', fontSize:'16px', fontWeight:800}}
+											>
+												CLAIM LIQUIDATION
+											</PrimaryButton>	
+										</Box>
+									</Box>
+									<Box display="flex" justifyContent="space-between" marginTop="37px">
+										<Box className={classes.collateralText}>Collaterall status <span style={{color:'#431AB7'}}>50%</span></Box>
+										<Box className={classes.collateralText}>Collateral  needed <span style={{color:'#D30401'}}>100%</span></Box>
+									</Box>
+									<CustomSlider
+										value={sliderValue}
+										onChange={handleChange}
+										aria-labelledby="continuous-slider"
+										defaultValue={0}
+										step={1}
+										marks={marks}
+										min={0}
+										max={100}
+										valueLabelDisplay="auto"
+									/>
+									<div className={classes.typo8}>Ccollateral available </div>
+								</Box>
+								<div className={classes.table}>
+									<CustomTable
+									headers={tableHeaders}
+									rows={flipHistory.map(item => [
+										{
+											cell: item.account,
+										},
+										{
+										cell: (
+											<div>
+											<img src={require("assets/tokenImages/USDT.png")} style={{width:'17%'}}/>
+											</div>
+										),
+										},
+										{
+											cellAlign: "center",
+											cell: item.amount
+										},
+										{
+											cellAlign: "center",
+											cell: item.of,
+										},
+										{
+											cellAlign: "center",
+											cell: (
+												<Box display="flex">
+													<SecondaryButton
+														size="small"
+														style={{ color: "#431AB7", minWidth: "100%", border: "2px solid #431AB7" }}
+													>
+														Withdraw 
+													</SecondaryButton>
+												</Box>
+											),
+										},
+									])}
+									placeholderText="No history"
+									/>
+								</div>
+							</div>
+						</div>
 
           </LoadingWrapper>
         ) : (

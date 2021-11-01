@@ -137,7 +137,7 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
                   style={{ color: "#431AB7", maxWidth: "100px", border: "2px solid #431AB7", padding:'0px', marginTop:'27px'}}
                   onClick={handleAddToken}
                 >
-                  + AddToken
+                  + Add Token
               </SecondaryButton>
             </Box>
             <Box className={classes.nameField}>

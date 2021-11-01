@@ -400,7 +400,7 @@ export const manageOptionDetailPageStyles = makeStyles(theme => ({
     border: '1px solid #431AB7',
     borderRadius: '8px',
     transform: 'rotate(0.11deg)',
-    padding: '16px',
+    padding: '20px 0px 14px 0px',
     cursor:'pointer',
     fontFamily: 'Agrandir',
     fontStyle: 'normal',
@@ -467,16 +467,7 @@ export const manageOptionDetailPageStyles = makeStyles(theme => ({
         padding: "8px",
       },
       "&:first-child": {
-        paddingLeft: 50,
-        [theme.breakpoints.down("md")]: {
-          paddingLeft: 30,
-        },
-        [theme.breakpoints.down("sm")]: {
-          paddingLeft: 12,
-        },
-        [theme.breakpoints.down("xs")]: {
-          paddingLeft: 8,
-        },
+        textAlign:'left'
       },
     },
     "& .MuiTableRow-head": {

@@ -291,25 +291,25 @@ const BoughtNftView = () => {
                         <Box display="flex">
                           <PrimaryButton
                             size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
+                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
                           >
                             4 Days
                           </PrimaryButton>
                           <PrimaryButton
                             size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
+                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
                           >
                             22h
                           </PrimaryButton>
                           <PrimaryButton
                             size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
+                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
                           >
                             12min
                           </PrimaryButton>
                           <PrimaryButton
                             size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'4px 15px'}}
+                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
                           >
                             10s
                           </PrimaryButton>

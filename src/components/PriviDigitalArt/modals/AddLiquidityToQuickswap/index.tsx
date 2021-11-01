@@ -65,7 +65,6 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
       }
 
       const response: any = await Promise.all(promises);
-      console.log('39393993993', response)
       const data = response[0].data ?? {};
       setUsdt(+response[1])
 

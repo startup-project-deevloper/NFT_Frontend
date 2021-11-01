@@ -134,7 +134,7 @@ export function DiscussionPage(props) {
             url: response.data.data.url || "",
             type: "file",
             podId: props.podId,
-            podType: "TRAX",
+            podType: "PIX",
             topicId: topicView.id,
             noAddMessage: true,
           };
@@ -187,7 +187,7 @@ export function DiscussionPage(props) {
             url: response.data.data.url || "",
             type: "video",
             podId: props.podId,
-            podType: "TRAX",
+            podType: "PIX",
             topicId: topicView.id,
             noAddMessage: true,
           };
@@ -286,7 +286,7 @@ export function DiscussionPage(props) {
             url: response.data.data.url || "",
             type: "photo",
             podId: props.podId,
-            podType: "TRAX",
+            podType: "PIX",
             topicId: topicView.id,
             noAddMessage: true,
           };
@@ -353,7 +353,7 @@ export function DiscussionPage(props) {
             url: response.data.data.url || "",
             type: "audio",
             podId: props.podId,
-            podType: "TRAX",
+            podType: "PIX",
             topicId: topicView.id,
             noAddMessage: true,
           };
@@ -559,7 +559,7 @@ export function DiscussionPage(props) {
       message: chatContent ? chatContent : audioMessage,
       type: "text",
       podId: props.podId,
-      podType: "TRAX",
+      podType: "PIX",
       topicId: topicView.id,
     };
     socket.emit("add-message-podDiscussion", messageObj);
@@ -591,7 +591,7 @@ export function DiscussionPage(props) {
       podId: props.podId,
       topicId: val.id,
       userId: user.id,
-      podType: "TRAX",
+      podType: "PIX",
     });
     setTopicView(val);
   };

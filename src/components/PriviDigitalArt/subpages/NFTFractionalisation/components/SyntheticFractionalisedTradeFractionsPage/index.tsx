@@ -26,7 +26,7 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import Axios from "axios";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import URL, { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { SwitchButton } from "shared/ui-kit/SwitchButton";
 import AddLiquidityOnQuickswap from "components/PriviDigitalArt/modals/AddLiquidityToQuickswap";
 import LiquidityOnQuickswapModal from "../../modals/LiquidityOnQuickswapModal";
@@ -298,7 +298,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [isAllowFlipCoin, setIsAllowFlipCoin] = useState<boolean>(false)
+  const [isAllowFlipCoin, setIsAllowFlipCoin] = useState<boolean>(nft.isAllowFlipCoin);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
   const ownershipJot = +nft.OwnerSupply;
@@ -306,18 +306,18 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const [ownerSupply, setOwnerSupply] = React.useState<number>(-1);
   const [sellingSupply, setSellingSupply] = React.useState<number>(-1);
-  const [liquidity, setLiquidity] = useState<any>(0);
+  const [liquiditySold, setLiquiditySold] = useState<any>(0);
 
   React.useEffect(() => {
-    fetchOwnerHistory()
-  }, [])
+    fetchOwnerHistory();
+  }, []);
 
   React.useEffect(() => {
     const interval = setInterval(() => {
       fetchOwnerHistory();
     }, 30000);
     getJotPrice();
-    getLiquidity()
+    getLiquidity();
 
     return () => {
       clearInterval(interval);
@@ -331,17 +331,17 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       const web3APIHandler = targetChain.apiHandler;
       const web3 = new Web3(library.provider);
 
-      const liquidity = await web3APIHandler.SyntheticCollectionManager.getliquiditySold(web3, {
+      const liquiditySold = await web3APIHandler.SyntheticCollectionManager.getliquiditySold(web3, {
         nft,
       });
 
-      if (liquidity) {
-        setLiquidity(liquidity);
+      if (liquiditySold) {
+        setLiquiditySold(liquiditySold);
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const getJotPrice = async () => {
     const targetChain = BlockchainNets[1];
@@ -425,24 +425,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setRewardConfig(newRewardConfig);
       }
     }
-  }
+  };
 
   const handleWithdrawFunds = async () => {
-    setOpenWithdrawFundsModal(true)
-    // try {
-    //   const targetChain = BlockchainNets[1];
-
-    //   const web3APIHandler = targetChain.apiHandler;
-    //   const web3 = new Web3(library.provider);
-      
-    //   const response = await web3APIHandler.SyntheticCollectionManager.withdrawFundingTokens(web3, {
-    //     nft,
-    //     amount: 3000
-    //   });
-    // } catch (err) {
-    //   console.log("error", err);
-    // }
-  }
+    setOpenWithdrawFundsModal(true);
+  };
 
   const handleRefresh = async () => {
     try {
@@ -459,7 +446,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setOwnerSupply(ownerSup);
         setNft({
           ...nft,
-          OwnerSupply: ownerSup
+          OwnerSupply: ownerSup,
         });
       }
 
@@ -471,7 +458,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setSellingSupply(sellingSup);
         setNft({
           ...nft,
-          SellingSupply: sellingSup
+          SellingSupply: sellingSup,
         });
       }
 
@@ -483,16 +470,15 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setSoldSupply(soldSupply);
         setNft({
           ...nft,
-          SoldSupply: soldSupply
+          SoldSupply: soldSupply,
         });
       }
 
-
-      return { ownerSupply: ownerSup, sellingSupply: sellingSup, soldSupply }
+      return { ownerSupply: ownerSup, sellingSupply: sellingSup, soldSupply };
     } catch (err) {
       console.log("error", err);
     }
-  }
+  };
 
   const handleOpenBuyJotsModal = () => {
     setOpenBuyJotsModal(true);
@@ -546,15 +532,18 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const totalJot = 10000;
-  const percentage = useMemo(() => Number(((ownerSupply === -1 ? ownershipJot : ownerSupply) / totalJot).toFixed(2)) * 100, [
-    ownerSupply,
-    ownershipJot,
-    totalJot,
-  ]);
+  const percentage = useMemo(
+    () => Number(((ownerSupply === -1 ? ownershipJot : ownerSupply) / totalJot).toFixed(2)) * 100,
+    [ownerSupply, ownershipJot, totalJot]
+  );
 
   const handleCloseWithdrawFunds = () => {
-    setOpenWithdrawFundsModal(false)
-  }
+    setOpenWithdrawFundsModal(false);
+  };
+
+  const handleWithdrawFundsCompleted = () => {
+    getLiquidity();
+  };
 
   React.useEffect(() => {
     if (ownershipJot === 0) {
@@ -599,6 +588,15 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       })();
     }
   }, [intervalId, remainingTime]);
+
+  const updateFlipCoinSetting = value => {
+    setIsAllowFlipCoin(value);
+    Axios.post(`${URL()}/syntheticFractionalize/updateFlipCoinSetting`, {
+      collectionAddress: nft.collection_id,
+      SyntheticID: nft.SyntheticID,
+      isAllowFlipCoin: value,
+    });
+  };
 
   const remainingDay = remainingTime >= 0 ? Math.floor(remainingTime / (3600 * 24)) : 0;
   const remainingHour = remainingTime >= 0 ? Math.floor((remainingTime % (3600 * 24)) / 3600) : 0;
@@ -789,12 +787,15 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       </Box>
                     </Box>
                     <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-                      <Box className={classes.ownerInfo} style={{
-                        background: "#DDFF57",
-                        borderRadius: 12,
-                        padding: "21px 0 18px 31px",
-                        marginLeft: 18
-                      }}>
+                      <Box
+                        className={classes.ownerInfo}
+                        style={{
+                          background: "#DDFF57",
+                          borderRadius: 12,
+                          padding: "21px 0 18px 31px",
+                          marginLeft: 18,
+                        }}
+                      >
                         <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
                           Current Reserve Price to Buy Back
                         </Box>
@@ -958,7 +959,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             </td>
                             <td>
                               <Box ml={3} className={classes.h1} fontWeight={800}>
-                                {nft.SellingSupply} JOTs
+                                {nft.SellingSupply - nft.SoldSupply} JOTs
                               </Box>
                             </td>
                           </tr>
@@ -1034,7 +1035,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          { jotPrice ? `$${jotPrice}` : 'N/A' }
+                          {jotPrice ? `$${jotPrice}` : "N/A"}
                         </Box>
                       </Box>
                       <Box
@@ -1080,7 +1081,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Supply</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            {nft.SellingSupply} JOTs
+                            {nft.SellingSupply - nft.SoldSupply} JOTs
                           </Box>
                         </Box>
                       </Box>
@@ -1122,7 +1123,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           className={classes.h1}
                           fontWeight={800}
                         >
-                          { jotPrice ? `$${jotPrice}` : 'N/A' }
+                          {jotPrice ? `$${jotPrice}` : "N/A"}
                         </Box>
                       </Box>
                       <Box
@@ -1137,7 +1138,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           size="medium"
                           style={{ background: "#431AB7", color: Color.White }}
                           onClick={handleBuyOnQuickSwap}
-                          disabled={!(+nft.totalLiquidity)}
+                          disabled={!+nft.totalLiquidity}
                         >
                           Buy on Quickswap
                         </PrimaryButton>
@@ -1160,141 +1161,137 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           )}
         </>
       )}
-      {
-        isOwner && (
-          <>
-            <Box className={classes.outBox}>
-              <Box className={classes.boxBody} justifyContent="space-between">
-                <Box
-                  className={`${classes.h1} ${classes.ownerTitle}`}
-                  alignItems="center"
-                  sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
-                >
-                  <img src={require(`assets/pixImages/coin.PNG`)} width={24} height={24} style={{ marginRight: 8, marginBottom: 4 }} />
-                  Coin Flip Settings
-                </Box>
-                <Box display="flex" alignItems="center">
-                  <Box
-                    className={classes.h4}
-                    sx={{ justifyContent: "center", alignItems: "center" }}
-                    mr={3}
+      {isOwner && (
+        <>
+          <Box className={classes.outBox}>
+            <Box className={classes.boxBody} justifyContent="space-between">
+              <Box
+                className={`${classes.h1} ${classes.ownerTitle}`}
+                alignItems="center"
+                sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
+              >
+                <img
+                  src={require(`assets/pixImages/coin.PNG`)}
+                  width={24}
+                  height={24}
+                  style={{ marginRight: 8, marginBottom: 4 }}
+                />
+                Coin Flip Settings
+              </Box>
+              <Box display="flex" alignItems="center">
+                <Box className={classes.h4} sx={{ justifyContent: "center", alignItems: "center" }} mr={3}>
+                  Your current ownership
+                  <HtmlTooltip
+                    title=""
+                    TransitionComponent={Fade}
+                    TransitionProps={{ timeout: 600 }}
+                    placement="bottom-start"
+                    arrow
                   >
-                    Your current ownership
-                    <HtmlTooltip
-                      title=""
-                      TransitionComponent={Fade}
-                      TransitionProps={{ timeout: 600 }}
-                      placement="bottom-start"
-                      arrow
+                    <IconButton>
+                      <InfoIcon />
+                    </IconButton>
+                  </HtmlTooltip>
+                </Box>
+                <SwitchButton state={isAllowFlipCoin} setState={updateFlipCoinSetting} />
+              </Box>
+            </Box>
+          </Box>
+          <Box className={classes.outBox}>
+            <Box display="flex" flexDirection="column">
+              <Box
+                className={`${classes.h1} ${classes.ownerTitle}`}
+                sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
+              >
+                Revenue
+              </Box>
+              <Box className={classes.boxBody} style={{ alignItems: "flex-start" }}>
+                <Box
+                  className={classes.col_half}
+                  sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
+                >
+                  <Box className={classes.ownerInfo}>
+                    <Box
+                      className={classes.h4}
+                      pb={1}
+                      sx={{ justifyContent: "center", alignItems: "center" }}
                     >
-                      <IconButton>
-                        <InfoIcon />
-                      </IconButton>
-                    </HtmlTooltip>
+                      Revenue raised from sales
+                    </Box>
+                    <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                      {liquiditySold} USDT
+                    </Box>
+                    <PrimaryButton
+                      className={classes.h4}
+                      size="medium"
+                      style={{
+                        background: Color.GreenLight,
+                        color: Color.Purple,
+                        padding: "0px 117px",
+                        borderRadius: 4,
+                        marginTop: 18,
+                      }}
+                      disabled={liquiditySold <= 0}
+                      onClick={handleWithdrawFunds}
+                    >
+                      Withdraw Funds
+                    </PrimaryButton>
                   </Box>
-                  <SwitchButton state={isAllowFlipCoin} setState={setIsAllowFlipCoin} />
                 </Box>
-              </Box>
-            </Box>
-            <Box className={classes.outBox}>
-              <Box display="flex" flexDirection="column">
                 <Box
-                  className={`${classes.h1} ${classes.ownerTitle}`}
-                  sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
+                  className={classes.col_half}
+                  sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
                 >
-                  Revenue
+                  <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
+                    <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                      Liquidity on Quickswap
+                    </Box>
+                    <PrimaryButton
+                      className={classes.h4}
+                      size="medium"
+                      style={{
+                        background: Color.White,
+                        color: Color.Purple,
+                        border: "solid 0.7px",
+                        borderColor: Color.Purple,
+                        padding: "0px 60px",
+                        marginTop: 14,
+                        borderRadius: 4,
+                      }}
+                      onClick={() => setOpenAddLiquidityOnQuickswap(true)}
+                    >
+                      Add Liquidity
+                    </PrimaryButton>
+                  </Box>
                 </Box>
-                <Box className={classes.boxBody} style={{ alignItems: "flex-start" }}>
-                  <Box
-                    className={classes.col_half}
-                    sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
-                  >
-                    <Box className={classes.ownerInfo}>
-                      <Box
-                        className={classes.h4}
-                        pb={1}
-                        sx={{ justifyContent: "center", alignItems: "center" }}
-                      >
-                        Revenue raised from sales
-                      </Box>
-                      <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                        { liquidity } JOTs
-                      </Box>
-                      <PrimaryButton
-                        className={classes.h4}
-                        size="medium"
-                        style={{
-                          background: Color.GreenLight,
-                          color: Color.Purple,
-                          padding: "0px 117px",
-                          borderRadius: 4,
-                          marginTop: 18
-                        }}
-                        disabled={liquidity <= 0}
-                        onClick={handleWithdrawFunds}
-                      >
-                        Withdraw Funds
-                      </PrimaryButton>
+                <Box className={classes.col_half} sx={{ marginTop: "15px", paddingY: "5px" }}>
+                  <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
+                    <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                      Liquidity on Derivatives
                     </Box>
-                  </Box>
-                  <Box
-                    className={classes.col_half}
-                    sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
-                  >
-                    <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
-                      <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                        Liquidity on Quickswap
-                      </Box>
-                      <PrimaryButton
-                        className={classes.h4}
-                        size="medium"
-                        style={{
-                          background: Color.White,
-                          color: Color.Purple,
-                          border: "solid 0.7px",
-                          borderColor: Color.Purple,
-                          padding: "0px 60px",
-                          marginTop: 14,
-                          borderRadius: 4,
-                        }}
-                        onClick={() => setOpenAddLiquidityOnQuickswap(true)}
-                      >
-                        Add Liquidity
-                      </PrimaryButton>
-                    </Box>
-                  </Box>
-                  <Box
-                    className={classes.col_half}
-                    sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
-                  >
-                    <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
-                      <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                        Liquidity on Derivatives
-                      </Box>
-                      <PrimaryButton
-                        className={classes.h4}
-                        size="medium"
-                        style={{
-                          background: Color.White,
-                          color: Color.Purple,
-                          border: "solid 0.7px",
-                          borderColor: Color.Purple,
-                          padding: "0px 80px",
-                          marginTop: 14,
-                          borderRadius: 4,
-                        }}
-                        onClick={() => {}}
-                      >
-                        Add Liquidity
-                      </PrimaryButton>
-                    </Box>
+                    <PrimaryButton
+                      className={classes.h4}
+                      size="medium"
+                      style={{
+                        background: Color.White,
+                        color: Color.Purple,
+                        border: "solid 0.7px",
+                        borderColor: Color.Purple,
+                        padding: "0px 80px",
+                        marginTop: 14,
+                        borderRadius: 4,
+                      }}
+                      onClick={() => {}}
+                    >
+                      Add Liquidity
+                    </PrimaryButton>
                   </Box>
                 </Box>
               </Box>
             </Box>
-          </>
-        )
-      }
+          </Box>
+        </>
+      )}
       <Box className={classes.boxBody} width={1} mb="10px">
         <Box className={classes.chart}>
           {(!ownerHistory || !ownerHistory.length) && <div className="no-data">There are no data yet.</div>}
@@ -1361,6 +1358,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         open={openWithdrawFundsModal}
         handleClose={handleCloseWithdrawFunds}
         nft={nft}
+        maxAmount={liquiditySold}
+        onCompleted={handleWithdrawFundsCompleted}
       />
       <QuickSwapModal
         open={openQuickSwapModal}

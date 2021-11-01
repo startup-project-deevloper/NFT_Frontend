@@ -49,8 +49,8 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const userSelector = useSelector((state: RootState) => state.user);
   const classes = fractionalisedCollectionStyles();
 
-  const [selectedTab, setSelectedTab] = useState<"flip_coin" | "trade_fraction" | "auction" | "ownership">(
-    "flip_coin"
+  const [selectedTab, setSelectedTab] = useState<"trade_fraction" | "flip_coin" | "auction" | "ownership">(
+    "trade_fraction"
   );
 
   const [openChangeLockedNFTModal, setOpenChangeLockedNFTModal] = useState<boolean>(false);
@@ -84,6 +84,9 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     () => nft && userSelector && (nft.OwnerAddress === userSelector.address || nft.user === userSelector.id),
     [nft, userSelector]
   );
+  const isAllowFlipCoin = React.useMemo(() => {
+    return !!nft.isAllowFlipCoin;
+  }, [nft]);
 
   const isOver10K = React.useMemo(() => nft && nft.OwnerSupply >= 10000, [nft]);
 
@@ -102,8 +105,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   }, [nft]);
 
   useEffect(() => {
-    setSelectedTab(isAuction ? "auction" : isOwner ? "ownership" : "flip_coin");
-  }, [isOwner, isAuction]);
+    setSelectedTab(
+      isAuction ? "auction" : isOwner ? "ownership" : isAllowFlipCoin ? "flip_coin" : "trade_fraction"
+    );
+  }, [isOwner, isAuction, isAllowFlipCoin]);
 
   useEffect(() => {
     setFlipDisabled(+(nft.totalStaked ?? 0) <= 0 || +(nft.OwnerSupply ?? 0) <= 0);
@@ -132,10 +137,10 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       setFlipHistory(flipResp.data);
       nftData = {
         ...nftData,
-        flipHistory: flipResp.data
+        flipHistory: flipResp.data,
       };
     }
-    setNft(nftData)
+    setNft(nftData);
   };
 
   const handleOpenChangeLockedNFTModal = () => {
@@ -194,7 +199,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         return;
       }
 
-      if (contractResponse === 'not allowed') {
+      if (contractResponse === "not allowed") {
         setOpenFlipCoinModal(false);
         setIsFlipping(false);
         setFlipDisabled(true);
@@ -274,7 +279,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   if (openChangeNFTToSynthetic) {
     return (
       <div className={classes.root}>
-        <ChangeNFTToSynthetic goBack={() => setOpenChangeNFTToSynthetic(false)} nft={nft}/>
+        <ChangeNFTToSynthetic goBack={() => setOpenChangeNFTToSynthetic(false)} nft={nft} />
       </div>
     );
   }
@@ -378,21 +383,21 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             )}
             {isOwner ? (
               <PrimaryButton
-              size="medium"
-              onClick={() => handleOpenChangeLockedNFTModal()}
-              style={{
-                background: "white",
-                border: "2px solid #431ab7",
-                color: "#431ab7",
-                padding: "0px 40px",
-                display: "flex",
-                alignItems: "center",
-              }}
+                size="medium"
+                onClick={() => handleOpenChangeLockedNFTModal()}
+                style={{
+                  background: "white",
+                  border: "2px solid #431ab7",
+                  color: "#431ab7",
+                  padding: "0px 40px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
-              CHANGE LOCKED NFT
-              <img src={require("assets/icons/change.png")} className={classes.btnIcon} />
+                CHANGE LOCKED NFT
+                <img src={require("assets/icons/change.png")} className={classes.btnIcon} />
               </PrimaryButton>
-            ): null}
+            ) : null}
           </Box>
         </Box>
         <div className={classes.nftInfoMainContent}>
@@ -489,7 +494,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             >
               <span>OWNERSHIP</span>
             </div>
-          ) : (
+          ) : isAllowFlipCoin ? (
             <div
               className={cls(
                 {
@@ -502,7 +507,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             >
               <span>FLIP A COIN</span>
             </div>
-          )}
+          ) : null}
 
           <div
             className={cls(

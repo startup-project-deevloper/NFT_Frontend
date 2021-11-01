@@ -735,11 +735,11 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
-  const withdrawFundingTokens = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+  const withdrawFundingTokens = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { tokenId, amount, setHash } = payload;
-        const { SyntheticCollectionManagerAddress, JotAddress } = collection;
+        const { nft, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
@@ -747,10 +747,10 @@ const syntheticCollectionManager = (network: string) => {
         const decimals = await USDTAPI.decimals(web3);
 
         const gas = await contract.methods
-          .withdrawFundingTokens(tokenId, toNDecimals(amount, decimals))
+          .withdrawFundingTokens(SyntheticID, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
         const response = contract.methods
-          .withdrawFundingTokens(tokenId, toNDecimals(amount, decimals))
+          .withdrawFundingTokens(SyntheticID, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas })
           .on("transactionHash", function (hash) {
             if (setHash) {
@@ -788,7 +788,7 @@ const syntheticCollectionManager = (network: string) => {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result?.liquiditySold ?? 0, decimals));
+            resolve(toDecimals(result ?? 0, decimals));
           }
         });
       } catch (err) {

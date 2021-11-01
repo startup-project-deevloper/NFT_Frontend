@@ -87,7 +87,7 @@ export default function NewDistributionModal(props: any) {
         data.forEach(rateObj => {
           tknObjList.push({ token: rateObj.token, name: rateObj.name });
         });
-        setTokenObjList(tknObjList);
+        setTokenObjList(tknObjList.filter(item => item.token === "USDT"));
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

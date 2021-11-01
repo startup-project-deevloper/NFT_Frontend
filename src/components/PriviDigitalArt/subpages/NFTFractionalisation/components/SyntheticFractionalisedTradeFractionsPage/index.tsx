@@ -291,7 +291,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [isAllowFlipCoin, setIsAllowFlipCoin] = useState<boolean>(nft.isAllowFlipCoin);
+  const [isAllowFlipCoin, setIsAllowFlipCoin] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (!nft) return;
+    setSoldSupply(nft.SoldSupply);
+    setIsAllowFlipCoin(!!nft.isAllowFlipCoin);
+  }, [nft]);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
   const ownershipJot = +nft.OwnerSupply;

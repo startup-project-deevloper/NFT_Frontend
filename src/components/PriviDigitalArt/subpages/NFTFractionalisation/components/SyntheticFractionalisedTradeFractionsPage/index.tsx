@@ -802,7 +802,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             alignItems: "center",
                             borderRadius: 4,
                           }}
-                          onClick={() => setOpenQuickSwapModal(true)}
+                          onClick={handleBuyBack}
                         >
                           Buy Back to Withdraw
                         </PrimaryButton>

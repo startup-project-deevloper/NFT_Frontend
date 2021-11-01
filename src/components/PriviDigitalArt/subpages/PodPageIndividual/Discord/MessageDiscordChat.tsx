@@ -99,7 +99,7 @@ const MessageDiscordChat = React.memo((props: any) => {
         messageId: message.id,
         userId: userSelector.id,
         podId: props.podId,
-        podType: "TRAX",
+        podType: "PIX",
         chatType: props.chatType,
         chatId: props.chatId
       })
@@ -129,7 +129,7 @@ const MessageDiscordChat = React.memo((props: any) => {
         messageId: message.id,
         userId: userSelector.id,
         podId: props.podId,
-        podType: "TRAX",
+        podType: "PIX",
         chatType: props.chatType,
         chatId: props.chatId
       })

@@ -84,7 +84,7 @@ const MediaUploadModal = ({ open, handleClose, pod, media, handleRefresh }) => {
     let body: any = {
       podId: pod.Id,
       mediaId: media.Title,
-      podType: "TRAX",
+      podType: "PIX",
       metadataPhoto: infoImage,
       metadataMedia: infoSong,
     };

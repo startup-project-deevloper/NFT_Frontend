@@ -299,7 +299,13 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const { account, library, chainId } = useWeb3React();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [isAllowFlipCoin, setIsAllowFlipCoin] = useState<boolean>(nft.isAllowFlipCoin);
+  const [isAllowFlipCoin, setIsAllowFlipCoin] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (!nft) return;
+    setSoldSupply(nft.SoldSupply);
+    setIsAllowFlipCoin(!!nft.isAllowFlipCoin);
+  }, [nft]);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
   const ownershipJot = +nft.OwnerSupply;
@@ -310,6 +316,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [liquiditySold, setLiquiditySold] = useState<any>(0);
   const [addLiquidityAnchorEl, setAddLiquidityAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [removeLiquidityAnchorEl, setRemoveLiquidityAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [buybackPrice, setBuybackPrice] = useState<number>(0);
 
   React.useEffect(() => {
     fetchOwnerHistory();
@@ -337,7 +344,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       const liquiditySold = await web3APIHandler.SyntheticCollectionManager.getliquiditySold(web3, {
         nft,
       });
-
+      web3APIHandler.SyntheticCollectionManager.getBuybackPrice(web3, { nft }).then(price =>
+        setBuybackPrice(price)
+      );
       if (liquiditySold) {
         setLiquiditySold(liquiditySold);
       }
@@ -807,7 +816,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           Current Reserve Price to Buy Back
                         </Box>
                         <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                          {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
+                          {buybackPrice} USDT
                         </Box>
                         <PrimaryButton
                           className={classes.h4}
@@ -822,7 +831,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             alignItems: "center",
                             borderRadius: 4,
                           }}
-                          onClick={() => setOpenQuickSwapModal(true)}
+                          onClick={handleBuyBack}
                         >
                           Buy Back to Withdraw
                         </PrimaryButton>

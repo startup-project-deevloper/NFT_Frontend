@@ -802,12 +802,14 @@ const syntheticCollectionManager = (network: string) => {
     return new Promise(async resolve => {
       try {
         const { quickSwapAddress, tokenId, amount, setHash } = payload;
+        console.log('9009900909099009909009099', quickSwapAddress, tokenId, amount)
 
         const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
 
         const gas = await contract.methods
           .addLiquidityToQuickswap(tokenId, amount)
           .estimateGas({ from: account });
+        console.log('393939399393939393', gas)
         const response = await contract.methods
           .addLiquidityToQuickswap(tokenId, amount)
           .send({ from: account, gas: gas })

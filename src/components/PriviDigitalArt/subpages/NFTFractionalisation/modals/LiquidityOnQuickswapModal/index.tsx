@@ -37,14 +37,14 @@ export default function LiquidityOnQuickswapModal({ open, onClose, amount, colle
         const web3APIHandler = targetChain.apiHandler;
         const web3 = new Web3(library.provider);
 
-        const contractResponse = await web3APIHandler.QuickSwapAddress.addLiquidityToQuickswap(web3, account!, {
-          quickSwapAddress: '',
-          tokenId: collection.SyntheticId,
-          amount,
+        const contractResponse = await web3APIHandler.SyntheticCollectionManager.addLiquidityToQuickswap(web3, account!, {
+          quickSwapAddress: collection.quickSwapAddress,
+          tokenId: collection.SyntheticID,
+          amount: 100,
           setHash
         });
 
-        if (!contractResponse) {
+        if (!contractResponse.success) {
           setIsLoading(false);
           setIsSuccess(false);
           showAlertMessage("Failed to approve. Please try again", { variant: "error" });

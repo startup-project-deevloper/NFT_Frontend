@@ -24,6 +24,7 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
   const [inputUsdt, setInputUsdt] = React.useState<number>(0);
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
   const [jotPrice, setJotPrice] = React.useState<number>(0);
+  const [usdt, setUsdt] = React.useState<number>(0);
 
   useEffect(() => {
     if (!open) return;
@@ -58,12 +59,15 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
               token1: JotAddress.toLowerCase(),
               token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
             },
-          })
+          }),
+          web3APIHandler.Erc20["USDT"].balanceOf(web3, { account }),
         ];
       }
 
       const response: any = await Promise.all(promises);
+      console.log('39393993993', response)
       const data = response[0].data ?? {};
+      setUsdt(+response[1])
 
       if (data.success) {
         const JotPrice = +data.data?.[0]?.token1Price;
@@ -136,7 +140,7 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
             size="medium"
             style={{ background: "#D9F66F", color: "#431AB7", minWidth: "56%" }}
             onClick={() => onConfirm(jots)}
-            disabled={inputUsdt > usdtBalance}
+            // disabled={inputUsdt > usdtBalance}
           >
             Confirm
           </PrimaryButton>

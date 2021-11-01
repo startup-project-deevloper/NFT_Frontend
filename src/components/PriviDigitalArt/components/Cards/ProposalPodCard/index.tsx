@@ -50,16 +50,16 @@ export const ProposalPodCard = props => {
   }, []);
 
   useEffect(() => {
-    if (ipfs) {
+    if (ipfs && Object.keys(ipfs).length !== 0 && usersList && usersList.length > 0 && pod) {
       getImages();
     }
-  }, [pod, ipfs]);
+  }, [pod, ipfs, usersList]);
 
   useEffect(() => {
-    if (ipfs && creator && creator.id) {
+    if (ipfs && Object.keys(ipfs).length !== 0 && creator && creator.id) {
       getUserPhoto(creator);
     }
-  }, [ipfs, creator]);
+  }, [ipfs, creator, usersList]);
 
   const handleAccept = async () => {
     setOpenTransactionModal(true);
@@ -142,15 +142,13 @@ export const ProposalPodCard = props => {
     let photos: any = {};
     for (let creator of pod.CreatorsData) {
       if (creator && creator.id) {
-        let creatorFound = usersList.find(user => user.id === creator.id);
+        let creatorFound: any = usersList.find(user => user.id === creator.id);
 
-        if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
-          photos[i + "-photo"] = await getPhotoIPFS(
-            creatorFound.infoImage.newFileCID,
-            downloadWithNonDecryption
-          );
+        if (creatorFound && creatorFound.ipfsImage) {
+          photos[i + "-photo"] = creatorFound.ipfsImage;
         }
       }
+      i++;
     }
     setMediasPhotos(photos);
   };
@@ -158,9 +156,8 @@ export const ProposalPodCard = props => {
   const getUserPhoto = async (creator: any) => {
     let creatorFound = usersList.find(user => user.id === creator.id);
 
-    if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
-      setCreatorImage(imageUrl);
+    if (creatorFound && creatorFound.ipfsImage) {
+      setCreatorImage(creatorFound.ipfsImage);
     }
   };
 
@@ -216,7 +213,7 @@ export const ProposalPodCard = props => {
           <Box display="flex">
             {pod.CreatorsData.map((item, index) => {
               return (
-                <Box ml={index > 1 ? -2 : 2}>
+                <Box ml={index > 0 ? -2 : 2}>
                   <Avatar
                     size={34}
                     rounded

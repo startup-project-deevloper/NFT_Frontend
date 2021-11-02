@@ -159,11 +159,9 @@ export const CoinFlipHistoryTable = ({ datas, nfts }) => {
 export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const { collection } = props;
   const classes = SyntheticFractionalisedJotPoolsPageStyles();
-  const [rewardConfig, setRewardConfig] = React.useState<any>();
   const PERIODS = ["1D", "7D", "1M", "YTD"];
   const [period, setPeriod] = React.useState<string>(PERIODS[0]);
 
-  const [flipHistory, setFlipHistory] = React.useState<any[]>(tempHistory);
   const [openLiquidityModal, setOpenLiquidityModal] = React.useState<boolean>(false);
   const [openRemoveLiquidityModal, setOpenRemoveLiquidityModal] = React.useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
@@ -175,7 +173,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
 
   const [shareAmount, setShareAmount] = React.useState(1);
   const [poolOwnership, setPoolOwnership] = React.useState(0);
-  const [liquidityValue, setLiquidityValue] = React.useState(0);
+  const [myLiquidityValue, setMyLiquidityValue] = React.useState(0);
   const [rewardValue, setRewardValue] = React.useState(0);
   const [jotPoolBalanceHistory, setJotPoolBalanceHistory] = React.useState([]);
 
@@ -194,22 +192,12 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
       const web3 = new Web3(library.provider);
       const web3APIHandler = targetChain.apiHandler;
 
-      const position = await web3APIHandler.JotPool.getPosition(web3, collection);
+      const position = await web3APIHandler.JotPool.getPosition(web3, account!, collection);
+      console.log("position... ", position);
       if (position) {
         setPoolOwnership(position.poolOwnership);
-      }
-    })();
-  }, [library]);
-
-  React.useEffect(() => {
-    (async () => {
-      const targetChain = BlockchainNets[1];
-      const web3 = new Web3(library.provider);
-      const web3APIHandler = targetChain.apiHandler;
-
-      const liquidity = await web3APIHandler.JotPool.getLiquidityValue(web3, account, collection);
-      if (liquidity) {
-        setLiquidityValue(liquidity);
+        setShareAmount(position.shareAmount);
+        setMyLiquidityValue(position.myLiquidityValue);
       }
     })();
   }, [library]);
@@ -279,7 +267,12 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                 </Box>
               </Grid>
               <Grid item md={9} xs={12}>
-                <PriceGraph data={jotPoolBalanceHistory} title="4245,24 USDC" subTitle="12 Sep 2021" filterDisable />
+                <PriceGraph
+                  data={jotPoolBalanceHistory}
+                  title="4245,24 USDC"
+                  subTitle="12 Sep 2021"
+                  filterDisable
+                />
               </Grid>
             </Grid>
             {shareAmount === 0 && (
@@ -335,7 +328,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                     MY LIQUIDITY VALUE
                   </Box>
                   <Box className={classes.h3} mt={1}>
-                    {liquidityValue} USD
+                    {myLiquidityValue} USD
                   </Box>
                 </Box>
               </Grid>
@@ -420,8 +413,11 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
         collection={collection}
         amount={amount}
         isAdd={isAdd}
-        onCompleted={liquidity => {
-          setTotalLiquidity(liquidity);
+        onCompleted={res => {
+          setTotalLiquidity(res.totalLiquidity);
+          setShareAmount(res.shareAmount);
+          setPoolOwnership(res.poolOwnership);
+          setMyLiquidityValue(res.myLiquidityValue);
         }}
       />
     </Box>

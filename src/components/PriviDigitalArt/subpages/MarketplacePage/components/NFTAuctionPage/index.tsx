@@ -157,9 +157,6 @@ const NFTAuctionPage = ({ goBack }) => {
       endTime: Math.floor(endDateTimeInMs / 1000),
       bidToken: web3Config.TOKEN_ADDRESSES[token],
     };
-    const additionalData = {
-      token,
-    };
 
     setOpenTransactionModal(true);
     setTransactionInProgress(true);
@@ -174,40 +171,39 @@ const NFTAuctionPage = ({ goBack }) => {
       selectedNFT.nftCollection.address
     ).then(resp => {
       if (resp.success) {
-        web3APIHandler.Auction.createAuction(web3, account!, payload, additionalData, setHash).then(
-          async res => {
-            if (res) {
-              setTransactionInProgress(false);
-              setTransactionSuccess(true);
+        web3APIHandler.Auction.createAuction(web3, account!, payload, setHash).then(async res => {
+          if (res) {
+            setTransactionInProgress(false);
+            setTransactionSuccess(true);
 
-              const tx = res.transaction;
+            const tx = res.transaction;
 
-              const uniqueId = uuidv4();
-              const body = {
-                auction: {
-                  id: uniqueId,
-                  owner: user.id,
-                  bidTokenSymbol: token,
-                  bidIncrement: Number(toDecimals(res.data?.bidIncrement, decimals)),
-                  ...payload,
-                },
-                transaction: {
-                  ...tx,
-                  Event: "Auction Created",
-                  Price: price,
-                },
-                type: "PIX",
-              };
+            const uniqueId = uuidv4();
+            const body = {
+              auction: {
+                ...payload,
+                id: uniqueId,
+                owner: user.id,
+                bidTokenSymbol: token,
+                bidIncrement: Number(toDecimals(res.data?.bidIncrement, decimals)),
+                reservePrice: price,
+              },
+              transaction: {
+                ...tx,
+                Event: "Auction Created",
+                Price: price,
+              },
+              type: "PIX",
+            };
 
-              const response = await Axios.post(`${URL()}/marketplace/createAuction`, body);
+            const response = await Axios.post(`${URL()}/marketplace/createAuction`, body);
 
-              onAfterCreateAuction(response.data);
-            } else {
-              setTransactionInProgress(false);
-              setTransactionSuccess(false);
-            }
+            onAfterCreateAuction(response.data);
+          } else {
+            setTransactionInProgress(false);
+            setTransactionSuccess(false);
           }
-        );
+        });
       } else {
         onAfterCreateAuction(resp);
 

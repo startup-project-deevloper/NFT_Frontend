@@ -202,8 +202,16 @@ export function validEmail(email: string): boolean {
   ).test(email);
 }
 
+export const handleDiscordLink = () => {
+  window.open("https://discord.gg/6Eu859gY7D", "_blank");
+};
+
+export const handleTelegramLink = () => {
+  window.open("http://t.me/protocolprivi", "_blank");
+};
+
 export const handleYoutubeLink = () => {
-  window.open("https://youtube.com/channel/UCWRmqGO428lR-LOknsaNN9g", "_blank");
+  window.open("https://www.youtube.com/channel/UCWRmqGO428lR-LOknsaNN9g", "_blank");
 };
 
 export const handleFacebookLink = () => {
@@ -211,7 +219,7 @@ export const handleFacebookLink = () => {
 };
 
 export const handleTwitterLink = () => {
-  window.open("http://www.twitter.com/priviprotocol", "_blank");
+  window.open("https://twitter.com/priviprotocol", "_blank");
 };
 
 export const handleLinkedinLink = () => {
@@ -219,42 +227,31 @@ export const handleLinkedinLink = () => {
 };
 
 export const handleInstagramLink = () => {
-  window.open("https://instagram.com/priviprotocol", "_blank");
+  window.open("https://www.instagram.com/priviprotocol/", "_blank");
 };
 
 export const handleTiktokLink = () => {
-  window.open("https://vm.tiktok.com/ZMechVPv8/", "_blank");
+  window.open("https://www.tiktok.com/@priviprotocol", "_blank");
 };
 
 export const handleMediumLink = () => {
-  window.open("https://privi.medium.com/", "_blank");
+  window.open("https://medium.com/privi", "_blank");
 };
 
-export const handleHomeLink = () => {
-  window.location.href = "https://www.privi.store/#/";
+export const handleAboutLink = () => {
+  window.open("https://privi.gitbook.io/privi-protocol/", "_blank");
 };
 
-export const handleAppsLink = () => {
-  window.open("https://www.privi.store/", "_blank");
+export const handleNewsletterLink = () => {
+  window.open("https://view.flodesk.com/pages/5fc4523e7996e283d830be49", "_blank");
 };
 
-// placeholder
-export const handleTeamLink = () => {
-  window.open("https://priviprotocol.io/", "_blank");
+export const handleWyrtNFTLink = () => {
+  window.open("https://privi.gitbook.io/wyrt-nfts/", "_blank");
 };
 
-export const handleCreatorsLink = () => {
-  window.open("https://priviprotocol.io/creators", "_blank");
-};
-
-// placeholder
-export const handleCommunitiesLink = () => {
-  window.open("https://priviprotocol.io/", "_blank");
-};
-
-// placeholder
-export const handleMediaLink = () => {
-  window.open("https://priviprotocol.io/", "_blank");
+export const handleClaimIDOTokenLink = () => {
+  window.open("https://www.privi.store/#/zoo/claim", "_blank");
 };
 
 export const handleLightPaperLink = () => {

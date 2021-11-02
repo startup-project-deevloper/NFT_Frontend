@@ -2,25 +2,45 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const footerStyles = makeStyles(theme => ({
   contentBox: {
-    borderTop: "1px solid #18181822",
-    padding: `0px ${theme.spacing(20)}px`,
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "110px 280px 100px 330px",
     width: "100%",
+    [theme.breakpoints.down("md")]: {
+      padding: "60px 100px 68px 100px",
+    },
     [theme.breakpoints.down("sm")]: {
-      padding: `0px ${theme.spacing(10)}px`,
+      padding: "60px 50px",
     },
     [theme.breakpoints.down("xs")]: {
-      padding: `0px ${theme.spacing(5)}px`,
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      padding: "60px 30px",
+      "& > div + div": {
+        marginTop: 40,
+      },
     },
-    fontFamily: "Agrandir",
   },
   flexBox: {
     display: "flex",
     alignItems: "center",
   },
   header1: {
-    fontSize: "22px",
-    fontWeight: "normal",
-    textDecoration: "underline",
+    fontSize: 30,
+    fontWeight: 400,
+    fontFamily: "Agrandir Grand",
+    lineHeight: "56px",
+    color: "#181818",
+    cursor: "pointer",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 24,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 18,
+    },
   },
   title: {
     fontSize: "35px",
@@ -30,28 +50,28 @@ export const footerStyles = makeStyles(theme => ({
     WebkitTextFillColor: "transparent",
   },
   title2: {
-    fontSize: "30px",
-    fontWeight: 400,
-  },
-  title3: {
-    color: "#4218B5",
     fontSize: 30,
     fontWeight: 400,
+    fontFamily: "Agrandir Grand",
+    lineHeight: "104.5%",
+    marginBottom: 32,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 24,
+      marginBottom: 16,
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 18,
+    },
   },
-  findUs: {
-  },
-  footerBox: {
-    maxWidth: "1000px",
-    margin: "auto",
-    background: "#FFF",
+  bottomBox: {
     display: "flex",
-    justifyContent: "space-between",
-    paddingTop: 100,
-    paddingBottom: 120,
+    justifyContent: "center",
+    background: "linear-gradient(0deg, #FFFFFF, #FFFFFF), #F7F8FB",
+    borderTop: "1px solid #70758240",
   },
   snsBox: {
-    width: theme.spacing(5),
-    height: theme.spacing(5),
+    width: 52,
+    height: 52,
     background: "#D9F66F",
     borderRadius: "50%",
     marginRight: theme.spacing(2),
@@ -60,36 +80,4 @@ export const footerStyles = makeStyles(theme => ({
     alignItems: "center",
     cursor: "pointer",
   },
-  footerTextWrapper: {
-    marginTop: 0,
-    marginLeft: 0,
-  },
-  '@media (max-width: 780px)' : {
-    findUs: {
-      marginTop: 10,
-    },
-    footerBox: {
-      flexDirection: "column",
-      paddingTop: 40,
-    },
-    footerTextWrapper: {
-      marginTop: 30,
-      marginLeft: 16,
-    },
-    contentBox: {
-      padding: "0 20px",
-    },
-    header1: {
-      fontSize: 18,
-    },
-    title2: {
-      fontSize: 24,
-    },
-    title3: {
-      fontSize: 24,
-    },
-    flexBox: {
-      justifyContent: "space-between",
-    }
-  }
 }));

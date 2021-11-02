@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@material-ui/core";
 
 import Avatar from "shared/ui-kit/Avatar";
 import { copyRightFractionTabStyles } from "./index.styles";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
-import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
-import {useTypedSelector} from "../../../../../../store/reducers/Reducer";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { useTypedSelector } from "store/reducers/Reducer";
 import { Color } from "shared/ui-kit";
 
 const CopyRightFractionTab = (props: any) => {
@@ -24,25 +23,25 @@ const CopyRightFractionTab = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if(ipfs ) {
-      getImages()
+    if (ipfs) {
+      getImages();
     }
   }, [pod, ipfs]);
 
   const getImages = async () => {
-    let i : number = 0;
-    let photos : any = {};
-    for(let creator of pod.CreatorsData) {
-      if(creator && creator.id) {
+    let i: number = 0;
+    let photos: any = {};
+    for (let creator of pod.CreatorsData) {
+      if (creator && creator.id) {
         let creatorFound = usersList.find(user => user.id === creator.id);
 
         if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
-          photos[i + '-photo']= await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
+          photos[creator.id + "-photo"] = creatorFound.ipfsImage;
         }
       }
     }
     setMediasPhotos(photos);
-  }
+  };
 
   return (
     <div className={classes.generalNftMediaTab}>
@@ -59,31 +58,27 @@ const CopyRightFractionTab = (props: any) => {
           justifyContent="space-between"
         >
           <Box display="flex">
-            <Avatar size={34}
-                    image={mediasPhotos && mediasPhotos[index + '-photo'] ?
-                      mediasPhotos[index + '-photo'] :
-                      getDefaultAvatar()}
-                    radius={25}
-                    bordered
-                    rounded />
-            <Box display="flex"
-                 flexDirection="column"
-                 ml={2}>
-              <Box display="flex"
-                   alignItems="center"
-                   mb={0.5}>
-                <div className={classes.nameTypo}>
-                  {user.name}
-                </div>
+            <Avatar
+              size={34}
+              image={
+                mediasPhotos && mediasPhotos[user.id + "-photo"]
+                  ? mediasPhotos[user.id + "-photo"]
+                  : getDefaultAvatar()
+              }
+              radius={25}
+              bordered
+              rounded
+            />
+            <Box display="flex" flexDirection="column" ml={2}>
+              <Box display="flex" alignItems="center" mb={0.5}>
+                <div className={classes.nameTypo}>{user.name}</div>
                 {index === 0 && (
                   <Box className={classes.tabBox} ml={2.5}>
                     Proposer
                   </Box>
                 )}
               </Box>
-              <div className={classes.slugTypo}>
-                {user.id}
-              </div>
+              <div className={classes.slugTypo}>{user.id}</div>
             </Box>
           </Box>
           <Box textAlign="end">

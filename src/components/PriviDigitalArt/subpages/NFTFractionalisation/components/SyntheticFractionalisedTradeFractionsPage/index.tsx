@@ -32,7 +32,6 @@ import AddLiquidityOnQuickswap from "components/PriviDigitalArt/modals/AddLiquid
 import LiquidityOnQuickswapModal from "../../modals/LiquidityOnQuickswapModal";
 import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundModal";
 import RemoveLiquidityQuickswap from "components/PriviDigitalArt/modals/RemoveLiquidityQuickswap";
-import {isNullOrUndefined} from "util";
 
 const FreeHoursChartConfig = {
   config: {
@@ -1243,9 +1242,10 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       style={{
                         background: Color.GreenLight,
                         color: Color.Purple,
-                        padding: "0px 117px",
+                        width: "calc(100% - 60px)",
                         borderRadius: 4,
                         marginTop: 18,
+                        justifyContent: "center"
                       }}
                       disabled={liquiditySold <= 0}
                       onClick={handleWithdrawFunds}
@@ -1282,8 +1282,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       Details
                     </PrimaryButton>
                     <Popover
-                      // open={Boolean(addLiquidityAnchorEl)}
-                      open
+                      open={Boolean(addLiquidityAnchorEl)}
                       anchorEl={addLiquidityAnchorEl}
                       onClose={() => setAddLiquidityAnchorEl(null)}
                       anchorOrigin={{
@@ -1341,6 +1340,44 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                               </Box>
                             </Box>
                           </Box>
+                        </Box>
+                        <Box display="flex" mt={5} justifyContent="center">
+                          <PrimaryButton
+                            className={classes.h4}
+                            size="medium"
+                            style={{
+                              background: Color.White,
+                              color: Color.Purple,
+                              border: "solid 0.7px",
+                              borderColor: Color.Purple,
+                              width: "180px",
+                              borderRadius: 4,
+                              justifyContent: "center"
+                            }}
+                            onClick={() => {
+                              setAddLiquidityAnchorEl(null);
+                              setOpenRemoveLiquidityOnQuickswap(true);
+                            }}
+                          >
+                            Remove Liquidity
+                          </PrimaryButton>
+                          <PrimaryButton
+                            className={classes.h4}
+                            size="medium"
+                            style={{
+                              background: Color.Purple,
+                              color: Color.White,
+                              width: "180px",
+                              borderRadius: 4,
+                              justifyContent: "center"
+                            }}
+                            onClick={() => {
+                              setAddLiquidityAnchorEl(null);
+                              setOpenAddLiquidityOnQuickswap(true);
+                            }}
+                          >
+                            Add Liquidity
+                          </PrimaryButton>
                         </Box>
                       </Box>
                     </Popover>

@@ -801,21 +801,30 @@ const syntheticCollectionManager = (network: string) => {
   const addLiquidityToQuickswap = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { quickSwapAddress, tokenId, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, tokenId, amount, setHash } = payload;
+        
+        console.log('3939339399393939393930', syntheticCollectionManager, tokenId)
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        
+        const USDTAPI = USDT(network);
+        const decimals = await USDTAPI.decimals(web3);
 
-        const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
+        const tAmount = toNDecimals(+amount, decimals);
+
+        console.log('params log... ', tAmount, tokenId)
 
         const gas = await contract.methods
-          .addLiquidityToQuickswap(tokenId, amount)
+          .addLiquidityToQuickswap(tokenId, tAmount)
           .estimateGas({ from: account });
         const response = await contract.methods
-          .addLiquidityToQuickswap(tokenId, amount)
+          .addLiquidityToQuickswap(tokenId, tAmount)
           .send({ from: account, gas: gas })
           .on("transactionHash", function (hash) {
             if (setHash) {
               setHash(hash);
             }
-          });;;
+          });
+        console.log('Liquidity response... ', response)
         const liquidityResponse = response.events?.LiquidiyAdded?.returnValues;
 
         if (liquidityResponse) {

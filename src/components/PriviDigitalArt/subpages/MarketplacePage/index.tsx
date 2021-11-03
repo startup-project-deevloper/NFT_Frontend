@@ -34,11 +34,12 @@ export default function MarketplacePage() {
   }, []);
 
   useEffect(() => {
-    initialLoad();
+    loadData();
   }, [filters.Status]);
 
-  const initialLoad = async () => {
+  const loadData = async () => {
     setIsLoading(true);
+
     const response = await getMarketplaceMedias({
       type: "PIX",
       mode: isProd ? "main" : "test",
@@ -77,8 +78,22 @@ export default function MarketplacePage() {
 
   return (
     <>
-      {openSellNFTPage && <SellNFTPage goBack={() => setOpenSellNFTPage(false)} />}
-      {openStartAuctionPage && <NFTAuctionPage goBack={() => setOpenStartAuctionPage(false)} />}
+      {openSellNFTPage && (
+        <SellNFTPage
+          goBack={() => {
+            setOpenSellNFTPage(false);
+            loadData();
+          }}
+        />
+      )}
+      {openStartAuctionPage && (
+        <NFTAuctionPage
+          goBack={() => {
+            setOpenStartAuctionPage(false);
+            loadData();
+          }}
+        />
+      )}
 
       {!openSellNFTPage && !openStartAuctionPage && (
         <div className={classes.page} onScroll={handleScroll}>

@@ -320,8 +320,6 @@ const Header = props => {
         .post(`${URL()}/chat/getUsers`)
         .then(response => {
           if (response.data.success) {
-            //should be remove user's id from the list ?? so they don't message themselves
-            // const allUsers = [...response.data.data].filter(user => user.id !== userSelector.id) ?? [];
             const allUsers = response.data.data;
             const u = [] as any[];
             allUsers.forEach(user => {
@@ -333,12 +331,7 @@ const Header = props => {
                 user.anonAvatar.length > 0
               ) {
                 image = `${require(`assets/anonAvatars/${user.anonAvatar}`)}`;
-              } /* else {
-                if (user.hasPhoto && user.url) {
-                  image = `${user.url}?${Date.now()}`;
-                }
-              }*/
-              // user.imageUrl = image;
+              }
               user.assistances = user.assistances ?? 0;
               user.rate = user.rate ?? 0;
 
@@ -391,20 +384,8 @@ const Header = props => {
               if (name2.startsWith("0x")) return -1;
               return capitalize(name1).localeCompare(capitalize(name2));
             });
-            // setUsers(allUsers);
-            // setFilteredUsers(allUsers);
-            const dispatchUsers = async () => {
-              for (let usr of u) {
-                if (usr && usr.infoImage && usr.infoImage.newFileCID) {
-                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
-                } else {
-                  usr.ipfsImage = getDefaultAvatar();
-                }
-              }
-              await dispatch(setUsersInfoList(u));
-            };
 
-            dispatchUsers();
+            dispatch(setUsersInfoList(u));
           }
         })
         .catch(error => {
@@ -425,7 +406,6 @@ const Header = props => {
         user.assistances = user.assistances ?? 0;
         user.rate = user.rate ?? 0;
       });
-      // setFilteredUsers(allUsers);
     }
   }, [usersInfoList, userSelector.id, ipfs]);
 

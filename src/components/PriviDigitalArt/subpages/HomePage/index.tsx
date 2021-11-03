@@ -1,25 +1,23 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import axios from "axios";
 import cls from "classnames";
-import { useSelector } from "react-redux";
+
+import ArtistCard from "../../components/Cards/ArtistCard";
+import CollectionCard from "../../components/Cards/CollectionCard";
+import DigitalArtCard from "../../components/Cards/DigitalArtCard";
+import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "../ExplorePage/index";
 
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import URL from "shared/functions/getURL";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import Box from "shared/ui-kit/Box";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
-import ArtistCard from "../../components/Cards/ArtistCard";
-import CollectionCard from "../../components/Cards/CollectionCard";
-import DigitalArtCard from "../../components/Cards/DigitalArtCard";
 import { CollectionsWax, CollectionsShowTime, CollectionsOpensea } from "shared/constants/collections";
-import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "../ExplorePage/index";
+
 import { subPageStyles } from "../index.styles";
-import { useHistory } from "react-router-dom";
-import { RootState } from "store/reducers/Reducer";
 
 export default function HomePage() {
   const classes = subPageStyles();
-  const users = useSelector((state: RootState) => state.usersInfoList);
   const { setOpenFilters } = useContext(DigitalArtContext);
   const [showMoreArtists, setShowMoreArtists] = useState<boolean>(false);
   const [loadingDigitalArts, setLoadingDigitalArts] = useState<boolean>(false);
@@ -32,7 +30,6 @@ export default function HomePage() {
     ...CollectionsShowTime,
     ...CollectionsOpensea,
   ]);
-  const [loadedUsers, setLoadedUsers] = useState<boolean>(false);
 
   useEffect(() => {
     setOpenFilters(false);
@@ -55,21 +52,6 @@ export default function HomePage() {
     });
     setCollections(filtered);
   }, []);
-
-  useEffect(() => {
-    if (users && users.length > 0 && !loadingArtists) {
-      setLoadedUsers(true);
-      setArtists(prev =>
-        prev.map((item: any) => {
-          const artist = users.find(user => user.id === item.id);
-          return {
-            ...item,
-            ...artist,
-          };
-        })
-      );
-    }
-  }, [users, loadingArtists]);
 
   const getArtists = useCallback(() => {
     if (loadingArtists) return;
@@ -120,10 +102,10 @@ export default function HomePage() {
     <div
       className={classes.page}
       style={{
-        justifyContent: loadingArtists || loadingDigitalArts || !loadedUsers ? "center" : "flex-start",
+        justifyContent: loadingArtists || loadingDigitalArts ? "center" : "flex-start",
       }}
     >
-      <LoadingWrapper loading={loadingArtists || loadingDigitalArts || !loadedUsers} theme={"blue"}>
+      <LoadingWrapper loading={loadingArtists || loadingDigitalArts} theme={"blue"}>
         <div className={classes.content}>
           <div className={classes.headerTitle}>
             ✨ Top Artists
@@ -144,7 +126,7 @@ export default function HomePage() {
                 gutter={"24px"}
                 data={artists}
                 renderItem={(item, index) => (
-                  <ArtistCard item={item} key={`item-${index}`} currentIndex={index} />
+                  <ArtistCard item={item} key={`item-${index}`}/>
                 )}
                 columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
               />

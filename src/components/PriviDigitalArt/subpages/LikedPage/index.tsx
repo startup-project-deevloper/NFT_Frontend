@@ -317,7 +317,7 @@ export default function LikedPage() {
           //         gutter={"24px"}
           //         data={sortedArtists}
           //         renderItem={(item, index) => (
-          //           <ArtistCard item={item} key={`item-${index}`} currentIndex={index} />
+          //           <ArtistCard item={item} key={`item-${index}`}/>
           //         )}
           //         columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
           //       />

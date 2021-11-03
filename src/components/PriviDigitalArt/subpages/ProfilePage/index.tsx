@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import cls from "classnames";
 import styled from "styled-components";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import Axios from "axios";
 
 import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
@@ -149,6 +149,8 @@ const ProfilePage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
   const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const loggedUser = useSelector(getUser);
   const params: any = useParams();
@@ -212,25 +214,27 @@ const ProfilePage = () => {
               const id = response.data.data.id;
               setUserId(id);
             } else {
-              Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/mediaUsers`)
-                .then(response => {
-                  if (response.data.success) {
-                    const id = response.data.data.id;
-                    setUserId(id);
-                  } else {
-                    setUserId(params.id);
-                  }
-                })
-                .catch(error => {
-                  console.log(error);
-                });
+              history.goBack();
+              // Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/mediaUsers`)
+              //   .then(response => {
+              //     if (response.data.success) {
+              //       const id = response.data.data.id;
+              //       setUserId(id);
+              //     } else {
+              //       setUserId(params.id);
+              //     }
+              //   })
+              //   .catch(error => {
+              //     console.log(error);
+              //   });
             }
           })
           .catch(error => {
             console.log(error);
           });
       } else if (params.id) {
-        setUserId(params.id);
+        history.goBack();
+        // setUserId(params.id);
       }
     }
   }, [params.id]);

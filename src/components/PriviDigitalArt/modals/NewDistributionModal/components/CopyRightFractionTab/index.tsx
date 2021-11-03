@@ -8,10 +8,9 @@ import { copyRightFractionTabStyles } from "./index.styles";
 import Avatar from "shared/ui-kit/Avatar";
 import { getDefaultAvatar, getRandomAvatar } from "shared/services/user/getUserAvatar";
 import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
-import {useEffect, useState} from "react";
-import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../../../../store/reducers/Reducer";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../store/reducers/Reducer";
 
 const infoIcon = require("assets/icons/info_music_dao.png");
 
@@ -19,7 +18,7 @@ const CopyRightFractionTab = (props: any) => {
   const classes = copyRightFractionTabStyles();
   const usersList = useSelector((state: RootState) => state.usersInfoList);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { ipfs, setMultiAddr } = useIPFS();
 
   const [mediasPhotos, setMediasPhotos] = useState<any[]>([]);
 
@@ -28,25 +27,25 @@ const CopyRightFractionTab = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if(ipfs  && props.pod) {
-      getImages()
+    if (ipfs && props.pod) {
+      getImages();
     }
   }, [props.pod]);
 
   const getImages = async () => {
-    let i : number = 0;
-    let photos : any = {};
-    for(let creator of props.pod.CreatorsData) {
-      if(creator && creator.id) {
+    let i: number = 0;
+    let photos: any = {};
+    for (let creator of props.pod.CreatorsData) {
+      if (creator && creator.id) {
         let creatorFound = usersList.find(user => user.id === creator.id);
-
-        if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
-          photos[i + '-photo']= await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
+        
+        if (creatorFound && creatorFound.ipfsImage) {
+          photos[creator.id + "-photo"] = creatorFound.ipfsImage;
         }
       }
     }
     setMediasPhotos(photos);
-  }
+  };
 
   const maxInvestorsShare = React.useMemo(() => {
     if (!props.pod || !props.pod.CreatorsData) return 100;
@@ -124,46 +123,52 @@ const CopyRightFractionTab = (props: any) => {
           </Box>
         </Box>
         {props.pod.CreatorsData?.map((creator, index) => {
-          return(
-          <Box
-            key={`distrib-${index}`}
-            className={classes.distribBox}
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Box display="flex">
-              <Avatar size={34}
-                      image={mediasPhotos && mediasPhotos[index + '-photo'] ?
-                        mediasPhotos[index + '-photo'] : getDefaultAvatar()}
-                      radius={25}
-                      bordered
-                      rounded />
-              <Box display="flex" flexDirection="column" ml={2}>
-                <div className={classes.nameTypo}>{creator.name}</div>
-                <div className={classes.slugTypo}>{`@${creator.id}`}</div>
+          return (
+            <Box
+              key={`distrib-${index}`}
+              className={classes.distribBox}
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Box display="flex">
+                <Avatar
+                  size={34}
+                  image={
+                    mediasPhotos && mediasPhotos[creator.id + "-photo"]
+                      ? mediasPhotos[creator.id + "-photo"]
+                      : getDefaultAvatar()
+                  }
+                  radius={25}
+                  bordered
+                  rounded
+                />
+                <Box display="flex" flexDirection="column" ml={2}>
+                  <div className={classes.nameTypo}>{creator.name}</div>
+                  <div className={classes.slugTypo}>{`@${creator.id}`}</div>
+                </Box>
               </Box>
+              <InputWithLabelAndTooltip
+                type="number"
+                minValue={0}
+                maxValue={getMaxCreatorShare(index)}
+                overriedClasses={classes.percentageBox}
+                onInputValueChange={e => {
+                  if (Number(e.target.value) > getMaxCreatorShare(index) || Number(e.target.value) < 0) {
+                    return;
+                  }
+                  let podCopy = { ...props.pod };
+                  podCopy.CreatorsData[index] = {
+                    ...podCopy.CreatorsData[index],
+                    sharingPercent: Number(e.target.value),
+                  };
+                  props.setPod(podCopy);
+                }}
+                inputValue={creator.sharingPercent || 0}
+              />
             </Box>
-            <InputWithLabelAndTooltip
-              type="number"
-              minValue={0}
-              maxValue={getMaxCreatorShare(index)}
-              overriedClasses={classes.percentageBox}
-              onInputValueChange={e => {
-                if (Number(e.target.value) > getMaxCreatorShare(index) || Number(e.target.value) < 0) {
-                  return;
-                }
-                let podCopy = { ...props.pod };
-                podCopy.CreatorsData[index] = {
-                  ...podCopy.CreatorsData[index],
-                  sharingPercent: Number(e.target.value),
-                };
-                props.setPod(podCopy);
-              }}
-              inputValue={creator.sharingPercent || 0}
-            />
-          </Box>
-        )})}
+          );
+        })}
         <Box className={classes.distribBox} display="flex" alignItems="center" justifyContent="space-between">
           <Box className={classes.nameTypo} flex={1}>
             Investors

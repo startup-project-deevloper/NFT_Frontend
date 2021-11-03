@@ -686,7 +686,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           </div>
         ) : (
           <div>
-            <SyntheticFractionalisedRedemptionPage collection={collection} />
+            <SyntheticFractionalisedRedemptionPage collection={{ ...collection, id: params.id }} />
           </div>
         )}
       </div>

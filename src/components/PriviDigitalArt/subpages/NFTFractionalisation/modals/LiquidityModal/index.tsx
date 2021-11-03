@@ -13,6 +13,7 @@ import { Modal } from "shared/ui-kit";
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
 import { addLiquidity } from "shared/services/API/SyntheticFractionalizeAPI";
 
+const isProd = process.env.REACT_APP_ENV === "prod";
 export default function LiquidityModal({ open, onClose, onCompleted, amount, collection, isAdd = false }) {
   const classes = LiquidityModalStyles();
   const [isProceeding, setIsProceeding] = useState<boolean>(false);
@@ -42,28 +43,31 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
 
         const contractResponse = await web3APIHandler.JotPool.addLiquidity(web3, account!, collection, {
           amount,
+          setHash,
         });
 
         if (!contractResponse) {
           setIsLoading(false);
           setIsSuccess(false);
-          setHash(contractResponse?.data?.hash);
           showAlertMessage("Failed to approve. Please try again", { variant: "error" });
           return;
         }
 
-        const totalLiquidityRes = await web3APIHandler.JotPool.getTotalLiquidity(web3, collection);
         const totalStake = await web3APIHandler.JotPool.getTotalStake(web3, collection);
+        const res = await web3APIHandler.JotPool.getPosition(web3, account!, collection);
 
-        await addLiquidity({ collectionId: collection.collectionAddress, totalLiquidity: totalLiquidityRes, totalStaked: totalStake })
-        
-        console.log('total liquidity ...', totalLiquidityRes, totalStake)
+        await addLiquidity({
+          collectionId: collection.collectionAddress,
+          totalLiquidity: res.totalLiquidity,
+          totalStaked: totalStake,
+        });
+
+        console.log("position response ...", res, totalStake);
 
         setIsSuccess(true);
         showAlertMessage("You added liquidity successuflly", { variant: "success" });
-        setHash(contractResponse?.data?.hash);
         setIsLoading(false);
-        onCompleted(totalLiquidityRes)
+        onCompleted({ ...res, totalStake });
       } else {
         // const gas = await contract.methods.removeLiquidity(Number(amount)).estimateGas({ from: account });
         // console.log("polygon gas", gas);
@@ -101,8 +105,12 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
         isSuccess={isSuccess}
         hash={hash}
       />
-    )
+    );
   }
+
+  const handlePolygonScan = () => {
+    window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
+  };
 
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.modal}>
@@ -112,12 +120,28 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
             {isProceeding ? (
               <>
                 <LoadingWrapper loading={isLoading} theme="blue" iconWidth="80px" iconHeight="80px" />
-                  <h1 className={classes.title}>{isAdd ? "Adding" : "Removing"} Liquidity</h1>
-                  <p className={classes.description}>
-                    Proceeding on Polygon Chain. <br />
-                    This can take a moment, please be patient...
-                  </p>
-                </>
+                <h1 className={classes.title}>{isAdd ? "Adding" : "Removing"} Liquidity</h1>
+                <p className={classes.description}>
+                  Proceeding on Polygon Chain. <br />
+                  This can take a moment, please be patient...
+                </p>
+                {hash && (
+                  <Box display="flex" flexDirection="column" alignItems="center">
+                    <CopyToClipboard text={hash}>
+                      <Box mt="20px" display="flex" alignItems="center" className={classes.hash}>
+                        Hash:
+                        <Box color="#4218B5" mr={1} ml={1}>
+                          {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
+                        </Box>
+                        <CopyIcon />
+                      </Box>
+                    </CopyToClipboard>
+                    <button className={classes.checkBtn} onClick={handlePolygonScan}>
+                      Check on Polygon Scan
+                    </button>
+                  </Box>
+                )}
+              </>
             ) : (
               <>
                 <img className={classes.icon} src={require("assets/icons/lock-nft-icon.png")} alt="" />

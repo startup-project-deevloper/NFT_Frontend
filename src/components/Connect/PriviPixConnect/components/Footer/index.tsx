@@ -6,24 +6,24 @@ import { ReactComponent as InstagramIcon } from "assets/snsIcons/instagram.svg";
 import { ReactComponent as LinkedInIcon } from "assets/snsIcons/linkedin.svg";
 import { ReactComponent as TiktokIcon } from "assets/snsIcons/tiktok.svg";
 import { ReactComponent as MediaIcon } from "assets/snsIcons/media.svg";
+import { ReactComponent as DiscordIcon } from "assets/snsIcons/discord.svg";
+import { ReactComponent as TelegramIcon } from "assets/snsIcons/telegram.svg";
+import { ReactComponent as PriviBlueLogoIcon } from "assets/logos/privi_logo_blue.svg";
 import Box from "shared/ui-kit/Box";
 import { footerStyles } from "./index.styles";
 import {
+  handleDiscordLink,
+  handleTelegramLink,
   handleYoutubeLink,
   handleTwitterLink,
   handleInstagramLink,
   handleLinkedinLink,
   handleTiktokLink,
   handleMediumLink,
-  handleHomeLink,
-  handleAppsLink,
-  handleTeamLink,
-  handleCreatorsLink,
-  handleCommunitiesLink,
-  handleMediaLink,
-  handleLightPaperLink,
-  handleTokenLink,
-  handleKnowledgeHubLink,
+  handleAboutLink,
+  handleNewsletterLink,
+  handleWyrtNFTLink,
+  handleClaimIDOTokenLink,
   handleTermsAndConditionsLink,
 } from "shared/constants/constants";
 
@@ -31,21 +31,27 @@ const Footer = () => {
   const classes = footerStyles();
 
   return (
-    <Box width={1} className={classes.contentBox}>
-      <Box className={classes.footerBox}>
-        <Box ml={2}>
-          <Box className={`${classes.title2} ${classes.findUs}`} mb={1}>
+    <Box className={classes.bottomBox}>
+      <Box className={classes.contentBox}>
+        <div>
+          <div>
+            <PriviBlueLogoIcon />
+          </div>
+          <Box className={classes.title2} color="#181818" mt={"55px"}>
             Find us on
           </Box>
           <Box className={classes.flexBox}>
-            <Box className={classes.snsBox} onClick={handleYoutubeLink}>
-              <YoutubeIcon width="26px" />
+            <Box className={classes.snsBox} onClick={handleDiscordLink}>
+              <DiscordIcon />
             </Box>
             <Box className={classes.snsBox} onClick={handleTwitterLink}>
               <TwitterIcon />
             </Box>
             <Box className={classes.snsBox} onClick={handleInstagramLink}>
               <InstagramIcon />
+            </Box>
+            <Box className={classes.snsBox} onClick={handleTelegramLink}>
+              <TelegramIcon />
             </Box>
           </Box>
           <Box className={classes.flexBox} mt={1}>
@@ -58,59 +64,28 @@ const Footer = () => {
             <Box className={classes.snsBox} onClick={handleMediumLink}>
               <MediaIcon />
             </Box>
+            <Box className={classes.snsBox} onClick={handleYoutubeLink}>
+              <YoutubeIcon width="26px" />
+            </Box>
           </Box>
-        </Box>
-        <Box className={classes.footerTextWrapper}>
-          <Box className={classes.title3}>Explore</Box>
-          <Box className={classes.header1} mt={2} onClick={handleHomeLink} style={{ cursor: "pointer" }}>
-            Home
+        </div>
+        <div>
+          <Box className={classes.header1} onClick={handleAboutLink}>
+            About
           </Box>
-          <Box className={classes.header1} mt={1} onClick={handleAppsLink} style={{ cursor: "pointer" }}>
-            Apps
+          <Box className={classes.header1} onClick={handleNewsletterLink}>
+            Newsletter
           </Box>
-          {/* <Box className={classes.header1} mt={1} onClick={handleTeamLink}>
-            Team
-          </Box> */}
-          {/* <Box className={classes.header1} mt={1} onClick={handleCreatorsLink} style={{cursor:"pointer"}}>
-            For Creators
-          </Box> */}
-          {/* <Box className={classes.header1} mt={1} onClick={handleCommunitiesLink}>
-            Communities
+          <Box className={classes.header1} mt={1} onClick={handleWyrtNFTLink}>
+            Wyrt NFTs
           </Box>
-          <Box className={classes.header1} mt={1} onClick={handleMediaLink}>
-            Media
-          </Box> */}
-        </Box>
-        <Box className={classes.footerTextWrapper}>
-          <Box className={classes.title3}>Learn</Box>
-          <Box
-            className={classes.header1}
-            mt={2}
-            onClick={handleLightPaperLink}
-            style={{ cursor: "pointer" }}
-          >
-            Lightpaper
+          <Box className={classes.header1} mt={1} onClick={handleClaimIDOTokenLink}>
+            Claim IDO Tokens
           </Box>
-          <Box className={classes.header1} mt={1} onClick={handleTokenLink} style={{ cursor: "pointer" }}>
-            Token Economy
-          </Box>
-          <Box
-            className={classes.header1}
-            mt={1}
-            onClick={handleKnowledgeHubLink}
-            style={{ cursor: "pointer" }}
-          >
-            Knowledge Hub
-          </Box>
-          <Box
-            className={classes.header1}
-            mt={1}
-            onClick={handleTermsAndConditionsLink}
-            style={{ cursor: "pointer" }}
-          >
+          <Box className={classes.header1} mt={1} onClick={handleTermsAndConditionsLink}>
             Terms & Conditions
           </Box>
-        </Box>
+        </div>
       </Box>
     </Box>
   );

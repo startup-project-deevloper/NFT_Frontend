@@ -129,7 +129,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const jotAPI = JOT(network);
       const decimals = await jotAPI.decimals(web3, jotContractAddress);
       const tSupply = toNDecimals(+supplyToKeep, decimals);
-      const tokenURI = selectedNFT.tokenURI;
+      const tokenURI = selectedNFT.tokenURI ?? '';
       const gas = await contract.methods
         .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
           originalName: collectionInfo.data.name,

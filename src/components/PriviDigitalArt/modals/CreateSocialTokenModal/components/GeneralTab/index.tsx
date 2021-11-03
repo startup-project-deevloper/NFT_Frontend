@@ -8,16 +8,23 @@ import FileUpload from "shared/ui-kit/Page-components/FileUpload";
 export default function CreateSocialTokenGeneralTab({ socialToken, setSocialToken }) {
   const [photoImg, setPhotoImg] = useState<any>();
   const [img, setImg] = useState<any>();
+  const [dimension, setDimension] = useState<any>({});
+
+  useEffect(() => {
+    if (dimension.dimensions) {
+      setSocialToken(prev => ({ ...prev, dimensions: dimension.dimensions }));
+    }
+  }, [dimension.dimensions]);
 
   useEffect(() => {
     if (img) {
-      setSocialToken({ ...socialToken, photo: img });
+      setSocialToken(prev => ({ ...prev, photo: img }));
     }
   }, [img]);
 
   useEffect(() => {
-    if (img) {
-      setSocialToken({ ...socialToken, photoImg: photoImg });
+    if (photoImg) {
+      setSocialToken(prev => ({ ...prev, photoImg: photoImg }));
     }
   }, [photoImg]);
 
@@ -78,8 +85,8 @@ export default function CreateSocialTokenGeneralTab({ socialToken, setSocialToke
         photoImg={photoImg}
         setterPhoto={setImg}
         setterPhotoImg={setPhotoImg}
-        mainSetter={setSocialToken}
-        mainElement={socialToken}
+        mainElement={dimension}
+        mainSetter={setDimension}
         type="image"
         canEdit={true}
       />

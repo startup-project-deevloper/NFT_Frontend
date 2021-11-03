@@ -144,20 +144,18 @@ const GeneralTab = ({ pod, setPod }) => {
               <Box display="flex" flexDirection="column" ml={4}>
                 <Box className={classes.label}>{song.Title || "No Title"}</Box>
                 <Box display="flex" alignItems="center">
-                  <Box fontSize={14} color={"#2D3047"} fontWeight={500} pr={2}>
+                  <Box fontSize={14} color={"#2D3047"} fontWeight={600} pr={2}>
+                    Genre
+                  </Box>
+                  <Box
+                    fontSize={14}
+                    color={"#2D3047"}
+                    fontWeight={500}
+                    pl={2}
+                    borderLeft="1px solid #00000033"
+                  >
                     {song.Genre || "No Genre"}
                   </Box>
-                  {song && song.MediaSymbol ? (
-                    <Box
-                      fontSize={14}
-                      color={"#2D3047"}
-                      fontWeight={500}
-                      ml={2}
-                      borderLeft="1px solid #00000033"
-                    >
-                      {song.MediaSymbol || ""}
-                    </Box>
-                  ) : null}
                 </Box>
               </Box>
             </Box>

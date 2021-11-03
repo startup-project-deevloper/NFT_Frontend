@@ -16,6 +16,10 @@ const fileUploadingModalStyles = makeStyles(theme => ({
     alignItems: "center",
     color: "#431AB7",
   },
+  progressImageContent: {
+    minHeight: 340,
+    position: "relative",
+  },
   uploadImg: {
     objectFit: "none",
   },
@@ -133,18 +137,7 @@ const FileUploadingModal = (props: any) => {
   return (
     <Modal size="medium" isOpen={props.open} onClose={props.handleClose} className={classes.root}>
       <Box className={classes.modalContent}>
-        <Box
-          // className={classes.uploadImg}
-          style={{
-            // backgroundImage: `url(${require(`assets/musicDAOImages/file_upload.png`)})`,
-            // backgroundRepeat: "no-repeat",
-            // backgroundSize: "cover",
-            // backgroundPosition: "center",
-            // width: "100%",
-            // height: "350px",
-            position: "relative",
-          }}
-        >
+        <div className={classes.progressImageContent}>
           <img
             src={require("assets/pixImages/file_upload.png")}
             alt="file uploading"
@@ -156,7 +149,7 @@ const FileUploadingModal = (props: any) => {
           <Box className={`${classes.point} ${classes.move4}`} />
           <Box className={`${classes.point} ${classes.move5}`} />
           <Box className={`${classes.point} ${classes.move6}`} />
-        </Box>
+        </div>
         <BlueLinearProgress
           variant="determinate"
           value={Math.floor(props.progress)}

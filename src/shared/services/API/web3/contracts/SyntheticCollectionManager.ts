@@ -803,7 +803,6 @@ const syntheticCollectionManager = (network: string) => {
       try {
         const { SyntheticCollectionManagerAddress, tokenId, amount, setHash } = payload;
         
-        console.log('3939339399393939393930', syntheticCollectionManager, tokenId)
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
         
         const USDTAPI = USDT(network);
@@ -842,9 +841,9 @@ const syntheticCollectionManager = (network: string) => {
   const withdrawLiquidityFromQuickswap = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { quickSwapAddress, tokenId, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, tokenId, amount, setHash } = payload;
 
-        const contract = ContractInstance(web3, metadata.abi, quickSwapAddress);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         const gas = await contract.methods
           .withdrawLiquidityFromQuickswap(tokenId, amount)
@@ -874,9 +873,9 @@ const syntheticCollectionManager = (network: string) => {
   const AddLiquidityToFuturePool = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { perpetualPoolLiteAddress, tokenId, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, tokenId, amount, setHash } = payload;
 
-        const contract = ContractInstance(web3, metadata.abi, perpetualPoolLiteAddress);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         const gas = await contract.methods
           .AddLiquidityToFuturePool(tokenId, amount)
@@ -906,9 +905,9 @@ const syntheticCollectionManager = (network: string) => {
   const withdrawLiquidityFromFuturePool = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { perpetualPoolLiteAddress, tokenId, amount, setHash } = payload;
+        const { SyntheticCollectionManagerAddress, tokenId, amount, setHash } = payload;
 
-        const contract = ContractInstance(web3, metadata.abi, perpetualPoolLiteAddress);
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
         const gas = await contract.methods
           .withdrawLiquidityFromFuturePool(tokenId, amount)

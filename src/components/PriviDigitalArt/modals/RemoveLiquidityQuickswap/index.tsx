@@ -12,7 +12,6 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { RemoveLiquidityQuickswapStyles } from "./index.style";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
-import {typeUnitValue} from "shared/helpers/utils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -96,20 +95,23 @@ export default function RemoveLiquidityQuickswap({ open, handleClose = () => {},
           type="number"
           theme="light"
           minValue={1}
-          endAdornment={<div className={classes.purpleText}>% SHARE</div>}
+          endAdornment={<div className={classes.purpleText}>%SHARE</div>}
         />
-        <Box mt={4} color="#431AB7" style={{ fontWeight: 700 }}>Liquidity amount to be removed</Box>
-        <Box display="flex" alignItems="center" my={1} justifyContent="space-between" style={{
+        <Box mt={2} color="#431AB7" style={{ fontWeight: 700 }}>Liquidity amount to be removed</Box>
+        <Box display="flex" flexDirection="column" mt={1} style={{
           background: "rgba(158, 172, 242, 0.2)",
           borderRadius: 12,
           padding: 20
         }}>
-          <span style={{ color: "#431AB7" }}>USDT</span>
-          <span className={classes.purpleText}>{usdt}</span>
-          <span style={{ color: "#431AB7" }}>JOTs</span>
-          <span className={classes.purpleText}>{jots}</span>
+          <Box width="100%" display="flex" justifyContent="space-between" pb={2} style={{ borderBottom: "1px solid #431AB710" }}>
+            <span style={{ color: "#431AB7" }}>USDT</span>
+            <span className={classes.purpleText}>{usdt}</span>
+          </Box>
+          <Box width="100%" display="flex" justifyContent="space-between" pt={2}>
+            <span style={{ color: "#431AB7" }}>JOTs</span>
+            <span className={classes.purpleText}>{jots}</span>
+          </Box>
         </Box>
-        <Box color="#431AB7">JOT Balance <span style={{ fontWeight: 700 }}>{ jotsBalance } JOTs</span></Box>
         <Box display="flex" alignItems="center" justifyContent="space-between" mt={5}>
           <SecondaryButton
             size="medium"

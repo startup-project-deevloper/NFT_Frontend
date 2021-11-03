@@ -40,6 +40,12 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
   }, [chainId, selectedChain, open]);
 
   useEffect(() => {
+    if (!open) {
+      setInputUsdt(0);
+    }
+  }, [open])
+
+  useEffect(() => {
     if (!open) return;
 
     (async () => {
@@ -138,8 +144,8 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
           <PrimaryButton
             size="medium"
             style={{ background: "#D9F66F", color: "#431AB7", minWidth: "56%" }}
-            onClick={() => onConfirm(jots)}
-            // disabled={inputUsdt > usdtBalance}
+            onClick={() => onConfirm(inputUsdt)}
+            disabled={inputUsdt > usdtBalance}
           >
             Confirm
           </PrimaryButton>

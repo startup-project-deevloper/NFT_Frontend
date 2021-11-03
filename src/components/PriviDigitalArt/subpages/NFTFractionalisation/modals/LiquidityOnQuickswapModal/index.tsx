@@ -38,7 +38,8 @@ export default function LiquidityOnQuickswapModal({ open, onClose, amount, colle
         const web3 = new Web3(library.provider);
 
         const contractResponse = await web3APIHandler.SyntheticCollectionManager.addLiquidityToQuickswap(web3, account!, {
-          quickSwapAddress: collection.quickSwapAddress,
+          SyntheticCollectionManagerAddress: collection.SyntheticCollectionManagerAddress,
+          JotAddress: collection.JotAddress,
           tokenId: collection.SyntheticID,
           amount: 100,
           setHash

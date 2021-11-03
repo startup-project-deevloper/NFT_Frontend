@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from "react";
 import Web3 from "web3";
-import { Grid, Fade, InputBase, Tooltip, IconButton, useMediaQuery, TooltipProps, Popover } from "@material-ui/core";
+import {
+  Grid,
+  Fade,
+  InputBase,
+  Tooltip,
+  IconButton,
+  useMediaQuery,
+  TooltipProps,
+  Popover,
+} from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import Moment from "react-moment";
 
@@ -32,6 +41,7 @@ import AddLiquidityOnQuickswap from "components/PriviDigitalArt/modals/AddLiquid
 import LiquidityOnQuickswapModal from "../../modals/LiquidityOnQuickswapModal";
 import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundModal";
 import RemoveLiquidityQuickswap from "components/PriviDigitalArt/modals/RemoveLiquidityQuickswap";
+import TransactionResultModal from "../../../../modals/TransactionResultModal";
 
 const FreeHoursChartConfig = {
   config: {
@@ -319,8 +329,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [sellingSupply, setSellingSupply] = React.useState<number>(-1);
   const [liquiditySold, setLiquiditySold] = useState<any>(0);
   const [addLiquidityAnchorEl, setAddLiquidityAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const [removeLiquidityAnchorEl, setRemoveLiquidityAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [removeLiquidityAnchorEl, setRemoveLiquidityAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
   const [buybackPrice, setBuybackPrice] = useState<number>(0);
+  const [hash, setHash] = useState<string>("");
+  const [updateResult, setUpdateResult] = useState<number>(0);
 
   React.useEffect(() => {
     fetchOwnerHistory();
@@ -360,15 +374,24 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const updateBuybackPrice = async () => {
     try {
+      setLoading(true);
+      setUpdateResult(0);
       const targetChain = BlockchainNets[1];
 
       const web3APIHandler = targetChain.apiHandler;
       const web3 = new Web3(library.provider);
-      web3APIHandler.SyntheticCollectionManager.updateBuybackPrice(web3, account!, { nft }).then(price =>
-        setBuybackPrice(price)
-      );
+      const price = await web3APIHandler.SyntheticCollectionManager.updateBuybackPrice(web3, account!, {
+        nft,
+        setHash,
+      });
+      console.log("updated price", price);
+      setBuybackPrice(price);
+      setUpdateResult(1);
     } catch (err) {
       console.log(err);
+      setUpdateResult(-1);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -575,8 +598,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   };
 
   const handleOpenQuickswapDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setAddLiquidityAnchorEl(e.currentTarget)
-  }
+    setAddLiquidityAnchorEl(e.currentTarget);
+  };
 
   React.useEffect(() => {
     if (ownershipJot === 0) {
@@ -636,17 +659,17 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const remainingMin = remainingTime >= 0 ? Math.floor((remainingTime % 3600) / 60) : 0;
   const remainingSec = remainingTime >= 0 ? Math.floor(remainingTime % 60) : 0;
 
-  const handleConfirmAddLiquidityOnQuickswap = (amount) => {
-    console.log('Add liquidity on quickswap result... ', amount)
+  const handleConfirmAddLiquidityOnQuickswap = amount => {
+    console.log("Add liquidity on quickswap result... ", amount);
     setAmount(amount);
     setOpenProceedModal(true);
 
     setOpenAddLiquidityOnQuickswap(false);
-  }
+  };
 
-  const handleConfirmRemoveLiquidityOnQuickswap = (amount) => {
-    console.log('Remove Liquidity on quickswap result... ', amount)
-  }
+  const handleConfirmRemoveLiquidityOnQuickswap = amount => {
+    console.log("Remove Liquidity on quickswap result... ", amount);
+  };
 
   return (
     <Box className={classes.root}>
@@ -821,7 +844,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                     </Box>
                     <Box
                       className={classes.col_half}
-                      style={{ minWidth: 450 }}
+                      style={{ minWidth: 500 }}
                       sx={{ marginY: "15px", paddingY: "5px" }}
                     >
                       <Box
@@ -1583,6 +1606,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         subTitle={`Transaction is proceeding on ${BlockchainNets[1].value}.\nThis can take a moment, please be patient...`}
         handleClose={() => {}}
       ></LoadingScreen>
+      <TransactionResultModal
+        open={updateResult !== 0}
+        onClose={() => setUpdateResult(0)}
+        isSuccess={updateResult > 0}
+        hash={hash}
+      />
     </Box>
   );
 }

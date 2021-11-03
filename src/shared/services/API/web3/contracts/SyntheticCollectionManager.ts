@@ -935,6 +935,53 @@ const syntheticCollectionManager = (network: string) => {
     });
   };
 
+  const updateBuybackPrice = (web3: Web3, account: string, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { nft } = payload;
+        const { SyntheticCollectionManagerAddress } = nft;
+        const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const USDTAPI = USDT(network);
+
+        const decimals = await USDTAPI.decimals(web3);
+
+        const gas = await contract.methods.updateBuybackPrice().estimateGas({ from: account });
+        console.log("polygon gas...", gas);
+
+        const response = await contract.methods
+          .updateBuybackPrice()
+          .send({ from: account, gas });
+        console.log('response', response)
+        const {
+          events: {
+            BuybackPriceUpdateRequested: {
+              blockNumber,
+              returnValues: { requestId },
+            },
+          },
+        } = response;
+
+        await new Promise(resolve => setTimeout(resolve, 30000));
+        await contract.getPastEvents(
+          "BuybackPriceUpdated",
+          {
+            fromBlock: blockNumber,
+            toBlock: "latest",
+          },
+          (error, events) => {
+            console.log(events);
+            const event = events
+              .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
+              .find(res => res.requestId === requestId);
+            resolve(event?.price)
+          })
+      } catch (err) {
+        console.log(err);
+        resolve(null);
+      }
+    });
+  };
+
   return {
     buyJotTokens,
     depositJots,
@@ -964,6 +1011,7 @@ const syntheticCollectionManager = (network: string) => {
     withdrawLiquidityFromQuickswap,
     AddLiquidityToFuturePool,
     withdrawLiquidityFromFuturePool,
+    updateBuybackPrice,
   };
 };
 

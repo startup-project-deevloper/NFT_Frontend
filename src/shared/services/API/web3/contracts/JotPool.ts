@@ -16,7 +16,7 @@ const jotPool = (network: string) => {
   ): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { amount } = payload;
+        const { amount, setHash } = payload;
         const { JotPoolAddress, JotAddress } = collection;
 
         const contract = ContractInstance(web3, metadata.abi, JotPoolAddress);
@@ -36,8 +36,39 @@ const jotPool = (network: string) => {
         console.log("Getting gas....", tAmount);
         const gas = await contract.methods.addLiquidity(tAmount).estimateGas({ from: account });
 
-        console.log("calced gas price is.... ", gas);
-        const response = await contract.methods.addLiquidity(tAmount).send({ from: account, gas: gas });
+        const response = await contract.methods
+          .addLiquidity(tAmount)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
+
+        console.log("addLiquidity response.... ", response);
+
+        const { blockNumber } = response;
+
+        await new Promise(resolve => setTimeout(resolve, 60000));
+
+        await contract.getPastEvents(
+          "LiquidityAdded",
+          {
+            fromBlock: blockNumber,
+            toBlock: "latest",
+          },
+          (error, events) => {
+            console.log("LiquidityAdded events", events);
+            if (events.length) {
+              const { returnValues } = events[0];
+              if (returnValues.mintedLiquidity) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            }
+            resolve(false);
+          }
+        );
+
         console.log("transaction succeed");
         resolve({
           data: {
@@ -51,7 +82,7 @@ const jotPool = (network: string) => {
     });
   };
 
-  const getPosition = async (web3: Web3, collection: any): Promise<any> => {
+  const getPosition = async (web3: Web3, account: StepIconClasskey, collection: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { JotPoolAddress, JotAddress } = collection;
@@ -60,18 +91,22 @@ const jotPool = (network: string) => {
         const jotAPI = JOT(network);
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
+        const balance = await jotAPI.balanceOf(web3, JotAddress, { account });
 
         const position = await contract.methods.getPosition().call();
-        const totalShares = await contract.methods.totalShares().call();
+        const totalShares = Number(await contract.methods.totalShares().call());
+        const totalLiquidity = Number(await contract.methods.totalLiquidity().call());
 
-        if (position && totalShares) {
+        const shareAmount = +position.liquidity;
+        const poolOwnership = totalLiquidity ? shareAmount / totalLiquidity : 0;
+        const myLiquidityValue = poolOwnership * balance;
+
+        if (position) {
           resolve({
-            shareAmount: parseInt(toNDecimals(position.totalShares, decimals)),
-            poolOwnership:
-              totalShares !== "0"
-                ? parseInt(toNDecimals(position.totalShares, decimals)) /
-                  parseInt(toNDecimals(totalShares, decimals))
-                : 0,
+            shareAmount,
+            poolOwnership: (poolOwnership * 100).toFixed(2),
+            myLiquidityValue,
+            totalLiquidity,
           });
         } else {
           resolve(null);
@@ -167,7 +202,7 @@ const jotPool = (network: string) => {
         resolve(null);
       }
     });
-  }
+  };
 
   return {
     addLiquidity,
@@ -175,7 +210,7 @@ const jotPool = (network: string) => {
     getLiquidityValue,
     getReward,
     getTotalLiquidity,
-    getTotalStake
+    getTotalStake,
   };
 };
 

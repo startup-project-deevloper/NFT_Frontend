@@ -306,6 +306,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     setIsAllowFlipCoin(!!nft.isAllowFlipCoin);
   }, [nft]);
 
+  React.useEffect(() => {
+    if (!nft.SyntheticCollectionManagerAddress) return;
+    if (nft.SyntheticCollectionManagerAddress) getLiquidity();
+  }, [nft.SyntheticCollectionManagerAddress, nft.SyntheticID]);
+
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
   const ownershipJot = +nft.OwnerSupply;
   const maxSupplyJot = +nft.SellingSupply;
@@ -326,7 +331,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       fetchOwnerHistory();
     }, 30000);
     getJotPrice();
-    getLiquidity();
 
     return () => {
       clearInterval(interval);
@@ -349,6 +353,20 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       if (liquiditySold) {
         setLiquiditySold(liquiditySold);
       }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const updateBuybackPrice = async () => {
+    try {
+      const targetChain = BlockchainNets[1];
+
+      const web3APIHandler = targetChain.apiHandler;
+      const web3 = new Web3(library.provider);
+      web3APIHandler.SyntheticCollectionManager.updateBuybackPrice(web3, account!, { nft }).then(price =>
+        setBuybackPrice(price)
+      );
     } catch (err) {
       console.log(err);
     }
@@ -801,7 +819,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         </PrimaryButton>
                       </Box>
                     </Box>
-                    <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
+                    <Box
+                      className={classes.col_half}
+                      style={{ minWidth: 450 }}
+                      sx={{ marginY: "15px", paddingY: "5px" }}
+                    >
                       <Box
                         className={classes.ownerInfo}
                         style={{
@@ -817,23 +839,42 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                           {buybackPrice} USDT
                         </Box>
-                        <PrimaryButton
-                          className={classes.h4}
-                          size="medium"
-                          style={{
-                            color: Color.White,
-                            background: Color.Purple,
-                            padding: "0px 25px",
-                            maxWidth: 250,
-                            marginTop: 14,
-                            display: "flex",
-                            alignItems: "center",
-                            borderRadius: 4,
-                          }}
-                          onClick={handleBuyBack}
-                        >
-                          Buy Back to Withdraw
-                        </PrimaryButton>
+                        <Box display="flex">
+                          <PrimaryButton
+                            className={classes.h4}
+                            size="medium"
+                            style={{
+                              color: Color.White,
+                              background: Color.Purple,
+                              padding: "0px 25px",
+                              maxWidth: 250,
+                              marginTop: 14,
+                              display: "flex",
+                              alignItems: "center",
+                              borderRadius: 4,
+                            }}
+                            onClick={handleBuyBack}
+                          >
+                            Buy Back to Withdraw
+                          </PrimaryButton>
+                          <PrimaryButton
+                            className={classes.h4}
+                            size="medium"
+                            style={{
+                              color: Color.White,
+                              background: Color.Purple,
+                              padding: "0px 25px",
+                              maxWidth: 250,
+                              marginTop: 14,
+                              display: "flex",
+                              alignItems: "center",
+                              borderRadius: 4,
+                            }}
+                            onClick={updateBuybackPrice}
+                          >
+                            Update Buy Back Price
+                          </PrimaryButton>
+                        </Box>
                       </Box>
                     </Box>
                   </Box>

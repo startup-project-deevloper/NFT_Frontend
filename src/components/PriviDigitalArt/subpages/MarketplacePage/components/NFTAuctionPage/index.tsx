@@ -216,6 +216,7 @@ const NFTAuctionPage = ({ goBack }) => {
   const onAfterCreateAuction = async (resp: any) => {
     if (resp?.success) {
       showAlertMessage("Auction created successfully", { variant: "success" });
+      goBack();
     } else {
       showAlertMessage("Auction creation failed. Please try again", { variant: "error" });
     }

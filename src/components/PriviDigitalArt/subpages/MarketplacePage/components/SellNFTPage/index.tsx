@@ -191,6 +191,7 @@ const SellNFTPage = ({ goBack }) => {
   const onAfterCreateExchange = async (resp: any) => {
     if (resp?.success) {
       showAlertMessage("Selling order created successfully", { variant: "success" });
+      goBack();
     } else {
       showAlertMessage("Selling order failed. Please try again", { variant: "error" });
     }

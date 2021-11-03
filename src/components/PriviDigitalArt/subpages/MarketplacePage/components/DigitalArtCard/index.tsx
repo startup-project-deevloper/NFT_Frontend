@@ -43,6 +43,9 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
     if (item?.token_uri && item.token_uri.includes(GENERATOR_ARTBLOCK_URL)) {
       item.token_uri = item.token_uri.replace(GENERATOR_ARTBLOCK_URL, API_ARTBLOCK_URL);
     }
+    if (item.metadata && typeof item.metadata === "string") {
+      item.metadata = JSON.parse(item.metadata);
+    }
     return item;
   }, [item]);
 
@@ -280,7 +283,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
 
       <div className={classes.info} onClick={handleOpenDigitalArtModal}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px">
-          <div className={cls(classes.black, classes.title)}>{media.name}</div>
+          <div className={cls(classes.black, classes.title)}>{media.metadata.name}</div>
           <img src={getChainImageUrl(media.chainsFullName)} alt={"chain"} className={classes.chain} />
         </Box>
 

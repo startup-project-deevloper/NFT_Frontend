@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
 
-import { useTypedSelector } from "store/reducers/Reducer";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import DigitalArtContext, { initialDigitalArtFilters } from "shared/contexts/DigitalArtContext";
 import Box from "shared/ui-kit/Box";
@@ -20,9 +19,7 @@ export default function MarketplacePage() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const user = useTypedSelector(state => state.user);
 
-  const lastIdRef = useRef<string>("");
   const hasMoreRef = useRef<boolean>(true);
 
   const [openSellNFTPage, setOpenSellNFTPage] = useState<boolean>(false);

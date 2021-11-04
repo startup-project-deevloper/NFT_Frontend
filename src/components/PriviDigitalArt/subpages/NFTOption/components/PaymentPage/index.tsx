@@ -11,7 +11,7 @@ import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
 import { MediaPhotoDetailsModal } from "components/PriviDigitalArt/modals/MediaPhotoDetailsModal";
-import { boughtNftViewStyles } from "./index.styles";
+import { PaymentPageStyles } from "./index.styles";
 
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
@@ -113,8 +113,8 @@ const CustomSlider = withStyles({
   },
 })(Slider);
 
-const BoughtNftView = () => {
-  const classes = boughtNftViewStyles();
+const PaymentPage = () => {
+  const classes = PaymentPageStyles();
 
   const [sliderValue, setSliderValue] = React.useState(30);
 
@@ -395,4 +395,4 @@ const BoughtNftView = () => {
   );
 };
 
-export default React.memo(BoughtNftView);
+export default React.memo(PaymentPage);

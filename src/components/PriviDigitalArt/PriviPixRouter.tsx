@@ -28,6 +28,11 @@ import ManageOptionDetailPage from "./subpages/NFTOption/components/ManageOption
 import NftCreatorAcceptPage from "./subpages/NFTOption/components/NftCreatorAcceptPage";
 import OfferAcceptedPage from "./subpages/NFTOption/components/OfferAcceptedPage";
 import BoughtNftView from "./subpages/NFTOption/components/BoughtNftView";
+import OfferPlacedDetailPage from "./subpages/NFTOption/components/OfferPlacedDetailPage";
+import PaymentPage from "./subpages/NFTOption/components/PaymentPage";
+import ExpirationDayFailedToPay from "./subpages/NFTOption/components/ExpirationDayFailedToPay";
+import ExpirationDayPaid from "./subpages/NFTOption/components/ExpirationDayPaid";
+import AfterOfferAccepted from "./subpages/NFTOption/components/AfterOfferAccepted"
 
 import TradeOnQuickSwap from "./subpages/NFTFractionalisation/components/SyntheticFractionalisedTradeJotPage/TradeOnQuickSwap";
 import MarketplaceDetailPage from "./subpages/MarketplacePage/components/MarketplaceDetailPage";
@@ -60,8 +65,13 @@ export default function PriviPixRouter(props) {
       <Route exact path="/option/explore/:img_id" component={ExploreOptionDetailPage} />
       <Route exact path="/option/managefutures/:img_id" component={ManageOptionDetailPage} />
       <Route exact path="/option/nft_creator" component={NftCreatorAcceptPage} />
-      <Route exact path="/option/nft_buyer" component={OfferAcceptedPage} />
+      <Route exact path="/option/offer_accepted" component={OfferAcceptedPage} />
       <Route exact path="/option/bought_nft_view" component={BoughtNftView} />
+      <Route exact path="/option/offer_placed" component={OfferPlacedDetailPage} />
+      <Route exact path="/option/payment" component={PaymentPage} />
+      <Route exact path="/option/expiration_day_failed_pay" component={ExpirationDayFailedToPay} />
+      <Route exact path="/option/expiration_day_paid" component={ExpirationDayPaid} />
+      <Route exact path="/option/after_offer_accepted" component={AfterOfferAccepted} />
       <Route exact path="/option/:id" component={NFTOption} />
       <Route exact path="/fractionalisation/:id" component={FractionPage} />
       <Route exact path="/fractionalisation/synthetic/:id" component={SyntheticFractionPage} />

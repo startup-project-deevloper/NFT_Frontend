@@ -11,7 +11,7 @@ import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
 import { MediaPhotoDetailsModal } from "components/PriviDigitalArt/modals/MediaPhotoDetailsModal";
-import { boughtNftViewStyles } from "./index.styles";
+import { ExpirationDayFailedToPayStyles } from "./index.styles";
 
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
@@ -113,8 +113,8 @@ const CustomSlider = withStyles({
   },
 })(Slider);
 
-const BoughtNftView = () => {
-  const classes = boughtNftViewStyles();
+const ExpirationDayFailedToPay = () => {
+  const classes = ExpirationDayFailedToPayStyles();
 
   const [sliderValue, setSliderValue] = React.useState(30);
 
@@ -291,51 +291,29 @@ const BoughtNftView = () => {
                 </Box> */}
                 <Box className={classes.priceBox}>
                     <Box className={classes.notifyHeader}>
-                      Reserve payment :
+                      Offer Expired
                     </Box>
                     <Box className={classes.notifyGeneral}>
-                      Your offer was accepted by the owner. You need to 
-                      <span className={classes.notifyBold}>pay remaining amount to buy the NFT at Future price before end of countdown</span> otherwise you will loose your collateral.
+                      You didn’t manage to pay full amount necessary to buy out your NFT. Yu can withdraw your funds and NFT will be returned to it’s owner. 
                     </Box>
                     {/* <Box className={classes.notifyHeader}>Future payment in:</Box> */}
-                    <Box display="flex" alignItems="center" mt={3}>
-                      <Box marginRight="80px">
+                    <Box display="flex" alignItems="center" mt={3} justifyContent="space-between">
+                      <Box>
                         <Box sx={{fontSize:'16px', color:'#181818'}}>Future price </Box>
                         <Box sx={{fontSize:'18px', color:'#431AB7', fontWeight:800}}>2545 USDT</Box>
                       </Box>
-                      <Box fontSize="14px" color="#181818" marginRight="18px">
-                        Time <br/>to pay 
-                      </Box>
+                      <Box style={{ borderRight: '1px solid rgba(164, 164, 164, 0.2)', height: '45px'}}></Box>
                       <Box>
-                        <Box display="flex">
-                          <PrimaryButton
-                            size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
-                          >
-                            4 Days
-                          </PrimaryButton>
-                          <PrimaryButton
-                            size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
-                          >
-                            22h
-                          </PrimaryButton>
-                          <PrimaryButton
-                            size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
-                          >
-                            12min
-                          </PrimaryButton>
-                        </Box>
+                        <Box sx={{fontSize:'16px', color:'#181818'}}>Paid amount to withdraw </Box>
+                        <Box sx={{fontSize:'18px', color:'#431AB7', fontWeight:800}}>1200 USDT</Box>
                       </Box>
                     </Box>
                     <Box mt={5}>
                       <PrimaryButton
-                        onClick={()=>setOpenPayRemainingAmountModal(true)} 
                         size="medium"
                         style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px', width:'100%'}}
                       >
-                        Pay remaining amount
+                        Withdraw your funds 
                       </PrimaryButton>
                     </Box>
                 </Box>                
@@ -346,45 +324,6 @@ const BoughtNftView = () => {
               handleClose={() => setOpenOrderBookModal(false)}
               onConfirm={handleConfirmOrderBook}
             />
-            <PayRemainingAmountModal
-              open={openPayRemainingAmountModal}
-              handleClose={() => setOpenPayRemainingAmountModal(false)}
-              onConfirm={handleConfirmPayRemainingAmount}
-            />
-            
-            <div className={classes.transactionsSection}>
-                <div className={classes.coinFlipHistorySection}>
-                    <Box display="flex" justifyContent="space-between">
-                      <Box>
-                        <div className={classes.typo8}>Manage Collateral </div>
-                        <div className={classes.subTypo8}>Make sure your’e collateral is above the liquidation level, otherwise you’ll loos your NFT and  whole collateral. </div>
-                      </Box>
-                      <Box>
-                        <PrimaryButton
-                          size="large"
-                          style={{ background: "#431AB7", color: "#ffffff", padding:'5px 30px'}}
-                        >
-                          Add collateral
-                        </PrimaryButton>
-                      </Box>
-                    </Box>
-                    <Box display="flex" justifyContent="space-between" marginTop="37px">
-                      <Box className={classes.collateralText}>Your Colllateral Percentage <span style={{color:'#431AB7'}}>50%</span></Box>
-                      <Box className={classes.collateralText}>Liquidation LTV:  <span style={{color:'#D30401'}}>80%</span></Box>
-                    </Box>
-                    <CustomSlider
-                      value={sliderValue}
-                      onChange={handleChange}
-                      aria-labelledby="continuous-slider"
-                      defaultValue={0}
-                      step={1}
-                      marks={marks}
-                      min={0}
-                      max={100}
-                      valueLabelDisplay="auto"
-                    />
-                </div>
-            </div>
 
           </LoadingWrapper>
         ) : (
@@ -395,4 +334,4 @@ const BoughtNftView = () => {
   );
 };
 
-export default React.memo(BoughtNftView);
+export default React.memo(ExpirationDayFailedToPay);

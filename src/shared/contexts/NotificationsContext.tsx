@@ -42,10 +42,12 @@ export const NotificationsContextProvider: React.FunctionComponent<Notifications
   useEffect(() => {
     if (currentUserId && socket) {
       const incomingNotificationHandler = (incomingNotification: Notification) => {
-        setNotifications(currentNotifications =>
-          sortNotifications([...currentNotifications, incomingNotification])
-        );
-        setUnreadNotifications(value => value + 1);
+        if (!incomingNotification.podType || incomingNotification.podType === "PIX") {
+          setNotifications(currentNotifications =>
+            sortNotifications([...currentNotifications, incomingNotification])
+          );
+          setUnreadNotifications(value => value + 1);
+        }
       };
 
       socket.on("sendNotification", incomingNotificationHandler);

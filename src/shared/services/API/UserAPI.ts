@@ -84,3 +84,15 @@ export async function getMatchingUsers(searchValue: string, properties: string[]
     throw new Error(e.message);
   }
 }
+
+export async function getUsersByAddresses(addresses: string[]): Promise<any> {
+  try {
+    let url = `${URL()}/user/getUsersByAddresses`;
+    addresses.forEach(prop => (url += `&addresses=${prop}`));
+    const response = await axios.get(url);
+    return response?.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}

@@ -372,7 +372,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     }
   };
 
-  const updateBuybackPrice = async () => {
+  const updateBuybackPrice = async (isShowSuccessModal: boolean) => {
     try {
       setLoading(true);
       setUpdateResult(0);
@@ -385,13 +385,23 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setHash,
       });
       console.log("updated price", price);
-      setBuybackPrice(price);
-      setUpdateResult(1);
+      if (!price) {
+        setUpdateResult(-1);
+        setLoading(false);
+        return false;
+      } else {
+        setBuybackPrice(price);
+        if (isShowSuccessModal) {
+          setUpdateResult(1);
+        }
+        setLoading(false);
+        return true;
+      }
     } catch (err) {
       console.log(err);
       setUpdateResult(-1);
-    } finally {
       setLoading(false);
+      return false;
     }
   };
 
@@ -579,8 +589,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     history.push(`/fractionalisation/collection/quick_swap/${collectionId}`);
   };
 
-  const handleBuyBack = () => {
-    setOpenBuyBackModal(true);
+  const handleBuyBack = async () => {
+    const result = await updateBuybackPrice(false);
+    if (result) {
+      setOpenBuyBackModal(true);
+    }
   };
 
   const totalJot = 10000;
@@ -842,11 +855,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         </PrimaryButton>
                       </Box>
                     </Box>
-                    <Box
-                      className={classes.col_half}
-                      style={{ minWidth: 500 }}
-                      sx={{ marginY: "15px", paddingY: "5px" }}
-                    >
+                    <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
                       <Box
                         className={classes.ownerInfo}
                         style={{
@@ -860,44 +869,25 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           Current Reserve Price to Buy Back
                         </Box>
                         <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                          {buybackPrice} USDT
+                          {(+buybackPrice).toFixed(4)} USDT
                         </Box>
-                        <Box display="flex">
-                          <PrimaryButton
-                            className={classes.h4}
-                            size="medium"
-                            style={{
-                              color: Color.White,
-                              background: Color.Purple,
-                              padding: "0px 25px",
-                              maxWidth: 250,
-                              marginTop: 14,
-                              display: "flex",
-                              alignItems: "center",
-                              borderRadius: 4,
-                            }}
-                            onClick={handleBuyBack}
-                          >
-                            Buy Back to Withdraw
-                          </PrimaryButton>
-                          <PrimaryButton
-                            className={classes.h4}
-                            size="medium"
-                            style={{
-                              color: Color.White,
-                              background: Color.Purple,
-                              padding: "0px 25px",
-                              maxWidth: 250,
-                              marginTop: 14,
-                              display: "flex",
-                              alignItems: "center",
-                              borderRadius: 4,
-                            }}
-                            onClick={updateBuybackPrice}
-                          >
-                            Update Buy Back Price
-                          </PrimaryButton>
-                        </Box>
+                        <PrimaryButton
+                          className={classes.h4}
+                          size="medium"
+                          style={{
+                            color: Color.White,
+                            background: Color.Purple,
+                            padding: "0px 25px",
+                            maxWidth: 250,
+                            marginTop: 14,
+                            display: "flex",
+                            alignItems: "center",
+                            borderRadius: 4,
+                          }}
+                          onClick={handleBuyBack}
+                        >
+                          Buy Back to Withdraw
+                        </PrimaryButton>
                       </Box>
                     </Box>
                   </Box>
@@ -1309,7 +1299,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         width: "calc(100% - 60px)",
                         borderRadius: 4,
                         marginTop: 18,
-                        justifyContent: "center"
+                        justifyContent: "center",
                       }}
                       disabled={liquiditySold <= 0}
                       onClick={handleWithdrawFunds}

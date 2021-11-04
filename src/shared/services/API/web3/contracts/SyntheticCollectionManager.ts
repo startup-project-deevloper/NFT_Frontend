@@ -247,7 +247,7 @@ const syntheticCollectionManager = (network: string) => {
         }
 
         const gas = await contract.methods.flipJot(tokenId, prediction).estimateGas({ from: account });
-        
+
         const response = await contract.methods
           .flipJot(tokenId, parseInt(prediction))
           .send({ from: account, gas });
@@ -660,16 +660,13 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        const USDTAPI = USDT(network);
-
-        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackPrice().call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result, decimals));
+            resolve(toDecimals(result));
           }
         });
       } catch (err) {
@@ -686,16 +683,13 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        const USDTAPI = USDT(network);
-
-        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackRequiredAmount(SyntheticID).call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result?.buybackAmount, decimals));
+            resolve(toDecimals(result?.buybackAmount));
           }
         });
       } catch (err) {
@@ -772,9 +766,9 @@ const syntheticCollectionManager = (network: string) => {
     return new Promise(async resolve => {
       try {
         const { SyntheticCollectionManagerAddress, tokenId, amount, setHash } = payload;
-        
+
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        
+
         const USDTAPI = USDT(network);
         const decimals = await USDTAPI.decimals(web3);
 
@@ -945,7 +939,7 @@ const syntheticCollectionManager = (network: string) => {
             const event = events
               .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
               .find(res => res.requestId === requestId);
-            resolve(event?.price)
+            resolve(toDecimals(event?.price))
           })
       } catch (err) {
         console.log(err);

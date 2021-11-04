@@ -329,7 +329,7 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
                 <div className={classes.detailRow}>
                   <p>Buy back price</p>
                   <div>
-                    {buybackPrice}&nbsp;<span className={classes.unit}>USDT/JOT</span>
+                    {(+buybackPrice).toFixed(4)}&nbsp;<span className={classes.unit}>USDT/JOT</span>
                   </div>
                 </div>
               </div>
@@ -337,7 +337,7 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
                 <div className={classes.detailRow}>
                   <p>Total to pay</p>
                   <div>
-                    {Math.floor(buybackRequiredAmount * 10000) / 10000}&nbsp;<span className={classes.unit}>USDT</span>
+                    {(+buybackRequiredAmount).toFixed(4)}&nbsp;<span className={classes.unit}>USDT</span>
                   </div>
                 </div>
               </div>

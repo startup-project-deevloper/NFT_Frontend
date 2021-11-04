@@ -993,7 +993,7 @@ const MediaPage = () => {
                     {
                       cell: (
                         <Box display="flex" flexDirection="row" alignItems="center">
-                          <Avatar size="medium" url={u?.ipfsImage ? u?.ipfsImage : getDefaultAvatar()} />
+                          <Avatar size="medium" url={u?.imageUrl ?? getDefaultAvatar()} />
                           <Box display="flex" flexDirection="column" alignItems="center">
                             <Text ml={1.5}>{u?.name}</Text>
                             <Text ml={1.5}>@{u?.urlSlug}</Text>

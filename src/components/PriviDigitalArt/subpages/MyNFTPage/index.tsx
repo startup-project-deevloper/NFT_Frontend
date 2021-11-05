@@ -157,7 +157,7 @@ const MyNFT = () => {
                     <>
                       {
                         (loading || !!toLockNFTs.length) && (
-                          <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                          <Box display="flex" flexDirection="column" gridRowGap={18}>
                             <Box className={classes.sectionTitle} color="#431AB7">
                               NFT To Lock
                             </Box>
@@ -181,7 +181,7 @@ const MyNFT = () => {
                       }
                       {
                         (loading || !!toVerifyNFTs.length) && (
-                          <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                          <Box display="flex" flexDirection="column" gridRowGap={18}>
                             <Box className={classes.sectionTitle} color="#F2604C">
                               NFT To Verify
                             </Box>
@@ -200,7 +200,7 @@ const MyNFT = () => {
                       }
                       {
                         (loading || !!toUnlockNFTs.length) && (
-                          <Box className={classes.syntheticContent} display="flex" flexDirection="column" gridRowGap={18}>
+                          <Box display="flex" flexDirection="column" gridRowGap={18}>
                             <Box className={classes.sectionTitle} color="#1DCC00">
                               NFT To Unlock
                             </Box>

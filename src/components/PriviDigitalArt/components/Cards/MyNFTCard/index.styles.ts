@@ -67,6 +67,8 @@ export const myNFTCardStyles = makeStyles(theme => ({
     textTransform: "capitalize",
     color: '#1A1B1C',
     marginRight: 8,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
 
     [theme.breakpoints.down(880)]: {
       fontSize: 10,

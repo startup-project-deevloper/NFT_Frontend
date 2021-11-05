@@ -24,7 +24,7 @@ export const myNFTStyles = makeStyles(theme => ({
   title: {
     fontSize: 40,
     fontWeight: 800,
-    fontFamily: "Agrandir",
+    fontFamily: "Agrandir GrandHeavy",
     color: "#431AB7",
     lineHeight: "104.5%",
     textTransform: "uppercase",
@@ -99,12 +99,10 @@ export const myNFTStyles = makeStyles(theme => ({
     },
   },
   sectionTitle: {
+    fontFamily: "Agrandir GrandHeavy",
     fontWeight: 800,
     fontSize: 24,
     lineHeight: "130%",
-  },
-  syntheticContent: {
-    minHeight: 200,
   },
   cardsGrid: {
     display: "flex",

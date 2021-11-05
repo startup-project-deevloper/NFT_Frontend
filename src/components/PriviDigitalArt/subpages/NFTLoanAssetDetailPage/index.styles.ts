@@ -36,6 +36,10 @@ export const useAssetDetailPageStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 40,
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
   },
   assetInfoSection: {
     display: "flex",
@@ -43,6 +47,9 @@ export const useAssetDetailPageStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 56,
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+    },
   },
   chartSection: {
     display: "flex",
@@ -147,6 +154,9 @@ export const useAssetDetailPageStyles = makeStyles(theme => ({
     width: "100%",
     padding: "12px 37px",
     borderBottom: "1px solid #9EACF2",
+    [theme.breakpoints.down("xs")]: {
+      padding: "12px 16px",
+    },
   },
   typo1: {
     fontSize: 27,
@@ -157,11 +167,17 @@ export const useAssetDetailPageStyles = makeStyles(theme => ({
     fontSize: 14,
     fontWeight: 400,
     fontFamily: "Agrandir",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 12,
+    },
   },
   typo3: {
     fontSize: 18,
     fontWeight: 800,
     fontFamily: "Agrandir",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 14,
+    },
   },
   typo4: {
     fontSize: 17,
@@ -172,5 +188,8 @@ export const useAssetDetailPageStyles = makeStyles(theme => ({
   typo5: {
     fontSize: 16,
     fontFamily: "Agrandir",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 13,
+    },
   },
 }));

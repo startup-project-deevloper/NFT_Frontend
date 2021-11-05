@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { useMediaQuery, useTheme } from "@material-ui/core";
+
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -175,6 +177,9 @@ const DetailsData = [
 const NFTLoanAssetDetailPage = () => {
   const classes = useAssetDetailPageStyles();
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+
   const [rewardConfig, setRewardConfig] = useState<any>();
   const [period, setPeriod] = useState<string>(PERIODS[0]);
 
@@ -213,13 +218,17 @@ const NFTLoanAssetDetailPage = () => {
             <div className={classes.typo1}>Tether</div>
           </Box>
         </Box>
-        <Box display="flex" alignItems="center">
-          <PrimaryButton style={{ background: "#431AB7", minWidth: 148 }} size="medium" onClick={() => {}}>
+        <Box display="flex" alignItems="center" mt={isMobile ? 2 : 0}>
+          <PrimaryButton
+            style={{ background: "#431AB7", minWidth: 148 }}
+            size={isMobile ? "small" : "medium"}
+            onClick={() => {}}
+          >
             Borrow
           </PrimaryButton>
           <SecondaryButton
             style={{ color: "#431AB7", borderColor: "#431AB7", minWidth: 148 }}
-            size="medium"
+            size={isMobile ? "small" : "medium"}
             onClick={() => {}}
           >
             Lend
@@ -231,19 +240,19 @@ const NFTLoanAssetDetailPage = () => {
           <div className={classes.typo2}>Total Lending</div>
           <div className={classes.typo3}>$245,556,255</div>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
           <div className={classes.typo2}>Total Borrowing</div>
           <div className={classes.typo3}>$245,556,255</div>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
           <div className={classes.typo2}>Lending APY</div>
           <div className={classes.typo3}>3%</div>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
           <div className={classes.typo2}>Borrow APY</div>
           <div className={classes.typo3}>2%</div>
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
           <div className={classes.typo2}>Utilisation Ratio</div>
           <div className={classes.typo3}>245556</div>
         </Box>

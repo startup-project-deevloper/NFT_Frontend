@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import Grid from "@material-ui/core/Grid";
-
 import DateFnsUtils from "@date-io/date-fns";
+import Grid from "@material-ui/core/Grid";
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { Fade, Tooltip } from "@material-ui/core";
-import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
-
-import { tokenomicsTabStyles } from "./index.styles";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import { ReactComponent as CheckCircleRegular } from "assets/icons/check-circle-regular.svg";
-import { ReactComponent as CheckCircleSolid } from "assets/icons/check-circle-solid.svg";
+
+import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import Box from "shared/ui-kit/Box";
 import FileUpload from "shared/ui-kit/Page-components/FileUpload";
-import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+
+import { tokenomicsTabStyles } from "./index.styles";
+
+import { ReactComponent as CheckCircleRegular } from "assets/icons/check-circle-regular.svg";
+import { ReactComponent as CheckCircleSolid } from "assets/icons/check-circle-solid.svg";
 
 const infoIcon = require("assets/icons/info_music_dao.png");
 const calendarIcon = require("assets/icons/calendar_icon.png");
@@ -30,7 +31,6 @@ const TokenomicsTab = (props: any) => {
   }, []);
 
   const handleChangeTokenSelector = e => {
-    console.log(`default value`, e.target.value);
     props.setPod(prev => ({ ...prev, FundingToken: e.target.value }));
   };
 
@@ -52,7 +52,7 @@ const TokenomicsTab = (props: any) => {
 
   const ValidatedField = (propsFunction: any) => {
     return (
-      <div
+      <Box
         style={
           propsFunction.isFlex && !propsFunction.marginApplied
             ? {
@@ -73,7 +73,7 @@ const TokenomicsTab = (props: any) => {
         }
       >
         {propsFunction.field ? (
-          <div
+          <Box
             style={
               propsFunction.isCreator
                 ? { color: "#64c89e", fontSize: "30px", cursor: "pointer" }
@@ -89,9 +89,9 @@ const TokenomicsTab = (props: any) => {
             <SvgIcon>
               <CheckCircleSolid />
             </SvgIcon>
-          </div>
+          </Box>
         ) : (
-          <div
+          <Box
             style={
               propsFunction.isCreator
                 ? {
@@ -111,16 +111,16 @@ const TokenomicsTab = (props: any) => {
             <SvgIcon>
               <CheckCircleRegular />
             </SvgIcon>
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
     );
   };
 
   return (
-    <div className={classes.tokenomicsTab}>
+    <Box className={classes.tokenomicsTab}>
       {props.pod || !props.creation ? (
-        <div>
+        <Box>
           <Grid container spacing={2} direction="row" alignItems="flex-start" justify="flex-start">
             <Grid item xs={12} md={6}>
               <RenderInputCreateModal
@@ -153,7 +153,7 @@ const TokenomicsTab = (props: any) => {
           </Grid>
           <Grid container spacing={2} direction="row" alignItems="flex-start" justify="flex-start">
             <Grid item xs={12}>
-              <div
+              <Box
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -162,7 +162,7 @@ const TokenomicsTab = (props: any) => {
                   marginTop: 16,
                 }}
               >
-                <div className={classes.infoHeaderCreatePod}>Pod Token Image</div>
+                <Box className={classes.infoHeaderCreatePod}>Pod Token Image</Box>
                 <Tooltip
                   TransitionComponent={Fade}
                   TransitionProps={{ timeout: 600 }}
@@ -172,7 +172,7 @@ const TokenomicsTab = (props: any) => {
                 >
                   <img src={infoIcon} alt={"info"} />
                 </Tooltip>
-              </div>
+              </Box>
               <FileUpload
                 photo={props.tokenPhoto}
                 photoImg={props.tokenPhotoImg}
@@ -206,7 +206,7 @@ const TokenomicsTab = (props: any) => {
             <Grid item xs={12} md={4}>
               <Box mt={"28px"}>
                 <Box display="flex" alignItems="center" justifyContent="space-between" mb={"11px"}>
-                  <div className={classes.infoHeaderCreatePod}>{""}</div>
+                  <Box className={classes.infoHeaderCreatePod}>{""}</Box>
                   <Tooltip
                     TransitionComponent={Fade}
                     TransitionProps={{ timeout: 600 }}
@@ -294,7 +294,7 @@ const TokenomicsTab = (props: any) => {
           </Grid>
           <Box className={classes.flexRowInputs} flexDirection="column">
             <Box display="flex" alignItems="center" justifyContent="space-between">
-              <div className={classes.infoHeaderCreatePod}>Funding Date</div>
+              <Box className={classes.infoHeaderCreatePod}>Funding Date</Box>
               <Tooltip
                 TransitionComponent={Fade}
                 TransitionProps={{ timeout: 600 }}
@@ -305,7 +305,7 @@ const TokenomicsTab = (props: any) => {
                 <img src={infoIcon} alt={"info"} />
               </Tooltip>
             </Box>
-            <div
+            <Box
               className={classes.textFieldCreatePod}
               style={{
                 display: "flex",
@@ -334,11 +334,11 @@ const TokenomicsTab = (props: any) => {
                   className={classes.datePicker}
                 />
               </MuiPickersUtilsProvider>
-            </div>
+            </Box>
           </Box>
-        </div>
+        </Box>
       ) : null}
-    </div>
+    </Box>
   );
 };
 
@@ -347,7 +347,7 @@ export default TokenomicsTab;
 //input component
 const RenderInputCreateModal = props => {
   return (
-    <div
+    <Box
       style={
         props.width === -1
           ? {
@@ -356,8 +356,8 @@ const RenderInputCreateModal = props => {
           : {}
       }
     >
-      <div style={{ display: "flex", alignItems: "flex-end" }}>
-        <div style={{ width: "100%" }}>
+      <Box style={{ display: "flex", alignItems: "flex-end" }}>
+        <Box style={{ width: "100%" }}>
           <InputWithLabelAndTooltip
             theme={"music dao"}
             labelName={props.name}
@@ -383,7 +383,7 @@ const RenderInputCreateModal = props => {
             placeHolder={props.placeholder}
             disabled={props.isCreator || props.pod[props.item + "Validation"]}
           />
-        </div>
+        </Box>
         {!props.creation ? (
           <ValidatedField
             field={props.pod[props.item + "Validation"]}
@@ -405,14 +405,14 @@ const RenderInputCreateModal = props => {
             }}
           />
         ) : null}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
 const ValidatedField = (propsFunction: any) => {
   return (
-    <div
+    <Box
       style={
         propsFunction.isFlex && !propsFunction.marginApplied
           ? {
@@ -433,7 +433,7 @@ const ValidatedField = (propsFunction: any) => {
       }
     >
       {propsFunction.field ? (
-        <div
+        <Box
           style={
             propsFunction.isCreator
               ? { color: "#64c89e", fontSize: "30px", cursor: "pointer" }
@@ -449,9 +449,9 @@ const ValidatedField = (propsFunction: any) => {
           <SvgIcon>
             <CheckCircleSolid />
           </SvgIcon>
-        </div>
+        </Box>
       ) : (
-        <div
+        <Box
           style={
             propsFunction.isCreator
               ? {
@@ -471,8 +471,8 @@ const ValidatedField = (propsFunction: any) => {
           <SvgIcon>
             <CheckCircleRegular />
           </SvgIcon>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };

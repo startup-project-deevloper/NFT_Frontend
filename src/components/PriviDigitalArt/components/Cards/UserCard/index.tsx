@@ -1,105 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import classnames from "classnames";
-import Axios from "axios";
 import { useHistory } from "react-router-dom";
 
-import { useTypedSelector } from "store/reducers/Reducer";
-
 import { Avatar } from "shared/ui-kit";
-import { getRandomAvatarForUserIdWithMemoization, useUserAvatar } from "shared/services/user/getUserAvatar";
-import URL from "shared/functions/getURL";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 import { userCardStyles } from "./index.styles";
-import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
 
 const UserCard = props => {
   const classes = userCardStyles();
 
   const history = useHistory();
-  const { userId, className } = props;
-  const userSelector = useTypedSelector(state => state.user);
-
-  const [user, setUser] = useState<any>();
-
-  const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
-
-  const [imageIPFS, setImageIPFS] = useState<any>(null);
-
-  const avatar = useUserAvatar(userId);
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    getPhotoUser(user);
-    console.log("user", user);
-  }, [ipfs, user]);
-
-  const getPhotoUser = async (user: any) => {
-    if (ipfs  && user && user.infoImage && user.infoImage.newFileCID) {
-      setImageIPFS(await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption));
-    }
-  };
-
-  useEffect(() => {
-    if (userId && userSelector) {
-      const getCreatorData = async () => {
-        if (userId === userSelector.id) setUser(userSelector);
-        else {
-          Axios.get(`${URL()}/user/getBasicUserInfo/${userId}`)
-            .then(response => {
-              if (response.data.success) {
-                let data = response.data.data;
-                setUser({
-                  ...data,
-                  name: data.name ?? `${data.firstName} ${data.lastName}`,
-                });
-              } else {
-                setUser({
-                  url: getRandomAvatarForUserIdWithMemoization(userId),
-                  name: "User name",
-                  urlSlug: "Username",
-                  id: "",
-                });
-              }
-            })
-            .catch(error => {
-              console.log(error);
-            });
-          }
-      };
-      getCreatorData();
-    }
-  }, [userSelector, userId]);
+  const { user, className } = props;
 
   const handleArtistHandler = () => {
-    history.push(`/trax/artists/${userId}`);
+    history.push(`/trax/artists/${user.id}`);
   };
 
   return (
     <div className={classnames(classes.container, className)}>
       <div>
         <div className={classes.avatar} onClick={handleArtistHandler}>
-          <Avatar size="large" url={imageIPFS ? imageIPFS : avatar} alt="" />
+          <Avatar size="large" url={user.imageUrl ?? getDefaultAvatar()} alt="" />
         </div>
-        <div className={classes.title}>{user?.name || user?.firstName || "User Name"}</div>
-        <div className={classes.userName}>
-          @
-          {user?.urlSlug
-            ? user?.urlSlug.length > 13
-              ? user?.urlSlug.substr(0, 13) + "..." + user?.urlSlug.substr(user?.urlSlug.length - 2, 2)
-              : user?.urlSlug
-            : "Username"}
+        <div className={classes.title}>{user?.name}</div>
+        <div className={classes.userName}>@{user?.urlSlug}</div>
+      </div>
+      {!props.invited && user?.verified && (
+        <div className={classes.iconContainer}>
+          <StarIcon />
+          <span className={classes.statusVerify}>Verified Artist</span>
         </div>
-      </div>
-      {/* {!props.invited && user?.verified && ( */}
-      <div className={classes.iconContainer}>
-        <StarIcon />
-        <span className={classes.statusVerify}>Verified Artist</span>
-      </div>
-      {/* )} */}
+      )}
       {props.invited && (
         <div className={classes.iconContainer}>
           {user?.accepted ? (
@@ -112,9 +44,7 @@ const UserCard = props => {
               />
             </svg>
           )}
-          <span className={classes.statusInvite}>
-            {user?.accepted ? "Accepted Invite" : "Invite sentbear "}
-          </span>
+          <span className={classes.statusInvite}>{user?.accepted ? "Accepted Invite" : "Invite sent"}</span>
         </div>
       )}
     </div>

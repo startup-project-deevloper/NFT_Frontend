@@ -39,7 +39,12 @@ export default function PodArtists({ pod }) {
             // pod.CreatorsData.length > 2
             //   ?
             pod.CreatorsData.map((creator, index) => (
-              <UserCard key={`artist-${index}`} userId={creator.id} />
+              <UserCard
+                key={`artist-${index}`}
+                user={creator}
+                invited={creator.address !== pod.Creator}
+                accepted={pod.Collabs.find(c => c.address === creator.address)?.accepted}
+              />
             ))
             // : pod.CreatorsData.map((creator, index) => (
             //     <UserWideCard key={`artist-${index}`} userId={creator.id} />

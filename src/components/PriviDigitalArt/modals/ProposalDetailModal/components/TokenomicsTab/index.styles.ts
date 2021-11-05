@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const tokenomicsTabStyles = makeStyles((theme) => ({
+export const tokenomicsTabStyles = makeStyles(theme => ({
   tokenomicsTab: {
     margin: 0,
     padding: 0,
@@ -14,20 +14,20 @@ export const tokenomicsTabStyles = makeStyles((theme) => ({
     paddingBottom: 36,
     marginBottom: 36,
     borderBottom: "1px solid #35385633",
-    "& img": {
-      width: 140,
-      height: 140,
-      borderRadius: "100%",
-      marginRight: 28,
-      [theme.breakpoints.down("xs")]: {
-        width: 80,
-        height: 80,
-      },
-    },
     "& span": {
       fontSize: 14,
       color: "#54658F",
       fontWeight: 500,
+    },
+  },
+  imageBox: {
+    width: 140,
+    height: 140,
+    borderRadius: "100%",
+    marginRight: 28,
+    [theme.breakpoints.down("xs")]: {
+      width: 80,
+      height: 80,
     },
   },
   headerTitle: {
@@ -61,7 +61,7 @@ export const tokenomicsTabStyles = makeStyles((theme) => ({
       [theme.breakpoints.down("xs")]: {
         fontSize: 18,
       },
-    }
+    },
   },
   valueBox: {
     "& p": {
@@ -69,12 +69,12 @@ export const tokenomicsTabStyles = makeStyles((theme) => ({
       marginBottom: 8,
       fontWeight: 600,
       fontSize: 16,
-      color: "#2D3047"
+      color: "#2D3047",
     },
     "& span": {
       fontWeight: 700,
       fontSize: 20,
-      color: "#65CB63"
+      color: "#65CB63",
     },
   },
   footerBox: {
@@ -87,12 +87,12 @@ export const tokenomicsTabStyles = makeStyles((theme) => ({
     "& span:first-child": {
       fontWeight: 600,
       fontSize: 16,
-      color: "#2D3047"
+      color: "#2D3047",
     },
     "& span:last-child": {
       fontWeight: 600,
       fontSize: 18,
-      color: "#54658F"
+      color: "#54658F",
     },
-  }
+  },
 }));

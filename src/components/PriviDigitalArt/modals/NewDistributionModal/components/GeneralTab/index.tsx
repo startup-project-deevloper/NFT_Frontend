@@ -1,18 +1,20 @@
 import React, { useEffect } from "react";
 import { Select, MenuItem, Tooltip, Fade } from "@material-ui/core";
 
-import Box from "shared/ui-kit/Box";
-import { generalTabStyles } from "./index.styles";
-import { PrimaryButton, StyledDivider } from "shared/ui-kit";
 import {
   AddIcon,
   RemoveCollectionIcon,
   EditCollectionIcon,
 } from "components/PriviDigitalArt/components/Icons/SvgIcons";
+
+import Box from "shared/ui-kit/Box";
+import { PrimaryButton, StyledDivider } from "shared/ui-kit";
 import FileUpload from "shared/ui-kit/Page-components/FileUpload";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
-import { onUploadNonEncrypt } from "../../../../../../shared/ipfs/upload";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { onUploadNonEncrypt } from "shared/ipfs/upload";
+
+import { generalTabStyles } from "./index.styles";
 
 const GeneralTab = ({ pod, setPod }) => {
   const classes = generalTabStyles();
@@ -25,7 +27,7 @@ const GeneralTab = ({ pod, setPod }) => {
   const [songGenre, setSongGenre] = React.useState<any>("pop");
   const [isEditing, setIsEditing] = React.useState<number>(-1);
 
-  const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
+  const { setMultiAddr, uploadWithNonEncryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
@@ -88,10 +90,9 @@ const GeneralTab = ({ pod, setPod }) => {
   return (
     <Box>
       <StyledDivider type="solid" margin={4} />
-      <div className={classes.title}>Add Song</div>
-
+      <Box className={classes.title}>Add Song</Box>
       <Box className={classes.label} mb={1}>
-        <div>Song Image</div>
+        <Box>Song Image</Box>
         <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} arrow title={""}>
           <img src={require("assets/icons/info_music_dao.png")} alt="info" />
         </Tooltip>
@@ -109,7 +110,7 @@ const GeneralTab = ({ pod, setPod }) => {
         extra={true}
       />
       <Box className={classes.label} mb={1} mt="24px">
-        <div>Song Title</div>
+        <Box>Song Title</Box>
         <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} arrow title={""}>
           <img src={require("assets/icons/info_music_dao.png")} alt="info" />
         </Tooltip>
@@ -121,7 +122,7 @@ const GeneralTab = ({ pod, setPod }) => {
         onChange={e => setSongTitle(e.target.value)}
       />
       <Box className={classes.label} mb={1} mt="24px">
-        <div>Genre</div>
+        <Box>Genre</Box>
         <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} arrow title={""}>
           <img src={require("assets/icons/info_music_dao.png")} alt="info" />
         </Tooltip>
@@ -129,7 +130,6 @@ const GeneralTab = ({ pod, setPod }) => {
       <Select className={classes.input} value={songGenre} onChange={e => setSongGenre(e.target.value)}>
         <MenuItem value="pop">Pop Music</MenuItem>
       </Select>
-
       <Box mt={"29px"} />
       <PrimaryButton size="medium" className={classes.button} onClick={savePodMedias}>
         <AddIcon />

@@ -1,21 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { setSelectedUser } from "store/actions/SelectedUser";
+
 import Box from "shared/ui-kit/Box";
-import { useTypedSelector } from "store/reducers/Reducer";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import { Color, Gradient, PrimaryButton } from "shared/ui-kit";
-import Avatar from "shared/ui-kit/Avatar";
-import { getUsersInfoList } from "store/selectors";
+import { Color, PrimaryButton } from "shared/ui-kit";
 import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
-import getPhotoIPFS from "shared/functions/getPhotoIPFS";
-import { PodProposalCardStyles } from "./index.styles";
 import SkeletonBox from "shared/ui-kit/SkeletonBox";
+
+import { PodProposalCardStyles } from "./index.styles";
 
 export default function PodProposalCard({ pod }) {
   const history = useHistory();
@@ -26,11 +24,8 @@ export default function PodProposalCard({ pod }) {
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
   const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const users = useTypedSelector(getUsersInfoList);
-
   const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
   const [imageIPFS, setImageIPFS] = useState<any>(null);
-  const [imageCreatorIPFS, setImageCreatorIPFS] = useState<any>(null);
 
   const [podData, setPodData] = useState<any>(pod);
   const [proposalEndTime, setProposalEndTime] = useState<any>({
@@ -47,21 +42,9 @@ export default function PodProposalCard({ pod }) {
   useEffect(() => {
     if (pod && isIPFSAvailable) {
       getImageIPFS(pod.InfoImage?.newFileCID);
-      getImageCreatorIPFS(pod.CreatorId);
       setPodData(pod);
     }
   }, [pod, isIPFSAvailable]);
-
-  const getImageCreatorIPFS = async (userId: string) => {
-    let creatorFound = users.find(user => user.id === userId);
-
-    if (creatorFound && creatorFound.infoImage && creatorFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(creatorFound.infoImage.newFileCID, downloadWithNonDecryption);
-      setImageCreatorIPFS(imageUrl);
-    } else {
-      setImageCreatorIPFS(getDefaultAvatar());
-    }
-  };
 
   useEffect(() => {
     if (!podData.distributionProposalAccepted) {
@@ -137,25 +120,31 @@ export default function PodProposalCard({ pod }) {
             backgroundPosition: "center",
             overflow: "hidden",
             width: isMobile ? "138px" : "100%",
-            height: isMobile ? "138px" : "100%"
+            height: isMobile ? "138px" : "100%",
           }}
         />
         {isMobile && (
-        <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", paddingTop: "10px" }}>
-          <PrimaryButton
-            size="medium"
-            style={{ background: Color.Purple, width:"100%", height:36, fontSize: isMobile ? "14px" : "16px", fontWeight: 600 }}
-            isRounded
-            onClick={() => history.push(`/pods/${podData.Id}`)}
-          >
-            OPEN POD
-          </PrimaryButton>
-        </div>
-      )}
+          <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", paddingTop: "10px" }}>
+            <PrimaryButton
+              size="medium"
+              style={{
+                background: Color.Purple,
+                width: "100%",
+                height: 36,
+                fontSize: isMobile ? "14px" : "16px",
+                fontWeight: 600,
+              }}
+              isRounded
+              onClick={() => history.push(`/pods/${podData.Id}`)}
+            >
+              OPEN POD
+            </PrimaryButton>
+          </div>
+        )}
       </Box>
       <Box width={1} ml={isMobile ? 1 : 2}>
         <Box display="flex">
-          <Box style={{ background: Color.Purple, borderRadius: 8, padding: "3px 34px", height: '22px' }}>
+          <Box style={{ background: Color.Purple, borderRadius: 8, padding: "3px 34px", height: "22px" }}>
             <Box className={styles.header1} color="white">
               POD Proposal
             </Box>
@@ -168,8 +157,8 @@ export default function PodProposalCard({ pod }) {
           <Box display="flex" alignItems="center" mt={2}>
             <SkeletonBox
               className={styles.avatar}
-              loading={!imageCreatorIPFS}
-              image={imageCreatorIPFS}
+              loading={false}
+              image={podData.creatorImageUrl ?? getDefaultAvatar()}
               style={{
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
@@ -178,8 +167,8 @@ export default function PodProposalCard({ pod }) {
               }}
               onClick={() => {
                 if (podData.CreatorId) {
-                  history.push(`/artists/${podData.CreatorId}`);
-                  dispatch(setSelectedUser(podData.CreatorId));
+                  history.push(`/artists/${podData.creatorId}`);
+                  dispatch(setSelectedUser(podData.creatorId));
                 }
               }}
             />
@@ -187,11 +176,17 @@ export default function PodProposalCard({ pod }) {
               Sent by
             </Box>
             <Box ml={isMobile ? 1 : 2} className={styles.header1} style={{ color: Color.Purple }}>
-              {`@${users.find(u => u.address === podData.Creator)?.name}`}
+              {podData.creatorName}
             </Box>
           </Box>
         )}
-        <Box className={styles.botWrap} display="flex" alignItems="center" justifyContent="space-between" mt={2}>
+        <Box
+          className={styles.botWrap}
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          mt={2}
+        >
           <Box
             display="flex"
             alignItems="center"
@@ -200,7 +195,7 @@ export default function PodProposalCard({ pod }) {
             flexGrow={1}
             pt={2}
             mr={isMobile ? 1 : 5}
-            flexDirection={isMobile ? 'column' : 'row'}
+            flexDirection={isMobile ? "column" : "row"}
           >
             <Box className={styles.header3} color="#707582">
               Proposal Deadline
@@ -224,7 +219,7 @@ export default function PodProposalCard({ pod }) {
             <div style={{ width: isTablet ? "100%" : "", display: "flex", justifyContent: "flex-end" }}>
               <PrimaryButton
                 size="medium"
-                style={{ background: Color.Purple, padding: "0 20px", fontSize: '14px', fontWeight: 600 }}
+                style={{ background: Color.Purple, padding: "0 20px", fontSize: "14px", fontWeight: 600 }}
                 isRounded
                 onClick={() => history.push(`/pods/${podData.Id}`)}
               >

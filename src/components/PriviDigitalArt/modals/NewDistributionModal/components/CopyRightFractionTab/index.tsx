@@ -1,51 +1,17 @@
-import * as React from "react";
-
+import React from "react";
 import { Fade, Tooltip } from "@material-ui/core";
 
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import Box from "shared/ui-kit/Box";
-import { copyRightFractionTabStyles } from "./index.styles";
 import Avatar from "shared/ui-kit/Avatar";
-import { getDefaultAvatar, getRandomAvatar } from "shared/services/user/getUserAvatar";
-import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../../../store/reducers/Reducer";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+
+import { copyRightFractionTabStyles } from "./index.styles";
 
 const infoIcon = require("assets/icons/info_music_dao.png");
 
 const CopyRightFractionTab = (props: any) => {
   const classes = copyRightFractionTabStyles();
-  const usersList = useSelector((state: RootState) => state.usersInfoList);
-
-  const { ipfs, setMultiAddr } = useIPFS();
-
-  const [mediasPhotos, setMediasPhotos] = useState<any[]>([]);
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (ipfs && props.pod) {
-      getImages();
-    }
-  }, [props.pod]);
-
-  const getImages = async () => {
-    let i: number = 0;
-    let photos: any = {};
-    for (let creator of props.pod.CreatorsData) {
-      if (creator && creator.id) {
-        let creatorFound = usersList.find(user => user.id === creator.id);
-        
-        if (creatorFound && creatorFound.ipfsImage) {
-          photos[creator.id + "-photo"] = creatorFound.ipfsImage;
-        }
-      }
-    }
-    setMediasPhotos(photos);
-  };
 
   const maxInvestorsShare = React.useMemo(() => {
     if (!props.pod || !props.pod.CreatorsData) return 100;
@@ -134,18 +100,14 @@ const CopyRightFractionTab = (props: any) => {
               <Box display="flex">
                 <Avatar
                   size={34}
-                  image={
-                    mediasPhotos && mediasPhotos[creator.id + "-photo"]
-                      ? mediasPhotos[creator.id + "-photo"]
-                      : getDefaultAvatar()
-                  }
+                  image={creator.imageUrl ?? getDefaultAvatar()}
                   radius={25}
                   bordered
                   rounded
                 />
                 <Box display="flex" flexDirection="column" ml={2}>
                   <div className={classes.nameTypo}>{creator.name}</div>
-                  <div className={classes.slugTypo}>{`@${creator.id}`}</div>
+                  <div className={classes.slugTypo}>{`@${creator.urlSlug}`}</div>
                 </Box>
               </Box>
               <InputWithLabelAndTooltip

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 import SimpleCarousel from "react-simply-carousel";
 
@@ -16,19 +17,18 @@ import NewDistributionModal from "components/PriviDigitalArt/modals/NewDistribut
 import PodHeader from "./Header";
 import PodArtists from "./Artists";
 import { useTypedSelector } from "store/reducers/Reducer";
+
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs/LoadingWrapper";
 import { getPod } from "shared/services/API/PriviPodAPI";
-import { Color, Gradient, SecondaryButton } from "shared/ui-kit";
+import { Color, SecondaryButton } from "shared/ui-kit";
 import { default as ServerURL } from "shared/functions/getURL";
-
-import { usePodPageIndividualStyles } from "./index.styles";
-import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { BlockchainNets } from "shared/constants/constants";
-import { useWeb3React } from "@web3-react/core";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
+
+import { usePodPageIndividualStyles } from "./index.styles";
 
 const apiType = "pix";
 const PODSTABOPTIONS = ["Media", "Reward", "Investments", "Discussion", "Chat", "Proposals"];
@@ -104,7 +104,7 @@ const PodPageIndividual = () => {
   }, []);
 
   useEffect(() => {
-    if (podId && ipfs ) {
+    if (podId && ipfs) {
       loadData();
     }
   }, [podId, ipfs]);
@@ -159,7 +159,7 @@ const PodPageIndividual = () => {
     if (!pod || !pod.PodAddress) return;
 
     (async () => {
-      if (ipfs ) {
+      if (ipfs) {
         const web3APIHandler = BlockchainNets[1].apiHandler;
         const web3 = new Web3(library.provider);
 
@@ -209,11 +209,11 @@ const PodPageIndividual = () => {
           let podData = resp.data;
 
           const cur = new Date().getTime() - podData.Created;
-          const deadline = podData.ProposalDeadline._seconds*1000 - podData.Created;
-          if(cur > deadline) {
-            setExpired(true)
+          const deadline = podData.ProposalDeadline._seconds * 1000 - podData.Created;
+          if (cur > deadline) {
+            setExpired(true);
           } else {
-            setExpired(false)
+            setExpired(false);
           }
 
           podData = getPodState(podData);
@@ -362,7 +362,7 @@ const PodPageIndividual = () => {
                     containerProps={{
                       style: {
                         width: "100%",
-                        justifyContent: "flex-start"
+                        justifyContent: "flex-start",
                       },
                     }}
                     activeSlideIndex={activeSlide}
@@ -403,7 +403,7 @@ const PodPageIndividual = () => {
                   size="medium"
                   onClick={() => setOpenDistributionTopic(true)}
                   isRounded
-                  disabled = {isExpired}
+                  disabled={isExpired}
                   style={{
                     border: "none",
                     background: "#DDFF57",
@@ -411,7 +411,7 @@ const PodPageIndividual = () => {
                     padding: "0 66px",
                     color: Color.Purple,
                     fontSize: "18px",
-                    lineHeight: "104.5%"
+                    lineHeight: "104.5%",
                   }}
                 >
                   New Pod Proposal
@@ -465,6 +465,11 @@ const LeftArrowIcon = () => (
 
 const MessageIcon = () => (
   <svg width="17" height="19" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M16.4827 1H0.896484V13H3.8189V18L8.68959 13H16.4827V1Z" stroke="#431AB7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path
+      d="M16.4827 1H0.896484V13H3.8189V18L8.68959 13H16.4827V1Z"
+      stroke="#431AB7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
   </svg>
-)
+);

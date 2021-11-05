@@ -52,7 +52,9 @@ const NFTAuctionPage = ({ goBack }) => {
   const { account, library, chainId } = useWeb3React();
   const [walletConnected, setWalletConnected] = useState<boolean>(!!account);
 
-  const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
+  const [selectedChain, setSelectedChain] = useState<any>(
+    filteredBlockchainNets.find(item => item.chainId === chainId) || filteredBlockchainNets[1]
+  );
 
   const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
   const [token, setToken] = useState<string>("USDT");
@@ -69,10 +71,13 @@ const NFTAuctionPage = ({ goBack }) => {
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
-  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(filteredBlockchainNets[1]);
+  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(
+    filteredBlockchainNets.find(item => item.chainId === chainId) || filteredBlockchainNets[1]
+  );
 
   // set token list according chain
   useEffect(() => {
+    if (!selectedChain) return;
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
     setToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);
   }, [selectedChain]);
@@ -82,6 +87,14 @@ const NFTAuctionPage = ({ goBack }) => {
   }, [chainIdCopy, walletConnected]);
 
   useEffect(() => {
+    const net = filteredBlockchainNets.find(item => item.chainId === chainId);
+    if (net) {
+      setSelectedChain(net);
+      setChainIdCopy(net.chainId);
+    }
+  }, [chainId]);
+
+  useEffect(() => {
     (async () => {
       if (chainId != selectedChain.chainId) {
         const changed = await switchNetwork(selectedChain.chainId);
@@ -89,7 +102,7 @@ const NFTAuctionPage = ({ goBack }) => {
         else setChainIdCopy(selectedChain.chainId);
       }
     })();
-  }, [chainId, selectedChain]);
+  }, [selectedChain]);
 
   // sync metamask chain with dropdown chain selection and load nft balance from wallet
   const loadNFT = async () => {
@@ -305,7 +318,7 @@ const NFTAuctionPage = ({ goBack }) => {
                   <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
                   <div className={classes.detailsLabel}>You can only select one NFT</div>
                   <Grid container spacing={2} alignItems="flex-end">
-                    <Grid item xs={12} lg={4}>
+                    <Grid item xs={12}>
                       <Typography style={{ marginBottom: 8 }}>Blockchain</Typography>
                       <Dropdown
                         value={selectedChain.value}
@@ -317,7 +330,7 @@ const NFTAuctionPage = ({ goBack }) => {
                         hasImage
                       />
                     </Grid>
-                    <Grid item container xs={12} lg={8} alignItems="flex-end" spacing={2}>
+                    <Grid item container xs={12} alignItems="flex-end" spacing={2}>
                       <Grid item xs={6}>
                         <Typography>Price</Typography>
                         <InputWithLabelAndTooltip
@@ -369,7 +382,7 @@ const NFTAuctionPage = ({ goBack }) => {
               <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
               <div className={classes.detailsLabel}>You can only select one NFT</div>
               <Grid container spacing={2} alignItems="flex-end">
-                <Grid item xs={12} lg={4}>
+                <Grid item xs={12} xl={4}>
                   <Typography style={{ marginBottom: 8 }}>Blockchain</Typography>
                   <Dropdown
                     value={selectedChain.value}
@@ -381,7 +394,7 @@ const NFTAuctionPage = ({ goBack }) => {
                     hasImage
                   />
                 </Grid>
-                <Grid item container xs={12} lg={8} alignItems="flex-end" spacing={2}>
+                <Grid item container xs={12} xl={8} alignItems="flex-end" spacing={2}>
                   <Grid item xs={6}>
                     <Typography>Price</Typography>
                     <InputWithLabelAndTooltip

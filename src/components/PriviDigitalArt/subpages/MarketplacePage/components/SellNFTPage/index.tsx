@@ -23,6 +23,7 @@ import Axios from "axios";
 import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 import { getNfts } from "shared/services/API";
 import { v4 as uuidv4 } from "uuid";
+import { switchNetwork } from "shared/functions/metamask";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 
@@ -44,7 +45,9 @@ const SellNFTPage = ({ goBack }) => {
   const [selectedNFT, setSelectedNFT] = useState<any>();
   const { account, library, chainId } = useWeb3React();
   const [walletConnected, setWalletConnected] = useState<boolean>(!!account);
-  const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[1]);
+  const [selectedChain, setSelectedChain] = useState<any>(
+    filteredBlockchainNets.find(item => item.chainId === chainId) || filteredBlockchainNets[1]
+  );
 
   const [price, setPrice] = useState<number>(0);
 
@@ -57,14 +60,38 @@ const SellNFTPage = ({ goBack }) => {
 
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
+  const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
+  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(
+    filteredBlockchainNets.find(item => item.chainId === chainId) || filteredBlockchainNets[1]
+  );
+
   useEffect(() => {
+    if (!selectedChain) return;
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
     setToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);
   }, [selectedChain]);
 
   useEffect(() => {
     loadNFT();
-  }, [chainId, walletConnected, selectedChain]);
+  }, [chainIdCopy, walletConnected]);
+
+  useEffect(() => {
+    const net = filteredBlockchainNets.find(item => item.chainId === chainId);
+    if (net) {
+      setSelectedChain(net);
+      setChainIdCopy(net.chainId);
+    }
+  }, [chainId]);
+
+  useEffect(() => {
+    (async () => {
+      if (chainId != selectedChain.chainId) {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) setSelectedChain(prevSelectedChain);
+        else setChainIdCopy(selectedChain.chainId);
+      }
+    })();
+  }, [selectedChain]);
 
   // sync metamask chain with dropdown chain selection and load nft balance from wallet
   const loadNFT = async () => {
@@ -285,6 +312,7 @@ const SellNFTPage = ({ goBack }) => {
                       value={selectedChain.value}
                       menuList={filteredBlockchainNets}
                       onChange={e => {
+                        setPrevSelectedChain(selectedChain);
                         setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
                       }}
                       hasImage
@@ -339,6 +367,7 @@ const SellNFTPage = ({ goBack }) => {
                   value={selectedChain.value}
                   menuList={filteredBlockchainNets}
                   onChange={e => {
+                    setPrevSelectedChain(selectedChain);
                     setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
                   }}
                   hasImage

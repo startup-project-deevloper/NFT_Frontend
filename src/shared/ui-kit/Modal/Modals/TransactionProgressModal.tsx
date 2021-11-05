@@ -65,7 +65,9 @@ export default function TransactionProgressModal({
 
       <Box>
         {transactionInProgress
-          ? `Transaction is proceeding on ${network.replace(" Chain", "").toUpperCase()} Mainnet.
+          ? `Transaction is proceeding on ${network.replace(" Chain", "").toUpperCase()} ${
+              isDev ? "Testnet" : "Mainnet"
+            }.
                 This can take a moment, please be patient and do not close this window`
           : transactionSuccess === false
           ? "Unfortunately there was an error during the transaction. Please try again later."

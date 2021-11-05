@@ -54,13 +54,13 @@ export const useDepositPageStyles = makeStyles(theme => ({
   },
   artCards: {
     padding: 10,
-    width: '49%',
+    width: "49%",
   },
   depositForm: {
-    background: '#FFF',
-    boxShadow: '1px 2px 4px rgba(176, 176, 176, 0.24)',
+    background: "#FFF",
+    boxShadow: "1px 2px 4px rgba(176, 176, 176, 0.24)",
     borderRadius: 16,
-    padding: '30px 20px',
+    padding: "30px 20px",
   },
   primaryBtn: {
     background: "#431AB7 !important",

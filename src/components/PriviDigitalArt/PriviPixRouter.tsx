@@ -8,6 +8,7 @@ import MarketplacePage from "./subpages/MarketplacePage";
 import MediaPage from "./subpages/MediaPage";
 import NFTLoansPage from "./subpages/NFTLoansPage";
 import NFTLoanDetailPage from "./subpages/NFTLoanDetailPage";
+import NFTLoanAssetDetailPage from "./subpages/NFTLoanAssetDetailPage";
 import PodPage from "./subpages/PodPage";
 import PodPageIndividual from "./subpages/PodPageIndividual";
 import WallPostPage from "./subpages/PodPageIndividual/components/Discussion/components/WallPostPage";
@@ -32,8 +33,7 @@ import OfferPlacedDetailPage from "./subpages/NFTOption/components/OfferPlacedDe
 import PaymentPage from "./subpages/NFTOption/components/PaymentPage";
 import ExpirationDayFailedToPay from "./subpages/NFTOption/components/ExpirationDayFailedToPay";
 import ExpirationDayPaid from "./subpages/NFTOption/components/ExpirationDayPaid";
-import AfterOfferAccepted from "./subpages/NFTOption/components/AfterOfferAccepted"
-
+import AfterOfferAccepted from "./subpages/NFTOption/components/AfterOfferAccepted";
 import TradeOnQuickSwap from "./subpages/NFTFractionalisation/components/SyntheticFractionalisedTradeJotPage/TradeOnQuickSwap";
 import MarketplaceDetailPage from "./subpages/MarketplacePage/components/MarketplaceDetailPage";
 import Fractionalise from "./subpages/NFTFractionalisation/components/Fractionalise";
@@ -61,6 +61,7 @@ export default function PriviPixRouter(props) {
       <Route exact path="/loan" component={NFTLoansPage} />
       <Route exact path="/loan/positions" component={NFTPositionManagerPage} />
       <Route exact path="/loan/:id" component={NFTLoanDetailPage} />
+      <Route exact path="/loan/asset/:assetId" component={NFTLoanAssetDetailPage} />
       <Route exact path="/option/create_nft_option" component={CreateNftOption} />
       <Route exact path="/option/explore/:img_id" component={ExploreOptionDetailPage} />
       <Route exact path="/option/managefutures/:img_id" component={ManageOptionDetailPage} />

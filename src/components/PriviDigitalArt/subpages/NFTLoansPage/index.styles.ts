@@ -114,18 +114,18 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
   },
   mediaImageWrapper: {
-    height: "73px",
-    width: "73px",
-    marginRight: 16,
+    height: 41,
+    width: 41,
+    marginRight: 14,
     [theme.breakpoints.down("md")]: {
-      height: "60px",
-      width: "60px",
+      height: "32px",
+      width: "32px",
       marginRight: 8,
     },
     [theme.breakpoints.down("sm")]: {
       borderRadius: 8,
-      height: "40px",
-      width: "40px",
+      height: "24px",
+      width: "24px",
     },
     [theme.breakpoints.down("xs")]: {
       borderRadius: 4,
@@ -135,26 +135,25 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
   },
   mediaImage: {
-    height: "80px",
-    width: "80px",
+    height: 41,
+    width: 41,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
     backgroundPosition: "center",
     boxSizing: "content-box",
-    borderRadius: "16px",
+    borderRadius: 8,
     [theme.breakpoints.down("md")]: {
-      height: "60px",
-      width: "60px",
+      height: "32px",
+      width: "32px",
     },
     [theme.breakpoints.down("sm")]: {
-      borderRadius: 8,
-      height: "40px",
-      width: "40px",
+      height: "24px",
+      width: "24px",
     },
     [theme.breakpoints.down("xs")]: {
       borderRadius: 4,
-      height: "25px",
-      width: "25px",
+      height: "20px",
+      width: "20px",
     },
   },
   mediaName: {
@@ -176,12 +175,22 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     marginTop: "8px",
     background: "white !important",
     color: "#431AB7 !important",
+    width: theme.spacing(10.5),
+    height: theme.spacing(3.75)
   },
   primary: {
     border: "1px solid #431AB7 !importafnt",
     marginTop: "8px",
     color: "white !important",
     background: "#431AB7 !important",
+    width: theme.spacing(10.75),
+    height: theme.spacing(3.75),
+    marginRight: theme.spacing(2),
+
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 0,
+      marginBottom: theme.spacing(2)
+    },
   },
   chain: {
     width: 24,
@@ -197,16 +206,16 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   tableContainerWithAbsoluteImage: {
     width: "100%",
     background: "#F6F5F8",
-    padding: "0 36px 36px",
+    padding: "28px 36px 36px",
 
     [theme.breakpoints.down("xs")]: {
       padding: "0 16px 16px",
     },
   },
   tableLoansContainer: {
+    marginTop: theme.spacing(3.25),
     "& .MuiTable-root": {
       borderCollapse: "separate",
-      borderSpacing: "0 10px",
     },
 
     "& .MuiTableHead-root": {
@@ -217,10 +226,12 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
 
     "& .MuiTableCell-head": {
       background: "transparent",
-      fontWeight: 600,
-      fontSize: 14,
       lineHeight: "120%",
-      color: Color.Purple,
+      color: '#9787C4',
+      fontSize: theme.spacing(1.75),
+      fontWeight: 500,
+      fontFamily: 'Agrandir',
+      padding: theme.spacing(2, 2, 1.5),
 
       "&:first-child": {
         paddingLeft: 25,
@@ -231,9 +242,6 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       border: "1px solid rgba(158, 172, 242, 0.4)",
 
       "& td:first-child": {
-        borderTopLeftRadius: 16,
-        borderBottomLeftRadius: 16,
-
         [theme.breakpoints.down("xs")]: {
           width: "fit-content",
 
@@ -241,11 +249,6 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
             width: "fit-content",
           },
         },
-      },
-
-      "& td:last-child": {
-        borderTopRightRadius: 16,
-        borderBottomRightRadius: 16,
       },
     },
   },
@@ -365,8 +368,8 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   positionColumnButtons: {
     display: "flex",
     alignItems: "center",
-    rowGap: 4,
-    flexDirection: "column",
+    colGap: 4,
+    // flexDirection: "column",
     marginRight: 16,
     [theme.breakpoints.down("md")]: {
       marginRight: 8,
@@ -378,7 +381,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     "& > button": {
       whiteSpace: "nowrap",
       borderRadius: 4,
-      padding: "0 40px",
+      padding: 0,
       marginLeft: "0 !important",
       [theme.breakpoints.down("md")]: {
         fontSize: 12,
@@ -474,11 +477,12 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
   },
   loanMediaNameTag: {
     background: "#431AB7",
+    fontFamily: 'Montserrat',
+    fontWeight: 'bold',
     borderRadius: 4,
-    fontWeight: "bold",
     fontSize: 10,
     color: "white",
-    padding: "5px 9px",
+    padding: "4px 8px",
     width: "fit-content",
     marginBottom: 8,
 
@@ -488,21 +492,16 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     },
   },
   loanMediaName: {
-    fontWeight: "bold",
-    fontSize: 18,
-    lineHeight: "104.5%",
-
-    textAlign: "justify",
-
+    fontWeight: 600,
+    fontSize: 16,
+    fontFamily: 'Montserrat',
     color: "#431AB7",
-    marginBottom: 8,
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
 
     [theme.breakpoints.down("xs")]: {
-      fontSize: 12,
-      marginBottom: 4,
+      fontSize: 12
     },
   },
   loanMediaNameId: {
@@ -571,4 +570,99 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       left: "280px",
     },
   },
+  outlinedButton: {
+    background: 'white',
+    borderColor: "#431AB7",
+    border: "0.7px solid #431AB7",
+    boxShadow: 'none'
+  },
+  cardContainer: {
+    border: '1px solid #9EACF2',
+    background: 'white',
+    borderRadius: theme.spacing(2.5),
+    padding: theme.spacing(4.75, 3, 5, 5.5),
+
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(3)
+    }
+  },
+  cardHeader: {
+    fontFamily: 'Agrandir GrandHeavy',
+    fontWeight: 800,
+    fontSize: theme.spacing(2.75),
+    color: "#431AB7",
+    marginBottom: theme.spacing(3.5)
+  },
+  cardCaption: {
+    fontFamily: 'Agrandir',
+    fontSize: theme.spacing(1.75),
+    color: "#431AB7"
+  },
+  cardValue: {
+    fontFamily: 'Agrandir GrandHeavy',
+    fontWeight: 800,
+    fontSize: theme.spacing(2.25),
+    color: "#431AB7",
+    whiteSpace: 'nowrap'
+  },
+  divider: {
+    fontFamily: 'Agrandir',
+    background: '#C4C4C4',
+    opacity: 0.2,
+    border: '1px solid #431AB7',
+  },
+  volumeDivider: {
+    margin: theme.spacing(4, 0)
+  },
+  tokenLabel: {
+    fontFamily: 'Montserrat',
+    fontSize: theme.spacing(2),
+    fontWeight: 600,
+    color: '#1A1B1C',
+  },
+  tokenDetail: {
+    color: '#431AB7',
+    whiteSpace: 'nowrap'
+  },
+  tokenImage: {
+    width: theme.spacing(3.5),
+    height: theme.spacing(3.5),
+    marginRight: theme.spacing(1.75)
+  },
+  tokenContainer: {
+    marginTop: -theme.spacing(0.5),
+    padding: theme.spacing(2.5, 0),
+
+    '&:last-child': {
+      borderBottom: 'none'
+    }
+  },
+  topContainer: {
+    marginBottom: theme.spacing(2.5)
+  },
+  marketsCard: {
+    border: '1px solid #9EACF2',
+    background: 'white',
+    borderRadius: theme.spacing(2.5),
+  },
+  tableHeader: {
+    padding: theme.spacing(3.75, 5, 3),
+
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(3)
+    }
+  },
+  headerTitle: {
+    fontFamily: 'Agrandir GrandHeavy',
+    fontWeight: 800,
+    fontSize: 17,
+    color: "#431AB7",
+    whiteSpace: 'nowrap'
+  },
+  marketValue: {
+    fontFamily: 'Montserrat',
+    fontSize: theme.spacing(2),
+    fontWeight: 600,
+    color: "#431AB7",
+  }
 }));

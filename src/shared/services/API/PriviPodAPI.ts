@@ -1,9 +1,5 @@
 import axios from "axios";
 import URL from "shared/functions/getURL";
-import { getPriviWallet } from "shared/helpers";
-import { IAPIRequestProps } from "shared/types";
-import { IUploadMedia } from ".";
-import { signPayload } from "../WalletSign";
 
 export async function getRaisedTrendingPods(type: string): Promise<any> {
   try {

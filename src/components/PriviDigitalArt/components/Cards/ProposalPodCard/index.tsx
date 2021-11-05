@@ -1,65 +1,41 @@
-import { useWeb3React } from "@web3-react/core";
-import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import Web3 from "web3";
-import ProposalDetailModal from "components/PriviDigitalArt/modals/ProposalDetailModal";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useWeb3React } from "@web3-react/core";
+import Web3 from "web3";
+
+import { RootState } from "store/reducers/Reducer";
+import TransactionProgressModal from "../../../modals/TransactionProgressModal";
+import ProposalDetailModal from "components/PriviDigitalArt/modals/ProposalDetailModal";
+
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { BlockchainNets } from "shared/constants/constants";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Avatar from "shared/ui-kit/Avatar";
 import Box from "shared/ui-kit/Box";
-import { ProposalPodCardStyles } from "./index.styles";
-import { useSelector } from "react-redux";
 import { priviPodVoteForPodProposal } from "shared/services/API";
-import { RootState } from "store/reducers/Reducer";
-import TransactionProgressModal from "../../../modals/TransactionProgressModal";
-import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+
+import { ProposalPodCardStyles } from "./index.styles";
 
 export const ProposalPodCard = props => {
   const { podId, proposal, pod, handleRefresh, handleNewProposalModal } = props;
-
-  const usersList = useSelector((state: RootState) => state.usersInfoList);
+  const classes = ProposalPodCardStyles();
 
   const { showAlertMessage } = useAlertMessage();
-
   const userSelector = useSelector((state: RootState) => state.user);
-
-  const classes = ProposalPodCardStyles();
-  const [openDetailModal, setOpenDetailModal] = React.useState<boolean>(false);
-
   const { account, library } = useWeb3React();
 
-  const creator = pod.CreatorsData.find(creator => creator.id === proposal.Proposer);
+  const [openDetailModal, setOpenDetailModal] = React.useState<boolean>(false);
   const [hash, setHash] = useState<string>("");
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
   const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
-
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  const [mediasPhotos, setMediasPhotos] = useState<any[]>([]);
-  const [creatorImage, setCreatorImage] = useState<any>(null);
-
   const [voteStatus, setVoteStatus] = useState<boolean | null>(null);
+
+  const creator = pod.CreatorsData.find(creator => creator.id === proposal.Proposer);
 
   useEffect(() => {
     setVoteStatus(proposal && proposal.Votes && proposal.Votes[userSelector.id]);
   }, [proposal]);
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0 && usersList && usersList.length > 0 && pod) {
-      getImages();
-    }
-  }, [pod, ipfs, usersList]);
-
-  useEffect(() => {
-    if (ipfs && Object.keys(ipfs).length !== 0 && creator && creator.id) {
-      getUserPhoto(creator);
-    }
-  }, [ipfs, creator, usersList]);
 
   const handleAccept = async () => {
     setOpenTransactionModal(true);
@@ -137,30 +113,6 @@ export const ProposalPodCard = props => {
     }
   };
 
-  const getImages = async () => {
-    let i: number = 0;
-    let photos: any = {};
-    for (let creator of pod.CreatorsData) {
-      if (creator && creator.id) {
-        let creatorFound: any = usersList.find(user => user.id === creator.id);
-
-        if (creatorFound && creatorFound.ipfsImage) {
-          photos[i + "-photo"] = creatorFound.ipfsImage;
-        }
-      }
-      i++;
-    }
-    setMediasPhotos(photos);
-  };
-
-  const getUserPhoto = async (creator: any) => {
-    let creatorFound = usersList.find(user => user.id === creator.id);
-
-    if (creatorFound && creatorFound.ipfsImage) {
-      setCreatorImage(creatorFound.ipfsImage);
-    }
-  };
-
   return (
     <Box className={classes.root}>
       <Box className={classes.flexBox} style={{ borderBottom: "1px dashed #18181822" }} pb={2}>
@@ -185,25 +137,14 @@ export const ProposalPodCard = props => {
       </Box>
       <Box className={classes.flexBox} style={{ borderBottom: "1px dashed #18181822" }} py={2}>
         <Box display="flex">
-          <Avatar
-            size={34}
-            rounded
-            bordered
-            image={creatorImage ? creatorImage : require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")}
-          />
+          <Avatar size={34} rounded bordered image={creator?.imageUrl ?? getDefaultAvatar()} />
           <Box ml={1}>
-            {creator ? (
+            {creator && (
               <>
                 <Box className={classes.header2}>{creator.name || ""}</Box>
-                <Box className={classes.header3}>
-                  {`@${
-                    creator.id.length > 13
-                      ? creator.id.substr(0, 13) + "..." + creator.id.substr(creator.id.length - 2, 2)
-                      : creator.id
-                  }`}
-                </Box>
+                <Box className={classes.header3}>{`@${creator.id}`}</Box>
               </>
-            ) : null}
+            )}
           </Box>
         </Box>
         <Box display="flex">
@@ -213,17 +154,8 @@ export const ProposalPodCard = props => {
           <Box display="flex">
             {pod.CreatorsData.map((item, index) => {
               return (
-                <Box ml={index > 0 ? -2 : 2}>
-                  <Avatar
-                    size={34}
-                    rounded
-                    bordered
-                    image={
-                      mediasPhotos && mediasPhotos[index + "-photo"]
-                        ? mediasPhotos[index + "-photo"]
-                        : require(`assets/anonAvatars/ToyFaces_Colored_BG_00${index + 1}.jpg`)
-                    }
-                  />
+                <Box ml={index > 0 ? -2 : 2} key={`creator-${index}`}>
+                  <Avatar size={34} rounded bordered image={item.imageUrl ?? getDefaultAvatar()} />
                 </Box>
               );
             })}

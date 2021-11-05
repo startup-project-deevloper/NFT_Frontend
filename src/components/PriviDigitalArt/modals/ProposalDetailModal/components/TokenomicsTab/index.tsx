@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid } from "@material-ui/core";
 
-import { tokenomicsTabStyles } from "./index.styles";
 import { formatDDMMYY } from "shared/helpers";
-import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
-import {onGetNonDecrypt} from "../../../../../../shared/ipfs/get";
-import {_arrayBufferToBase64} from "../../../../../../shared/functions/commonFunctions";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { onGetNonDecrypt } from "shared/ipfs/get";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import SkeletonBox from "shared/ui-kit/SkeletonBox";
+
+import { tokenomicsTabStyles } from "./index.styles";
 
 const TokenomicsTab = (props: any) => {
   const { proposal } = props;
@@ -20,10 +22,8 @@ const TokenomicsTab = (props: any) => {
   }, []);
 
   useEffect(() => {
-    console.log('proposal', proposal);
-    if(ipfs  &&
-      proposal && proposal.TokenInfoImage &&
-      proposal.TokenInfoImage.newFileCID) {
+    console.log("proposal", proposal);
+    if (ipfs && proposal && proposal.TokenInfoImage && proposal.TokenInfoImage.newFileCID) {
       getImageIPFS(proposal.TokenInfoImage.newFileCID);
     }
   }, [proposal, ipfs]);
@@ -38,33 +38,31 @@ const TokenomicsTab = (props: any) => {
     }
   };
 
-
   return (
     <div className={classes.tokenomicsTab}>
       <Box className={classes.headerBox}>
-        <img
-          src={imageIPFS ? imageIPFS :
-            "http://bsmedia.business-standard.com/_media/bs/img/article/2017-05/22/full/1495395416-6262.jpg"
-          }
-          alt="image"
+        <SkeletonBox
+          width="100%"
+          height="100%"
+          loading={!imageIPFS}
+          image={imageIPFS}
+          className={classes.imageBox}
+          style={{
+            backgroundSize: "cover",
+          }}
         />
         <Box>
           <Box className={classes.headerTitle}>
             <Box>
               <p>Pod Token Name</p>
-              <p>{proposal.TokenName || 'Token Name'}</p>
+              <p>{proposal.TokenName || "Token Name"}</p>
             </Box>
             <Box>
               <p>Symbol</p>
-              <p>{proposal.TokenSymbol || 'Token Symbol'}</p>
+              <p>{proposal.TokenSymbol || "Token Symbol"}</p>
             </Box>
           </Box>
-          {
-            proposal && proposal.TokenDescription ?
-              <span>
-                {proposal.TokenDescription}
-              </span> : null
-          }
+          {proposal && proposal.TokenDescription ? <span>{proposal.TokenDescription}</span> : null}
         </Box>
       </Box>
       <Grid className={classes.valueBox} container spacing={2} wrap={"wrap"}>

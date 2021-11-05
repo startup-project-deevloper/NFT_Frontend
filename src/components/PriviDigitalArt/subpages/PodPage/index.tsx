@@ -2,29 +2,29 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import clsx from "clsx";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useDebounce } from "use-debounce/lib";
 
-import { getRaisedTrendingPods, getPods, getPodsProposal } from "shared/services/API/PriviPodAPI";
-
+import { useTypedSelector } from "store/reducers/Reducer";
+import { getUser } from "store/selectors";
 import NFTPodCard from "components/PriviDigitalArt/components/Cards/NFTPodCard";
 import CreatePodModal from "components/PriviDigitalArt/modals/CreatePodModal/CreatePodModal";
+import PodProposalCard from "components/PriviDigitalArt/components/Cards/PodProposalCard";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
+import { SearchIcon } from "../../components/Icons/SvgIcons";
+// import CustomPopup from "components/PriviDigitalArt/components/CustomPopup";
+
+import { getRaisedTrendingPods, getPods, getPodsProposal } from "shared/services/API/PriviPodAPI";
+import { getPodStatus } from "shared/functions/utilsPriviPod";
 import { PrimaryButton, CircularLoadingIndicator, Color } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
-import useWindowDimensions from "../../../../shared/hooks/useWindowDimensions";
-import { useNFTPodsPageStyles } from "./index.styles";
-import { ReactComponent as GovernanceImg } from "assets/icons/governance.svg";
+import useWindowDimensions from "shared/hooks/useWindowDimensions";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-import { SearchIcon } from "../../components/Icons/SvgIcons";
-import CustomPopup from "components/PriviDigitalArt/components/CustomPopup";
 
-import { useTypedSelector } from "store/reducers/Reducer";
-import { getUser } from "store/selectors";
-import { useDebounce } from "use-debounce/lib";
-import PodProposalCard from "components/PriviDigitalArt/components/Cards/PodProposalCard";
+import { useNFTPodsPageStyles } from "./index.styles";
 
-import { getPodStatus } from "shared/functions/utilsPriviPod";
+import { ReactComponent as GovernanceImg } from "assets/icons/governance.svg";
 
 const apiType = "pix";
 const LoadingIndicatorWrapper = styled.div`
@@ -35,8 +35,8 @@ const LoadingIndicatorWrapper = styled.div`
   padding-top: 20px;
 `;
 
-const filterTagOptions = ["Trending", "Hot", "New"];
-const filterTagMorOptions = ["MoreOption1", "MoreOption2", "MoreOption3", "MoreOption4"];
+// const filterTagOptions = ["Trending", "Hot", "New"];
+// const filterTagMorOptions = ["MoreOption1", "MoreOption2", "MoreOption3", "MoreOption4"];
 
 const PodPage = () => {
   const classes = useNFTPodsPageStyles();
@@ -88,6 +88,7 @@ const PodPage = () => {
     if (filterMore !== "More" && filterMore.length > 0) {
       // TODO: get pods by more filter option
     } else if (filterOption === "Trending") {
+      setLoadingTrendingPods(true);
       getRaisedTrendingPods(apiType)
         .then(resp => {
           if (resp?.success) {
@@ -99,7 +100,10 @@ const PodPage = () => {
             setTrendingPods(nextPagePods);
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
+        .finally(() => {
+          setLoadingTrendingPods(false);
+        });
     } else if (filterOption === "Hot") {
       // TODO:
     } else if (filterOption === "New") {
@@ -113,7 +117,6 @@ const PodPage = () => {
     if (isInit) lastIdRef.current = "undefined";
     getPods(lastIdRef.current, apiType)
       .then(resp => {
-        setIsLoading(false);
         if (resp?.success) {
           const data = resp.data;
           const nextPagePods = data.pods
@@ -122,10 +125,12 @@ const PodPage = () => {
           setHasMore(data.hasMore ?? false);
           setPods([...pods, ...nextPagePods]);
           lastIdRef.current = nextPagePods.length ? nextPagePods[nextPagePods.length - 1].id : "";
-          console.log(nextPagePods);
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const loadMoreProposals = (isInit = false) => {
@@ -145,14 +150,16 @@ const PodPage = () => {
       .catch(_ => setProposals([]))
       .finally(() => setIsLoadingProposals(false));
   };
-  const onClickFilterTag = tag => {
-    setFilterOption(tag);
-    setFilterMore("More");
-  };
-  const onChangeFilterMore = val => {
-    setFilterMore(val);
-    setFilterOption("");
-  };
+
+  // const onClickFilterTag = tag => {
+  //   setFilterOption(tag);
+  //   setFilterMore("More");
+  // };
+
+  // const onChangeFilterMore = val => {
+  //   setFilterMore(val);
+  //   setFilterOption("");
+  // };
 
   const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {

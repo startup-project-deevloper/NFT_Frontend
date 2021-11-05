@@ -18,6 +18,7 @@ import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Slider from "@material-ui/core/Slider";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
+import PayRemainingAmountModal from "components/PriviDigitalArt/modals/PayRemainingAmountModal";
 
 const useStyles = makeStyles({
   root: {
@@ -148,6 +149,10 @@ const BoughtNftView = () => {
   const handleConfirmOrderBook = () => {
       setOpenOrderBookModal(false);
   }
+  const [openPayRemainingAmountModal, setOpenPayRemainingAmountModal] = useState<boolean>(false);
+  const handleConfirmPayRemainingAmount = () => {
+      setOpenPayRemainingAmountModal(false);
+  }
 
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
@@ -275,7 +280,7 @@ const BoughtNftView = () => {
                     </Box>
                 </Box>
                 <hr className={classes.divider} />
-                <Box className={classes.importantNotify}>
+                {/* <Box className={classes.importantNotify}>
                   <Box className={classes.notifyHeader}>
                     Important
                   </Box>
@@ -283,11 +288,25 @@ const BoughtNftView = () => {
                     Your offer was accepted by the owner. You need to 
                     <span className={classes.notifyBold}>pay remaining amount to buy the NFT at Future price before end of countdown</span> otherwise you will loose your collateral.
                   </Box>
-                </Box>
+                </Box> */}
                 <Box className={classes.priceBox}>
-                    <Box className={classes.notifyHeader}>Future payment in:</Box>
-                    <Box display="flex" alignItems="center">
-                      <Box marginRight="25px">
+                    <Box className={classes.notifyHeader}>
+                      Reserve payment :
+                    </Box>
+                    <Box className={classes.notifyGeneral}>
+                      Your offer was accepted by the owner. You need to 
+                      <span className={classes.notifyBold}>pay remaining amount to buy the NFT at Future price before end of countdown</span> otherwise you will loose your collateral.
+                    </Box>
+                    {/* <Box className={classes.notifyHeader}>Future payment in:</Box> */}
+                    <Box display="flex" alignItems="center" mt={3}>
+                      <Box marginRight="80px">
+                        <Box sx={{fontSize:'16px', color:'#181818'}}>Future price </Box>
+                        <Box sx={{fontSize:'18px', color:'#431AB7', fontWeight:800}}>2545 USDT</Box>
+                      </Box>
+                      <Box fontSize="14px" color="#181818" marginRight="18px">
+                        Time <br/>to pay 
+                      </Box>
+                      <Box>
                         <Box display="flex">
                           <PrimaryButton
                             size="small"
@@ -307,26 +326,30 @@ const BoughtNftView = () => {
                           >
                             12min
                           </PrimaryButton>
-                          <PrimaryButton
-                            size="small"
-                            style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px'}}
-                          >
-                            10s
-                          </PrimaryButton>
                         </Box>
                       </Box>
-                      <Box>
-                        <Box sx={{fontSize:'16px', color:'#181818'}}>Future price </Box>
-                        <Box sx={{fontSize:'18px', color:'#431AB7', fontWeight:800}}>2545 USDT</Box>
-                      </Box>
+                    </Box>
+                    <Box mt={5}>
+                      <PrimaryButton
+                        onClick={()=>setOpenPayRemainingAmountModal(true)} 
+                        size="medium"
+                        style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px', width:'100%'}}
+                      >
+                        Pay remaining amount
+                      </PrimaryButton>
                     </Box>
                 </Box>                
               </Box>
             </Box>           
             <OrderBookModal
-                open={openOrderBookModal}
-                handleClose={() => setOpenOrderBookModal(false)}
-                onConfirm={handleConfirmOrderBook}
+              open={openOrderBookModal}
+              handleClose={() => setOpenOrderBookModal(false)}
+              onConfirm={handleConfirmOrderBook}
+            />
+            <PayRemainingAmountModal
+              open={openPayRemainingAmountModal}
+              handleClose={() => setOpenPayRemainingAmountModal(false)}
+              onConfirm={handleConfirmPayRemainingAmount}
             />
             
             <div className={classes.transactionsSection}>

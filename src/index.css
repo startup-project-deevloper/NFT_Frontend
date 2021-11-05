@@ -5,6 +5,34 @@
 
 @font-face {
   font-family: "Agrandir";
+  font-style: normal;
+  font-weight: 300;
+  src: local("Agrandir GrandLight"), url(assets/fonts/Agrandir/Agrandir-GrandLight.otf) format("truetype");
+}
+
+@font-face {
+  font-family: "Agrandir";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Agrandir"), url(assets/fonts/Agrandir/Agrandir-Regular.otf) format("truetype");
+}
+
+@font-face {
+  font-family: "Agrandir";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Agrandir Bold"), url(assets/fonts/Agrandir/Agrandir-TextBold.otf) format("truetype");
+}
+
+@font-face {
+  font-family: "Agrandir";
+  font-style: normal;
+  font-weight: 800;
+  src: local("Agrandir HeavyBold"), url(assets/fonts/Agrandir/Agrandir-GrandHeavy.otf) format("truetype");
+}
+
+@font-face {
+  font-family: "Agrandir";
   src: local("Agrandir"), url(assets/fonts/Agrandir/Agrandir-Regular.otf) format("truetype");
 }
 
@@ -51,11 +79,6 @@
 @font-face {
   font-family: "Agrandir Regular";
   src: local("Agrandir Regular"), url(assets/fonts/Agrandir/Agrandir-Regular.otf) format("truetype");
-}
-
-@font-face {
-  font-family: "Agrandir TextBold";
-  src: local("Agrandir TextBold"), url(assets/fonts/Agrandir/Agrandir-TextBold.otf) format("truetype");
 }
 
 @font-face {

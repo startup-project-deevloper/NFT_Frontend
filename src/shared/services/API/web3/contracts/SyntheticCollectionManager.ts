@@ -20,11 +20,9 @@ const syntheticCollectionManager = (network: string) => {
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
-        console.log("Getting gas....");
         const gas = await contract.methods
           .buyJotTokens(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
         const response = contract.methods
           .buyJotTokens(tokenId, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas })
@@ -39,7 +37,6 @@ const syntheticCollectionManager = (network: string) => {
               },
             });
           });
-        console.log("transaction succeed");
       } catch (e) {
         console.log(e);
         resolve({ success: false });
@@ -237,33 +234,24 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
-        console.log("Getting gas....");
         const isAllowedToFlipGas = await contract.methods
           .isAllowedToFlip(tokenId)
           .estimateGas({ from: account });
-
-        console.log("Estimated gas....", isAllowedToFlipGas);
 
         const isAllowedToFlip = await contract.methods
           .isAllowedToFlip(tokenId)
           .call({ from: account, gas: isAllowedToFlipGas });
 
-        console.log("Is Allowed to flip? --", isAllowedToFlip);
-
         if (!isAllowedToFlip) {
           resolve("not allowed");
         }
 
-        console.log("Getting gas... ", prediction, tokenId);
-
         const gas = await contract.methods.flipJot(tokenId, prediction).estimateGas({ from: account });
-        console.log("polygon gas...", gas);
 
         const response = await contract.methods
           .flipJot(tokenId, parseInt(prediction))
           .send({ from: account, gas });
 
-        console.log("coinFlipped... ", response);
         setFlippingHash(response.transactionHash);
 
         const {
@@ -284,7 +272,6 @@ const syntheticCollectionManager = (network: string) => {
             toBlock: "latest",
           },
           (error, events) => {
-            console.log(events);
             const event = events
               .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
               .find(res => res.requestId === requestId);
@@ -311,9 +298,7 @@ const syntheticCollectionManager = (network: string) => {
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
 
-        console.log("Getting gas....");
         const gas = await contract.methods.updatePriceFraction(tokenId, price).estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
 
         contract.methods
           .updatePriceFraction(tokenId, price)
@@ -322,7 +307,6 @@ const syntheticCollectionManager = (network: string) => {
             setHash(hash);
           })
           .on("receipt", function (receipt) {
-            console.log("transaction succeed");
             resolve({
               success: true,
               data: {
@@ -354,11 +338,9 @@ const syntheticCollectionManager = (network: string) => {
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
-        console.log("Getting gas....");
         const gas = await contract.methods
           .increaseSellingSupply(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
         await contract.methods
           .increaseSellingSupply(tokenId, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas })
@@ -366,7 +348,6 @@ const syntheticCollectionManager = (network: string) => {
             setHash(hash);
           })
           .on("receipt", function (receipt) {
-            console.log("transaction succeed");
             resolve({
               success: true,
               data: {
@@ -398,11 +379,9 @@ const syntheticCollectionManager = (network: string) => {
 
         const decimals = await jotAPI.decimals(web3, JotAddress);
 
-        console.log("Getting gas....");
         const gas = await contract.methods
           .decreaseSellingSupply(tokenId, toNDecimals(amount, decimals))
           .estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
         await contract.methods
           .decreaseSellingSupply(tokenId, toNDecimals(amount, decimals))
           .send({ from: account, gas: gas })
@@ -410,7 +389,6 @@ const syntheticCollectionManager = (network: string) => {
             setHash(hash);
           })
           .on("receipt", function (receipt) {
-            console.log("transaction succeed");
             resolve({
               success: true,
               data: {
@@ -440,7 +418,6 @@ const syntheticCollectionManager = (network: string) => {
             console.log(err);
             resolve(null);
           } else {
-            console.log("transaction succeed ", result);
             resolve(toDecimals(result, decimals));
           }
         });
@@ -473,7 +450,6 @@ const syntheticCollectionManager = (network: string) => {
             },
           },
         } = response;
-        console.log("verify response", response);
         await new Promise(resolve => setTimeout(resolve, 15000));
 
         await contract.getPastEvents(
@@ -483,7 +459,6 @@ const syntheticCollectionManager = (network: string) => {
             toBlock: "latest",
           },
           (error, events) => {
-            console.log("verify events", events);
             const event = events
               .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
               .find(res => res.requestId === requestId);
@@ -512,7 +487,6 @@ const syntheticCollectionManager = (network: string) => {
 
         const gas = await contract.methods.isVerified(tokenId).estimateGas({ from: account });
         const response = await contract.methods.isVerified(tokenId).send({ from: account, gas: gas });
-        console.log("is verified token response", response);
         resolve({
           success: true,
           data: {
@@ -565,7 +539,6 @@ const syntheticCollectionManager = (network: string) => {
             console.log(err);
             resolve(null);
           } else {
-            console.log("transaction succeed ", result);
             resolve(toDecimals(result, decimals));
           }
         });
@@ -582,15 +555,12 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, JotAddress, SyntheticID: tokenId } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        console.log(SyntheticCollectionManagerAddress);
         const gas = await contract.methods.exchangeOwnerJot(tokenId, amount).estimateGas({ from: account });
-        console.log(gas);
         const response = await contract.methods
           .exchangeOwnerJot(tokenId, amount)
           .send({ from: account, gas: gas });
 
         if (response) {
-          console.log(response);
           resolve({ success: true });
         } else {
           resolve({ success: false });
@@ -690,16 +660,13 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        const USDTAPI = USDT(network);
-
-        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackPrice().call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result, decimals));
+            resolve(toDecimals(result));
           }
         });
       } catch (err) {
@@ -716,16 +683,13 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        const USDTAPI = USDT(network);
-
-        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackRequiredAmount(SyntheticID).call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result?.buybackAmount, decimals));
+            resolve(toDecimals(result?.buybackAmount));
           }
         });
       } catch (err) {
@@ -802,9 +766,9 @@ const syntheticCollectionManager = (network: string) => {
     return new Promise(async resolve => {
       try {
         const { SyntheticCollectionManagerAddress, tokenId, amount, setHash } = payload;
-        
+
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
-        
+
         const USDTAPI = USDT(network);
         const decimals = await USDTAPI.decimals(web3);
 
@@ -937,7 +901,7 @@ const syntheticCollectionManager = (network: string) => {
   const updateBuybackPrice = (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { nft } = payload;
+        const { nft, setHash } = payload;
         const { SyntheticCollectionManagerAddress } = nft;
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
         const USDTAPI = USDT(network);
@@ -945,12 +909,15 @@ const syntheticCollectionManager = (network: string) => {
         const decimals = await USDTAPI.decimals(web3);
 
         const gas = await contract.methods.updateBuybackPrice().estimateGas({ from: account });
-        console.log("polygon gas...", gas);
 
         const response = await contract.methods
           .updateBuybackPrice()
-          .send({ from: account, gas });
-        console.log('response', response)
+          .send({ from: account, gas })
+          .on("transactionHash", function (hash) {
+            if (setHash) {
+              setHash(hash);
+            }
+          })
         const {
           events: {
             BuybackPriceUpdateRequested: {
@@ -972,7 +939,7 @@ const syntheticCollectionManager = (network: string) => {
             const event = events
               .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
               .find(res => res.requestId === requestId);
-            resolve(event?.price)
+            resolve(toDecimals(event?.price))
           })
       } catch (err) {
         console.log(err);

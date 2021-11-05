@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import cls from "classnames";
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
-import { getCryptosRateAsList } from "shared/services/API";
-import { Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
-import Box from "shared/ui-kit/Box";
 import GeneralTab from "./components/GeneralTab";
 import CopyRightFractionTab from "./components/CopyRightFractionTab";
 import TokenomicsTab from "./components/TokenomicsTab";
-import { proposalDetailModalStyles } from "./index.styles";
 import TransactionProgressModal from "../TransactionProgressModal";
 
-const startDate = Math.floor(Date.now() / 1000 + 3600 * 24 * 7); // one week later
+import { getCryptosRateAsList } from "shared/services/API";
+import { Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
+import Box from "shared/ui-kit/Box";
+
+import { proposalDetailModalStyles } from "./index.styles";
+
+// const startDate = Math.floor(Date.now() / 1000 + 3600 * 24 * 7); // one week later
 
 const ProposalDetailModal = (props: any) => {
   const { pod, proposal, txnModalOpen, closeTxnModal, txnSuccess, hash, voteStatus } = props;

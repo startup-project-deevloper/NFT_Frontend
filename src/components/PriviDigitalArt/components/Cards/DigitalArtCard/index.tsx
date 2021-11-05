@@ -3,7 +3,7 @@ import cls from "classnames";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import { Avatar } from "shared/ui-kit";
-import { RootState, useTypedSelector } from "store/reducers/Reducer";
+import { useTypedSelector } from "store/reducers/Reducer";
 import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
@@ -19,8 +19,7 @@ import { onGetNonDecrypt } from "shared/ipfs/get";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
-import { StyledSkeleton, SkeletonAvatar } from "shared/ui-kit/Styled-components/StyledComponents";
-import { useSelector } from "react-redux";
+import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
 
 const getRandomImageUrl = () => {
@@ -29,7 +28,6 @@ const getRandomImageUrl = () => {
 
 export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   const classes = digitalArtCardStyles();
-  const users = useSelector((state: RootState) => state.usersInfoList);
   const user = useTypedSelector(state => state.user);
   const history = useHistory();
 
@@ -62,27 +60,16 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    if (media && user && users && users.length > 0) {
+    if (media && user) {
       if (media.CreatorId || media.CreatorAddress) {
         const getCreatorData = async creatorId => {
           try {
             const response = await Axios.get(`${URL()}/user/getBasicUserInfo/${creatorId}`);
             if (response.data.success) {
               let data = response.data.data;
-              const creatorData: any = users.find(u => u.address === creatorId || u.id === creatorId);
-
-              data.infoImage = creatorData.infoImage || null;
-              if (ipfs && data && data.infoImage) {
-                data.ipfsImage = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
-              }
-
-              if (!data.ipfsImage) {
-                data.ipfsImage = getDefaultAvatar();
-              }
-
               setCreator({
                 ...data,
-                name: data.name ?? `${data.firstName} ${data.lastName}`,
+                name: data.name ?? ``,
               });
             }
             return response.data.success;
@@ -100,7 +87,6 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               if (!tryWithId) {
                 setCreator({
                   imageUrl: getDefaultAvatar(),
-                  // imageUrl: getRandomAvatarForUserIdWithMemoization(media.creator),
                   name: media.blockchain,
                   urlSlug: "",
                   id: "",
@@ -111,7 +97,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         });
       } else {
         setCreator({
-          imageUrl: getRandomAvatarForUserIdWithMemoization(media.creator),
+          imageUrl: getDefaultAvatar(),
           name: media.creator || media.blockchain,
           urlSlug: media.creator,
           id: media.creator,
@@ -162,7 +148,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         return () => clearInterval(timerId);
       } else return;
     }
-  }, [media, user, ipfs, users]);
+  }, [media, user, ipfs]);
 
   useEffect(() => {
     if (media.cid) {
@@ -242,8 +228,8 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         <Box display="flex" alignItems="center">
           <Avatar
             size="small"
-            url={creator.ipfsImage ?? getDefaultAvatar()}
-            alt={creator.id}
+            url={creator.imageUrl ?? getDefaultAvatar()}
+            alt={creator.name}
             title={`${creator.name}`}
             onClick={() => {
               if (creator.id ?? creator.urlSlug) {

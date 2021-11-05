@@ -11,7 +11,6 @@ import ReactPlayer from "react-player";
 
 import { Grid, Hidden, useMediaQuery } from "@material-ui/core";
 
-import { RootState } from "store/reducers/Reducer";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { useTypedSelector } from "store/reducers/Reducer";
 import {
@@ -44,25 +43,26 @@ import {
   _arrayBufferToBase64,
 } from "shared/functions/commonFunctions";
 import {
-  buyFraction,
-  placeBid,
+  // buyFraction,
+  // placeBid,
   getFractionalisedMediaOffers,
   getFractionalisedMediaTransactions,
   getFractionalisedMediaPriceHistory,
   getFractionalisedMediaSharedOwnershipHistory,
-  deleteBuyOrder,
-  deleteSellOrder,
-  cancelAuction,
-  withdrawAuction,
+  // deleteBuyOrder,
+  // deleteSellOrder,
+  // cancelAuction,
+  // withdrawAuction,
   getAuctionBidHistory,
-  getAuctionTransactions,
-  cancelSellingOffer,
-  buyFromOffer,
-  sellFromOffer,
+  // getAuctionTransactions,
+  // cancelSellingOffer,
+  // buyFromOffer,
+  // sellFromOffer,
   // getExchangePriceHistory,
   getBuyingOffers,
-  cancelBuyingOffer,
+  // cancelBuyingOffer,
   getNft,
+  getUsersByAddresses,
 } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import CreateFractionOfferModal from "components/PriviDigitalArt/modals/CreateOfferModal";
@@ -75,7 +75,7 @@ import DigitalArtDetailsModal from "../../../../modals/DigitalArtDetailsModal";
 import { PlaceBidModal } from "../../modals/PlaceBidModal";
 import BuyNFTModal from "../../../../modals/BuyNFTModal";
 import PlaceBuyingOfferModal from "../../../../modals/PlaceBuyingOfferModal";
-import ConfirmPayment from "../../../../modals/ConfirmPayment";
+// import ConfirmPayment from "../../../../modals/ConfirmPayment";
 import { marketplaceDetailPageStyles, LinkIcon } from "./index.styles";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 
@@ -350,7 +350,6 @@ const MarketplaceDetailPage = () => {
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
   const loggedUser = useSelector(getUser);
-  const usersList = useSelector((state: RootState) => state.usersInfoList);
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const classes = marketplaceDetailPageStyles();
@@ -393,7 +392,7 @@ const MarketplaceDetailPage = () => {
   const [auctionEnded, setAuctionEnded] = React.useState<boolean>(false);
   const [openBidModal, setOpenBidModal] = React.useState<boolean>(false);
   const priceRef = useRef<number>(0);
-  const [openConfirmPaymentModal, setOpenConfirmPaymentModal] = useState<boolean>(false);
+  // const [openConfirmPaymentModal, setOpenConfirmPaymentModal] = useState<boolean>(false);
   const [bidPriceInfo, setBidPriceInfo] = React.useState<any>({
     lastPrice: 0,
     priceChange: 0,
@@ -463,14 +462,11 @@ const MarketplaceDetailPage = () => {
 
   const { account, library, chainId } = useWeb3React();
   const [web3, setWeb3] = useState<Web3 | null>(null);
-  const getUserInfo = (id: string) => usersList.find(u => u.id === id);
   const [editedCommentId, setEditedCommentId] = useState<any>(null);
   const [editedComment, setEditedComment] = useState<any>(null);
   const isEditingComment = useRef<boolean>(false);
 
   const [disableBidBtn, setDisableBidBtn] = useState<boolean>(false);
-
-  const [mediaCreator, setMediaCreator] = useState<any>();
 
   useEffect(() => {
     setOpenFilters(false);
@@ -508,14 +504,10 @@ const MarketplaceDetailPage = () => {
   }, [media?.tokenAddress]);
 
   useEffect(() => {
-    if (media?.owner_of && usersList) {
-      const creator = usersList.find(u => u.address.toLowerCase() === media?.owner_of);
-      setMediaCreator(creator);
-      if (creator) {
-        setIsFollowing(isUserFollowed(creator?.id));
-      }
+    if (media?.CreatorId) {
+      setIsFollowing(isUserFollowed(media?.CreatorId));
     }
-  }, [media?.owner_of, usersList]);
+  }, [media?.CreatorId]);
 
   useEffect(() => {
     if (media?.symbol) {
@@ -765,15 +757,14 @@ const MarketplaceDetailPage = () => {
               const data = resp.data;
               const newExchangeTableData: any[] = [];
               data.forEach(offer => {
-                const u = usersList.find(u => u.address == offer.CreatorAddress);
                 newExchangeTableData.push([
                   {
                     cell: (
                       <Box display="flex" flexDirection="row" alignItems="center">
-                        <Avatar size="medium" url={u?.ipfsImage ? u?.ipfsImage : getDefaultAvatar()} />
+                        <Avatar size="medium" url={offer.creatorInfo.imageUrl ?? getDefaultAvatar()} />
                         <Box display="flex" flexDirection="column" alignItems="center">
-                          <Text ml={1.5}>{u?.name}</Text>
-                          <Text ml={1.5}>@{u?.urlSlug}</Text>
+                          <Text ml={1.5}>{offer.creatorInfo?.name}</Text>
+                          <Text ml={1.5}>@{offer.creatorInfo?.urlSlug}</Text>
                         </Box>
                       </Box>
                     ),
@@ -832,52 +823,61 @@ const MarketplaceDetailPage = () => {
                   Price: offer.price,
                   OfferToken: "BAL", // This value should be returned from contract
                 })) || [];
-            buyOffers.forEach(offer => {
-              const u = usersList.find(u => u.address == offer.CreatorAddress);
-              newExchangeTableData.push([
-                {
-                  cell: (
-                    <Box display="flex" flexDirection="row" alignItems="center">
-                      <Avatar size="medium" url={u?.ipfsImage ? u?.ipfsImage : getDefaultAvatar()} />
-                      <Box display="flex" flexDirection="column" alignItems="center">
-                        <Text ml={1.5}>{u?.name}</Text>
-                        <Text ml={1.5}>@{u?.urlSlug}</Text>
-                      </Box>
-                    </Box>
-                  ),
-                },
-                {
-                  cell: (
-                    <img src={require(`assets/tokenImages/${offer.OfferToken}.png`)} width={24} height={24} />
-                  ),
-                },
-                { cell: offer.OfferToken },
-                { cell: offer.Price },
-                {
-                  cell:
-                    offer.CreatorAddress === user.address ? (
-                      <Text
-                        onClick={() => {
-                          handleOpenSignatureCancelBuyingOffer(offer);
-                        }}
-                      >
-                        {" "}
-                        Cancel{" "}
-                      </Text>
-                    ) : media?.exchange?.CreatorAddress === user.address ? (
-                      <Text
-                        onClick={() => {
-                          handleOpenSignatureSellFromBuyingOffer(offer);
-                        }}
-                      >
-                        {" "}
-                        Sell{" "}
-                      </Text>
-                    ) : null,
-                },
-              ]);
+            getUsersByAddresses(buyOffers.map(b => b.CreatorAddress)).then(res => {
+              if (res.success) {
+                const userList = res.data;
+                buyOffers.forEach(offer => {
+                  const u = userList[offer.CreatorAddress];
+                  newExchangeTableData.push([
+                    {
+                      cell: (
+                        <Box display="flex" flexDirection="row" alignItems="center">
+                          <Avatar size="medium" url={u?.imageUrl ?? getDefaultAvatar()} />
+                          <Box display="flex" flexDirection="column" alignItems="center">
+                            <Text ml={1.5}>{u?.name}</Text>
+                            <Text ml={1.5}>@{u?.urlSlug}</Text>
+                          </Box>
+                        </Box>
+                      ),
+                    },
+                    {
+                      cell: (
+                        <img
+                          src={require(`assets/tokenImages/${offer.OfferToken}.png`)}
+                          width={24}
+                          height={24}
+                        />
+                      ),
+                    },
+                    { cell: offer.OfferToken },
+                    { cell: offer.Price },
+                    {
+                      cell:
+                        offer.CreatorAddress === user.address ? (
+                          <Text
+                            onClick={() => {
+                              handleOpenSignatureCancelBuyingOffer(offer);
+                            }}
+                          >
+                            {" "}
+                            Cancel{" "}
+                          </Text>
+                        ) : media?.exchange?.CreatorAddress === user.address ? (
+                          <Text
+                            onClick={() => {
+                              handleOpenSignatureSellFromBuyingOffer(offer);
+                            }}
+                          >
+                            {" "}
+                            Sell{" "}
+                          </Text>
+                        ) : null,
+                    },
+                  ]);
+                });
+                setExchangeTableData(newExchangeTableData);
+              }
             });
-            setExchangeTableData(newExchangeTableData);
           });
         }
       }
@@ -931,18 +931,9 @@ const MarketplaceDetailPage = () => {
 
   useEffect(() => {
     if (media && media.Comments && media.Comments.length) {
-      const newComments = media.Comments.map(item => {
-        const user = usersList.find(userItem => userItem.id === item.user.id);
-        return {
-          comment: item.comment,
-          date: item.date,
-          user,
-        };
-      });
-
-      setComments(newComments.reverse());
+      setComments(media.Comments.reverse());
     }
-  }, [media, usersList]);
+  }, [media]);
 
   const loadMedia = async () => {
     if (isDataLoading || !params.tokenAddress || !params.tokenId) return;
@@ -998,11 +989,11 @@ const MarketplaceDetailPage = () => {
   const handleFollow = e => {
     e.stopPropagation();
     e.preventDefault();
-    if (mediaCreator) {
+    if (media?.CreatorId) {
       if (isFollowing === 0) {
-        followUser(mediaCreator.id).then(_ => setIsFollowing(1));
+        followUser(media?.CreatorId).then(_ => setIsFollowing(1));
       } else {
-        unfollowUser(mediaCreator.id).then(_ => setIsFollowing(0));
+        unfollowUser(media?.CreatorId).then(_ => setIsFollowing(0));
       }
     }
   };
@@ -1017,15 +1008,16 @@ const MarketplaceDetailPage = () => {
   }, [media]);
 
   const owners = React.useMemo(() => {
-    if (!media || !media?.auction || !media?.BidHistory || media?.BidHistory.length === 0) return [];
-    return [
-      ...new Set(
-        media?.BidHistory.map((history: any) =>
-          usersList.find(user => user.address === history.bidderAddress)
-        ).filter(history => !!history)
-      ),
-    ];
-  }, [usersList, media]);
+    // if (!media || !media?.auction || !media?.BidHistory || media?.BidHistory.length === 0) return [];
+    // return [
+    //   ...new Set(
+    //     media?.BidHistory.map((history: any) =>
+    //       usersList.find(user => user.address === history.bidderAddress)
+    //     ).filter(history => !!history)
+    //   ),
+    // ];
+    return [];
+  }, [media]);
 
   const handleChangeComment = e => {
     setComment(e.target.value);
@@ -1034,12 +1026,11 @@ const MarketplaceDetailPage = () => {
   const addComment = () => {
     if (!comment) return;
     axios
-      .post(`${URL()}/streaming/addComment`, {
-        DocId: media?.symbol ?? media?.id,
-        MediaType: media?.Type,
-        MediaTag: media?.tag ?? "privi",
-        UserId: user.id,
-        Comment: {
+      .post(`${URL()}/marketplace/addComment`, {
+        tokenAddress: media?.token_address,
+        tokenId: media?.token_id,
+        userId: user.id,
+        comment: {
           user: {
             id: user.id,
             name: `${user.firstName || ""} ${user.lastName || ""}`,
@@ -1051,8 +1042,18 @@ const MarketplaceDetailPage = () => {
       .then(res => {
         if (res.data.success) {
           showAlertMessage("Comment added successfully!", { variant: "success" });
-          const newComment = { ...res.data.data, user };
-          setComments([newComment, ...comments]);
+          setComments([
+            {
+              user: {
+                id: user.id,
+                name: `${user.firstName || ""} ${user.lastName || ""}`,
+                imageUrl: user.ipfsImage,
+              },
+              comment,
+              date: new Date(),
+            },
+            ...comments,
+          ]);
           setComment("");
         }
       })
@@ -1085,12 +1086,18 @@ const MarketplaceDetailPage = () => {
     bodyComments[bodyComments.length - editedCommentId].comment = editedComment;
 
     axios
-      .post(`${URL()}/streaming/editComment`, {
-        DocId: media?.symbol ?? media?.id,
-        MediaType: media?.Type,
-        MediaTag: media?.tag ?? "privi",
-        UserId: user.id,
-        Comments: bodyComments,
+      .post(`${URL()}/marketplace/editComment`, {
+        tokenAddress: media?.token_address,
+        tokenId: media?.token_id,
+        userId: user.id,
+        comments: bodyComments.map(c => ({
+          user: {
+            id: c.user.id,
+            name: c.name,
+          },
+          comment: c.comment,
+          date: c.date,
+        })),
       })
       .then(res => {
         if (res.data.success) {
@@ -1120,12 +1127,18 @@ const MarketplaceDetailPage = () => {
     );
 
     axios
-      .post(`${URL()}/streaming/editComment`, {
-        DocId: media?.symbol ?? media?.id,
-        MediaType: media?.Type,
-        MediaTag: media?.tag ?? "privi",
-        UserId: user.id,
-        Comments: bodyComments,
+      .post(`${URL()}/marketplace/editComment`, {
+        tokenAddress: media?.token_address,
+        tokenId: media?.token_id,
+        userId: user.id,
+        comments: bodyComments.map(c => ({
+          user: {
+            id: c.user.id,
+            name: c.name,
+          },
+          comment: c.comment,
+          date: c.date,
+        })),
       })
       .then(res => {
         if (res.data.success) {
@@ -1451,8 +1464,8 @@ const MarketplaceDetailPage = () => {
                 hash: res.transaction.Id,
                 transaction: {
                   ...res.transaction,
-                  Event: 'Bid',
-                  Price: priceRef.current
+                  Event: "Bid",
+                  Price: priceRef.current,
                 },
                 type: "PIX",
               };
@@ -1809,17 +1822,17 @@ const MarketplaceDetailPage = () => {
                       <div
                         className={classes.avatarImg}
                         onClick={() => {
-                          history.push(`/${mediaCreator?.urlSlug || mediaCreator?.id}/profile`);
+                          history.push(`/${media?.CreatorUrlSlug || media?.CreatorId}/profile`);
                         }}
                       >
-                        <Avatar size="small" url={mediaCreator?.ipfsImage ?? getDefaultAvatar()} />
+                        <Avatar size="small" url={media?.CreatorImageUrl ?? getDefaultAvatar()} />
                       </div>
                       <Box display="flex" flexDirection="column" ml={1} mr={4}>
                         <Text color={Color.Black} className={classes.creatorName} mb={0.5}>
-                          {mediaCreator?.name}
+                          {media?.CreatorName}
                         </Text>
-                        {mediaCreator && (
-                          <Text className={classes.creatorName} mt={0.5}>{`@${mediaCreator?.urlSlug}`}</Text>
+                        {media?.CreatorUrlSlug && (
+                          <Text className={classes.creatorName} mt={0.5}>{`@${media?.CreatorUrlSlug}`}</Text>
                         )}
                       </Box>
                     </Box>
@@ -2457,14 +2470,11 @@ const MarketplaceDetailPage = () => {
                   {auctionHistoryData &&
                     auctionHistoryData.length > 0 &&
                     auctionHistoryData.map(row => {
-                      const bidder = getUserInfo(row.bidder);
+                      const bidder = row.bidderInfo;
                       const token = media.auction.bidTokenSymbol;
                       return (
                         <Grid item sm={12} md={6} lg={4} className={classes.bidderInfoItem}>
-                          <Avatar
-                            size="small"
-                            url={bidder?.ipfsImage ? bidder?.ipfsImage : getDefaultAvatar()}
-                          />
+                          <Avatar size="small" url={bidder?.imageUrl ?? getDefaultAvatar()} />
                           <Box
                             display="flex"
                             flexDirection="column"
@@ -2607,7 +2617,7 @@ const MarketplaceDetailPage = () => {
                             history.push(`/${comment.user.urlSlug}/profile`);
                           }}
                         >
-                          <Avatar size="medium" url={comment.user && comment.user.ipfsImage} />
+                          <Avatar size="medium" url={comment.user && comment.user.imageUrl} />
                         </div>
                         <Box
                           display="flex"

@@ -11,9 +11,9 @@ import ReactPlayer from "react-player";
 import queryString from "query-string";
 
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
+  // Accordion,
+  // AccordionDetails,
+  // AccordionSummary,
   Grid,
   Hidden,
   useMediaQuery,
@@ -22,6 +22,8 @@ import {
 import { RootState } from "store/reducers/Reducer";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { useTypedSelector } from "store/reducers/Reducer";
+import { getUser } from "store/selectors";
+
 import {
   Avatar,
   Text,
@@ -36,16 +38,15 @@ import URL from "shared/functions/getURL";
 import Box from "shared/ui-kit/Box";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import { DropDownIcon } from "shared/ui-kit/Icons";
+// import { DropDownIcon } from "shared/ui-kit/Icons";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { ChooseWalletModal } from "shared/ui-kit/Modal/Modals/ChooseWalletModal";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import PrintChart from "shared/ui-kit/Chart/Chart";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { getDefaultAvatar, getRandomAvatar, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { getUser } from "store/selectors";
 import {
   generateDayLabelsFromDate,
   calculateTimeFromNow,
@@ -73,6 +74,7 @@ import {
   // getExchangePriceHistory,
   getBuyingOffers,
   cancelBuyingOffer,
+  getUsersByAddresses,
 } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import CreateFractionOfferModal from "components/PriviDigitalArt/modals/CreateOfferModal";
@@ -366,7 +368,6 @@ const MediaPage = () => {
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
   const loggedUser = useSelector(getUser);
-  const usersList = useSelector((state: RootState) => state.usersInfoList);
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const query: { blockchainTag?: string; collectionTag?: string } = queryString.parse(location.search);
@@ -389,7 +390,6 @@ const MediaPage = () => {
   const [openPlaceOffer, setOpenPlaceOffer] = React.useState<boolean>(false);
   const [comment, setComment] = useState<string>("");
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [creatorInfo, setCreatorInfo] = useState<any>({});
   const [mediaImageLoaded, setMediaImageLoaded] = useState<boolean>(false);
 
   const payloadRef = useRef<any>();
@@ -483,9 +483,8 @@ const MediaPage = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { account, library, chainId } = useWeb3React();
+  const { account, library } = useWeb3React();
   const [web3, setWeb3] = useState<Web3 | null>(null);
-  const getUserInfo = (address: string) => usersList.find(u => u.address === address);
   const [editedCommentId, setEditedCommentId] = useState<any>(null);
   const [editedComment, setEditedComment] = useState<any>(null);
   const isEditingComment = useRef<boolean>(false);
@@ -498,7 +497,6 @@ const MediaPage = () => {
   }, []);
 
   const [imageIPFS, setImageIPFS] = useState("");
-  const [imageCreatorIPFS, setImageCreatorIPFS] = useState<any>(null);
 
   useEffect(() => {
     setOpenFilters(false);
@@ -536,21 +534,10 @@ const MediaPage = () => {
       console.log("media", media);
       sumTotalViews(media);
       if (media?.CreatorId) {
-        getCreatorPhotoIpfs(media.CreatorId);
-
         setIsFollowing(isUserFollowed(media?.CreatorId));
       }
     }
   }, [media?.id]);
-
-  const getCreatorPhotoIpfs = async creatorId => {
-    const userFound = usersList.find(usr => usr.id === creatorId);
-
-    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
-      setImageCreatorIPFS(imageUrl);
-    }
-  };
 
   useEffect(() => {
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))
@@ -623,18 +610,9 @@ const MediaPage = () => {
 
   useEffect(() => {
     if (media && media.Comments && media.Comments.length) {
-      const newComments = media.Comments.map(item => {
-        const user = usersList.find(userItem => userItem.id === item.user.id);
-        return {
-          comment: item.comment,
-          date: item.date,
-          user,
-        };
-      });
-
-      setComments(newComments.reverse());
+      setComments(media.Comments.reverse());
     }
-  }, [media, usersList]);
+  }, [media]);
 
   const loadMedia = async () => {
     if (isDataLoading || !params.id) return;
@@ -660,9 +638,6 @@ const MediaPage = () => {
             m.url = m.url.replace(GENERATOR_ARTBLOCK_URL, API_ARTBLOCK_URL);
           }
           setMedia(m);
-
-          const info = usersList.find(user => user.id === m.CreatorId);
-          setCreatorInfo(info);
           if (m.Rating) handleRatings(m.Rating);
         }
       });
@@ -687,10 +662,6 @@ const MediaPage = () => {
             m.url = m.url.replace(GENERATOR_ARTBLOCK_URL, API_ARTBLOCK_URL);
           }
           setMedia(m);
-
-          const info = usersList.find(user => user.id === m.CreatorId);
-          setCreatorInfo(info);
-
           if (m.Rating) handleRatings(m.Rating);
         }
       });
@@ -947,15 +918,14 @@ const MediaPage = () => {
               const data = resp.data;
               const newExchangeTableData: any[] = [];
               data.forEach(offer => {
-                const u = usersList.find(u => u.address == offer.CreatorAddress);
                 newExchangeTableData.push([
                   {
                     cell: (
                       <Box display="flex" flexDirection="row" alignItems="center">
-                        <Avatar size="medium" url={u?.ipfsImage ? u?.ipfsImage : getDefaultAvatar()} />
+                        <Avatar size="medium" url={offer.creatorInfo.imageUrl ?? getDefaultAvatar()} />
                         <Box display="flex" flexDirection="column" alignItems="center">
-                          <Text ml={1.5}>{u?.name}</Text>
-                          <Text ml={1.5}>@{u?.urlSlug}</Text>
+                          <Text ml={1.5}>{offer.creatorInfo?.name}</Text>
+                          <Text ml={1.5}>@{offer.creatorInfo?.urlSlug}</Text>
                         </Box>
                       </Box>
                     ),
@@ -1003,7 +973,6 @@ const MediaPage = () => {
           const web3APIHandler = BlockchainNets[1].apiHandler;
           web3APIHandler.Exchange.getErc721OfferAll(web3, account!).then(offers => {
             const newExchangeTableData: any[] = [];
-            console.log(offers);
             const buyOffers =
               offers
                 ?.map((offer, index) => ({ ...offer, id: index + 1 }))
@@ -1015,52 +984,61 @@ const MediaPage = () => {
                   Price: offer.price,
                   OfferToken: "BAL", // This value should be returned from contract
                 })) || [];
-            buyOffers.forEach(offer => {
-              const u = usersList.find(u => u.address == offer.CreatorAddress);
-              newExchangeTableData.push([
-                {
-                  cell: (
-                    <Box display="flex" flexDirection="row" alignItems="center">
-                      <Avatar size="medium" url={u?.ipfsImage ? u?.ipfsImage : getDefaultAvatar()} />
-                      <Box display="flex" flexDirection="column" alignItems="center">
-                        <Text ml={1.5}>{u?.name}</Text>
-                        <Text ml={1.5}>@{u?.urlSlug}</Text>
-                      </Box>
-                    </Box>
-                  ),
-                },
-                {
-                  cell: (
-                    <img src={require(`assets/tokenImages/${offer.OfferToken}.png`)} width={24} height={24} />
-                  ),
-                },
-                { cell: offer.OfferToken },
-                { cell: offer.Price },
-                {
-                  cell:
-                    offer.CreatorAddress === user.address ? (
-                      <Text
-                        onClick={() => {
-                          handleOpenSignatureCancelBuyingOffer(offer);
-                        }}
-                      >
-                        {" "}
-                        Cancel{" "}
-                      </Text>
-                    ) : media?.ExchangeData?.CreatorAddress === user.address ? (
-                      <Text
-                        onClick={() => {
-                          handleOpenSignatureSellFromBuyingOffer(offer);
-                        }}
-                      >
-                        {" "}
-                        Sell{" "}
-                      </Text>
-                    ) : null,
-                },
-              ]);
+            getUsersByAddresses(buyOffers.map(b => b.CreatorAddress)).then(res => {
+              if (res.success) {
+                const userList = res.data;
+                buyOffers.forEach(offer => {
+                  const u = userList[offer.CreatorAddress];
+                  newExchangeTableData.push([
+                    {
+                      cell: (
+                        <Box display="flex" flexDirection="row" alignItems="center">
+                          <Avatar size="medium" url={u?.imageUrl ?? getDefaultAvatar()} />
+                          <Box display="flex" flexDirection="column" alignItems="center">
+                            <Text ml={1.5}>{u?.name}</Text>
+                            <Text ml={1.5}>@{u?.urlSlug}</Text>
+                          </Box>
+                        </Box>
+                      ),
+                    },
+                    {
+                      cell: (
+                        <img
+                          src={require(`assets/tokenImages/${offer.OfferToken}.png`)}
+                          width={24}
+                          height={24}
+                        />
+                      ),
+                    },
+                    { cell: offer.OfferToken },
+                    { cell: offer.Price },
+                    {
+                      cell:
+                        offer.CreatorAddress === user.address ? (
+                          <Text
+                            onClick={() => {
+                              handleOpenSignatureCancelBuyingOffer(offer);
+                            }}
+                          >
+                            {" "}
+                            Cancel{" "}
+                          </Text>
+                        ) : media?.ExchangeData?.CreatorAddress === user.address ? (
+                          <Text
+                            onClick={() => {
+                              handleOpenSignatureSellFromBuyingOffer(offer);
+                            }}
+                          >
+                            {" "}
+                            Sell{" "}
+                          </Text>
+                        ) : null,
+                    },
+                  ]);
+                });
+                setExchangeTableData(newExchangeTableData);
+              }
             });
-            setExchangeTableData(newExchangeTableData);
           });
         }
       }
@@ -1123,15 +1101,16 @@ const MediaPage = () => {
   }, [media]);
 
   const owners = React.useMemo(() => {
-    if (!media || !media?.Auctions || !media?.BidHistory || media?.BidHistory.length === 0) return [];
-    return [
-      ...new Set(
-        media?.BidHistory.map((history: any) =>
-          usersList.find(user => user.address === history.bidderAddress)
-        ).filter(history => !!history)
-      ),
-    ];
-  }, [usersList, media]);
+    // if (!media || !media?.Auctions || !media?.BidHistory || media?.BidHistory.length === 0) return [];
+    // return [
+    //   ...new Set(
+    //     media?.BidHistory.map((history: any) =>
+    //       usersList.find(user => user.address === history.bidderAddress)
+    //     ).filter(history => !!history)
+    //   ),
+    // ];
+    return [];
+  }, [media]);
 
   const handleChangeComment = e => {
     setComment(e.target.value);
@@ -1149,6 +1128,7 @@ const MediaPage = () => {
           user: {
             id: user.id,
             name: `${user.firstName || ""} ${user.lastName || ""}`,
+            imageUrl: user.ipfsImage,
           },
           comment,
           date: new Date(),
@@ -2168,12 +2148,12 @@ const MediaPage = () => {
                         <Avatar
                           key={`creator-${media?.CreatorAddress}`}
                           size="small"
-                          url={imageCreatorIPFS ? imageCreatorIPFS : getDefaultAvatar()}
+                          url={media?.CreatorImageUrl ?? getDefaultAvatar()}
                         />
                       </div>
                       <Box display="flex" flexDirection="column" ml={1} mr={4}>
                         <Text color={Color.Black} className={classes.creatorName} mb={0.5}>
-                          {creatorInfo?.name || media?.CreatorName || media?.creator}
+                          {media?.CreatorName || media?.creator}
                         </Text>
                         {media?.CreatorUrlSlug && (
                           <Text className={classes.creatorName} mt={0.5}>{`@${media?.CreatorUrlSlug}`}</Text>
@@ -2828,14 +2808,11 @@ const MediaPage = () => {
                   {auctionHistoryData &&
                     auctionHistoryData.length > 0 &&
                     auctionHistoryData.map(row => {
-                      const bidder = getUserInfo(row.From);
+                      const bidder = row.bidderInfo;
                       const token = row.Token;
                       return (
                         <Grid item sm={12} md={6} lg={4} className={classes.bidderInfoItem}>
-                          <Avatar
-                            size="small"
-                            url={bidder?.ipfsImage ? bidder?.ipfsImage : getDefaultAvatar()}
-                          />
+                          <Avatar size="small" url={bidder?.imageUrl ?? getDefaultAvatar()} />
                           <Box
                             display="flex"
                             flexDirection="column"
@@ -3001,19 +2978,7 @@ const MediaPage = () => {
                             history.push(`/${comment.user.urlSlug}/profile`);
                           }}
                         >
-                          <Avatar
-                            size="medium"
-                            url={
-                              comment.user && comment.user.ipfsImage
-                              // getUserAvatar({
-                              //   id: comment.user.id,
-                              //   anon: comment.user.anon,
-                              //   hasPhoto: comment.user.hasPhoto,
-                              //   anonAvatar: comment.user.anonAvatar,
-                              //   url: comment.user.url,
-                              // })
-                            }
-                          />
+                          <Avatar size="medium" url={comment.user.imageUrl} />
                         </div>
                         <Box
                           display="flex"

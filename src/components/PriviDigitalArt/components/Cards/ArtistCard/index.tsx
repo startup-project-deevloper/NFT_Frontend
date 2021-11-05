@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 
 import { useTypedSelector } from "store/reducers/Reducer";
@@ -11,54 +11,15 @@ import { artistCardStyles } from "./index.styles";
 import { CircularLoadingIndicator } from "shared/ui-kit";
 
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
-import useIPFS from "../../../../../shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "../../../../../shared/ipfs/get";
-import getPhotoIPFS from "../../../../../shared/functions/getPhotoIPFS";
-import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 
-export default function ArtistCard({ item, currentIndex }) {
+export default function ArtistCard({ item }) {
   const classes = artistCardStyles();
-  const users = useTypedSelector(state => state.usersInfoList);
   const user = useTypedSelector(state => state.user);
   const history = useHistory();
   const { isSignedin } = useAuth();
   const { followUser, unfollowUser, isUserFollowed } = useUserConnections();
   const [isFollowInProgress, setIsFollowInProgress] = React.useState<boolean>(false);
   const isFollowing = item ? isUserFollowed(item.id) : 0;
-
-  const [artist, setArtist] = useState<any>(item);
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  const [imageIPFS, setImageIPFS] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (ipfs && item) {
-      getUserPhoto(item);
-    }
-  }, [item, ipfs]);
-
-  const getUserPhoto = async (user: any) => {
-    setLoading(true);
-    if (user && user.infoImage && user.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
-      setImageIPFS(imageUrl);
-    } else if (user && user.id) {
-      const userFound = users.find(usr => usr.id === user.id);
-
-      if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-        let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
-        setImageIPFS(imageUrl);
-      }
-    } else {
-      setImageIPFS(require(`assets/anonAvatars/${artist.anonAvatar ?? "ToyFaces_Colored_BG_001.jpg"}`));
-    }
-    setLoading(false);
-  };
 
   const handleFollow = e => {
     e.stopPropagation();
@@ -84,14 +45,10 @@ export default function ArtistCard({ item, currentIndex }) {
         history.push(`/${item.urlSlug}/profile`);
       }}
     >
-      {loading ? (
-        <StyledSkeleton width="100%" height="100%" variant="rect" />
-      ) : (
-        <img src={imageIPFS ? imageIPFS : getDefaultAvatar()} />
-      )}
+      <img src={item.imageUrl || getDefaultAvatar()} />
       <div className={classes.filter}>
         <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">
-          {<b>{`${item.firstName || ""} ${item.lastName || ""}`}</b>}
+          {<b>{`${item.name || ""}`}</b>}
           {user && item.id !== user.id && isSignedin && (
             <button className={isFollowing ? classes.unfollow : classes.follow} onClick={handleFollow}>
               {isFollowInProgress ? (

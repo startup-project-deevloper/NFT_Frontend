@@ -263,7 +263,7 @@ export default function ExplorePage() {
                     gutter={"24px"}
                     data={artists}
                     renderItem={(item, index) => (
-                      <ArtistCard item={item} key={`item-${index}`} currentIndex={index} />
+                      <ArtistCard item={item} key={`item-${index}`}/>
                     )}
                     columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
                   />

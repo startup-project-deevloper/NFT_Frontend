@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useHistory } from "react-router";
+import cls from 'classnames';
 
-import { useTheme, useMediaQuery } from "@material-ui/core";
+import { useTheme, useMediaQuery, Grid } from "@material-ui/core";
 
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -12,6 +13,9 @@ import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../index.styles";
 import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
+import LendingCard from './LendingCard';
+import BorrowingCard from './BorrowingCard';
+import MarketsTable from './MarketsTable';
 
 const FractionalLoans = ({ loading, loans }) => {
   const theme = useTheme();
@@ -36,29 +40,29 @@ const FractionalLoans = ({ loading, loans }) => {
 
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
-      headerName: "Collection",
+      headerName: "Asset",
       headerAlign: "left",
     },
     {
-      headerName: "Total Size",
+      headerName: "Total Lend",
       headerAlign: "center",
     },
     {
-      headerName: "Total Borrowed",
-      headerAlign: "right",
-    },
-    {
-      headerName: "Collateral Locked",
+      headerName: "Lend APY",
       headerAlign: "center",
     },
     {
-      headerName: "C-Ratio",
+      headerName: "Total Borrow",
       headerAlign: "center",
     },
     {
-      headerName: "Interest APR",
+      headerName: "Borrow APR",
       headerAlign: "center",
     },
+    // {
+    //   headerName: "Interest APR",
+    //   headerAlign: "center",
+    // },
     {
       headerName: "",
       headerAlign: "center",
@@ -80,7 +84,7 @@ const FractionalLoans = ({ loading, loans }) => {
 
   useEffect(() => {
     if (positions) {
-      const data: Array<Array<CustomTableCellInfo>> = positions.map(row => {
+      const data: Array<Array<CustomTableCellInfo>> = positions.map((row, index) => {
         let endTime: any = {
           days: 0,
           hours: 0,
@@ -128,15 +132,17 @@ const FractionalLoans = ({ loading, loans }) => {
             cell: (
               <Box
                 display="flex"
-                alignItems="center"
+                alignItems="fle-start"
                 className={classes.tableAvatarField}
                 onClick={() => {}}
                 // onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
               >
                 <Box className={classes.mediaImageWrapper}>
-                  <div
+                  <img className={classes.mediaImage} src={require(`assets/anonAvatars/ToyFaces_Colored_BG_${('000' + (index+1)).substr(-3)}.jpg`)} />
+                  {/* <div
                     className={classes.mediaImage}
                     style={{
+                      backgroundImage: `assets/anonAvatars/ToyFaces_Colored_BG_0${index}`
                       backgroundImage:
                         row?.media?.cidUrl ?? row?.media?.UrlMainPhoto ?? row?.media?.Url ?? row?.media?.url
                           ? `url(${
@@ -148,7 +154,7 @@ const FractionalLoans = ({ loading, loans }) => {
                           : "none",
                       backgroundColor: "#DDFF57",
                     }}
-                  />
+                  /> */}
                 </Box>
                 <Box
                   display="flex"
@@ -158,46 +164,45 @@ const FractionalLoans = ({ loading, loans }) => {
                 >
                   <span className={classes.loanMediaNameTag}>collection</span>
                   <span className={classes.loanMediaName}>{row?.media?.MediaName ?? ""}</span>
-                  <span className={classes.loanMediaNameId}>ID #24556</span>
+                  {/* <span className={classes.loanMediaNameId}>ID #24556</span> */}
                 </Box>
               </Box>
             ),
             cellAlign: "center",
           },
           {
-            cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
+            cell: <span className={classes.marketValue}>52,455 USDT</span>,
             cellAlign: "center",
           },
           {
-            cell: <span style={{ color: "#431AB7" }}>52,455 USDT</span>,
+            cell: <span className={classes.marketValue}>20%</span>,
             cellAlign: "center",
           },
           {
-            cell: <span style={{ color: "#431AB7" }}>52,455 JOTs</span>,
+            cell: <span className={classes.marketValue}>$7,231.14M</span>,
             cellAlign: "center",
           },
           {
-            cell: <span style={{ color: "#431AB7" }}>2.5%</span>,
-            cellAlign: "center",
-          },
-          {
-            cell: <span style={{ color: "#04B800" }}>2.5%</span>,
+            cell: <span className={classes.marketValue}>2.5%</span>,
             cellAlign: "center",
           },
           {
             cell: (
               <Box className={classes.positionColumnButtons}>
-                <PrimaryButton disabled className={classes.primary} size="medium">
+                <button 
+                  // disabled 
+                  className={classes.primary} 
+                >
                   Deposit
-                </PrimaryButton>
-                <SecondaryButton
-                  disabled
-                  className={classes.secondary}
-                  size="medium"
+                </button>
+                <button
+                  // disabled
+                  className={cls(classes.secondary, classes.outlinedButton)}
+                  // size="medium"
                   onClick={() => handleOpenBorrowModal(row)}
                 >
                   Borrow
-                </SecondaryButton>
+                </button>
               </Box>
             ),
             cellAlign: "center",
@@ -209,15 +214,14 @@ const FractionalLoans = ({ loading, loans }) => {
   }, [positions]);
 
   return (
-    <div style={{ width: "100%", filter: "blur(7px)" }}>
+    <div style={{ width: "100%" }}>
       <div>
         {isMobile ? (
           <Box className={classes.loanTopButtonBox}>
             <Box className={classes.btnGroup}>
               <button
                 disabled
-                className={classes.greenButton}
-                style={{ color: "white", background: "#431AB7" }}
+                className={cls(classes.greenButton, classes.outlinedButton)}
                 onClick={() =>
                   history.push({
                     pathname: "/loan/positions",
@@ -229,30 +233,19 @@ const FractionalLoans = ({ loading, loans }) => {
               >
                 Manage positions
               </button>
-              <SecondaryButton
-                size="medium"
+              <button
                 disabled
                 onClick={() => setOpenHowModal(true)}
-                style={{
-                  color: "#431AB7",
-                  border: "0.7px solid #431AB7",
-                  boxSizing: "border-box",
-                  boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
-                  borderRadius: "4px",
-                  padding: "0 32px",
-                  marginTop: "16px",
-                }}
               >
                 How it works?
-              </SecondaryButton>
+              </button>
             </Box>
           </Box>
         ) : (
           <Box className={classes.loanTopButtonBox}>
             <button
               disabled
-              className={classes.greenButton}
-              style={{ color: "white", background: "#431AB7" }}
+              className={cls(classes.greenButton, classes.outlinedButton)}
               onClick={() =>
                 history.push({
                   pathname: "/loan/positions",
@@ -264,28 +257,28 @@ const FractionalLoans = ({ loading, loans }) => {
             >
               Manage positions
             </button>
-            <SecondaryButton
+            <button
               disabled
-              size="medium"
+              className={cls(classes.greenButton, classes.outlinedButton)}
               onClick={() => setOpenHowModal(true)}
-              style={{
-                color: "#431AB7",
-                border: "0.7px solid #431AB7",
-                boxSizing: "border-box",
-                boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
-                borderRadius: "4px",
-                padding: "0 32px",
-              }}
             >
               How it works?
-            </SecondaryButton>
+            </button>
           </Box>
         )}
       </div>
       <LoadingWrapper loading={loading} theme={"blue"} height="calc(100vh - 100px)">
         <div className={classes.tableContainerWithAbsoluteImage}>
+          <Grid container spacing={3}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              <LendingCard />
+            </Grid>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
+              <BorrowingCard />
+            </Grid>
+          </Grid>
           <div className={`${classes.tableLoansContainer} position-table`}>
-            <CustomTable theme="art green" headers={tableHeaders} rows={tableData} />
+            <MarketsTable tableHeaders={tableHeaders} tableData={tableData} />
           </div>
         </div>
       </LoadingWrapper>

@@ -660,13 +660,15 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const USDTAPI = USDT(network);
+        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackPrice().call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result));
+            resolve(toDecimals(result, decimals));
           }
         });
       } catch (err) {
@@ -683,13 +685,15 @@ const syntheticCollectionManager = (network: string) => {
         const { SyntheticCollectionManagerAddress, SyntheticID } = nft;
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
+        const USDTAPI = USDT(network);
+        const decimals = await USDTAPI.decimals(web3);
 
         contract.methods.buybackRequiredAmount(SyntheticID).call((err, result) => {
           if (err) {
             console.log(err);
             resolve(null);
           } else {
-            resolve(toDecimals(result?.buybackAmount));
+            resolve(toDecimals(result?.buybackAmount, decimals));
           }
         });
       } catch (err) {
@@ -939,7 +943,7 @@ const syntheticCollectionManager = (network: string) => {
             const event = events
               .map(res => ({ ...res.returnValues, hash: res.transactionHash }))
               .find(res => res.requestId === requestId);
-            resolve(toDecimals(event?.price))
+            resolve(toDecimals(event?.price, decimals))
           })
       } catch (err) {
         console.log(err);

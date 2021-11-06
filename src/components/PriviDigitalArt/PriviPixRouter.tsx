@@ -9,6 +9,7 @@ import MediaPage from "./subpages/MediaPage";
 import NFTLoansPage from "./subpages/NFTLoansPage";
 import NFTLoanDetailPage from "./subpages/NFTLoanDetailPage";
 import NFTLoanAssetDetailPage from "./subpages/NFTLoanAssetDetailPage";
+import NFTManageLoansPage from "./subpages/NFTManageLoansPage";
 import PodPage from "./subpages/PodPage";
 import PodPageIndividual from "./subpages/PodPageIndividual";
 import WallPostPage from "./subpages/PodPageIndividual/components/Discussion/components/WallPostPage";
@@ -60,6 +61,7 @@ export default function PriviPixRouter(props) {
       <Route exact path="/marketplace" component={MarketplacePage} />
       <Route exact path="/loan" component={NFTLoansPage} />
       <Route exact path="/loan/positions" component={NFTPositionManagerPage} />
+      <Route exact path="/loan/manage_loans" component={NFTManageLoansPage} />
       <Route exact path="/loan/:id" component={NFTLoanDetailPage} />
       <Route exact path="/loan/asset/:assetId" component={NFTLoanAssetDetailPage} />
       <Route exact path="/option/create_nft_option" component={CreateNftOption} />

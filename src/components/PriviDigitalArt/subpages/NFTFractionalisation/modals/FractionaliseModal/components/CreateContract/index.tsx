@@ -167,9 +167,9 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             Address: collection.jotAddress,
           };
           const { data } = await axios.post(`${URL()}/token/addTokenInfo`, tokenParams);
-          if (!data?.success) {
-            showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
-          }
+          // if (!data?.success) {
+          //   showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
+          // }
         }
         let params = {};
         if (collection) {

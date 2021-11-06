@@ -80,11 +80,29 @@ export const useManageLoansPageStyles = makeStyles(theme => ({
     },
   },
   slideSection: {
-    marginTop: 27,
+    marginTop: 39,
     marginLeft: 10,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
   },
   slider: {
-    width: "70%",
+    width: "80%",
+  },
+  positionSection: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 80,
+    padding: "0px 64px",
+  },
+  positionCard: {
+    background: "#FFFFFF",
+    border: "1px solid #9EACF2",
+    borderRadius: 20,
+    padding: "31px 0",
+    width: "40%",
   },
   typo1: {
     fontSize: 24,

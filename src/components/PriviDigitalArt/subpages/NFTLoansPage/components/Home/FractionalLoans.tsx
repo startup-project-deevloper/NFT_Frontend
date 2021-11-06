@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import cls from "classnames";
 
 import { useTheme, useMediaQuery, Grid } from "@material-ui/core";
@@ -210,20 +210,16 @@ const FractionalLoans = ({ loading, loans }) => {
           <Box className={classes.loanTopButtonBox}>
             <Box className={classes.btnGroup}>
               <button
-                disabled
-                className={cls(classes.greenButton, classes.outlinedButton)}
-                onClick={() =>
-                  history.push({
-                    pathname: "/loan/positions",
-                    state: {
-                      tabId: 1,
-                    },
-                  })
-                }
+                className={classes.greenButton}
+                style={{ background: "#431AB7", color: "#fff" }}
+                onClick={() => history.push("/loan/manage_loans")}
               >
-                Manage positions
+                Manage Loans
               </button>
-              <button disabled onClick={() => setOpenHowModal(true)}>
+              <button
+                className={cls(classes.greenButton, classes.outlinedButton)}
+                onClick={() => setOpenHowModal(true)}
+              >
                 How it works?
               </button>
             </Box>
@@ -231,21 +227,13 @@ const FractionalLoans = ({ loading, loans }) => {
         ) : (
           <Box className={classes.loanTopButtonBox}>
             <button
-              disabled
-              className={cls(classes.greenButton, classes.outlinedButton)}
-              onClick={() =>
-                history.push({
-                  pathname: "/loan/positions",
-                  state: {
-                    tabId: 1,
-                  },
-                })
-              }
+              className={classes.greenButton}
+              style={{ background: "#431AB7", color: "#fff" }}
+              onClick={() => history.push("/loan/manage_loans")}
             >
-              Manage positions
+              Manage Loans
             </button>
             <button
-              disabled
               className={cls(classes.greenButton, classes.outlinedButton)}
               onClick={() => setOpenHowModal(true)}
             >

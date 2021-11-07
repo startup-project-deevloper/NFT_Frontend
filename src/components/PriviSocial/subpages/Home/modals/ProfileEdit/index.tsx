@@ -87,7 +87,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
             if (response.data.success) {
               if (response.data.data.urlSlugExists) {
                 showAlertMessage(
-                  response.data.data.msg || "User with this url already exists, please choose another one",
+                  "User with this url already exists or is not allowed, please choose another one.",
                   { variant: "error" }
                 );
                 return false;

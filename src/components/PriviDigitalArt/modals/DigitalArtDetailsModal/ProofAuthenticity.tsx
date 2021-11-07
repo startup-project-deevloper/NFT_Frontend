@@ -13,11 +13,13 @@ const ProofAuthenticity = ({ media }) => {
   const classes = useStyles();
   const allUsers = useTypedSelector(state => state.usersInfoList);
 
+  console.log(media);
   const creator = React.useMemo(() => {
     return allUsers.find(user => user.id === media.CreatorId);
   }, [allUsers, media]);
 
   if (!creator) return <div style={{ minHeight: 400 }}></div>;
+
   return (
     <div style={{ minHeight: 400 }}>
       <Header5>Creator</Header5>
@@ -34,32 +36,22 @@ const ProofAuthenticity = ({ media }) => {
       </Box>
       <Box display="flex" flexDirection="row" mb={5}>
         <Text color={Color.Black}>Created:</Text>
-        {media.ReleaseDate && (
-          <Text ml={1}>{format(new Date(media.ReleaseDate * 1000), "MMMM dd, yyyy")}</Text>
-        )}
+        {media.synced_at && <Text ml={1}>{format(new Date(media.synced_at), "MMMM dd, yyyy")}</Text>}
       </Box>
       <Header5>Chain</Header5>
       <StyledDivider type="solid" mb={3} />
       <Box display="flex" flexDirection="row" mb={1}>
         <Text color={Color.Black}>Token name:</Text>
-        <Text ml={1}>
-          {media.Auctions
-            ? media.Auctions.TokenSymbol
-            : media.ExchangeData
-            ? media.ExchangeData.OfferToken
-            : media.NftConditions
-            ? media.NftConditions.NftToken
-            : "N/A"}
-        </Text>
+        <Text ml={1}>{media.symbol}</Text>
       </Box>
       <Box display="flex" flexDirection="row" mb={1}>
         <Text color={Color.Black}>ID:</Text>
-        <Text ml={1}>#{media.MediaSymbol ?? media.id}</Text>
+        <Text ml={1}>#{media.token_id}</Text>
       </Box>
       <Box display="flex" flexDirection="row" mb={1}>
         <Text color={Color.Black}>Contract ID:</Text>
         <Text ml={1} className={classes.mintGradient}>
-          {creator.id || ""}
+          {media.token_address}
         </Text>
       </Box>
       <Box display="flex" flexDirection="row" mb={5}>

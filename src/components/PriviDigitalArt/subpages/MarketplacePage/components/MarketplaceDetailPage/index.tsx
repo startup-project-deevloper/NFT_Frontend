@@ -782,7 +782,7 @@ const MarketplaceDetailPage = () => {
                   { cell: offer.Price },
                   {
                     cell:
-                      offer.CreatorAddress === user.address ? (
+                      offer.address === user.address ? (
                         <Text
                           onClick={() => {
                             handleOpenSignatureCancelBuyingOffer(offer);
@@ -791,7 +791,7 @@ const MarketplaceDetailPage = () => {
                           {" "}
                           Cancel{" "}
                         </Text>
-                      ) : media?.exchange?.CreatorAddress === user.address ? (
+                      ) : media?.exchange?.address === user.address ? (
                         <Text
                           onClick={() => {
                             handleOpenSignatureSellFromBuyingOffer(offer);
@@ -2209,7 +2209,7 @@ const MarketplaceDetailPage = () => {
                     )
                   ) : null}
                   {media?.exchange ? (
-                    media?.exchange.creatorAddress === user.address ? (
+                    media?.exchange.address === user.address ? (
                       <PrimaryButton
                         size="medium"
                         onClick={() => handleOpenSignatureCancelSellingOffer()}
@@ -2237,7 +2237,7 @@ const MarketplaceDetailPage = () => {
                       </PrimaryButton>
                     )
                   ) : null}
-                  {media?.exchange && media.exchange.creatorAddress !== user.address && (
+                  {media?.exchange && media.exchange.address !== user.address && (
                     <PrimaryButton
                       size="medium"
                       onClick={() => setOpenBuyNFTModal(true)}

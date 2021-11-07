@@ -16,7 +16,7 @@ const Button = styled.div<ButtonProps>`
   cursor: pointer;
   font-family: ${p => (p.purple ? "Agrandir" : "sans-serif")};
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 400;
   display: flex;
   align-items: baseline;
   svg {

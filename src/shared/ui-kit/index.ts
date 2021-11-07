@@ -9,3 +9,4 @@ export * from "./common";
 export * from "../constants/const";
 export * from "./display";
 export * from "./Divider";
+export * from "./Slider";

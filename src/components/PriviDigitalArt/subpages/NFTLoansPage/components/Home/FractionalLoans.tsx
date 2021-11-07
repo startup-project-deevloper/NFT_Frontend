@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { useHistory } from "react-router";
-import cls from 'classnames';
+import { useHistory } from "react-router-dom";
+import cls from "classnames";
 
 import { useTheme, useMediaQuery, Grid } from "@material-ui/core";
 
-import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
@@ -13,9 +12,9 @@ import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { useNFTLoansPageStyles } from "../../index.styles";
 import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
-import LendingCard from './LendingCard';
-import BorrowingCard from './BorrowingCard';
-import MarketsTable from './MarketsTable';
+import LendingCard from "./LendingCard";
+import BorrowingCard from "./BorrowingCard";
+import MarketsTable from "./MarketsTable";
 
 const FractionalLoans = ({ loading, loans }) => {
   const theme = useTheme();
@@ -28,8 +27,7 @@ const FractionalLoans = ({ loading, loans }) => {
   const [positions, setPositions] = useState<any[]>([]);
   const [tableData, setTableData] = useState<Array<Array<CustomTableCellInfo>>>([]);
   const isMediumScreen = useMediaQuery("(max-width: 1000px)");
-  const [openDepositModal, setOpenDepositModal] = useState<boolean>(false);
-  const [openBorrowModal, setOpenBorrowModal] = useState<boolean>(false);
+
   const [openHowModal, setOpenHowModal] = useState<boolean>(false);
 
   const { setMultiAddr, downloadWithNonDecryption } = useIPFS();
@@ -73,14 +71,6 @@ const FractionalLoans = ({ loading, loans }) => {
   useEffect(() => {
     setPositions(loans || []);
   }, [loans]);
-
-  const handleOpenDepositModal = loan => {
-    setOpenDepositModal(loan);
-  };
-
-  const handleOpenBorrowModal = loan => {
-    setOpenBorrowModal(loan);
-  };
 
   useEffect(() => {
     if (positions) {
@@ -138,7 +128,12 @@ const FractionalLoans = ({ loading, loans }) => {
                 // onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
               >
                 <Box className={classes.mediaImageWrapper}>
-                  <img className={classes.mediaImage} src={require(`assets/anonAvatars/ToyFaces_Colored_BG_${('000' + (index+1)).substr(-3)}.jpg`)} />
+                  <img
+                    className={classes.mediaImage}
+                    src={require(`assets/anonAvatars/ToyFaces_Colored_BG_${("000" + (index + 1)).substr(
+                      -3
+                    )}.jpg`)}
+                  />
                   {/* <div
                     className={classes.mediaImage}
                     style={{
@@ -189,19 +184,14 @@ const FractionalLoans = ({ loading, loans }) => {
           {
             cell: (
               <Box className={classes.positionColumnButtons}>
-                <button 
-                  // disabled 
-                  className={classes.primary} 
-                >
-                  Deposit
+                <button className={classes.primary} onClick={() => history.push(`/loan/asset/${row.id}`)}>
+                  Borrow
                 </button>
                 <button
-                  // disabled
                   className={cls(classes.secondary, classes.outlinedButton)}
-                  // size="medium"
-                  onClick={() => handleOpenBorrowModal(row)}
+                  onClick={() => history.push(`/loan/asset/${row.id}`)}
                 >
-                  Borrow
+                  Lend
                 </button>
               </Box>
             ),
@@ -220,21 +210,14 @@ const FractionalLoans = ({ loading, loans }) => {
           <Box className={classes.loanTopButtonBox}>
             <Box className={classes.btnGroup}>
               <button
-                disabled
-                className={cls(classes.greenButton, classes.outlinedButton)}
-                onClick={() =>
-                  history.push({
-                    pathname: "/loan/positions",
-                    state: {
-                      tabId: 1,
-                    },
-                  })
-                }
+                className={classes.greenButton}
+                style={{ background: "#431AB7", color: "#fff" }}
+                onClick={() => history.push("/loan/manage_loans")}
               >
-                Manage positions
+                Manage Loans
               </button>
               <button
-                disabled
+                className={cls(classes.greenButton, classes.outlinedButton)}
                 onClick={() => setOpenHowModal(true)}
               >
                 How it works?
@@ -244,21 +227,13 @@ const FractionalLoans = ({ loading, loans }) => {
         ) : (
           <Box className={classes.loanTopButtonBox}>
             <button
-              disabled
-              className={cls(classes.greenButton, classes.outlinedButton)}
-              onClick={() =>
-                history.push({
-                  pathname: "/loan/positions",
-                  state: {
-                    tabId: 1,
-                  },
-                })
-              }
+              className={classes.greenButton}
+              style={{ background: "#431AB7", color: "#fff" }}
+              onClick={() => history.push("/loan/manage_loans")}
             >
-              Manage positions
+              Manage Loans
             </button>
             <button
-              disabled
               className={cls(classes.greenButton, classes.outlinedButton)}
               onClick={() => setOpenHowModal(true)}
             >

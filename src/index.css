@@ -28,7 +28,7 @@
   font-family: "Agrandir";
   font-style: normal;
   font-weight: 800;
-  src: local("Agrandir HeavyBold"), url(assets/fonts/Agrandir/Agrandir-GrandHeavy.otf) format("truetype");
+  src: local("Agrandir HeavyBold"), url(assets/fonts/Agrandir/Agrandir-TextBold.otf) format("truetype");
 }
 
 @font-face {

@@ -86,7 +86,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
     const response = await updatePriceFraction({
       collectionId,
       syntheticId: nft.SyntheticID,
-      price: price,
+      price: nftPrice,
     });
 
     setLoading(false);

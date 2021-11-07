@@ -129,7 +129,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const jotAPI = JOT(network);
       const decimals = await jotAPI.decimals(web3, jotContractAddress);
       const tSupply = toNDecimals(+supplyToKeep, decimals);
-      const tokenURI = selectedNFT.tokenURI ?? '';
+      const tokenURI = selectedNFT.tokenURI ?? "";
       const gas = await contract.methods
         .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
           originalName: collectionInfo.data.name,
@@ -156,7 +156,21 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         setIsLoading(false);
         const collection = response.events?.CollectionManagerRegistered?.returnValues;
         const nftInfo = response.events?.TokenRegistered?.returnValues;
-
+        if (collection) {
+          const tokenParams = {
+            Symbol: `JOT_${selectedNFT.MediaSymbol}`,
+            Name: `Privi Jot ${selectedNFT.MediaName}`,
+            Decimals: decimals,
+            ImageUrl: "",
+            Type: "Crypto",
+            Network: network,
+            Address: collection.jotAddress,
+          };
+          const { data } = await axios.post(`${URL()}/token/addTokenInfo`, tokenParams);
+          // if (!data?.success) {
+          //   showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
+          // }
+        }
         let params = {};
         if (collection) {
           params = {
@@ -208,6 +222,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           onCompleted(data.nft);
         } else {
           showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
+          setIsProceeding(false);
+          setIsLoading(false);
         }
       }
     } catch (err) {

@@ -78,6 +78,22 @@ export const pixMessageProfileStyles = makeStyles(theme => ({
     justifyContent: "flex-start",
     alignItems: "center",
   },
+  noMessagesLabelChat: {
+    fontSize: "14px",
+    color: "grey",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "10px",
+    marginBottom: "10px",
+    width: "100%"
+  },
+  itemSubtitle: {
+    fontSize: "8px",
+    color: "grey",
+    display: "flex",
+    justifyContent: "center"
+  },
   videoPlayer: {
     cursor: "pointer",
     width: "100% !important",

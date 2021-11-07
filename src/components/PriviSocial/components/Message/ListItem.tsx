@@ -26,12 +26,10 @@ export const ListItem: React.FunctionComponent<any> = ({
       ? userSelector.urlSlug
       : localStorage.getItem("userSlug");
 
-  const usersInfo = useSelector((state: RootState) => state.usersInfoList);
-
   const handleClick = () => {
     // if (currentChat && chat.room === currentChat.room) return;
     setCurrentChat(chat);
-    let user = usersInfo[usersInfo.findIndex(user => user.id === otherUser.userId)];
+    let user = users[users.findIndex(user => user.id === otherUser.userId)];
     dispatch(openChatModal(user));
     setChat();
     if (!pathName.includes("messages")) history.push(`/social/${idUrl}/messages`);
@@ -42,39 +40,31 @@ export const ListItem: React.FunctionComponent<any> = ({
   const [connected, setConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    if (usersInfo.some(user => user.id === chat.users.userFrom.userId)) {
-      chat.users.userFrom.userFoto =
-        usersInfo[usersInfo.findIndex(user => user.id === chat.users.userFrom.userId)].imageURL;
-      chat.users.userFrom.userName =
-        usersInfo[usersInfo.findIndex(user => user.id === chat.users.userFrom.userId)].name;
-    }
-    if (usersInfo.some(user => user.id === chat.users.userTo.userId)) {
-      chat.users.userTo.userFoto =
-        usersInfo[usersInfo.findIndex(user => user.id === chat.users.userTo.userId)].imageURL;
-      chat.users.userTo.userName =
-        usersInfo[usersInfo.findIndex(user => user.id === chat.users.userTo.userId)].name;
-    }
-
-    if (chat.users && chat.users.userFrom && chat.users.userFrom.userId === userSelector.id) {
-      setOtherUser(chat.users.userTo);
-      let user: any = users.find(usr => chat?.users?.userTo?.userId === usr.id);
-
-      if (user?.url) {
-        setOtherUserPhoto(user.url);
+    if(users && users.length > 0) {
+      if (users.some(user => user.id === chat.users.userFrom.userId)) {
+        chat.users.userFrom.userName =
+          users[users.findIndex(user => user.id === chat.users.userFrom.userId)].name;
       }
-      if (user?.connected) setConnected(true);
-      else setConnected(false);
-    } else if (chat.users && chat.users.userTo && chat.users.userTo.userId === userSelector.id) {
-      setOtherUser(chat.users.userFrom);
-      let user: any = users.find(usr => chat?.users?.userFrom?.userId === usr.id);
-
-      if (user?.url) {
-        setOtherUserPhoto(user.url);
+      if (users.some(user => user.id === chat.users.userTo.userId)) {
+        chat.users.userTo.userName =
+        users[users.findIndex(user => user.id === chat.users.userTo.userId)].name;
       }
-      if (user?.connected) setConnected(true);
-      else setConnected(false);
+
+      if (chat.users && chat.users.userFrom && chat.users.userFrom.userId === userSelector.id) {
+        setOtherUser(chat.users.userTo);
+        let user: any = users.find(usr => chat?.users?.userTo?.userId === usr.id);
+
+        setOtherUserPhoto(user?.ipfsImage);
+        setConnected(user?.connected);
+      } else if (chat.users && chat.users.userTo && chat.users.userTo.userId === userSelector.id) {
+        setOtherUser(chat.users.userFrom);
+        let user: any = users.find(usr => chat?.users?.userFrom?.userId === usr.id);
+
+        setOtherUserPhoto(user.ipfsImage);
+        setConnected(user?.connected);
+      }
     }
-  }, [chat]);
+  }, [chat, users]);
 
   if (!chat.lastMessageDate) return null;
 
@@ -89,8 +79,6 @@ export const ListItem: React.FunctionComponent<any> = ({
           style={{
             backgroundImage: otherUserPhoto
               ? `url(${otherUserPhoto})`
-              : otherUser.userFoto
-              ? `url(${otherUser.userFoto})`
               : `url(${require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",

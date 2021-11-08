@@ -69,15 +69,15 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
     user.urlSlug.match(acceptedChars);
 
     //check special characters
-    if (user.urlSlug.includes('/')) {
-      showAlertMessage("You don't have to include '/' in your profile url", {variant: "error"});
+    if (user.urlSlug.includes("/")) {
+      showAlertMessage("You don't have to include '/' in your profile url", { variant: "error" });
       return false;
     } else {
       if (user.urlSlug.includes(".", user.urlSlug.length - 1)) {
-        showAlertMessage("URL can't end with a .", {variant: "error"});
+        showAlertMessage("URL can't end with a .", { variant: "error" });
         return false;
       } else if (user.urlSlug.includes(".", 0)) {
-        showAlertMessage("URL can't start with a .", {variant: "error"});
+        showAlertMessage("URL can't start with a .", { variant: "error" });
         return false;
       } else {
         //check if slug exists
@@ -86,18 +86,21 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
           .then(response => {
             if (response.data.success) {
               if (response.data.data.urlSlugExists) {
-                showAlertMessage("user with this url already exists, please choose another one", {variant: "error"});
+                showAlertMessage(
+                  "User with this url already exists or is not allowed, please choose another one.",
+                  { variant: "error" }
+                );
                 return false;
               } else {
                 return true;
               }
             } else {
-              showAlertMessage("error when checking url, please try again", {variant: "error"});
+              showAlertMessage("error when checking url, please try again", { variant: "error" });
               return false;
             }
           })
           .catch(error => {
-            showAlertMessage("error when making the request, please try again", {variant: "error"});
+            showAlertMessage("error when making the request, please try again", { variant: "error" });
             return false;
           });
       }
@@ -128,7 +131,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
         .post(`${URL()}/user/editUser`, user)
         .then(response => {
           if (response.data.success) {
-            showAlertMessage("Profile updated successfully!", {variant: "success"});
+            showAlertMessage("Profile updated successfully!", { variant: "success" });
             setEditionProgress(false);
             localStorage.setItem("urlSlug", user.urlSlug);
             dispatch(editUser(response.data.data));
@@ -139,12 +142,12 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
               dispatch(setUpdateBasicInfo(true));
             }, 1000);
           } else {
-            showAlertMessage("error when checking updating profile, please try again", {variant: "error"});
+            showAlertMessage("error when checking updating profile, please try again", { variant: "error" });
             setEditionProgress(false);
           }
         })
         .catch(error => {
-          showAlertMessage("Error when making the request", {variant: "error"});
+          showAlertMessage("Error when making the request", { variant: "error" });
           setEditionProgress(false);
         });
     } else {
@@ -352,7 +355,11 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
         ) : null}
 
         <div className={classes.editButton}>
-          <SocialPrimaryButton disabled={editionProgress} onClick={editProfile} className={editionProgress ? 'disabled' : ''}>
+          <SocialPrimaryButton
+            disabled={editionProgress}
+            onClick={editProfile}
+            className={editionProgress ? "disabled" : ""}
+          >
             Save Changes
           </SocialPrimaryButton>
         </div>

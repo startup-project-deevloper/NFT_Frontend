@@ -19,6 +19,10 @@ import { Color, Modal, PrimaryButton } from "shared/ui-kit";
 import DiscordPhotoFullScreen from "shared/ui-kit/Page-components/Discord/DiscordPhotoFullScreen/DiscordPhotoFullScreen";
 import DiscordVideoFullScreen from "shared/ui-kit/Page-components/Discord/DiscordVideoFullScreen/DiscordVideoFullScreen";
 import { RootState } from "store/reducers/Reducer";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { onGetNonDecrypt } from "shared/ipfs/get";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 
 const MEDIA_MAX_COUNTS = 120;
 
@@ -29,6 +33,15 @@ const MediaItemFC = ({ item }) => {
   const [selectedVideo, setSelectedVideo] = React.useState<string>("");
   const [openModalPhotoFullScreen, setOpenModalPhotoFullScreen] = React.useState<boolean>(false);
   const [openModalVideoFullScreen, setOpenModalVideoFullScreen] = React.useState<boolean>(false);
+
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const [fileIPFS, setFileIPFS] = useState<any>(null);
+  const [fileBlobIPFS, setFileBlobIPFS] = useState<any>(null);
+
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
   const handleOpenModalPhotoFullScreen = () => {
     setOpenModalPhotoFullScreen(true);
@@ -46,7 +59,52 @@ const MediaItemFC = ({ item }) => {
   };
 
   const downloadFile = () => {
-    saveAs(`${item.url}`, item.comment || "file");
+    if (fileBlobIPFS) {
+      saveAs(
+        fileBlobIPFS,
+        item.message &&
+          item.message.metadata &&
+          item.message.metadata.properties &&
+          item.message.metadata.properties.name
+          ? item.message.metadata.properties.name
+          : "File"
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (
+      ipfs &&
+      Object.keys(ipfs).length !== 0 &&
+      item &&
+      item.type &&
+      item.type !== "text" &&
+      item.message &&
+      item.message.newFileCID
+    ) {
+      getUserFileIpfs(item.message.newFileCID, item.type);
+    }
+  }, [item, ipfs]);
+
+  const getUserFileIpfs = async (cid: any, type: string) => {
+    let fileUrl: string = "";
+    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
+      downloadWithNonDecryption(fileCID, download)
+    );
+    if (files) {
+      let base64String = _arrayBufferToBase64(files.content);
+      if (type === "photo") {
+        fileUrl = "data:image/png;base64," + base64String;
+      } else if (type === "video") {
+        fileUrl = "data:video/mp4;base64," + base64String;
+      } else if (type === "audio") {
+        fileUrl = "data:audio/mp3;base64," + base64String;
+      } else {
+        fileUrl = base64String;
+        setFileBlobIPFS(files.blob);
+      }
+    }
+    setFileIPFS(fileUrl);
   };
 
   return (
@@ -57,11 +115,11 @@ const MediaItemFC = ({ item }) => {
             <div
               className={classes.imageContainer}
               onClick={() => {
-                setSelectedPhoto(`${item.url}?${Date.now()}`);
+                setSelectedPhoto(fileIPFS);
                 handleOpenModalPhotoFullScreen();
               }}
               style={{
-                backgroundImage: `url(${item.url}?${Date.now()})`,
+                backgroundImage: `url(${fileIPFS})`,
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
@@ -76,10 +134,12 @@ const MediaItemFC = ({ item }) => {
               </div>
               <ReactPlayer
                 onClick={() => {
-                  setSelectedVideo(`${item.url}`);
-                  handleOpenModalVideoFullScreen();
+                  if (fileIPFS) {
+                    setSelectedVideo(fileIPFS);
+                    handleOpenModalVideoFullScreen();
+                  }
                 }}
-                url={`${item.url}`}
+                url={fileIPFS}
                 ref={playerVideo}
                 className={classes.videoPlayer}
                 progressInterval={200}
@@ -87,24 +147,35 @@ const MediaItemFC = ({ item }) => {
             </div>
           ) : item.type === "audio" ? (
             <div className={classes.audioContainer}>
-              <Waveform
-                url={`${URL()}/chat/getMessageAudio/${item.room}/${item.from}/${item.id}`}
-                mine={false}
-                showTime={false}
-                onPauseFunction={null}
-                onPlayFunction={null}
-                onReadyFunction={null}
-                showFrame={false}
-              />
+              {fileIPFS ? (
+                <Waveform
+                  url={fileIPFS ? fileIPFS : null}
+                  mine={false}
+                  showTime={false}
+                  onPauseFunction={null}
+                  onPlayFunction={null}
+                  onReadyFunction={null}
+                />
+              ) : (
+                <p className={classes.noMessagesLabelChat}>Loading audio...</p>
+              )}
             </div>
           ) : (
             <div className="item-file">
-              <div className="item-file-name">{item.comment}</div>
+              <div className={classes.itemSubtitle}>
+                {item.message &&
+                item.message.metadata &&
+                item.message.metadata.properties &&
+                item.message.metadata.properties.name
+                  ? item.message.metadata.properties.name
+                  : "File"}
+              </div>
               <div
                 onClick={() => {
                   downloadFile();
                 }}
                 className="item-file-icon"
+                style={{ textAlign: "center" }}
               >
                 <SvgIcon>
                   <DownloadSolid />
@@ -156,7 +227,13 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
   const messageBoxInfo = useSelector(getMessageBox);
   const { userInfo } = messageBoxInfo;
   const { showAlertMessage } = useAlertMessage();
+  
+  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+  
   const getmyStats = () => {
     axios
       .get(`${URL()}/user/getUserCounters/${userInfo.id}`)
@@ -175,20 +252,29 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
   };
 
   useEffect(() => {
-    if (userInfo && userInfo.id) {
+    if (isIPFSAvailable && userInfo && userInfo.id) {
+      getIPFSImage(userInfo);
       getmyStats();
     }
-  }, [userInfo]);
+  }, [userInfo, isIPFSAvailable]);
+
+  const getIPFSImage = async userInfo => {
+    if (
+      userInfo &&
+      userInfo.infoImage &&
+      userInfo.infoImage.newFileCID &&
+      (!userInfo.ipfsImage || userInfo.ipfsImage === "")
+    ) {
+      userInfo.ipfsImage = await getPhotoIPFS(userInfo.infoImage.newFileCID, downloadWithNonDecryption);
+    }
+  };
 
   useEffect(() => {
     if (chat && userInfo) {
       axios
         .post(`${URL()}/chat/getChatUploadedMedias/`, {
           room: chat.room,
-          userIds: [
-            userInfo.id,
-            userSelector.id,
-          ],
+          userIds: [userInfo.id, userSelector.id],
           lastId,
         })
         .then(response => {
@@ -214,15 +300,15 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
   const userName = useMemo(() => {
     const user = userInfo?.urlSlug ? userInfo?.urlSlug : "";
     return user.length > 17 ? user.substr(0, 13) + "..." + user.substr(user.length - 3, 3) : user;
-  }, [userInfo])
+  }, [userInfo]);
 
   if (userInfo !== undefined)
     return (
       <div>
         <img
           src={
-            userInfo && userInfo.url
-              ? userInfo.url
+            userInfo.ipfsImage
+              ? userInfo.ipfsImage
               : require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")
           }
           className="message-profile-avatar"

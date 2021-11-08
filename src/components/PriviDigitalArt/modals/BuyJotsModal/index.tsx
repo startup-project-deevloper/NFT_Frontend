@@ -17,18 +17,12 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import TransactionResultModal from "../TransactionResultModal";
-import {typeUnitValue} from "shared/helpers/utils";
+import { typeUnitValue } from "shared/helpers/utils";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
-export default function BuyJotsModal({
-  open,
-  collectionId,
-  nft,
-  handleRefresh,
-  handleClose = () => {},
-}) {
+export default function BuyJotsModal({ open, collectionId, nft, handleRefresh, handleClose = () => {} }) {
   const classes = BuyJotsModalStyles();
 
   const { showAlertMessage } = useAlertMessage();
@@ -67,9 +61,9 @@ export default function BuyJotsModal({
 
   useEffect(() => {
     if (!open) {
-      setJOTs(0)
+      setJOTs(0);
     }
-  }, [open])
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -83,7 +77,7 @@ export default function BuyJotsModal({
       if (balance) {
         const usdt = parseInt(toDecimals(balance, decimals));
         setUsdtBalance(usdt);
-        setMaxJot(Math.max(nft.SellingSupply - nft.SoldSupply, 0));
+        setMaxJot(Math.max(nft.SellingSupply, 0));
       }
     })();
   }, [open, nft, selectedChain]);
@@ -140,7 +134,7 @@ export default function BuyJotsModal({
     }
 
     const { sellingSupply, soldSupply } = await handleRefresh();
-    console.log('sellingsupply, soldsupply... ', sellingSupply, soldSupply)
+    console.log("sellingsupply, soldsupply... ", sellingSupply, soldSupply);
 
     setLoading(false);
     const response = await buyJots({
@@ -258,7 +252,12 @@ export default function BuyJotsModal({
               justifyContent="flex-end"
             >
               <Box>MAX: {typeUnitValue(maxJot, 1)}</Box>
-              <Box color="rgba(67,26, 183, 0.4)" pl="15px" onClick={() => setJOTs(maxJot)} style={{ cursor: "pointer" }}>
+              <Box
+                color="rgba(67,26, 183, 0.4)"
+                pl="15px"
+                onClick={() => setJOTs(maxJot)}
+                style={{ cursor: "pointer" }}
+              >
                 Buy Max
               </Box>
             </Box>

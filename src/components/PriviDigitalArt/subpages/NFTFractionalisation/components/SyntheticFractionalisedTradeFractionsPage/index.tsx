@@ -1028,7 +1028,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             </td>
                             <td>
                               <Box ml={3} className={classes.h1} fontWeight={800}>
-                                {nft.SellingSupply - nft.SoldSupply} JOTs
+                                {nft.SellingSupply} JOTs
                               </Box>
                             </td>
                           </tr>
@@ -1150,7 +1150,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <Box display="flex" flexDirection="column" justifyContent="center" gridRowGap={8}>
                           <Box className={classes.h3}>Supply</Box>
                           <Box className={classes.h1} fontWeight={800}>
-                            {nft.SellingSupply - nft.SoldSupply} JOTs
+                            {nft.SellingSupply} JOTs
                           </Box>
                         </Box>
                       </Box>
@@ -1166,7 +1166,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             color: Color.White,
                           }}
                           onClick={handleOpenBuyJotsModal}
-                          disabled={+nft.SellingSupply <= +nft.SoldSupply}
+                          disabled={+nft.SellingSupply <= 0}
                         >
                           Buy
                         </PrimaryButton>

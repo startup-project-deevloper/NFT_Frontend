@@ -24,11 +24,15 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
   const [hotLoans, setHotLoans] = useState<any[]>([]);
   const [loans, setLoans] = useState<any[]>([]);
 
+  const [loadingMarkets, setLoadingMarkets] = useState<boolean>(false);
+  const [markets, setMarkets] = useState<any[]>([]);
+
   const lastIdRef = useRef<string>("");
   const hasMoreRef = useRef<boolean>(true);
 
   useEffect(() => {
     loadLoans();
+    loadMarkets();
     loadHottestLoans();
   }, []);
 
@@ -67,6 +71,22 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
         setLoadingLoans(false);
       });
   };
+
+  const loadMarkets = () => {
+    setLoadingMarkets(true);
+
+    Axios.get(`${URL()}/nftLoan/getFractionalLoans`)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          setMarkets(data.data.markets)
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingMarkets(false);
+      })
+  }
 
   const loadHottestLoans = () => {
     setLoadingHotLoans(true);
@@ -169,7 +189,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
             handleScroll={handleScroll}
           />
         )}
-        {selectedTab === 1 && <FractionalLoans loading={loadingLoans} loans={loans} />}
+        {selectedTab === 1 && <FractionalLoans loading={loadingMarkets} markets={markets} />}
       </div>
     </>
   );

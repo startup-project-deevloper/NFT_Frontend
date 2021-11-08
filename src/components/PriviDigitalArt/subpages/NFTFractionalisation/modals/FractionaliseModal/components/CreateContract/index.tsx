@@ -188,7 +188,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             SyntheticNFTAddress: collection.syntheticNFTAddress,
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
-            SellingSupply: (10000 - Number(supplyToKeep)) / 2,
+            SellingSupply: 10000 - Number(supplyToKeep),
             SoldSupply: 0,
             collectionName: collectionInfo.data.name,
             collectionSymbol: collectionInfo.data.symbol,
@@ -213,7 +213,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
             isAddCollection: false,
-            SellingSupply: (10000 - Number(supplyToKeep)) / 2,
+            SellingSupply: 10000 - Number(supplyToKeep),
             SoldSupply: 0,
           };
         }

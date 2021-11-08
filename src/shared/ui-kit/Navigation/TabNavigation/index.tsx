@@ -60,8 +60,8 @@ const AppBar = styled(MuiAppBar) <AppBarProps>`
       text-transform: ${props => (props.theme === "green" ? "uppercase" : "none")};
       white-space: nowrap;
       padding: ${props => (props.padding !== undefined ? `${props.padding}px` : "6px 12px")};
-      margin-right: ${props => (props.$ismobile ? "0px" : "10px")};
-      margin-left: ${props => (props.$ismobile ? "0px" : "10px")};
+      margin-right: 10px;
+      margin-left: 10px;
       font-size: ${props =>
     props.size === "large" ? FontSize.L : props.size === "extralarge" ? "25px" : FontSize.M};
       font-family: Agrandir;

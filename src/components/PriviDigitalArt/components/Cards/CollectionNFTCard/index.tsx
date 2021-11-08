@@ -36,7 +36,7 @@ export default function CollectionNFTCard({
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Available</div>
-              <div className={classes.typo2}>{`${Number(item.SellingSupply) - Number(item.SoldSupply)} JOTs`}</div>
+              <div className={classes.typo2}>{item.SellingSupply} JOTs</div>
             </Box>
             <Box display="flex" justifyItems="center" justifyContent="space-between" mt={"5px"}>
               <div className={classes.typo1}>Price</div>

@@ -282,7 +282,6 @@ const CreateMediaModal = (props: any) => {
       } else if (mediaData.type === "BLOG_TYPE" || mediaData.type === "BLOG_SNAP_TYPE") {
         await mainPhotoMedia(mediaData.MediaName.replace(/\s/g, ""), false);
       }
-      console.log("metadataID", metadataID, mediaData.blockchainNet);
       const chainName = BlockchainNets.find(net => net.value === mediaData.blockchainNet)?.name;
       if (chainName === "PRIVI") {
         createMediaOnPrivi(metadataID.newFileCID || "");
@@ -330,12 +329,10 @@ const CreateMediaModal = (props: any) => {
     const tokenId = random();
     try {
       const { MediaName, MediaDescription } = mediaData;
-      const external_url = `https://${window.location.hostname}/#/nft/${MediaName}`;
+      const external_url = `https://${window.location.hostname}/#/nft/${MediaName.replace(/\s/g, "")}`;
       const image = `${getURLfromCID(metadataID)}/${imageName}`;
       const metaData = { name: MediaName, description: MediaDescription, external_url, image };
-      console.log({ metaData });
       uri = getURLfromCID((await uploadNFTMetaData(metaData)).cid);
-      console.log({ uri });
     } catch (err) {
       console.error("Error-UploadNFTMetaData", { err });
     }

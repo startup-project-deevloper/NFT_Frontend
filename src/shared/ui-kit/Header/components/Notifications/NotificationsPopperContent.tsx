@@ -1,15 +1,14 @@
 import { formatDistanceToNowStrict } from "date-fns/esm";
 import React, { useMemo, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import styled from "styled-components";
+
 import { Notification } from "shared/services/API/NotificationsAPI";
 import { Avatar, Color, FontSize, grid, HeaderBold4, HeaderBold6 } from "shared/ui-kit";
-import styled from "styled-components";
-import { RootState } from "store/reducers/Reducer";
+
+import { ReactComponent as RemoveIcon } from "assets/icons/close.svg";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { NotificationButtons } from "./NotificationButtons";
 import { NotificationContent } from "./NotificationContent/NotificationContent";
-import { ReactComponent as RemoveIcon } from "assets/icons/close.svg";
-import useIPFS from "shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 
 type NotificationsPopperContentProps = {
   notifications: Notification[];
@@ -41,29 +40,14 @@ const NotificationItem = ({
   handleHidePopper,
   theme,
 }) => {
-  const users = useSelector((state: RootState) => state.usersInfoList);
-  const userSelector = useSelector((state: RootState) => state.user);
-  const { downloadWithNonDecryption } = useIPFS();
-
-  const notificationUserId = notification.typeItemId === "user" ? notification.itemId : notification.follower;
-  let user: any = users.find(usr => usr.id === notificationUserId);
-
   const [avatar, setAvatar] = useState<string | undefined>("");
-
-  if (!user || !user.url) {
-    user = userSelector;
-  }
 
   useEffect(() => {
     (async () => {
-      if (notification.user && notification.user.infoImage && notification.user.infoImage.newFileCID) {
-        const imageUrl = await getPhotoIPFS(
-          notification.user.infoImage.newFileCID,
-          downloadWithNonDecryption
-        );
-        setAvatar(imageUrl);
-      } else {
+      if (notification && notification.avatar) {
         setAvatar(notification.avatar);
+      } else {
+        setAvatar(getDefaultAvatar());
       }
     })();
   }, [notification]);

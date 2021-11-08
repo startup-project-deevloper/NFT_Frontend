@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
 import axios from "axios";
 import Web3 from "web3";
 import { Rating } from "react-simple-star-rating";
@@ -349,7 +349,9 @@ const MarketplaceDetailPage = () => {
 
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
+
   const loggedUser = useSelector(getUser);
+
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const classes = marketplaceDetailPageStyles();
@@ -358,7 +360,6 @@ const MarketplaceDetailPage = () => {
   const [openDetailModal, setOpenDetailModal] = React.useState<boolean>(false);
   const [chooseWalletModal, setChooseWalletModal] = React.useState<boolean>(false);
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
-  // const [liked, setLiked] = React.useState<boolean>(false);
   const user = useTypedSelector(state => state.user);
   const userBalances = useTypedSelector(state => state.userBalances);
   const { convertTokenToUSD } = useTokenConversion();
@@ -1003,8 +1004,7 @@ const MarketplaceDetailPage = () => {
   };
 
   const topBidPrice = React.useMemo(() => {
-    if (!media || !media?.auction || !media?.BidHistory || media?.BidHistory.length === 0) return "N/A";
-    return Math.max(...media?.BidHistory.map((history: any) => parseInt(history.price)));
+    return media?.auction?.topBidInfo?.price || "N/A";
   }, [media]);
 
   const owners = React.useMemo(() => {
@@ -1560,7 +1560,6 @@ const MarketplaceDetailPage = () => {
                   MediaType: media.Type,
                 },
               };
-              console.log(body);
               const response = await axios.post(`${URL()}/exchange/cancelSellingOffer/v2_p`, body);
               if (response?.data?.success) {
                 showAlertMessage("Exchange cancelled successfully", { variant: "success" });
@@ -1712,7 +1711,7 @@ const MarketplaceDetailPage = () => {
   return (
     <div className={classes.page}>
       <Helmet>
-        <title>{media?.name}</title>
+        <title>{media?.metadata?.name || media?.name}</title>
         <meta name="description" content={media?.metadata?.description} />
         <meta property="og:image" content={media?.content_url} />
         <meta name="og:image" content={media?.content_url} />
@@ -1725,7 +1724,7 @@ const MarketplaceDetailPage = () => {
         </Box>
         <LoadingWrapper loading={!media || isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
           <Box mt={2}>
-            <Header3 noMargin>{media?.name}</Header3>
+            <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
             {media?.fraction ? (
               <Box
                 className={classes.fraction}
@@ -2105,13 +2104,13 @@ const MarketplaceDetailPage = () => {
                       </Box>
                     )}
                     <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                      {media.auction.TopBidInfo && (
+                      {media?.auction?.topBidInfo && (
                         <Box className={classes.bidBox} style={{ background: "#9EACF2" }} width={1} mr={1}>
                           <Avatar
                             size="medium"
                             url={
-                              media?.auction?.TopBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.auction?.TopBidInfo?.AnonAvatar}`)
+                              media.auction.topBidInfo.imageUrl ||
+                              require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
                             }
                           />
                           <Box ml={2}>
@@ -2119,12 +2118,12 @@ const MarketplaceDetailPage = () => {
                               Top Bid Placed By
                             </Box>
                             <Box className={classes.header2} style={{ color: "white" }} mt={0.5}>
-                              {media?.auction.TopBidInfo?.Name}
+                              {media.auction.topBidInfo.name}
                             </Box>
                           </Box>
                         </Box>
                       )}
-                      {media.auction.ReplacedBidInfo && (
+                      {media?.auction?.replacedBidInfo && (
                         <Box
                           className={classes.bidBox}
                           style={{ border: "1px solid #9EACF2" }}
@@ -2134,8 +2133,8 @@ const MarketplaceDetailPage = () => {
                           <Avatar
                             size="medium"
                             url={
-                              media?.auction?.ReplacedBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.auction?.ReplacedBidInfo?.AnonAvatar}`)
+                              media.auction.replacedBidInfo.imageUrl ||
+                              require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
                             }
                           />
                           <Box ml={2}>
@@ -2143,7 +2142,7 @@ const MarketplaceDetailPage = () => {
                               Displaced Bidder
                             </Box>
                             <Box className={classes.header2} style={{ color: "#9EACF2" }} mt={0.5}>
-                              {media?.auction.ReplacedBidInfo?.Name}
+                              {media.auction.replacedBidInfo.name}
                             </Box>
                           </Box>
                         </Box>

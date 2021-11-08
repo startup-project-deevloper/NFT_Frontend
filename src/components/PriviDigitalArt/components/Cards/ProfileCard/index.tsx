@@ -10,7 +10,7 @@ import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useShareMedia } from "shared/contexts/ShareMediaContext";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import MediaDetailsModal from "components/PriviDigitalArt/modals/MediaDetailsModal";
 import { getBidHistory } from "shared/services/API";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
@@ -519,19 +519,20 @@ export default function ProfileCard({
                   <Box display="flex" alignItems="center" justifyContent="flex-start" alignSelf="flex-start">
                     {creatorsData.map((creator, index) =>
                       index < 3 ? (
-                        <div
-                          key={`creator-${index}`}
-                          className={classes.avatar}
-                          style={{
-                            backgroundImage: `url(${
-                              creator?.url
-                                ? creator.url
-                                : creator?.anonAvatar
-                                ? `${require(`assets/anonAvatars/${user.anonAvatar}`)}`
-                                : getRandomAvatarForUserIdWithMemoization(creator.id)
-                            })`,
-                          }}
-                        />
+                        <Box display="flex" alignItems="center">
+                          <div
+                            key={`creator-${index}`}
+                            className={classes.avatar}
+                            style={{
+                              backgroundImage: `url(${
+                                creator?.imageUrl ? creator?.imageUrl : getDefaultAvatar()
+                              })`,
+                            }}
+                          />
+                          <Box ml={2} fontSize={18}>
+                            {creator.name}
+                          </Box>
+                        </Box>
                       ) : null
                     )}
                     {creatorsData.length > 3 && (
@@ -594,6 +595,7 @@ export default function ProfileCard({
           media={item}
           mediaViews={totalView}
           cidUrl={item?.cid ? imageIPFS : ""}
+          creators={creatorsData}
         />
       )}
     </>

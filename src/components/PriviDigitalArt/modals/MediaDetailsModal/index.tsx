@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 
 import { Grid, useMediaQuery } from "@material-ui/core";
 
-import { mediaDetailsModalStyles } from "./index.styles";
 import {
   Avatar,
   Text,
@@ -19,18 +18,15 @@ import {
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
-import {
-  getDefaultAvatar,
-  getRandomAvatarForUserIdWithMemoization,
-} from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
-import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMediaModal";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
+import { mediaDetailsModalStyles } from "./index.styles";
 
 const MediaDetailsModal = (props: any) => {
   const classes = mediaDetailsModalStyles();
@@ -43,16 +39,14 @@ const MediaDetailsModal = (props: any) => {
   const userBalances = useTypedSelector(state => state.userBalances);
   const userConnections = useUserConnections();
 
-  const [creatorsImages, setCreatorsImages] = useState<any[]>([]);
-  const [creator, setCreator] = useState<any>();
+  const [creators, setCreators] = useState<any[]>(props.creators);
+  const [creator, setCreator] = useState<any>(props.creators[0]);
   const [isFollowing, setIsFollowing] = useState<number>(0);
 
   const anchorShareMenuRef = React.useRef<HTMLDivElement>(null);
   const [openShareMenu, setOpenShareMenu] = useState(false);
   const [openFractionalise, setOpenFractionalise] = useState(false);
   const [showDetailsBtn, setShowDetailsBtn] = useState<boolean>(false);
-
-  const { convertTokenToUSD } = useTokenConversion();
 
   const handleOpenFractionalise = () => {
     setOpenFractionalise(true);
@@ -78,13 +72,13 @@ const MediaDetailsModal = (props: any) => {
       media.CreatorId ?? foundUser?.id ? userConnections.isUserFollowed(media.CreatorId ?? foundUser?.id) : 0;
     setIsFollowing(isFollowing);
 
-    if (foundUser) {
-      cts.push(foundUser);
-      setCreator(foundUser);
-    } else {
-      setCreator({ name: media.CreatorId, urlSlug: media?.CreatorId });
-      cts.push(getRandomAvatarForUserIdWithMemoization(media.Creator ?? media.CreatorId));
-    }
+    // if (foundUser) {
+    //   cts.push(foundUser);
+    //   setCreator(foundUser);
+    // } else {
+    //   setCreator({ name: media.CreatorId, urlSlug: media?.CreatorId });
+    //   cts.push(getRandomAvatarForUserIdWithMemoization(media.Creator ?? media.CreatorId));
+    // }
 
     if (media.Members && media.Members.length > 0) {
       media.Members.forEach((member, index) => {
@@ -93,7 +87,7 @@ const MediaDetailsModal = (props: any) => {
           if (foundUser) {
             cts.push(foundUser);
           } else {
-            cts.push(getRandomAvatarForUserIdWithMemoization(member.id));
+            cts.push(getDefaultAvatar());
           }
         } else {
           cts.push(index);
@@ -112,7 +106,6 @@ const MediaDetailsModal = (props: any) => {
       });
     }
 
-    setCreatorsImages(cts);
     if (media) {
       sumTotalViews({
         ...media,
@@ -301,7 +294,7 @@ const MediaDetailsModal = (props: any) => {
             <Box display="flex" flexDirection="row" alignItems="center">
               <Avatar
                 size="medium"
-                url={creator && creator.ipfsImage ? creator.ipfsImage : getDefaultAvatar()}
+                url={creator && creator.imageUrl ? creator.imageUrl : getDefaultAvatar()}
               />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
                 <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
@@ -357,14 +350,14 @@ const MediaDetailsModal = (props: any) => {
             isLeftAligned={true}
           /> */}
           <Box display="flex" alignItems="center" justifyContent="space-between" my={2}>
-            {creatorsImages.length > 0 && (
+            {creators.length > 0 && (
               <Box display="flex" alignItems="center" mr={2}>
-                {creatorsImages.map((owner: any) => (
+                {creators.map((creator: any) => (
                   <Avatar
-                    key={`artist-${owner.id}`}
+                    key={`artist-${creator.id}`}
                     className={classes.artist}
                     size="small"
-                    url={owner.ipfsImage ? owner.ipfsImage : getDefaultAvatar()}
+                    url={creator.imageUrl ? creator.imageUrl : getDefaultAvatar()}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>
@@ -408,7 +401,7 @@ const MediaDetailsModal = (props: any) => {
               </Box>
             </Box>
           )}
-          {!media.metadata && (
+          {/* {!media.metadata && (
             <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end">
               <Text color={Color.Black} size={FontSize.XL}>
                 Price
@@ -431,8 +424,8 @@ const MediaDetailsModal = (props: any) => {
                 </Text>
               )}
             </Box>
-          )}
-          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={2}>
+          )} */}
+          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={12}>
             {showDetailsBtn && (
               <PrimaryButton
                 size={mobileMatches ? "small" : "medium"}

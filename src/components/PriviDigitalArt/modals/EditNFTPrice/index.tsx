@@ -19,7 +19,7 @@ import { CopyIcon } from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 const isProd = process.env.REACT_APP_ENV === "prod";
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
-export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) {
+export default function EditNFTPriceModal({ open, onClose, collectionId, nft, onCompleted }) {
   const classes = EditNFTPriceModalStyles();
 
   const { showAlertMessage } = useAlertMessage();
@@ -96,6 +96,7 @@ export default function EditNFTPriceModal({ open, onClose, collectionId, nft }) 
 
     showAlertMessage("Successfully updated price fraction", { variant: "success" });
     onClose();
+    onCompleted(nftPrice);
   };
 
   const handlePolygonScan = () => {

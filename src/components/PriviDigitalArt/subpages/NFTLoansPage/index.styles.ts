@@ -491,6 +491,18 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
       marginBottom: 4,
     },
   },
+  loanMediaSymbol: {
+    fontFamily: 'Montserrat',
+    fontWeight: 'bold',
+    borderRadius: 4,
+    fontSize: 12,
+    color: "#9787C3",
+    width: "fit-content",
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 10,
+    },
+  },
   loanMediaName: {
     fontWeight: 600,
     fontSize: 16,

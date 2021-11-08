@@ -16,7 +16,7 @@ import LendingCard from "./LendingCard";
 import BorrowingCard from "./BorrowingCard";
 import MarketsTable from "./MarketsTable";
 
-const FractionalLoans = ({ loading, loans }) => {
+const FractionalLoans = ({ loading, markets }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
@@ -69,54 +69,19 @@ const FractionalLoans = ({ loading, loans }) => {
   ];
 
   useEffect(() => {
-    setPositions(loans || []);
-  }, [loans]);
+    setPositions(markets || []);
+  }, [markets]);
 
   useEffect(() => {
     if (positions) {
       const data: Array<Array<CustomTableCellInfo>> = positions.map((row, index) => {
-        let endTime: any = {
-          days: 0,
-          hours: 0,
-          minutes: 0,
-          seconds: 0,
-        };
-        let endDate: any = "";
-        if (row) {
-          const now = new Date();
-          let delta = Math.floor(row.Duration ? row.CreationDate + row.Duration - now.getTime() / 1000 : 0);
-          if (delta < 0) {
-            endDate = format(new Date((row.CreationDate + row.Duration) * 1000), "dd/MM/yyyy");
-            endTime = {
-              days: 0,
-              hours: 0,
-              minutes: 0,
-              seconds: 0,
-            };
-          } else {
-            let days = Math.floor(delta / 86400);
-            delta -= days * 86400;
-
-            // calculate (and subtract) whole hours
-            let hours = Math.floor(delta / 3600) % 24;
-            delta -= hours * 3600;
-
-            // calculate (and subtract) whole minutes
-            let minutes = Math.floor(delta / 60) % 60;
-            delta -= minutes * 60;
-
-            // what's left is seconds
-            let seconds = delta % 60;
-            endDate = "";
-            endTime = {
-              days,
-              hours,
-              minutes,
-              seconds,
-            };
-          }
+        const total_borrow_list = row.market_info.borrowList
+        let total_borrow = 0
+        let total_lend = 0
+        if (total_borrow_list.length > 0) {
+          total_borrow = total_borrow_list[total_borrow_list.length - 1].total_borrow
+          total_lend = total_borrow_list[total_borrow_list.length - 1].total_reserves
         }
-
         return [
           {
             cell: (
@@ -124,32 +89,14 @@ const FractionalLoans = ({ loading, loans }) => {
                 display="flex"
                 alignItems="fle-start"
                 className={classes.tableAvatarField}
-                onClick={() => {}}
-                // onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
+                onClick={() => { }}
+              // onClick={() => history.push(`/loan/${row?.media?.MediaSymbol}`)}
               >
                 <Box className={classes.mediaImageWrapper}>
                   <img
                     className={classes.mediaImage}
-                    src={require(`assets/anonAvatars/ToyFaces_Colored_BG_${("000" + (index + 1)).substr(
-                      -3
-                    )}.jpg`)}
+                    src={row.token_info.ImageUrl}
                   />
-                  {/* <div
-                    className={classes.mediaImage}
-                    style={{
-                      backgroundImage: `assets/anonAvatars/ToyFaces_Colored_BG_0${index}`
-                      backgroundImage:
-                        row?.media?.cidUrl ?? row?.media?.UrlMainPhoto ?? row?.media?.Url ?? row?.media?.url
-                          ? `url(${
-                              row?.media?.cidUrl ??
-                              row?.media?.UrlMainPhoto ??
-                              row?.media?.Url ??
-                              row?.media?.url
-                            })`
-                          : "none",
-                      backgroundColor: "#DDFF57",
-                    }}
-                  /> */}
                 </Box>
                 <Box
                   display="flex"
@@ -157,39 +104,48 @@ const FractionalLoans = ({ loading, loans }) => {
                   justifyContent="space-between"
                   className={classes.loanMediaTextWrapper}
                 >
-                  <span className={classes.loanMediaNameTag}>collection</span>
-                  <span className={classes.loanMediaName}>{row?.media?.MediaName ?? ""}</span>
-                  {/* <span className={classes.loanMediaNameId}>ID #24556</span> */}
+                  {
+                    row.token_info.Type !== 'Crypto' ?
+                      <>
+                        <span className={classes.loanMediaNameTag}>collection</span>
+                        <span className={classes.loanMediaName}>{row.token_info.Name}</span>
+                      </>
+                      :
+                      <>
+                        <span className={classes.loanMediaName}>{row.token_info.Name}</span>
+                        <span className={classes.loanMediaSymbol}>{row.token_info.Symbol}</span>
+                      </>
+                  }
                 </Box>
               </Box>
             ),
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>52,455 USDT</span>,
+            cell: <span className={classes.marketValue}>{`${total_lend} ${row.token_info.Symbol}`}</span>,
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>20%</span>,
+            cell: <span className={classes.marketValue}>{row.market_info.reserve_apy}%</span>,
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>$7,231.14M</span>,
+            cell: <span className={classes.marketValue}>{`${total_borrow} ${row.token_info.Symbol}`}</span>,
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>2.5%</span>,
+            cell: <span className={classes.marketValue}>{row.market_info.borrow_apy}%</span>,
             cellAlign: "center",
           },
           {
             cell: (
               <Box className={classes.positionColumnButtons}>
-                <button className={classes.primary} onClick={() => history.push(`/loan/asset/${row.id}`)}>
+                <button className={classes.primary} onClick={() => history.push(`/loan/asset/${row.token_address}`)}>
                   Borrow
                 </button>
                 <button
                   className={cls(classes.secondary, classes.outlinedButton)}
-                  onClick={() => history.push(`/loan/asset/${row.id}`)}
+                  onClick={() => history.push(`/loan/asset/${row.token_address}`)}
                 >
                   Lend
                 </button>

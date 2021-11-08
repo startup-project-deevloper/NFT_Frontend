@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
 import { format } from "date-fns";
 import ReactPlayer from "react-player";
-import { getUsersInfoList } from "store/selectors";
 
 import { Grid, Hidden, useMediaQuery } from "@material-ui/core";
 
@@ -352,7 +351,6 @@ const MarketplaceDetailPage = () => {
   const isTableScreen = useMediaQuery("(max-width:768px)");
 
   const loggedUser = useSelector(getUser);
-  const allUsers = useSelector(getUsersInfoList);
 
   const { setOpenFilters } = useContext(DigitalArtContext);
 
@@ -2106,7 +2104,7 @@ const MarketplaceDetailPage = () => {
                       </Box>
                     )}
                     <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                      {media.auction.topBidInfo && (
+                      {media?.auction?.topBidInfo && (
                         <Box className={classes.bidBox} style={{ background: "#9EACF2" }} width={1} mr={1}>
                           <Avatar
                             size="medium"
@@ -2125,7 +2123,7 @@ const MarketplaceDetailPage = () => {
                           </Box>
                         </Box>
                       )}
-                      {media.auction.replacedBidInfo && (
+                      {media?.auction?.replacedBidInfo && (
                         <Box
                           className={classes.bidBox}
                           style={{ border: "1px solid #9EACF2" }}

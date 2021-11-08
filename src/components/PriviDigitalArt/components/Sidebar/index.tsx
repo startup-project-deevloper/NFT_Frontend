@@ -53,7 +53,8 @@ const SidebarContent = ({ handleRefresh }) => {
       return TABS[6];
     } else if (
       location.pathname.includes("fractionalisation") ||
-      location.pathname.includes("fractionalise")
+      location.pathname.includes("fractionalise") ||
+      location.pathname.includes("mynft")
     ) {
       return TABS[7];
     }

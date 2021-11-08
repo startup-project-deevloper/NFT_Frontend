@@ -69,10 +69,11 @@ export const useMediaPreloader = (filters: SearchMediaFilters) => {
             }
           })
         );
+        const newData1 = newData.filter((m: any)=>m.media.cid || m.media.UrlMainPhoto || m.media.Url || m.media.url)
         setIsLoading(false);
         setSearchResult(prevSearchResult => ({
           ...restNewSearchResult,
-          data: prevSearchResult ? [...prevSearchResult.data, ...newData] : newData,
+          data: prevSearchResult ? [...prevSearchResult.data, ...newData1] : newData1,
         }));
       } catch (err) {
         setIsLoading(false);
@@ -124,9 +125,9 @@ export const useMediaPreloader = (filters: SearchMediaFilters) => {
 
 // code is based on internals of MediaCard, should be merged somehow
 export const getMediaUrl = (media: Media): string | undefined => {
-  if (media.source === MediaSource.Privi && media.HasPhoto) {
-    return `${URL()}/media/getMediaMainPhoto/${media.MediaSymbol.replace(/\s/g, "")}`;
-  }
+  // if (media.source === MediaSource.Privi && media.HasPhoto) {
+  //   return `${URL()}/media/getMediaMainPhoto/${media.MediaSymbol.replace(/\s/g, "")}`;
+  // }
 
   if (media.source === MediaSource.Eth) {
     if (media.Url && media.Url.length > 0 && media.Url !== "" && media.Url !== "Error") {

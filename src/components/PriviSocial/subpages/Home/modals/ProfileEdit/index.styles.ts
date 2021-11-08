@@ -58,6 +58,9 @@ export const profileEditModalStyles = makeStyles(theme => ({
       columnGap: 8,
       alignItems: "center",
       marginLeft: "40px",
+      [theme.breakpoints.down("xs")]: {
+        marginLeft: 12,
+      }
     },
     "& .option-buttons": {
       borderRadius: 20,

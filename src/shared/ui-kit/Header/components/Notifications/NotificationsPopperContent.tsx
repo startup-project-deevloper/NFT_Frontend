@@ -114,8 +114,6 @@ export const NotificationsPopperContent: React.FunctionComponent<NotificationsPo
     return [newN, pastN];
   }, [notifications]);
 
-  console.log(`newNotifications========================`, newNotifications)
-
   return (
     <div>
       <HeaderBold4 theme={theme}>Notifications</HeaderBold4>

@@ -531,7 +531,6 @@ const MediaPage = () => {
 
   useEffect(() => {
     if (media) {
-      console.log("media", media);
       sumTotalViews(media);
       if (media?.CreatorId) {
         setIsFollowing(isUserFollowed(media?.CreatorId));

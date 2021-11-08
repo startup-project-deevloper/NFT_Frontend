@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Web3 from "web3";
 import Carousel from "react-elastic-carousel";
 import Pagination from "@material-ui/lab/Pagination";
-import axios from 'axios'
+import axios from "axios";
 
 import { createTheme, useMediaQuery } from "@material-ui/core";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -15,6 +15,7 @@ import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { SyntheticFractionalisedRedemptionPageStyles } from "./index.styles";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import RedeemJotsModal from "components/PriviDigitalArt/modals/RedeemJotsModal";
+import { toDecimals } from "shared/functions/web3";
 
 const ROWS_PER_PAGE = 20;
 
@@ -110,8 +111,8 @@ export default ({ collection }) => {
 
   useEffect(() => {
     getRedeemData();
-    loadNFTs(collection.id)
-  }, [])
+    loadNFTs(collection.id);
+  }, []);
 
   const loadNFTs = id => {
     if (!id) return;
@@ -144,19 +145,21 @@ export default ({ collection }) => {
 
     const web3APIHandler = targetChain.apiHandler;
     const web3 = new Web3(library.provider);
-    
+
+    const decimals = await web3APIHandler.Erc20["USDT"].decimals(web3);
+
     const total = await web3APIHandler.RedemptionPool.getTotalLiquidityToRedeem(web3, collection);
 
     if (total) {
-      setTotalLiquidityToRedeem(total)
+      setTotalLiquidityToRedeem(+toDecimals(total, decimals));
     }
 
     const jotsToRedeem = await web3APIHandler.RedemptionPool.getJotsToRedeem(web3, collection);
 
     if (jotsToRedeem) {
-      setJotsToRedeem(jotsToRedeem)
+      setJotsToRedeem(jotsToRedeem);
     }
-  }
+  };
 
   return (
     <Box className={classes.root}>
@@ -177,10 +180,13 @@ export default ({ collection }) => {
           </Box>
           <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
             <Box className={classes.h4} pb={1}>
-              Redeption rate
+              Redemption rate
             </Box>
             <Box className={classes.h2} sx={{ fontWeight: 800, fontFamily: "Agrandir Grand !important" }}>
-              <span style={{ fontFamily: "Agrandir GrandHeavy", marginRight: "4px" }}>{jotsToRedeem > 0 ? (totalLiquidityToRedeem/jotsToRedeem) : 0}</span> USDT/JOT
+              <span style={{ fontFamily: "Agrandir GrandHeavy", marginRight: "4px" }}>
+                {jotsToRedeem > 0 ? (totalLiquidityToRedeem / jotsToRedeem).toFixed(2) : 0}
+              </span>{" "}
+              USDT/JOT
             </Box>
           </Box>
           <PrimaryButton
@@ -222,32 +228,34 @@ export default ({ collection }) => {
               ref={carouselRef}
               itemPadding={[0, 12]}
             >
-              {nfts.filter(nft => nft.isWithdrawn).map((item: any, i: Number) => (
-                <div
-                  key={item.id}
-                  style={{
-                    width: "100%",
-                    paddingBottom: "15px",
-                    display: "flex",
-                    justifyContent: isMobile
-                      ? "center"
-                      : nfts.length === 2 && i === 1
-                      ? "flex-end"
-                      : nfts.length === 3 && i === 1
-                      ? "center"
-                      : nfts.length === 3 && i === 2
-                      ? "flex-end"
-                      : "flex-start",
-                  }}
-                >
-                  <CollectionNFTCard
-                    item={item}
-                    customWidth="232px"
-                    customHeight="345px"
-                    handleSelect={() => {}}
-                  />
-                </div>
-              ))}
+              {nfts
+                .filter(nft => nft.isWithdrawn)
+                .map((item: any, i: Number) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      width: "100%",
+                      paddingBottom: "15px",
+                      display: "flex",
+                      justifyContent: isMobile
+                        ? "center"
+                        : nfts.length === 2 && i === 1
+                        ? "flex-end"
+                        : nfts.length === 3 && i === 1
+                        ? "center"
+                        : nfts.length === 3 && i === 2
+                        ? "flex-end"
+                        : "flex-start",
+                    }}
+                  >
+                    <CollectionNFTCard
+                      item={item}
+                      customWidth="232px"
+                      customHeight="345px"
+                      handleSelect={() => {}}
+                    />
+                  </div>
+                ))}
             </Carousel>
           </div>
         </LoadingWrapper>
@@ -323,6 +331,7 @@ export default ({ collection }) => {
         open={openRedeemJotsModal}
         handleClose={() => setOpenRedeemJotsModal(false)}
         collection={collection}
+        price={totalLiquidityToRedeem / jotsToRedeem}
         jotsBalance={totalLiquidityToRedeem}
       />
     </Box>

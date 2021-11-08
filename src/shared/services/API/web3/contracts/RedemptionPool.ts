@@ -8,10 +8,7 @@ import { toNDecimals, toDecimals } from "shared/functions/web3";
 const redemptionPool = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/RedemptionPool.json");
 
-  const getTotalLiquidityToRedeem = async (
-    web3: Web3,
-    collection: any,
-  ): Promise<any> => {
+  const getTotalLiquidityToRedeem = async (web3: Web3, collection: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { RedemptionPoolAddress, JotAddress } = collection;
@@ -32,10 +29,7 @@ const redemptionPool = (network: string) => {
     });
   };
 
-  const getJotsToRedeem = async (
-    web3: Web3,
-    collection: any,
-  ): Promise<any> => {
+  const getJotsToRedeem = async (web3: Web3, collection: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { RedemptionPoolAddress, JotAddress } = collection;
@@ -72,11 +66,12 @@ const redemptionPool = (network: string) => {
         const jotAPI = JOT(network);
         const decimals = await jotAPI.decimals(web3, JotAddress);
         const tAmount = toNDecimals(amount, decimals);
+        console.log("redeem amount... ", tAmount);
 
-        const gas = await contract.methods.redeem(amount).estimateGas({ from: account });
-        console.log('estimated gas... ', gas);
+        const gas = await contract.methods.redeem(tAmount).estimateGas({ from: account });
+        console.log("estimated gas... ", gas);
         const response = await contract.methods
-          .redeem(amount)
+          .redeem(tAmount)
           .send({ from: account, gas: gas })
           .on("transactionHash", function (hash) {
             if (setHash) {
@@ -84,8 +79,7 @@ const redemptionPool = (network: string) => {
             }
           });
 
-        console.log('redeem repsonse... ', response);
-
+        console.log("redeem repsonse... ", response);
       } catch (e) {
         console.log(e);
         resolve({ success: false });
@@ -96,8 +90,8 @@ const redemptionPool = (network: string) => {
   return {
     getTotalLiquidityToRedeem,
     getJotsToRedeem,
-    redeem
+    redeem,
   };
-}
+};
 
 export default redemptionPool;

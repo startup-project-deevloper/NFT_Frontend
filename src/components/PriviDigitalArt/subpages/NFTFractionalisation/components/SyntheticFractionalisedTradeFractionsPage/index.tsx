@@ -1230,7 +1230,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           )}
         </>
       )}
-      {isOwner && (
+      {isOwner && isOwnerShipTab && (
         <>
           <Box className={classes.outBox}>
             <Box display="flex" justifyContent="space-between" alignItems="center">

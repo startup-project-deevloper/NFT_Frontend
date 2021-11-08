@@ -595,6 +595,7 @@ export default function ProfileCard({
           media={item}
           mediaViews={totalView}
           cidUrl={item?.cid ? imageIPFS : ""}
+          creators={creatorsData}
         />
       )}
     </>

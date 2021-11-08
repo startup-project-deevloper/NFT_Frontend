@@ -18,6 +18,7 @@ import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
 import {onGetNonDecrypt} from "../../../../shared/ipfs/get";
 import {_arrayBufferToBase64} from "../../../../shared/functions/commonFunctions";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const useStyles = makeStyles(theme => ({
   dialogContainer: {
@@ -124,6 +125,8 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
   const [fileIPFS, setFileIPFS] = useState<any>(null);
   const [fileBlobIPFS, setFileBlobIPFS] = useState<any>(null);
 
+  console.log("============================", userInfo.ipfsImage)
+
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
@@ -192,9 +195,9 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
           <div className="avatar-container">
             <img
               src={
-                userInfo && userInfo.imageURL
-                  ? userInfo.imageURL
-                  : require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")
+                userInfo && userInfo.ipfsImage
+                  ? userInfo.ipfsImage
+                  : getDefaultAvatar()
               }
               alt="Avatar"
               className="message-item-avatar"

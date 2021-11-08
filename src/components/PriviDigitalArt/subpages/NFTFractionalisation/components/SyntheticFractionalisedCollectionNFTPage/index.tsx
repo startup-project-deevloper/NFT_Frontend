@@ -88,8 +88,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     return !!nft.isAllowFlipCoin;
   }, [nft]);
 
-  const isOver10K = React.useMemo(() => nft && nft.OwnerSupply >= 10000, [nft]);
-
   const userName = React.useMemo(() => {
     let name: string = "";
     const ownerAddress: string = (nft.OwnerAddress ?? "").toLowerCase();
@@ -352,6 +350,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     });
   };
 
+  if (nft.isWithdrawn) {
+    history.push(`/fractionalisation/collection/${params.collectionId}`);
+    return null;
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.nftInfoSection}>
@@ -365,22 +368,6 @@ const SyntheticFractionalisedCollectionNFTPage = ({
         >
           <BackButton purple overrideFunction={goBack} />
           <Box display="flex" alignItems="center" className={classes.topButtonContainer}>
-            {isOwner && isOver10K ? (
-              <PrimaryButton
-                size="medium"
-                onClick={() => handleOpenWithdrawNFTModal()}
-                style={{
-                  background: "#431AB7",
-                  boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
-                  color: "#fff",
-                  padding: "0px 40px",
-                }}
-              >
-                Withdraw NFT
-              </PrimaryButton>
-            ) : (
-              <></>
-            )}
             {isOwner ? (
               <PrimaryButton
                 size="medium"

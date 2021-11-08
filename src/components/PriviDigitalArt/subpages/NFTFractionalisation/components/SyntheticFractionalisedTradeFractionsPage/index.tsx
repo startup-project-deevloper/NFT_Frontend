@@ -1233,6 +1233,46 @@ export default function SyntheticFractionalisedTradeFractionsPage({
       {isOwner && (
         <>
           <Box className={classes.outBox}>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box
+                className={`${classes.h3} ${classes.ownerTitle}`}
+                sx={{
+                  fontWeight: 800,
+                  fontFamily: "Agrandir GrandHeavy",
+                  flex: 0.3,
+                  py: 2,
+                  borderRight: "1px solid #E6E6E8",
+                }}
+              >
+                Revenue generated
+              </Box>
+              <Box style={{ flex: 0.3 }}>
+                <Box className={classes.h4} pb={1} sx={{ justifyContent: "center", alignItems: "center" }}>
+                  Revenue raised from sales
+                </Box>
+                <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                  {liquiditySold} USDT
+                </Box>
+              </Box>
+              <PrimaryButton
+                className={classes.h4}
+                size="medium"
+                style={{
+                  background: Color.GreenLight,
+                  color: Color.Purple,
+                  width: "calc(100% - 60px)",
+                  borderRadius: 4,
+                  justifyContent: "center",
+                  flex: 0.3,
+                }}
+                disabled={liquiditySold <= 0}
+                onClick={handleWithdrawFunds}
+              >
+                Withdraw Funds
+              </PrimaryButton>
+            </Box>
+          </Box>
+          <Box className={classes.outBox}>
             <Box className={classes.boxBody} justifyContent="space-between">
               <Box
                 className={`${classes.h1} ${classes.ownerTitle}`}
@@ -1263,229 +1303,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                   </HtmlTooltip>
                 </Box>
                 <SwitchButton state={isAllowFlipCoin} setState={updateFlipCoinSetting} />
-              </Box>
-            </Box>
-          </Box>
-          <Box className={classes.outBox}>
-            <Box display="flex" flexDirection="column">
-              <Box
-                className={`${classes.h1} ${classes.ownerTitle}`}
-                sx={{ fontWeight: 800, fontFamily: "Agrandir GrandHeavy" }}
-              >
-                Revenue
-              </Box>
-              <Box className={classes.boxBody} style={{ alignItems: "flex-start" }}>
-                <Box
-                  className={classes.col_half}
-                  sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
-                >
-                  <Box className={classes.ownerInfo}>
-                    <Box
-                      className={classes.h4}
-                      pb={1}
-                      sx={{ justifyContent: "center", alignItems: "center" }}
-                    >
-                      Revenue raised from sales
-                    </Box>
-                    <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                      {liquiditySold} USDT
-                    </Box>
-                    <PrimaryButton
-                      className={classes.h4}
-                      size="medium"
-                      style={{
-                        background: Color.GreenLight,
-                        color: Color.Purple,
-                        width: "calc(100% - 60px)",
-                        borderRadius: 4,
-                        marginTop: 18,
-                        justifyContent: "center",
-                      }}
-                      disabled={liquiditySold <= 0}
-                      onClick={handleWithdrawFunds}
-                    >
-                      Withdraw Funds
-                    </PrimaryButton>
-                  </Box>
-                </Box>
-                {/* <Box
-                  className={classes.col_half}
-                  sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
-                >
-                  <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
-                    <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                      Liquidity on Quickswap
-                    </Box>
-                    <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                      10240 USDT
-                    </Box>
-                    <PrimaryButton
-                      className={classes.h4}
-                      size="medium"
-                      style={{
-                        background: Color.White,
-                        color: Color.Purple,
-                        border: "solid 0.7px",
-                        borderColor: Color.Purple,
-                        padding: "0px 60px",
-                        marginTop: 14,
-                        borderRadius: 4,
-                      }}
-                      onClick={handleOpenQuickswapDetails}
-                    >
-                      Details
-                    </PrimaryButton>
-                    <Popover
-                      open={Boolean(addLiquidityAnchorEl)}
-                      anchorEl={addLiquidityAnchorEl}
-                      onClose={() => setAddLiquidityAnchorEl(null)}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <Box display="flex" flexDirection="column" className={classes.popoverWrapper}>
-                        <Box className={classes.boxBody}>
-                          <Box
-                            className={classes.col_half}
-                            sx={{ borderRight: "1px solid #ECE8F8", paddingX: 5 }}
-                          >
-                            <Box className={classes.ownerInfo}>
-                              <Box
-                                className={classes.h4}
-                                pb={1}
-                                sx={{ justifyContent: "center", alignItems: "center" }}
-                                style={{ opacity: 0.5 }}
-                              >
-                                Liquidity share
-                              </Box>
-                              <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800, fontSize: "16px !important" }}>
-                                0.04
-                              </Box>
-                            </Box>
-                          </Box>
-                          <Box
-                            className={classes.col_half}
-                            sx={{ borderRight: "1px solid #ECE8F8", paddingX: 5, whiteSpace: 'nowrap' }}
-                          >
-                            <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
-                              <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }} style={{ opacity: 0.5 }}>
-                                % of share off liquidity 
-                              </Box>
-                              <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800, fontSize: "16px !important" }}>
-                                15%
-                              </Box>
-                            </Box>
-                          </Box>
-                          <Box
-                            className={classes.col_half}
-                            sx={{ paddingX: 5 }}
-                          >
-                            <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
-                              <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }} style={{ opacity: 0.5 }}>
-                                Liquidity value 
-                              </Box>
-                              <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800, fontSize: "16px !important", whiteSpace: "no-wrap" }}>
-                                2455 USDT
-                              </Box>
-                            </Box>
-                          </Box>
-                        </Box>
-                        <Box display="flex" mt={5} justifyContent="center">
-                          <PrimaryButton
-                            className={classes.h4}
-                            size="medium"
-                            style={{
-                              background: Color.White,
-                              color: Color.Purple,
-                              border: "solid 0.7px",
-                              borderColor: Color.Purple,
-                              width: "180px",
-                              borderRadius: 4,
-                              justifyContent: "center"
-                            }}
-                            onClick={() => {
-                              setAddLiquidityAnchorEl(null);
-                              setOpenRemoveLiquidityOnQuickswap(true);
-                            }}
-                          >
-                            Remove Liquidity
-                          </PrimaryButton>
-                          <PrimaryButton
-                            className={classes.h4}
-                            size="medium"
-                            style={{
-                              background: Color.Purple,
-                              color: Color.White,
-                              width: "180px",
-                              borderRadius: 4,
-                              justifyContent: "center"
-                            }}
-                            onClick={() => {
-                              setAddLiquidityAnchorEl(null);
-                              setOpenAddLiquidityOnQuickswap(true);
-                            }}
-                          >
-                            Add Liquidity
-                          </PrimaryButton>
-                        </Box>
-                      </Box>
-                    </Popover>
-                  </Box>
-                </Box> */}
-                <Box
-                  className={classes.col_half}
-                  sx={{ borderRight: "1px solid #ECE8F8", marginTop: "15px", paddingY: "5px" }}
-                >
-                  <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
-                    <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                      Liquidity on Quickswap
-                    </Box>
-                    <PrimaryButton
-                      className={classes.h4}
-                      size="medium"
-                      style={{
-                        background: Color.White,
-                        color: Color.Purple,
-                        border: "solid 0.7px",
-                        borderColor: Color.Purple,
-                        padding: "0px 60px",
-                        marginTop: 14,
-                        borderRadius: 4,
-                      }}
-                      onClick={() => setOpenAddLiquidityOnQuickswap(true)}
-                    >
-                      Add Liquidity
-                    </PrimaryButton>
-                  </Box>
-                </Box>
-                <Box className={classes.col_half} sx={{ marginTop: "15px", paddingY: "5px" }}>
-                  <Box className={classes.ownerInfo} style={{ margin: "auto", width: "fit-content" }}>
-                    <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                      Liquidity on Derivatives
-                    </Box>
-                    <PrimaryButton
-                      className={classes.h4}
-                      size="medium"
-                      style={{
-                        background: Color.White,
-                        color: Color.Purple,
-                        border: "solid 0.7px",
-                        borderColor: Color.Purple,
-                        padding: "0px 80px",
-                        marginTop: 14,
-                        borderRadius: 4,
-                      }}
-                      onClick={() => {}}
-                    >
-                      Add Liquidity
-                    </PrimaryButton>
-                  </Box>
-                </Box>
               </Box>
             </Box>
           </Box>

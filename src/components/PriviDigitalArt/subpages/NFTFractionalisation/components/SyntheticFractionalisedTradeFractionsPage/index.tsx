@@ -570,6 +570,14 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     setOpenWithdrawJOTsModal(true);
   };
 
+  const confirmEditPrice = price => {
+    setOpenEditPriceModal(false);
+    setNft({
+      ...nft,
+      Price: +price,
+    });
+  };
+
   const handleAddLiquidity = async () => {
     setLoading(true);
 
@@ -1346,6 +1354,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         open={openEditPriceModal}
         onClose={() => setOpenEditPriceModal(false)}
         collectionId={collectionId}
+        onCompleted={confirmEditPrice}
         nft={nft}
       />
       <EditJOTsSupplyModal

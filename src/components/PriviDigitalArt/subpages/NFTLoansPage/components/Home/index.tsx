@@ -106,7 +106,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
   };
 
   const loadMore = () => {
-    if (!hasMoreRef.current || loadingHotLoans) return;
+    if (!hasMoreRef.current || loadingLoans) return;
     setLoadingLoans(true);
 
     const config = {

@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useMediaQuery, useTheme } from "@material-ui/core";
+import styled from "styled-components";
 
 import { useNFTLoansPageStyles } from "../../index.styles";
 import LoanCard from "components/PriviDigitalArt/components/Cards/LoanCard";
@@ -22,7 +23,7 @@ export default ({
   setLoans,
   loadingLoans,
   loadingHotLoans,
-  handleScroll
+  handleScroll,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
@@ -42,7 +43,7 @@ export default ({
   };
 
   return (
-    <div style={{ width: "100%", fontFamily: "Agrandir" }}>
+    <div style={{ width: "100%", fontFamily: "Agrandir", flex: 1, display: "flex", flexDirection: "column" }}>
       <div>
         <Box className={classes.loanTopButtonBox}>
           <Box className={classes.btnGroup}>
@@ -52,12 +53,14 @@ export default ({
             <button
               className={classes.greenButton}
               style={{ color: "white", background: "#431AB7" }}
-              onClick={() => history.push({
-                pathname: "/loan/positions",
-                state: {
-                  tabId: 0,
-                }
-              })}
+              onClick={() =>
+                history.push({
+                  pathname: "/loan/positions",
+                  state: {
+                    tabId: 0,
+                  },
+                })
+              }
             >
               Manage positions
             </button>
@@ -65,7 +68,15 @@ export default ({
               <SecondaryButton
                 size="medium"
                 onClick={() => setOpenHowModal(true)}
-                style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px", marginTop:"16px" }}
+                style={{
+                  color: "#431AB7",
+                  border: "0.7px solid #431AB7",
+                  boxSizing: "border-box",
+                  boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
+                  borderRadius: "4px",
+                  padding: "0 32px",
+                  marginTop: "16px",
+                }}
               >
                 How it works?
               </SecondaryButton>
@@ -75,14 +86,30 @@ export default ({
             <SecondaryButton
               size="medium"
               onClick={() => setOpenHowModal(true)}
-              style={{ color: "#431AB7", border: "0.7px solid #431AB7", boxSizing: "border-box", boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)", borderRadius: "4px", padding: "0 32px" }}
+              style={{
+                color: "#431AB7",
+                border: "0.7px solid #431AB7",
+                boxSizing: "border-box",
+                boxShadow: "0px 8px 20px -12px rgba(79, 95, 17, 0.54)",
+                borderRadius: "4px",
+                padding: "0 32px",
+              }}
             >
               How it works?
             </SecondaryButton>
           )}
         </Box>
       </div>
-      <div style={{ width: "100%", padding: "0 24px", color: "#181818", background: "#F6F5F8", fontFamily: "Agrandir" }}>
+      <div
+        style={{
+          width: "100%",
+          padding: "0 24px",
+          color: "#181818",
+          background: "#F6F5F8",
+          fontFamily: "Agrandir",
+          flex: 1,
+        }}
+      >
         <div className={classes.positionTitle}>✨ Hottest Loans</div>
         <LoadingWrapper loading={loadingHotLoans} theme={"blue"}>
           <div className={classes.artCards}>
@@ -105,26 +132,26 @@ export default ({
           </div>
         </LoadingWrapper>
         <div className={classes.positionTitle}>✨ All</div>
-        <LoadingWrapper loading={loadingLoans} theme={"blue"}>
-          <div className={classes.artCards}>
-            <MasonryGrid
-              gutter={"24px"}
-              data={loans}
-              renderItem={(item, index) => (
-                <LoanCard
-                  item={item}
-                  key={`item-${index}`}
-                  setItem={newItem => {
-                    const newLoans = [...loans];
-                    newLoans[index] = newItem;
-                    setLoans(newLoans);
-                  }}
-                />
-              )}
-              columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-            />
-          </div>
-        </LoadingWrapper>
+        {/* <LoadingWrapper loading={loadingLoans} theme={"blue"}> */}
+        <div className={classes.artCards}>
+          <MasonryGrid
+            gutter={"24px"}
+            data={loans}
+            renderItem={(item, index) => (
+              <LoanCard
+                item={item}
+                key={`item-${index}`}
+                setItem={newItem => {
+                  const newLoans = [...loans];
+                  newLoans[index] = newItem;
+                  setLoans(newLoans);
+                }}
+              />
+            )}
+            columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+          />
+        </div>
+        {loadingLoans && <LoadingWrapper loading={loadingLoans} theme={"blue"} />}
         <DepositNFT open={openDepositNFTModal} onClose={handleCloseDepositNFTModal} reload={reload} />
         {openHowModal && <HowItWorksModal open={openHowModal} handleClose={() => setOpenHowModal(false)} />}
       </div>

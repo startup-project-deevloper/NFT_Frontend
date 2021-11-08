@@ -20,7 +20,7 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     maxHeight: "calc(100vh - 80px)",
     overflowX: "hidden",
     position: "relative",
-    padding: "45px 0",
+    padding: "45px 0 0",
     "& > div > h2": {
       fontFamily: "Agrandir GrandHeavy",
       fontWeight: "800",
@@ -107,7 +107,6 @@ export const useNFTLoansPageStyles = makeStyles(theme => ({
     width: "calc(100% + 20px)",
     marginLeft: -10,
     marginTop: -10,
-    marginBottom: 38,
     padding: "10px 5px",
     "& > div": {
       width: "100%",

@@ -1,9 +1,13 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import axios from "axios";
+
+import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
 
 type MessagesContextType = {
   unreadMessages: number;
   setNumberMessages: (numberMessages: number) => void;
+  markAllMessagesAsRead: () => void;
 };
 
 const MessagesContext = createContext<MessagesContextType | null>(null);
@@ -27,7 +31,7 @@ export const MessagesContextProvider: React.FunctionComponent<MessagesContextPro
   }, [numberMessages]);
 
   useEffect(() => {
-    if (currentUserId && socket) {      
+    if (currentUserId && socket) {
       const incomingNumberOfMessagesHandler = number => {
         const { number: numberOfMessages } = number;
 
@@ -38,12 +42,33 @@ export const MessagesContextProvider: React.FunctionComponent<MessagesContextPro
     }
   }, [currentUserId, socket]);
 
+  const markAllMessagesAsRead = useCallback(() => {
+    if (currentUserId) {
+      const chatObj = {
+        userId: currentUserId,
+        lastView: Date.now(),
+      };
+
+      axios
+        .post(`${URL()}/chat/lastView`, chatObj)
+        .then(response => {
+          if (response.data.success) {
+            setUnreadMessages(0);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }, [currentUserId]);
+
   const context = useMemo<MessagesContextType>(
     () => ({
       unreadMessages,
       setNumberMessages(numberMessages) {
         setUnreadMessages(numberMessages);
       },
+      markAllMessagesAsRead,
     }),
     [unreadMessages]
   );

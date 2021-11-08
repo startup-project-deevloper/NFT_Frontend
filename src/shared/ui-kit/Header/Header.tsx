@@ -95,7 +95,7 @@ const Header = props => {
     removeNotification,
   } = useNotifications();
 
-  const { unreadMessages } = useMessages();
+  const { unreadMessages, markAllMessagesAsRead } = useMessages();
   const { account } = useWeb3React();
 
   const [userId, setUserId] = useState<string>("");
@@ -885,6 +885,7 @@ const Header = props => {
                       tooltip="Messages"
                       icon={isTablet ? IconMessagesWhite : IconMessages}
                       badge={numberMessages > 0 ? numberMessages.toString() : undefined}
+                      onIconClick={markAllMessagesAsRead}
                       openToolbar={openMessagesModal}
                       handleOpenToolbar={showMessagesModal}
                     >

@@ -233,8 +233,7 @@ const ProfilePage = () => {
             console.log(error);
           });
       } else if (params.id) {
-        history.goBack();
-        // setUserId(params.id);
+        setUserId(params.id);
       }
     }
   }, [params.id]);

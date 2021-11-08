@@ -1709,10 +1709,11 @@ const MarketplaceDetailPage = () => {
     return false;
   };
 
+  console.log(media);
   return (
     <div className={classes.page}>
       <Helmet>
-        <title>{media?.name}</title>
+        <title>{media?.metadata?.name || media?.name}</title>
         <meta name="description" content={media?.metadata?.description} />
         <meta property="og:image" content={media?.content_url} />
         <meta name="og:image" content={media?.content_url} />
@@ -1725,7 +1726,7 @@ const MarketplaceDetailPage = () => {
         </Box>
         <LoadingWrapper loading={!media || isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
           <Box mt={2}>
-            <Header3 noMargin>{media?.name}</Header3>
+            <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
             {media?.fraction ? (
               <Box
                 className={classes.fraction}

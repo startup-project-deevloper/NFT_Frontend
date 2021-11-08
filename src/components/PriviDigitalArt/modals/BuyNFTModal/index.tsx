@@ -41,10 +41,6 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
   const userBalances = useTypedSelector(state => state.userBalances);
   const { convertTokenToUSD } = useTokenConversion();
 
-  const payloadRef = useRef<any>({});
-  // const [openSignRequestModal, setOpenSignRequestModal] = useState<boolean>(false);
-  // const [signRequestModalDetail, setSignRequestModalDetail] = useState<any>(null);
-
   const { account, library, chainId } = useWeb3React();
 
   const handleNFTPage = () => {
@@ -53,46 +49,20 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
 
   const handleOpenSignatureModal = () => {
     if (validate()) {
-      const payload: IBuySellFromOffer = {
-        ExchangeId: media.ExchangeData.Id,
-        OfferId: media.ExchangeData.Id,
-        Address: user.address,
-        Amount: media.ExchangeData.InitialAmount,
-      };
-      payloadRef.current = payload;
-      
-      try {
-        const netType = media.BlockchainNetwork;
-        if (netType === BlockchainNets[0].value) {
-          // BUY FROM OFFER ON PRIVI
-          buyFromOfferOnPrivi();
-        } else if (netType === BlockchainNets[1].value) {
-          // BUY FROM OFFER ON POLYGON
-          buyFromOfferOnPolygon();
-        }
-      } catch (e) {
-        showAlertMessage("Purchase failed: " + e, { variant: "error" });
+      if (media.BlockchainNetwork === BlockchainNets[1].value) {
+        // BUY FROM OFFER ON POLYGON
+        buyFromOfferOnPolygon();
       }
     }
   };
 
-  const buyFromOfferOnPrivi = async () => {
-    const payload = payloadRef.current;
-    if (Object.keys(payload).length) {
-      const resp = await buyFromOffer(user.address, payload, {
-        MediaSymbol: media.MediaSymbol,
-        MediaType: media?.Type,
-      });
-      onAfterBuyFromOffer(resp);
-    }
-  };
   const buyFromOfferOnPolygon = async () => {
     const web3 = new Web3(library.provider);
 
     const offerRequest = {
       input: {
-        exchangeId: media.ExchangeData.Id,
-        offerId: media.ExchangeData.InitialOfferId,
+        exchangeId: media.exchange.exchangeId,
+        offerId: media.exchange.initialOfferId,
       },
       caller: account!,
     };
@@ -128,19 +98,19 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
   const validate = () => {
     if (
       !media ||
-      !media.ExchangeData ||
-      !media.ExchangeData.Id ||
-      !media.ExchangeData.InitialAmount ||
-      !media.ExchangeData.OfferToken ||
-      !media.ExchangeData.Price
+      !media.exchange ||
+      !media.exchange.id ||
+      !media.exchange.initialAmount ||
+      !media.exchange.offerToken ||
+      !media.exchange.price
     ) {
       showAlertMessage("Media exchange data error", { variant: "error" });
       return false;
     } else if (
-      !userBalances[media.ExchangeData.OfferToken] ||
-      userBalances[media.ExchangeData.OfferToken].Balance < media.ExchangeData.Price
+      !userBalances[media.exchange.offerToken] ||
+      userBalances[media.exchange.offerToken].Balance < media.exchange.price
     ) {
-      showAlertMessage(`Insufficient ${media.ExchangeData.OfferToken} funds`, { variant: "error" });
+      showAlertMessage(`Insufficient ${media.exchange.offerToken} funds`, { variant: "error" });
       return false;
     }
     return true;
@@ -163,33 +133,28 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
             <div>
               <h3>Item</h3>
               <div className={classes.nftInfo}>
-                <img src={media.Type === "VIDEO_TYPE" ? media.UrlMainPhoto : media.Url} />
-                <h2>{media && media.MediaName}</h2>
+                <img src={media.content_url} />
+                <h2>{media && media.metadata?.name}</h2>
               </div>
             </div>
             <div>
               <h3>Price</h3>
               <div className={classes.flexCol}>
                 <h5>
-                  {media && media.ExchangeData && !["Sold", "Cancelled"].includes(media.ExchangeData.Status)
-                    ? `${convertTokenToUSD(
-                        media.ExchangeData.OfferToken,
-                        media.ExchangeData.Price
-                      ).toFixed()}`
+                  {media && media.exchange
+                    ? `${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed()}`
                     : ""}
                 </h5>
                 <div>
-                  {media && media.ExchangeData && !["Sold", "Cancelled"].includes(media.ExchangeData.Status)
-                    ? `$${convertTokenToUSD(media.ExchangeData.OfferToken, media.ExchangeData.Price).toFixed(
-                        4
-                      )}`
+                  {media && media.exchange
+                    ? `$${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed(4)}`
                     : ""}
                 </div>
               </div>
             </div>
           </div>
           <div className={classes.divider} />
-          <p className={classes.nftDesc}>{media && media.MediaDescription}</p>
+          <p className={classes.nftDesc}>{media && media.metadata?.description}</p>
           <div className={classes.actionButtons}>
             <SecondaryButton
               size="medium"

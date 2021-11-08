@@ -18,6 +18,7 @@ import { BlockchainTokenSelect } from "shared/ui-kit/Select/BlockchainTokenSelec
 import { BlockchainNets } from "shared/constants/constants";
 import { placeBuyingOfferModalStyles } from "./index.styles";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
+import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 
 type PlaceBuyingOfferModalProps = {
   open: boolean;
@@ -36,15 +37,14 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
   const { showAlertMessage } = useAlertMessage();
   const user = useTypedSelector(state => state.user);
   const userBalances = useTypedSelector(state => state.userBalances);
-  const [price, setPrice] = useState<string>(media?.ExchangeData?.Price ?? 0);
+  const [price, setPrice] = useState<string>(media?.exchange?.price ?? 0);
   const [selectedToken, setSelectedToken] = useState<string>("PRIVI");
   const [tokenList, setTokenList] = useState<any[]>([]);
   const [rateOfChange, setRateOfChange] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const { convertTokenToUSD } = useTokenConversion();
 
   const payloadRef = useRef<any>({});
-  // const [openSignRequestModal, setOpenSignRequestModal] = useState<boolean>(false);
-  // const [signRequestModalDetail, setSignRequestModalDetail] = useState<any>(null);
 
   const [blockChain, setBlockChain] = useState<any>(BlockchainNets[0].name);
 
@@ -68,51 +68,15 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
     });
   }, []);
 
-  const handleOpenSignatureModal = () => {
-    if (validate()) {
-      const payload: IPlaceOffer = {
-        ExchangeId: media.ExchangeData.Id,
-        Address: user.address,
-        Amount: media.ExchangeData.InitialAmount,
-        Price: price,
-        OfferToken: selectedToken,
-      };
-      payloadRef.current = payload;
-
-      const netType = media.BlockchainNetwork;
-      if (netType === BlockchainNets[0].value) {
-        // PLACE BUY OFFER ON PRIVI CHAIN
-        placeOfferOnPrivi();
-      } else if (netType === BlockchainNets[1].value) {
-        // PLACE BUY OFFER ON POLYGON CHAIN
-        placeOfferOnPolygon();
-      }
-    }
-  };
-
-  const placeOfferOnPrivi = async () => {
-    try {
-      const payload = payloadRef.current;
-      if (Object.keys(payload).length) {
-        setLoading(true);
-        const resp = await placeBuyingOffer(user.address, payload, {});
-        onAfterPlaceBuyOffer(resp);
-      }
-    } catch (e) {
-      setLoading(false);
-      showAlertMessage("Offer placing failed: " + e, { variant: "error" });
-    }
-  };
-
-  const placeOfferOnPolygon = async () => {
+  const handlePlaceBuyingOffer = async () => {
     setLoading(true);
     const payload = payloadRef.current;
     const web3 = new Web3(library.provider);
 
     const placeOfferRequest = {
       input: {
-        exchangeId: media.ExchangeData.Id,
-        tokenId: media.ExchangeData.TokenId,
+        exchangeId: media.exchange.exchangeId,
+        tokenId: media.token_id,
         price: price,
       },
       caller: account!,
@@ -128,7 +92,7 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
         const body = {
           BlockchainRes: blockchainRes,
           AdditionalData: {
-            ExchangeId: media.ExchangeData.Id,
+            ExchangeId: media.exchange.exchangeId,
           },
         };
 
@@ -156,7 +120,7 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
     } else if (!userBalances[selectedToken] || userBalances[selectedToken].Balance < Number(price)) {
       showAlertMessage(`Insufficient ${selectedToken} balance`, { variant: "error" });
       return false;
-    } else if (!media || !media.ExchangeData || !media.ExchangeData.Id || !media.ExchangeData.InitialAmount) {
+    } else if (!media || !media.exchange || !media.exchange.Id || !media.exchange.initialAmount) {
       showAlertMessage(`Media exchange data error`, { variant: "error" });
       return false;
     }
@@ -164,108 +128,80 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
   };
 
   return (
-    <LoadingScreen
-      loading={loading}
-      title={`Transaction \nin progress`}
-      subTitle={`Transaction is proceeding on ${
-        media.BlockchainNetwork || media.blockchain || "Polygon"
-      }.\nThis can take a moment, please be patient...`}
-      handleClose={() => {}}
-    >
-      <Modal size="medium" isOpen={open} onClose={handleClose} className={classes.modal} showCloseIcon={true}>
-        {/* <SignatureRequestModal
-        open={openSignRequestModal}
-        address={user.address}
-        transactionFee="0.0000"
-        detail={signRequestModalDetail}
-        handleOk={handleConfirmSign}
-        handleClose={() => setOpenSignRequestModal(false)}
-      /> */}
-        <div className={classes.modalContent}>
-          <div className={classes.content}>
-            <h2>Place Buying Offer</h2>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <h3>Item</h3>
-                <div className={classes.nftInfo}>
-                  <img src={media.Type === "VIDEO_TYPE" ? media.UrlMainPhoto : media.Url} />
-                  <h2>{media && media.MediaName}</h2>
-                </div>
-              </div>
-              <div>
-                <h3>Price</h3>
-                <div className={classes.flexCol}>
-                  <h5>
-                    {media && media.ExchangeData && !["Sold", "Cancelled"].includes(media.ExchangeData.Status)
-                      ? formatNumber(
-                          media?.ExchangeData?.Price ?? 0,
-                          media?.ExchangeData?.OfferToken ?? "USDT",
-                          4
-                        )
-                      : ""}
-                  </h5>
-                  <span>
-                    {media && media.ExchangeData && !["Sold", "Cancelled"].includes(media.ExchangeData.Status)
-                      ? formatNumber(
-                          Math.floor(
-                            (rateOfChange[media.ExchangeData.OfferToken] ?? 1) * media?.ExchangeData?.Price ??
-                              0
-                          ),
-                          "$",
-                          4
-                        )
-                      : ""}
-                  </span>
-                </div>
+    <Modal size="medium" isOpen={open} onClose={handleClose} className={classes.modal} showCloseIcon={true}>
+      <div className={classes.modalContent}>
+        <div className={classes.content}>
+          <h2>Place Buying Offer</h2>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div>
+              <h3>Item</h3>
+              <div className={classes.nftInfo}>
+                <img src={media.content_url} />
+                <h2>{media && media.metadata?.name}</h2>
               </div>
             </div>
-            <div className={classes.divider} />
-            <div className={classes.offerInputWrapper}>
-              <div className={classes.borderBox} style={{ width: "100%" }}>
-                <BlockchainTokenSelect
-                  network={blockChain}
-                  setNetwork={setBlockChain}
-                  BlockchainNets={BlockchainNets}
-                  isReverse
-                />
+            <div>
+              <h3>Price</h3>
+              <div className={classes.flexCol}>
+                <h5>
+                  {media && media.exchange
+                    ? `${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed()}`
+                    : ""}
+                </h5>
+                <span>
+                  {media && media.exchange
+                    ? `$${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed(4)}`
+                    : ""}
+                </span>
               </div>
-              <div
-                className={classes.inputPrice}
-                style={{ width: "100%", marginLeft: "24px", marginRight: "24px" }}
-              >
-                <InputWithLabelAndTooltip
-                  type="number"
-                  inputValue={price}
-                  placeHolder="0.00"
-                  onInputValueChange={e => setPrice(e.target.value)}
-                  required
-                  style={{ marginTop: 0, marginBottom: 0, height: "50px", width: "100%" }}
-                />
-              </div>
-              <div className={classes.tokenSelect} style={{ width: "100%" }}>
-                <TokenSelect
-                  value={selectedToken}
-                  onChange={event => setSelectedToken(event.target.value)}
-                  tokens={tokenList}
-                />
-              </div>
-            </div>
-            <div className={classes.divider} />
-            <p className={classes.nftDesc}>{media && media.MediaDescription}</p>
-            <div className={classes.actionButtons}>
-              <PrimaryButton
-                size="medium"
-                style={{ background: "#431AB7" }}
-                className={classes.primary}
-                onClick={handleOpenSignatureModal}
-              >
-                Place Buying Order
-              </PrimaryButton>
             </div>
           </div>
+          <div className={classes.divider} />
+          <div className={classes.offerInputWrapper}>
+            <div className={classes.borderBox} style={{ width: "100%" }}>
+              <BlockchainTokenSelect
+                network={blockChain}
+                setNetwork={setBlockChain}
+                BlockchainNets={BlockchainNets}
+                isReverse
+              />
+            </div>
+            <div
+              className={classes.inputPrice}
+              style={{ width: "100%", marginLeft: "24px", marginRight: "24px" }}
+            >
+              <InputWithLabelAndTooltip
+                type="number"
+                inputValue={price}
+                placeHolder="0.00"
+                onInputValueChange={e => setPrice(e.target.value)}
+                required
+                style={{ marginTop: 0, marginBottom: 0, height: "50px", width: "100%" }}
+              />
+            </div>
+            <div className={classes.tokenSelect} style={{ width: "100%" }}>
+              <TokenSelect
+                value={selectedToken}
+                onChange={event => setSelectedToken(event.target.value)}
+                tokens={tokenList}
+              />
+            </div>
+          </div>
+          <div className={classes.divider} />
+          <p className={classes.nftDesc}>{media && media.MediaDescription}</p>
+          <div className={classes.actionButtons}>
+            <PrimaryButton
+              size="medium"
+              style={{ background: "#431AB7" }}
+              className={classes.primary}
+              onClick={handlePlaceBuyingOffer}
+            >
+              Place Buying Order
+            </PrimaryButton>
+          </div>
         </div>
-      </Modal>
-    </LoadingScreen>
+      </div>
+    </Modal>
   );
 };
 

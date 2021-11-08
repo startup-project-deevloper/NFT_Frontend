@@ -207,34 +207,30 @@ const ProfilePage = () => {
     setPriviUser(undefined);
     setUserProfile({});
     if (params.id) {
-      if (params.id && !params.id.includes("Px")) {
-        Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/user`)
-          .then(response => {
-            if (response.data.success) {
-              const id = response.data.data.id;
-              setUserId(id);
-            } else {
-              history.goBack();
-              // Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/mediaUsers`)
-              //   .then(response => {
-              //     if (response.data.success) {
-              //       const id = response.data.data.id;
-              //       setUserId(id);
-              //     } else {
-              //       setUserId(params.id);
-              //     }
-              //   })
-              //   .catch(error => {
-              //     console.log(error);
-              //   });
-            }
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      } else if (params.id) {
-        setUserId(params.id);
-      }
+      Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/user`)
+        .then(response => {
+          if (response.data.success) {
+            const id = response.data.data.id;
+            setUserId(id);
+          } else {
+            history.goBack();
+            // Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/mediaUsers`)
+            //   .then(response => {
+            //     if (response.data.success) {
+            //       const id = response.data.data.id;
+            //       setUserId(id);
+            //     } else {
+            //       setUserId(params.id);
+            //     }
+            //   })
+            //   .catch(error => {
+            //     console.log(error);
+            //   });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }, [params.id]);
 

@@ -13,23 +13,23 @@ const erc721 = network => {
         const gas = await contract
           .deploy({
             data: metadata.bytecode,
-            arguments: ['privierc721', 'privi'],
+            arguments: ["privierc721", "privi"],
           })
           .estimateGas({ from: account });
         console.log("calced gas price: => ", gas);
         contract
           .deploy({
             data: metadata.bytecode,
-            arguments: ['privierc721', 'privi'],
+            arguments: ["privierc721", "privi"],
           })
           .send(
             {
               from: account,
               gas: gas,
             },
-            (error, transactionHash) => { }
+            (error, transactionHash) => {}
           )
-          .on("error", error => { })
+          .on("error", error => {})
           .on("transactionHash", transactionHash => {
             console.log("Transaction Hash: => ", transactionHash);
           })
@@ -49,15 +49,24 @@ const erc721 = network => {
       }
     });
   };
-  const mint = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const mint = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
         console.log("Getting gas....");
-        const gas = await contract.methods.mint(payload.to, payload.tokenId, payload.uri).estimateGas({ from: account });
+        const gas = await contract.methods
+          .mint(payload.to, payload.tokenId, payload.uri)
+          .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
-        const response = await contract.methods.mint(payload.to, payload.tokenId, payload.uri).send({ from: account, gas: gas });
+        const response = await contract.methods
+          .mint(payload.to, payload.tokenId, payload.uri)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            if (setHash) {
+              setHash(hash);
+            }
+          });
         console.log("transaction succeed", response);
         resolve(response.transactionHash);
       } catch (e) {
@@ -66,16 +75,19 @@ const erc721 = network => {
       }
     });
   };
-  const setApprovalForToken = async (web3: Web3, account: string, payload: any, tokenContractAddress: string = ''): Promise<any> => {
+  const setApprovalForToken = async (
+    web3: Web3,
+    account: string,
+    payload: any,
+    tokenContractAddress: string = ""
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, tokenContractAddress || contractAddress);
         const gas = await contract.methods
           .approve(payload.to, payload.tokenId)
           .estimateGas({ from: account });
-        await contract.methods
-          .approve(payload.to, payload.tokenId)
-          .send({ from: account, gas: gas });
+        await contract.methods.approve(payload.to, payload.tokenId).send({ from: account, gas: gas });
         resolve({ success: true });
       } catch (e) {
         console.log(e);
@@ -83,7 +95,12 @@ const erc721 = network => {
       }
     });
   };
-  const setApprovalForAll = async (web3: Web3, account: string, payload: any, tokenContractAddress: string = ''): Promise<any> => {
+  const setApprovalForAll = async (
+    web3: Web3,
+    account: string,
+    payload: any,
+    tokenContractAddress: string = ""
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, tokenContractAddress || contractAddress);
@@ -100,7 +117,12 @@ const erc721 = network => {
       }
     });
   };
-  const setApprovalForAll2 = (web3: Web3, account: string, interactingContractAddress: string, sourceContractAddress = undefined): Promise<any> => {
+  const setApprovalForAll2 = (
+    web3: Web3,
+    account: string,
+    interactingContractAddress: string,
+    sourceContractAddress = undefined
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, sourceContractAddress ?? contractAddress);
@@ -116,7 +138,7 @@ const erc721 = network => {
         resolve({ success: false });
       }
     });
-  }
+  };
   const ownerOf = async (web3: Web3, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
@@ -155,6 +177,14 @@ const erc721 = network => {
       }
     });
   };
-  return { instantiate, mint, setApprovalForToken, setApprovalForAll, setApprovalForAll2, ownerOf, balanceOf };
+  return {
+    instantiate,
+    mint,
+    setApprovalForToken,
+    setApprovalForAll,
+    setApprovalForAll2,
+    ownerOf,
+    balanceOf,
+  };
 };
 export default erc721;

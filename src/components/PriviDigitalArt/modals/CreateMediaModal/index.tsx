@@ -12,14 +12,12 @@ import FileUpload from "shared/ui-kit/Page-components/FileUpload";
 import CustomImageUploadAdapter from "shared/services/CustomImageUploadAdapter";
 import { usePageRefreshContext } from "shared/contexts/PageRefreshContext";
 import URL from "shared/functions/getURL";
-// import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import { UsersMultiselect } from "shared/ui-kit/Select/UserMultiSelect/UsersMultiselect";
 import { Dropdown } from "shared/ui-kit/Select/Select";
 import QuillEditor from "shared/ui-kit/QuillEditor";
 import * as API from "shared/services/API/MediaAPI";
 import Web3Config from "shared/connectors/web3/config";
 import { random } from "shared/functions/web3";
-import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 import { Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
@@ -29,16 +27,14 @@ import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { createMediaModalStyles } from "./index.styles";
 import StyledCheckbox from "shared/ui-kit/Checkbox";
-import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { CloseIcon } from "shared/ui-kit/Icons";
 import { priviTokenList } from "shared/constants/constants";
 import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2IPFS";
 import getIPFSURL from "shared/functions/getIPFSURL";
-import TransactionResultModal, { CopyIcon } from "../TransactionResultModal";
-import CopyToClipboard from "react-copy-to-clipboard";
 import FileUploadingModal from "../../../../shared/ui-kit/Modal/Modals/FileUploadingModal";
+import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
@@ -106,8 +102,6 @@ const CreateMediaModal = (props: any) => {
   const [tokens, setTokens] = useState<string[]>(priviTokenList);
 
   const [disableButton, setDisableButton] = useState<boolean>(false);
-  const [openTranactionModal, setOpenTranactionModal] = useState<boolean>(false);
-  const [hash, setHash] = useState<string>("");
 
   const [mediaData, setMediaData] = useState<any>({
     type: MEDIA_TYPES[0].value,
@@ -142,9 +136,13 @@ const CreateMediaModal = (props: any) => {
   const mediaPayloadRef = useRef<any>({});
   const mediaAdditionalDataRef = useRef<any>({});
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [tnxSuccess, setTnxSuccess] = useState<boolean>(false);
   const { account, library, chainId } = useWeb3React();
+
+  const [hash, setHash] = useState<string>("");
+  const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
+  const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
+
+  const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
   const triedEager = useEagerConnect();
   useInactiveListener(!triedEager);
@@ -292,14 +290,12 @@ const CreateMediaModal = (props: any) => {
         createMediaOnEth(metadataID.newFileCID || "", chainName, metadataID.metadata.properties.name);
       }
     } catch (e) {
-      setLoading(false);
       setDisableButton(false);
       showAlertMessage("Error when making the request", { variant: "error" });
     }
   };
 
   const createMediaOnPrivi = async (metadataID: string) => {
-    setLoading(true);
     const resp = await API.createMedia(
       userSelector.address,
       mediaPayloadRef.current,
@@ -308,7 +304,6 @@ const CreateMediaModal = (props: any) => {
     );
 
     afterCreateMedia(resp);
-    setLoading(false);
     setDisableButton(false);
   };
 
@@ -324,7 +319,8 @@ const CreateMediaModal = (props: any) => {
       }
     }
 
-    setLoading(true);
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
 
     const web3APIHandler = targetChain.apiHandler;
     const web3Config = targetChain.config;
@@ -348,11 +344,12 @@ const CreateMediaModal = (props: any) => {
       tokenId: tokenId,
       uri: uri,
     };
-    console.log("CreateMediaModal", { payload });
-    web3APIHandler.Erc721.mint(web3, account!, payload)
+    web3APIHandler.Erc721.mint(web3, account!, payload, setHash)
       .then(async res => {
-        setHash(res);
-        if (tokenId) {
+        if (res) {
+          setTransactionInProgress(false);
+          setTransactionSuccess(true);
+
           const body = {
             main: {
               ...mediaPayloadRef.current,
@@ -365,7 +362,8 @@ const CreateMediaModal = (props: any) => {
           const response = await axios.post(`${URL()}/media/createMedia/p1`, body);
           afterCreateMedia(response.data);
         } else {
-          setLoading(false);
+          setTransactionInProgress(false);
+          setTransactionSuccess(false);
         }
         setDisableButton(false);
       })
@@ -391,8 +389,6 @@ const CreateMediaModal = (props: any) => {
       if (props.updateMedia) props.updateMedia();
       showAlertMessage("NFT created!", { variant: "success" });
       reloadMediaPage();
-      setOpenTranactionModal(true);
-      setTnxSuccess(true);
 
       // setTimeout(() => {
       //   initForm();
@@ -400,13 +396,10 @@ const CreateMediaModal = (props: any) => {
       //   if (props.handleRefresh) props.handleRefresh();
       // }, 1000);
     } else {
-      setOpenTranactionModal(true);
-      setTnxSuccess(false);
       if ((resp as any).error) {
         showAlertMessage((resp as any).error, { variant: "error" });
       }
     }
-    setLoading(false);
   };
 
   //photo functions
@@ -706,41 +699,7 @@ const CreateMediaModal = (props: any) => {
   };
 
   return (
-    <LoadingScreen
-      loading={loading}
-      title={`Transaction \nin progress`}
-      SubTitleRender={() => (
-        <>
-          <span>Transaction is proceeding on {mediaData.blockchainNet.replace(" Chain", "")} Chain.</span>
-          <br />
-          <span>This can take a moment, please be patient...</span>
-          {hash && (
-            <CopyToClipboard text={hash}>
-              <Box
-                mt="20px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                className={classes.hash}
-              >
-                Hash:
-                <Box color="#4218B5" mr={1} ml={1}>
-                  {hash.substr(0, 18) + "..." + hash.substr(hash.length - 3, 3)}
-                </Box>
-                <CopyIcon />
-              </Box>
-            </CopyToClipboard>
-          )}
-
-          {hash && (
-            <button className={classes.buttonCheck} onClick={handleCheck}>
-              Check on {mediaData.blockchainNet.replace(" Chain", "")} Scan
-            </button>
-          )}
-        </>
-      )}
-      handleClose={props.handleClose}
-    >
+    <>
       <Modal
         size="medium"
         isOpen={props.open}
@@ -1041,34 +1000,31 @@ const CreateMediaModal = (props: any) => {
                 <SecondaryButton size="medium" onClick={() => setPage(1)}>
                   Cancel
                 </SecondaryButton>
-                <LoadingWrapper loading={loading} theme={"blue"}>
-                  <PrimaryButton
-                    className={classes.primaryBtn}
-                    size="medium"
-                    onClick={() => createMedia()}
-                    disabled={disableButton}
-                  >
-                    Create Media
-                  </PrimaryButton>
-                </LoadingWrapper>
+                <PrimaryButton
+                  className={classes.primaryBtn}
+                  size="medium"
+                  onClick={() => createMedia()}
+                  disabled={disableButton}
+                >
+                  Create Media
+                </PrimaryButton>
               </Box>
             </div>
           )}
         </div>
       </Modal>
-      <TransactionResultModal
-        open={openTranactionModal}
+      <TransactionProgressModal
+        open={openTransactionModal}
         onClose={() => {
-          setHash("");
-          setOpenTranactionModal(false);
-          props.handleClose();
+          setOpenTransactionModal(false);
         }}
-        isSuccess={tnxSuccess}
+        transactionInProgress={transactionInProgress}
+        transactionSuccess={transactionSuccess}
         hash={hash}
         network={mediaData.blockchainNet.replace(" Chain", "")}
       />
       <FileUploadingModal open={!!progress} progress={progress} isUpload />
-    </LoadingScreen>
+    </>
   );
 };
 

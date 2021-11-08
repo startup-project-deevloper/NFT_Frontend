@@ -350,6 +350,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     });
   };
 
+  if (nft.isWithdrawn) {
+    history.push(`/fractionalisation/collection/${params.collectionId}`);
+    return null;
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.nftInfoSection}>

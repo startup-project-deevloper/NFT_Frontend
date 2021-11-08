@@ -24,7 +24,7 @@ import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 export const OfferTable = ({ offers, token }) => {
   const classes = useStyles();
   const usersList = useSelector((state: RootState) => state.usersInfoList);
-  const getUserInfo = (address: string) => usersList.find(u => u.address === address);
+  const getUserInfo = (id: string) => usersList.find(u => u.id === id);
 
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
@@ -41,11 +41,12 @@ export const OfferTable = ({ offers, token }) => {
     },
   ];
   const [tableData, setTableData] = React.useState<Array<Array<CustomTableCellInfo>>>([]);
+  console.log(offers);
   React.useEffect(() => {
     let data: Array<Array<CustomTableCellInfo>> = [];
     if (offers && offers.length) {
       data = offers.slice(0, 5).map(row => {
-        const user = getUserInfo(row.bidderAddress);
+        const user = getUserInfo(row.bidder);
         return [
           {
             cell: (

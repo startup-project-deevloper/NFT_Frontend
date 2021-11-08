@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Text } from "shared/ui-kit";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { getAuctionBidHistory, getAuctionTransactions, getExchangeTransactions } from "shared/services/API";
+import { getAuctionBidHistory, getExchangeTransactions } from "shared/services/API";
 
 import { useStyles } from "./index.styles";
 
@@ -41,7 +41,7 @@ const MarketActivity = ({ media }) => {
         if (resp?.success) setTransactionHistory(resp.data);
       });
     else if (media?.exchange)
-      getExchangeTransactions(media.ExchangeData.Id).then(resp => {
+      getExchangeTransactions(media.exchange.id).then(resp => {
         if (resp?.success) setTransactionHistory(resp.data);
       });
   }, [media]);

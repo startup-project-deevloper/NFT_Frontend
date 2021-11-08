@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
 import axios from "axios";
 import Web3 from "web3";
 import { Rating } from "react-simple-star-rating";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
 import { format } from "date-fns";
 import ReactPlayer from "react-player";
+import { getUsersInfoList } from "store/selectors";
 
 import { Grid, Hidden, useMediaQuery } from "@material-ui/core";
 
@@ -349,7 +350,10 @@ const MarketplaceDetailPage = () => {
 
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
+
   const loggedUser = useSelector(getUser);
+  const allUsers = useSelector(getUsersInfoList);
+
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const classes = marketplaceDetailPageStyles();
@@ -358,7 +362,6 @@ const MarketplaceDetailPage = () => {
   const [openDetailModal, setOpenDetailModal] = React.useState<boolean>(false);
   const [chooseWalletModal, setChooseWalletModal] = React.useState<boolean>(false);
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
-  // const [liked, setLiked] = React.useState<boolean>(false);
   const user = useTypedSelector(state => state.user);
   const userBalances = useTypedSelector(state => state.userBalances);
   const { convertTokenToUSD } = useTokenConversion();
@@ -467,6 +470,22 @@ const MarketplaceDetailPage = () => {
   const isEditingComment = useRef<boolean>(false);
 
   const [disableBidBtn, setDisableBidBtn] = useState<boolean>(false);
+
+  const topBidder = useMemo(() => {
+    if (media && media.auction && media.auction.topBidInfo) {
+      return allUsers.find(user => user.id === media.auction.topBidInfo.bidder);
+    } else {
+      return null;
+    }
+  }, [media, allUsers]);
+
+  const displacedBidder = useMemo(() => {
+    if (media && media.auction && media.auction.replacedBidInfo) {
+      return allUsers.find(user => user.id === media.auction.replacedBidInfo.bidder);
+    } else {
+      return null;
+    }
+  }, [media, allUsers]);
 
   useEffect(() => {
     setOpenFilters(false);
@@ -1003,8 +1022,7 @@ const MarketplaceDetailPage = () => {
   };
 
   const topBidPrice = React.useMemo(() => {
-    if (!media || !media?.auction || !media?.BidHistory || media?.BidHistory.length === 0) return "N/A";
-    return Math.max(...media?.BidHistory.map((history: any) => parseInt(history.price)));
+    return media?.auction?.topBidInfo?.price || "N/A";
   }, [media]);
 
   const owners = React.useMemo(() => {
@@ -1560,7 +1578,6 @@ const MarketplaceDetailPage = () => {
                   MediaType: media.Type,
                 },
               };
-              console.log(body);
               const response = await axios.post(`${URL()}/exchange/cancelSellingOffer/v2_p`, body);
               if (response?.data?.success) {
                 showAlertMessage("Exchange cancelled successfully", { variant: "success" });
@@ -1709,7 +1726,6 @@ const MarketplaceDetailPage = () => {
     return false;
   };
 
-  console.log(media);
   return (
     <div className={classes.page}>
       <Helmet>
@@ -2106,26 +2122,23 @@ const MarketplaceDetailPage = () => {
                       </Box>
                     )}
                     <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                      {media.auction.TopBidInfo && (
+                      {topBidder && (
                         <Box className={classes.bidBox} style={{ background: "#9EACF2" }} width={1} mr={1}>
                           <Avatar
                             size="medium"
-                            url={
-                              media?.auction?.TopBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.auction?.TopBidInfo?.AnonAvatar}`)
-                            }
+                            url={topBidder.imageUrl || require(`assets/anonAvatars/${topBidder.anonAvatar}`)}
                           />
                           <Box ml={2}>
                             <Box className={classes.header2} style={{ color: "#431AB7" }}>
                               Top Bid Placed By
                             </Box>
                             <Box className={classes.header2} style={{ color: "white" }} mt={0.5}>
-                              {media?.auction.TopBidInfo?.Name}
+                              {topBidder.name}
                             </Box>
                           </Box>
                         </Box>
                       )}
-                      {media.auction.ReplacedBidInfo && (
+                      {displacedBidder && (
                         <Box
                           className={classes.bidBox}
                           style={{ border: "1px solid #9EACF2" }}
@@ -2135,8 +2148,8 @@ const MarketplaceDetailPage = () => {
                           <Avatar
                             size="medium"
                             url={
-                              media?.auction?.ReplacedBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.auction?.ReplacedBidInfo?.AnonAvatar}`)
+                              displacedBidder.imageUrl ||
+                              require(`assets/anonAvatars/${displacedBidder.anonAvatar}`)
                             }
                           />
                           <Box ml={2}>
@@ -2144,7 +2157,7 @@ const MarketplaceDetailPage = () => {
                               Displaced Bidder
                             </Box>
                             <Box className={classes.header2} style={{ color: "#9EACF2" }} mt={0.5}>
-                              {media?.auction.ReplacedBidInfo?.Name}
+                              {displacedBidder.name}
                             </Box>
                           </Box>
                         </Box>

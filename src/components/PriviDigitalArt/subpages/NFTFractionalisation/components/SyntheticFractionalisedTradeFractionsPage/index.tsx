@@ -384,7 +384,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         nft,
         setHash,
       });
-      console.log("updated price", price);
       if (!price) {
         setUpdateResult(-1);
         setLoading(false);
@@ -495,7 +494,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const handleRefresh = async () => {
     try {
-      console.log("handleRefresh");
       const targetChain = BlockchainNets[1];
 
       const web3APIHandler = targetChain.apiHandler;

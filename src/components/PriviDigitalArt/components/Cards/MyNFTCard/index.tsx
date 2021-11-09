@@ -13,9 +13,16 @@ interface IProps {
   onLockCompleted?: () => void;
   onUnLockCompleted?: () => void;
   onVerifyCompleted?: () => void;
+  handleClick?: () => void;
 }
 
-export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted, onVerifyCompleted }: IProps) {
+export default function MyNFTCard({
+  item,
+  onLockCompleted,
+  onUnLockCompleted,
+  onVerifyCompleted,
+  handleClick,
+}: IProps) {
   const classes = myNFTCardStyles();
   const history = useHistory();
   const { isSignedin } = useAuth();
@@ -38,7 +45,7 @@ export default function MyNFTCard({ item, onLockCompleted, onUnLockCompleted, on
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" position="relative">
+    <Box display="flex" flexDirection="column" alignItems="center" position="relative" onClick={handleClick}>
       <div className={classes.card}>
         <div className={classes.innerBox}>
           <Box display="flex" justifyContent="space-between" alignItems="center" width={1} mb={1}>

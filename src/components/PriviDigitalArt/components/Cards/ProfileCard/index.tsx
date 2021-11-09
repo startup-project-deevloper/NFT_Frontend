@@ -230,7 +230,7 @@ export default function ProfileCard({
     e.stopPropagation();
     e.preventDefault();
 
-    shareMediaToSocial(item.id, "Community");
+    shareMediaToSocial(item.id, "Media", "DIGITAL_ART_TYPE");
   };
 
   const handleOpenQRCodeModal = e => {
@@ -284,14 +284,14 @@ export default function ProfileCard({
       >
         <div className={classes.topActions}>
           <Box display="flex" alignItems="center">
-            {type !== "Social" && (
+            {/* {type !== "Social" && (
               <span onClick={handleSave}>
                 <img
                   src={require(`assets/priviIcons/${bookmarked ? "bookmark-filled" : "bookmark"}.svg`)}
                   alt={"list"}
                 />
               </span>
-            )}
+            )} */}
             {type !== "Social" && (
               <span onClick={handleToggleShareMenu} ref={anchorShareMenuRef}>
                 <img src={require("assets/priviIcons/share.svg")} alt={"share"} />

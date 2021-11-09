@@ -19,7 +19,7 @@ import RedeemJotsModal from "components/PriviDigitalArt/modals/RedeemJotsModal";
 import { toDecimals } from "shared/functions/web3";
 import { addRedemptionHistory } from "shared/services/API/SyntheticFractionalizeAPI";
 
-const ROWS_PER_PAGE = 3;
+const ROWS_PER_PAGE = 15;
 const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default ({ collection }) => {

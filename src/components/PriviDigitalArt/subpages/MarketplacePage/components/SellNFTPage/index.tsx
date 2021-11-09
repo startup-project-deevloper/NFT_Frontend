@@ -182,6 +182,7 @@ const SellNFTPage = ({ goBack }) => {
             const exchange = res.data;
             const tx = res.transaction;
             const uniqueId = uuidv4();
+            console.log(">>>---  res data: :::: ----", res.data);
             const body = {
               exchange: {
                 id: uniqueId,
@@ -195,11 +196,12 @@ const SellNFTPage = ({ goBack }) => {
               transaction: tx,
               type: "PIX",
             };
-
+            console.log(">>>---  body ----", body);
             setTransactionInProgress(false);
             setTransactionSuccess(true);
 
             const response = await Axios.post(`${URL()}/marketplace/createExchange`, body);
+            console.log(">>>---", response.data);
             onAfterCreateExchange(response.data);
           } else {
             setTransactionInProgress(false);

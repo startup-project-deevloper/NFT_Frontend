@@ -54,14 +54,6 @@ export const createNftOptionStyles = makeStyles(theme => ({
         },
     },
     walletRow: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      [theme.breakpoints.down("md")]: {
-        flexDirection: "column",
-        alignItems: "flex-start",
-      },
-      width: "100%",
       "& div": {
         display: "flex",
         alignItems: "center",
@@ -69,13 +61,8 @@ export const createNftOptionStyles = makeStyles(theme => ({
         fontWeight: 800,
         lineHeight: "18px",
         color: "#431AB7",
-        width: "calc(60% - 24px)",
-        [theme.breakpoints.down("md")]: {
-          width: "100%",
-          marginRight: 0,
-          paddingBottom: 25,
-        },
-        marginRight: "24px",
+        width: "100%",
+        marginRight: 0,
         "& img": {
           marginRight: "24px",
           width: "32px",
@@ -265,5 +252,25 @@ export const createNftOptionStyles = makeStyles(theme => ({
       borderRadius: '4px',
       width: '50%',
       float: 'right',
-    }
+    },
+    detailsLabel: {
+      color: "#431AB7",
+      fontStyle: "normal",
+      fontWeight: 800,
+      fontSize: "14px",
+      lineHeight: "120%",
+      marginBottom: "16px",
+      textAlign: "center",
+    },
+    emptyBox: {
+      background: "#EFF2FD",
+      border: "1px solid rgba(67, 26, 183, 0.24)",
+      boxSizing: "border-box",
+      borderRadius: "20px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 1,
+    },
 }));

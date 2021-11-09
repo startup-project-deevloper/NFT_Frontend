@@ -30,6 +30,7 @@ export async function getMarketplaceMedias(payload: any): Promise<any> {
     const response = await axios.get(`${URL()}/marketplace/getMarketplaceMedias`, {
       params: payload,
     });
+    console.log(response.data, URL());
     return response.data;
   } catch (e) {
     console.log(e);

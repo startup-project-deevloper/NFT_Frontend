@@ -96,6 +96,8 @@ const PriviPixConnect = () => {
 
   const signData = useRef();
 
+  console.log("connect", account, library, chainId);
+
   useEffect(() => {
     if (account && account.length > 0) {
       axios

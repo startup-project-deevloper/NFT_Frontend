@@ -12,6 +12,7 @@ import { useAssetDetailPageStyles } from "./index.styles";
 import URL from "shared/functions/getURL";
 import Axios from "axios";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
+import LendModal from "./modals/LendModal";
 
 const PERIODS = ["Borrowing", "Lending"];
 
@@ -215,7 +216,9 @@ const NFTLoanAssetDetailPage = () => {
   const [market, setMarket] = useState<any>(null);
   const [loadingMarket, setLoadingMarket] = useState<boolean>(false);
   const [DetailsData, setDetailsData] = useState<any>(_DetailsData);
-
+  const [lendModalOpen, setLendModalOpen] = useState<boolean>(false);
+  const [borrowModalOpen, setBorrowModalOpen] = useState<boolean>(false);
+  
   useEffect(() => {
     setLoadingMarket(true)
     Axios.get(`${URL()}/nftLoan/getFractionalLoan/${params?.assetId}`)
@@ -288,14 +291,14 @@ const NFTLoanAssetDetailPage = () => {
             <PrimaryButton
               style={{ background: "#431AB7", minWidth: 148 }}
               size={isMobile ? "small" : "medium"}
-              onClick={() => { }}
+              onClick={() => { setBorrowModalOpen(true)}}
             >
               Borrow
             </PrimaryButton>
             <SecondaryButton
               style={{ color: "#431AB7", borderColor: "#431AB7", minWidth: 148 }}
               size={isMobile ? "small" : "medium"}
-              onClick={() => { }}
+              onClick={() => { setLendModalOpen(true) }}
             >
               Lend
             </SecondaryButton>
@@ -304,11 +307,11 @@ const NFTLoanAssetDetailPage = () => {
         <div className={classes.assetInfoSection}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <div className={classes.typo2}>Total Lending</div>
-            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_reserves : 0}</div>
+            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_reserves * market?.token_info.priceInUsd : 0}</div>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
             <div className={classes.typo2}>Total Borrowing</div>
-            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_borrow : 0}</div>
+            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_borrow * market?.token_info.priceInUsd : 0}</div>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
             <div className={classes.typo2}>Lending APY</div>
@@ -367,6 +370,12 @@ const NFTLoanAssetDetailPage = () => {
             )}
           </Box>
         </div>
+        <LendModal
+          open={lendModalOpen}
+          onClose={() => setLendModalOpen(false)}
+          onSuccess={() => {}}
+          market={market}
+        />
       </LoadingWrapper>
     </div>
   );

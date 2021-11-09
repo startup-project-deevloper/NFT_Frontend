@@ -374,13 +374,13 @@ const MediaDetailsModal = (props: any) => {
               </Text>
             </div>
           </Box>
-          {!media.metadata && (
+          {/* {!media.metadata && (
             <>
               <hr className={classes.divider} />
               <Header5>Collection</Header5>
               {renderCollection()}
             </>
-          )}
+          )} */}
           {!!media.metadata?.description && (
             <>
               <hr className={classes.divider} />

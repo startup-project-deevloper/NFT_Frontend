@@ -1,20 +1,23 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "store/reducers/Reducer";
-import { MessageItem } from "./MessageItem";
-import "./MessageBox.css";
-import { setChat, setMessage } from "store/actions/MessageActions";
 import axios from "axios";
+
+import { MessageItem } from "./MessageItem";
+import { socket } from "components/Login/Auth";
+import { RootState } from "store/reducers/Reducer";
+import { setChat, setMessage } from "store/actions/MessageActions";
+
 import { default as ServerURL } from "shared/functions/getURL";
 import { RecordingBox } from "shared/ui-kit/RecordingBox";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import EmojiPane from "shared/ui-kit/EmojiPane";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-import { socket } from "components/Login/Auth";
 import FileAttachment, { FileType } from "shared/ui-kit/FileAttachment";
 import { Gradient } from "shared/ui-kit";
-import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
-import {onUploadNonEncrypt} from "../../../../shared/ipfs/upload";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { onUploadNonEncrypt } from "shared/ipfs/upload";
+
+import "./MessageBox.css";
 
 export const MessageFooter = props => {
   const { chat, messages, setMessages, specialWidthInput, type = "social" } = props;
@@ -447,10 +450,9 @@ export const MessageFooter = props => {
     >
       {!audioMessage && (
         <>
-          <FileAttachment setStatus={setStatus}
-                          onFileChange={onFileChange} />
+          <FileAttachment setStatus={setStatus} onFileChange={onFileChange} />
           <img
-            src={require("assets/icons/pix_emoji_icon.svg")}
+            src={require("assets/icons/emoji_icon.svg")}
             className="emoji-icon"
             onClick={toggleEmojiPicker}
             ref={emojiRef}
@@ -475,13 +477,12 @@ export const MessageFooter = props => {
           onKeyDown={e => {
             e.key === "Enter" && sendMessage();
           }}
-          style={{ border: "1px solid #181818" }}
+          style={{ background: "#F2FBF6" }}
         />
       )}
 
       {!audioMessage && (
-        <div className="send-icon"
-             onClick={() => sendMessage()}>
+        <div className="send-icon" onClick={() => sendMessage()} style={{ background: Gradient.Green1 }}>
           <img src={require("assets/icons/send_icon.svg")} />
         </div>
       )}
@@ -508,8 +509,8 @@ export const MessageContent = ({
   setChat,
 }) => {
   const userSelector = useSelector((state: RootState) => state.user);
-  const usersInfo = useSelector((state: RootState) => state.usersInfoList);
   const [newChat, setNewChat] = React.useState(null);
+  const [hasMore, setHasMore] = useState<boolean>(messages.length > 0);
   const [paginationLoading, setPaginationLoading] = React.useState<boolean>(false);
 
   const itemListRef = useRef<HTMLDivElement>(null);
@@ -526,20 +527,18 @@ export const MessageContent = ({
     } else if (chat.users && chat.users.userTo && chat.users.userTo.userId === userSelector.id) {
       otherUserId = chat.users.userFrom.userId;
     }
-    let fIndex = usersInfo.findIndex(user => user.id === otherUserId);
-    if (fIndex < 0) return;
     setNewChat({
       ...chat,
-      userInfo: usersInfo[fIndex],
     });
-  }, [chat, usersInfo]);
+  }, [chat]);
 
   const handleScroll = React.useCallback(
     async e => {
-      if (e.target.scrollTop === 0 && messages.length > 0) {
+      if (e.target.scrollTop === 0 && hasMore) {
         const lastMsgID = messages.length > 0 ? messages[0].id : null;
         setPaginationLoading(true);
         const count = await getMessages();
+        setHasMore(count > 0);
         if (count === 0) {
           setPaginationLoading(false);
         }
@@ -568,11 +567,7 @@ export const MessageContent = ({
               <MessageItem
                 key={index}
                 user={
-                  item.users && item.users.userFrom && item.users.userFrom.userId
-                    ? item.users.userFrom.userId === userSelector.id
-                      ? item.users.userTo
-                      : item.users.userFrom
-                    : null
+                  chat.users.userFrom.userId === userSelector.id ? chat.users.userTo : chat.users.userFrom
                 }
                 message={item}
                 chat={newChat}

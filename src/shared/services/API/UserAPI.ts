@@ -69,14 +69,24 @@ export interface IAutocompleteUsers {
   address: string;
   imageUrl: string;
   anonAvatar: string;
-  avatar: string,
+  avatar: string;
 }
 
-export async function getMatchingUsers(searchValue: string, properties: string[]): Promise<any> {
+export async function getMatchingUsers(
+  searchValue: string,
+  properties: string[],
+  lastValue: string = ""
+): Promise<any> {
   try {
     let url = `${URL()}/user/getMatchingUsers`;
-    url += `?value=${searchValue}`;
-    properties.forEach(prop => (url += `&properties=${prop}`));
+    if (searchValue) url += `?value=${searchValue}`;
+    properties.forEach((prop, index) => {
+      if (index > 0 || searchValue) url += `&properties=${prop}`;
+      else if (index === 0) {
+        url += `?properties=${prop}`;
+      }
+    });
+    if (lastValue) url += `&lastValue=${lastValue}`;
     const response = await axios.get(url);
     return response?.data;
   } catch (e) {
@@ -90,6 +100,16 @@ export async function getUsersByAddresses(addresses: string[]): Promise<any> {
     let url = `${URL()}/user/getUsersByAddresses`;
     addresses.forEach(prop => (url += `&addresses=${prop}`));
     const response = await axios.get(url);
+    return response?.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function checkUserConnected(userId: string): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/user/checkUserConnected/${userId}`);
     return response?.data;
   } catch (e) {
     console.log(e);

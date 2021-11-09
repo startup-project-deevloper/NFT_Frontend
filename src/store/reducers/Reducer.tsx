@@ -214,7 +214,6 @@ export interface RootState {
   slug: { slug: string };
   messageBox: {
     isOpenMessageBox: boolean;
-    userInfo: UserInfo;
     message: string;
     isSendMessage: boolean;
     chat: any;

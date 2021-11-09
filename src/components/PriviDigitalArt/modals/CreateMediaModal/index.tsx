@@ -86,6 +86,13 @@ const multiAddr = getIPFSURL();
 const polygonTokenList = Object.keys(Web3Config.Polygon.TOKEN_ADDRESSES);
 const ethereumTokenList = Object.keys(Web3Config.Ethereum.TOKEN_ADDRESSES);
 
+interface IMetadata {
+  name: string;
+  description: string;
+  external_url: string;
+  image: string;
+}
+
 const CreateMediaModal = (props: any) => {
   const { showAlertMessage } = useAlertMessage();
   const classes = createMediaModalStyles();
@@ -312,7 +319,7 @@ const CreateMediaModal = (props: any) => {
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
       if (!isHere) {
-        showAlertMessage("Got failed while switching over to target netowrk", { variant: "error" });
+        showAlertMessage("Got failed while switching over to target network", { variant: "error" });
         setDisableButton(false);
         return;
       }
@@ -326,13 +333,14 @@ const CreateMediaModal = (props: any) => {
     const web3 = new Web3(library.provider);
     // upload metadata to ipfs
     let uri;
+    let metadata: IMetadata;
     const tokenId = random();
     try {
       const { MediaName, MediaDescription } = mediaData;
       const external_url = `https://${window.location.hostname}/#/nft/${MediaName.replace(/\s/g, "")}`;
       const image = `${getURLfromCID(metadataID)}/${imageName}`;
-      const metaData = { name: MediaName, description: MediaDescription, external_url, image };
-      uri = getURLfromCID((await uploadNFTMetaData(metaData)).cid);
+      metadata = { name: MediaName, description: MediaDescription, external_url, image };
+      uri = getURLfromCID((await uploadNFTMetaData(metadata)).cid);
     } catch (err) {
       console.error("Error-UploadNFTMetaData", { err });
     }
@@ -353,6 +361,8 @@ const CreateMediaModal = (props: any) => {
               BlockchainId: tokenId,
               TokenContractAddress: web3Config.CONTRACT_ADDRESSES.ERC721WithRoyalty,
               cid: metadataID,
+              metadata,
+              urlIpfsImage: metadata.image,
             },
             extra: mediaAdditionalDataRef.current,
           };

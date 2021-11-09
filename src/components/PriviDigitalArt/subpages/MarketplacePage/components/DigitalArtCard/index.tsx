@@ -22,7 +22,6 @@ const getRandomImageUrl = () => {
 
 export default function DigitalArtCard({ item, heightFixed }) {
   const classes = useStyles();
-  const user = useTypedSelector(state => state.user);
   const history = useHistory();
 
   const { isSignedin } = useAuth();
@@ -172,9 +171,7 @@ export default function DigitalArtCard({ item, heightFixed }) {
           {creator ? (
             <Avatar
               size="small"
-              url={
-                creator.imageUrl ?? getDefaultAvatar()
-              }
+              url={creator.imageUrl ?? getDefaultAvatar()}
               alt={creator.id}
               title={creator.name}
               onClick={() => {
@@ -264,7 +261,7 @@ export default function DigitalArtCard({ item, heightFixed }) {
 
       <div className={classes.info} onClick={handleOpenDigitalArtModal}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px">
-          <div className={cls(classes.black, classes.title)}>{media.metadata.name}</div>
+          <div className={cls(classes.black, classes.title)}>{media.metadata?.name}</div>
           <img src={getChainImageUrl(media.chainsFullName)} alt={"chain"} className={classes.chain} />
         </Box>
 

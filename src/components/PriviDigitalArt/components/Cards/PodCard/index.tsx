@@ -241,14 +241,6 @@ export default function PodCard({ item, heightFixed, index = 0 }) {
           <p>{media.SharingPercent ? `${parseFloat(media.SharingPercent)}%` : "0%"}</p>
         </Box>
       </Box>
-      {/* {isSignedin && media && creator && (
-        <DigitalArtModal
-          open={openDigitalArtModal}
-          handleClose={handleCloseDigitalArtModal}
-          selectedMedia={media}
-          creator={creator}
-        />
-      )} */}
     </div>
   );
 }

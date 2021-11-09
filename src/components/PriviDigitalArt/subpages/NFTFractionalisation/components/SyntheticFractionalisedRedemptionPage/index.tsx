@@ -3,7 +3,7 @@ import Web3 from "web3";
 import Carousel from "react-elastic-carousel";
 import Pagination from "@material-ui/lab/Pagination";
 import axios from "axios";
-import moment from "moment";
+import Moment from "react-moment";
 
 import { createTheme, useMediaQuery } from "@material-ui/core";
 import { PrimaryButton, SecondaryButton, Text, Color } from "shared/ui-kit";
@@ -12,7 +12,6 @@ import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
-import { getDiffBetweenDate } from "shared/helpers/utils";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { SyntheticFractionalisedRedemptionPageStyles } from "./index.styles";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
@@ -97,7 +96,7 @@ export default ({ collection }) => {
     },
     {
       cellAlign: "center",
-      cell: `${getDiffBetweenDate(new Date(row.timestamp), new Date())}ago`,
+      cell: <Moment fromNow>{new Date(row.timestamp)}</Moment>,
     },
     {
       cellAlign: "center",

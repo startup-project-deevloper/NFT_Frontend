@@ -76,29 +76,3 @@ export const typeUnitValue = (value: any, precision: number) => {
     return roundFloat(Number(value), precision);
   }
 };
-
-export const getDiffBetweenDate = (date1: Date, date2: Date) => {
-  const m1 = moment(date1, "DD-MM-YYYY HH:mm");
-  const m2 = moment(date2, "DD-MM-YYYY HH:mm");
-  const m3 = m2.diff(m1, "minutes");
-  const m4 = m2.diff(m1, "h");
-
-  const numdays = Math.floor(m3 / 1440);
-  const numhours = Math.floor((m3 % 1440) / 60);
-  const numminutes = Math.floor((m3 % 1440) % 60);
-
-  let ret = "";
-  if (numdays) {
-    ret += `${numdays} day(s) `;
-  }
-
-  if (numhours) {
-    ret += `${numhours} hour(s) `;
-  }
-
-  if (numminutes) {
-    ret += `${numminutes} minute(s) `;
-  }
-
-  return ret;
-};

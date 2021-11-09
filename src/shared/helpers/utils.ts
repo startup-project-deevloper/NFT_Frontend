@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const countDecimals = (value: number) => {
   if (Math.floor(value) === value) return 0;
   return value.toString().split(".")[1].length || 0;
@@ -48,20 +50,55 @@ export const sanitizeIfIpfsUrl = url => {
 export const roundFloat = (value: number, precision: number) => parseFloat(value.toFixed(precision));
 
 export const typeUnitValue = (value: any, precision: number) => {
-    let num_str = value.toString()
-    let int_str = num_str.split('.')[0]
-    let direction = true
-    if (int_str[0] == '-') {
-        direction = false
-        int_str = int_str.split('-')[1]
-    }
-    if (int_str.length > 6) {
-        return `${direction ? '' : '-'}${int_str.substring(0, int_str.length - 6)},${int_str.substring(int_str.length - 6, int_str.length - 6 - 3)}M`
-    } else if (int_str.length > 5) {
-        return `${direction ? '' : '-'}${int_str.substring(0, int_str.length - 3)},${int_str.substring(int_str.length - 3, int_str.length)}K`
-    } else if (int_str.length >= 4) {
-        return `${direction ? '' : '-'}${int_str.substring(0, int_str.length - 3)},${int_str.substring(int_str.length - 3, int_str.length)}`
-    } else {
-        return roundFloat(Number(value), precision)
-    }
-}
+  let num_str = value.toString();
+  let int_str = num_str.split(".")[0];
+  let direction = true;
+  if (int_str[0] == "-") {
+    direction = false;
+    int_str = int_str.split("-")[1];
+  }
+  if (int_str.length > 6) {
+    return `${direction ? "" : "-"}${int_str.substring(0, int_str.length - 6)},${int_str.substring(
+      int_str.length - 6,
+      int_str.length - 6 - 3
+    )}M`;
+  } else if (int_str.length > 5) {
+    return `${direction ? "" : "-"}${int_str.substring(0, int_str.length - 3)},${int_str.substring(
+      int_str.length - 3,
+      int_str.length
+    )}K`;
+  } else if (int_str.length >= 4) {
+    return `${direction ? "" : "-"}${int_str.substring(0, int_str.length - 3)},${int_str.substring(
+      int_str.length - 3,
+      int_str.length
+    )}`;
+  } else {
+    return roundFloat(Number(value), precision);
+  }
+};
+
+export const getDiffBetweenDate = (date1: Date, date2: Date) => {
+  const m1 = moment(date1, "DD-MM-YYYY HH:mm");
+  const m2 = moment(date2, "DD-MM-YYYY HH:mm");
+  const m3 = m2.diff(m1, "minutes");
+  const m4 = m2.diff(m1, "h");
+
+  const numdays = Math.floor(m3 / 1440);
+  const numhours = Math.floor((m3 % 1440) / 60);
+  const numminutes = Math.floor((m3 % 1440) % 60);
+
+  let ret = "";
+  if (numdays) {
+    ret += `${numdays} day(s) `;
+  }
+
+  if (numhours) {
+    ret += `${numhours} hour(s) `;
+  }
+
+  if (numminutes) {
+    ret += `${numminutes} minute(s) `;
+  }
+
+  return ret;
+};

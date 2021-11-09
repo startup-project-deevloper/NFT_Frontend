@@ -3,26 +3,29 @@ import Web3 from "web3";
 import Carousel from "react-elastic-carousel";
 import Pagination from "@material-ui/lab/Pagination";
 import axios from "axios";
+import moment from "moment";
 
 import { createTheme, useMediaQuery } from "@material-ui/core";
-import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
+import { PrimaryButton, SecondaryButton, Text, Color } from "shared/ui-kit";
 import URL from "shared/functions/getURL";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
+import { getDiffBetweenDate } from "shared/helpers/utils";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { SyntheticFractionalisedRedemptionPageStyles } from "./index.styles";
 import CollectionNFTCard from "../../../../components/Cards/CollectionNFTCard";
 import RedeemJotsModal from "components/PriviDigitalArt/modals/RedeemJotsModal";
 import { toDecimals } from "shared/functions/web3";
+import { addRedemptionHistory } from "shared/services/API/SyntheticFractionalizeAPI";
 
-const ROWS_PER_PAGE = 20;
+const ROWS_PER_PAGE = 3;
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default ({ collection }) => {
   const [nfts, setNFTs] = useState<any[]>([]);
   const classes = SyntheticFractionalisedRedemptionPageStyles();
-  const [historyRows, setHistoryRows] = useState<any>([]);
   const [openRedeemJotsModal, setOpenRedeemJotsModal] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<number>(1);
   const [totalLiquidityToRedeem, setTotalLiquidityToRedeem] = useState<number>(0);
@@ -30,6 +33,7 @@ export default ({ collection }) => {
   const [loadingNFTs, setLoadingNFTs] = useState<boolean>(false);
   const lastIdRef = useRef(null);
   const hasMoreRef = useRef(null);
+  const [history, setHistory] = useState<any[]>(collection.redemptionHistory ?? []);
 
   const { account, library, chainId } = useWeb3React();
   const theme = createTheme({
@@ -74,40 +78,41 @@ export default ({ collection }) => {
 
   const setShowAllNFTs = () => {};
 
-  useEffect(() => {
-    setHistoryRows(
-      new Array(0).fill([
-        {
-          cellAlign: "center",
-          cell: "Redemption",
-        },
-        {
-          cellAlign: "center",
-          cell: "20 JOTs",
-        },
-        {
-          cellAlign: "center",
-          cell: "24 55O USDT/JOT",
-        },
-        {
-          cellAlign: "center",
-          cell: "0xeec9...82f8",
-        },
-        {
-          cellAlign: "center",
-          cell: "2 minutes ago",
-        },
-        {
-          cellAlign: "center",
-          cell: (
-            <div className={classes.explorerImg} onClick={() => {}}>
-              <img src={require("assets/icons/polygon_scan.png")} />
-            </div>
-          ),
-        },
-      ])
-    );
-  }, []);
+  const historyRows: any[] = history.map(row => [
+    {
+      cellAlign: "center",
+      cell: "Redemption",
+    },
+    {
+      cellAlign: "center",
+      cell: `${row.amount} JOTs`,
+    },
+    {
+      cellAlign: "center",
+      cell: `${row.rate} JOTs`,
+    },
+    {
+      cellAlign: "center",
+      cell: <Text color={Color.Purple}>{row.account ? row.account.substring(0, 8) + "..." : "-"}</Text>,
+    },
+    {
+      cellAlign: "center",
+      cell: `${getDiffBetweenDate(new Date(row.timestamp), new Date())}ago`,
+    },
+    {
+      cellAlign: "center",
+      cell: (
+        <div
+          className={classes.explorerImg}
+          onClick={() => {
+            window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${row.txnAddress}`, "_blank");
+          }}
+        >
+          <img src={require("assets/icons/polygon_scan.png")} />
+        </div>
+      ),
+    },
+  ]);
 
   useEffect(() => {
     getRedeemData();
@@ -150,17 +155,39 @@ export default ({ collection }) => {
 
     const total = await web3APIHandler.RedemptionPool.getTotalLiquidityToRedeem(web3, collection);
 
-    console.log("total liquidity to redeem... ", total);
     if (total) {
       setTotalLiquidityToRedeem(+toDecimals(total, decimals));
     }
 
     const jotsToRedeem = await web3APIHandler.RedemptionPool.getJotsToRedeem(web3, collection);
 
-    console.log("jotsToRedeem... ", jotsToRedeem);
     if (jotsToRedeem) {
       setJotsToRedeem(jotsToRedeem);
     }
+  };
+
+  const onConfirm = async (amount, txn) => {
+    getRedeemData();
+    const data = {
+      type: "Redemption",
+      amount,
+      rate: jotsToRedeem > 0 ? (totalLiquidityToRedeem / jotsToRedeem).toFixed(2) : 0,
+      account,
+      txnAddress: txn,
+    };
+
+    await addRedemptionHistory({
+      collectionAddress: collection.id,
+      history: data,
+    });
+    const timestamp = Date.now();
+    let updateHistory = [...history];
+    updateHistory.unshift({
+      ...data,
+      id: timestamp.toString(),
+      timestamp,
+    });
+    setHistory(updateHistory);
   };
 
   return (
@@ -334,6 +361,7 @@ export default ({ collection }) => {
         handleClose={() => setOpenRedeemJotsModal(false)}
         collection={collection}
         price={totalLiquidityToRedeem / jotsToRedeem}
+        onCompleted={onConfirm}
       />
     </Box>
   );

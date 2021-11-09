@@ -42,7 +42,7 @@ const redemptionPool = (network: string) => {
 
         const response = await contract.methods.jotsToRedeem().call();
         console.log("transaction succeed... ", response);
-        resolve(response);
+        resolve(+toDecimals(response, decimals));
       } catch (e) {
         console.log(e);
         resolve(null);
@@ -64,17 +64,20 @@ const redemptionPool = (network: string) => {
         const contract = ContractInstance(web3, metadata.abi, RedemptionPoolAddress);
 
         const jotAPI = JOT(network);
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+        const tAmount = toNDecimals(+amount, decimals);
+        console.log("tAmount... ", tAmount);
 
-        const approve = await jotAPI.approve(web3, account, JotAddress, RedemptionPoolAddress, amount);
+        const approve = await jotAPI.approve(web3, account, JotAddress, RedemptionPoolAddress, tAmount);
 
         if (!approve) {
           resolve(null);
         }
 
-        const gas = await contract.methods.redeem(amount).estimateGas({ from: account });
+        const gas = await contract.methods.redeem(tAmount).estimateGas({ from: account });
         console.log("estimated gas... ", gas);
         const response = await contract.methods
-          .redeem(amount)
+          .redeem(tAmount)
           .send({ from: account, gas: gas })
           .on("transactionHash", function (hash) {
             if (setHash) {

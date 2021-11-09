@@ -9,7 +9,7 @@ import { RootState } from "store/reducers/Reducer";
 import { TwitterShareButton, InstapaperShareButton, FacebookShareButton } from "react-share";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { wallFeedCardStyles } from "./index.styles";
-import { getRandomAvatarForUserIdWithMemoization, getUserAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import WallItemModal from "components/PriviDigitalArt/subpages/ProfilePage/components/MyWall/WallItemModal";
 
 import { ReactComponent as FacebookIcon } from "assets/snsIcons/facebook.svg";
@@ -23,7 +23,7 @@ export default function WallFeedCard({
   userProfile,
   feedItem,
   type,
-} : {
+}: {
   item: any;
   userProfile: any;
   feedItem?: boolean;
@@ -52,14 +52,14 @@ export default function WallFeedCard({
   const [imageWallIPFS, setImageWallIPFS] = useState<any>(null);
   const [videoWallIPFS, setVideoWallIPFS] = useState<any>(null);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
 
   useEffect(() => {
-    if (feedData && ipfs ) {
+    if (feedData && isIPFSAvailable) {
       getPhotos(feedData);
 
       if (feedData.comments && feedData.responses?.length > 0) {
@@ -78,7 +78,7 @@ export default function WallFeedCard({
         setComments && setComments(r);
       }
     }
-  }, [feedData, users, ipfs]);
+  }, [feedData, users, isIPFSAvailable]);
 
   useEffect(() => {
     if (userSelector.id === userProfile.id) {
@@ -88,12 +88,14 @@ export default function WallFeedCard({
     }
   }, [feedData]);
 
-  const getPhotos = async (feedData) => {
-    const userFound = users.find(usr => usr.id === feedData.userId);
+  const getPhotos = async feedData => {
+    const userFound = users.find(usr => usr.id === feedData.createdBy);
 
     if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
       setImageIPFS(imageUrl);
+    } else {
+      setImageIPFS(getDefaultAvatar());
     }
 
     if (feedData && feedData.infoImage && feedData.infoImage.newFileCID) {
@@ -105,17 +107,16 @@ export default function WallFeedCard({
       let videoUrl = await getPhotoIPFS(feedData.infoVideo.newFileCID, downloadWithNonDecryption);
       setVideoWallIPFS(videoUrl);
     }
-
-  }
+  };
 
   const getReturnUserPhoto = async (userFound: any) => {
     if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
       let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
-      return(imageUrl);
+      return imageUrl;
     } else {
-      return("");
+      return "";
     }
-  }
+  };
 
   const handleFruit = type => {
     const body = {
@@ -139,15 +140,9 @@ export default function WallFeedCard({
 
   return (
     <>
-      <div className={classes.wallItem}
-           onClick={handleOpenWallItemModal}>
+      <div className={classes.wallItem} onClick={handleOpenWallItemModal}>
         <Box mb={"16px"} display="flex" alignItems="center">
-          <Avatar
-            size={"small"}
-            url={imageIPFS ?
-              imageIPFS : ""
-            }
-          />
+          <Avatar size={"small"} url={imageIPFS ? imageIPFS : ""} />
           <Box ml="8px" fontSize="12px">
             {userSelector.id !== feedData.createdBy ? <span>{feedData.userName}</span> : "You"}
             {!feedItem

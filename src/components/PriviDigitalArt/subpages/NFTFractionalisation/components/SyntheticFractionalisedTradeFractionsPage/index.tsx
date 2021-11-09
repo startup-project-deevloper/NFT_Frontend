@@ -860,18 +860,22 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       <Box
                         className={classes.ownerInfo}
                         style={{
-                          background: "#DDFF57",
+                          background: buybackPrice > 0 ? "#DDFF57" : "transparent",
                           borderRadius: 12,
                           padding: "21px 0 18px 31px",
                           marginLeft: 18,
                         }}
                       >
-                        <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                          Current Reserve Price to Buy Back
-                        </Box>
-                        <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                          {(+buybackPrice).toFixed(4)} USDT
-                        </Box>
+                        {buybackPrice > 0 ? (
+                          <>
+                            <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                              Current Reserve Price to Buy Back
+                            </Box>
+                            <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                              {(+buybackPrice).toFixed(4)} USDT
+                            </Box>
+                          </>
+                        ) : null}
                         <PrimaryButton
                           className={classes.h4}
                           size="medium"

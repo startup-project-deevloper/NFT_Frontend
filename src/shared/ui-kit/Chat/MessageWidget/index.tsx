@@ -732,7 +732,6 @@ const MessageWidget: React.FC<MessageWidgetProps> = ({
               message={item}
               chat={chat}
               mediaOnCommunity={false}
-              lastRow={index + 1 === messages.length}
             />
           ))
         ) : (

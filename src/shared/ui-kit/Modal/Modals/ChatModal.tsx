@@ -1,17 +1,19 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import { MessageFooter } from "shared/ui-kit/Chat/MessageContent";
-import { Avatar, makeStyles } from "@material-ui/core";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { Avatar, makeStyles } from "@material-ui/core";
+
 import { endChat, updateChat } from "store/actions/MessageActions";
 import { RootState } from "store/reducers/Reducer";
-import URL from "shared/functions/getURL";
-import axios from "axios";
+import { getMessageBox } from "store/selectors";
 import { socket } from "components/Login/Auth";
+
+import { MessageFooter } from "shared/ui-kit/Chat/MessageContent";
+import URL from "shared/functions/getURL";
 import { MessageItem } from "shared/ui-kit/Chat/MessageItem";
 import { useMessages } from "shared/contexts/MessagesContext";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { getMessageBox } from "store/selectors";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const useStyles = makeStyles({
   container: {
@@ -130,18 +132,12 @@ const useStyles = makeStyles({
 const ChatModal = ({ chat }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const location = useLocation();
   const userSelector = useSelector((state: RootState) => state.user);
-  const usersInfo = useSelector((state: RootState) => state.usersInfoList);
-  const { setNumberMessages } = useMessages();
-  const [chatUsers, setChatUsers] = React.useState([]);
-
   const messageBoxInfo = useSelector(getMessageBox);
   const { isSendMessage, chat: messageBoxChat } = messageBoxInfo;
+  const { setNumberMessages } = useMessages();
 
   const [minimize, setMinimize] = useState<boolean>(true);
-  const [otherUser, setOtherUser] = useState<any>({});
-  const [differentUser, setDifferentUser] = useState<any>({});
 
   const [messages, setMessages] = useState<any[]>([]);
   const [messagesCharged, setMessagesCharged] = useState<boolean>(true);
@@ -151,29 +147,27 @@ const ChatModal = ({ chat }) => {
 
   const itemListRef = useRef<HTMLDivElement>(null);
 
+  const differentUser = React.useMemo(
+    () => (chat.users.userFrom.userId === userSelector.id ? chat.users.userTo : chat.users.userFrom),
+    [chat, userSelector]
+  );
+
+  useEffect(() => {
+    createChat();
+  }, []);
+
   useEffect(() => {
     if (isSendMessage === true) {
       // If currently selected chat in the profile message is same as the chatmodal
-      if (chat.room === messageBoxChat.room
-        || (chat.users?.userFrom?.userId === messageBoxChat.users?.userFrom?.userId && chat.users?.userTo?.userId === messageBoxChat.users?.userTo?.userId)) {
+      if (
+        chat.room === messageBoxChat.room ||
+        (chat.users?.userFrom?.userId === messageBoxChat.users?.userFrom?.userId &&
+          chat.users?.userTo?.userId === messageBoxChat.users?.userTo?.userId)
+      ) {
         setMessages(messageBoxChat.messages);
       }
     }
   }, [isSendMessage]);
-
-  const handleMinimize = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setMinimize(!minimize);
-  };
-
-  const handleClose = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    dispatch(
-      endChat({
-        receipientId: chat.receipientId,
-      })
-    );
-  };
 
   useEffect(() => {
     setPageIndex(messages.length);
@@ -208,35 +202,7 @@ const ChatModal = ({ chat }) => {
     }
   }, [chat]);
 
-  useEffect(() => {
-    if (chat) {
-      let differentUser: string = "";
-      if (
-        chat &&
-        chat.users &&
-        chat.users.userFrom &&
-        chat.users.userFrom.userId &&
-        chat.users.userFrom.userId !== userSelector.id
-      ) {
-        differentUser = chat.users.userFrom.userId;
-      } else if (
-        chat &&
-        chat.users &&
-        chat.users.userTo &&
-        chat.users.userTo.userId &&
-        chat.users.userTo.userId !== userSelector.id
-      ) {
-        differentUser = chat.users.userTo.userId;
-      }
-      let differentUserInfo = usersInfo.find(user => user.id === differentUser);
-      if (differentUserInfo) {
-        setDifferentUser(differentUserInfo);
-        createChat(differentUserInfo);
-      }
-    }
-  }, []);
-
-  const createChat = (user: any) => {
+  const createChat = () => {
     let users: any = {
       userFrom: {
         userId: userSelector.id,
@@ -245,13 +211,12 @@ const ChatModal = ({ chat }) => {
         lastView: new Date(),
       },
       userTo: {
-        userId: user.id,
-        userName: user.name,
+        userId: chat.users.userTo.userId,
+        userName: chat.users.userTo.userName,
         userConnected: false,
         lastView: null,
       },
     };
-    setChatUsers(users);
 
     axios
       .post(`${URL()}/chat/newChat`, { users: users })
@@ -262,7 +227,6 @@ const ChatModal = ({ chat }) => {
               chat: {
                 ...response.data.data,
                 receipientId: chat.receipientId,
-                userInfo: chat.userInfo,
               },
             })
           );
@@ -327,22 +291,38 @@ const ChatModal = ({ chat }) => {
     [getMessages]
   );
 
+  const handleMinimize = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setMinimize(!minimize);
+  };
+
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch(
+      endChat({
+        receipientId: chat.receipientId,
+      })
+    );
+  };
+
   return (
     <div className={classes.container} style={{ display: chat.hidden ? "none" : "inline-block" }}>
       <div className={classes.header} onClick={handleMinimize}>
         <div className={classes.chatInfo}>
-          <Avatar src={differentUser.ipfsImage ? differentUser.ipfsImage : ""}
-                  alt={differentUser.name}
-                  style={{
-            filter: "drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2))",
-            backgroundColor: "#fff",
-            padding: 2,
-            borderRadius: "50%",
-          }} />
+          <Avatar
+            src={differentUser.userFoto ?? getDefaultAvatar()}
+            alt={differentUser.name}
+            style={{
+              filter: "drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2))",
+              backgroundColor: "#fff",
+              padding: 2,
+              borderRadius: "50%",
+            }}
+          />
           {differentUser.connected && <span className="online" />}
           <div className={classes.user}>
-            <div className={classes.userName}>{differentUser.name ?? differentUser.userName ?? ""}</div>
-            <div className={classes.userSlug}>{"@" + differentUser.urlSlug}</div>
+            <div className={classes.userName}>{differentUser.name ?? ""}</div>
+            {/* <div className={classes.userSlug}>{"@" + differentUser.urlSlug}</div> */}
           </div>
         </div>
         <div className={classes.actionBtns}>
@@ -367,16 +347,9 @@ const ChatModal = ({ chat }) => {
                     return (
                       <MessageItem
                         key={item.id}
-                        user={
-                          item.users && item.users.userFrom && item.users.userFrom.userId
-                            ? item.users.userFrom.userId === userSelector.id
-                              ? item.users.userTo
-                              : item.users.userFrom
-                            : null
-                        }
+                        user={differentUser}
                         message={item}
                         chat={chat}
-                        lastRow={index + 1 === messages.length}
                         mediaOnCommunity={false}
                       />
                     );
@@ -386,7 +359,6 @@ const ChatModal = ({ chat }) => {
           </div>
           <MessageFooter
             chat={chat}
-            chatsUsers={chatUsers}
             messages={messages}
             specialWidthInput={false}
             setMessages={msgs => setMessages(msgs)}

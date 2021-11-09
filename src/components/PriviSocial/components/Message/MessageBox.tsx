@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { Box } from "@material-ui/core";
+
+import { socket } from "components/Login/Auth";
+import { PixMessageProfile } from "./PixMessageProfile";
 import { MessageList } from "./MessageList";
 import { MessageContent } from "./MessageContent";
-import axios from "axios";
-import io from "socket.io-client";
-import URL from "shared/functions/getURL";
-import { useSelector, useDispatch } from "react-redux";
+import { MessageProfile } from "./MessageProfile";
+
 import { RootState } from "store/reducers/Reducer";
 import { openMessageBox, sentMessage } from "store/actions/MessageActions";
 import { getMessageBox } from "store/selectors/user";
-import "./MessageBox.css";
-import { socket, setSocket } from "components/Login/Auth";
-import { PixMessageProfile } from "./PixMessageProfile";
+
+import URL from "shared/functions/getURL";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
-import { Box } from "@material-ui/core";
+
+import "./MessageBox.css";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 export const MessageBox = ({ type = "social" }) => {
   const dispatch = useDispatch();
 
   const userSelector = useSelector((state: RootState) => state.user);
-  const usersInfo = useSelector((state: RootState) => state.usersInfoList);
   const messageBoxInfo = useSelector(getMessageBox);
-  const { isOpenMessageBox, userInfo, isSendMessage, message, chat: messageBoxChat } = messageBoxInfo;
+  const { isOpenMessageBox, isSendMessage, message, chat: messageBoxChat } = messageBoxInfo;
 
   const [chats, setChats] = useState<any[]>([]);
   const [chatsUsers, setChatsUsers] = useState<any>({});
@@ -32,20 +36,20 @@ export const MessageBox = ({ type = "social" }) => {
   const width = useWindowDimensions().width;
   const [mobileShowRoom, setMobileShowRoom] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!socket && localStorage.getItem("userId")) {
-      const sock = io(URL(), {
-        query: { token: localStorage.getItem("token")?.toString() || "" },
-        transports: ["websocket"],
-      });
-      sock.connect();
-      setSocket(sock);
-      sock.emit("add user", localStorage.getItem("userId")?.toString() || "");
+  const userInfo = React.useMemo(() => {
+    if (chat && userSelector) {
+      if (chat.users?.userFrom?.userId === userSelector.id) {
+        return chat.users?.userTo;
+      }
+      return chat.users?.userFrom;
     }
-  }, []);
+
+    return null;
+  }, [chat, useSelector]);
 
   useEffect(() => {
     if (chat && chat.room && socket) {
+      socket.off("message");
       socket.on("message", message => {
         setMessages(msgs => {
           let msgsArray = [...msgs];
@@ -87,22 +91,11 @@ export const MessageBox = ({ type = "social" }) => {
   useEffect(() => {
     //this opens message box when navigating to /social/:id/messages
     if (!isOpenMessageBox) {
-      if (!message && userInfo) {
-        let user = usersInfo[usersInfo.findIndex(user => user.id === userInfo.id)];
-        dispatch(openMessageBox(user));
+      if (!message) {
+        dispatch(openMessageBox(true));
       }
     }
-  }, [usersInfo]);
-
-  useEffect(() => {
-    //this loads the chat when opening the messagebox through the header menu
-    if (Object.keys(chat).length <= 0 || messages.length <= 0) {
-      if (chats && chats.length > 0 && userInfo) {
-        let openedChat = chats.find(chat => chat.users.userTo.userId === userInfo.id);
-        beforeCreateChat(openedChat);
-      }
-    }
-  }, [chats]);
+  }, []);
 
   useEffect(() => {
     setPageIndex(messages.length);
@@ -136,7 +129,7 @@ export const MessageBox = ({ type = "social" }) => {
   }, [isSendMessage]);
 
   const beforeCreateChat = (chat: any) => {
-    let differentUser: string = "";
+    let differentUser;
     if (
       chat &&
       chat.users &&
@@ -144,7 +137,7 @@ export const MessageBox = ({ type = "social" }) => {
       chat.users.userFrom.userId &&
       chat.users.userFrom.userId !== userSelector.id
     ) {
-      differentUser = chat.users.userFrom.userId;
+      differentUser = chat.users.userFrom;
     } else if (
       chat &&
       chat.users &&
@@ -152,11 +145,11 @@ export const MessageBox = ({ type = "social" }) => {
       chat.users.userTo.userId &&
       chat.users.userTo.userId !== userSelector.id
     ) {
-      differentUser = chat.users.userTo.userId;
+      differentUser = chat.users.userTo;
     }
-    let differentUserInfo = usersInfo.find(user => user.id === differentUser);
-    if (differentUserInfo) {
-      createChat(differentUserInfo);
+
+    if (differentUser) {
+      createChat(differentUser);
     }
   };
 
@@ -165,26 +158,12 @@ export const MessageBox = ({ type = "social" }) => {
       userFrom: {
         userId: userSelector.id,
         userName: userSelector.firstName,
-        userFoto: userSelector.anon
-          ? userSelector.anonAvatar && userSelector.anonAvatar.length > 0
-            ? `${require(`assets/anonAvatars/${userSelector.anonAvatar}`)}`
-            : `${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}`
-          : userSelector.hasPhoto
-          ? `${URL()}/user/getPhoto/${userSelector.id}`
-          : "",
         userConnected: true,
         lastView: new Date(),
       },
       userTo: {
-        userId: user.id,
-        userName: user.name,
-        userFoto: user.anon
-          ? user.anonAvatar && user.anonAvatar.length > 0
-            ? `${require(`assets/anonAvatars/${user.anonAvatar}`)}`
-            : `${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}`
-          : user.hasPhoto
-          ? `${URL()}/user/getPhoto/${user.id}`
-          : "",
+        userId: user.userId,
+        userName: user.userName,
         userConnected: false,
         lastView: null,
       },
@@ -255,7 +234,7 @@ export const MessageBox = ({ type = "social" }) => {
   };
 
   return (
-    <div className={`message-box pix`}>
+    <div className={`message-box ${type !== "social" ? "pix" : ""}`}>
       <div className={"message-list"}>
         <MessageList
           chats={chats}
@@ -286,20 +265,11 @@ export const MessageBox = ({ type = "social" }) => {
               >
                 <img src={require("assets/icons/back.png")} alt="back" />
               </Box>
-              <img
-                src={
-                  userInfo && userInfo.url
-                    ? userInfo.url
-                    : require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")
-                }
-                className="message-profile-avatar"
-              />
+              <img src={userInfo?.userFoto ?? getDefaultAvatar} className="message-profile-avatar" />
               <Box display="flex" flexDirection="column" ml={2}>
-                <div className="name">{userInfo && userInfo.name}</div>
+                <div className="name">{userInfo?.name}</div>
                 <div className="slug-container">
-                  {userInfo && userInfo.urlSlug ? (
-                    <div className="slug-name">@{userInfo && userInfo.urlSlug ? userInfo.urlSlug : ""}</div>
-                  ) : null}
+                  {userInfo?.urlSlug ? <div className="slug-name">@{userInfo.urlSlug}</div> : null}
                 </div>
               </Box>
             </Box>
@@ -328,7 +298,11 @@ export const MessageBox = ({ type = "social" }) => {
       </div>
       {width >= 1300 && (
         <div className="message-profile">
-          <PixMessageProfile chat={chat} type={type} />
+          {type === "pix" || type === "trax" ? (
+            <PixMessageProfile chat={chat} type={type} />
+          ) : (
+            <MessageProfile chat={chat}/>
+          )}
         </div>
       )}
     </div>

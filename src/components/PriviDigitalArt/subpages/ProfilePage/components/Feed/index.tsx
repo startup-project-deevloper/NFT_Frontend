@@ -303,14 +303,14 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
           {getFriendsBox()}
         </Box>
         <Box width={1}>
-          {ownUser && (
+          {/* {ownUser && (
             <ShareVoiceMessage
               theme="pix"
               handleShare={audio => {
                 setSharedVoices([...sharedVoices, audio]);
               }}
             />
-          )}
+          )} */}
           <Box className={classes.contentContainer}>
             {sharedVoices.map((voice, index) => (
               <SharedVoiceItem voice={voice} key={`shared-voices-${index}`} />

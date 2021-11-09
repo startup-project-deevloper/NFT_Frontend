@@ -4,9 +4,40 @@ import { Avatar } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { useHistory } from "react-router-dom";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 
 export default function FriendLabel({ friend }) {
   const history = useHistory();
+
+  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+
+  const [imageIPFS, setImageIPFS] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
+
+  React.useEffect(() => {
+    if (isIPFSAvailable && friend) {
+      getImageIpfs();
+    }
+  }, [friend, isIPFSAvailable]);
+
+  const getImageIpfs = async () => {
+    if (friend.infoImage && friend.infoImage.newFileCID) {
+      let imageUrl = await getPhotoIPFS(friend.infoImage.newFileCID, downloadWithNonDecryption);
+      setImageIPFS(imageUrl);
+    } else {
+      setImageIPFS(getDefaultAvatar());
+    }
+  };
+
+  const userSlug = React.useMemo(() => {
+    const slug = friend.urlSlug;
+    return slug.length > 15 ? slug.substr(0, 11) + "..." + slug.substr(slug.length - 3, 3) : slug;
+  }, [friend]);
 
   return (
     <Box
@@ -18,13 +49,13 @@ export default function FriendLabel({ friend }) {
       onClick={() => history.push(`/${friend.urlSlug}/profile`)}
     >
       <Box display="flex" alignItems="flex-start" width="95%">
-        <Avatar url={friend.ipfsImage ? friend.ipfsImage : ""} size="small" />
+        <Avatar url={imageIPFS ? imageIPFS : ""} size="small" />
         <Box ml="14px" maxWidth="70%">
           <Box color="#181818" fontSize="16px" mb="4px">
             {friend.name ?? <StyledSkeleton width={120} animation="wave" />}
           </Box>
           <Box fontSize="14px" color="#431AB7">
-            @{friend.urlSlug}
+            @{userSlug}
           </Box>
         </Box>
       </Box>

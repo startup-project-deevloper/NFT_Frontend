@@ -46,6 +46,7 @@ const exchange = network => {
   const PlaceERC721TokenBuyingOffer = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
+        console.log(contractAddress);
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
         const gas = await contract.methods
           .PlaceERC721TokenBuyingOffer(payload.input, payload.caller)
@@ -56,7 +57,7 @@ const exchange = network => {
         console.log("transaction succeed ", response);
         const result = {
           data: {
-            offerId: response.events.ERC721TokenBuyingOfferPlaced.returnValues[0],
+            offerId: response.events.ERC721TokenBuyingOfferPlaced.returnValues.offerId,
           },
           transaction: {
             From: response.from,

@@ -59,7 +59,7 @@ import {
   // buyFromOffer,
   // sellFromOffer,
   // getExchangePriceHistory,
-  getBuyingOffers,
+  getExchangeBuyingOffers,
   // cancelBuyingOffer,
   getNft,
   getUsersByAddresses,
@@ -349,7 +349,9 @@ const MarketplaceDetailPage = () => {
 
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
+
   const loggedUser = useSelector(getUser);
+
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const classes = marketplaceDetailPageStyles();
@@ -358,7 +360,6 @@ const MarketplaceDetailPage = () => {
   const [openDetailModal, setOpenDetailModal] = React.useState<boolean>(false);
   const [chooseWalletModal, setChooseWalletModal] = React.useState<boolean>(false);
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
-  // const [liked, setLiked] = React.useState<boolean>(false);
   const user = useTypedSelector(state => state.user);
   const userBalances = useTypedSelector(state => state.userBalances);
   const { convertTokenToUSD } = useTokenConversion();
@@ -494,8 +495,14 @@ const MarketplaceDetailPage = () => {
   }, [media?.fraction?.fraction, userBalances]);
 
   useEffect(() => {
-    loadData();
+    loadMedia();
   }, [params?.tokenAddress]);
+
+  useEffect(() => {
+    if (media) {
+      loadHistory();
+    }
+  }, [media]);
 
   useEffect(() => {
     if (media?.tokenAddress) {
@@ -510,378 +517,6 @@ const MarketplaceDetailPage = () => {
   }, [media?.CreatorId]);
 
   useEffect(() => {
-    if (media?.symbol) {
-      // FRACTIONALISE
-      if (media?.fraction) {
-        getFractionalisedMediaPriceHistory(media.symbol, media.Type).then(resp => {
-          const data = resp.data;
-          let labels = data.map(p => "");
-          const values = data.map(p => p.price);
-          if (data.length > 180) labels = generateMonthLabelsFromDate(data.map(p => p.date));
-          else
-            labels = generateDayLabelsFromDate(
-              data.map(p => p.date),
-              Math.min(10, data.length)
-            );
-          if (data.length > 1)
-            setFractionPrice(convertTokenToUSD(media.fraction.FundingToken, data[data.length - 1].price));
-          if (data.length > 2)
-            setFractionPriceChange(
-              (data[data.length - 1].price - data[data.length - 2].price) / data[data.length - 2].price
-            );
-
-          const newFractionHistoryConfig = JSON.parse(JSON.stringify(ChartConfig));
-          newFractionHistoryConfig.configurer = configurer;
-          newFractionHistoryConfig.config.data.labels = labels;
-          newFractionHistoryConfig.config.data.datasets[0].data = values;
-          newFractionHistoryConfig.config.data.datasets[0].backgroundColor = "#FFD705";
-          newFractionHistoryConfig.config.data.datasets[0].borderColor = "#FFD70500";
-          newFractionHistoryConfig.config.data.datasets[0].pointBackgroundColor = "#FFD705";
-          newFractionHistoryConfig.config.data.datasets[0].hoverBackgroundColor = "#FFD705";
-          newFractionHistoryConfig.config.data.datasets[0].type = "line";
-          newFractionHistoryConfig.config.options.scales.xAxes[0].offset = true;
-          newFractionHistoryConfig.config.options.scales.yAxes[0].ticks.display = true;
-          setFractionHistoryConfig(newFractionHistoryConfig);
-        });
-        // load ownership graph
-        getFractionalisedMediaSharedOwnershipHistory(media.symbol, media.Type).then(resp => {
-          const data = resp.data;
-          let labels = data.map(p => "");
-          const values = data.map(p => p.ownership);
-          if (data.length > 180) labels = generateMonthLabelsFromDate(data.map(p => p.date));
-          else
-            labels = generateDayLabelsFromDate(
-              data.map(p => p.date),
-              Math.min(10, data.length)
-            );
-
-          if (data.length > 1) setOwnershipFraction(data[data.length - 1].ownership);
-          if (data.length > 2)
-            setOwnershipFractionChange(
-              (data[data.length - 1].ownership - data[data.length - 2].ownership) /
-                data[data.length - 2].ownership
-            );
-
-          const newOwnershipHistoryConfig = JSON.parse(JSON.stringify(ChartConfig));
-          newOwnershipHistoryConfig.configurer = configurer;
-          newOwnershipHistoryConfig.config.data.labels = labels;
-          newOwnershipHistoryConfig.config.data.datasets[0].data = values;
-          newOwnershipHistoryConfig.config.data.datasets[0].backgroundColor = "#FFD705";
-          newOwnershipHistoryConfig.config.data.datasets[0].borderColor = "#FFD70500";
-          newOwnershipHistoryConfig.config.data.datasets[0].pointBackgroundColor = "#FFD705";
-          newOwnershipHistoryConfig.config.data.datasets[0].hoverBackgroundColor = "#FFD705";
-          newOwnershipHistoryConfig.config.data.datasets[0].type = "line";
-          newOwnershipHistoryConfig.config.options.scales.xAxes[0].offset = true;
-          newOwnershipHistoryConfig.config.options.scales.yAxes[0].ticks.display = true;
-          setOwnershipHistoryConfig(newOwnershipHistoryConfig);
-        });
-        // load buying and selling offers
-        getFractionalisedMediaOffers(media.symbol, media.Type).then(resp => {
-          if (resp?.success) {
-            const buyingOffers = resp?.data?.buyingOffers ?? [];
-            const sellingOffers = resp?.data?.sellingOffers ?? [];
-            const newBuyingOffersData: any[] = [];
-            const newSellingOffersData: any[] = [];
-            buyingOffers.forEach(offer => {
-              newBuyingOffersData.push([
-                {
-                  cell: <img src={require(`assets/tokenImages/${offer.Token}.png`)} width={24} height={24} />,
-                  cellAlign: "center",
-                },
-                { cell: offer.Token, cellAlign: "center" },
-                { cell: offer.Price, cellAlign: "center" },
-                { cell: offer.Amount, cellAlign: "center" },
-                {
-                  cell:
-                    offer.BAddress === user.address ? (
-                      <Text color={Color.Purple} onClick={() => handleOpenSignatureDeleteBuyOffer(offer)}>
-                        Delete
-                      </Text>
-                    ) : (
-                      <Text
-                        color={Color.Purple}
-                        onClick={() => {
-                          selectedOfferRef.current = offer;
-                          fractionOfferTypeRef.current = "sell";
-                          setOpenTradeFractionOfferModadl(true);
-                        }}
-                      >
-                        Sell
-                      </Text>
-                    ),
-                  cellAlign: "center",
-                },
-              ]);
-            });
-            sellingOffers.forEach(offer => {
-              if (offer.OrderId != media.fraction.OrderId) {
-                newSellingOffersData.push([
-                  {
-                    cell: (
-                      <img src={require(`assets/tokenImages/${offer.Token}.png`)} width={24} height={24} />
-                    ),
-                    cellAlign: "center",
-                  },
-                  { cell: offer.Token, cellAlign: "center" },
-                  { cell: offer.Price, cellAlign: "center" },
-                  { cell: offer.Amount, cellAlign: "center" },
-                  {
-                    cell:
-                      offer.SAddress === user.address ? (
-                        <Text color={Color.Purple} onClick={() => handleOpenSignatureDeleteSellOffer(offer)}>
-                          Delete
-                        </Text>
-                      ) : (
-                        <Text
-                          color={Color.Purple}
-                          onClick={() => {
-                            selectedOfferRef.current = offer;
-                            fractionOfferTypeRef.current = "buy";
-                            setOpenTradeFractionOfferModadl(true);
-                          }}
-                        >
-                          Buy
-                        </Text>
-                      ),
-                    cellAlign: "center",
-                  },
-                ]);
-              }
-            });
-            setBuyingOffersData(newBuyingOffersData);
-            setSellingOffersData(newSellingOffersData);
-          }
-        });
-        getFractionalisedMediaTransactions(media.symbol, media.Type).then(resp => {
-          if (resp?.success) {
-            const data = resp.data;
-            const newFractionTransactionsData: any[] = [];
-            data.forEach(txn => {
-              newFractionTransactionsData.push([
-                { cell: "Event", cellAlign: "center" },
-                {
-                  cell: <img src={require(`assets/tokenImages/${txn.Token}.png`)} width={24} height={24} />,
-                  cellAlign: "center",
-                },
-                { cell: txn.Token, cellAlign: "center" },
-                { cell: txn.Amount.toFixed(4), cellAlign: "center" },
-                {
-                  cell: <Text color={Color.Purple}>{txn.From ? txn.From.substring(0, 8) + "..." : "-"}</Text>,
-                  cellAlign: "center",
-                },
-                {
-                  cell: <Text color={Color.Purple}>{txn.To ? txn.To.substring(0, 8) + "..." : "-"}</Text>,
-                  cellAlign: "center",
-                },
-                {
-                  cell: <Text color={Color.Purple}>{calculateTimeFromNow(txn.Date)}</Text>,
-                  cellAlign: "center",
-                },
-              ]);
-            });
-            setFractionTransactionsData(newFractionTransactionsData);
-          }
-        });
-      }
-      // AUCTION
-      else if (media.auction) {
-        getAuctionBidHistory({
-          id: media.auction.id,
-          type: "PIX",
-        }).then(resp => {
-          if (resp?.success) {
-            const data = resp.data;
-            // set graph data
-            let config = ChartConfig;
-            config.config.options.scales.xAxes[0].display = false;
-            const newConfig = JSON.parse(JSON.stringify(ChartConfig));
-            newConfig.plugins = [GradientBgPlugin];
-            newConfig.configurer = configurer;
-            newConfig.config.data.labels = data.map(history => history.date);
-            newConfig.config.data.datasets[0].data = data.map(history => history.price.toFixed(4));
-            newConfig.config.data.datasets[0].backgroundColor = "#27E8D9";
-            newConfig.config.data.datasets[0].borderColor = "#27E8D9";
-            newConfig.config.data.datasets[0].pointBackgroundColor = "#27E8D9";
-            newConfig.config.data.datasets[0].hoverBackgroundColor = "#27E8D9";
-            seBidHistoryConfig(newConfig);
-            // set price change
-            if (data.length > 1) {
-              const p1 = data[data.length - 1].price;
-              const p2 = data[data.length - 2].price;
-              setBidPriceInfo({
-                lastPrice: p1.toFixed(2),
-                priceChange: (p1 - p2).toFixed(2),
-                priceChangePct: ((100 * (p1 - p2)) / p2).toFixed(2),
-              });
-            }
-
-            setAuctionHistoryData(resp.data.filter((_, index) => index < 6) || []);
-          }
-        });
-      }
-      // EXCHANGE
-      else if (media.exchange) {
-        // getExchangePriceHistory(media.exchange.exchangeId).then(resp => {
-        //   if (resp?.success) {
-        //     const data = resp.data;
-        //     // set graph data
-        //     let config = ChartConfig;
-        //     config.config.options.scales.xAxes[0].display = false;
-        //     const newConfig = JSON.parse(JSON.stringify(ChartConfig));
-        //     newConfig.plugins = [GradientBgPlugin];
-        //     newConfig.configurer = configurer;
-        //     newConfig.config.data.labels = data.map(history => history.date);
-        //     newConfig.config.data.datasets[0].data = data.map(history => history.price.toFixed(4));
-        //     newConfig.config.data.datasets[0].backgroundColor = "#27E8D9";
-        //     newConfig.config.data.datasets[0].borderColor = "#27E8D9";
-        //     newConfig.config.data.datasets[0].pointBackgroundColor = "#27E8D9";
-        //     newConfig.config.data.datasets[0].hoverBackgroundColor = "#27E8D9";
-        //     setExchangeHistoryConfig(newConfig);
-        //     // set price change
-        //     if (data.length > 1) {
-        //       const p1 = data[data.length - 1].price;
-        //       const p2 = data[data.length - 2].price;
-        //       setExchangePriceInfo({
-        //         lastPrice: p1.toFixed(2),
-        //         priceChange: (p1 - p2).toFixed(2),
-        //         priceChangePct: ((100 * (p1 - p2)) / p2).toFixed(2),
-        //       });
-        //     }
-        //   }
-        // });
-        // Get buying offers depends on chain net
-        const netType = media.BlockchainNetwork;
-        if (netType === BlockchainNets[0].value) {
-          getBuyingOffers(media.exchange.exchangeId).then(resp => {
-            if (resp?.success) {
-              const data = resp.data;
-              const newExchangeTableData: any[] = [];
-              data.forEach(offer => {
-                newExchangeTableData.push([
-                  {
-                    cell: (
-                      <Box display="flex" flexDirection="row" alignItems="center">
-                        <Avatar size="medium" url={offer.creatorInfo.imageUrl ?? getDefaultAvatar()} />
-                        <Box display="flex" flexDirection="column" alignItems="center">
-                          <Text ml={1.5}>{offer.creatorInfo?.name}</Text>
-                          <Text ml={1.5}>@{offer.creatorInfo?.urlSlug}</Text>
-                        </Box>
-                      </Box>
-                    ),
-                  },
-                  {
-                    cell: (
-                      <img
-                        src={require(`assets/tokenImages/${offer.OfferToken}.png`)}
-                        width={24}
-                        height={24}
-                      />
-                    ),
-                  },
-                  { cell: offer.OfferToken },
-                  { cell: offer.Price },
-                  {
-                    cell:
-                      offer.address === user.address ? (
-                        <Text
-                          onClick={() => {
-                            handleOpenSignatureCancelBuyingOffer(offer);
-                          }}
-                        >
-                          {" "}
-                          Cancel{" "}
-                        </Text>
-                      ) : media?.exchange?.address === user.address ? (
-                        <Text
-                          onClick={() => {
-                            handleOpenSignatureSellFromBuyingOffer(offer);
-                          }}
-                        >
-                          {" "}
-                          Sell{" "}
-                        </Text>
-                      ) : null,
-                  },
-                ]);
-              });
-              setExchangeTableData(newExchangeTableData);
-            }
-          });
-        } else if (netType === BlockchainNets[1].value) {
-          if (!web3) return;
-          const web3APIHandler = BlockchainNets[1].apiHandler;
-          web3APIHandler.Exchange.getErc721OfferAll(web3, account!).then(offers => {
-            const newExchangeTableData: any[] = [];
-            const buyOffers =
-              offers
-                ?.map((offer, index) => ({ ...offer, id: index + 1 }))
-                .filter(offer => offer.offerType === "BUY" && offer.exchangeId === media.exchange.exchangeId)
-                .map(offer => ({
-                  Id: offer.id, // This value should be returned from contract
-                  CreatorAddress: offer.creatorAddress,
-                  ExchangeId: offer.exchangeId,
-                  Price: offer.price,
-                  OfferToken: "BAL", // This value should be returned from contract
-                })) || [];
-            getUsersByAddresses(buyOffers.map(b => b.CreatorAddress)).then(res => {
-              if (res.success) {
-                const userList = res.data;
-                buyOffers.forEach(offer => {
-                  const u = userList[offer.CreatorAddress];
-                  newExchangeTableData.push([
-                    {
-                      cell: (
-                        <Box display="flex" flexDirection="row" alignItems="center">
-                          <Avatar size="medium" url={u?.imageUrl ?? getDefaultAvatar()} />
-                          <Box display="flex" flexDirection="column" alignItems="center">
-                            <Text ml={1.5}>{u?.name}</Text>
-                            <Text ml={1.5}>@{u?.urlSlug}</Text>
-                          </Box>
-                        </Box>
-                      ),
-                    },
-                    {
-                      cell: (
-                        <img
-                          src={require(`assets/tokenImages/${offer.OfferToken}.png`)}
-                          width={24}
-                          height={24}
-                        />
-                      ),
-                    },
-                    { cell: offer.OfferToken },
-                    { cell: offer.Price },
-                    {
-                      cell:
-                        offer.CreatorAddress === user.address ? (
-                          <Text
-                            onClick={() => {
-                              handleOpenSignatureCancelBuyingOffer(offer);
-                            }}
-                          >
-                            {" "}
-                            Cancel{" "}
-                          </Text>
-                        ) : media?.exchange?.CreatorAddress === user.address ? (
-                          <Text
-                            onClick={() => {
-                              handleOpenSignatureSellFromBuyingOffer(offer);
-                            }}
-                          >
-                            {" "}
-                            Sell{" "}
-                          </Text>
-                        ) : null,
-                    },
-                  ]);
-                });
-                setExchangeTableData(newExchangeTableData);
-              }
-            });
-          });
-        }
-      }
-    }
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))
       setBookmarked(true);
     if (media && media?.auction) {
@@ -948,8 +583,113 @@ const MarketplaceDetailPage = () => {
     });
   };
 
+  const loadHistory = () => {
+    if (!media) return;
+    // AUCTION
+    if (media.auction) {
+      getAuctionBidHistory({
+        id: media.auction.id,
+        type: "PIX",
+      }).then(resp => {
+        if (resp?.success) {
+          const data = resp.data;
+          // set graph data
+          let config = ChartConfig;
+          config.config.options.scales.xAxes[0].display = false;
+          const newConfig = JSON.parse(JSON.stringify(ChartConfig));
+          newConfig.plugins = [GradientBgPlugin];
+          newConfig.configurer = configurer;
+          newConfig.config.data.labels = data.map(history => history.date);
+          newConfig.config.data.datasets[0].data = data.map(history => history.price.toFixed(4));
+          newConfig.config.data.datasets[0].backgroundColor = "#27E8D9";
+          newConfig.config.data.datasets[0].borderColor = "#27E8D9";
+          newConfig.config.data.datasets[0].pointBackgroundColor = "#27E8D9";
+          newConfig.config.data.datasets[0].hoverBackgroundColor = "#27E8D9";
+          seBidHistoryConfig(newConfig);
+          // set price change
+          if (data.length > 1) {
+            const p1 = data[data.length - 1].price;
+            const p2 = data[data.length - 2].price;
+            setBidPriceInfo({
+              lastPrice: p1.toFixed(2),
+              priceChange: (p1 - p2).toFixed(2),
+              priceChangePct: ((100 * (p1 - p2)) / p2).toFixed(2),
+            });
+          }
+
+          setAuctionHistoryData(resp.data.filter((_, index) => index < 6) || []);
+        }
+      });
+    }
+    // EXCHANGE
+    if (media.exchange) {
+      getExchangeBuyingOffers({
+        id: media.exchange.id,
+        type: "PIX",
+      }).then(resp => {
+        if (resp?.success) {
+          const data = resp.data;
+          const newExchangeTableData: any[] = [];
+          data.forEach(offer => {
+            newExchangeTableData.push([
+              {
+                cell: (
+                  <Box display="flex" flexDirection="row" alignItems="center">
+                    <Avatar size="medium" url={offer.bidderInfo.imageUrl ?? getDefaultAvatar()} />
+                    <Box display="flex" flexDirection="column" alignItems="center">
+                      <Text ml={1.5}>{offer.bidderInfo?.name}</Text>
+                      <Text ml={1.5}>@{offer.bidderInfo?.urlSlug}</Text>
+                    </Box>
+                  </Box>
+                ),
+                cellAlign: "center",
+              },
+              {
+                cell: (
+                  <img
+                    src={require(`assets/tokenImages/${media.exchange.offerToken}.png`)}
+                    width={24}
+                    height={24}
+                  />
+                ),
+                cellAlign: "center",
+              },
+              { cell: media.exchange.offerToken, cellAlign: "center" },
+              { cell: offer.price, cellAlign: "center" },
+              {
+                cell:
+                  offer.bidder === user.id ? (
+                    <Text
+                      onClick={() => {
+                        handleCancelBuyingOffer(offer);
+                      }}
+                    >
+                      {" "}
+                      Cancel{" "}
+                    </Text>
+                  ) : media?.exchange?.owner === user.id ? (
+                    <Text
+                      onClick={() => {
+                        handleSellFromBuyingOffer(offer);
+                      }}
+                    >
+                      {" "}
+                      Sell{" "}
+                    </Text>
+                  ) : null,
+                cellAlign: "center",
+              },
+            ]);
+          });
+          setExchangeTableData(newExchangeTableData);
+        }
+      });
+    }
+  };
+
   const loadData = () => {
     loadMedia();
+    loadHistory();
   };
 
   const handleOpenDetailModal = React.useCallback(() => {
@@ -1003,8 +743,7 @@ const MarketplaceDetailPage = () => {
   };
 
   const topBidPrice = React.useMemo(() => {
-    if (!media || !media?.auction || !media?.BidHistory || media?.BidHistory.length === 0) return "N/A";
-    return Math.max(...media?.BidHistory.map((history: any) => parseInt(history.price)));
+    return media?.auction?.topBidInfo?.price || "N/A";
   }, [media]);
 
   const owners = React.useMemo(() => {
@@ -1281,7 +1020,7 @@ const MarketplaceDetailPage = () => {
     });
   };
 
-  const handleOpenSignatureDeleteBuyOffer = offer => {
+  const handleDeleteBuyOffer = offer => {
     const payload = {
       OrderId: offer.OrderId,
       RequesterAddress: user.address,
@@ -1292,7 +1031,7 @@ const MarketplaceDetailPage = () => {
     interactOnChain();
   };
 
-  const handleOpenSignatureDeleteSellOffer = offer => {
+  const handleDeleteSellOffer = offer => {
     const payload = {
       OrderId: offer.OrderId,
       RequesterAddress: user.address,
@@ -1327,37 +1066,25 @@ const MarketplaceDetailPage = () => {
   };
 
   // AUCTION: withdraw auction
-  const handleOpenSignatureWithdrawAuction = () => {
+  const handleWithdrawAuction = () => {
     operationRef.current = 8;
     interactOnChain();
   };
 
   // EXCHANGE: cancel selling offer (cancel exchange)
-  const handleOpenSignatureCancelSellingOffer = () => {
-    const payload = {
-      ExchangeId: media.exchange.exchangeId,
-      OfferId: media.exchange.exchangeId,
-    };
-    payloadRef.current = payload;
+  const handleCancelSellingOffer = () => {
     operationRef.current = 9;
     interactOnChain();
   };
 
   // EXCHANGE: buy from selling offer
-  const handleOpenSignatureBuyFromSellingOffer = () => {
-    const payload = {
-      ExchangeId: media.exchange.exchangeId,
-      OfferId: media.exchange.exchangeId,
-      Address: user.address,
-      Amount: "1",
-    };
-    payloadRef.current = payload;
+  const handleBuyFromSellingOffer = () => {
     operationRef.current = 10;
     interactOnChain();
   };
 
   // EXCHANGE: sell
-  const handleOpenSignatureSellFromBuyingOffer = offer => {
+  const handleSellFromBuyingOffer = offer => {
     const payload = {
       ExchangeId: offer.ExchangeId,
       OfferId: offer.Id,
@@ -1370,7 +1097,7 @@ const MarketplaceDetailPage = () => {
   };
 
   // EXCHANGE: cancel buying Offer
-  const handleOpenSignatureCancelBuyingOffer = offer => {
+  const handleCancelBuyingOffer = offer => {
     const payload = {
       ExchangeId: offer.ExchangeId,
       OfferId: offer.Id,
@@ -1380,13 +1107,20 @@ const MarketplaceDetailPage = () => {
     interactOnChain();
   };
 
+  // EXCHANGE: Place buying offer
+  const handlePlaceBuyingOffer = price => {
+    operationRef.current = 13;
+    priceRef.current = price;
+    interactOnChain();
+  };
+
   const approveToken = async (apiHandler, spender, token, amount) => {
     let balance = await apiHandler.Erc20[token].balanceOf(web3, { account });
     let decimals = await apiHandler.Erc20[token].decimals(web3);
     balance = Number(toDecimals(balance, decimals));
     if (balance < amount) {
       setLoading(false);
-      showAlertMessage(`Insufficient balance to place bid`, { variant: "error" });
+      showAlertMessage(`Insufficient balance`, { variant: "error" });
       return;
     }
 
@@ -1410,7 +1144,7 @@ const MarketplaceDetailPage = () => {
     if (chainId != targetChain.chainId) {
       const changed = await switchNetwork(targetChain.chainId);
       if (!changed) {
-        showAlertMessage(`Got failed while switching over to taret network`, { variant: "error" });
+        showAlertMessage(`Got failed while switching over to target network`, { variant: "error" });
         return;
       }
     }
@@ -1560,7 +1294,6 @@ const MarketplaceDetailPage = () => {
                   MediaType: media.Type,
                 },
               };
-              console.log(body);
               const response = await axios.post(`${URL()}/exchange/cancelSellingOffer/v2_p`, body);
               if (response?.data?.success) {
                 showAlertMessage("Exchange cancelled successfully", { variant: "success" });
@@ -1577,13 +1310,14 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 10: // EXCHANGE: Buy from selling offer
-          request = {
+          contractParams = {
             input: {
               exchangeId: media.exchange.exchangeId,
               offerId: media.exchange.initialOfferId,
             },
             caller: account!,
           };
+          console.log(contractParams);
 
           await approveToken(
             web3APIHandler,
@@ -1592,22 +1326,20 @@ const MarketplaceDetailPage = () => {
             media?.exchange?.price
           );
 
-          web3APIHandler.Exchange.BuyERC721TokenFromOffer(web3, account!, request).then(async res => {
+          web3APIHandler.Exchange.BuyERC721TokenFromOffer(web3, account!, contractParams).then(async res => {
             if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  Address: user.address,
-                  ExchangeId: request.input.exchangeId,
-                  OfferId: request.input.offerId,
-                  MediaSymbol: media.symbol,
-                  MediaType: media.Type,
+              request = {
+                id: media.exchange.id,
+                bidder: user.id,
+                hash: res.transaction.Id,
+                transaction: {
+                  ...res.transaction,
+                  Event: "Buy",
+                  Price: media.exchange.price,
                 },
+                type: "PIX",
               };
-              const response = await axios.post(`${URL()}/exchange/buyFromOffer/v2_p`, body);
+              const response = await axios.post(`${URL()}/marketplace/buyFromOffer`, request);
               if (response?.data?.success) {
                 showAlertMessage("NFT bought successfully", { variant: "success" });
                 loadData();
@@ -1693,6 +1425,56 @@ const MarketplaceDetailPage = () => {
             }
           });
           break;
+        case 13: // EXCHANGE: Place buying offer
+          let offerTokenDecimals = await web3APIHandler.Erc20[media.exchange.offerToken].decimals(web3);
+
+          contractParams = {
+            input: {
+              exchangeId: media.exchange.exchangeId,
+              tokenId: media.token_id,
+              price: toNDecimals(priceRef.current, offerTokenDecimals),
+            },
+            caller: account!,
+          };
+
+          await approveToken(
+            web3APIHandler,
+            web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
+            media.exchange.offerToken,
+            priceRef.current
+          );
+
+          web3APIHandler.Exchange.PlaceERC721TokenBuyingOffer(web3, account!, contractParams).then(
+            async res => {
+              if (res) {
+                request = {
+                  id: media.exchange.id,
+                  offerId: res.data.offerId,
+                  price: priceRef.current,
+                  hash: res.transaction.Id,
+                  transaction: {
+                    ...res.transaction,
+                    Event: "Place buying offer",
+                    Price: priceRef.current,
+                  },
+                  type: "PIX",
+                };
+                const response = await axios.post(`${URL()}/marketplace/placeBuyingOffer`, request);
+                if (response?.data?.success) {
+                  showAlertMessage("Placed offer successfully", { variant: "success" });
+                  handleClosePlaceOffer();
+                  loadData();
+                } else {
+                  showAlertMessage("Failed to Place an offer", { variant: "error" });
+                }
+                setLoading(false);
+              } else {
+                setLoading(false);
+                showAlertMessage("Failed to Place an offer", { variant: "error" });
+              }
+            }
+          );
+          break;
       }
     } else {
       setDisableBidBtn(false);
@@ -1709,7 +1491,6 @@ const MarketplaceDetailPage = () => {
     return false;
   };
 
-  console.log(media);
   return (
     <div className={classes.page}>
       <Helmet>
@@ -2106,13 +1887,13 @@ const MarketplaceDetailPage = () => {
                       </Box>
                     )}
                     <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                      {media.auction.TopBidInfo && (
+                      {media?.auction?.topBidInfo && (
                         <Box className={classes.bidBox} style={{ background: "#9EACF2" }} width={1} mr={1}>
                           <Avatar
                             size="medium"
                             url={
-                              media?.auction?.TopBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.auction?.TopBidInfo?.AnonAvatar}`)
+                              media.auction.topBidInfo.imageUrl ||
+                              require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
                             }
                           />
                           <Box ml={2}>
@@ -2120,12 +1901,12 @@ const MarketplaceDetailPage = () => {
                               Top Bid Placed By
                             </Box>
                             <Box className={classes.header2} style={{ color: "white" }} mt={0.5}>
-                              {media?.auction.TopBidInfo?.Name}
+                              {media.auction.topBidInfo.name}
                             </Box>
                           </Box>
                         </Box>
                       )}
-                      {media.auction.ReplacedBidInfo && (
+                      {media?.auction?.replacedBidInfo && (
                         <Box
                           className={classes.bidBox}
                           style={{ border: "1px solid #9EACF2" }}
@@ -2135,8 +1916,8 @@ const MarketplaceDetailPage = () => {
                           <Avatar
                             size="medium"
                             url={
-                              media?.auction?.ReplacedBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.auction?.ReplacedBidInfo?.AnonAvatar}`)
+                              media.auction.replacedBidInfo.imageUrl ||
+                              require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
                             }
                           />
                           <Box ml={2}>
@@ -2144,7 +1925,7 @@ const MarketplaceDetailPage = () => {
                               Displaced Bidder
                             </Box>
                             <Box className={classes.header2} style={{ color: "#9EACF2" }} mt={0.5}>
-                              {media?.auction.ReplacedBidInfo?.Name}
+                              {media.auction.replacedBidInfo.name}
                             </Box>
                           </Box>
                         </Box>
@@ -2181,7 +1962,7 @@ const MarketplaceDetailPage = () => {
                         {media.auction.gathered ? (
                           <PrimaryButton
                             size="medium"
-                            onClick={handleOpenSignatureWithdrawAuction}
+                            onClick={handleWithdrawAuction}
                             className={classes.primaryBtn}
                             style={{
                               background: "#DDFF57",
@@ -2213,7 +1994,7 @@ const MarketplaceDetailPage = () => {
                     media?.exchange.address === user.address ? (
                       <PrimaryButton
                         size="medium"
-                        onClick={() => handleOpenSignatureCancelSellingOffer()}
+                        onClick={() => handleCancelSellingOffer()}
                         className={classes.primaryBtn}
                         style={{
                           background: "#DDFF57",
@@ -2226,7 +2007,7 @@ const MarketplaceDetailPage = () => {
                     ) : (
                       <PrimaryButton
                         size="medium"
-                        onClick={() => handleOpenSignatureBuyFromSellingOffer()}
+                        onClick={() => handleBuyFromSellingOffer()}
                         className={classes.primaryBtn}
                         style={{
                           background: "#DDFF57",
@@ -2721,6 +2502,10 @@ const MarketplaceDetailPage = () => {
               open={openBuyNFTModal}
               handleClose={() => setOpenBuyNFTModal(false)}
               handleRefresh={() => null}
+              handleBuyFromSellingOffer={() => {
+                handleCloseBidModal();
+                handleBuyFromSellingOffer();
+              }}
               handleSwitchPlaceOffer={() => {
                 handleCloseBidModal();
                 handleOpenPlaceOffer();
@@ -2732,11 +2517,8 @@ const MarketplaceDetailPage = () => {
           {openPlaceOffer && (
             <PlaceBuyingOfferModal
               open={openPlaceOffer}
-              handleClose={() => {
-                handleClosePlaceOffer();
-                setOpenBuyNFTModal(false);
-              }}
-              handleRefresh={loadData}
+              handleClose={handleClosePlaceOffer}
+              handlePlaceBuyingOffer={handlePlaceBuyingOffer}
               media={media}
             />
           )}

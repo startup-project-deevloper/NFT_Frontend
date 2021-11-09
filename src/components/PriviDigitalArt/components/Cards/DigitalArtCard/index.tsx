@@ -309,6 +309,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               <StyledSkeleton width="100%" height={226} variant="rect" />
             </Box>
           )}
+          
           <img
             src={`${
               media.cid

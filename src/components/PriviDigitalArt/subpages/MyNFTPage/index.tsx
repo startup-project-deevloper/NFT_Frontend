@@ -92,10 +92,10 @@ const MyNFT = () => {
     setMyNFTs(newNFTs);
   };
 
-  const ownedNFTs = myNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn)
-  const toLockNFTs = myNFTs.filter(nft => !nft.isLocked)
-  const toVerifyNFTs = myNFTs.filter(nft => nft.isLocked && !nft.isVerified)
-  const toUnlockNFTs = myNFTs.filter(nft => nft.isWithdrawn && !nft.isUnlocked)
+  const ownedNFTs = myNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn);
+  const toLockNFTs = myNFTs.filter(nft => !nft.isLocked);
+  const toVerifyNFTs = myNFTs.filter(nft => nft.isLocked && !nft.isVerified);
+  const toUnlockNFTs = myNFTs.filter(nft => nft.isWithdrawn && !nft.isUnlocked);
 
   const EmptySection = ({ type }) => (
     <Box className={classes.emptyBox}>
@@ -105,7 +105,7 @@ const MyNFT = () => {
         Not {type} NFT found.
       </Box>
     </Box>
-  )
+  );
 
   return (
     <>
@@ -134,92 +134,100 @@ const MyNFT = () => {
         <div className={classes.cardsGroup}>
           {selectedTab === "owned" && (
             <LoadingWrapper theme={"blue"} loading={loading}>
-              {
-                !loading && !ownedNFTs.length ? (
-                  <EmptySection type="Owned" />
-                ) : (
-                  <MasonryGrid
-                    gutter={"16px"}
-                    data={ownedNFTs}
-                    renderItem={(item, index) => <MyNFTCard key={index} item={item} />}
-                    columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-                  />
-                )
-              }
+              {!loading && !ownedNFTs.length ? (
+                <EmptySection type="Owned" />
+              ) : (
+                <MasonryGrid
+                  gutter={"16px"}
+                  data={ownedNFTs}
+                  renderItem={(item, index) => (
+                    <MyNFTCard
+                      key={index}
+                      item={item}
+                      handleClick={() =>
+                        history.push(
+                          `/fractionalisation/collection/${item.collection_id}/nft/${item.SyntheticID}`
+                        )
+                      }
+                    />
+                  )}
+                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                />
+              )}
             </LoadingWrapper>
           )}
           {selectedTab === "synthetic" && (
             <Box display="flex" flexDirection="column" gridRowGap={50} height="100%">
-              {
-                !loading && !toVerifyNFTs.length && !toLockNFTs.length && !toUnlockNFTs.length
-                  ? <EmptySection type="Synthetic" />
-                  : (
-                    <>
-                      {
-                        (loading || !!toLockNFTs.length) && (
-                          <Box display="flex" flexDirection="column" gridRowGap={18}>
-                            <Box className={classes.sectionTitle} color="#431AB7">
-                              NFT To Lock
-                            </Box>
-                            <LoadingWrapper theme={"blue"} loading={loading}>                              
-                              <MasonryGrid
-                                gutter={"16px"}
-                                data={toLockNFTs}
-                                renderItem={(item, index) => (
-                                  <MyNFTCard
-                                    key={index}
-                                    item={item}
-                                    onLockCompleted={() => onMyNFTLocked(item)}
-                                    onVerifyCompleted={() => onMyNFTVerified(item)}
-                                  />
-                                )}
-                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-                              />
-                            </LoadingWrapper>
-                          </Box>
-                        )
-                      }
-                      {
-                        (loading || !!toVerifyNFTs.length) && (
-                          <Box display="flex" flexDirection="column" gridRowGap={18}>
-                            <Box className={classes.sectionTitle} color="#F2604C">
-                              NFT To Verify
-                            </Box>
-                            <LoadingWrapper theme={"blue"} loading={loading}>
-                              <MasonryGrid
-                                gutter={"16px"}
-                                data={toVerifyNFTs}
-                                renderItem={(item, index) => (
-                                  <MyNFTCard key={index} item={item} onVerifyCompleted={() => onMyNFTVerified(item)} />
-                                )}
-                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-                              />
-                            </LoadingWrapper>
-                          </Box>
-                        )
-                      }
-                      {
-                        (loading || !!toUnlockNFTs.length) && (
-                          <Box display="flex" flexDirection="column" gridRowGap={18}>
-                            <Box className={classes.sectionTitle} color="#1DCC00">
-                              NFT To Unlock
-                            </Box>
-                            <LoadingWrapper theme={"blue"} loading={loading}>
-                              <MasonryGrid
-                                gutter={"16px"}
-                                data={toUnlockNFTs}
-                                renderItem={(item, index) => (
-                                  <MyNFTCard key={index} item={item} onUnLockCompleted={() => onMyNFTUnlocked(item)} />
-                                )}
-                                columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
-                              />
-                            </LoadingWrapper>
-                          </Box>
-                        )
-                      }
-                    </>
-                  )
-                }
+              {!loading && !toVerifyNFTs.length && !toLockNFTs.length && !toUnlockNFTs.length ? (
+                <EmptySection type="Synthetic" />
+              ) : (
+                <>
+                  {(loading || !!toLockNFTs.length) && (
+                    <Box display="flex" flexDirection="column" gridRowGap={18}>
+                      <Box className={classes.sectionTitle} color="#431AB7">
+                        NFT To Lock
+                      </Box>
+                      <LoadingWrapper theme={"blue"} loading={loading}>
+                        <MasonryGrid
+                          gutter={"16px"}
+                          data={toLockNFTs}
+                          renderItem={(item, index) => (
+                            <MyNFTCard
+                              key={index}
+                              item={item}
+                              onLockCompleted={() => onMyNFTLocked(item)}
+                              onVerifyCompleted={() => onMyNFTVerified(item)}
+                            />
+                          )}
+                          columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                        />
+                      </LoadingWrapper>
+                    </Box>
+                  )}
+                  {(loading || !!toVerifyNFTs.length) && (
+                    <Box display="flex" flexDirection="column" gridRowGap={18}>
+                      <Box className={classes.sectionTitle} color="#F2604C">
+                        NFT To Verify
+                      </Box>
+                      <LoadingWrapper theme={"blue"} loading={loading}>
+                        <MasonryGrid
+                          gutter={"16px"}
+                          data={toVerifyNFTs}
+                          renderItem={(item, index) => (
+                            <MyNFTCard
+                              key={index}
+                              item={item}
+                              onVerifyCompleted={() => onMyNFTVerified(item)}
+                            />
+                          )}
+                          columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                        />
+                      </LoadingWrapper>
+                    </Box>
+                  )}
+                  {(loading || !!toUnlockNFTs.length) && (
+                    <Box display="flex" flexDirection="column" gridRowGap={18}>
+                      <Box className={classes.sectionTitle} color="#1DCC00">
+                        NFT To Unlock
+                      </Box>
+                      <LoadingWrapper theme={"blue"} loading={loading}>
+                        <MasonryGrid
+                          gutter={"16px"}
+                          data={toUnlockNFTs}
+                          renderItem={(item, index) => (
+                            <MyNFTCard
+                              key={index}
+                              item={item}
+                              onUnLockCompleted={() => onMyNFTUnlocked(item)}
+                            />
+                          )}
+                          columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_FOUR}
+                        />
+                      </LoadingWrapper>
+                    </Box>
+                  )}
+                </>
+              )}
             </Box>
           )}
         </div>

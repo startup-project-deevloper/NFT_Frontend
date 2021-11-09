@@ -36,34 +36,8 @@ import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { getUser } from "store/selectors";
-import {
-  generateDayLabelsFromDate,
-  calculateTimeFromNow,
-  generateMonthLabelsFromDate,
-  _arrayBufferToBase64,
-} from "shared/functions/commonFunctions";
-import {
-  // buyFraction,
-  // placeBid,
-  getFractionalisedMediaOffers,
-  getFractionalisedMediaTransactions,
-  getFractionalisedMediaPriceHistory,
-  getFractionalisedMediaSharedOwnershipHistory,
-  // deleteBuyOrder,
-  // deleteSellOrder,
-  // cancelAuction,
-  // withdrawAuction,
-  getAuctionBidHistory,
-  // getAuctionTransactions,
-  // cancelSellingOffer,
-  // buyFromOffer,
-  // sellFromOffer,
-  // getExchangePriceHistory,
-  getExchangeBuyingOffers,
-  // cancelBuyingOffer,
-  getNft,
-  getUsersByAddresses,
-} from "shared/services/API";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import { getAuctionBidHistory, getExchangeBuyingOffers, getNft } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import CreateFractionOfferModal from "components/PriviDigitalArt/modals/CreateOfferModal";
 import TradeFractionOfferModal from "components/PriviDigitalArt/modals/TradeOfferModal";
@@ -75,12 +49,10 @@ import DigitalArtDetailsModal from "../../../../modals/DigitalArtDetailsModal";
 import { PlaceBidModal } from "../../modals/PlaceBidModal";
 import BuyNFTModal from "../../../../modals/BuyNFTModal";
 import PlaceBuyingOfferModal from "../../../../modals/PlaceBuyingOfferModal";
-// import ConfirmPayment from "../../../../modals/ConfirmPayment";
 import { marketplaceDetailPageStyles, LinkIcon } from "./index.styles";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 
 import { getChainImageUrl } from "shared/functions/chainFucntions";
-import Moment from "react-moment";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
@@ -472,27 +444,6 @@ const MarketplaceDetailPage = () => {
   useEffect(() => {
     setOpenFilters(false);
   }, []);
-
-  // set fraction ownership graph
-  useEffect(() => {
-    if (media?.fraction?.fraction) {
-      const creatorFraction = userBalances[media.symbol] ? userBalances[media.symbol].Balance * 100 : 0;
-      const fractionForSale = media.fraction.fraction * 100;
-      const newDistrubtionRadial = JSON.parse(JSON.stringify(RadialConfig));
-      newDistrubtionRadial.config.data.datasets[0].labels = [
-        "Creator Fraction",
-        "Fractions For Sale",
-        "Sold Fractions",
-      ];
-      newDistrubtionRadial.config.data.datasets[0].data = [
-        creatorFraction,
-        fractionForSale,
-        100 - creatorFraction,
-      ];
-      newDistrubtionRadial.config.data.datasets[0].backgroundColor = ["#431AB7", "#DDFF57", "#9EACF2"];
-      setDistributionRadialConfig(newDistrubtionRadial);
-    }
-  }, [media?.fraction?.fraction, userBalances]);
 
   useEffect(() => {
     loadMedia();
@@ -1508,43 +1459,6 @@ const MarketplaceDetailPage = () => {
         <LoadingWrapper loading={!media || isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
           <Box mt={2}>
             <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
-            {media?.fraction ? (
-              <Box
-                className={classes.fraction}
-                display="flex"
-                flexDirection="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Interest Rate</span>
-                  <span className={classes.fractionValue}>{media.fraction.InterestRate * 100}%</span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Creator Royalty</span>
-                  <span className={classes.fractionValue}>{media.Royalty ?? 1}%</span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Fraction Price</span>
-                  <span className={classes.fractionValue}>
-                    {media.fraction.FundingToken} {media.fraction.InitialPrice}
-                  </span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Buy Back Price</span>
-                  <span className={classes.fractionValue}>
-                    {media.fraction.FundingToken} {media.fraction.BuyBackPrice}
-                  </span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  {media?.fraction?.OwnerAddress != user.address && (
-                    <PrimaryButton size="small" className={classes.fractionBuy}>
-                      Buy Fraction
-                    </PrimaryButton>
-                  )}
-                </Box>
-              </Box>
-            ) : null}
             <Grid className={classes.leftImage} container spacing={2} wrap="wrap">
               <Grid item xs={12} sm={6}>
                 {media?.content_url.endsWith("mp4") ? (
@@ -1745,68 +1659,9 @@ const MarketplaceDetailPage = () => {
                       Link
                     </PrimaryButton>
                   )}
-                  {!!media?.fraction && (
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      borderRadius={8}
-                      bgcolor={Color.GreenLight}
-                      width={"50%"}
-                      padding={2}
-                    >
-                      <span className={classes.fractionTitle}>Fractionalised</span>
-                      <span className={classes.fractionValue}>{media.fraction.fraction * 100}%</span>
-                    </Box>
-                  )}
                 </Box>
                 {media?.price && <Box>{`Price ${media?.price}`}</Box>}
-                {media?.fraction ? (
-                  <>
-                    <hr className={classes.divider} />
-                    <Box>
-                      <Text size={FontSize.XL} color={Color.Black}>
-                        Ownership Distribution
-                      </Text>
-                      <Grid container style={{ marginTop: "16px" }}>
-                        <Grid item xs={12} sm={3}>
-                          {distributionRadialConfig && (
-                            <PrintChart config={distributionRadialConfig} canvasHeight={250} />
-                          )}
-                        </Grid>
-                        <Grid item xs={12} sm={5}>
-                          <Box style={{ marginLeft: "12px" }}>
-                            {distributionRadialConfig &&
-                              distributionRadialConfig.config.data.datasets[0].labels.map((item, index) => (
-                                <Box key={"labels-" + index}>
-                                  <Box display="flex" alignItems="center" justifyContent="space-between">
-                                    <Box display="flex" flexDirection="row" alignItems="center">
-                                      <Box
-                                        width={12}
-                                        height={12}
-                                        style={{
-                                          background:
-                                            distributionRadialConfig.config.data.datasets[0].backgroundColor[
-                                              index
-                                            ],
-                                        }}
-                                      />
-                                      <Box ml={1} className={classes.radialText}>
-                                        {item}
-                                      </Box>
-                                    </Box>
-                                    <Box className={classes.radialText}>
-                                      ${distributionRadialConfig.config.data.datasets[0].data[index]}%
-                                    </Box>
-                                  </Box>
-                                  <hr className={classes.divider} style={{ margin: "12px 0" }} />
-                                </Box>
-                              ))}
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </>
-                ) : media?.exchange ? (
+                {media?.exchange ? (
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <Text color={Color.Black} size={FontSize.XL}>
                       Price
@@ -2049,170 +1904,7 @@ const MarketplaceDetailPage = () => {
                 </Box>
               </Grid>
             </Grid>
-            {media?.fraction ? (
-              <Box display="flex" flexDirection="column">
-                {/* <Text size={FontSize.XL} color={Color.Black}>
-                  History
-                </Text>
-                <hr className={classes.divider} />
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Box className={classes.card}>
-                      <Text>Fraction Price (1%)</Text>
-                      <Box
-                        display="flex"
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Box display="flex" flexDirection="row" alignItems="center">
-                          <Text size={FontSize.XXL} color={Color.Black}>
-                            {formatNumber(fractionPrice, "USD", 2)}
-                          </Text>
-                          <Text size={FontSize.L} color={Color.Black} ml={1}>
-                            per fraction
-                          </Text>
-                        </Box>
-                        <Text size={FontSize.XXL} color={Color.Violet}>
-                          {fractionPriceChange > 0 ? "+" : ""}
-                          {fractionPriceChange * 100}%
-                        </Text>
-                      </Box>
-                      <hr className={classes.divider} />
-                      {fractionHistoryConfig && (
-                        <Box height="250px">
-                          <PrintChart config={fractionHistoryConfig} />
-                        </Box>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Box className={classes.card}>
-                      <Text>Shared Ownership History</Text>
-                      <Box
-                        display="flex"
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Box display="flex" flexDirection="row" alignItems="center">
-                          <Text size={FontSize.XXL} color={Color.Black}>
-                            {ownershipFraction * 100}
-                          </Text>
-                          <Text size={FontSize.L} color={Color.Black} ml={1}>
-                            fractions
-                          </Text>
-                        </Box>
-                        <Text size={FontSize.XXL} color={Color.Violet}>
-                          {ownershipFractionChange > 0 ? "+" : ""}
-                          {ownershipFractionChange * 100}%
-                        </Text>
-                      </Box>
-                      <hr className={classes.divider} />
-                      {ownershipHistoryConfig && (
-                        <Box height="250px">
-                          <PrintChart config={ownershipHistoryConfig} />
-                        </Box>
-                      )}
-                    </Box>
-                  </Grid>
-                </Grid>
-                <hr className={classes.divider} /> */}
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Box>
-                        <Text size={FontSize.XL} color={Color.Black}>
-                          Buying Offers
-                        </Text>
-                        <Text
-                          color={Color.Purple}
-                          onClick={() => {
-                            fractionOfferTypeRef.current = "buy";
-                            setOpenPlaceFractionOfferModal(true);
-                          }}
-                          ml={1}
-                        >
-                          Place Buying Offer
-                        </Text>
-                      </Box>
-                      <Text color={Color.Purple}>View All</Text>
-                    </Box>
-                    <Box className={classes.table}>
-                      <CustomTable
-                        headers={OfferHeaders}
-                        rows={buyingOffersData}
-                        placeholderText="No Offers"
-                        theme="offers blue"
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Box>
-                        <Text size={FontSize.XL} color={Color.Black}>
-                          Selling Offers
-                        </Text>
-                        <Text
-                          color={Color.Purple}
-                          onClick={() => {
-                            if (userBalances[media.symbol]) {
-                              fractionOfferTypeRef.current = "sell";
-                              setOpenPlaceFractionOfferModal(true);
-                            } else
-                              showAlertMessage("You dont have any ownership of this media", {
-                                variant: "error",
-                              });
-                          }}
-                          ml={1}
-                        >
-                          Place Selling Offer
-                        </Text>
-                      </Box>
-                      <Text color={Color.Purple}>View All</Text>
-                    </Box>
-                    <Box className={classes.table}>
-                      <CustomTable
-                        headers={OfferHeaders}
-                        rows={sellingOffersData}
-                        placeholderText="No Offers"
-                        theme="offers blue"
-                      />
-                    </Box>
-                  </Grid>
-                </Grid>
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  mt={3}
-                >
-                  <Text size={FontSize.XL} color={Color.Black}>
-                    Trading History
-                  </Text>
-                  <Text color={Color.Purple}>View All</Text>
-                </Box>
-                <Box className={classes.table} mb={5}>
-                  <CustomTable
-                    headers={TradingTableHeaders}
-                    rows={fractionTransactionsData}
-                    placeholderText="No Offers"
-                    theme="offers blue"
-                  />
-                </Box>
-              </Box>
-            ) : media?.auction ? (
+            {media?.auction ? (
               <>
                 {isValidBidHistory() && (
                   <>
@@ -2333,145 +2025,6 @@ const MarketplaceDetailPage = () => {
               ))}
             </Grid>
             <hr className={classes.divider} />
-            {!media?.fraction ? (
-              <>
-                <Header5>Comments</Header5>
-                <Box
-                  className={classes.message}
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  mb={2}
-                >
-                  <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getDefaultAvatar()} />
-                  <InputWithLabelAndTooltip
-                    transparent
-                    overriedClasses=""
-                    type="text"
-                    inputValue={comment}
-                    onInputValueChange={handleChangeComment}
-                    onKeyDown={e => {
-                      if (e.key === "Enter") addComment();
-                    }}
-                    placeHolder="Add comment..."
-                    style={{ marginBottom: 4, flex: "1", width: "auto" }}
-                  />
-                  <Text
-                    size={FontSize.S}
-                    mr={isMobileScreen ? 1 : 2}
-                    onClick={() => setComment(`${comment}😍`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    😍
-                  </Text>
-                  <Text
-                    size={FontSize.S}
-                    mr={isMobileScreen ? 1 : 2}
-                    onClick={() => setComment(`${comment}😭`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    😭
-                  </Text>
-                  <img
-                    src={require("assets/icons/+.png")}
-                    onClick={addComment}
-                    style={{ cursor: "pointer" }}
-                  />
-                </Box>
-
-                {comments.length ? (
-                  !isViewComments ? (
-                    <Text className={classes.link} size={FontSize.S} onClick={() => setIsViewComments(true)}>
-                      View all {comments.length} comments
-                    </Text>
-                  ) : (
-                    comments.map((comment, index) => (
-                      <Box
-                        key={`comment-${index}`}
-                        mt={2}
-                        display="flex"
-                        alignContent="center"
-                        gridColumnGap={8}
-                      >
-                        <div
-                          className={classes.avatarImg}
-                          onClick={() => {
-                            history.push(`/${comment.user.urlSlug}/profile`);
-                          }}
-                        >
-                          <Avatar size="medium" url={comment.user && comment.user.imageUrl} />
-                        </div>
-                        <Box
-                          display="flex"
-                          flexDirection="column"
-                          justifyContent="center"
-                          gridRowGap={4}
-                          maxWidth="70%"
-                          flex={1}
-                        >
-                          <span className={classes.commentUername}>{comment.user?.name}</span>
-                          {index === editedCommentId - 1 ? (
-                            <input
-                              className={classes.editComment}
-                              value={editedComment}
-                              onChange={e => {
-                                setEditedComment(e.target.value);
-                              }}
-                              onKeyDown={e => {
-                                if (e.key === "Enter") {
-                                  saveComment(comment.comment);
-                                }
-                              }}
-                              onBlur={() => saveComment(comment.comment)}
-                              autoFocus
-                            />
-                          ) : (
-                            <span className={classes.commentDescription}>{comment.comment}</span>
-                          )}
-                        </Box>
-                        <Box display="flex" alignItems="center" style={{ marginLeft: "auto", fontSize: 12 }}>
-                          <Box display="flex" alignItems="center" gridColumnGap={8} onClick={() => {}}>
-                            {loggedUser?.id === comment.user?.id && (
-                              <>
-                                {editedCommentId ? (
-                                  <SaveIcon
-                                    className={classes.commentIcon}
-                                    onClick={() => saveComment(comment.comment)}
-                                  />
-                                ) : (
-                                  <img
-                                    src={editIcon}
-                                    className={classes.commentIcon}
-                                    alt={"edit"}
-                                    onClick={() => {
-                                      if (isEditingComment.current) return;
-                                      setEditedCommentId(index + 1);
-                                      setEditedComment(comment.comment);
-                                    }}
-                                  />
-                                )}
-                                <img
-                                  src={removeIcon}
-                                  className={classes.commentIcon}
-                                  alt={"remove"}
-                                  onClick={() => {
-                                    if (isEditingComment.current) return;
-                                    setEditedCommentId(null);
-                                    setEditedComment(null);
-                                    removeComment(index + 1);
-                                  }}
-                                />
-                              </>
-                            )}
-                            <Moment fromNow>{comment.date}</Moment>
-                          </Box>
-                        </Box>
-                      </Box>
-                    ))
-                  )
-                ) : null}
-              </>
-            ) : null}
           </Box>
           {openDetailModal && (
             <DigitalArtDetailsModal

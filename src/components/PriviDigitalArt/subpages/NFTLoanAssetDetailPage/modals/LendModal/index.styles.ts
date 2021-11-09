@@ -45,8 +45,8 @@ export const useLendModalStyles = makeStyles(theme => ({
     marginTop: '24px'
   },
   placeBtn: {
-    fontFamily: 'Agrandir',
+    fontFamily: 'Agrandir !important',
     background: "#431AB7 !important",
-    fontSize: '14px'
+    fontSize: '14px !important',
   },
 }));

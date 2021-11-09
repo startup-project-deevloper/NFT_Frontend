@@ -10,15 +10,13 @@ import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProg
 import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
-import { useLendModalStyles } from "./index.styles";
+import { useBorrowModalStyles } from "./index.styles";
 import PolygonAPI from "shared/services/API/polygon";
 
 const BorrowModal = ({ open, onClose, onSuccess, market }) => {
-  const classes = useLendModalStyles();
+  const classes = useBorrowModalStyles();
   const { showAlertMessage } = useAlertMessage();
   const [amount, setAmount] = useState<number>(0);
-  const [isApproved, setIsApproved] = useState<boolean>(false);
-  const [balance, setBalance] = useState<number>(0);
   const [network, setNetwork] = useState<string>("");
   const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
@@ -30,25 +28,8 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
   useEffect(() => {
     if (!open) {
       setAmount(0)
-      setIsApproved(false)
     }
   }, [open])
-
-  useEffect(() => {
-    handleSetBalance()
-  }, [market])
-
-  const handleSetBalance = async () => {
-    if (library) {
-      const web3 = new Web3(library.provider);
-      if (account && web3 && market) {
-        let _balance = await PolygonAPI.Erc20[market.token_info.Symbol].balanceOf(web3, { account });
-        let _decimals = await PolygonAPI.Erc20[market.token_info.Symbol].decimals(web3, { account });
-        _balance = _balance / Math.pow(10, _decimals);
-        setBalance(_balance)
-      }
-    }
-  }
 
   const handleOpenTransactionModal = () => {
     setOpenTransactionModal(true);
@@ -60,51 +41,7 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
     setOpenTransactionModal(false);
   };
 
-  const handleApprove = async () => {
-    try {
-      if (chainId && chainId !== 80001) {
-        const isOnPolygon = await switchNetwork(80001);
-        if (!isOnPolygon) {
-          showAlertMessage(`Got failed while switching over to polygon network`, { variant: "error" });
-          return;
-        }
-      }
-      if (library) {
-        const web3 = new Web3(library.provider);
-        if (account && web3 && market) {
-          let balance = await PolygonAPI.Erc20[market.token_info.Symbol].balanceOf(web3, { account });
-          let decimals = await PolygonAPI.Erc20[market.token_info.Symbol].decimals(web3, { account });
-          balance = balance / Math.pow(10, decimals);
-          if (balance < amount) {
-            showAlertMessage(`Insufficient balance to approve`, { variant: "error" });
-            return;
-          }
-          handleOpenTransactionModal()
-          const approved = await PolygonAPI.Erc20[market.token_info.Symbol].approve(web3, account!, market.token_info.Address);
-          if (!approved) {
-            showAlertMessage(`Can't proceed to approve`, { variant: "error" });
-            setTransactionInProgress(false);
-            setTransactionSuccess(false);
-            return;
-          }
-          setIsApproved(true);
-          showAlertMessage(`Successfully approved ${amount} USDT!`, {
-            variant: "success",
-          });
-          setTransactionSuccess(true);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      showAlertMessage("Something went wrong. Please try again!", {
-        variant: "error",
-      });
-    } finally {
-      setTransactionInProgress(false);
-    }
-  };
-
-  const handleLend = async () => {
+  const handleBorrow = async () => {
     if (chainId && chainId !== 80001) {
       const isOnPolygon = await switchNetwork(80001);
       if (!isOnPolygon) {
@@ -118,9 +55,9 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
         let decimals = await PolygonAPI.Erc20[market.token_info.Symbol].decimals(web3, { account });
         let _bn_number = amount * (10 ** decimals)
         handleOpenTransactionModal()
-        await PolygonAPI.FractionalLoan.lend(web3, account, market.CToken, _bn_number,  setTxnHash);
+        await PolygonAPI.FractionalLoan.borrow(web3, account, market.CToken, _bn_number,  setTxnHash);
         onSuccess && onSuccess(amount);
-        showAlertMessage(`Successfully lent ${amount} ${market?.token_info?.Symbol}!`, {
+        showAlertMessage(`Successfully borrowed ${amount} ${market?.token_info?.Symbol}!`, {
           variant: "success",
         });
         setTransactionSuccess(true);
@@ -150,12 +87,11 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
         <InputWithLabelAndTooltip
           inputValue={amount !== 0 ? amount.toString() : ""}
           type="number"
-          placeHolder="Lend amount"
+          placeHolder="Borrow amount"
           onInputValueChange={e => {
             setAmount(Number(e.target.value));
           }}
           startAdornment={<img width="25px" src={market?.token_info?.ImageUrl} style={{ margin: '0px 10px 0px 0px' }} />}
-          disabled={isApproved}
         />
       </Box>
       <Box className={classes.rateBox}>
@@ -170,13 +106,8 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
         </Box>
       </Box>
       <Box className={classes.buttonContainer} display="flex" justifyContent="space-between">
-        <PrimaryButton className={classes.placeBtn} onClick={handleApprove} size="medium" disabled={!market || isApproved || transactionInProgress || amount == 0}>
-          {
-            isApproved ? 'Approved' : 'Approve'
-          }
-        </PrimaryButton>
-        <PrimaryButton className={classes.placeBtn} onClick={handleLend} size="medium" disabled={!market || !isApproved || transactionInProgress || amount == 0}>
-          Lend
+        <PrimaryButton className={classes.placeBtn} onClick={handleBorrow} size="medium" disabled={!market || transactionInProgress || amount == 0}>
+          Borrow
         </PrimaryButton>
       </Box>
       <TransactionProgressModal

@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 
-export const useLendModalStyles = makeStyles(theme => ({
+export const useBorrowModalStyles = makeStyles(theme => ({
   modal: {
     padding: "27px 16px",
     maxWidth: "500px !important",
@@ -53,8 +53,9 @@ export const useLendModalStyles = makeStyles(theme => ({
     marginTop: '24px'
   },
   placeBtn: {
-    fontFamily: 'Agrandir',
+    fontFamily: 'Agrandir !important',
     background: "#431AB7 !important",
-    fontSize: '14px'
+    fontSize: '14px !important',
+    width: '100% !important'
   },
 }));

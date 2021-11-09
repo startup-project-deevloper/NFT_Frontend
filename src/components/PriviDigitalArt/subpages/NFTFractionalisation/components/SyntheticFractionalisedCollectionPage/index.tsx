@@ -594,6 +594,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               onClick={() => setSelectedTab("auctions")}
             >
               <span>AUCTIONS</span>
+              <Box className={classes.countCircle}>{auctionNFTs.length}</Box>
             </div>
             <div
               className={cls(

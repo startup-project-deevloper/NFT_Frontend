@@ -12,6 +12,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 import { useLendModalStyles } from "./index.styles";
 import PolygonAPI from "shared/services/API/polygon";
+import { setEthAccount } from "store/actions/User";
 
 const LendModal = ({ open, onClose, onSuccess, market }) => {
   const classes = useLendModalStyles();
@@ -19,12 +20,11 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
   const [amount, setAmount] = useState<number>(0);
   const [isApproved, setIsApproved] = useState<boolean>(false);
   const [balance, setBalance] = useState<number>(0);
-  const [hash, setHash] = useState<string>("");
   const [network, setNetwork] = useState<string>("");
   const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
-
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
+  const [txnHash, setTxnHash] = useState<string>("");
 
   const { account, library, chainId } = useWeb3React();
 
@@ -51,14 +51,17 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
     }
   }
 
+  const handleOpenTransactionModal = () => {
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
+    setNetwork("polygon");
+  };
+
   const handleCloseTransactionModal = () => {
     setOpenTransactionModal(false);
   };
 
   const handleApprove = async () => {
-    setOpenTransactionModal(true);
-    setTransactionInProgress(true);
-
     try {
       if (chainId && chainId !== 80001) {
         const isOnPolygon = await switchNetwork(80001);
@@ -77,6 +80,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
             showAlertMessage(`Insufficient balance to approve`, { variant: "error" });
             return;
           }
+          handleOpenTransactionModal()
           const approved = await PolygonAPI.Erc20[market.token_info.Symbol].approve(web3, account!, market.token_info.Address);
           if (!approved) {
             showAlertMessage(`Can't proceed to approve`, { variant: "error" });
@@ -101,10 +105,35 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
     }
   };
 
+  const handleLend = async () => {
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
 
-  const handleLend = () => {
-
-  }
+    try {
+      const web3 = new Web3(library.provider);
+      if (account && web3 && market) {
+        let decimals = await PolygonAPI.Erc20[market.token_info.Symbol].decimals(web3, { account });
+        let _bn_number = amount * (10 ** decimals)
+        handleOpenTransactionModal()
+        await PolygonAPI.FractionalLoan.lend(web3, account, market.CToken, _bn_number,  setTxnHash);
+        onSuccess && onSuccess(amount);
+        showAlertMessage(`Successfully lent ${amount} ${market?.token_info?.Symbol}!`, {
+          variant: "success",
+        });
+        setTransactionSuccess(true);
+        onClose()
+      }
+    } catch (e) {
+      console.log("handleSubmit error", e);
+      showAlertMessage("Something went wrong. Please try again!", {
+        variant: "error",
+      });
+      setTransactionSuccess(false);
+    } finally {
+      setTransactionInProgress(false);
+      setTxnHash('');
+    }
+  };
 
   return (
     <Modal size="medium" isOpen={open} onClose={onClose} className={classes.modal} showCloseIcon={true}>
@@ -148,7 +177,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
         onClose={handleCloseTransactionModal}
         transactionInProgress={transactionInProgress}
         transactionSuccess={transactionSuccess}
-        hash={hash}
+        hash={txnHash}
         network={network}
       />
     </Modal>

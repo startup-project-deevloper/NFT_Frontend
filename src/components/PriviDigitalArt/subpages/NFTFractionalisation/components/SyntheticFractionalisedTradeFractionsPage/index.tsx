@@ -290,7 +290,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [soldSupply, setSoldSupply] = React.useState<number>(nft.SoldSupply);
 
   const [jotPrice, setJotPrice] = React.useState<number>(0);
-  const [transList, setTransList] = React.useState<any[]>(tempHistory);
+  const [transList, setTransList] = React.useState<any[]>([]);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
@@ -1238,7 +1238,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           )}
         </>
       )}
-      {isOwner && (
+      {isOwner && isOwnerShipTab && (
         <>
           <Box className={classes.outBox}>
             <Box display="flex" justifyContent="space-between" alignItems="center">

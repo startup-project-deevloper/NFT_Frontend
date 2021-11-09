@@ -6,7 +6,6 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
-import { format } from "date-fns";
 import ReactPlayer from "react-player";
 import queryString from "query-string";
 
@@ -19,7 +18,6 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 
-import { RootState } from "store/reducers/Reducer";
 import { sumTotalViews } from "shared/functions/totalViews";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { getUser } from "store/selectors";
@@ -66,15 +64,10 @@ import {
   deleteSellOrder,
   cancelAuction,
   withdrawAuction,
-  getBidHistory,
-  getAuctionTransactions,
   cancelSellingOffer,
   buyFromOffer,
   sellFromOffer,
-  // getExchangePriceHistory,
-  getBuyingOffers,
   cancelBuyingOffer,
-  getUsersByAddresses,
 } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import CreateFractionOfferModal from "components/PriviDigitalArt/modals/CreateOfferModal";
@@ -84,21 +77,16 @@ import { SharePopup } from "shared/ui-kit/SharePopup";
 import { BackButton } from "../../components/BackButton";
 import { MediaPhotoDetailsModal } from "../../modals/MediaPhotoDetailsModal";
 import DigitalArtDetailsModal from "../../modals/DigitalArtDetailsModal";
-import { PlaceBidModal } from "../../modals/PlaceBidModal";
-import BuyNFTModal from "../../modals/BuyNFTModal";
-import PlaceBuyingOfferModal from "../../modals/PlaceBuyingOfferModal";
 import ConfirmPayment from "../../modals/ConfirmPayment";
-import { digitalArtModalStyles, LinkIcon } from "./index.styles";
+import { digitalArtModalStyles } from "./index.styles";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
 
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import Moment from "react-moment";
-import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
-import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
 import { CollectionsShowTime } from "shared/constants/collections";
 
 const removeIcon = require("assets/icons/remove_red.png");
@@ -645,11 +633,6 @@ const MediaPage = () => {
         setIsDataLoading(false);
         if (resp && resp.success) {
           let m = resp.data;
-          // Auction: set if auction ended
-          if (m.Auctions) {
-            const delta = Math.floor(m.Auctions.EndTime - Date.now() / 1000);
-            if (delta < 0) setAuctionEnded(true);
-          }
 
           m.eth = tag === "privi" ? false : true;
           m.ImageUrl = m.HasPhoto
@@ -842,205 +825,6 @@ const MediaPage = () => {
           }
         });
       }
-      // AUCTION
-      else if (media.Auctions) {
-        getBidHistory(media.MediaSymbol, media.Type).then(resp => {
-          if (resp?.success) {
-            const data = resp.data;
-            // set graph data
-            let config = ChartConfig;
-            config.config.options.scales.xAxes[0].display = false;
-            const newConfig = JSON.parse(JSON.stringify(ChartConfig));
-            newConfig.plugins = [GradientBgPlugin];
-            newConfig.configurer = configurer;
-            newConfig.config.data.labels = data.map(history => history.date);
-            newConfig.config.data.datasets[0].data = data.map(history => history.price.toFixed(4));
-            newConfig.config.data.datasets[0].backgroundColor = "#27E8D9";
-            newConfig.config.data.datasets[0].borderColor = "#27E8D9";
-            newConfig.config.data.datasets[0].pointBackgroundColor = "#27E8D9";
-            newConfig.config.data.datasets[0].hoverBackgroundColor = "#27E8D9";
-            seBidHistoryConfig(newConfig);
-            // set price change
-            if (data.length > 1) {
-              const p1 = data[data.length - 1].price;
-              const p2 = data[data.length - 2].price;
-              setBidPriceInfo({
-                lastPrice: p1.toFixed(2),
-                priceChange: (p1 - p2).toFixed(2),
-                priceChangePct: ((100 * (p1 - p2)) / p2).toFixed(2),
-              });
-            }
-          }
-        });
-        getAuctionTransactions(media.MediaSymbol, media.Type).then(resp => {
-          if (resp?.success) {
-            //set auction history data
-            setAuctionHistoryData(resp.data.filter((_, index) => index < 6) || []);
-          }
-        });
-      }
-      // EXCHANGE
-      else if (media.ExchangeData) {
-        // getExchangePriceHistory(media.ExchangeData.Id).then(resp => {
-        //   if (resp?.success) {
-        //     const data = resp.data;
-        //     // set graph data
-        //     let config = ChartConfig;
-        //     config.config.options.scales.xAxes[0].display = false;
-        //     const newConfig = JSON.parse(JSON.stringify(ChartConfig));
-        //     newConfig.plugins = [GradientBgPlugin];
-        //     newConfig.configurer = configurer;
-        //     newConfig.config.data.labels = data.map(history => history.date);
-        //     newConfig.config.data.datasets[0].data = data.map(history => history.price.toFixed(4));
-        //     newConfig.config.data.datasets[0].backgroundColor = "#27E8D9";
-        //     newConfig.config.data.datasets[0].borderColor = "#27E8D9";
-        //     newConfig.config.data.datasets[0].pointBackgroundColor = "#27E8D9";
-        //     newConfig.config.data.datasets[0].hoverBackgroundColor = "#27E8D9";
-        //     setExchangeHistoryConfig(newConfig);
-        //     // set price change
-        //     if (data.length > 1) {
-        //       const p1 = data[data.length - 1].price;
-        //       const p2 = data[data.length - 2].price;
-        //       setExchangePriceInfo({
-        //         lastPrice: p1.toFixed(2),
-        //         priceChange: (p1 - p2).toFixed(2),
-        //         priceChangePct: ((100 * (p1 - p2)) / p2).toFixed(2),
-        //       });
-        //     }
-        //   }
-        // });
-        // Get buying offers depends on chain net
-        const netType = media.BlockchainNetwork;
-        if (netType === BlockchainNets[0].value) {
-          getBuyingOffers(media.ExchangeData.Id).then(resp => {
-            if (resp?.success) {
-              const data = resp.data;
-              const newExchangeTableData: any[] = [];
-              data.forEach(offer => {
-                newExchangeTableData.push([
-                  {
-                    cell: (
-                      <Box display="flex" flexDirection="row" alignItems="center">
-                        <Avatar size="medium" url={offer.creatorInfo.imageUrl ?? getDefaultAvatar()} />
-                        <Box display="flex" flexDirection="column" alignItems="center">
-                          <Text ml={1.5}>{offer.creatorInfo?.name}</Text>
-                          <Text ml={1.5}>@{offer.creatorInfo?.urlSlug}</Text>
-                        </Box>
-                      </Box>
-                    ),
-                  },
-                  {
-                    cell: (
-                      <img
-                        src={require(`assets/tokenImages/${offer.OfferToken}.png`)}
-                        width={24}
-                        height={24}
-                      />
-                    ),
-                  },
-                  { cell: offer.OfferToken },
-                  { cell: offer.Price },
-                  {
-                    cell:
-                      offer.CreatorAddress === user.address ? (
-                        <Text
-                          onClick={() => {
-                            handleOpenSignatureCancelBuyingOffer(offer);
-                          }}
-                        >
-                          {" "}
-                          Cancel{" "}
-                        </Text>
-                      ) : media?.ExchangeData?.CreatorAddress === user.address ? (
-                        <Text
-                          onClick={() => {
-                            handleOpenSignatureSellFromBuyingOffer(offer);
-                          }}
-                        >
-                          {" "}
-                          Sell{" "}
-                        </Text>
-                      ) : null,
-                  },
-                ]);
-              });
-              setExchangeTableData(newExchangeTableData);
-            }
-          });
-        } else if (netType === BlockchainNets[1].value) {
-          if (!web3) return;
-          const web3APIHandler = BlockchainNets[1].apiHandler;
-          web3APIHandler.Exchange.getErc721OfferAll(web3, account!).then(offers => {
-            const newExchangeTableData: any[] = [];
-            const buyOffers =
-              offers
-                ?.map((offer, index) => ({ ...offer, id: index + 1 }))
-                .filter(offer => offer.offerType === "BUY" && offer.exchangeId === media.ExchangeData.Id)
-                .map(offer => ({
-                  Id: offer.id, // This value should be returned from contract
-                  CreatorAddress: offer.creatorAddress,
-                  ExchangeId: offer.exchangeId,
-                  Price: offer.price,
-                  OfferToken: "BAL", // This value should be returned from contract
-                })) || [];
-            getUsersByAddresses(buyOffers.map(b => b.CreatorAddress)).then(res => {
-              if (res.success) {
-                const userList = res.data;
-                buyOffers.forEach(offer => {
-                  const u = userList[offer.CreatorAddress];
-                  newExchangeTableData.push([
-                    {
-                      cell: (
-                        <Box display="flex" flexDirection="row" alignItems="center">
-                          <Avatar size="medium" url={u?.imageUrl ?? getDefaultAvatar()} />
-                          <Box display="flex" flexDirection="column" alignItems="center">
-                            <Text ml={1.5}>{u?.name}</Text>
-                            <Text ml={1.5}>@{u?.urlSlug}</Text>
-                          </Box>
-                        </Box>
-                      ),
-                    },
-                    {
-                      cell: (
-                        <img
-                          src={require(`assets/tokenImages/${offer.OfferToken}.png`)}
-                          width={24}
-                          height={24}
-                        />
-                      ),
-                    },
-                    { cell: offer.OfferToken },
-                    { cell: offer.Price },
-                    {
-                      cell:
-                        offer.CreatorAddress === user.address ? (
-                          <Text
-                            onClick={() => {
-                              handleOpenSignatureCancelBuyingOffer(offer);
-                            }}
-                          >
-                            {" "}
-                            Cancel{" "}
-                          </Text>
-                        ) : media?.ExchangeData?.CreatorAddress === user.address ? (
-                          <Text
-                            onClick={() => {
-                              handleOpenSignatureSellFromBuyingOffer(offer);
-                            }}
-                          >
-                            {" "}
-                            Sell{" "}
-                          </Text>
-                        ) : null,
-                    },
-                  ]);
-                });
-                setExchangeTableData(newExchangeTableData);
-              }
-            });
-          });
-        }
-      }
     }
   };
 
@@ -1094,20 +878,7 @@ const MediaPage = () => {
     setChooseWalletModal(false);
   };
 
-  const topBidPrice = React.useMemo(() => {
-    if (!media || !media?.Auctions || !media?.BidHistory || media?.BidHistory.length === 0) return "N/A";
-    return Math.max(...media?.BidHistory.map((history: any) => parseInt(history.price)));
-  }, [media]);
-
   const owners = React.useMemo(() => {
-    // if (!media || !media?.Auctions || !media?.BidHistory || media?.BidHistory.length === 0) return [];
-    // return [
-    //   ...new Set(
-    //     media?.BidHistory.map((history: any) =>
-    //       usersList.find(user => user.address === history.bidderAddress)
-    //     ).filter(history => !!history)
-    //   ),
-    // ];
     return [];
   }, [media]);
 
@@ -1429,129 +1200,6 @@ const MediaPage = () => {
     handleCurrentMediaAction();
   };
 
-  // AUCTION: open wallet selection modal
-  const handleOpenWalletSelectionModal = (price: number, topBidPrice: number | "N/A") => {
-    const token = media?.Auctions.TokenSymbol;
-    // if (!userBalances[token] || userBalances[token].Balance < price) {
-    //   showAlertMessage(`Insufficient ${token} balance`, { variant: "error" });
-    //   return;
-    // }
-    if (topBidPrice !== "N/A" && price < topBidPrice + media?.Auctions.BidIncrement) {
-      showAlertMessage(
-        `Bid Amount should be higher than Top Bid Amount(${media?.Auctions.TokenSymbol}${
-          topBidPrice + media?.Auctions.BidIncrement
-        })`,
-        { variant: "error" }
-      );
-      return;
-    }
-    setDisableBidBtn(true);
-    priceRef.current = price;
-    handlePlaceBid();
-  };
-
-  // AUCTION: bid nft with own wallet
-  const handlePlaceBid = () => {
-    const price = priceRef.current;
-    if (price > Math.max(media?.Auctions?.Gathered ?? 0, media?.Auctions?.ReservePrice ?? 0)) {
-      // setOpenConfirmPaymentModal(false);
-      const payload = {
-        MediaSymbol: media?.Auctions.MediaSymbol,
-        TokenSymbol: media?.Auctions.TokenSymbol,
-        MediaType: media?.Type,
-        Owner: media?.Auctions.Owner,
-        Address: user.address,
-        Amount: price,
-      };
-      payloadRef.current = payload;
-      operationRef.current = 6;
-      setDisableBidBtn(true);
-      handleCurrentMediaAction();
-    } else {
-      showAlertMessage(
-        `Bid should be greater than ${Math.max(
-          media?.Auctions?.Gathered ?? 0,
-          media?.Auctions?.ReservePrice ?? 0
-        )} ${media?.Auctions?.TokenSymbol}`,
-        { variant: "error" }
-      );
-      setDisableBidBtn(false);
-    }
-  };
-
-  // AUCTION: cancel auction
-  const handleOpenSignatureCancelAuction = () => {
-    const payload = {
-      MediaSymbol: media?.Auctions.MediaSymbol,
-      TokenSymbol: media?.Auctions.TokenSymbol,
-      MediaType: media?.Type,
-      Owner: media?.Auctions.Owner,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 7;
-    handleCurrentMediaAction();
-  };
-
-  // AUCTION: withdraw auction
-  const handleOpenSignatureWithdrawAuction = () => {
-    const payload = {
-      MediaSymbol: media?.Auctions.MediaSymbol,
-      TokenSymbol: media?.Auctions.TokenSymbol,
-      Owner: media?.Auctions.Owner,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 8;
-    handleCurrentMediaAction();
-  };
-
-  // EXCHANGE: cancel selling offer (cancel exchange)
-  const handleOpenSignatureCancelSellingOffer = () => {
-    const payload = {
-      ExchangeId: media.ExchangeData.Id,
-      OfferId: media.ExchangeData.Id,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 9;
-    handleCurrentMediaAction();
-  };
-
-  // EXCHANGE: buy from selling offer
-  const handleOpenSignatureBuyFromSellingOffer = () => {
-    const payload = {
-      ExchangeId: media.ExchangeData.Id,
-      OfferId: media.ExchangeData.Id,
-      Address: user.address,
-      Amount: "1",
-    };
-    payloadRef.current = payload;
-    operationRef.current = 10;
-    handleCurrentMediaAction();
-  };
-
-  // EXCHANGE: sell
-  const handleOpenSignatureSellFromBuyingOffer = offer => {
-    const payload = {
-      ExchangeId: offer.ExchangeId,
-      OfferId: offer.Id,
-      Address: user.address,
-      Amount: offer.Amount,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 11;
-    handleCurrentMediaAction();
-  };
-
-  // EXCHANGE: cancel buying Offer
-  const handleOpenSignatureCancelBuyingOffer = offer => {
-    const payload = {
-      ExchangeId: offer.ExchangeId,
-      OfferId: offer.Id,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 12;
-    handleCurrentMediaAction();
-  };
-
   // media relevant contract interaction on privi chain
   const interactOnPrivi = () => {
     const payload = payloadRef.current;
@@ -1693,29 +1341,6 @@ const MediaPage = () => {
     }
   };
 
-  const approveToken = async (apiHandler, spender, token, amount) => {
-    let balance = await apiHandler.Erc20[token].balanceOf(web3, { account });
-    let decimals = await apiHandler.Erc20[token].decimals(web3);
-    balance = Number(toDecimals(balance, decimals));
-    if (balance < amount) {
-      setLoading(false);
-      showAlertMessage(`Insufficient balance to place bid`, { variant: "error" });
-      return;
-    }
-
-    const approved = await apiHandler.Erc20[token].approve(
-      web3,
-      account!,
-      spender,
-      toNDecimals(amount, decimals)
-    );
-    if (!approved) {
-      setLoading(false);
-      showAlertMessage(`Can't proceed to approve Token`, { variant: "error" });
-      return;
-    }
-  };
-
   // media relevant contract interaction on polygon chain
   const interactOnPolygon = async () => {
     const payload = payloadRef.current;
@@ -1739,275 +1364,10 @@ const MediaPage = () => {
           break;
         case 5: // FRACTIONALISE: Delete sell offer
           break;
-        case 6: // AUCTION: Place bid
-          request = {
-            mediaSymbol: payload.MediaSymbol,
-            tokenSymbol: payload.TokenSymbol,
-            _address: payload.Address,
-            amount: payload.Amount,
-            fromAddress: payload.Address,
-          };
-
-          await approveToken(
-            web3APIHandler,
-            web3Config.CONTRACT_ADDRESSES.ERC721_AUCTION,
-            payload.TokenSymbol,
-            payload.Amount
-          );
-
-          web3APIHandler.Auction.placeBid(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: payload,
-              };
-              const response = await axios.post(`${URL()}/auction/placeBid/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Bid placed successfully", { variant: "success" });
-                handleCloseBidModal();
-                loadData();
-              } else {
-                showAlertMessage("Failed to Place a Bid", { variant: "error" });
-              }
-              setLoading(false);
-              setDisableBidBtn(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to Place a Bid", { variant: "error" });
-            }
-          });
-          break;
-        case 7: // AUCTION: Cancel auction
-          request = {
-            mediaSymbol: payload.MediaSymbol,
-            tokenSymbol: payload.TokenSymbol,
-          };
-          web3APIHandler.Auction.cancelAuction(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: payload,
-              };
-              const response = await axios.post(`${URL()}/auction/cancelAuction/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Auction cancelled successfully", { variant: "success" });
-                loadData();
-              } else {
-                showAlertMessage("Failed to cancel the auction", { variant: "error" });
-              }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to Cancel the auction", { variant: "error" });
-            }
-          });
-          break;
-        case 8: // AUCTION: Withdraw auction
-          request = {
-            mediaSymbol: payload.MediaSymbol,
-            tokenSymbol: payload.TokenSymbol,
-          };
-          web3APIHandler.Auction.withdrawAuction(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: payload,
-              };
-              const response = await axios.post(`${URL()}/auction/withdrawAuction/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Auction withdrawn successfully", { variant: "success" });
-                loadData();
-              } else {
-                showAlertMessage("Failed to withdraw the auction", { variant: "error" });
-              }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to withdraw the auction", { variant: "error" });
-            }
-          });
-          break;
-        case 9: // EXCHANGE: Cancel selling offer
-          request = {
-            input: {
-              exchangeId: media.ExchangeData.Id,
-              offerId: media.ExchangeData.InitialOfferId,
-            },
-            caller: account!,
-          };
-          web3APIHandler.Exchange.CancelERC721TokenSellingOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: media.ExchangeData.Id,
-                  OfferId: media.ExchangeData.InitialOfferId,
-                  MediaSymbol: media.MediaSymbol,
-                  MediaType: media.Type,
-                },
-              };
-              console.log(body);
-              const response = await axios.post(`${URL()}/exchange/cancelSellingOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Exchange cancelled successfully", { variant: "success" });
-                loadData();
-              } else {
-                showAlertMessage("Failed to cancel the exchange", { variant: "error" });
-              }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to cancel the exchange", { variant: "error" });
-            }
-          });
-          break;
-        case 10: // EXCHANGE: Buy from selling offer
-          request = {
-            input: {
-              exchangeId: media.ExchangeData.Id,
-              offerId: media.ExchangeData.InitialOfferId,
-            },
-            caller: account!,
-          };
-
-          await approveToken(
-            web3APIHandler,
-            web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
-            media?.ExchangeData?.OfferToken ?? "USDT",
-            media?.ExchangeData?.Price
-          );
-
-          web3APIHandler.Exchange.BuyERC721TokenFromOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  Address: user.address,
-                  ExchangeId: request.input.exchangeId,
-                  OfferId: request.input.offerId,
-                  MediaSymbol: media.MediaSymbol,
-                  MediaType: media.Type,
-                },
-              };
-              const response = await axios.post(`${URL()}/exchange/buyFromOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("NFT bought successfully", { variant: "success" });
-                loadData();
-              } else {
-                showAlertMessage("Failed to buy NFT", { variant: "error" });
-              }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to buy NFT", { variant: "error" });
-            }
-          });
-          break;
-        case 11: // EXCHANGE: Sell from buying offer
-          request = {
-            input: {
-              exchangeId: payload.ExchangeId,
-              offerId: payload.OfferId,
-            },
-            caller: account!,
-          };
-          web3APIHandler.Exchange.SellERC721TokenFromOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: request.input.exchangeId,
-                  MediaSymbol: media.MediaSymbol,
-                  MediaType: media.Type,
-                },
-              };
-              const response = await axios.post(`${URL()}/exchange/sellFromOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("NFT sold successfully", { variant: "success" });
-                loadData();
-              } else {
-                showAlertMessage("Failed to sell NFT", { variant: "error" });
-              }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to sell NFT", { variant: "error" });
-            }
-          });
-          break;
-        case 12: // EXCHANGE: Cancel buying offer
-          request = {
-            input: {
-              exchangeId: payload.ExchangeId,
-              offerId: payload.OfferId,
-            },
-            caller: account!,
-          };
-          web3APIHandler.Exchange.CancelERC721TokenBuyingOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: request.input.exchangeId,
-                  OfferId: request.input.offerId,
-                },
-              };
-              const response = await axios.post(`${URL()}/exchange/cancelBuyingOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Cancelled successfully", { variant: "success" });
-                loadData();
-              } else {
-                showAlertMessage("Failed to cancel offer", { variant: "error" });
-              }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to cancel offer", { variant: "error" });
-            }
-          });
-          break;
       }
     } else {
       setDisableBidBtn(false);
     }
-  };
-
-  const isValidBidHistory = () => {
-    if (bidHistoryConfig) {
-      const values = bidHistoryConfig.config.data.datasets[0].data;
-
-      return Boolean(values.find(value => parseFloat(value) > 0));
-    }
-
-    return false;
   };
 
   return (
@@ -2369,239 +1729,7 @@ const MediaPage = () => {
                       </Grid>
                     </Box>
                   </>
-                ) : media?.ExchangeData ? (
-                  <Box display="flex" flexDirection="row" alignItems="center">
-                    <Text color={Color.Black} size={FontSize.XL}>
-                      Price
-                    </Text>
-                    <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                      {`${media?.ExchangeData?.OfferToken ?? "ETH"} ${media?.ExchangeData?.Price ?? 0}`}
-                    </Text>
-                    <Text color={Color.Black} size={FontSize.S}>
-                      {`$(${convertTokenToUSD(
-                        media?.ExchangeData?.OfferToken ?? "USDT",
-                        media?.ExchangeData?.Price ?? 0
-                      ).toFixed(6)})`}
-                    </Text>
-                  </Box>
-                ) : media?.Auctions ? (
-                  <>
-                    <>
-                      {topBidPrice !== "N/A" && (
-                        <Box display="flex" flexDirection="row" alignItems="center">
-                          <Text color={Color.Black} size={FontSize.XL}>
-                            Top bid
-                          </Text>
-                          <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                            {`${media?.Auctions.TokenSymbol} ${topBidPrice}`}
-                          </Text>
-                          <Text color={Color.Black} size={FontSize.S}>
-                            {`$(${convertTokenToUSD(media?.Auctions.TokenSymbol, topBidPrice).toFixed(6)})`}
-                          </Text>
-                        </Box>
-                      )}
-                      <Box mb={1}>
-                        <Text size={FontSize.S} color={Color.Black}>
-                          {`Bidding token is ${media?.Auctions.TokenSymbol}`}
-                        </Text>
-                      </Box>
-                    </>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      justifyContent="space-between"
-                      bgcolor={Color.GreenLight}
-                      borderRadius={8}
-                      px={2}
-                      py={1}
-                    >
-                      {media?.Auctions && (
-                        <Box display="flex" flexDirection="column" alignItems="flex-start">
-                          <Text color={Color.Purple} mb={0.5}>
-                            Reserve Price
-                          </Text>
-                          <Text color={Color.Purple} size={FontSize.XL} bold>{`${Math.max(
-                            media.Auctions.Gathered ?? 0,
-                            media.Auctions.ReservePrice ?? 0
-                          )} ${media.Auctions.TokenSymbol}`}</Text>
-                        </Box>
-                      )}
-                      {media?.Auctions && (
-                        <Box display="flex" flexDirection="column" alignItems="flex-end">
-                          <Text color={Color.Purple} mb={0.5}>
-                            {!auctionEnded ? "Auction Ending In" : "Auction Ended"}
-                          </Text>
-                          {!auctionEnded && (
-                            <Text color={Color.Purple} size={FontSize.XL} bold>
-                              {`${endTime.days ? `${String(endTime.days).padStart(2, "0")}d` : ""} ${String(
-                                endTime.hours
-                              ).padStart(2, "0")}h ${String(endTime.minutes).padStart(2, "0")}m ${String(
-                                endTime.seconds
-                              ).padStart(2, "0")}s`}
-                            </Text>
-                          )}
-                        </Box>
-                      )}
-                    </Box>
-                    <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                      {media.Auctions.TopBidInfo && (
-                        <Box className={classes.bidBox} style={{ background: "#9EACF2" }} width={1} mr={1}>
-                          <Avatar
-                            size="medium"
-                            url={
-                              media?.Auctions?.TopBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.Auctions?.TopBidInfo?.AnonAvatar}`)
-                            }
-                          />
-                          <Box ml={2}>
-                            <Box className={classes.header2} style={{ color: "#431AB7" }}>
-                              Top Bid Placed By
-                            </Box>
-                            <Box className={classes.header2} style={{ color: "white" }} mt={0.5}>
-                              {media?.Auctions.TopBidInfo?.Name}
-                            </Box>
-                          </Box>
-                        </Box>
-                      )}
-                      {media.Auctions.ReplacedBidInfo && (
-                        <Box
-                          className={classes.bidBox}
-                          style={{ border: "1px solid #9EACF2" }}
-                          width={1}
-                          ml={1}
-                        >
-                          <Avatar
-                            size="medium"
-                            url={
-                              media?.Auctions?.ReplacedBidInfo?.ImageUrl ||
-                              require(`assets/anonAvatars/${media?.Auctions?.ReplacedBidInfo?.AnonAvatar}`)
-                            }
-                          />
-                          <Box ml={2}>
-                            <Box className={classes.header2} style={{ color: "#431AB7" }}>
-                              Displaced Bidder
-                            </Box>
-                            <Box className={classes.header2} style={{ color: "#9EACF2" }} mt={0.5}>
-                              {media?.Auctions.ReplacedBidInfo?.Name}
-                            </Box>
-                          </Box>
-                        </Box>
-                      )}
-                    </Box>
-                  </>
                 ) : null}
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  flexWrap="wrap"
-                  mt={3}
-                  gridRowGap={12}
-                >
-                  {media?.Auctions ? (
-                    media.Auctions.Owner !== user.address ? (
-                      !auctionEnded && (
-                        <PrimaryButton
-                          size="medium"
-                          onClick={handleOpenBidModal}
-                          className={classes.primaryBtn}
-                          style={{
-                            background: "#DDFF57",
-                            color: "#431AB7",
-                            marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                          }}
-                        >
-                          Place a Bid
-                        </PrimaryButton>
-                      )
-                    ) : (
-                      <div>
-                        {media.Auctions.Gathered ? (
-                          <PrimaryButton
-                            size="medium"
-                            onClick={handleOpenSignatureWithdrawAuction}
-                            className={classes.primaryBtn}
-                            style={{
-                              background: "#DDFF57",
-                              color: "#431AB7",
-                              marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                            }}
-                          >
-                            Withdraw
-                          </PrimaryButton>
-                        ) : null}
-                        <PrimaryButton
-                          size="medium"
-                          onClick={handleOpenSignatureCancelAuction}
-                          className={classes.primaryBtn}
-                          style={{
-                            background: "#DDFF57",
-                            color: "#431AB7",
-                            marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                          }}
-                        >
-                          Stop Auction
-                        </PrimaryButton>
-                      </div>
-                    )
-                  ) : null}
-                  {media?.ExchangeData ? (
-                    media?.ExchangeData.CreatorAddress === user.address ? (
-                      <PrimaryButton
-                        size="medium"
-                        onClick={() => handleOpenSignatureCancelSellingOffer()}
-                        className={classes.primaryBtn}
-                        style={{
-                          background: "#DDFF57",
-                          color: "#431AB7",
-                          marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                        }}
-                      >
-                        Remove Selling Offer
-                      </PrimaryButton>
-                    ) : (
-                      <PrimaryButton
-                        size="medium"
-                        onClick={() => handleOpenSignatureBuyFromSellingOffer()}
-                        className={classes.primaryBtn}
-                        style={{
-                          background: "#DDFF57",
-                          color: "#431AB7",
-                          marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                        }}
-                      >
-                        Buy NFT
-                      </PrimaryButton>
-                    )
-                  ) : null}
-                  {media?.ExchangeData && media.ExchangeData.CreatorAddress !== user.address && (
-                    <PrimaryButton
-                      size="medium"
-                      onClick={() => setOpenBuyNFTModal(true)}
-                      className={classes.primaryBtn}
-                      style={{
-                        background: "#DDFF57",
-                        color: "#431AB7",
-                        marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                        marginLeft: `${isTableScreen ? "0px" : "8px"}`,
-                      }}
-                    >
-                      Place Buying Offer
-                    </PrimaryButton>
-                  )}
-                  {(media?.Auctions || media?.ExchangeData) && (
-                    <SecondaryButton
-                      size="medium"
-                      onClick={handleOpenDetailModal}
-                      className={classes.transparentBtn}
-                      style={{
-                        marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                      }}
-                    >
-                      View More Details
-                    </SecondaryButton>
-                  )}
-                </Box>
               </Grid>
             </Grid>
             {media?.Fraction ? (
@@ -2767,118 +1895,6 @@ const MediaPage = () => {
                   />
                 </Box>
               </Box>
-            ) : media?.Auctions ? (
-              <>
-                {isValidBidHistory() && (
-                  <>
-                    <Box my={3}>Bid History</Box>
-                    <Box className={classes.graphBox} height="200px" mb={3}>
-                      <Box display="flex" style={{ position: "absolute", left: "16px", top: "8px" }}>
-                        <Box mt={2}>
-                          <Box style={{ fontSize: 18 }}>
-                            {convertTokenToUSD(
-                              media?.Auctions?.TokenSymbol ?? "USDT",
-                              bidPriceInfo.lastPrice ?? 0
-                            ).toFixed(1)}{" "}
-                            $
-                          </Box>
-                          <Box
-                            color={bidPriceInfo.priceChange ?? 0 >= 0 ? "#65CB63" : "#F2A07E"}
-                            style={{ fontSize: 14 }}
-                            mt={1}
-                          >
-                            {bidPriceInfo.priceChange ?? 0 > 0 ? "+" : ""}
-                            {convertTokenToUSD(
-                              media?.Auctions?.TokenSymbol ?? "USDT",
-                              bidPriceInfo.priceChange ?? 0
-                            ).toFixed(4)}
-                            {"$"}
-                            {/* ({bidPriceInfo.priceChangePct ?? 0 > 0 ? "+" : ""}
-                        {bidPriceInfo.priceChangePct}%) */}
-                          </Box>
-                        </Box>
-                      </Box>
-                      {bidHistoryConfig && <PrintChart config={bidHistoryConfig} />}
-                    </Box>
-                  </>
-                )}
-
-                <Grid container>
-                  {auctionHistoryData &&
-                    auctionHistoryData.length > 0 &&
-                    auctionHistoryData.map(row => {
-                      const bidder = row.bidderInfo;
-                      const token = row.Token;
-                      return (
-                        <Grid item sm={12} md={6} lg={4} className={classes.bidderInfoItem}>
-                          <Avatar size="small" url={bidder?.imageUrl ?? getDefaultAvatar()} />
-                          <Box
-                            display="flex"
-                            flexDirection="column"
-                            ml={2}
-                            mr={isTableScreen || isMobileScreen ? "18px" : "104px"}
-                          >
-                            <Box fontSize={14} fontWeight={400} color="#181818" mb={1}>
-                              Bid placed by <span className={classes.text1}>@{bidder?.name}</span>
-                            </Box>
-                            <Box fontSize={14} fontWeight={800} color="#9EACF2">
-                              {`${row.Amount?.toFixed(4)} ${token}`}{" "}
-                              <span className={classes.text2}>{`On ${format(
-                                new Date(row.Date * 1000),
-                                "MMMM dd, yyyy"
-                              )} at ${format(new Date(row.Date * 1000), "p")}`}</span>
-                            </Box>
-                          </Box>
-                          <Box
-                            style={{ cursor: "pointer" }}
-                            onClick={() =>
-                              window.open(
-                                `https://priviscan.io/tx/${row.Id}`,
-                                "_blank",
-                                "noopener,noreferrer"
-                              )
-                            }
-                          >
-                            <LinkIcon />
-                          </Box>
-                        </Grid>
-                      );
-                    })}
-                </Grid>
-              </>
-            ) : media?.ExchangeData ? (
-              <>
-                {/* <Box my={3}>Price History</Box>
-                <Box className={classes.graphBox} height="200px" mb={3}>
-                  <Box display="flex" style={{ position: "absolute", left: "16px", top: "8px" }}>
-                    <Box mt={2}>
-                      <Box style={{ fontSize: 18 }}>
-                        {Number(exchangePriceInfo.lastPrice ?? 0).toFixed(4)}
-                      </Box>
-                      <Box
-                        color={exchangePriceInfo.priceChange ?? 0 >= 0 ? "#65CB63" : "#F2A07E"}
-                        style={{ fontSize: 14 }}
-                        mt={1}
-                      >
-                        {exchangePriceInfo.priceChange ?? 0 > 0 ? "+" : ""}
-                        {Number(exchangePriceInfo.priceChange ?? 0).toFixed(4)} (
-                        {exchangePriceInfo.priceChangePct ?? 0 > 0 ? "+" : ""}
-                        {exchangePriceInfo.priceChangePct}%)
-                      </Box>
-                    </Box>
-                  </Box>
-                  {exchangeHistoryConfig && <PrintChart config={exchangeHistoryConfig} />}
-                </Box> */}
-                <Box my={3}>Offers</Box>
-                <Box className={classes.table} mb={5}>
-                  <CustomTable
-                    headers={ExchangeOfferTableHeaders}
-                    rows={exchangeTableData}
-                    placeholderText="No available data"
-                    theme="offers blue"
-                  />
-                </Box>
-              </>
             ) : null}
             {(media?.MediaDescription || media?.description) && (
               <>
@@ -3062,45 +2078,6 @@ const MediaPage = () => {
               }}
             />
           )}
-          {openBidModal && (
-            <PlaceBidModal
-              isOpen={openBidModal}
-              onClose={handleCloseBidModal}
-              placeBid={(price: number, topBidPrice: number | "N/A") => {
-                handleOpenWalletSelectionModal(price, topBidPrice);
-              }}
-              viewDetails={() => {
-                handleCloseBidModal();
-                handleOpenDetailModal();
-              }}
-              media={media}
-              disableBidBtn={disableBidBtn}
-            />
-          )}
-          {openBuyNFTModal && (
-            <BuyNFTModal
-              open={openBuyNFTModal}
-              handleClose={() => setOpenBuyNFTModal(false)}
-              handleRefresh={() => null}
-              handleSwitchPlaceOffer={() => {
-                handleCloseBidModal();
-                handleOpenPlaceOffer();
-              }}
-              media={media}
-              isFromExchange={true}
-            />
-          )}
-          {openPlaceOffer && (
-            <PlaceBuyingOfferModal
-              open={openPlaceOffer}
-              handleClose={() => {
-                handleClosePlaceOffer();
-                setOpenBuyNFTModal(false);
-              }}
-              handleRefresh={loadData}
-              media={media}
-            />
-          )}
           {chooseWalletModal && (
             <ChooseWalletModal
               isOpen={chooseWalletModal}
@@ -3112,7 +2089,7 @@ const MediaPage = () => {
             <ConfirmPayment
               open={openConfirmPaymentModal}
               handleClose={() => setOpenConfirmPaymentModal(false)}
-              payWithOwnWallet={handlePlaceBid}
+              payWithOwnWallet={() => {}}
               payWithCommunity={() => {}}
             />
           )}

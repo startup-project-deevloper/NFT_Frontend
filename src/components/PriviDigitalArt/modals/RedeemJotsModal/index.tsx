@@ -18,7 +18,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { toDecimals } from "shared/functions/web3";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
-export default function RedeemJotsModal({ open, handleClose = () => {}, collection, jotsBalance, price }) {
+export default function RedeemJotsModal({ open, handleClose = () => {}, collection, price }) {
   const classes = RedeemJotsModalStyles();
   const { account, library, chainId } = useWeb3React();
 
@@ -97,10 +97,20 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
     const web3APIHandler = selectedChain.apiHandler;
     const web3 = new Web3(library.provider);
 
+    setLoading(true);
     const contractResponse = await web3APIHandler.RedemptionPool.redeem(web3, account!, collection, {
       amount: +jot,
       setHash,
     });
+
+    if (!contractResponse.success) {
+      setLoading(false);
+      setTnxSuccess(false);
+      return;
+    }
+
+    setLoading(false);
+    setTnxSuccess(true);
   };
 
   return (

@@ -150,12 +150,14 @@ export default ({ collection }) => {
 
     const total = await web3APIHandler.RedemptionPool.getTotalLiquidityToRedeem(web3, collection);
 
+    console.log("total liquidity to redeem... ", total);
     if (total) {
       setTotalLiquidityToRedeem(+toDecimals(total, decimals));
     }
 
     const jotsToRedeem = await web3APIHandler.RedemptionPool.getJotsToRedeem(web3, collection);
 
+    console.log("jotsToRedeem... ", jotsToRedeem);
     if (jotsToRedeem) {
       setJotsToRedeem(jotsToRedeem);
     }
@@ -332,7 +334,6 @@ export default ({ collection }) => {
         handleClose={() => setOpenRedeemJotsModal(false)}
         collection={collection}
         price={totalLiquidityToRedeem / jotsToRedeem}
-        jotsBalance={totalLiquidityToRedeem}
       />
     </Box>
   );

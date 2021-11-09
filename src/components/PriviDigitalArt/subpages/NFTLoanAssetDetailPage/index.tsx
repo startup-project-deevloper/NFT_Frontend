@@ -156,26 +156,50 @@ const ChartLabels = [
   "18",
 ];
 
-const DetailsData = [
+const _DetailsData = [
   {
     attribute: "Price",
-    value: "$1.00",
+    value: "",
   },
   {
     attribute: "Market liquidity",
-    value: "2,456,663 USDT",
+    value: "",
   },
   {
     attribute: "# of Lenders",
-    value: "1235",
+    value: "",
   },
   {
     attribute: "# of Borrowers",
-    value: "24555",
+    value: "",
   },
   {
-    attribute: "USDT Borrow CAP",
-    value: "$2,456,663",
+    attribute: "Borrow CAP",
+    value: "",
+  },
+  {
+    attribute: "Interest Paid/Day",
+    value: "",
+  },
+  {
+    attribute: "Reserves",
+    value: "",
+  },
+  {
+    attribute: "Reserves Factor",
+    value: "",
+  },
+  {
+    attribute: "Collateral Factor",
+    value: "",
+  },
+  {
+    attribute: "Minted",
+    value: "",
+  },
+  {
+    attribute: "Exchange Rate",
+    value: "",
   },
 ];
 
@@ -190,6 +214,7 @@ const NFTLoanAssetDetailPage = () => {
   const [period, setPeriod] = useState<string>(PERIODS[0]);
   const [market, setMarket] = useState<any>(null);
   const [loadingMarket, setLoadingMarket] = useState<boolean>(false);
+  const [DetailsData, setDetailsData] = useState<any>(_DetailsData);
 
   useEffect(() => {
     setLoadingMarket(true)
@@ -197,7 +222,24 @@ const NFTLoanAssetDetailPage = () => {
       .then(res => {
         const data = res.data;
         if (data.success) {
-          setMarket(data.data.market)
+          const _market = data.data.market
+          setMarket(_market)
+
+          const _details_data = JSON.parse(JSON.stringify(DetailsData))
+          _details_data[0].value = `$${_market?.token_info?.priceInUsd}`
+          _details_data[1].value = `0 ${_market?.token_info?.Symbol}`
+          _details_data[2].value = '0'
+          _details_data[3].value = '0'
+          _details_data[4].attribute = `${_market?.token_info?.Symbol} Borrow CAP`
+          _details_data[4].value = '$0'
+          _details_data[5].value = `0 ${_market?.token_info?.Symbol}`
+          _details_data[6].value = `${_market?.borrowList.length > 0 ? _market?.borrowList[0].total_reserves : 0} ${_market?.token_info?.Symbol}`
+          _details_data[7].value = `${(_market?.reserve_factor || 0) * 100} %`
+          _details_data[8].value = `${(_market?.collateralFactor || 0) * 100} %`
+          _details_data[9].attribute = `${_market?.token_info?.Name} Minted`
+          _details_data[9].value = `${_market?.token_info?.total_supply || 0}`
+          _details_data[10].value = `1 ${_market?.token_info?.Symbol} = $${_market?.token_info?.priceInUsd}`
+          setDetailsData(_details_data)
         }
       })
       .catch(err => console.log(err))

@@ -495,6 +495,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   const handleRefresh = async () => {
     try {
+      console.log("handleRefresh");
       const targetChain = BlockchainNets[1];
 
       const web3APIHandler = targetChain.apiHandler;
@@ -504,12 +505,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         tokenId: nft.SyntheticID,
       });
 
+      let newNFT = { ...nft };
+
       if (ownerSup) {
         setOwnerSupply(ownerSup);
-        setNft({
-          ...nft,
-          OwnerSupply: ownerSup,
-        });
+        newNFT.OwnerSupply = ownerSup;
       }
 
       const sellingSup = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft, {
@@ -518,10 +518,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (sellingSup) {
         setSellingSupply(sellingSup);
-        setNft({
-          ...nft,
-          SellingSupply: sellingSup,
-        });
+        newNFT.SellingSupply = sellingSup;
       }
 
       const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
@@ -530,11 +527,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (soldSupply) {
         setSoldSupply(soldSupply);
-        setNft({
-          ...nft,
-          SoldSupply: soldSupply,
-        });
+        newNFT.SoldSupply = soldSupply;
       }
+      setNft(newNFT);
 
       return { ownerSupply: ownerSup, sellingSupply: sellingSup, soldSupply };
     } catch (err) {

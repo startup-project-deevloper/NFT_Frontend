@@ -228,8 +228,8 @@ const NFTLoanAssetDetailPage = () => {
           const _details_data = JSON.parse(JSON.stringify(DetailsData))
           _details_data[0].value = `$${_market?.token_info?.priceInUsd}`
           _details_data[1].value = `0 ${_market?.token_info?.Symbol}`
-          _details_data[2].value = '0'
-          _details_data[3].value = '0'
+          _details_data[2].value = (_market?.lender || 0)
+          _details_data[3].value = (_market?.borrower || 0)
           _details_data[4].attribute = `${_market?.token_info?.Symbol} Borrow CAP`
           _details_data[4].value = '$0'
           _details_data[5].value = `0 ${_market?.token_info?.Symbol}`

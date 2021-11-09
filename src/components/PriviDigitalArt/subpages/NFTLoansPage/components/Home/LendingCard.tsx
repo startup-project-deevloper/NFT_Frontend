@@ -14,6 +14,7 @@ const LendingCard = ({markets}) => {
   useEffect(() => {
     let _totalBorrow = 0
     let _dailyVolume = 0
+    let _borrower = 0
     let _topMarkets: any = JSON.parse(JSON.stringify(markets))
     if (_topMarkets.length >= 2)
       for (let i = 0; i < _topMarkets.length - 1; i++) {
@@ -54,9 +55,12 @@ const LendingCard = ({markets}) => {
       } else if (markets[i].market_info.borrowList.length > 1) {
         _dailyVolume += markets[i].market_info.borrowList[0].total_borrow
       }
+
+      _borrower += (markets[i].market_info?.borrower || 0)
     }
     setDailyVolume(_dailyVolume)
     setTotalBorrow(_totalBorrow)
+    setBorrowers(_borrower)
   }, [markets])
 
   return (

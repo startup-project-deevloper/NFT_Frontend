@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
+import { useParams } from "react-router-dom";
+
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import PrintChart from "shared/ui-kit/Chart/Chart";
 import { useAssetDetailPageStyles } from "./index.styles";
+import URL from "shared/functions/getURL";
+import Axios from "axios";
+import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
 const PERIODS = ["Borrowing", "Lending"];
 
@@ -91,7 +96,7 @@ const FreeHoursChartConfig = {
         intersect: false,
         callbacks: {
           //This removes the tooltip title
-          title: function () {},
+          title: function () { },
           label: function (tooltipItem, data) {
             return `$${tooltipItem.yLabel.toFixed(4)}`;
           },
@@ -180,8 +185,26 @@ const NFTLoanAssetDetailPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
+  const params: { assetId?: string } = useParams();
   const [rewardConfig, setRewardConfig] = useState<any>();
   const [period, setPeriod] = useState<string>(PERIODS[0]);
+  const [market, setMarket] = useState<any>(null);
+  const [loadingMarket, setLoadingMarket] = useState<boolean>(false);
+
+  useEffect(() => {
+    setLoadingMarket(true)
+    Axios.get(`${URL()}/nftLoan/getFractionalLoan/${params?.assetId}`)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          setMarket(data.data.market)
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingMarket(false);
+      })
+  }, [params?.assetId])
 
   useEffect(() => {
     const newRewardConfig = JSON.parse(JSON.stringify(FreeHoursChartConfig));
@@ -211,97 +234,98 @@ const NFTLoanAssetDetailPage = () => {
   return (
     <div className={classes.root}>
       <BackButton purple />
-      <div className={classes.headerSection}>
-        <Box display="flex" alignItems="center">
-          <img src={require("assets/tokenImages/USDT.png")} width={40} />
-          <Box ml={"20px"} mt={0.5}>
-            <div className={classes.typo1}>Tether</div>
-          </Box>
-        </Box>
-        <Box display="flex" alignItems="center" mt={isMobile ? 2 : 0}>
-          <PrimaryButton
-            style={{ background: "#431AB7", minWidth: 148 }}
-            size={isMobile ? "small" : "medium"}
-            onClick={() => {}}
-          >
-            Borrow
-          </PrimaryButton>
-          <SecondaryButton
-            style={{ color: "#431AB7", borderColor: "#431AB7", minWidth: 148 }}
-            size={isMobile ? "small" : "medium"}
-            onClick={() => {}}
-          >
-            Lend
-          </SecondaryButton>
-        </Box>
-      </div>
-      <div className={classes.assetInfoSection}>
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <div className={classes.typo2}>Total Lending</div>
-          <div className={classes.typo3}>$245,556,255</div>
-        </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
-          <div className={classes.typo2}>Total Borrowing</div>
-          <div className={classes.typo3}>$245,556,255</div>
-        </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
-          <div className={classes.typo2}>Lending APY</div>
-          <div className={classes.typo3}>3%</div>
-        </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
-          <div className={classes.typo2}>Borrow APY</div>
-          <div className={classes.typo3}>2%</div>
-        </Box>
-        <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
-          <div className={classes.typo2}>Utilisation Ratio</div>
-          <div className={classes.typo3}>245556</div>
-        </Box>
-      </div>
-      <div className={classes.chartSection}>
-        <div className={classes.controlParentBox}>
-          <div className={classes.controlBox}>
-            <Box className={classes.liquidityBox}>
-              {PERIODS.map((item, index) => (
-                <button
-                  key={`period-button-${index}`}
-                  className={`${classes.groupButton} ${item === period && classes.selectedGroupButton}`}
-                  onClick={handleChangePeriod(item)}
-                  style={{ marginLeft: index > 0 ? "8px" : 0 }}
-                >
-                  {item}
-                </button>
-              ))}
+      <LoadingWrapper loading={loadingMarket} theme={"blue"} height="calc(100vh - 100px)">
+        <div className={classes.headerSection}>
+          <Box display="flex" alignItems="center">
+            <img src={market?.token_info?.ImageUrl} width={40} />
+            <Box ml={"20px"} mt={0.5}>
+              <div className={classes.typo1}>{market?.token_info?.Name}</div>
             </Box>
-          </div>
-          <Box display="flex" flexDirection="column">
-            <div className={classes.graphTitle}>{`${
-              period === PERIODS[0] ? PERIODS[0] : PERIODS[1]
-            } over time`}</div>
+          </Box>
+          <Box display="flex" alignItems="center" mt={isMobile ? 2 : 0}>
+            <PrimaryButton
+              style={{ background: "#431AB7", minWidth: 148 }}
+              size={isMobile ? "small" : "medium"}
+              onClick={() => { }}
+            >
+              Borrow
+            </PrimaryButton>
+            <SecondaryButton
+              style={{ color: "#431AB7", borderColor: "#431AB7", minWidth: 148 }}
+              size={isMobile ? "small" : "medium"}
+              onClick={() => { }}
+            >
+              Lend
+            </SecondaryButton>
           </Box>
         </div>
-        <Box flex={1} width={1} className={classes.chartWrapper}>
-          {rewardConfig && <PrintChart config={rewardConfig} />}
-        </Box>
-      </div>
-      <div className={classes.detailTableSection}>
-        <div className={classes.typo4}>Details</div>
-        <Box width={1} display="flex" flexDirection="column" mt={2}>
-          {DetailsData && DetailsData.length > 0 ? (
-            DetailsData.map(item => (
-              <Box className={classes.detailItemSection}>
-                <Box className={classes.typo5} fontWeight={400}>
-                  {item.attribute}
-                </Box>
-                <Box className={classes.typo5} fontWeight={800}>
-                  {item.value}
-                </Box>
+        <div className={classes.assetInfoSection}>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <div className={classes.typo2}>Total Lending</div>
+            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_reserves : 0}</div>
+          </Box>
+          <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
+            <div className={classes.typo2}>Total Borrowing</div>
+            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_borrow : 0}</div>
+          </Box>
+          <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
+            <div className={classes.typo2}>Lending APY</div>
+            <div className={classes.typo3}>{(market?.reserve_apy || 0) * 100}%</div>
+          </Box>
+          <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
+            <div className={classes.typo2}>Borrow APY</div>
+            <div className={classes.typo3}>{(market?.borrow_apy || 0) * 100}%</div>
+          </Box>
+          <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
+            <div className={classes.typo2}>Utility Ratio</div>
+            <div className={classes.typo3}>{(market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_borrow : 0) / (market?.borrowList?.length > 0 ? (market?.borrowList[0]?.total_reserves == 0 ? 1 : market?.borrowList[0]?.total_reserves) : 1)}</div>
+          </Box>
+        </div>
+        <div className={classes.chartSection}>
+          <div className={classes.controlParentBox}>
+            <div className={classes.controlBox}>
+              <Box className={classes.liquidityBox}>
+                {PERIODS.map((item, index) => (
+                  <button
+                    key={`period-button-${index}`}
+                    className={`${classes.groupButton} ${item === period && classes.selectedGroupButton}`}
+                    onClick={handleChangePeriod(item)}
+                    style={{ marginLeft: index > 0 ? "8px" : 0 }}
+                  >
+                    {item}
+                  </button>
+                ))}
               </Box>
-            ))
-          ) : (
-            <>No Data</>
-          )}
-        </Box>
-      </div>
+            </div>
+            <Box display="flex" flexDirection="column">
+              <div className={classes.graphTitle}>{`${period === PERIODS[0] ? PERIODS[0] : PERIODS[1]
+                } over time`}</div>
+            </Box>
+          </div>
+          <Box flex={1} width={1} className={classes.chartWrapper}>
+            {rewardConfig && <PrintChart config={rewardConfig} />}
+          </Box>
+        </div>
+        <div className={classes.detailTableSection}>
+          <div className={classes.typo4}>Details</div>
+          <Box width={1} display="flex" flexDirection="column" mt={2}>
+            {DetailsData && DetailsData.length > 0 ? (
+              DetailsData.map(item => (
+                <Box className={classes.detailItemSection}>
+                  <Box className={classes.typo5} fontWeight={400}>
+                    {item.attribute}
+                  </Box>
+                  <Box className={classes.typo5} fontWeight={800}>
+                    {item.value}
+                  </Box>
+                </Box>
+              ))
+            ) : (
+              <>No Data</>
+            )}
+          </Box>
+        </div>
+      </LoadingWrapper>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { switchNetwork } from "shared/functions/metamask";
 
 import { Typography } from "@material-ui/core";
-import { Modal, PrimaryButton } from "shared/ui-kit";
+import { Divider, Modal, PrimaryButton } from "shared/ui-kit";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 import Box from "shared/ui-kit/Box";
@@ -13,7 +13,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { useLendModalStyles } from "./index.styles";
 import PolygonAPI from "shared/services/API/polygon";
 
-const LendModal = ({ open, onClose, onSuccess, market }) => {
+const BorrowModal = ({ open, onClose, onSuccess, market }) => {
   const classes = useLendModalStyles();
   const { showAlertMessage } = useAlertMessage();
   const [amount, setAmount] = useState<number>(0);
@@ -142,10 +142,11 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
     <Modal size="medium" isOpen={open} onClose={onClose} className={classes.modal} showCloseIcon={true}>
       <Box display="flex" alignItems="center">
         <img src={market?.token_info?.ImageUrl} alt={`${market?.token_info?.Name} asset`} width="40px" />
-        <Typography className={classes.title}>Lend {market?.token_info?.Symbol}</Typography>
+        <Typography className={classes.title}>Borrow {market?.token_info?.Symbol}</Typography>
       </Box>
-      <Typography className={classes.content}>Set the deposit amount you want to place as collatarall. Your amount of borrowable funds will depend on it. </Typography>
-      <Box marginTop="30px">
+      <Typography className={classes.content}>Set the borrow amount . Your borrowing power depends on deposited tokens. </Typography>
+      <Typography className={classes.inputTitle}>Amount to borrow</Typography>
+      <Box>
         <InputWithLabelAndTooltip
           inputValue={amount !== 0 ? amount.toString() : ""}
           type="number"
@@ -157,13 +158,16 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
           disabled={isApproved}
         />
       </Box>
-      <Box marginTop="8px" display="flex">
-        <Typography className={classes.small}>Wallet Balance</Typography>
-        <Typography className={classes.smallBold}>{`${balance} ${market?.token_info?.Symbol}`}</Typography>
-      </Box>
-      <Box className={classes.rateBox} display="flex" justifyContent="space-between">
-        <Typography className={classes.small}>Lending Rate</Typography>
-        <Typography className={classes.smallBold}>0%</Typography>
+      <Box className={classes.rateBox}>
+        <Box display="flex" justifyContent="space-between">
+          <Typography className={classes.small}>Borrowing power</Typography>
+          <Typography className={classes.smallBold}>2425 {market?.token_info?.Symbol}</Typography>
+        </Box>
+        <Divider/>
+        <Box display="flex" justifyContent="space-between">
+          <Typography className={classes.small}>Borrowing limit used</Typography>
+          <Typography className={classes.smallBold}>0 {market?.token_info?.Symbol}</Typography>
+        </Box>
       </Box>
       <Box className={classes.buttonContainer} display="flex" justifyContent="space-between">
         <PrimaryButton className={classes.placeBtn} onClick={handleApprove} size="medium" disabled={!market || isApproved || transactionInProgress || amount == 0}>
@@ -187,4 +191,4 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
   );
 };
 
-export default LendModal;
+export default BorrowModal;

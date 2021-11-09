@@ -13,6 +13,7 @@ import URL from "shared/functions/getURL";
 import Axios from "axios";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import LendModal from "./modals/LendModal";
+import BorrowModal from "./modals/BorrowModal";
 
 const PERIODS = ["Borrowing", "Lending"];
 
@@ -218,7 +219,7 @@ const NFTLoanAssetDetailPage = () => {
   const [DetailsData, setDetailsData] = useState<any>(_DetailsData);
   const [lendModalOpen, setLendModalOpen] = useState<boolean>(false);
   const [borrowModalOpen, setBorrowModalOpen] = useState<boolean>(false);
-  
+
   useEffect(() => {
     setLoadingMarket(true)
     Axios.get(`${URL()}/nftLoan/getFractionalLoan/${params?.assetId}`)
@@ -373,6 +374,12 @@ const NFTLoanAssetDetailPage = () => {
         <LendModal
           open={lendModalOpen}
           onClose={() => setLendModalOpen(false)}
+          onSuccess={() => {}}
+          market={market}
+        />
+        <BorrowModal
+          open={borrowModalOpen}
+          onClose={() => setBorrowModalOpen(false)}
           onSuccess={() => {}}
           market={market}
         />

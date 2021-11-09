@@ -126,7 +126,7 @@ const FractionalLoans = ({ loading, markets }) => {
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>{row.market_info.reserve_apy}%</span>,
+            cell: <span className={classes.marketValue}>{row.market_info.reserve_apy * 100}%</span>,
             cellAlign: "center",
           },
           {
@@ -134,7 +134,7 @@ const FractionalLoans = ({ loading, markets }) => {
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>{row.market_info.borrow_apy}%</span>,
+            cell: <span className={classes.marketValue}>{row.market_info.borrow_apy * 100}%</span>,
             cellAlign: "center",
           },
           {

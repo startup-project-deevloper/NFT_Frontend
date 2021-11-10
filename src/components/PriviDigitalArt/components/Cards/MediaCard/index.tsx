@@ -34,12 +34,8 @@ export const MediaCard = ({ media, pod, handleRefresh }) => {
 
   const [creators, setCreators] = useState<any[]>([]);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { ipfs, downloadWithNonDecryption } = useIPFS();
   const users = useTypedSelector(state => state.usersInfoList);
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
 
   useEffect(() => {
     const setAvarts = async () => {
@@ -58,7 +54,7 @@ export const MediaCard = ({ media, pod, handleRefresh }) => {
       }
     }
     setAvarts();
-  }, [ipfs, pod.CreatorsData, users]);
+  }, [pod.CreatorsData, users]);
 
   const getDefaultImage = type => {
     switch (type) {

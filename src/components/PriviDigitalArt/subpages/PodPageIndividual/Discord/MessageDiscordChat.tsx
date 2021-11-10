@@ -58,13 +58,9 @@ const MessageDiscordChat = React.memo((props: any) => {
   const [openModalDiscordPhotoFullScreen, setOpenModalDiscordPhotoFullScreen] = useState<boolean>(false);
   const [openModalDiscordVideoFullScreen, setOpenModalDiscordVideoFullScreen] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
 
   const handleOpenGiveTipModal = () => {
     setOpenGiveTipModal(true);
@@ -153,11 +149,11 @@ const MessageDiscordChat = React.memo((props: any) => {
   };
 
   useEffect(() => {
-    if(props.message.from && ipfs  &&
+    if(props.message.from &&
       usersList && usersList.length > 0) {
       getImage(props.message.from);
     }
-  }, [props.message.from, usersList, ipfs]);
+  }, [props.message.from, usersList]);
 
   useEffect(() => {
     setTypeMessage(props.message.type || 'text');
@@ -186,8 +182,8 @@ const MessageDiscordChat = React.memo((props: any) => {
   const getImage = async (userId: string) => {
     let userFound = usersList.find(user => user.id === userId);
 
-    if(userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+    if(userFound?.infoImage?.newFileCID && userFound?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, userFound.infoImage.metadata.properties.name, downloadWithNonDecryption);
       setImageIPFS(imageUrl)
     }
   }

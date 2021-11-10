@@ -35,11 +35,7 @@ export default function PriviSocial({ id }) {
 
   const scrollRef = React.useRef<any>();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -129,8 +125,8 @@ export default function PriviSocial({ id }) {
 
   const setUserSelector = async setterUser => {
     if (setterUser.id) {
-      if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
-        setterUser.imageIPFS = await getPhotoIPFS(setterUser.infoImage.newFileCID, downloadWithNonDecryption);
+      if (setterUser?.infoImage?.newFileCID && setterUser?.infoImage?.metadata?.properties?.name) {
+        setterUser.imageIPFS = await getPhotoIPFS(setterUser.infoImage.newFileCID, setterUser.infoImage.metadata.properties.name, downloadWithNonDecryption);
       }
       dispatch(setUser(setterUser));
     }

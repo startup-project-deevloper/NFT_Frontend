@@ -278,9 +278,10 @@ const InfoPane = React.memo(
 
               setterUser.hasPhoto = true;
               if (setterUser.id) {
-                if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
+                if (setterUser?.infoImage?.newFileCID && setterUser?.infoImage?.metadata?.properties?.name) {
                   setterUser.ipfsImage = await getPhotoIPFS(
                     setterUser.infoImage.newFileCID,
+                    setterUser.infoImage.metadata.properties.name,
                     downloadWithNonDecryption
                   );
                 }

@@ -14,36 +14,32 @@ const GeneralTab = (props: any) => {
 
   const [mediasPhotos, setMediasPhotos] = useState<any[]>([]);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (ipfs) {
+    if (proposal) {
       getImages();
     }
-  }, [proposal, ipfs]);
+  }, [proposal]);
 
   const getImages = async () => {
     let i: number = 0;
     let photos: any = {};
     for (let media of proposal.Medias) {
-      if (media && media.InfoImage && media.InfoImage.newFileCID) {
-        let img = await getImageIPFS(media.InfoImage.newFileCID);
+      if (media?.InfoImage?.newFileCID && media?.InfoImage?.metadata?.properties?.name) {
+        let img = await getImageIPFS(media.InfoImage.newFileCID, media.InfoImage.metadata.properties.name);
         photos[i + "-photo"] = img;
       }
     }
     setMediasPhotos(photos);
   };
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       return "data:image/png;base64," + base64String;
     }
     return "";

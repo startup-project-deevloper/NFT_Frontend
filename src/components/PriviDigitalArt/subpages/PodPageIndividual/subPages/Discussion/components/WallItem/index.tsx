@@ -33,24 +33,20 @@ const WallItem = React.memo((props: any) => {
   const [videoIPFS, setVideoIPFS] = useState<any>(null);
   const [creatorImageIPFS, setCreatorImageIPFS] = useState<any>(null);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     let item = props.item;
-    if (ipfs  && item && item.infoImage && item.infoImage.newFileCID) {
-      getImageIPFS(item.infoImage?.newFileCID);
+    if (item?.infoImage?.newFileCID && item?.infoImage?.metadata?.properties?.name) {
+      getImageIPFS(item.infoImage?.newFileCID, item.infoImage.metadata.properties.name);
     }
-    if (ipfs  && item && item.infoVideo && item.infoVideo.newFileCID) {
-      getVideoIPFS(item.infoVideo?.newFileCID);
+    if (item?.infoVideo?.newFileCID && item?.infoVideo?.metadata?.properties?.name) {
+      getVideoIPFS(item.infoVideo?.newFileCID, item.infoVideo.metadata.properties.name);
     }
-    if (ipfs  && item && item.author) {
+    if (item && item.author) {
       getAuthorImage(item.author)
     }
-  }, [props.item, ipfs]);
+  }, [props.item]);
 
   let userIndex;
   if (props.Creator.includes("0x")) {
@@ -59,22 +55,22 @@ const WallItem = React.memo((props: any) => {
     userIndex = usersList.findIndex(user => user.id === props.Creator);
   }
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     }
   };
 
-  const getVideoIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getVideoIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setVideoIPFS("data:video/mp4;base64," + base64String);
     }
   };
@@ -82,8 +78,8 @@ const WallItem = React.memo((props: any) => {
   const getAuthorImage = async(userId) => {
     let userFound = usersList.find(user => user.id === userId);
 
-    if(userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+    if(userFound?.infoImage?.newFileCID && userFound?.infoImage?.metadata?.name) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, userFound.infoImage.metadata.name, downloadWithNonDecryption);
       console.log(userId, userFound, creatorImageIPFS);
 
       setCreatorImageIPFS(imageUrl)

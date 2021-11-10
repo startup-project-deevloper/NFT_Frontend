@@ -10,12 +10,9 @@ import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useShareMedia } from "shared/contexts/ShareMediaContext";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import MediaDetailsModal from "components/PriviDigitalArt/modals/MediaDetailsModal";
 import { getBidHistory } from "shared/services/API";
-import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import useIPFS from "shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "shared/ipfs/get";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { profileCardStyles } from "./index.styles";
@@ -30,10 +27,6 @@ enum MediaType {
   DigitalArt = "DIGITAL_ART_TYPE",
 }
 
-const getRandomImageUrl = () => {
-  return require(`assets/podImages/2.png`);
-};
-
 export default function ProfileCard({
   item,
   type,
@@ -47,7 +40,6 @@ export default function ProfileCard({
   noMargin?: boolean;
   handleRefresh?: any;
 }) {
-  const { convertTokenToUSD } = useTokenConversion();
   const classes = profileCardStyles();
   const usersList = useTypedSelector(state => state.usersInfoList);
   const user = useTypedSelector(state => state.user);
@@ -66,14 +58,7 @@ export default function ProfileCard({
 
   const [openMediaDetailsModal, setOpenMediaDetailsModal] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [imageIPFS, setImageIPFS] = useState("");
 
   // get 24h change for auction
   useEffect(() => {
@@ -116,18 +101,8 @@ export default function ProfileCard({
           }
         });
       }
-
-      if (item.cid) {
-        getImageIPFS(item.cid);
-      }
     }
   }, [item, usersList]);
-
-  useEffect(() => {
-    if (item?.cid) {
-      getImageIPFS(item.cid);
-    }
-  }, [ipfs]);
 
   useEffect(() => {
     if (item.Auctions) {
@@ -170,18 +145,6 @@ export default function ProfileCard({
       return () => clearInterval(timerId);
     } else return;
   }, [item]);
-
-  const getImageIPFS = async (cid: string) => {
-    setIsLoading(true);
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-    setIsLoading(false);
-  };
 
   const isBookmarked = () => {
     if (item.Bookmarks) {
@@ -266,6 +229,8 @@ export default function ProfileCard({
     setOpenMediaDetailsModal(true);
     setTotalView(value => value + 1);
   };
+
+  const mediaImage = item.metadata?.image ?? item.url ?? getDefaultBGImage();
 
   return (
     <>
@@ -392,7 +357,7 @@ export default function ProfileCard({
                           justifyContent: "center",
                         }
                       : {
-                          backgroundImage: `url(${item?.metadata?.image ?? getRandomImageUrl()})`,
+                          backgroundImage: `url(${mediaImage})`,
                           backgroundSize: "cover",
                         }
                   }
@@ -404,11 +369,7 @@ export default function ProfileCard({
               ) : isLoading ? (
                 <StyledSkeleton width="100%" height="100%" variant="rect" />
               ) : (
-                <object
-                  data={item.cid ? imageIPFS : ""}
-                  type="image/png"
-                  className={cls(classes.image, classes.img)}
-                >
+                <object data={mediaImage} type="image/png" className={cls(classes.image, classes.img)}>
                   <div className={classes.image} />
                 </object>
               )}
@@ -457,12 +418,12 @@ export default function ProfileCard({
                   </Box>
                 </Box>
 
-                <Box width="100%">
+                {/* <Box width="100%">
                   <StyledDivider color={Color.White} type="solid" margin={3} />
                 </Box>
 
                 <Box display="flex" alignItems="flex-start" justifyContent="space-between" width="100%">
-                  {/* <Box>
+                  <Box>
                     <Box fontSize="14px">Price</Box>
                     <Box>
                       {`${
@@ -478,7 +439,7 @@ export default function ProfileCard({
                           : ""
                       }`}
                     </Box>
-                  </Box> */}
+                  </Box>
                   <Box>
                     <Box fontSize="14px">Bid</Box>
                     {item.Auctions ? (
@@ -498,7 +459,7 @@ export default function ProfileCard({
                       {(change24h * 100).toFixed(2)}%
                     </Box>
                   </Box>
-                </Box>
+                </Box> */}
                 {item.ExchangeData > 0 && (
                   <Box width="100%">
                     <StyledDivider color={Color.White} type="solid" margin={3} />
@@ -594,7 +555,6 @@ export default function ProfileCard({
           handleRefresh={handleRefresh}
           media={item}
           mediaViews={totalView}
-          cidUrl={item?.cid ? imageIPFS : ""}
           creators={creatorsData}
         />
       )}

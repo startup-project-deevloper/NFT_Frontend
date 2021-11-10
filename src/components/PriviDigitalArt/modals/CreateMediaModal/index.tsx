@@ -35,6 +35,7 @@ import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2I
 import getIPFSURL from "shared/functions/getIPFSURL";
 import FileUploadingModal from "../../../../shared/ui-kit/Modal/Modals/FileUploadingModal";
 import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
+import { injected } from "shared/connectors";
 
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
@@ -143,7 +144,7 @@ const CreateMediaModal = (props: any) => {
   const mediaPayloadRef = useRef<any>({});
   const mediaAdditionalDataRef = useRef<any>({});
 
-  const { account, library, chainId } = useWeb3React();
+  const { activate, account, library, chainId } = useWeb3React();
 
   const [hash, setHash] = useState<string>("");
   const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
@@ -212,6 +213,12 @@ const CreateMediaModal = (props: any) => {
 
   const createMedia = async () => {
     if (!validateMediaInfo()) return;
+
+    if (!library) {
+      activate(injected);
+      return;
+    }
+
     setDisableButton(true);
     const viewConditions = {
       ViewingType: mediaData.viewPricingMethod == "Streaming" ? "DYNAMIC" : "FIXED",
@@ -315,6 +322,7 @@ const CreateMediaModal = (props: any) => {
 
   const createMediaOnEth = async (metadataID: any, chain: string, imageName: string) => {
     setDisableButton(true);
+
     const targetChain = BlockchainNets.find(net => net.value === mediaData.blockchainNet);
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
@@ -324,9 +332,6 @@ const CreateMediaModal = (props: any) => {
         return;
       }
     }
-
-    setOpenTransactionModal(true);
-    setTransactionInProgress(true);
 
     const web3APIHandler = targetChain.apiHandler;
     const web3Config = targetChain.config;
@@ -349,6 +354,10 @@ const CreateMediaModal = (props: any) => {
       tokenId: tokenId,
       uri: uri,
     };
+
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
+
     web3APIHandler.Erc721.mint(web3, account!, payload, setHash)
       .then(async res => {
         if (res) {
@@ -397,11 +406,10 @@ const CreateMediaModal = (props: any) => {
       showAlertMessage("NFT created!", { variant: "success" });
       reloadMediaPage();
 
-      // setTimeout(() => {
-      //   initForm();
-      //   props.handleClose();
-      //   if (props.handleRefresh) props.handleRefresh();
-      // }, 1000);
+      setTimeout(() => {
+        props.handleClose();
+        if (props.handleRefresh) props.handleRefresh();
+      }, 1000);
     } else {
       if ((resp as any).error) {
         showAlertMessage((resp as any).error, { variant: "error" });

@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useMediaQuery, useTheme } from "@material-ui/core";
-import styled from "styled-components";
 
 import { useNFTLoansPageStyles } from "../../index.styles";
 import LoanCard from "components/PriviDigitalArt/components/Cards/LoanCard";
-import DepositNFT from "components/PriviDigitalArt/modals/DepositNFTModal";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
 
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
@@ -30,17 +28,9 @@ export default ({
   const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
   const classes = useNFTLoansPageStyles();
-  const [openDepositNFTModal, setOpenDepositNFTModal] = useState<boolean>(false);
   const history = useHistory();
 
   const [openHowModal, setOpenHowModal] = useState<boolean>(false);
-
-  const handleCloseDepositNFTModal = () => {
-    setOpenDepositNFTModal(false);
-  };
-  const handleOpenDepositNFTModal = () => {
-    setOpenDepositNFTModal(true);
-  };
 
   return (
     <div style={{ width: "100%", fontFamily: "Agrandir", flex: 1, display: "flex", flexDirection: "column" }}>

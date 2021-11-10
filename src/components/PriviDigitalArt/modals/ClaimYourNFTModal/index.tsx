@@ -50,7 +50,7 @@ export default function ClaimYourNFTModal({ open, handleClose = () => {}, onConf
   return (
     <Modal size="medium" isOpen={open} onClose={handleCloseModal} showCloseIcon className={classes.container}>
       <Box style={{padding:'25px'}} display="flex" justifyContent="center" alignItems = "center" flexWrap="wrap" flexDirection="column">
-          <ExploreOptionCard xs={6} sm={6} md={6} lg={6}  img_url={img_url}/>
+          <ExploreOptionCard xs={6} sm={6} md={6} lg={6}  img_url={img_url} nft_name="test1" period="10" price="2300" pct="10"/>
           <div style={{color:'#2D3047', fontSize:'22px', fontWeight: 800, marginTop:'31px'}}>Claim your NFT</div>
           <div style={{color:'#54658F', fontSize:'16px', marginTop:'20px', textAlign:'center'}}>Congrat,s you’ve succesfullycan claim your<br/> resrved NFT  [ NFT name]  at [Price]</div>
           <PrimaryButton

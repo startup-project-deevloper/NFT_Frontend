@@ -5,7 +5,7 @@ import { CardActions, CardContent, Typography, CardMedia, Card } from '@material
 import { Button, Grid } from '@material-ui/core';
 import { useHistory } from 'react-router';
 
-const ExploreOptionCard = ({xs, sm, md, lg, img_url}) => {
+const ExploreOptionCard = ({xs, sm, md, lg, img_url, nft_name, period, price, pct}) => {
     const history = useHistory();
     const classes = optionCardStyles();
     const handleOpenExplore = () => {
@@ -18,7 +18,7 @@ const ExploreOptionCard = ({xs, sm, md, lg, img_url}) => {
                     <div className={classes.innerCardGradient}>
                         <div className={classes.innerCard}>
                             <div className={classes.cardTitle}>
-                                <span className={classes.cardNftName}>NFT NAME</span>
+                                <span className={classes.cardNftName}>{nft_name}</span>
                                 <button className={classes.cardOptionButton}>OPTION</button>
                             </div>
                             <div className={classes.cardImg}>
@@ -27,15 +27,15 @@ const ExploreOptionCard = ({xs, sm, md, lg, img_url}) => {
                             <div className={classes.cardContent}>
                                 <div className={classes.cardContentDiv}>
                                     <span className={classes.cardContentText}>Time</span>
-                                    <span className={classes.cardContentAmount}>20 Days</span>
+                                    <span className={classes.cardContentAmount}>{period} Days</span>
                                 </div>
                                 <div className={classes.cardContentDiv}>
                                     <span className={classes.cardContentText}>FUTURE PRICE</span>
-                                    <span className={classes.cardContentAmount}>2000 USDT</span>
+                                    <span className={classes.cardContentAmount}>{price} USDT</span>
                                 </div>
                                 <div className={classes.cardContentDiv}>
                                     <span className={classes.cardContentText}>COLLATERAL PCT.</span>
-                                    <span className={classes.cardContentAmount}>10%</span>
+                                    <span className={classes.cardContentAmount}>{pct}%</span>
                                 </div>
                             </div>
                         </div>

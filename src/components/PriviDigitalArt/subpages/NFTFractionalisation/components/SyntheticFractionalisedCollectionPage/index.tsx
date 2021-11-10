@@ -280,6 +280,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
       const web3APIHandler = targetChain.apiHandler;
       const web3Config = targetChain.config;
       const web3 = new Web3(library.provider);
+      console.log("--------", library.provider);
 
       const contractResponse = await web3APIHandler.SyntheticFractionalisationAuctionsManager.startAuction(
         web3,

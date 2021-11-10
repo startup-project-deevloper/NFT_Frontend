@@ -165,7 +165,7 @@ export default function ReserveNftModal({ open, handleClose = () => {}, onConfir
       )}
       {confirmSuccess && (
         <Box style={{padding:'25px'}} display="flex" justifyContent="center" flexWrap="wrap">
-            <ExploreOptionCard xs={6} sm={6} md={6} lg={6}  img_url={img_url}/>
+            <ExploreOptionCard xs={6} sm={6} md={6} lg={6}  img_url={img_url} nft_name="test1" period="10" price="2300" pct="10"/>
             <div style={{color:'#2D3047', fontSize:'22px', fontWeight: 800, marginTop:'31px'}}>You’ve reserved your NFT price.</div>
             <div style={{color:'#54658F', fontSize:'16px', marginTop:'20px', textAlign:'center'}}>Congrat,s you’ve succesfully reserved a price to<br/> buy  [ NFT name] in future at [Price]</div>
             <PrimaryButton

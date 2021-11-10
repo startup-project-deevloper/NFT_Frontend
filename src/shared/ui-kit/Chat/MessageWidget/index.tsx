@@ -727,10 +727,9 @@ const MessageWidget: React.FC<MessageWidgetProps> = ({
         {messages && messages.length > 0 ? (
           messages.map((item, index) => (
             <MessageItem
-              key={index}
+              key={item.id ?? `message-${index}`}
               user={userSelector.id}
               message={item}
-              chat={chat}
               mediaOnCommunity={false}
             />
           ))

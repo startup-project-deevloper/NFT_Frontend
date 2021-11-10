@@ -106,7 +106,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const MessageItem = ({ key, user, message, chat, mediaOnCommunity }) => {
+export const MessageItem = ({ key, user, message, mediaOnCommunity }) => {
   const playerVideo = React.useRef(null);
   const classes = useStyles();
   const [selectedPhoto, setSelectedPhoto] = React.useState<string>("");

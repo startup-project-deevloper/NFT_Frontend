@@ -18,7 +18,7 @@ import {
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMediaModal";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
@@ -264,15 +264,7 @@ const MediaDetailsModal = (props: any) => {
             <img src={media.metadata?.image} alt={media.metadata?.name || ""} className={classes.detailImg} />
           ) : (
             <object
-              data={
-                props.cidUrl ??
-                media.imageURL ??
-                media.UrlMainPhoto ??
-                media.Url ??
-                media.url ??
-                media.metadata?.image ??
-                `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
-              }
+              data={media.metadata?.image ?? media.url ?? getDefaultBGImage()}
               type="image/png"
               className={classes.detailImg}
               style={{ height: "100%" }}
@@ -425,7 +417,7 @@ const MediaDetailsModal = (props: any) => {
               )}
             </Box>
           )} */}
-          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={12}>
+          {/* <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={12}>
             {showDetailsBtn && (
               <PrimaryButton
                 size={mobileMatches ? "small" : "medium"}
@@ -450,7 +442,7 @@ const MediaDetailsModal = (props: any) => {
                 Fractionalize
               </PrimaryButton>
             )}
-          </Box>
+          </Box> */}
         </Grid>
       </Grid>
       {openFractionalise && (

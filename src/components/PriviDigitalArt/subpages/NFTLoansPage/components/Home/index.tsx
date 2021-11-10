@@ -11,6 +11,8 @@ import FractionalLoans from "./FractionalLoans";
 
 const Tabs = ["Collateralised Loans", "Fractional Loans"];
 
+const isProd = process.env.REACT_APP_ENV === "prod";
+
 const NFTLoansHome = ({ setOpenDepositPage }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
@@ -52,6 +54,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
     const config = {
       params: {
         lastId: lastIdRef.current,
+        mode: isProd ? "main" : "test",
       },
     };
 
@@ -59,7 +62,16 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
       .then(res => {
         const data = res.data;
         if (data.success) {
-          const nftLoans = data.data;
+          const nftLoans = data.data.map(item => {
+            if (typeof item.nftData?.metadata === "string") {
+              try {
+                item.nftData.metadata = JSON.parse(item.nftData?.metadata);
+              } catch (e) {
+                console.log(e);
+              }
+            }
+            return item;
+          });
           const newData = [...nftLoans];
           setLoans(newData);
           lastIdRef.current = data.lastId;
@@ -73,29 +85,42 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
   };
 
   const loadMarkets = () => {
-    setLoadingMarkets(true);
-
-    Axios.get(`${URL()}/nftLoan/getFractionalLoans`)
-      .then(res => {
-        const data = res.data;
-        if (data.success) {
-          setMarkets(data.data.markets)
-        }
-      })
-      .catch(err => console.log(err))
-      .finally(() => {
-        setLoadingMarkets(false);
-      })
-  }
+    // setLoadingMarkets(true);
+    // Axios.get(`${URL()}/nftLoan/getFractionalLoans`)
+    //   .then(res => {
+    //     const data = res.data;
+    //     if (data.success) {
+    //       setMarkets(data.data.markets);
+    //     }
+    //   })
+    //   .catch(err => console.log(err))
+    //   .finally(() => {
+    //     setLoadingMarkets(false);
+    //   });
+  };
 
   const loadHottestLoans = () => {
     setLoadingHotLoans(true);
 
-    Axios.get(`${URL()}/nftLoan/getHottestNFTLoans`)
+    const config = {
+      params: {
+        mode: isProd ? "main" : "test",
+      },
+    };
+    Axios.get(`${URL()}/nftLoan/getHottestNFTLoans`, config)
       .then(res => {
         const data = res.data;
         if (data.success) {
-          const nftLoans = data.data;
+          const nftLoans = data.data.map(item => {
+            if (typeof item.nftData?.metadata === "string") {
+              try {
+                item.nftData.metadata = JSON.parse(item.nftData.metadata);
+              } catch (e) {
+                console.log(e);
+              }
+            }
+            return item;
+          });
           setHotLoans(nftLoans);
         }
       })
@@ -112,6 +137,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
     const config = {
       params: {
         lastId: lastIdRef.current,
+        mode: isProd ? "main" : "test",
       },
     };
 
@@ -119,7 +145,17 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
       .then(res => {
         const data = res.data;
         if (data.success) {
-          const nftLoans = data.data;
+          const nftLoans = data.data.map(item => {
+            if (typeof item.nftData?.metadata === "string") {
+              try {
+                item.nftData.metadata = JSON.parse(item.nftData.metadata);
+              } catch (e) {
+                console.log(e);
+              }
+            }
+            return item;
+          });
+
           const newData = [...loans, ...nftLoans];
           setLoans(newData);
           lastIdRef.current = data.lastId;

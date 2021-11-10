@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, useMediaQuery, useTheme } from "@material-ui/core";
 import axios from "axios";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
@@ -12,7 +12,7 @@ import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { useDepositPageStyles } from "./index.styles";
-import { LoanBlockchainNet } from "shared/constants/constants";
+import { BlockchainNets, LoanBlockchainNet } from "shared/constants/constants";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { useTypedSelector } from "store/reducers/Reducer";
@@ -30,6 +30,9 @@ import NFTSelectCard from "components/PriviDigitalArt/components/Cards/NFTSelect
 import { Dropdown } from "shared/ui-kit/Select/Select";
 import { getPixUserMediasByBlockchainIds, savePixUserMedias } from "shared/services/API";
 
+import { getNfts } from "shared/services/API";
+import NFTCard from "components/PriviDigitalArt/subpages/MarketplacePage/components/NFTCard";
+
 const removeIcon = require("assets/icons/remove_red.png");
 
 const getRandomImageUrl = () => {
@@ -41,8 +44,16 @@ const COLUMNS_COUNT_BREAK_POINTS_TWO = {
   1440: 2,
 };
 
+const isProd = process.env.REACT_APP_ENV === "prod";
+
+const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
+
 const NFTLoansDeposit = ({ setOpenDepositPage }) => {
   const classes = useDepositPageStyles();
+  const theme = useTheme();
+  const isTablet = useMediaQuery(theme.breakpoints.between(769, 960));
+  const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
+  const isMobile = useMediaQuery(theme.breakpoints.down(700));
 
   const [status, setStatus] = useState<any>(""); // show status of the operation
   const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
@@ -52,17 +63,13 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
   const { showAlertMessage } = useAlertMessage();
   const user = useTypedSelector(state => state.user);
 
-  const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
+  const [loadingNFTS, setLoadingNFTS] = useState<boolean>(false);
+  const [selectedNFT, setSelectedNFT] = useState<any>();
+
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
-  const [selectedMedia, setSelectedMedia] = useState<any>();
 
   const [hash, setHash] = useState<string>("");
   const [network, setNetwork] = useState<string>("");
-
-  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(LoanBlockchainNet[0]);
-  const [selectedChain, setSelectedChain] = useState<any>(LoanBlockchainNet[0]);
-  const [token, setToken] = useState<string>("");
-  const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
 
   const [interest, setInterest] = useState<string>("");
   const [reservePrice, setReservePrice] = useState<string>("");
@@ -72,154 +79,61 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
   const [disableButton, setDisableButton] = useState<boolean>(false);
 
   const { account, library, chainId } = useWeb3React();
+
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  const [imageIPFS, setImageIPFS] = useState({});
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, async (fileCID, download) => {
-      return await downloadWithNonDecryption(fileCID, download);
-    });
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-      return "data:image/png;base64," + base64String;
-    }
-    return "";
-  };
-
-  useEffect(() => {
-    if (selectedMedia?.cid) {
-      getImageIPFS(selectedMedia.cid);
-    }
-  }, [ipfs, selectedMedia]);
-
-  useEffect(() => {
-    const connectedChain = LoanBlockchainNet.find(chain => chain.chainId === chainId);
-    if (connectedChain && connectedChain.chainId !== selectedChain.chainId) {
-      setSelectedChain(connectedChain);
-    }
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      let changed = true;
-      if (prevSelectedChain.chainId !== selectedChain.chainId) {
-        changed = await handleSyncChain();
-      }
-      if (changed) {
-        setLoadingnNFTS(true);
-        const { result: nfts } = await getNFTBalanceFromMoralis(account!, selectedChain.chainId!);
-        if (nfts) {
-          let parsedNFTData = nfts.map(nft => parseMoralisData(nft, account, selectedChain));
-          let priviNFTData = parsedNFTData.filter(
-            nft =>
-              nft.MediaSymbol === "PRIVIERC721" || nft.MediaSymbol === "PNR" || nft.MediaSymbol === "PNFT"
-          );
-          let exNFTData = parsedNFTData.filter(
-            nft =>
-              nft.MediaSymbol !== "PRIVIERC721" && nft.MediaSymbol !== "PNR" && nft.MediaSymbol !== "PNFT"
-          );
-
-          const priviNFTIds = priviNFTData
-            .map(nft => nft.BlockchainId)
-            .filter((id, index, ids) => ids.indexOf(id) == index);
-          const resp = await getPixUserMediasByBlockchainIds(priviNFTIds, selectedChain.value);
-          if (resp && resp.success) {
-            priviNFTData = resp.data.filter(
-              nftData =>
-                !nftData.HasNFTLoan &&
-                nftData.NftConditions &&
-                nftData.NftConditions.Price !== 0 &&
-                nftData.NftConditions.Price !== "0"
-            );
-          } else {
-            priviNFTData = [];
-          }
-
-          setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-
-          priviNFTData = await Promise.all(
-            priviNFTData.map(async nft => {
-              let cidUrl = "";
-              if (nft.cid) {
-                cidUrl = await getImageIPFS(nft.cid);
-              }
-              return { ...nft, cidUrl };
-            })
-          );
-          savePixUserMedias(exNFTData);
-          setUserNFTs([...priviNFTData, ...exNFTData]);
-        }
-        setLoadingnNFTS(false);
-      } else {
-        setUserNFTs([]);
-      }
-    })();
-  }, [chainIdCopy, selectedChain.chainId, account]);
+  const [prevSelectedChain, setPrevSelectedChain] = useState<any>(
+    filteredBlockchainNets.find(item => item.chainId === chainId) || filteredBlockchainNets[1]
+  );
+  const [selectedChain, setSelectedChain] = useState<any>(
+    filteredBlockchainNets.find(item => item.chainId === chainId) || filteredBlockchainNets[1]
+  );
+  const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
+  const [token, setToken] = useState<string>("USDT");
 
   // set token list according chain
   useEffect(() => {
+    if (!selectedChain) return;
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
+    setToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);
   }, [selectedChain]);
 
-  // sync selected chain with metamask chain
-  const handleSyncChain = async () => {
-    if (chainId != selectedChain.chainId) {
-      const changed = await switchNetwork(selectedChain.chainId);
-      if (!changed) setSelectedChain(prevSelectedChain);
-      else setChainIdCopy(selectedChain.chainId);
-      return changed;
-    }
-    return true;
-  };
+  useEffect(() => {
+    loadNFT();
+  }, [chainIdCopy]);
 
-  // parse it to same format as fb collection
-  const parseMoralisData = (data, address, selectedChain) => {
-    const metadata = data.metadata ? JSON.parse(data.metadata) : {};
-    return {
-      BlockchainId: data.token_id,
-      BlockchainNetwork: selectedChain.value,
-      Collabs: {},
-      CreatorId: user?.id,
-      CreatorAddress: address,
-      HasPhoto: metadata.image != undefined,
-      Hashtags: [],
-      MediaDescription: metadata.description,
-      MediaName: data.name ? data.name : data.symbol,
-      MediaSymbol: data.symbol ? data.symbol : data.name,
-      Type: "DIGITAL_ART_TYPE",
-      Url: metadata.image,
-      chainId: selectedChain.chainId,
-      contractType: data.contract_type,
-      TokenContractAddress: data.token_address,
-    };
-  };
+  useEffect(() => {
+    const net = filteredBlockchainNets.find(item => item.chainId === chainId);
+    if (net) {
+      setSelectedChain(net);
+      setChainIdCopy(net.chainId);
+    }
+  }, [chainId]);
 
   useEffect(() => {
     (async () => {
-      const newNFTs = await Promise.all(
-        userNFTs.map(async nft => {
-          if (nft.cid) {
-            const cidUrl = nft.cid ? await getImageIPFS(nft.cid) : "";
-            return { ...nft, cidUrl };
-          }
-        })
-      );
-      setUserNFTs(newNFTs);
+      if (chainId != selectedChain.chainId) {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) setSelectedChain(prevSelectedChain);
+        else setChainIdCopy(selectedChain.chainId);
+      }
     })();
-  }, [ipfs]);
+  }, [selectedChain]);
 
-  useEffect(() => {
-    if (tokenList.length > 0) {
-      setToken(tokenList[0]);
+  // sync metamask chain with dropdown chain selection and load nft balance from wallet
+  const loadNFT = async () => {
+    setLoadingNFTS(true);
+
+    const response = await getNfts({
+      mode: isProd ? "main" : "test",
+      network: selectedChain.chainName,
+    });
+    if (response.success) {
+      setUserNFTs(response.data);
+    } else {
+      showAlertMessage(`Can't fetch nfts`);
     }
-  }, [tokenList]);
+    setLoadingNFTS(false);
+  };
 
   const validate = () => {
     if (!interest || Number(interest) == NaN) {
@@ -247,7 +161,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
         setStatus
       );
       return false;
-    } else if (!selectedMedia) {
+    } else if (!selectedNFT) {
       handleSetStatus(`Please select nft`, "error", setStatus);
       return false;
     }
@@ -274,13 +188,11 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
       const endTimestamp = Math.ceil(new Date(expirationDate).getTime() / 1000);
       const decimals = await web3APIHandler.Erc20[token].decimals(web3);
       const startPrice = toNDecimals(reservePrice, decimals);
-      const mediaSymbol = selectedMedia?.MediaSymbol;
 
       handleOpenTransactionModal(selectedChain?.value);
 
-      const tokenContractAddress =
-        selectedMedia?.TokenContractAddress || web3Config.CONTRACT_ADDRESSES.PRIVIERC721;
-      const tokenId = selectedMedia?.BlockchainId;
+      const tokenContractAddress = selectedNFT?.nftCollection?.address;
+      const tokenId = selectedNFT?.nftTokenId;
       web3APIHandler.Erc721.setApprovalForAll(
         web3,
         account!,
@@ -301,50 +213,40 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
               fee: Number(interest),
               fundTokenAddress: web3Config.TOKEN_ADDRESSES[token],
             };
-            web3APIHandler.Loan.createAuction(web3, account!, createAuctionRequest).then(async res => {
-              if (res) {
-                const tx = res.transaction;
-                const blockchainRes = { output: { UpdateNftCollaterals: {}, Transactions: {} } };
-                blockchainRes.output.UpdateNftCollaterals[mediaSymbol] = {
-                  Available: 0,
-                  Debt: 0,
-                  TokenSymbol: mediaSymbol,
-                  FundingToken: token,
-                  Duration: endTimestamp - startTimestamp,
-                  FeePct: Number(interest),
-                  Bid: Number(reservePrice),
-                  BidderAddress: "",
-                  PodAddress: "",
-                  Chain: selectedChain.name,
-                  CreatorAddress: user.address,
-                  docType: "NftCollateral",
-                  CreationDate: startTimestamp,
-                };
-                blockchainRes.output.Transactions[tx.Id] = [tx];
-                const body = {
-                  BlockchainRes: blockchainRes,
-                  AdditionalData: {
-                    MediaSymbol: mediaSymbol,
-                    Address: user.address,
-                  },
-                };
-                setHash(tx.Id);
-                const response = await axios.post(`${URL()}/nftloan/collateralizeNFT/v2_p`, body);
-                if (response.data.success) {
-                  showAlertMessage("NFT deposited successfully: ", { variant: "success" });
-                  setUserNFTs(userNFTs.filter(media => media.MediaSymbol !== selectedMedia?.MediaSymbol));
-                  setSelectedMedia(null);
+            web3APIHandler.Loan.createAuction(web3, account!, createAuctionRequest, setHash).then(
+              async res => {
+                if (res) {
+                  const request = {
+                    Available: 0,
+                    Debt: 0,
+                    TokenAddress: selectedNFT?.nftCollection.address,
+                    TokenId: selectedNFT?.nftTokenId,
+                    FundingToken: token,
+                    Duration: endTimestamp - startTimestamp,
+                    FeePct: Number(interest),
+                    Bid: Number(reservePrice),
+                    BidderAddress: "",
+                    BlockchainNetwork: selectedChain.value,
+                    CreatorAddress: user.address,
+                    docType: "NftCollateral",
+                    CreationDate: startTimestamp,
+                  };
+                  const response = await axios.post(`${URL()}/nftloan/collateralizeNFT`, request);
+                  if (response.data.success) {
+                    showAlertMessage("NFT deposited successfully: ", { variant: "success" });
+                    setSelectedNFT(null);
+                  } else {
+                    showAlertMessage("NFT deposition failed: ", { variant: "error" });
+                  }
+                  setTransactionInProgress(false);
+                  setTransactionSuccess(true);
                 } else {
-                  showAlertMessage("NFT deposition failed: ", { variant: "error" });
+                  setTransactionInProgress(false);
+                  setTransactionSuccess(false);
                 }
-                setTransactionInProgress(false);
-                setTransactionSuccess(true);
-              } else {
-                setTransactionInProgress(false);
-                setTransactionSuccess(false);
+                setDisableButton(false);
               }
-              setDisableButton(false);
-            });
+            );
           } else {
             setTransactionInProgress(false);
             setTransactionSuccess(false);
@@ -392,27 +294,6 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
     }
   };
 
-  const handleNFTSelect = (mediaSymbol: string) => {
-    if (userNFTs) {
-      let nftsCopy = [...userNFTs];
-      const index = userNFTs.findIndex(nft => nft.MediaSymbol === mediaSymbol);
-      const selected = !userNFTs[index].selected;
-      nftsCopy[index] = {
-        ...userNFTs[index],
-        selected: !userNFTs[index].selected,
-      };
-      // only need one selected
-      if (selected) {
-        for (let i = 0; i < nftsCopy.length; i++) {
-          if (i != index) nftsCopy[i].selected = false;
-        }
-        setSelectedMedia(nftsCopy[index]);
-      } else {
-        setSelectedMedia(null);
-      }
-      setUserNFTs(nftsCopy);
-    }
-  };
   return (
     <div className={classes.root}>
       <BackButton purple overrideFunction={() => setOpenDepositPage(false)} />
@@ -421,39 +302,69 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
 
       <Grid container spacing={6}>
         <Grid item xs={12} md={6}>
-          <LoadingWrapper loading={loadingnNFTS} theme={"blue"} height="calc(100vh - 200px)">
-            <MasonryGrid
-              gutter={"24px"}
-              data={userNFTs}
-              renderItem={(item, index) => (
-                <NFTSelectCard item={item} key={`item-${index}`} handleSelect={handleNFTSelect} />
-              )}
-              columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
-            />
+          <LoadingWrapper loading={loadingNFTS} theme={"blue"}>
+            {userNFTs && userNFTs.length > 0 ? (
+              <Box
+                width={1}
+                borderRadius={20}
+                bgcolor="#EFF2FD"
+                border="1px solid rgba(67, 26, 183, 0.24)"
+                boxSizing="border-box"
+                padding={isTablet || isMiniTablet || isMobile ? "41px 12px" : "41px 29px"}
+              >
+                <MasonryGrid
+                  gutter={"12px"}
+                  data={userNFTs}
+                  renderItem={(item, index) => (
+                    <NFTCard
+                      item={item}
+                      key={`item-${index}`}
+                      handleSelect={() => {
+                        if (userNFTs) {
+                          let nftsCopy = [...userNFTs];
+                          const selected = !userNFTs[index].selected;
+                          nftsCopy[index] = {
+                            ...userNFTs[index],
+                            selected: !userNFTs[index].selected,
+                          };
+                          // only need one selected
+                          if (selected) {
+                            for (let i = 0; i < nftsCopy.length; i++) {
+                              if (i != index) nftsCopy[i].selected = false;
+                            }
+                          }
+                          setSelectedNFT({ index, ...nftsCopy[index] });
+                          setUserNFTs(nftsCopy);
+                        }
+                      }}
+                    />
+                  )}
+                  columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS_TWO}
+                />
+              </Box>
+            ) : (
+              <Box className={classes.emptyBox}>
+                <img src={require("assets/pixImages/not_found_wallet.png")} />
+                <Box className={classes.detailsLabel} mt={1}>
+                  Not NFT found on your wallet.
+                </Box>
+              </Box>
+            )}
           </LoadingWrapper>
         </Grid>
         <Grid item xs={12} md={6}>
           <div className={classes.depositForm}>
             <Grid container spacing={2}>
-              {selectedMedia && (
+              {selectedNFT && (
                 <div className={classes.mediaDisplay}>
                   <div className={classes.leftSection}>
                     <div
                       className={classes.mediaImage}
                       style={{
-                        backgroundImage: `url(${
-                          selectedMedia.cid
-                            ? imageIPFS
-                            : selectedMedia.Type && selectedMedia.Type !== "DIGITAL_ART_TYPE"
-                            ? selectedMedia.UrlMainPhoto
-                            : selectedMedia.UrlMainPhoto ??
-                              selectedMedia.Url ??
-                              selectedMedia.url ??
-                              getRandomImageUrl()
-                        })`,
+                        backgroundImage: `url(${selectedNFT.nftPictureUrl || getRandomImageUrl()})`,
                       }}
                     />
-                    {selectedMedia.MediaName ?? selectedMedia.name ?? selectedMedia.MediaSymbol}
+                    {selectedNFT.nftName}
                   </div>
                   <span
                     onClick={() => {
@@ -461,7 +372,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
                         return { ...nft, selected: false };
                       });
                       setUserNFTs(nftsCopy);
-                      setSelectedMedia(null);
+                      setSelectedNFT(null);
                     }}
                   >
                     <img src={removeIcon} alt={"remove"} />
@@ -474,9 +385,9 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
                   value={selectedChain.value}
                   menuList={LoanBlockchainNet}
                   onChange={e => {
+                    setSelectedNFT(null);
                     setPrevSelectedChain(selectedChain);
-                    setSelectedMedia(null);
-                    setSelectedChain(LoanBlockchainNet.find(c => c.value === e.target.value));
+                    setSelectedChain(filteredBlockchainNets.find(c => c.value === e.target.value));
                   }}
                   hasImage
                 />

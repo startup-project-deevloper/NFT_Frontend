@@ -374,13 +374,13 @@ const MediaDetailsModal = (props: any) => {
               </Text>
             </div>
           </Box>
-          {!media.metadata && (
+          {/* {!media.metadata && (
             <>
               <hr className={classes.divider} />
               <Header5>Collection</Header5>
               {renderCollection()}
             </>
-          )}
+          )} */}
           {!!media.metadata?.description && (
             <>
               <hr className={classes.divider} />
@@ -392,13 +392,13 @@ const MediaDetailsModal = (props: any) => {
           {(media.BlockchainNetwork || media.chainsFullName) && (
             <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
               <img src={getChainImage()} width="32px" />
-              <Box ml={2}>
+              {/* <Box ml={2}>
                 {media.chainsFullName
                   ? media.chainsFullName === "Mumbai" || media.chainsFullName === "Polygon"
                     ? "Polygon"
                     : "Ethereum"
                   : media.BlockchainNetwork}
-              </Box>
+              </Box> */}
             </Box>
           )}
           {/* {!media.metadata && (

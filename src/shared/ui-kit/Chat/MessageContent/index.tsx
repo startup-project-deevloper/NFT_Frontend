@@ -1,31 +1,35 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "store/reducers/Reducer";
-import { MessageItem } from "../MessageItem";
-import "./MessageBox.css";
-import { setChat, setMessage } from "store/actions/MessageActions";
-import { socket } from "components/Login/Auth";
 import axios from "axios";
+
+import { RootState } from "store/reducers/Reducer";
+import { setChat, setMessage } from "store/actions/MessageActions";
+import { MessageItem } from "../MessageItem";
+import { socket } from "components/Login/Auth";
+
 import { default as ServerURL } from "shared/functions/getURL";
 import { RecordingBox } from "shared/ui-kit/RecordingBox";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import EmojiPane from "shared/ui-kit/EmojiPane";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
-import {onUploadNonEncrypt} from "../../../ipfs/upload";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import useIPFS from "../../../utils-IPFS/useIPFS";
+import { onUploadNonEncrypt } from "../../../ipfs/upload";
 
-export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, specialWidthInput }) => {
+import "./MessageBox.css";
+
+export const MessageFooter = ({ chat, messages, setMessages, specialWidthInput }) => {
   const dispatch = useDispatch();
   const userSelector = useSelector((state: RootState) => state.user);
-  const [showEmoji, setShowEmoji] = useState<boolean>(false);
+  const { showAlertMessage } = useAlertMessage();
 
+  const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const [audioMessage, setAudioMessage] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>("");
   const [mediaBlobUrl, setMediaBlobUrl] = React.useState<any>();
-  const [status, setStatus] = useState<any>("");
   const emojiRef = useRef<any>();
 
-  const { ipfs, setMultiAddr, uploadWithNonEncryption } = useIPFS();
+  const { setMultiAddr, uploadWithNonEncryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
@@ -72,9 +76,7 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
       if (files[i].size / 1024 <= 51200) {
         onChangeMessageOther(files[i]);
       } else {
-        setStatus({
-          msg: "File too big (< 50Mb)",
-          key: Math.random(),
+        showAlertMessage("File too big (< 50Mb)", {
           variant: "error",
         });
       }
@@ -89,18 +91,13 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
           // TODO: have to upload image file here, check Discord.tsx Line 872
         } else {
           files[i]["invalid"] = true;
-          console.log("No valid file");
           // Alert invalid image
-          setStatus({
-            msg: "Not valid format",
-            key: Math.random(),
+          showAlertMessage("Not valid format", {
             variant: "error",
           });
         }
       } else {
-        setStatus({
-          msg: "File too big (< 50Mb)",
-          key: Math.random(),
+        showAlertMessage("File too big (< 50Mb)", {
           variant: "error",
         });
       }
@@ -115,18 +112,12 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
           // TODO: have to upload image file here, check Discord.tsx Line 897
         } else {
           files[i]["invalid"] = true;
-          console.log("No valid file");
-          // Alert invalid image
-          setStatus({
-            msg: "Not valid format",
-            key: Math.random(),
+          showAlertMessage("Not valid format", {
             variant: "error",
           });
         }
       } else {
-        setStatus({
-          msg: "File too big (< 5Mb)",
-          key: Math.random(),
+        showAlertMessage("File too big (< 50Mb)", {
           variant: "error",
         });
       }
@@ -170,33 +161,22 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
             dispatch(setChat(chatObj));
             dispatch(setMessage(msg));
 
-            setStatus({
-              msg: "Photo uploaded successfully",
-              key: Math.random(),
+            showAlertMessage("Photo uploaded successfully", {
               variant: "success",
             });
           } else {
-            console.log(response.data);
-            setStatus({
-              msg: response.data.error,
-              key: Math.random(),
+            showAlertMessage(response.data.error, {
               variant: "error",
             });
           }
         })
         .catch(error => {
-          console.log(error);
-          setStatus({
-            msg: "Error uploading photo",
-            key: Math.random(),
+          showAlertMessage("Error uploading photo", {
             variant: "error",
           });
         });
     } catch (error) {
-      console.log(error);
-      setStatus({
-        msg: "Error uploading photo",
-        key: Math.random(),
+      showAlertMessage("Error uploading photo", {
         variant: "error",
       });
     }
@@ -238,34 +218,22 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
 
             dispatch(setChat(chatObj));
             dispatch(setMessage(msg));
-
-            setStatus({
-              msg: "Audio uploaded successfully",
-              key: Math.random(),
+            showAlertMessage("Audio uploaded successfully", {
               variant: "success",
             });
           } else {
-            console.log(response.data);
-            setStatus({
-              msg: response.data.error,
-              key: Math.random(),
+            showAlertMessage(response.data.error, {
               variant: "error",
             });
           }
         })
         .catch(error => {
-          console.log(error);
-          setStatus({
-            msg: "Error uploading audio",
-            key: Math.random(),
+          showAlertMessage("Error uploading audio", {
             variant: "error",
           });
         });
     } catch (error) {
-      console.log(error);
-      setStatus({
-        msg: "Error uploading audio",
-        key: Math.random(),
+      showAlertMessage("Error uploading audio", {
         variant: "error",
       });
     }
@@ -308,33 +276,22 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
             dispatch(setChat(chatObj));
             dispatch(setMessage(msg));
 
-            setStatus({
-              msg: "File uploaded successfully",
-              key: Math.random(),
+            showAlertMessage("File uploaded successfully", {
               variant: "success",
             });
           } else {
-            console.log(response.data);
-            setStatus({
-              msg: response.data.error,
-              key: Math.random(),
+            showAlertMessage(response.data, {
               variant: "error",
             });
           }
         })
         .catch(error => {
-          console.log(error);
-          setStatus({
-            msg: "Error uploading file",
-            key: Math.random(),
+          showAlertMessage("Error uploading audio", {
             variant: "error",
           });
         });
     } catch (error) {
-      console.log(error);
-      setStatus({
-        msg: "Error uploading file",
-        key: Math.random(),
+      showAlertMessage("Error uploading audio", {
         variant: "error",
       });
     }
@@ -373,40 +330,26 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
               lastMessageDate: msg.created,
               messages: messagesCopy,
             };
-            if (setChat) {
-              setChat(chatObj);
-            }
 
             dispatch(setChat(chatObj));
             dispatch(setMessage(msg));
 
-            setStatus({
-              msg: "Video uploaded successfully",
-              key: Math.random(),
+            showAlertMessage("Video uploaded successfully", {
               variant: "success",
             });
           } else {
-            console.log(response.data);
-            setStatus({
-              msg: response.data.error,
-              key: Math.random(),
+            showAlertMessage(response.data.error, {
               variant: "error",
             });
           }
         })
         .catch(error => {
-          console.log(error);
-          setStatus({
-            msg: "Error uploading video",
-            key: Math.random(),
+          showAlertMessage("Error uploading video", {
             variant: "error",
           });
         });
     } catch (error) {
-      console.log(error);
-      setStatus({
-        msg: "Error uploading video",
-        key: Math.random(),
+      showAlertMessage("Error uploading video", {
         variant: "error",
       });
     }
@@ -549,7 +492,7 @@ export const MessageFooter = ({ chat, chatsUsers, messages, setMessages, special
     >
       {!audioMessage && (
         <>
-        {/*<img
+          {/*<img
             src={require("assets/mediaIcons/old/audio_live.png")}
             alt={"Record your voice"}
             onClick={startAudioRecording}
@@ -620,6 +563,7 @@ export const MessageContent = ({
   const usersInfo = useSelector((state: RootState) => state.usersInfoList);
   const [newChat, setNewChat] = React.useState(null);
   const [paginationLoading, setPaginationLoading] = React.useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(messages.length > 0);
 
   const itemListRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -639,16 +583,16 @@ export const MessageContent = ({
     if (fIndex < 0) return;
     setNewChat({
       ...chat,
-      userInfo: usersInfo[fIndex],
     });
   }, [chat, usersInfo]);
 
   const handleScroll = React.useCallback(
     async e => {
-      if (e.target.scrollTop === 0 && messages.length > 0) {
+      if (e.target.scrollTop === 0 && hasMore) {
         const lastMsgID = messages.length > 0 ? messages[0].id : null;
         setPaginationLoading(true);
         const count = await getMessages();
+        setHasMore(count > 0);
         if (count === 0) {
           setPaginationLoading(false);
         }
@@ -677,22 +621,16 @@ export const MessageContent = ({
               <MessageItem
                 key={index}
                 user={
-                  item.users && item.users.userFrom && item.users.userFrom.userId
-                    ? item.users.userFrom.userId === userSelector.id
-                      ? item.users.userTo
-                      : item.users.userFrom
-                    : null
+                  chat.users.userFrom.userId === userSelector.id ? chat.users.userTo : chat.users.userFrom
                 }
                 message={item}
                 chat={newChat}
-                lastRow={index + 1 === messages.length}
                 mediaOnCommunity={false}
               />
             ))}
         </div>
         <MessageFooter
           chat={chat}
-          chatsUsers={chatsUsers}
           messages={messages}
           specialWidthInput={specialWidthInput}
           setMessages={msgs => setMessages(msgs)}

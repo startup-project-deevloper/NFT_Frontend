@@ -1,28 +1,33 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMessageBox } from "store/selectors/user";
-import "./PixMessageProfile.css";
-import { setSelectedUser } from "store/actions/SelectedUser";
+import { saveAs } from "file-saver";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import ReactPlayer from "react-player";
+
+import { Grid, SvgIcon } from "@material-ui/core";
+
+import { RootState } from "store/reducers/Reducer";
+import { setSelectedUser } from "store/actions/SelectedUser";
+import { LatestBadgesGrid } from "components/PriviSocial/subpages/Home/components/InfoPane";
+
 import URL from "shared/functions/getURL";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { LatestBadgesGrid } from "components/PriviSocial/subpages/Home/components/InfoPane";
-import { pixMessageProfileStyles } from "./PixMessageProfile.styles";
 import Box from "shared/ui-kit/Box";
-import { Grid, SvgIcon } from "@material-ui/core";
-import { ReactComponent as PlaySolid } from "assets/icons/play-solid.svg";
-import { ReactComponent as DownloadSolid } from "assets/icons/download-solid.svg";
-import ReactPlayer from "react-player";
 import Waveform from "shared/ui-kit/Page-components/Discord/DiscordAudioWavesurfer/Waveform";
 import { Color, Modal, PrimaryButton } from "shared/ui-kit";
 import DiscordPhotoFullScreen from "shared/ui-kit/Page-components/Discord/DiscordPhotoFullScreen/DiscordPhotoFullScreen";
 import DiscordVideoFullScreen from "shared/ui-kit/Page-components/Discord/DiscordVideoFullScreen/DiscordVideoFullScreen";
-import { RootState } from "store/reducers/Reducer";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+
+import { ReactComponent as PlaySolid } from "assets/icons/play-solid.svg";
+import { ReactComponent as DownloadSolid } from "assets/icons/download-solid.svg";
+
+import { pixMessageProfileStyles } from "./PixMessageProfile.styles";
+import "./PixMessageProfile.css";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const MEDIA_MAX_COUNTS = 120;
 
@@ -42,35 +47,6 @@ const MediaItemFC = ({ item }) => {
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
-
-  const handleOpenModalPhotoFullScreen = () => {
-    setOpenModalPhotoFullScreen(true);
-  };
-
-  const handleCloseModalPhotoFullScreen = () => {
-    setOpenModalPhotoFullScreen(false);
-  };
-  const handleOpenModalVideoFullScreen = () => {
-    setOpenModalVideoFullScreen(true);
-  };
-
-  const handleCloseModalVideoFullScreen = () => {
-    setOpenModalVideoFullScreen(false);
-  };
-
-  const downloadFile = () => {
-    if (fileBlobIPFS) {
-      saveAs(
-        fileBlobIPFS,
-        item.message &&
-          item.message.metadata &&
-          item.message.metadata.properties &&
-          item.message.metadata.properties.name
-          ? item.message.metadata.properties.name
-          : "File"
-      );
-    }
-  };
 
   useEffect(() => {
     if (
@@ -107,6 +83,35 @@ const MediaItemFC = ({ item }) => {
     setFileIPFS(fileUrl);
   };
 
+  const handleOpenModalPhotoFullScreen = () => {
+    setOpenModalPhotoFullScreen(true);
+  };
+
+  const handleCloseModalPhotoFullScreen = () => {
+    setOpenModalPhotoFullScreen(false);
+  };
+  const handleOpenModalVideoFullScreen = () => {
+    setOpenModalVideoFullScreen(true);
+  };
+
+  const handleCloseModalVideoFullScreen = () => {
+    setOpenModalVideoFullScreen(false);
+  };
+
+  const downloadFile = () => {
+    if (fileBlobIPFS) {
+      saveAs(
+        fileBlobIPFS,
+        item.message &&
+          item.message.metadata &&
+          item.message.metadata.properties &&
+          item.message.metadata.properties.name
+          ? item.message.metadata.properties.name
+          : "File"
+      );
+    }
+  };
+
   return (
     <Box style={{ height: "100%" }}>
       <Box className={classes.starBox}>
@@ -115,11 +120,13 @@ const MediaItemFC = ({ item }) => {
             <div
               className={classes.imageContainer}
               onClick={() => {
-                setSelectedPhoto(fileIPFS);
-                handleOpenModalPhotoFullScreen();
+                if (fileIPFS) {
+                  setSelectedPhoto(fileIPFS);
+                  handleOpenModalPhotoFullScreen();
+                }
               }}
               style={{
-                backgroundImage: `url(${fileIPFS})`,
+                backgroundImage: `url(${fileIPFS ? fileIPFS : ""})`,
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
@@ -224,19 +231,22 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
   const [lastId, setLastId] = useState<string>("");
   const [medias, setMedias] = useState<any[]>([]);
 
-  const messageBoxInfo = useSelector(getMessageBox);
-  const { userInfo } = messageBoxInfo;
   const { showAlertMessage } = useAlertMessage();
-  
-  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-  
+  const userInfo = React.useMemo(() => {
+    if (chat && userSelector) {
+      if (chat.users?.userFrom?.userId === userSelector.id) {
+        return chat.users?.userTo;
+      }
+      return chat.users?.userFrom;
+    }
+
+    return null;
+  }, [chat, useSelector]);
+
   const getmyStats = () => {
     axios
-      .get(`${URL()}/user/getUserCounters/${userInfo.id}`)
+      .get(`${URL()}/user/getUserCounters/${userInfo.userId}`)
       .then(response => {
         const resp = response.data;
         if (resp.success) {
@@ -252,29 +262,17 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
   };
 
   useEffect(() => {
-    if (isIPFSAvailable && userInfo && userInfo.id) {
-      getIPFSImage(userInfo);
+    if (userInfo && userInfo.userId) {
       getmyStats();
     }
-  }, [userInfo, isIPFSAvailable]);
-
-  const getIPFSImage = async userInfo => {
-    if (
-      userInfo &&
-      userInfo.infoImage &&
-      userInfo.infoImage.newFileCID &&
-      (!userInfo.ipfsImage || userInfo.ipfsImage === "")
-    ) {
-      userInfo.ipfsImage = await getPhotoIPFS(userInfo.infoImage.newFileCID, downloadWithNonDecryption);
-    }
-  };
+  }, [userInfo]);
 
   useEffect(() => {
     if (chat && userInfo) {
       axios
         .post(`${URL()}/chat/getChatUploadedMedias/`, {
           room: chat.room,
-          userIds: [userInfo.id, userSelector.id],
+          userIds: [userInfo.userId, userSelector.id],
           lastId,
         })
         .then(response => {
@@ -297,27 +295,20 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
     }
   }, [chat]);
 
-  const userName = useMemo(() => {
-    const user = userInfo?.urlSlug ? userInfo?.urlSlug : "";
-    return user.length > 17 ? user.substr(0, 13) + "..." + user.substr(user.length - 3, 3) : user;
-  }, [userInfo]);
-
   if (userInfo !== undefined)
     return (
       <div>
         <img
           src={
-            userInfo.ipfsImage
-              ? userInfo.ipfsImage
-              : require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")
+            userInfo.userFoto ?? getDefaultAvatar()
           }
           className="message-profile-avatar"
         />
         <div className="name">{userInfo && userInfo.name}</div>
         <div className="slug-container">
-          {userName ? (
+          {userInfo && userInfo.urlSlug ? (
             <div className="slug-name" style={type === "trax" ? { color: Color.MusicDAOGreen } : {}}>
-              @{userName}
+              @{userInfo && userInfo.urlSlug ? userInfo.urlSlug : ""}
             </div>
           ) : null}
           <img className="verified-label" src={require("assets/icons/profileVerified.svg")} alt={"check"} />
@@ -341,7 +332,7 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
             <div className="title">Media</div>
             <Grid container spacing={1}>
               {medias.map((item, index) => (
-                <Grid item xs={6} sm={4} md={3}>
+                <Grid item xs={6} sm={4} md={3} key={index}>
                   <MediaItem item={item} key={index} />
                 </Grid>
               ))}
@@ -352,8 +343,8 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
           <PrimaryButton
             size="medium"
             onClick={() => {
-              history.push(`/${userInfo.id}/profile`);
-              dispatch(setSelectedUser(userInfo.id));
+              history.push("/profile/" + `${userInfo.userId}`);
+              dispatch(setSelectedUser(userInfo.userId));
             }}
             style={type === "trax" ? { background: Color.MusicDAOGreen } : {}}
             isRounded={type === "trax"}

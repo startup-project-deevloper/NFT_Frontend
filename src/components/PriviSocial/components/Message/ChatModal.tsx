@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
-import { MessageFooter } from "./MessageContent";
-import { Avatar, makeStyles } from "@material-ui/core";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { Avatar, makeStyles } from "@material-ui/core";
+
 import { endChat, updateChat } from "store/actions/MessageActions";
 import { RootState } from "store/reducers/Reducer";
-import URL from "shared/functions/getURL";
-import axios from "axios";
 import { MessageItem } from "./MessageItem";
+import { socket } from "components/Login/Auth";
+import { MessageFooter } from "./MessageContent";
+
+import URL from "shared/functions/getURL";
 import { useMessages } from "shared/contexts/MessagesContext";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { socket } from "components/Login/Auth";
 
 const useStyles = makeStyles({
   container: {
@@ -128,19 +130,21 @@ const ChatModal = ({ chat }) => {
   const classes = useStyles();
 
   const userSelector = useSelector((state: RootState) => state.user);
-  const usersInfo = useSelector((state: RootState) => state.usersInfoList);
   const { setNumberMessages } = useMessages();
   const [chatUsers, setChatUsers] = React.useState([]);
 
   const [minimize, setMinimize] = useState<boolean>(true);
-  const [otherUser, setOtherUser] = useState<any>({});
-  const [differentUser, setDifferentUser] = useState<any>({});
 
   const [messages, setMessages] = useState<any[]>([]);
   const [messagesCharged, setMessagesCharged] = useState<boolean>(true);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [paginationLoading, setPaginationLoading] = React.useState<boolean>(false);
+
+  const differentUser = React.useMemo(
+    () => (chat.users.userFrom.userId === userSelector.id ? chat.users.userTo : chat.users.userFrom),
+    [chat, userSelector]
+  );
 
   const itemListRef = useRef<HTMLDivElement>(null);
   const handleMinimize = (e: React.MouseEvent) => {
@@ -202,57 +206,21 @@ const ChatModal = ({ chat }) => {
 
   useEffect(() => {
     if (chat) {
-      let differentUser: string = "";
-      if (
-        chat &&
-        chat.users &&
-        chat.users.userFrom &&
-        chat.users.userFrom.userId &&
-        chat.users.userFrom.userId !== userSelector.id
-      ) {
-        differentUser = chat.users.userFrom.userId;
-      } else if (
-        chat &&
-        chat.users &&
-        chat.users.userTo &&
-        chat.users.userTo.userId &&
-        chat.users.userTo.userId !== userSelector.id
-      ) {
-        differentUser = chat.users.userTo.userId;
-      }
-      let differentUserInfo = usersInfo.find(user => user.id === differentUser);
-      if (differentUserInfo) {
-        setDifferentUser(differentUserInfo);
-        createChat(differentUserInfo);
-      }
+      createChat();
     }
   }, []);
 
-  const createChat = (user: any) => {
+  const createChat = () => {
     let users: any = {
       userFrom: {
         userId: userSelector.id,
         userName: userSelector.firstName,
-        userFoto: userSelector.anon
-          ? userSelector.anonAvatar && userSelector.anonAvatar.length > 0
-            ? `${require(`assets/anonAvatars/${userSelector.anonAvatar}`)}`
-            : `${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}`
-          : userSelector.hasPhoto && userSelector.url
-          ? `${userSelector.url}?${Date.now()}`
-          : "",
         userConnected: true,
         lastView: new Date(),
       },
       userTo: {
-        userId: user.id,
-        userName: user.name,
-        userFoto: user.anon
-          ? user.anonAvatar && user.anonAvatar.length > 0
-            ? `${require(`assets/anonAvatars/${user.anonAvatar}`)}`
-            : `${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)}`
-          : user.hasPhoto && user.url
-          ? `${user.url}?${Date.now()}`
-          : "",
+        userId: chat.users.userTo.userId,
+        userName: chat.users.userTo.userName,
         userConnected: false,
         lastView: null,
       },
@@ -268,7 +236,6 @@ const ChatModal = ({ chat }) => {
               chat: {
                 ...response.data.data,
                 receipientId: chat.receipientId,
-                userInfo: chat.userInfo,
               },
             })
           );
@@ -311,7 +278,7 @@ const ChatModal = ({ chat }) => {
 
   const handleScroll = React.useCallback(
     async e => {
-      if (e.target.scrollTop === 0 && messages.length > 0) {
+      if (e.target.scrollTop === 0 && hasMore) {
         const lastMsgID = messages.length > 0 ? messages[0].id : null;
         setPaginationLoading(true);
         const count = await getMessages();
@@ -337,7 +304,7 @@ const ChatModal = ({ chat }) => {
     <div className={classes.container} style={{ display: chat.hidden ? "none" : "inline-block" }}>
       <div className={classes.header} onClick={handleMinimize}>
         <div className={classes.chatInfo}>
-          <Avatar src={differentUser.imageURL} alt={differentUser.name} />
+          <Avatar src={differentUser.ipfsImage ? differentUser.ipfsImage : ""} alt={differentUser.name} />
           {differentUser.connected && <span className="online" />}
           <div className={classes.user}>
             <div className={classes.userName}>{differentUser.name ?? differentUser.userName ?? ""}</div>
@@ -366,13 +333,7 @@ const ChatModal = ({ chat }) => {
                     return (
                       <MessageItem
                         key={item.id}
-                        user={
-                          item.users && item.users.userFrom && item.users.userFrom.userId
-                            ? item.users.userFrom.userId === userSelector.id
-                              ? item.users.userTo
-                              : item.users.userFrom
-                            : null
-                        }
+                        user={differentUser}
                         message={item}
                         chat={chat}
                         mediaOnCommunity={false}

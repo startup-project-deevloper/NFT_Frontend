@@ -290,7 +290,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [soldSupply, setSoldSupply] = React.useState<number>(nft.SoldSupply);
 
   const [jotPrice, setJotPrice] = React.useState<number>(0);
-  const [transList, setTransList] = React.useState<any[]>(tempHistory);
+  const [transList, setTransList] = React.useState<any[]>([]);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
@@ -384,7 +384,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         nft,
         setHash,
       });
-      console.log("updated price", price);
       if (!price) {
         setUpdateResult(-1);
         setLoading(false);
@@ -504,12 +503,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         tokenId: nft.SyntheticID,
       });
 
+      let newNFT = { ...nft };
+
       if (ownerSup) {
         setOwnerSupply(ownerSup);
-        setNft({
-          ...nft,
-          OwnerSupply: ownerSup,
-        });
+        newNFT.OwnerSupply = ownerSup;
       }
 
       const sellingSup = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft, {
@@ -518,10 +516,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (sellingSup) {
         setSellingSupply(sellingSup);
-        setNft({
-          ...nft,
-          SellingSupply: sellingSup,
-        });
+        newNFT.SellingSupply = sellingSup;
       }
 
       const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
@@ -530,11 +525,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (soldSupply) {
         setSoldSupply(soldSupply);
-        setNft({
-          ...nft,
-          SoldSupply: soldSupply,
-        });
+        newNFT.SoldSupply = soldSupply;
       }
+      setNft(newNFT);
 
       return { ownerSupply: ownerSup, sellingSupply: sellingSup, soldSupply };
     } catch (err) {
@@ -867,18 +860,22 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       <Box
                         className={classes.ownerInfo}
                         style={{
-                          background: "#DDFF57",
+                          background: buybackPrice > 0 ? "#DDFF57" : "transparent",
                           borderRadius: 12,
                           padding: "21px 0 18px 31px",
                           marginLeft: 18,
                         }}
                       >
-                        <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                          Current Reserve Price to Buy Back
-                        </Box>
-                        <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                          {(+buybackPrice).toFixed(4)} USDT
-                        </Box>
+                        {buybackPrice > 0 ? (
+                          <>
+                            <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                              Current Reserve Price to Buy Back
+                            </Box>
+                            <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                              {(+buybackPrice).toFixed(4)} USDT
+                            </Box>
+                          </>
+                        ) : null}
                         <PrimaryButton
                           className={classes.h4}
                           size="medium"
@@ -1238,7 +1235,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           )}
         </>
       )}
-      {isOwner && (
+      {isOwner && isOwnerShipTab && (
         <>
           <Box className={classes.outBox}>
             <Box display="flex" justifyContent="space-between" alignItems="center">

@@ -10,19 +10,20 @@ import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { RedeemJotsModalStyles } from "./index.style";
-import {typeUnitValue} from "shared/helpers/utils";
+import { typeUnitValue } from "shared/helpers/utils";
 import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import TransactionResultModal, { CopyIcon } from "../TransactionResultModal";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { toDecimals } from "shared/functions/web3";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
-export default function RedeemJotsModal({ open, handleClose = () => {}, collection, jotsBalance }) {
+export default function RedeemJotsModal({ open, handleClose = () => {}, collection, price, onCompleted }) {
   const classes = RedeemJotsModalStyles();
   const { account, library, chainId } = useWeb3React();
 
   const [jot, setJot] = React.useState<number>(0);
-  const [receive, setReceive] = React.useState<number>(0);
+  const [receive, setReceive] = React.useState<string>("0");
   const [maxJots, setMaxJots] = React.useState<number>(0);
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
   const [jotPrice, setJotPrice] = React.useState<number>(0);
@@ -65,7 +66,9 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
               token1: JotAddress.toLowerCase(),
               token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
             },
-          })
+          }),
+          web3APIHandler.Erc20["JOT"].decimals(web3, JotAddress),
+          web3APIHandler.Erc20["JOT"].balanceOf(web3, JotAddress, { account }),
         ];
       }
 
@@ -78,27 +81,44 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
           setJotPrice(JotPrice);
         }
       }
+
+      if (response[2]) {
+        const jots = parseInt(toDecimals(response[2], response[1]));
+        setMaxJots(jots);
+      }
     })();
   }, [open, selectedChain]);
 
   const handleCheck = () => {
     window.open(`https://mumbai.polygonscan.com/tx/${hash}`, "_blank");
-  }
+  };
+
+  const setHashAndComplete = hash => {
+    setHash(hash);
+    onCompleted(+jot, hash);
+  };
 
   const handleConfirm = async () => {
     const web3APIHandler = selectedChain.apiHandler;
     const web3 = new Web3(library.provider);
 
-    const contractResponse = await web3APIHandler.RedemptionPool.redeem(
-      web3,
-      account!,
-      collection,
-      {
-        amount: +jot,
-        setHash
-      }
-    );
-  }
+    setLoading(true);
+    const contractResponse = await web3APIHandler.RedemptionPool.redeem(web3, account!, collection, {
+      amount: +jot,
+      setHash: setHashAndComplete,
+    });
+
+    if (!contractResponse.success) {
+      setLoading(false);
+      setTnxSuccess(false);
+      setOpenTranactionModal(true);
+      return;
+    }
+
+    setOpenTranactionModal(true);
+    setLoading(false);
+    setTnxSuccess(true);
+  };
 
   return (
     <LoadingScreen
@@ -143,7 +163,10 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
           </Box>
           <InputWithLabelAndTooltip
             inputValue={jot.toString()}
-            onInputValueChange={e => setJot(+e.target.value)}
+            onInputValueChange={e => {
+              setJot(+e.target.value);
+              setReceive((price * +e.target.value).toFixed(2));
+            }}
             overriedClasses={classes.inputJOT}
             required
             type="number"
@@ -156,18 +179,24 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
               <span>Wallet Balance</span>
               <Box className={classes.usdWrap} display="flex" alignItems="center">
                 <Box className={classes.point}></Box>
-                <Box fontWeight="700">{typeUnitValue(jotsBalance, 1)} JOTs</Box>
+                <Box fontWeight="700">{typeUnitValue(maxJots, 1)} JOTs</Box>
               </Box>
             </Box>
-            <Box display="flex" alignItems="center" fontSize="16px">
-              <span>
-                MAX: <b>{typeUnitValue(maxJots, 1)}</b>
-              </span>
+            <Box
+              display="flex"
+              alignItems="center"
+              fontSize="16px"
+              onClick={() => {
+                setJot(maxJots);
+                setReceive((price * maxJots).toFixed(2));
+              }}
+            >
+              <span>MAX</span>
             </Box>
           </Box>
           <Box className={classes.receiveContainer}>
             <span>You'll receive</span>
-            <Box className={classes.usdt}>{jot * jotPrice} USDT</Box>
+            <Box className={classes.usdt}>{receive} USDT</Box>
           </Box>
           <Box display="flex" alignItems="center" justifyContent="space-between" mt={5}>
             <SecondaryButton

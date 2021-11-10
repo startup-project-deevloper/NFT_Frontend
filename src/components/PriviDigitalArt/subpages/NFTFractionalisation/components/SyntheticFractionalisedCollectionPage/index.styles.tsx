@@ -410,9 +410,31 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     color: "white",
     fontWeight: 800,
 
-    '& img': {
-      marginRight: "8px !important"
-    }
+    "& img": {
+      marginRight: "8px !important",
+    },
+  },
+  countCircle: {
+    width: "20px",
+    height: "20px",
+    fontSize: "10px",
+    background: "#9EACF2",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "50%",
+    lineHeight: "9px",
+    top: "14px",
+    right: "15px",
+    marginLeft: "8px",
+    [theme.breakpoints.down("xs")]: {
+      width: "15px",
+      height: "15px",
+      fontSize: "8px",
+      lineHeight: "8px",
+      top: 6,
+      right: 10,
+    },
   },
 }));
 

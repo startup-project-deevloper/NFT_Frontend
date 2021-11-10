@@ -1,6 +1,5 @@
 const INIT_STATE = {
   isOpenMessageBox: false,
-  userInfo: {},
   message: "",
   isSendMessage: false,
   openChatModal: true,
@@ -17,7 +16,6 @@ const MessageBoxReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         isOpenMessageBox: true,
-        userInfo: action.payload,
       };
     case "CLOSE_MESSAGE_BOX":
       return {
@@ -40,7 +38,6 @@ const MessageBoxReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         openChatModal: true,
-        userInfo: action.payload,
       };
     case "CLOSE_CHAT_MODAL":
       return {

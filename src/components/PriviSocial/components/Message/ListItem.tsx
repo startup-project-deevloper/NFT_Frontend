@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { openChatModal } from "store/actions/MessageActions";
 import { useSelector } from "react-redux";
-import { RootState } from "store/reducers/Reducer";
 import Moment from "react-moment";
 import { useHistory } from "react-router-dom";
+
+import { RootState } from "store/reducers/Reducer";
+import { openChatModal } from "store/actions/MessageActions";
+import { socket } from "components/Login/Auth";
+
 import { Color } from "shared/ui-kit";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { checkUserConnected } from "shared/services/API";
 
 export const ListItem: React.FunctionComponent<any> = ({
   chat,
@@ -18,7 +24,6 @@ export const ListItem: React.FunctionComponent<any> = ({
   const history = useHistory();
 
   const userSelector = useSelector((state: RootState) => state.user);
-  const users = useSelector((state: RootState) => state.usersInfoList);
 
   let pathName = window.location.href; // If routing changes, change to
   let idUrl =
@@ -26,47 +31,49 @@ export const ListItem: React.FunctionComponent<any> = ({
       ? userSelector.urlSlug
       : localStorage.getItem("userSlug");
 
-  const handleClick = () => {
-    // if (currentChat && chat.room === currentChat.room) return;
-    setCurrentChat(chat);
-    let user = users[users.findIndex(user => user.id === otherUser.userId)];
-    dispatch(openChatModal(user));
-    setChat();
-    if (!pathName.includes("messages")) history.push(`/social/${idUrl}/messages`);
-  };
-
   const [otherUser, setOtherUser] = useState<any>({});
-  const [otherUserPhoto, setOtherUserPhoto] = useState<string>("");
   const [connected, setConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    if(users && users.length > 0) {
-      if (users.some(user => user.id === chat.users.userFrom.userId)) {
-        chat.users.userFrom.userName =
-          users[users.findIndex(user => user.id === chat.users.userFrom.userId)].name;
-      }
-      if (users.some(user => user.id === chat.users.userTo.userId)) {
-        chat.users.userTo.userName =
-        users[users.findIndex(user => user.id === chat.users.userTo.userId)].name;
-      }
+    if (otherUser.userId) {
+      checkUserConnected(otherUser.userId)
+        .then(res => {
+          if (res.success) {
+            setConnected(res.connected);
+          } else {
+            setConnected(false);
+          }
+        })
+        .catch(e => {})
+        .finally(() => {
+          if (socket) {
+            socket.on("user_connect_status", connectStatus => {
+              if (connectStatus.userId === otherUser.userId) {
+                setConnected(connectStatus.connected);
+              }
+            });
+          }
+        });
+    }
+  }, [otherUser]);
 
+  useEffect(() => {
+    if (chat) {
       if (chat.users && chat.users.userFrom && chat.users.userFrom.userId === userSelector.id) {
         setOtherUser(chat.users.userTo);
-        let user: any = users.find(usr => chat?.users?.userTo?.userId === usr.id);
-
-        setOtherUserPhoto(user?.ipfsImage);
-        setConnected(user?.connected);
       } else if (chat.users && chat.users.userTo && chat.users.userTo.userId === userSelector.id) {
         setOtherUser(chat.users.userFrom);
-        let user: any = users.find(usr => chat?.users?.userFrom?.userId === usr.id);
-
-        setOtherUserPhoto(user.ipfsImage);
-        setConnected(user?.connected);
       }
     }
-  }, [chat, users]);
+  }, [chat]);
 
-  if (!chat.lastMessageDate) return null;
+  const handleClick = () => {
+    // if (currentChat && chat.room === currentChat.room) return;
+    setCurrentChat(chat);
+    dispatch(openChatModal(true));
+    setChat();
+    if (!pathName.includes("messages")) history.push(`/social/${idUrl}/messages`);
+  };
 
   return (
     <div
@@ -77,9 +84,7 @@ export const ListItem: React.FunctionComponent<any> = ({
         <div
           className="message-list-avatar"
           style={{
-            backgroundImage: otherUserPhoto
-              ? `url(${otherUserPhoto})`
-              : `url(${require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")})`,
+            backgroundImage: otherUser.userFoto ? `url(${otherUser.userFoto})` : `url(${getDefaultAvatar()})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",

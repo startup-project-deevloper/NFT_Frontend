@@ -1,9 +1,13 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getMessageBox } from "store/selectors/user";
 import { setSelectedUser } from "store/actions/SelectedUser";
+import { useTypedSelector } from "store/reducers/Reducer";
+import { getUser } from "store/selectors/user";
+
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+
 import "./MessageProfile.css";
 
 const TopStatesItem = props => {
@@ -19,38 +23,46 @@ const TopStatesItem = props => {
   );
 };
 
-export const MessageProfile = () => {
+export const MessageProfile = ({ chat }) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const messageBoxInfo = useSelector(getMessageBox);
+  const userSelector = useTypedSelector(getUser);
+
+  const userInfo = React.useMemo(() => {
+    if (chat && userSelector) {
+      if (chat.users?.userFrom?.userId === userSelector.id) {
+        return chat.users?.userTo;
+      }
+      return chat.users?.userFrom;
+    }
+
+    return null;
+  }, [chat, useSelector]);
 
   const pathName = window.location.href; // If routing changes, change to pathname
 
   const handleViewProfile = () => {
-    history.push(`/${userInfo.id}/profile`);
-    dispatch(setSelectedUser(userInfo.id));
+    if (pathName.includes("/pix/")) {
+      history.push(`/pix/${userInfo.userId}/profile`);
+    } else {
+      history.push(`/social/${userInfo.userId}`);
+    }
+    dispatch(setSelectedUser(userInfo.userId));
   };
 
-  
-  const { userInfo } = messageBoxInfo;
-  const user = userInfo.urlSlug ? userInfo.urlSlug : "";
-  const userName = user.length > 17 ? user.substr(0, 13) + "..." + user.substr(user.length - 3, 3) : user;
-
-  if (userInfo !== undefined && (userInfo.name || userInfo.urlSlug))
+  if (userInfo !== undefined && (userInfo.userName || userInfo.urlSlug))
     return (
       <div>
         <img
           src={
-            userInfo && userInfo.url
-              ? userInfo.url
-              : require("assets/anonAvatars/ToyFaces_Colored_BG_001.jpg")
+            userInfo?.userFoto ?? getDefaultAvatar()
           }
           className="message-profile-avatar"
         />
-        <div className="name">{userInfo && userInfo.name}</div>
+        <div className="name">{userInfo && userInfo.userName}</div>
         <div className="slug-container">
-          {userName ? (
-            <div className="slug-name">@{userName}</div>
+          {userInfo && userInfo.urlSlug ? (
+            <div className="slug-name">@{userInfo && userInfo.urlSlug ? userInfo.urlSlug : ""}</div>
           ) : null}
           <img className="verified-label" src={require("assets/icons/profileVerified.svg")} alt={"check"} />
           <span className="profile-level">level 1</span>

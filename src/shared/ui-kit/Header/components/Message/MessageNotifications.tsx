@@ -31,8 +31,8 @@ export const MessageNotifications: React.FC<MessageNotificationsProps> = ({ hand
   const [chatsCharged, setChatsCharged] = useState<boolean>(false);
 
   useEffect(() => {
-    getChats();
-  }, []);
+    if (userSelector.id) getChats();
+  }, [userSelector.id]);
 
   const handleOpenNewChatModal = () => {
     dispatch(openNewChatModal());

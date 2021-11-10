@@ -27,8 +27,8 @@ export const MessageList = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    getChats();
-  }, []);
+    if (userSelector.id) getChats();
+  }, [userSelector.id]);
 
   useEffect(() => {
     if (props.chats) {

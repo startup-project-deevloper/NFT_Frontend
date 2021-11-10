@@ -67,7 +67,7 @@ export default function ArtistCard({ item }) {
         </Box>
         <Box display="flex" width="100%" justifyContent="space-between">
           <Box display="flex" flexDirection="column">
-            <b>🌟 Collections</b>
+            {/* <b>🌟 Collections</b>
             <Box marginTop="8px">
               {item.myMediasCount
                 ? `${
@@ -78,7 +78,7 @@ export default function ArtistCard({ item }) {
                       : item.myMediasCount
                   }${item.myMediasCount > 1000000 ? "M" : item.myMediasCount > 1000 ? "K" : ""}`
                 : 0}
-            </Box>
+            </Box> */}
           </Box>
 
           <Box display="flex" flexDirection="column" alignItems="flex-end">

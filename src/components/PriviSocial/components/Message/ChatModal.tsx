@@ -219,8 +219,8 @@ const ChatModal = ({ chat }) => {
         lastView: new Date(),
       },
       userTo: {
-        userId: chat.users.userTo.userId,
-        userName: chat.users.userTo.userName,
+        userId: differentUser.userId,
+        userName: differentUser.userName,
         userConnected: false,
         lastView: null,
       },

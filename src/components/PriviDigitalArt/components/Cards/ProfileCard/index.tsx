@@ -101,9 +101,6 @@ export default function ProfileCard({
           }
         });
       }
-      if (item?.urlIpfsImage) {
-        setImageIPFS(item.urlIpfsImage)
-      }
     }
   }, [item, usersList]);
 

@@ -332,10 +332,9 @@ const ChatModal = ({ chat }) => {
                   ) {
                     return (
                       <MessageItem
-                        key={item.id}
+                        key={item.id ?? `message-${index}`}
                         user={differentUser}
                         message={item}
-                        chat={chat}
                         mediaOnCommunity={false}
                       />
                     );

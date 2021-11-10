@@ -619,12 +619,11 @@ export const MessageContent = ({
           {messages &&
             messages.map((item, index) => (
               <MessageItem
-                key={index}
+                key={item.id ?? `message-${index}`}
                 user={
                   chat.users.userFrom.userId === userSelector.id ? chat.users.userTo : chat.users.userFrom
                 }
                 message={item}
-                chat={newChat}
                 mediaOnCommunity={false}
               />
             ))}

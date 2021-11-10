@@ -667,10 +667,11 @@ const Header = props => {
                         }}
                       />
                     </div>
-                    Profile
+                    My Profile
                   </MenuItem>
                   <PrimaryButton
                     className={classes.pixApp}
+                    style={{ fontWeight: 400 }}
                     size="medium"
                     isRounded
                     onClick={e => {
@@ -678,7 +679,7 @@ const Header = props => {
                       history.push("/");
                     }}
                   >
-                    Pix
+                    Privi Pix
                     <img src={require("assets/logos/privi_pix_simple.png")} alt="icon" />
                   </PrimaryButton>
                   <MenuItem onClick={handleSearch}>
@@ -782,6 +783,7 @@ const Header = props => {
                   <MenuItem>
                     <PrimaryButton
                       className={classes.createPix}
+                      style={{ fontWeight: 400 }}
                       size="medium"
                       isRounded
                       onClick={e => {

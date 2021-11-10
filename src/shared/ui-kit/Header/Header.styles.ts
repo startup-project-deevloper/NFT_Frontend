@@ -75,6 +75,7 @@ export const headerStyles = makeStyles(theme => ({
     },
     "& .header-right .avatar-container": {
       marginLeft: 10,
+      marginRight: 8,
       [theme.breakpoints.down("sm")]: {
         marginLeft: 0,
       },
@@ -324,6 +325,7 @@ export const headerStyles = makeStyles(theme => ({
       fontSize: 14,
       "& svg": {
         marginRight: 20,
+        width: 20
       },
     },
     "& .MuiMenuItem-root": {

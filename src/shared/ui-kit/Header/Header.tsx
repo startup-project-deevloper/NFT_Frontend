@@ -714,7 +714,7 @@ const Header = props => {
                     </svg>
                     Messages
                   </MenuItem>
-                  <MenuItem>
+                  {/* <MenuItem>
                     {!isZoo && (
                       <ToolbarButtonWithPopper
                         theme="pop"
@@ -754,7 +754,7 @@ const Header = props => {
                         />
                       </ToolbarButtonWithPopper>
                     )}
-                  </MenuItem>
+                  </MenuItem> */}
                   {/* <MenuItem>
                     <PrimaryButton
                       size="medium"

@@ -185,7 +185,7 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
   if (userId)
     return (
       <>
-        {user.id === userId && (
+        {user.id == userId && (
           <div className={classes.wallPostOption}>
             {/* <Box display="flex" flexDirection="row" mb={2} mr={1}>
               <Box fontSize="14px" mr={1} alignItems="center" display="flex">
@@ -208,7 +208,14 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
             <PrimaryButton
               size="small"
               onClick={handleOpenCreateWallPostModal}
-              style={{ marginLeft: "16px", fontSize: 16, background: "#DDFF57", border: "none", color: "#431AB7", height: 40 }}
+              style={{
+                marginLeft: "16px",
+                fontSize: 16,
+                background: "#DDFF57",
+                border: "none",
+                color: "#431AB7",
+                height: 40,
+              }}
             >
               Create New
             </PrimaryButton>
@@ -233,7 +240,7 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
             </LoadingIndicatorWrapper>
           }
         >
-          <>
+          <Box mt={3}>
             <MasonryGrid
               data={posts}
               renderItem={(item, index) => (
@@ -242,7 +249,7 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
               columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS}
               gutter={GUTTER}
             />
-          </>
+          </Box>
         </InfiniteScroll>
         {posts && posts.length === 0 && !isDataLoading && <Box mt={3}>No Posts available</Box>}
         {status ? <AlertMessage key={status.key} message={status.msg} variant={status.variant} /> : ""}

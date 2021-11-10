@@ -185,10 +185,10 @@ export const MessageBox = ({ type = "social" }) => {
       });
   };
 
-  const getMessages = (chatInfo?: any, isNew?: boolean): Promise<number> => {
+  const getMessages = (chatInfo?: any, isNew?: boolean): Promise<boolean> => {
     return new Promise((resolve, reject) => {
       if (!isNew && (loadingMessages || !hasMore)) {
-        resolve(0);
+        resolve(true);
         return;
       }
       setLoadingMessages(true);
@@ -206,7 +206,7 @@ export const MessageBox = ({ type = "social" }) => {
             setMessages(newMessages);
             setHasMore(response.data.hasMore);
             setLoadingMessages(false);
-            resolve(response.data.data.length);
+            resolve(response.data.hasMore);
           }
         })
         .catch(error => {
@@ -301,7 +301,7 @@ export const MessageBox = ({ type = "social" }) => {
           {type === "pix" || type === "trax" ? (
             <PixMessageProfile chat={chat} type={type} />
           ) : (
-            <MessageProfile chat={chat}/>
+            <MessageProfile chat={chat} />
           )}
         </div>
       )}

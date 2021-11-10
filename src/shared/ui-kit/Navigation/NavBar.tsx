@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+
+import { getMessageBox } from "store/selectors/user";
+
 import ScrollToTop from "../../functions/ScrollToTop";
 import Routes from "shared/routes/Routes";
 import { useLogin } from "shared/hooks/useLogin";
-import Header from "shared/ui-kit/Header/Header";
 import ChatModal from "shared/ui-kit/Modal/Modals/ChatModal";
 import NewChatModal from "shared/ui-kit/Modal/Modals/NewChatModal";
-import { getMessageBox } from "store/selectors/user";
+
 import "./NavBar.css";
 
 const NavBar = () => {
   const isLogin = useLogin();
   const messageBoxInfo = useSelector(getMessageBox);
-  const location = useLocation();
   const { activeChats } = messageBoxInfo;
-  const [isHideHeader, setIsHideHeader] = useState<boolean>(false);
-
-  useEffect(() => {
-    setIsHideHeader(location.pathname.toLowerCase().includes("/connect"));
-  }, [location]);
 
   return (
     <div
@@ -48,10 +43,9 @@ const NavBar = () => {
               <div className="container-fluid">
                 <Routes />
                 <div className="chat-modal-container">
-                  {activeChats.map(chat =>
+                  {activeChats.map((chat, index) =>
                     chat && chat.users && chat.receipientId ? (
-                      <ChatModal chat={chat}
-                                 key={chat.receipientId} />
+                      <ChatModal chat={chat} key={chat.room ?? `chat-${index}`} />
                     ) : null
                   )}
                   {messageBoxInfo.openNewChatModal && <NewChatModal />}

@@ -509,39 +509,23 @@ export const MessageContent = ({
   setChat,
 }) => {
   const userSelector = useSelector((state: RootState) => state.user);
-  const [newChat, setNewChat] = React.useState(null);
-  const [hasMore, setHasMore] = useState<boolean>(messages.length > 0);
-  const [paginationLoading, setPaginationLoading] = React.useState<boolean>(false);
-
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const itemListRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (itemListRef && itemListRef.current && !paginationLoading)
-      itemListRef.current.scrollTop = itemListRef.current.scrollHeight;
-    setPaginationLoading(false);
-  }, [messages]);
 
   useEffect(() => {
-    let otherUserId = null;
-    if (chat.users && chat.users.userFrom && chat.users.userFrom.userId === userSelector.id) {
-      otherUserId = chat.users.userTo.userId;
-    } else if (chat.users && chat.users.userTo && chat.users.userTo.userId === userSelector.id) {
-      otherUserId = chat.users.userFrom.userId;
-    }
-    setNewChat({
-      ...chat,
-    });
+    setHasMore(true);
   }, [chat]);
+
+  useEffect(() => {
+    if (itemListRef && itemListRef.current) itemListRef.current.scrollTop = itemListRef.current.scrollHeight;
+  }, [messages]);
 
   const handleScroll = React.useCallback(
     async e => {
       if (e.target.scrollTop === 0 && hasMore) {
         const lastMsgID = messages.length > 0 ? messages[0].id : null;
-        setPaginationLoading(true);
-        const count = await getMessages();
-        setHasMore(count > 0);
-        if (count === 0) {
-          setPaginationLoading(false);
-        }
+        const hasMoreMessage = await getMessages();
+        setHasMore(hasMoreMessage);
         if (lastMsgID) {
           const el = document.getElementById(lastMsgID);
           const itemList = document.getElementById("messageContainer");
@@ -565,12 +549,11 @@ export const MessageContent = ({
           {messages &&
             messages.map((item, index) => (
               <MessageItem
-                key={index}
+                key={item.id ?? `message-${index}`}
                 user={
                   chat.users.userFrom.userId === userSelector.id ? chat.users.userTo : chat.users.userFrom
                 }
                 message={item}
-                chat={newChat}
                 mediaOnCommunity={false}
                 type={type}
               />

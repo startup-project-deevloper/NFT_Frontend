@@ -122,7 +122,7 @@ const DepositNFT = ({ open, onClose, reload }) => {
           }
           priviNFTData = await Promise.all(
             priviNFTData.map(async nft => {
-              const cidUrl = nft.cid ? await getImageIPFS(nft.cid, "") : "";
+              const cidUrl = nft.urlIpfsImage ? nft.urlIpfsImage : "";
               return { ...nft, cidUrl };
             })
           );

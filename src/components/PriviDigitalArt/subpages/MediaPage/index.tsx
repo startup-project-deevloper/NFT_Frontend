@@ -565,27 +565,10 @@ const MediaPage = () => {
 
       return () => clearInterval(timerId);
     }
-
-    if (media && media.cid) {
-      getImageIPFS(media.cid, "");
+    if (media?.urlIpfsImage) {
+      setImageIPFS(media.urlIpfsImage)
     }
   }, [media]);
-
-  useEffect(() => {
-    if (media?.cid) {
-      getImageIPFS(media.cid, "");
-    }
-  }, [media]);
-
-  const getImageIPFS = async (cid: string, fileName: string) => {
-    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
-      downloadWithNonDecryption(fileCID, fileName, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.buffer);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
 
   useEffect(() => {
     if (library) setWeb3(new Web3(library.provider));

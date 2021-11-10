@@ -161,20 +161,10 @@ const NFTLoanDetailPage = () => {
   }, [loan]);
 
   useEffect(() => {
-    if (loanMedia && loanMedia.cid) {
-      getImageIPFS(loanMedia.cid, "");
+    if (loanMedia?.urlIpfsImage) {
+      setImageIPFS(loanMedia.urlIpfsImage)
     }
   }, [loanMedia]);
-
-  const getImageIPFS = async (cid: string, fileName: string) => {
-    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
-      downloadWithNonDecryption(fileCID, fileName, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.buffer);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
 
   const handleOpenRepayLoan = () => {
     setOpenRepayLoanModal(loan);

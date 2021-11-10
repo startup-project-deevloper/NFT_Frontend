@@ -95,7 +95,7 @@ const NFTSelectCard = ({ item, handleSelect }) => {
   const history = useHistory();
   const { isSignedin } = useAuth();
 
-  const { ipfs, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [media, setMedia] = React.useState<any>(item);
   const [imageIPFS, setImageIPFS] = useState('');
@@ -111,10 +111,10 @@ const NFTSelectCard = ({ item, handleSelect }) => {
   }, [item]);
 
   useEffect(() => {
-    if (media.cid) {
-      getImageIPFS(media.cid, "");
+    if (media?.urlIpfsImage) {
+      setImageIPFS(media.urlIpfsImage)
     }
-  }, [ipfs, media]);
+  }, [media]);
 
   const handleOpenDigitalArtModal = () => {
     if (isSignedin && media) {
@@ -122,16 +122,6 @@ const NFTSelectCard = ({ item, handleSelect }) => {
       if (media.tag) queryParam += (queryParam ? "&" : "") + `blockchainTag=${media.tag}`;
       if (media.collection) queryParam += (queryParam ? "&" : "") + `collectionTag=${media.collection}`;
       history.push(`/nft/${encodeURIComponent(media.MediaSymbol ?? media.id)}?${queryParam}`);
-    }
-  };
-
-  const getImageIPFS = async (cid: string, fileName: string) => {
-    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
-      downloadWithNonDecryption(fileCID, fileName, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.buffer);
-      setImageIPFS("data:image/png;base64," + base64String);
     }
   };
 

@@ -100,9 +100,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         });
       }
 
-      if (media.cid) {
-        getImageIPFS(media.cid, "");
-      }
+      setImageIPFS(media?.urlIpfsImage || "")
 
       if (media.Auctions) {
         const timerId = setInterval(() => {
@@ -145,22 +143,6 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
       } else return;
     }
   }, [media, user]);
-
-  useEffect(() => {
-    if (media.cid) {
-      getImageIPFS(media.cid, "");
-    }
-  }, [media]);
-
-  const getImageIPFS = async (cid: string, fileName: string) => {
-    let files = await onGetNonDecrypt(cid, fileName,  (fileCID, fileName, download) =>
-      downloadWithNonDecryption(fileCID, fileName, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.buffer);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
 
   const handleOpenDigitalArtModal = () => {
     if (isSignedin && media && creator) {

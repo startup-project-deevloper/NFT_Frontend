@@ -112,18 +112,11 @@ export default function ProfileCard({
           }
         });
       }
-
-      if (item.cid) {
-        getImageIPFS(item.cid, "");
+      if (item?.urlIpfsImage) {
+        setImageIPFS(item.urlIpfsImage)
       }
     }
   }, [item, usersList]);
-
-  useEffect(() => {
-    if (item?.cid) {
-      getImageIPFS(item.cid, "");
-    }
-  }, [item]);
 
   useEffect(() => {
     if (item.Auctions) {
@@ -166,18 +159,6 @@ export default function ProfileCard({
       return () => clearInterval(timerId);
     } else return;
   }, [item]);
-
-  const getImageIPFS = async (cid: string, fileName: string) => {
-    setIsLoading(true);
-    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
-      downloadWithNonDecryption(fileCID, fileName, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.buffer);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-    setIsLoading(false);
-  };
 
   const isBookmarked = () => {
     if (item.Bookmarks) {

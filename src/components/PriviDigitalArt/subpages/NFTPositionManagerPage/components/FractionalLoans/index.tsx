@@ -69,7 +69,7 @@ const FractionalLoans = () => {
         if (data.success) {
           const postionsData = await Promise.all(
             data.data?.map(async nft => {
-              const cidUrl = nft.media?.cid ? await getImageIPFS(nft.media?.cid, "") : "";
+              const cidUrl = nft.media?.urlIpfsImage ? nft.media?.urlIpfsImage : "";
               if (cidUrl) {
                 nft.media["cidUrl"] = cidUrl;
               }

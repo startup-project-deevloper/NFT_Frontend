@@ -13,21 +13,10 @@ export default function NFTCard({ item, handleSelect }) {
   const [imageIPFS, setImageIPFS] = useState({});
 
   useEffect(() => {
-    if (item && item?.cid) {
-      getImageIPFS(item?.cid, "");
+    if (item?.urlIpfsImage) {
+      setImageIPFS(item.urlIpfsImage)
     }
   }, [item]);
-
-
-  const getImageIPFS = async (cid: string, fileName: string) => {
-    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
-      downloadWithNonDecryption(fileCID, fileName, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.buffer);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
 
   const imgSrc = useMemo(() => {
     let src = item?.cid

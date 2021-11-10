@@ -29,12 +29,10 @@ export default function LoanCard({ item, index = 0, setItem }) {
 
   const history = useHistory();
   const user = useTypedSelector(getUser);
-  const users = useTypedSelector(getUsersInfoList);
 
   const { isSignedin } = useAuth();
 
   const [media, setMedia] = React.useState<any>(item.media);
-  const [creator, setCreator] = React.useState<any>();
 
   const [loanEnded, setLoanEnded] = React.useState<boolean>(true);
   const [endTime, setEndTime] = useState<any>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -44,57 +42,6 @@ export default function LoanCard({ item, index = 0, setItem }) {
   const anchorShareMenuRef = React.useRef<HTMLButtonElement>(null);
 
   const parentNode = React.useRef<HTMLDivElement>(null);
-
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  const [imageIPFS, setImageIPFS] = useState("");
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (media && users) {
-      if (item?.CreatorAddress) {
-        const c = users.find(u => u.address === item?.CreatorAddress);
-        if (c) {
-          setCreator(c);
-        } else {
-          setCreator({
-            imageUrl: getRandomAvatarForUserIdWithMemoization(media?.creator),
-            name: media?.creator,
-            urlSlug: media?.creator,
-          });
-        }
-      } else {
-        setCreator({
-          imageUrl: getRandomAvatarForUserIdWithMemoization(media?.creator),
-          name: media?.creator,
-          urlSlug: media?.creator,
-        });
-      }
-    }
-
-    if (media && media?.cid) {
-      getImageIPFS(media?.cid);
-    }
-  }, [media, users]);
-
-  useEffect(() => {
-    if (media?.cid) {
-      getImageIPFS(media?.cid);
-    }
-  }, [ipfs]);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
 
   useEffect(() => {
     if (item) {
@@ -139,7 +86,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
   }, [item]);
 
   const handleOpenDigitalArtModal = () => {
-    if (isSignedin && media && creator) {
+    if (isSignedin && media) {
       history.push(`/loan/${item.id}`);
     }
   };
@@ -185,24 +132,25 @@ export default function LoanCard({ item, index = 0, setItem }) {
     <div className={classes.card} style={{ marginBottom: 0 }}>
       <div className={classes.header}>
         <Box display="flex" alignItems="center">
-          {creator ? (
+          {item.CreatorInfo ? (
             <div
               className={classes.avatar}
               style={{
                 backgroundImage:
-                  creator?.ipfsImage ? `url(${creator?.ipfsImage})` : `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)})`,
+                  item.CreatorInfo.imageUrl ||
+                  `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)})`,
               }}
-              onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
+              onClick={() => history.push(`/${item.CreatorId}/profile`)}
             />
           ) : (
             <StyledSkeleton width={40} height={40} animation="wave" variant="circle" />
           )}
           <Box display="flex" flexDirection="column">
             <div className={cls(classes.black, classes.creatorName)} style={{ marginBottom: 4 }}>
-              {creator?.name ?? <StyledSkeleton width={120} animation="wave" />}
+              {item?.CreatorInfo?.name ?? <StyledSkeleton width={120} animation="wave" />}
             </div>
-            {creator?.urlSlug ? (
-              <div className={cls(classes.gray, classes.creatorName)}>@{creator.urlSlug}</div>
+            {item?.CreatorId ? (
+              <div className={cls(classes.gray, classes.creatorName)}>@{item?.CreatorId}</div>
             ) : (
               <StyledSkeleton width={80} animation="wave" />
             )}
@@ -237,7 +185,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
           </Box>
         )}
       </div>
-      {media?.cid && !imageIPFS ? (
+      {!item.nftData.content_url ? (
         <Box my={1}>
           <StyledSkeleton width="100%" height={226} variant="rect" />
         </Box>
@@ -245,22 +193,18 @@ export default function LoanCard({ item, index = 0, setItem }) {
         <div
           className={cls(classes.media, classes.fixed)}
           style={{
-            backgroundImage: `url(${
-              media?.cid
-                ? imageIPFS
-                : media?.Type && media?.Type !== "DIGITAL_ART_TYPE"
-                ? media?.UrlMainPhoto
-                : media?.UrlMainPhoto ?? media?.Url ?? media?.url ?? getRandomImageUrl()
-            })`,
+            backgroundImage: `url(${item.nftData.content_url})`,
           }}
           onClick={handleOpenDigitalArtModal}
         />
       )}
       <div className={classes.info} onClick={handleOpenDigitalArtModal}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px" mt={1}>
-          <div className={cls(classes.black, classes.title)}>{media?.MediaName ?? media?.title}</div>
+          <div className={cls(classes.black, classes.title)}>
+            {item.nftData?.metadata?.name || item.nftData?.name}
+          </div>
           <img
-            src={getLoanChainImageUrl(item?.Chain, media?.BlockchainNetwork)}
+            src={getLoanChainImageUrl(item?.Chain, item?.BlockchainNetwork)}
             alt={"Chain"}
             className={classes.chain}
           />
@@ -279,9 +223,6 @@ export default function LoanCard({ item, index = 0, setItem }) {
             <div className={classes.bold}>{`${item?.FeePct || "0"}%`}</div>
           </Box>
         </Box>
-        {
-          //media?.Loan && (
-        }{" "}
         <div className={classes.loan}>
           <div>{!loanEnded ? "Loan Ends In" : "Loan Ended"}</div>
           {!loanEnded && (

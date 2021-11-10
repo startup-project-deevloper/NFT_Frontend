@@ -152,7 +152,6 @@ export default ({
           />
         </div>
         {loadingLoans && <LoadingWrapper loading={loadingLoans} theme={"blue"} />}
-        <DepositNFT open={openDepositNFTModal} onClose={handleCloseDepositNFTModal} reload={reload} />
         {openHowModal && <HowItWorksModal open={openHowModal} handleClose={() => setOpenHowModal(false)} />}
       </div>
     </div>

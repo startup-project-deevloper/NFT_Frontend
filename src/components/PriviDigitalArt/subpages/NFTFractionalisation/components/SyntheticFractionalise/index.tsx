@@ -14,7 +14,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { getNFTBalanceFromMoralis } from "shared/services/API/balances/externalAPI";
 import { switchNetwork } from "shared/functions/metamask";
 import { useFractionaliseStyles } from "./index.styles";
-import { saveExternallyFetchedNfts, getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
+import { getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
 import { DateInput } from "shared/ui-kit/DateTimeInput";
 import NFTCard from "./NFTCard";
 import { FractionaliseModal } from "../../modals/FractionaliseModal";
@@ -150,8 +150,6 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
               });
             }
           }
-          // save externally created nft to backend
-          saveExternallyFetchedNfts(externallyCreatedNft);
           // set user nfts
           const nfts = [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(
             item => !myNFTs.map(nft => nft.NftId).includes(item.BlockchainId)

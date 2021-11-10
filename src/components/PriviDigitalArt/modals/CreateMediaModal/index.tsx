@@ -1012,7 +1012,7 @@ const CreateMediaModal = (props: any) => {
                 </>
               )}
               <Box width={1} display="flex" justifyContent="space-between" mt={4}>
-                <SecondaryButton size="medium" onClick={() => setPage(1)}>
+                <SecondaryButton size="medium" onClick={props.handleClose}>
                   Cancel
                 </SecondaryButton>
                 <PrimaryButton

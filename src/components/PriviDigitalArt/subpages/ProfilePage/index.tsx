@@ -192,11 +192,7 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const scrollRef = useRef<any>();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     setOpenFilters(false);
@@ -318,9 +314,10 @@ const ProfilePage = () => {
     if (setterUser.id) {
       dispatch(setSelectedUser(setterUser.id, setterUser.address));
       if (ownUser) {
-        if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
+        if (setterUser?.infoImage?.newFileCID && setterUser?.infoImage?.metadata?.properties?.name) {
           setterUser.imageIPFS = await getPhotoIPFS(
             setterUser.infoImage.newFileCID,
+            setterUser?.infoImage.metadata.properties.name,
             downloadWithNonDecryption
           );
         }

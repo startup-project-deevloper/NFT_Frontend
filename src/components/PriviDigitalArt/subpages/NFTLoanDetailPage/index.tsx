@@ -83,11 +83,7 @@ const NFTLoanDetailPage = () => {
 
   const { account, library, chainId } = useWeb3React();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState({});
 
@@ -165,20 +161,10 @@ const NFTLoanDetailPage = () => {
   }, [loan]);
 
   useEffect(() => {
-    if (loanMedia && loanMedia.cid) {
-      getImageIPFS(loanMedia.cid);
+    if (loanMedia?.urlIpfsImage) {
+      setImageIPFS(loanMedia.urlIpfsImage)
     }
-  }, [loanMedia, ipfs]);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
+  }, [loanMedia]);
 
   const handleOpenRepayLoan = () => {
     setOpenRepayLoanModal(loan);

@@ -50,7 +50,7 @@ export const onGetDecrypt = async (metaDataID, address, mnemonic, downloadWithDe
   }
 };
 
-export const onGetNonDecrypt = async (metaDataID, downloadWithNonDecryption) => {
+export const onGetNonDecrypt = async (metaDataID, fileName, downloadWithNonDecryption) => {
   if (!metaDataID) return;
   try {
     /*let resp = await downloadMetadataFunction(metaDataID);
@@ -61,7 +61,7 @@ export const onGetNonDecrypt = async (metaDataID, downloadWithNonDecryption) => 
 
     TimeLogger.start("Get Files IPFS");
     // const files = await getFiles(fileCID);
-    const files = await downloadWithNonDecryption(metaDataID, false);
+    const files = await downloadWithNonDecryption(metaDataID, fileName, false);
 
     TimeLogger.end("Get Files IPFS");
     TimeLogger.log();

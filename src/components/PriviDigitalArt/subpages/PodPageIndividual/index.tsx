@@ -84,7 +84,7 @@ const PodPageIndividual = () => {
 
   const podId = params?.podId;
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState({});
 
@@ -99,15 +99,12 @@ const PodPageIndividual = () => {
 
   const [isExpired, setExpired] = useState<boolean>(true);
 
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
 
   useEffect(() => {
-    if (podId && ipfs) {
+    if (podId) {
       loadData();
     }
-  }, [podId, ipfs]);
+  }, [podId]);
 
   useEffect(() => {
     if (pod?.FundingDate) {
@@ -159,28 +156,26 @@ const PodPageIndividual = () => {
     if (!pod || !pod.PodAddress) return;
 
     (async () => {
-      if (ipfs) {
-        const web3APIHandler = BlockchainNets[1].apiHandler;
-        const web3 = new Web3(library.provider);
+      const web3APIHandler = BlockchainNets[1].apiHandler;
+      const web3 = new Web3(library.provider);
 
-        const podInfo = await web3APIHandler?.PodManager.getPodInfo(web3, {
-          podAddress: pod.PodAddress,
-          fundingToken: pod.FundingToken,
-        });
-        setPodInfo(podInfo);
-      }
+      const podInfo = await web3APIHandler?.PodManager.getPodInfo(web3, {
+        podAddress: pod.PodAddress,
+        fundingToken: pod.FundingToken,
+      });
+      setPodInfo(podInfo);
     })();
 
     const podRef = pod;
     setPod(getPodState(podRef));
   }, [pod, pod?.PodAddress]);
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     }
   };
@@ -233,8 +228,8 @@ const PodPageIndividual = () => {
           }
 
           setPod(podData);
-          if (podData && podData.InfoImage && podData.InfoImage.newFileCID) {
-            getImageIPFS(podData.InfoImage.newFileCID);
+          if (podData?.InfoImage?.newFileCID && podData?.InfoImage?.metadata?.properties?.name) {
+            getImageIPFS(podData.InfoImage.newFileCID, podData.InfoImage.metadata.properties.name);
           }
           const followers: any[] = podData.Followers ?? [];
           setFollowed(followers.find(followerData => followerData.id == user.id) != undefined);

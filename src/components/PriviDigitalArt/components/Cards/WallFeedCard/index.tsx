@@ -52,11 +52,7 @@ export default function WallFeedCard({
   const [imageWallIPFS, setImageWallIPFS] = useState<any>(null);
   const [videoWallIPFS, setVideoWallIPFS] = useState<any>(null);
 
-  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { isIPFSAvailable, downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     if (feedData && isIPFSAvailable) {
@@ -91,27 +87,27 @@ export default function WallFeedCard({
   const getPhotos = async feedData => {
     const userFound = users.find(usr => usr.id === feedData.createdBy);
 
-    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+    if (userFound?.infoImage?.newFileCID && userFound?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, userFound.infoImage.metadata.properties.name, downloadWithNonDecryption);
       setImageIPFS(imageUrl);
     } else {
       setImageIPFS(getDefaultAvatar());
     }
 
-    if (feedData && feedData.infoImage && feedData.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(feedData.infoImage.newFileCID, downloadWithNonDecryption);
+    if (feedData?.infoImage?.newFileCID && feedData?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(feedData.infoImage.newFileCID, feedData.infoImage.metadata.properties.name, downloadWithNonDecryption);
       setImageWallIPFS(imageUrl);
     }
 
-    if (feedData && feedData.infoVideo && feedData.infoVideo.newFileCID) {
-      let videoUrl = await getPhotoIPFS(feedData.infoVideo.newFileCID, downloadWithNonDecryption);
+    if (feedData?.infoVideo?.newFileCID && feedData?.infoVideo?.metadata?.properties?.name) {
+      let videoUrl = await getPhotoIPFS(feedData.infoVideo.newFileCID, feedData.infoVideo.metadata.properties.name, downloadWithNonDecryption);
       setVideoWallIPFS(videoUrl);
     }
   };
 
   const getReturnUserPhoto = async (userFound: any) => {
-    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+    if (userFound?.infoImage?.newFileCID && userFound?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, userFound.infoImage.metadata.properties.name, downloadWithNonDecryption);
       return imageUrl;
     } else {
       return "";

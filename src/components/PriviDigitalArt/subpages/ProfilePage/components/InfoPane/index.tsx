@@ -122,13 +122,10 @@ const InfoPane = React.memo(
 
     const getPhotoUser = async () => {
       if (
-        ipfs &&
-        Object.keys(ipfs).length !== 0 &&
-        userProfile &&
-        userProfile.infoImage &&
-        userProfile.infoImage.newFileCID
+        userProfile?.infoImage?.newFileCID &&
+        userProfile?.infoImage?.metadata?.properties?.name
       ) {
-        setImageIPFS(await getPhotoIPFS(userProfile.infoImage.newFileCID, downloadWithNonDecryption));
+        setImageIPFS(await getPhotoIPFS(userProfile.infoImage.newFileCID, userProfile?.infoImage?.metadata.properties.name,  downloadWithNonDecryption));
       } else {
         setImageIPFS(getDefaultAvatar());
       }
@@ -291,9 +288,10 @@ const InfoPane = React.memo(
               let setterUser: any = { ...user, infoImage: res.data.data };
               setterUser.hasPhoto = true;
               if (setterUser.id) {
-                if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {
+                if (setterUser?.infoImage?.newFileCID && setterUser?.infoImage?.metadata?.properties?.name) {
                   setterUser.ipfsImage = await getPhotoIPFS(
                     setterUser.infoImage.newFileCID,
+                    setterUser.infoImage.metadata.properties.name,
                     downloadWithNonDecryption
                   );
                 }

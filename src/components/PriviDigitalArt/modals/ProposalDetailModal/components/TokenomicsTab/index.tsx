@@ -13,27 +13,22 @@ const TokenomicsTab = (props: any) => {
   const { proposal } = props;
   const classes = tokenomicsTabStyles();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    console.log("proposal", proposal);
-    if (ipfs && proposal && proposal.TokenInfoImage && proposal.TokenInfoImage.newFileCID) {
-      getImageIPFS(proposal.TokenInfoImage.newFileCID);
+    if (proposal?.TokenInfoImage?.newFileCID && proposal?.TokenInfoImage?.metadata?.properties?.name) {
+      getImageIPFS(proposal.TokenInfoImage.newFileCID, proposal.TokenInfoImage.metadata.properties.name);
     }
-  }, [proposal, ipfs]);
+  }, [proposal]);
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     }
   };

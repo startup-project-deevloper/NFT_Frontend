@@ -134,10 +134,8 @@ const ExpirationDayFailedToPay = () => {
   const [openBidModal, setOpenBidModal] = useState<boolean>(false);
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
 
-  const { setMultiAddr } = useIPFS();
-
   const [imageIPFS, setImageIPFS] = useState({});
-  
+
   const handleOpenMediaPhotoDetailModal = () => {
     setIsShowingMediaPhotoDetailModal(true);
   };
@@ -221,7 +219,7 @@ const ExpirationDayFailedToPay = () => {
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                   <Box display="flex" flexDirection={isMobileScreen ? "column" : "row"} alignItems="center">
                     <Box display="flex" flexDirection="row" alignItems="center">
-                      
+
                       <Box display="flex" flexDirection="column" ml={0.25} mr={1.25}>
                         <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                           Test
@@ -230,9 +228,9 @@ const ExpirationDayFailedToPay = () => {
                     </Box>
                   </Box>
                   <Box display="flex" flexDirection="row" alignItems="center">
-                        <SecondaryButton 
-                            size="small" 
-                            // onClick={handleFollow} 
+                        <SecondaryButton
+                            size="small"
+                            // onClick={handleFollow}
                             className={classes.checkOnBtn}
                         >
                           Check on
@@ -245,7 +243,7 @@ const ExpirationDayFailedToPay = () => {
                   </Box>
                 </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-start">
-                    <Avatar  
+                    <Avatar
                         url={require("assets/anonAvatars/ToyFaces_Colored_BG_066.jpg")}
                         size="small"
                     />
@@ -270,9 +268,9 @@ const ExpirationDayFailedToPay = () => {
                     </Box>
                     <Box style={{ borderRight: '1px solid rgb(158 172 242 / 30%)', height: '45px'}}></Box>
                     <Box>
-                        <SecondaryButton 
-                            size="small" 
-                            onClick={()=>setOpenOrderBookModal(true)} 
+                        <SecondaryButton
+                            size="small"
+                            onClick={()=>setOpenOrderBookModal(true)}
                             className={classes.checkOrderbookBtn}
                         >
                             Check Orderbook
@@ -285,7 +283,7 @@ const ExpirationDayFailedToPay = () => {
                     Important
                   </Box>
                   <Box className={classes.notifyGeneral}>
-                    Your offer was accepted by the owner. You need to 
+                    Your offer was accepted by the owner. You need to
                     <span className={classes.notifyBold}>pay remaining amount to buy the NFT at Future price before end of countdown</span> otherwise you will loose your collateral.
                   </Box>
                 </Box> */}
@@ -294,7 +292,7 @@ const ExpirationDayFailedToPay = () => {
                       Offer Expired
                     </Box>
                     <Box className={classes.notifyGeneral}>
-                      You didn’t manage to pay full amount necessary to buy out your NFT. Yu can withdraw your funds and NFT will be returned to it’s owner. 
+                      You didn’t manage to pay full amount necessary to buy out your NFT. Yu can withdraw your funds and NFT will be returned to it’s owner.
                     </Box>
                     {/* <Box className={classes.notifyHeader}>Future payment in:</Box> */}
                     <Box display="flex" alignItems="center" mt={3} justifyContent="space-between">
@@ -313,12 +311,12 @@ const ExpirationDayFailedToPay = () => {
                         size="medium"
                         style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px', width:'100%'}}
                       >
-                        Withdraw your funds 
+                        Withdraw your funds
                       </PrimaryButton>
                     </Box>
-                </Box>                
+                </Box>
               </Box>
-            </Box>           
+            </Box>
             <OrderBookModal
               open={openOrderBookModal}
               handleClose={() => setOpenOrderBookModal(false)}

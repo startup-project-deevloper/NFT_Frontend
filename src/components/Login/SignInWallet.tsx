@@ -76,11 +76,7 @@ const SignInWallet = () => {
   const [showMnemonicInput, setShowMnemonicInput] = useState<boolean>(false);
   const { setSignedin } = useAuth();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   const { activate, account, deactivate, library } =
         useWeb3React();
@@ -125,8 +121,8 @@ const SignInWallet = () => {
       const data = res.userData;
       socket.emit("add user", data.id);
 
-      if (data && data.infoImage && data.infoImage.newFileCID) {
-        data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, downloadWithNonDecryption);
+      if (data?.infoImage?.newFileCID && data?.infoImage?.metadata?.properties?.name) {
+        data.imageIPFS = await getPhotoIPFS(data.infoImage.newFileCID, data.infoImage.metadata.properties.name, downloadWithNonDecryption);
       }
 
       dispatch(setUser(data));

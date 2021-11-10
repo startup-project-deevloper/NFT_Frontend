@@ -11,23 +11,19 @@ import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 export default function FriendLabel({ friend }) {
   const history = useHistory();
 
-  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = React.useState<any>(null);
 
   React.useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  React.useEffect(() => {
-    if (isIPFSAvailable && friend) {
+    if (friend) {
       getImageIpfs();
     }
-  }, [friend, isIPFSAvailable]);
+  }, [friend]);
 
   const getImageIpfs = async () => {
-    if (friend.infoImage && friend.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(friend.infoImage.newFileCID, downloadWithNonDecryption);
+    if (friend?.infoImage?.newFileCID && friend?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(friend.infoImage.newFileCID, friend.infoImage.metadata.properties.name, downloadWithNonDecryption);
       setImageIPFS(imageUrl);
     } else {
       setImageIPFS(getDefaultAvatar());

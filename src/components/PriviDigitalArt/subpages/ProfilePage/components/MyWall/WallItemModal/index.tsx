@@ -129,11 +129,7 @@ export const WallPostModalContent = ({
     setOpenMorePicturesModal(false);
   };
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     if (!onlyDisplay) {
@@ -221,8 +217,8 @@ export const WallPostModalContent = ({
   };
 
   const getReturnUserPhoto = async (userFound: any) => {
-    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+    if (userFound?.infoImage?.newFileCID && userFound?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, userFound.infoImage.metadata.properties.name, downloadWithNonDecryption);
       return(imageUrl);
     } else {
       return("");

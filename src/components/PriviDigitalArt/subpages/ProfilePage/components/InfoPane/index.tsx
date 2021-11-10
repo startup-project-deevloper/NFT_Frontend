@@ -83,9 +83,9 @@ const InfoPane = React.memo(
 
     const inputRef = useRef<any>();
 
-    const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
+    const { setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
 
-    const [imageIPFS, setImageIPFS] = useState<any>(null);
+    const [imageIPFS, setImageIPFS] = useState<any>(userProfile.urlIpfsImage);
     const { profileAvatarChanged, setProfileAvatarChanged } = usePageRefreshContext();
 
     useEffect(() => {
@@ -93,18 +93,14 @@ const InfoPane = React.memo(
     }, []);
 
     useEffect(() => {
+      setImageIPFS(userProfile.urlIpfsImage ?? getDefaultAvatar());
+    }, [userProfile]);
+
+    useEffect(() => {
       if (userId) {
         setIsFollowing(isUserFollowed(userId));
       }
     }, [userId, isUserFollowed]);
-
-    useEffect(() => {
-      if (ipfs && Object.entries(userProfile).length) {
-        getPhotoUser();
-      } else if (!Object.entries(userProfile).length) {
-        setImageIPFS(null);
-      }
-    }, [ipfs, userProfile, profileAvatarChanged]);
 
     useEffect(() => {
       if (user.backgroundURL) {
@@ -119,20 +115,6 @@ const InfoPane = React.memo(
     useEffect(() => {
       getFollowers();
     }, [userId, ownUser]);
-
-    const getPhotoUser = async () => {
-      if (
-        ipfs &&
-        Object.keys(ipfs).length !== 0 &&
-        userProfile &&
-        userProfile.infoImage &&
-        userProfile.infoImage.newFileCID
-      ) {
-        setImageIPFS(await getPhotoIPFS(userProfile.infoImage.newFileCID, downloadWithNonDecryption));
-      } else {
-        setImageIPFS(getDefaultAvatar());
-      }
-    };
 
     const handleOpenModalFollows = () => {
       setOpenModalFollows(true);
@@ -288,7 +270,12 @@ const InfoPane = React.memo(
           .post(`${URL()}/user/changeProfilePhoto/saveMetadata/${user.id}`, metadataID)
           .then(async res => {
             if (res.data.data) {
-              let setterUser: any = { ...user, infoImage: res.data.data };
+              let setterUser: any = {
+                ...user,
+                infoImage: res.data.data.body,
+                urlIpfsImage: res.data.data.urlIpfsImage,
+              };
+
               setterUser.hasPhoto = true;
               if (setterUser.id) {
                 if (setterUser && setterUser.infoImage && setterUser.infoImage.newFileCID) {

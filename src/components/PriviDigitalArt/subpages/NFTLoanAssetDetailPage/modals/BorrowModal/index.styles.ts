@@ -56,6 +56,5 @@ export const useBorrowModalStyles = makeStyles(theme => ({
     fontFamily: 'Agrandir !important',
     background: "#431AB7 !important",
     fontSize: '14px !important',
-    width: '100% !important'
   },
 }));

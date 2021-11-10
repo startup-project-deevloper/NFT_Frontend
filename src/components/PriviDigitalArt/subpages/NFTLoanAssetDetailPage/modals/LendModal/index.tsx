@@ -31,6 +31,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
     if (!open) {
       setAmount(0)
       setIsApproved(false)
+      setOpenTransactionModal(false)
     }
   }, [open])
 
@@ -80,7 +81,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
             return;
           }
           handleOpenTransactionModal()
-          const approved = await PolygonAPI.Erc20[market.token_info.Symbol].approve(web3, account!, market.token_info.Address, amount * (10 ** decimals), setTxnHash);
+          const approved = await PolygonAPI.Erc20[market.token_info.Symbol].approve(web3, account!, market.CToken, amount * (10 ** decimals), setTxnHash);
           if (!approved) {
             showAlertMessage(`Can't proceed to approve`, { variant: "error" });
             setTransactionInProgress(false);
@@ -88,7 +89,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
             return;
           }
           setIsApproved(true);
-          showAlertMessage(`Successfully approved ${amount} USDT!`, {
+          showAlertMessage(`Successfully approved ${amount} ${market.token_info.Symbol}!`, {
             variant: "success",
           });
           setTransactionSuccess(true);
@@ -105,6 +106,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
   };
 
   const handleLend = async () => {
+    setTxnHash('')
     if (chainId && chainId !== 80001) {
       const isOnPolygon = await switchNetwork(80001);
       if (!isOnPolygon) {

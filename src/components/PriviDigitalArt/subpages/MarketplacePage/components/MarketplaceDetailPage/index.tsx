@@ -587,7 +587,7 @@ const MarketplaceDetailPage = () => {
                 cell: (
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <Avatar size="medium" url={offer.bidderInfo.imageUrl ?? getDefaultAvatar()} />
-                    <Box display="flex" flexDirection="column" alignItems="center">
+                    <Box display="flex" flexDirection="column" alignItems="flex-start">
                       <Text ml={1.5}>{offer.bidderInfo?.name}</Text>
                       <Text ml={1.5}>@{offer.bidderInfo?.urlSlug}</Text>
                     </Box>

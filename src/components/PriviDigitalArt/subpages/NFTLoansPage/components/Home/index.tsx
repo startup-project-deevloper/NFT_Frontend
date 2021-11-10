@@ -134,7 +134,7 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
 
   const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
-      if (hasMoreRef.current) loadMore();
+      if (hasMoreRef.current && selectedTab != 1) loadMore();
     }
   };
 

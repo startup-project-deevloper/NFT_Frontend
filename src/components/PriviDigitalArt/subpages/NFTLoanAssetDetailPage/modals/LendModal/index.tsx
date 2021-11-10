@@ -80,7 +80,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
             return;
           }
           handleOpenTransactionModal()
-          const approved = await PolygonAPI.Erc20[market.token_info.Symbol].approve(web3, account!, market.token_info.Address);
+          const approved = await PolygonAPI.Erc20[market.token_info.Symbol].approve(web3, account!, market.token_info.Address, amount * (10 ** decimals), setTxnHash);
           if (!approved) {
             showAlertMessage(`Can't proceed to approve`, { variant: "error" });
             setTransactionInProgress(false);

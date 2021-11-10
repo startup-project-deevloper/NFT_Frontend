@@ -1,6 +1,5 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/polygon/functions";
-import config from "shared/connectors/polygon/config";
 
 const ctoken_metadata = require("shared/connectors/polygon/contracts/CToken.json");
 

@@ -3,14 +3,22 @@ import { ContractInstance } from "shared/connectors/polygon/functions";
 import config from "shared/connectors/polygon/config";
 
 const dai_metadata = require("shared/connectors/polygon/contracts/DAI.json");
-export async function approve(web3: Web3, account: string, address: string) {
+export async function approve(web3: Web3, account: string, address: string, amount?: number, setTxnHash?: (hash: string) => void) {
   return new Promise(async resolve => {
     try {
       const contract = ContractInstance(web3, dai_metadata.abi, config.TOKEN_ADDRESSES.DAI);
       console.log("Getting gas....");
-      const gas = await contract.methods.approve(address, web3.utils.toBN(10).pow(web3.utils.toBN(30))).estimateGas({ from: account });
+      const gas = await contract.methods
+        .approve(address, amount || web3.utils.toBN(10).pow(web3.utils.toBN(30)))
+        .estimateGas({ from: account });
       console.log("calced gas price is.... ", gas);
-      await contract.methods.approve(address, web3.utils.toBN(10).pow(web3.utils.toBN(30))).send({ from: account, gas: gas });
+
+      await contract.methods
+        .approve(address, amount || web3.utils.toBN(10).pow(web3.utils.toBN(30)))
+        .send({ from: account, gas: gas })
+        .on("transactionHash", hash => {
+          setTxnHash && setTxnHash(hash);
+        });
       console.log("transaction succeed");
       resolve(true);
     } catch (e) {

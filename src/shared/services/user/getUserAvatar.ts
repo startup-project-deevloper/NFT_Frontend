@@ -62,14 +62,14 @@ export const useUserAvatar = (userId: string | undefined) => {
 };
 
 export const getUserIpfsAvatar = async (user: any, users: UserInfo[], downloadWithNonDecryption: () => void) => {
-  if (user && user.infoImage && user.infoImage.newFileCID) {
-    let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
+  if (user?.infoImage?.newFileCID && user?.infoImage?.metadata?.properties?.name) {
+    let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, user.infoImage.metadata.properties.name, downloadWithNonDecryption);
     return imageUrl;
   } else if (user && user.id) {
     const userFound = users.find(usr => usr.id === user.id);
 
-    if (userFound && userFound.infoImage && userFound.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, downloadWithNonDecryption);
+    if (userFound?.infoImage?.newFileCID && userFound?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, userFound.infoImage.metadata.properties.name, downloadWithNonDecryption);
       return imageUrl;
     } else {
       return getDefaultAvatar();

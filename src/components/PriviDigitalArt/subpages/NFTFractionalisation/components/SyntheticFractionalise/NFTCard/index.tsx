@@ -9,28 +9,22 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 export default function NFTCard({ item, handleSelect }) {
   const classes = normalNFTCardStyles();
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
   const [imageIPFS, setImageIPFS] = useState({});
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
     if (item && item?.cid) {
-      getImageIPFS(item?.cid);
+      getImageIPFS(item?.cid, "");
     }
   }, [item]);
 
-  useEffect(() => {
-    if (item?.cid) {
-      getImageIPFS(item?.cid);
-    }
-  }, [ipfs]);
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     }
   };

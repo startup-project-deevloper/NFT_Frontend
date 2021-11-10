@@ -6,6 +6,7 @@ import TimeLogger from "shared/utils-IPFS/TimeLogger";
 import { sizeToString } from "shared/utils-IPFS/functions";
 import getIPFSURL from "shared/functions/getIPFSURL";
 import FileUploadingModal from "shared/ui-kit/Modal/Modals/FileUploadingModal";
+import axios from "axios";
 
 type IPFSContextType = {
   ipfs: IPFSHTTPClient | undefined;
@@ -114,8 +115,33 @@ export const IPFSContextProvider = ({ children }) => {
     });
   };
 
-  const downloadWithDecryption = async (fileCID, isEncrypted = false, keyData, download, peerNumber) => {
-    const files = await getFiles(fileCID);
+  const downloadWithDecryption = async (fileCID, fileName, isEncrypted = false, keyData, download, peerNumber) => {
+    const file = `https://elb.ipfsprivi.com:8080/ipfs/${fileCID}/${fileName}.enc`;
+
+    const response = await axios.get(file,  {responseType: 'arraybuffer',
+      transformRequest: (data, headers) => {
+        delete headers.common['Authorization'];
+        return data;
+      }
+    });
+    const buffer = Buffer.from(response.data, "utf-8");
+
+    let content : any = buffer;
+
+    if (isEncrypted) {
+      TimeLogger.start("Decryption");
+      content = await decryptContent(content, keyData);
+      TimeLogger.end("Decryption");
+      fileName = fileName?.replace(".enc", "");
+    }
+    const blob = getBlob(content);
+
+    if(download) {
+      saveAs(blob, fileName);
+    } else {
+      return({blob, content})
+    }
+    /*const files = await getFiles(fileCID);
     for await (const file of files) {
       TimeLogger.start("DownloadFromIPFS");
       const ipfsPath = `/ipfs/${file.path}`;
@@ -140,11 +166,29 @@ export const IPFSContextProvider = ({ children }) => {
       } else {
         return { blob, content };
       }
-    }
+    }*/
   };
 
-  const downloadWithNonDecryption = async (fileCID, download) => {
-    const files = await getFiles(fileCID);
+  const downloadWithNonDecryption = async (fileCID, fileName, download) => {
+    const file = `https://elb.ipfsprivi.com:8080/ipfs/${fileCID}/${fileName}`;
+
+    const response = await axios.get(file,  {responseType: 'arraybuffer',
+      transformRequest: (data, headers) => {
+        delete headers.common['Authorization'];
+
+        return data;
+      }
+    });
+    const buffer = Buffer.from(response.data, "utf-8");
+
+    const blob = getBlob(buffer);
+
+    if(download) {
+      saveAs(blob, fileName);
+    } else {
+      return({blob, buffer})
+    }
+    /*const files = await getFiles(fileCID);
     for await (const file of files) {
       TimeLogger.start("DownloadFromIPFS");
       const ipfsPath = `/ipfs/${file.path}`;
@@ -163,7 +207,7 @@ export const IPFSContextProvider = ({ children }) => {
       } else {
         return { blob, fileName, content };
       }
-    }
+    }*/
   };
 
   const upload = async file => {

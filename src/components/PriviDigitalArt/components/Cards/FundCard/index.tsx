@@ -36,17 +36,13 @@ export const FundCard = props => {
   const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
   const users = useTypedSelector(state => state.usersInfoList);
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if(proposal.creator && users.length && ipfs )
+    if(proposal.creator && users.length)
     setImageIPFS(getUserIpfsAvatar(proposal.creator, users, downloadWithNonDecryption));
-  }, [ipfs, proposal.creator]);
+  }, [proposal.creator]);
 
   const handleVote = async vote => {
     setOpenTransactionModal(true);

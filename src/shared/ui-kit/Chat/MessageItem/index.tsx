@@ -116,36 +116,30 @@ export const MessageItem = ({ key, user, message, chat, mediaOnCommunity }) => {
   const isLeftItem = user?.userId === message.from;
   const isRightItem = user?.userd !== message.from;
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [fileIPFS, setFileIPFS] = useState<any>(null);
   const [fileBlobIPFS, setFileBlobIPFS] = useState<any>(null);
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
     if (
-      ipfs &&
-      Object.keys(ipfs).length !== 0 &&
-      message &&
       message.type &&
       message.type !== "text" &&
       message.message &&
-      message.message.newFileCID
+      message?.message?.newFileCID &&
+      message?.message?.metadata?.properties?.name
     ) {
-      getUserFileIpfs(message.message.newFileCID, message.type);
+      getUserFileIpfs(message?.message?.newFileCID, message.message.metadata.properties.name, message.type);
     }
-  }, [message, ipfs]);
+  }, [message]);
 
-  const getUserFileIpfs = async (cid: any, type: string) => {
+  const getUserFileIpfs = async (cid: any, fileName: string,type: string) => {
     let fileUrl: string = "";
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       if (type === "photo") {
         fileUrl = "data:image/png;base64," + base64String;
       } else if (type === "video") {

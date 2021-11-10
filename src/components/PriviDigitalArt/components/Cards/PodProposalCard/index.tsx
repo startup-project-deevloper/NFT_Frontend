@@ -24,7 +24,7 @@ export default function PodProposalCard({ pod }) {
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
   const isTablet = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
   const [podData, setPodData] = useState<any>(pod);
@@ -36,15 +36,11 @@ export default function PodProposalCard({ pod }) {
   });
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (pod && isIPFSAvailable) {
-      getImageIPFS(pod.InfoImage?.newFileCID);
+    if (pod?.InfoImage?.newFileCID && pod?.InfoImage?.metadata?.properties?.name) {
+      getImageIPFS(pod.InfoImage?.newFileCID, pod.InfoImage?.metadata.properties.name);
       setPodData(pod);
     }
-  }, [pod, isIPFSAvailable]);
+  }, [pod]);
 
   useEffect(() => {
     if (!podData.distributionProposalAccepted) {
@@ -93,12 +89,12 @@ export default function PodProposalCard({ pod }) {
     }
   }, [podData?.ProposalDeadline]);
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     } else {
       setImageIPFS(getDefaultBGImage());

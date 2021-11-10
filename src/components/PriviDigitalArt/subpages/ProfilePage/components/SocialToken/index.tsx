@@ -241,13 +241,9 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
 
   const { library } = useWeb3React();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState(null);
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -257,13 +253,13 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   }, []);
 
   useEffect(() => {
-    if (token && token.infoImage && token.infoImage.newFileCID && ipfs ) {
-      getImageIpfs(token.infoImage.newFileCID);
+    if (token?.infoImage?.newFileCID && token?.infoImage?.metadata?.properties?.name) {
+      getImageIpfs(token.infoImage.newFileCID, token.infoImage.metadata.properties.name);
     }
-  }, [token, ipfs]);
+  }, [token]);
 
-  const getImageIpfs = async cid => {
-    let imageUrl: any = await getPhotoIPFS(cid, downloadWithNonDecryption);
+  const getImageIpfs = async (cid, fileName) => {
+    let imageUrl: any = await getPhotoIPFS(cid, fileName, downloadWithNonDecryption);
     setImageIPFS(imageUrl);
   };
 

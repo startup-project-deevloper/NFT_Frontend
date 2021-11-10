@@ -66,11 +66,7 @@ export default function ProfileCard({
 
   const [openMediaDetailsModal, setOpenMediaDetailsModal] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageIPFS, setImageIPFS] = useState("");
@@ -118,16 +114,16 @@ export default function ProfileCard({
       }
 
       if (item.cid) {
-        getImageIPFS(item.cid);
+        getImageIPFS(item.cid, "");
       }
     }
   }, [item, usersList]);
 
   useEffect(() => {
     if (item?.cid) {
-      getImageIPFS(item.cid);
+      getImageIPFS(item.cid, "");
     }
-  }, [ipfs]);
+  }, [item]);
 
   useEffect(() => {
     if (item.Auctions) {
@@ -171,13 +167,13 @@ export default function ProfileCard({
     } else return;
   }, [item]);
 
-  const getImageIPFS = async (cid: string) => {
+  const getImageIPFS = async (cid: string, fileName: string) => {
     setIsLoading(true);
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     }
     setIsLoading(false);

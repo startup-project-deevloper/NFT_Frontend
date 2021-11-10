@@ -30,19 +30,15 @@ export const MediaSimpleCard = ({ media, pod, handleRefresh }) => {
   const [isFunded, setIsFunded] = useState<boolean>(false);
   const [isFundingFailed, setIsFundingFailed] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (media.metadataPhoto && media.metadataPhoto.newFileCID && ipfs) {
-      downloadMediaPhotoIPFS(media.metadataPhoto.newFileCID);
+    if (media?.metadataPhoto?.newFileCID && media?.metadataPhoto?.metadata?.properties?.name) {
+      downloadMediaPhotoIPFS(media.metadataPhoto.newFileCID, media.metadataPhoto.metadata.properties.name);
     }
-  }, [media, ipfs]);
+  }, [media]);
 
   useEffect(() => {
     if (pod && pod.Collabs) {
@@ -69,12 +65,12 @@ export const MediaSimpleCard = ({ media, pod, handleRefresh }) => {
     }
   }, [pod]);
 
-  const downloadMediaPhotoIPFS = async (newFileCID: any) => {
-    let files = await onGetNonDecrypt(newFileCID, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const downloadMediaPhotoIPFS = async (newFileCID: any, fileName: string) => {
+    let files = await onGetNonDecrypt(newFileCID, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     }
   };

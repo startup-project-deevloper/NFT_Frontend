@@ -95,14 +95,10 @@ const NFTSelectCard = ({ item, handleSelect }) => {
   const history = useHistory();
   const { isSignedin } = useAuth();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { ipfs, downloadWithNonDecryption } = useIPFS();
 
   const [media, setMedia] = React.useState<any>(item);
   const [imageIPFS, setImageIPFS] = useState('');
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
 
   useEffect(() => {
     const GENERATOR_ARTBLOCK_URL = "https://generator.artblocks.io/";
@@ -116,7 +112,7 @@ const NFTSelectCard = ({ item, handleSelect }) => {
 
   useEffect(() => {
     if (media.cid) {
-      getImageIPFS(media.cid);
+      getImageIPFS(media.cid, "");
     }
   }, [ipfs, media]);
 
@@ -129,12 +125,12 @@ const NFTSelectCard = ({ item, handleSelect }) => {
     }
   };
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     }
   };

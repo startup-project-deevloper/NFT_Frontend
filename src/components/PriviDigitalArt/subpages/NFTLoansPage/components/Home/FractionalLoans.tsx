@@ -30,12 +30,6 @@ const FractionalLoans = ({ loading, markets }) => {
 
   const [openHowModal, setOpenHowModal] = useState<boolean>(false);
 
-  const { setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "Asset",

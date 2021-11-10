@@ -56,8 +56,8 @@ export const onDownloadDecrypt = async (fileCID, address, mnemonic, downloadWith
 };
 
 
-export const onDownloadNonDecrypt = async (fileCID, address, mnemonic, downloadWithNonDecryption) => {
-  if (!metaDataID) return;
+export const onDownloadNonDecrypt = async (fileCID, fileName, downloadWithNonDecryption) => {
+  if (!fileCID) return;
   try {
     /*console.log("----------Download Start----------");
     TimeLogger.start("MetaDatafromIPFS");
@@ -71,10 +71,10 @@ export const onDownloadNonDecrypt = async (fileCID, address, mnemonic, downloadW
     await readFile(fileCID);
     TimeLogger.end("MetaDatafromHLF");*/
 
-    await readFile(fileCID);
+    // await readFile(fileCID);
 
     TimeLogger.start("Download IPFS");
-    await downloadWithNonDecryption(fileCID);
+    await downloadWithNonDecryption(fileCID, fileName);
     TimeLogger.end("Download IPFS");
 
     console.log("----------Download End----------");

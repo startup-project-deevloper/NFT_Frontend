@@ -79,18 +79,14 @@ const DepositNFT = ({ open, onClose, reload }) => {
   const [status, setStatus] = useState<any>(""); // show status of the operation
 
   const { account, library, chainId } = useWeb3React();
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       return "data:image/png;base64," + base64String;
     }
     return "";
@@ -126,14 +122,14 @@ const DepositNFT = ({ open, onClose, reload }) => {
           }
           priviNFTData = await Promise.all(
             priviNFTData.map(async nft => {
-              const cidUrl = nft.cid ? await getImageIPFS(nft.cid) : "";
+              const cidUrl = nft.cid ? await getImageIPFS(nft.cid, "") : "";
               return { ...nft, cidUrl };
             })
           );
           savePixUserMedias(exNFTData);
           setUserMedias([...priviNFTData, ...exNFTData]);
           setIsUserMediaLoading(false);
-        }        
+        }
       }
     })();
   }, [user, chainNet]);

@@ -378,7 +378,7 @@ const NFTLoansDeposit = ({ setOpenDepositPage }) => {
                 <div className={classes.label}>Chain</div>
                 <Dropdown
                   value={selectedChain.value}
-                  menuList={LoanBlockchainNet}
+                  menuList={filteredBlockchainNets}
                   onChange={e => {
                     setSelectedNFT(null);
                     setPrevSelectedChain(selectedChain);

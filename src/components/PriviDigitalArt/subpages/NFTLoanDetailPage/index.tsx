@@ -586,9 +586,7 @@ const NFTLoanDetailPage = () => {
               flexDirection={isTableScreen || isMobileScreen ? "column" : "row"}
             >
               <Box display="flex" alignItems="center">
-                <div className={classes.mediaName}>
-                  {loanMedia?.metadata?.name ?? loanMedia.name ?? "Media Name"}
-                </div>
+                <div className={classes.mediaName}>{loanMedia?.metadata?.name ?? loanMedia.name}</div>
                 {loanMedia.blockchain ? (
                   <img
                     src={require(`assets/priviIcons/${

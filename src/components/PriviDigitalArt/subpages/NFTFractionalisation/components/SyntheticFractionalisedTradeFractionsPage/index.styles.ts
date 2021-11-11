@@ -147,7 +147,7 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
     "& button": {
       padding: 0,
       paddingLeft: 12,
-      height: "auto"
+      height: "auto",
     },
   },
   h5: {
@@ -451,6 +451,23 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   },
   popoverWrapper: {
     padding: "46px 46px 36px 46px",
-
-  }
+  },
+  buybackButton: {
+    color: "#ffffff",
+    background: "#431AB7 !important",
+    padding: "0px 25px !important",
+    maxWidth: 250,
+    display: "flex",
+    alignItems: "center",
+    borderRadius: 4,
+  },
+  buybackPanel: {
+    background: "#DDFF57",
+    borderRadius: 12,
+    marginLeft: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 100,
+    padding: "10px 0",
+  },
 }));

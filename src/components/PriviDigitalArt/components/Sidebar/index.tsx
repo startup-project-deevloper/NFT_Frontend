@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { useTypedSelector } from "store/reducers/Reducer";
-
 import CreateMediaModal from "../../modals/CreateMediaModal";
 import { SellModal } from "../../modals/SellModal";
 
 import styles from "shared/ui-kit/PriviAppSidebar/index.module.css";
 import AppSidebar from "shared/ui-kit/PriviAppSidebar";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
-import { PrimaryButton } from "shared/ui-kit";
 import { Widget } from "@maticnetwork/wallet-widget";
 
 const TABS = [
   "HOME",
   "EXPLORE",
   "MARKETPLACE",
-  "PODS",
+  // "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
   "NFT OPTIONS",
@@ -31,7 +28,6 @@ export default function Sidebar({ handleRefresh }) {
 }
 
 const SidebarContent = ({ handleRefresh }) => {
-  const user = useTypedSelector(state => state.user);
   const location = useLocation();
   const history = useHistory();
 
@@ -82,29 +78,33 @@ const SidebarContent = ({ handleRefresh }) => {
     }
   };
 
-  const setBridgeWidget = () => {
-    const widget = new Widget({
-      target: "",
-      appName: "priviPix",
-      autoShowTime: 0.1,
-      position: "center",
-      height: 630,
-      width: 540,
-      overlay: false,
-      network: "testnet",
-      closable: true,
-    });
-    widget.create();
-  };
+  // const setBridgeWidget = () => {
+  //   const widget = new Widget({
+  //     target: "",
+  //     appName: "priviPix",
+  //     autoShowTime: 0.1,
+  //     position: "center",
+  //     height: 630,
+  //     width: 540,
+  //     overlay: false,
+  //     network: "testnet",
+  //     closable: true,
+  //   });
+  //   widget.create();
+  // };
+
   const handleOpenCreateContentModal = () => {
     setOpenCreateContentModal(true);
   };
+
   const handleOpenSellStartAuctionModal = () => {
     setOpenSellStartAuctionModal(true);
   };
+
   const handleCloseCreateContentModal = () => {
     setOpenCreateContentModal(false);
   };
+
   const handleCloseSellStartAuctionModal = () => {
     setOpenSellStartAuctionModal(false);
   };

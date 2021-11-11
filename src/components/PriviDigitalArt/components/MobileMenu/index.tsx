@@ -11,7 +11,7 @@ const TABS = [
   "HOME",
   "EXPLORE",
   "MARKETPLACE",
-  "PODS",
+  // "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
   "NFT FRACTIONALISATION",

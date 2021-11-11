@@ -10,8 +10,8 @@ import NFTLoansPage from "./subpages/NFTLoansPage";
 import NFTLoanDetailPage from "./subpages/NFTLoanDetailPage";
 import NFTLoanAssetDetailPage from "./subpages/NFTLoanAssetDetailPage";
 import NFTManageLoansPage from "./subpages/NFTManageLoansPage";
-import PodPage from "./subpages/PodPage";
-import PodPageIndividual from "./subpages/PodPageIndividual";
+// import PodPage from "./subpages/PodPage";
+// import PodPageIndividual from "./subpages/PodPageIndividual";
 import WallPostPage from "./subpages/PodPageIndividual/components/Discussion/components/WallPostPage";
 import ProfilePage from "./subpages/ProfilePage";
 import ExplorePage from "./subpages/ExplorePage";
@@ -56,8 +56,8 @@ export default function PriviPixRouter(props) {
       <Route exact path="/explorer" component={ExplorePage} />
       <Route exact path="/explorer/:collectionName" component={CollectionPage} />
       <Route exact path="/like" component={LikedPage} />
-      <Route exact path="/pods" component={PodPage} />
-      <Route exact path="/pods/:podId" component={PodPageIndividual} />
+      {/* <Route exact path="/pods" component={PodPage} />
+      <Route exact path="/pods/:podId" component={PodPageIndividual} /> */}
       <Route exact path="/marketplace" component={MarketplacePage} />
       <Route exact path="/loan" component={NFTLoansPage} />
       <Route exact path="/loan/positions" component={NFTPositionManagerPage} />
@@ -104,7 +104,6 @@ export default function PriviPixRouter(props) {
           </div>
         )}
       />
-      <Route exact path="/pods/:id" component={PodPageIndividual} />
       <Route exact path="/nft/:id" component={MediaPage} />
       <Route exact path="/marketplace/:tokenAddress/:tokenId" component={MarketplaceDetailPage} />
       <Route path="/" component={HomePage} />

@@ -136,9 +136,9 @@ export default function LoanCard({ item, index = 0, setItem }) {
             <div
               className={classes.avatar}
               style={{
-                backgroundImage:
-                  item.CreatorInfo.imageUrl ||
-                  `url(${require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)})`,
+                backgroundImage: `url(${
+                  item.CreatorInfo.imageUrl || require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
+                })`,
               }}
               onClick={() => history.push(`/${item.CreatorId}/profile`)}
             />
@@ -150,7 +150,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
               {item?.CreatorInfo?.name ?? <StyledSkeleton width={120} animation="wave" />}
             </div>
             {item?.CreatorId ? (
-              <div className={cls(classes.gray, classes.creatorName)}>@{item?.CreatorId}</div>
+              <div className={cls(classes.gray, classes.creatorName)}>@{item?.CreatorInfo?.urlSlug}</div>
             ) : (
               <StyledSkeleton width={80} animation="wave" />
             )}

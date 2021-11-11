@@ -587,7 +587,7 @@ const NFTLoanDetailPage = () => {
             >
               <Box display="flex" alignItems="center">
                 <div className={classes.mediaName}>
-                  {loanMedia.MediaName ?? loanMedia.name ?? loanMedia.title ?? "Media Name"}
+                  {loanMedia?.metadata?.name ?? loanMedia.name ?? "Media Name"}
                 </div>
                 {loanMedia.blockchain ? (
                   <img

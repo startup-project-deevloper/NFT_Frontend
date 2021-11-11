@@ -143,14 +143,14 @@ export default function TradeOnQuickSwap(props: any) {
         web3,
         account,
         collection.JotAddress,
-        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"],
+        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_ROUTER_MANAGER"],
         amountInMax
       );
     else
       await web3APIHandler.Erc20.USDT.approve(
         web3,
         account,
-        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"],
+        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_ROUTER_MANAGER"],
         amountInMax
       );
 
@@ -183,8 +183,8 @@ export default function TradeOnQuickSwap(props: any) {
     const amountIn = toNDecimals(_value, tokenFrom.decimals);
     const path =
       tokenTo.symbol === "USDT"
-        ? [collection.JotAddress, web3Config.TOKEN_ADDRESSES["USDT"]]
-        : [web3Config.TOKEN_ADDRESSES["USDT"], collection.JotAddress];
+        ? [collection.JotAddress.toLowerCase(), web3Config.TOKEN_ADDRESSES["USDT"].toLowerCase()]
+        : [web3Config.TOKEN_ADDRESSES["USDT"].toLowerCase(), collection.JotAddress.toLowerCase()];
 
     if (_value != 0) {
       const response = await web3APIHandler.QuickSwap.getAmountsOut(web3, amountIn, path);

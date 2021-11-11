@@ -412,8 +412,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         Authorization: `Basic ${PriceFeed_Token()}`,
       },
       params: {
-        token0: web3Config.TOKEN_ADDRESSES["USDT"],
-        token1: nft.JotAddress,
+        token0: (nft.JotAddress || "").toLowerCase(),
+        token1: web3Config.TOKEN_ADDRESSES["USDT"].toLowerCase(),
       },
     }).then(res => {
       const resp = res.data;
@@ -423,7 +423,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         setJotPrice(data.token0Price);
       }
     });
-    nft.JotAddress;
   };
 
   const fetchOwnerHistory = async () => {
@@ -1122,10 +1121,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <PrimaryButton
                           className={classes.priceButton}
                           size="medium"
-                          style={{ background: "#DDFF57", color: Color.Purple, maxWidth: "220px" }}
-                          onClick={handleAddLiquidity}
+                          style={{ background: "#DDFF57", color: Color.Purple, maxWidth: "220px", padding: "0 30px" }}
+                          disabled={!+nft.totalLiquidity}
+                          onClick={handleBuyOnQuickSwap}
                         >
-                          Add liquidity on Quickswap
+                          Buy on Quickswap
                         </PrimaryButton>
                       </Box>
                     </Box>

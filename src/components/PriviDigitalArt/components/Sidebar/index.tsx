@@ -39,20 +39,20 @@ const SidebarContent = ({ handleRefresh }) => {
       return TABS[1];
     } else if (location.pathname.includes("marketplace")) {
       return TABS[2];
-    } else if (location.pathname.includes("pods")) {
-      return TABS[3];
+    // } else if (location.pathname.includes("pods")) {
+    //   return TABS[3];
     } else if (location.pathname.includes("loan")) {
-      return TABS[4];
+      return TABS[3];
     } else if (location.pathname.includes("like")) {
-      return TABS[5];
+      return TABS[4];
     } else if (location.pathname.includes("option")) {
-      return TABS[6];
+      return TABS[5];
     } else if (
       location.pathname.includes("fractionalisation") ||
       location.pathname.includes("fractionalise") ||
       location.pathname.includes("mynft")
     ) {
-      return TABS[7];
+      return TABS[6];
     }
 
     return TABS[0];
@@ -66,14 +66,14 @@ const SidebarContent = ({ handleRefresh }) => {
     } else if (value === TABS[2]) {
       history.push("/marketplace");
     } else if (value === TABS[3]) {
-      history.push("/pods");
-    } else if (value === TABS[4]) {
+    //   history.push("/pods");
+    // } else if (value === TABS[4]) {
       history.push("/loan");
-    } else if (value === TABS[5]) {
+    } else if (value === TABS[4]) {
       history.push("/like");
-    } else if (value === TABS[6]) {
+    } else if (value === TABS[5]) {
       history.push("/option/explore");
-    } else if (value === TABS[7]) {
+    } else if (value === TABS[6]) {
       history.push("/fractionalise");
     }
   };

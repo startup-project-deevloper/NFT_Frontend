@@ -44,7 +44,6 @@ export const MessageList = (props: any) => {
       messages: [],
       created: new Date().getTime(),
     };
-    setCurrentChat(newChatItem);
     dispatch(openChatModal(true));
     props.createChat(newChatItem);
     if (
@@ -52,9 +51,25 @@ export const MessageList = (props: any) => {
         chat =>
           chat.users.userFrom.userId === newChatItem.users.userFrom.userId &&
           chat.users.userTo.userId === newChatItem.users.userTo.userId
+      ) > -1 ||
+      chats.findIndex(
+        chat =>
+          chat.users.userFrom.userId === newChatItem.users.userTo.userId &&
+          chat.users.userTo.userId === newChatItem.users.userFrom.userId
       ) > -1
-    )
+    ) {
+      setCurrentChat(
+        chats.find(
+          chat =>
+            (chat.users.userFrom.userId === newChatItem.users.userFrom.userId &&
+              chat.users.userTo.userId === newChatItem.users.userTo.userId) ||
+            (chat.users.userFrom.userId === newChatItem.users.userTo.userId &&
+              chat.users.userTo.userId === newChatItem.users.userFrom.userId)
+        )
+      );
       return;
+    }
+    setCurrentChat(newChatItem);
     setChats([newChatItem, ...chats]);
     if (props.setChats !== undefined) {
       props.setChats([newChatItem, ...chats]);

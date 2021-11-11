@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 
+import { RootState } from "store/reducers/Reducer";
+import WallFeedCard from "components/PriviDigitalArt/components/Cards/WallFeedCard";
+// import CreatePostContainer from "./CreatePostContainer";
+import CreateWallPostModal from "./CreateWallPostModal";
+
 import URL from "shared/functions/getURL";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
-import { RootState } from "store/reducers/Reducer";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { CircularLoadingIndicator, PrimaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
-import CustomSwitch from "shared/ui-kit/CustomSwitch";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
-import WallFeedCard from "components/PriviDigitalArt/components/Cards/WallFeedCard";
-import CreatePostContainer from "./CreatePostContainer";
-import CreateWallPostModal from "./CreateWallPostModal";
+// import CustomSwitch from "shared/ui-kit/CustomSwitch";
 import { wallStyles } from "./index.styles";
 
 const LoadingIndicatorWrapper = styled.div`
@@ -41,7 +41,6 @@ const arePropsEqual = (prevProps, currProps) => {
 const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfile: any }) => {
   const classes = wallStyles();
   const user = useSelector((state: RootState) => state.user);
-  const users = useSelector((state: RootState) => state.usersInfoList);
 
   const [posts, setPosts] = useState<any[]>([]);
   const [status, setStatus] = useState<any>("");
@@ -66,7 +65,7 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
       getPosts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users, userId]);
+  }, [userId]);
 
   useEffect(() => {
     //TODO: update on backend and set who can post on user's wall
@@ -98,34 +97,6 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
                 });
               } catch (e) {
                 console.log(e);
-              }
-            }
-
-            if (userId === post?.createdBy) {
-              data[index].userImageURL = userProfile.anon
-                ? require(`assets/anonAvatars/${userProfile.anonAvatar}`)
-                : userProfile.hasPhoto
-                ? userProfile.url
-                : require(`assets/anonAvatars/${userProfile.anonAvatar}`);
-              data[index].userName = userProfile.firstName ?? userProfile.name ?? "User name";
-              data[index].urlSlug =
-                userProfile.urlSlug ?? userProfile.firstName ?? userProfile.name ?? "User name";
-              data[index].level = userProfile.level ?? 1;
-              data[index].verified = userProfile.verified ?? false;
-            } else {
-              const thisUser = users.find(user => user.id === post?.createdBy);
-              if (thisUser) {
-                data[index].userImageURL = thisUser.url ?? thisUser.imageURL;
-                data[index].userName = thisUser.name;
-                data[index].urlSlug = thisUser.urlSlug ?? thisUser.name ?? "User name";
-                data[index].level = thisUser.level ?? 1;
-                data[index].verified = thisUser.verified ?? false;
-              } else {
-                data[index].userImageURL = getRandomAvatarForUserIdWithMemoization(post?.createdBy);
-                data[index].userName = "User name";
-                data[index].urlSlug = "Username";
-                data[index].level = 1;
-                data[index].verified = false;
               }
             }
           });

@@ -107,10 +107,8 @@ const NFTFractionalisation = () => {
 
   return (
     <>
-      {openFractionalize ? (
-        selectedTab !== "pure" && (
-          <SyntheticFractionalise goBack={() => setOpenFractionalize(false)} isSynthetic={true} />
-        )
+      {openFractionalize && selectedTab !== "pure" ? (
+        <SyntheticFractionalise goBack={() => setOpenFractionalize(false)} isSynthetic={true} />
       ) : (
         <div className={classes.content} onScroll={handleScroll}>
           <div className={classes.titleBar}>

@@ -79,4 +79,7 @@ export const mediaDetailsModalStyles = makeStyles(theme => ({
       display: "block",
     },
   },
+  shareCountText: {
+    marginRight: 16
+  }
 }));

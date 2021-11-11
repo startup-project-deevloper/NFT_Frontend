@@ -54,7 +54,7 @@ const loan = network => {
       }
     });
   };
-  const placeBid = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const placeBid = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
@@ -65,7 +65,10 @@ const loan = network => {
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
           .placeBid(payload.tokenContractAddress, payload.tokenId, payload.bidAmount)
-          .send({ from: account, gas: gas });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
         console.log("transaction succeed ", response);
         const result = {
           data: response.events.BidPlaced.returnValues,

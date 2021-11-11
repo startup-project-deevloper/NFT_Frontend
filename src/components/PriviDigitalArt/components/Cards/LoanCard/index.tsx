@@ -195,10 +195,17 @@ export default function LoanCard({ item, index = 0, setItem }) {
           style={{
             backgroundImage: `url(${item.nftData.content_url})`,
           }}
-          onClick={handleOpenDigitalArtModal}
+          onClick={() => {
+            history.push(`/loan/${item.id}`);
+          }}
         />
       )}
-      <div className={classes.info} onClick={handleOpenDigitalArtModal}>
+      <div
+        className={classes.info}
+        onClick={() => {
+          history.push(`/loan/${item.id}`);
+        }}
+      >
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px" mt={1}>
           <div className={cls(classes.black, classes.title)}>
             {item.nftData?.metadata?.name || item.nftData?.name}
@@ -235,7 +242,7 @@ export default function LoanCard({ item, index = 0, setItem }) {
             </h5>
           )}
         </div>
-        {item.CreatorAddress !== user?.address && !loanEnded ? (
+        {item.CreatorAddress.toLowerCase() !== user?.address.toLowerCase() && !loanEnded ? (
           item?.BidderAddress ? (
             <button className={classes.secondary} onClick={handleOpenBidModal}>
               Place a higher bid

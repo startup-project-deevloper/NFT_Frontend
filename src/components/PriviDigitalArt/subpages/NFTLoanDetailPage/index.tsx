@@ -44,7 +44,7 @@ const NFTLoanDetailPage = () => {
   const classes = useLoanViewStyles();
   const user = useTypedSelector(state => state.user);
   const history = useHistory();
-  const params: { id?: string } = useParams();
+  const params: { loanId: string } = useParams();
 
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
@@ -93,12 +93,16 @@ const NFTLoanDetailPage = () => {
 
   const fetchLoanDetail = useCallback(() => {
     setLoadingLoan(true);
-    Axios.get(`${URL()}/nftLoan/getNFTLoan/${params.id}`)
+    Axios.get(`${URL()}/nftLoan/getNFTLoan/`, {
+      params: {
+        id: params.loanId,
+      },
+    })
       .then(res => {
         const data = res.data;
         if (data.success) {
           setLoan(data.data);
-          setLoanMedia(data.data?.media);
+          setLoanMedia(data.data?.nftData);
           setTotalViews(data.data?.totalViews ?? 0);
           const bidHistory = data.data.bidHistory;
           if (bidHistory.length) {
@@ -129,7 +133,7 @@ const NFTLoanDetailPage = () => {
       .finally(() => {
         setLoadingLoan(false);
       });
-  }, [params.id]);
+  }, [params.tokenAddress, params.tokenId]);
 
   useEffect(() => {
     if (loan) {
@@ -162,7 +166,7 @@ const NFTLoanDetailPage = () => {
 
   useEffect(() => {
     if (loanMedia?.urlIpfsImage) {
-      setImageIPFS(loanMedia.urlIpfsImage)
+      setImageIPFS(loanMedia.urlIpfsImage);
     }
   }, [loanMedia]);
 
@@ -249,9 +253,9 @@ const NFTLoanDetailPage = () => {
     ].sort((a, b) => a.date - b.date);
     const data: Array<Array<CustomTableCellInfo>> = transactions.map(row => {
       let priviScanLink = "https://priviscan.io/tx/";
-      if (loanMedia.BlockchainNetwork.toLowerCase().includes("polygon")) {
+      if (loan.BlockchainNetwork.toLowerCase().includes("polygon")) {
         priviScanLink = "https://mumbai.polygonscan.com/tx/" + (row.txnHash ?? "");
-      } else if (loanMedia.BlockchainNetwork.toLowerCase().includes("ethereum")) {
+      } else if (loan.BlockchainNetwork.toLowerCase().includes("ethereum")) {
         priviScanLink = "https://rinkeby.etherscan.io/tx/" + (row.txnHash ?? "");
       }
       return [
@@ -274,7 +278,7 @@ const NFTLoanDetailPage = () => {
         {
           cell: (
             <img
-              src={getLoanChainImageUrl(loan.Chain, loan.media.BlockchainNetwork)}
+              src={getLoanChainImageUrl(loan.Chain, loan.BlockchainNetwork)}
               alt={"chain"}
               className={classes.chain}
             />
@@ -703,13 +707,7 @@ const NFTLoanDetailPage = () => {
                 onClick={handleOpenMediaPhotoDetailModal}
               >
                 <img
-                  src={
-                    loanMedia.cid
-                      ? imageIPFS
-                      : loanMedia.Type === "VIDEO_TYPE"
-                      ? loanMedia.UrlMainPhoto
-                      : loanMedia.Url || loanMedia.url || require("assets/backgrounds/digital_art_1.png")
-                  }
+                  src={loanMedia?.metadata?.image || require("assets/backgrounds/digital_art_1.png")}
                   className={classes.detailImg}
                   width="100%"
                 />
@@ -924,13 +922,7 @@ const NFTLoanDetailPage = () => {
               <MediaPhotoDetailsModal
                 isOpen={isShowingMediaPhotoDetailModal}
                 onClose={handleCloseMediaPhotoDetailModal}
-                imageURL={
-                  loanMedia.cid
-                    ? imageIPFS
-                    : loanMedia.Type === "VIDEO_TYPE"
-                    ? loanMedia.UrlMainPhoto
-                    : loanMedia.Url || loanMedia.url || require("assets/backgrounds/digital_art_1.png")
-                }
+                imageURL={loanMedia?.metadata.image || require("assets/backgrounds/digital_art_1.png")}
               />
             )}
           </LoadingWrapper>

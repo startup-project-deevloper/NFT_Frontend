@@ -68,7 +68,7 @@ const BidModal = ({ open, onClose, previousBid, loan, setLoan, refresh = () => {
 
   const handleOk = async () => {
     if (!validate()) return;
-    const targetChain = LoanBlockchainNet.find(net => net.value === loan.media.BlockchainNetwork);
+    const targetChain = LoanBlockchainNet.find(net => net.value === loan.BlockchainNetwork);
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
       if (!isHere) {
@@ -108,18 +108,20 @@ const BidModal = ({ open, onClose, previousBid, loan, setLoan, refresh = () => {
         return;
       }
     }
-    const tokenContractAddress = loan.media.TokenContractAddress || web3Config.CONTRACT_ADDRESSES.PRIVIERC721;
-    const tokenId = loan.media.BlockchainId;
-    web3APIHandler.Loan.placeBid(web3, account!, {
-      tokenContractAddress: tokenContractAddress,
-      tokenId: tokenId,
-      bidAmount: toNDecimals(amount, decimals),
-    }).then(async res => {
-      if (res) {
-        const tx = res.transaction;
-        const blockchainRes = { output: { Transactions: {} } };
-        blockchainRes.output.Transactions[tx.Id] = [tx];
+    const tokenContractAddress = loan.nftData.token_address;
+    const tokenId = loan.nftData.token_id;
 
+    web3APIHandler.Loan.placeBid(
+      web3,
+      account!,
+      {
+        tokenContractAddress: tokenContractAddress,
+        tokenId: tokenId,
+        bidAmount: toNDecimals(amount, decimals),
+      },
+      setHash
+    ).then(async res => {
+      if (res) {
         let availableFunds = await web3APIHandler.Loan.getAvailableFunds(web3, {
           tokenContractAddress: tokenContractAddress,
           tokenId: tokenId,
@@ -127,22 +129,17 @@ const BidModal = ({ open, onClose, previousBid, loan, setLoan, refresh = () => {
         availableFunds = Number(toDecimals(availableFunds, decimals));
 
         const body = {
-          BlockchainRes: blockchainRes,
-          AdditionalData: {
-            TransactionHash: tx.Id,
-            BidAmount: amount,
-            BidderAddress: account!,
-            AvailableFunds: availableFunds,
-            Date: new Date().getTime(),
-            MediaSymbol: loan.media.MediaSymbol,
-          },
+          id: loan.id,
+          bidAmount: amount,
+          bidderAddress: account!,
+          availableFunds: availableFunds,
+          date: new Date().getTime(),
+          hash: res.transaction.Id,
         };
-        setHash(tx.Id);
         setTransactionInProgress(false);
-        const response = await axios.post(`${URL()}/nftloan/bidCollateralizedNFT/v2_p`, body);
+        const response = await axios.post(`${URL()}/nftloan/bidCollateralizedNFT`, body);
         if (response.data.success) {
-          showAlertMessage(`Successfully placed a bid`, { variant: "success" });
-          setLoan && setLoan({
+          setLoan({
             ...loan,
             Bid: amount,
             BidderAddress: account!,
@@ -166,16 +163,12 @@ const BidModal = ({ open, onClose, previousBid, loan, setLoan, refresh = () => {
         <div
           className={classes.mediaImage}
           style={{
-            backgroundImage: `url(${
-              loan.media.Type && loan.media.Type !== "DIGITAL_ART_TYPE"
-                ? loan.media.UrlMainPhoto
-                : loan.media.UrlMainPhoto ?? loan.media.Url ?? loan.media.url
-            })`,
+            backgroundImage: `url(${loan.nftData.content_url})`,
           }}
         />
         <Box>
-          <div className={classes.mediaTitle}>{loan.media.MediaName ?? loan.media.title}</div>
-          <div className={classes.interest}>{`${((loan?.Loan?.Interest ?? 0.1) * 100).toFixed(0)}%`}</div>
+          <div className={classes.mediaTitle}>{loan.nftData?.metadata?.name || loan.nftData?.name}</div>
+          <div className={classes.interest}>{`${loan?.FeePct ?? 1}%`}</div>
         </Box>
       </Box>
 
@@ -184,12 +177,12 @@ const BidModal = ({ open, onClose, previousBid, loan, setLoan, refresh = () => {
           <InputWithLabelAndTooltip
             endAdornment={
               <img
-                src={getLoanChainImageUrl(loan.Chain, loan.media.BlockchainNetwork)}
+                src={getLoanChainImageUrl(loan.Chain, loan.BlockchainNetwork)}
                 alt={"chain"}
                 className={classes.chain}
               />
             }
-            inputValue={loan.Chain || "POLYGON"}
+            inputValue={loan.BlockchainNetwork || "POLYGON"}
             disabled
             type="text"
             labelName={"Chain"}

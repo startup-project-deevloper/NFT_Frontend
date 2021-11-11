@@ -37,7 +37,9 @@ const ProfileFollowsModal = React.memo(
     refreshFollowers,
     isLoadingFollows,
     ownUser = true,
+    userProfile
   }: {
+    userProfile: any;
     list: any[];
     onClose: () => void;
     open: boolean;
@@ -173,6 +175,7 @@ const ProfileFollowsModal = React.memo(
         });
       }
     };
+    const filteredSuggestList = suggestionsList.filter((s) => ![...usersFilteredList.map(u => u.id), userProfile.id].includes(s.id));
 
     return (
       <Modal className={classes.root} isOpen={open} onClose={onClose} showCloseIcon size="medium">
@@ -292,11 +295,11 @@ const ProfileFollowsModal = React.memo(
           Users you may want to follow
         </Box>
         <LoadingWrapper theme="blue" loading={loadingSuggestions}>
-          {!suggestionsList || suggestionsList.length === 0 ? (
+          {!filteredSuggestList || filteredSuggestList.length === 0 ? (
             <div>No suggest users</div>
           ) : (
             <div className={classes.usersList}>
-              {suggestionsList.map((item, index) => (
+              {filteredSuggestList.map((item, index) => (
                 <Box mb={2} display="flex" alignItems="center" justifyContent="space-between" key={index}>
                   <Box
                     alignItems="center"

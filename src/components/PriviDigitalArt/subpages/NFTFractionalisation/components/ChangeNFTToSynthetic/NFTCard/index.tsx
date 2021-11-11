@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Box from "shared/ui-kit/Box";
 import { normalNFTCardStyles } from "../index.styles";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default function NFTCard({ item, handleSelect, isSmall = false }) {
   const classes = normalNFTCardStyles();
@@ -13,7 +14,9 @@ export default function NFTCard({ item, handleSelect, isSmall = false }) {
         <div className={`${classes.card} ${item.selected ? classes.selected : ""}`}>
           <div className={classes.innerBox} style={{ padding: isSmall ? 6 : 16 }}>
             <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} className={classes.nftNameContainer}>
-              <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{`${item.MediaName} #${item.BlockchainId}`}</div>
+              <Tooltip title={`${item.MediaName} #${item.BlockchainId}`}>
+                <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{`${item.MediaName} #${item.BlockchainId}`}</div>
+              </Tooltip>
             </Box>
             <img
               src={

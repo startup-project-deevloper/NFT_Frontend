@@ -71,7 +71,7 @@ const redemptionPool = (network: string) => {
         const approve = await jotAPI.approve(web3, account, JotAddress, RedemptionPoolAddress, tAmount);
 
         if (!approve) {
-          resolve(null);
+          resolve({ success: false });
         }
 
         const gas = await contract.methods.redeem(tAmount).estimateGas({ from: account });

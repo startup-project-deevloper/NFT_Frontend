@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const RedeemJotsModalStyles = makeStyles((theme) => ({
+export const RedeemJotsModalStyles = makeStyles(theme => ({
   container: {
     maxWidth: "508px !important",
   },
@@ -18,7 +18,7 @@ export const RedeemJotsModalStyles = makeStyles((theme) => ({
     color: "#431AB7",
     fontSize: "16px",
     minWidth: "55px",
-    fontWeight: 700
+    fontWeight: 700,
   },
   usdWrap: {
     display: "flex",
@@ -43,14 +43,14 @@ export const RedeemJotsModalStyles = makeStyles((theme) => ({
     marginTop: "22px",
     "& span": {
       color: "#431AB7",
-      fontSize: "16px"
-    }
+      fontSize: "16px",
+    },
   },
   usdt: {
     fontFamily: "Agrandir GrandHeavy !important",
     color: "#431AB7",
     fontWeight: 800,
-    fontSize: "16px"
+    fontSize: "16px",
   },
   hash: {
     cursor: "pointer",
@@ -75,5 +75,11 @@ export const RedeemJotsModalStyles = makeStyles((theme) => ({
     background: "white",
     marginTop: "28px",
     backgroundColor: "#431AB7",
-  }
+  },
+  maxLabel: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: "16px",
+    cursor: "pointer",
+  },
 }));

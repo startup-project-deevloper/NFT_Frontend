@@ -88,11 +88,11 @@ export default ({ collection }) => {
     },
     {
       cellAlign: "center",
-      cell: `${row.rate} JOTs`,
+      cell: `${row.rate} USDT / JOT`,
     },
     {
       cellAlign: "center",
-      cell: <Text color={Color.Purple}>{row.account ? row.account.substring(0, 8) + "..." : "-"}</Text>,
+      cell: <Text color={Color.Purple}>{row.account ?? "-"}</Text>,
     },
     {
       cellAlign: "center",
@@ -166,7 +166,7 @@ export default ({ collection }) => {
   };
 
   const onConfirm = async (amount, txn) => {
-    getRedeemData();
+    await getRedeemData();
     const data = {
       type: "Redemption",
       amount,
@@ -179,6 +179,8 @@ export default ({ collection }) => {
       collectionAddress: collection.id,
       history: data,
     });
+
+    // auto refresh data
     const timestamp = Date.now();
     let updateHistory = [...history];
     updateHistory.unshift({
@@ -187,6 +189,7 @@ export default ({ collection }) => {
       timestamp,
     });
     setHistory(updateHistory);
+    getRedeemData();
   };
 
   return (

@@ -278,6 +278,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   collectionId,
   nft,
   setNft,
+  setWithdrawing,
 }: any) {
   const history = useHistory();
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
@@ -320,6 +321,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     if (!nft.SyntheticCollectionManagerAddress) return;
     if (nft.SyntheticCollectionManagerAddress) getLiquidity();
   }, [nft.SyntheticCollectionManagerAddress, nft.SyntheticID]);
+
+  React.useEffect(() => {
+    if (setWithdrawing) {
+      setWithdrawing(openBuyBackModal);
+    }
+  }, [openBuyBackModal]);
 
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
   const ownershipJot = +nft.OwnerSupply;
@@ -856,38 +863,23 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       </Box>
                     </Box>
                     <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-                      <Box
-                        className={classes.ownerInfo}
-                        style={{
-                          background: buybackPrice > 0 ? "#DDFF57" : "transparent",
-                          borderRadius: 12,
-                          padding: "21px 0 18px 31px",
-                          marginLeft: 18,
-                        }}
-                      >
+                      <Box className={`${classes.ownerInfo} ${classes.buybackPanel}`}>
                         {buybackPrice > 0 ? (
                           <>
                             <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
                               Current Reserve Price to Buy Back
                             </Box>
-                            <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
+                            <Box
+                              className={classes.h2}
+                              sx={{ justifyContent: "center", fontWeight: 800, marginBottom: 14 }}
+                            >
                               {(+buybackPrice).toFixed(4)} USDT
                             </Box>
                           </>
                         ) : null}
                         <PrimaryButton
-                          className={classes.h4}
+                          className={`${classes.buybackButton} ${classes.h4}`}
                           size="medium"
-                          style={{
-                            color: Color.White,
-                            background: Color.Purple,
-                            padding: "0px 25px",
-                            maxWidth: 250,
-                            marginTop: 14,
-                            display: "flex",
-                            alignItems: "center",
-                            borderRadius: 4,
-                          }}
                           onClick={handleBuyBack}
                         >
                           Buy Back to Withdraw
@@ -985,15 +977,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                     {soldSupply ?? 0} JOTs
                   </Box>
-                </Box>
-              </Box>
-              <Box></Box>
-              <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-                <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                  ACCRUED INTEREST
-                </Box>
-                <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                  {nft.AccruedReward || 0} USDT
                 </Box>
               </Box>
             </Box>

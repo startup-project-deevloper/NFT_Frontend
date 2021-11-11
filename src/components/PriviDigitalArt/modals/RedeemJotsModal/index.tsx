@@ -93,11 +93,6 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
     window.open(`https://mumbai.polygonscan.com/tx/${hash}`, "_blank");
   };
 
-  const setHashAndComplete = hash => {
-    setHash(hash);
-    onCompleted(+jot, hash);
-  };
-
   const handleConfirm = async () => {
     const web3APIHandler = selectedChain.apiHandler;
     const web3 = new Web3(library.provider);
@@ -105,7 +100,7 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
     setLoading(true);
     const contractResponse = await web3APIHandler.RedemptionPool.redeem(web3, account!, collection, {
       amount: +jot,
-      setHash: setHashAndComplete,
+      setHash: setHash,
     });
 
     if (!contractResponse.success) {
@@ -115,6 +110,7 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
       return;
     }
 
+    onCompleted(+jot, hash);
     setOpenTranactionModal(true);
     setLoading(false);
     setTnxSuccess(true);
@@ -183,9 +179,7 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
               </Box>
             </Box>
             <Box
-              display="flex"
-              alignItems="center"
-              fontSize="16px"
+              className={classes.maxLabel}
               onClick={() => {
                 setJot(maxJots);
                 setReceive((price * maxJots).toFixed(2));
@@ -210,6 +204,7 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
               size="medium"
               style={{ background: "#D9F66F", color: "#431AB7", minWidth: "56%" }}
               onClick={() => handleConfirm()}
+              disabled={maxJots < +jot}
             >
               Confirm
             </PrimaryButton>

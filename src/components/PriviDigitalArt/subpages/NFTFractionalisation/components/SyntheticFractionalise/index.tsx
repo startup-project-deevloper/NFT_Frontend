@@ -100,7 +100,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
       getMySyntheticFractionalisedNFT()
         .then(res => {
           if (res.success) {
-            setMyNFTs(res.nfts ?? []);
+            setMyNFTs(res.nfts.filter(nft => !nft.isUnlocked) ?? []);
           }
           setLoading(false);
         })

@@ -74,6 +74,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [OpenFlipCoinGuessModal, setOpenFlipCoinGuessModal] = useState<boolean>(false);
   const [resultState, setResultState] = useState<number>(0);
   const [flipDisabled, setFlipDisabled] = useState<boolean>(false);
+  const [isWithdrawing, setWithdrawing] = useState<boolean>(false);
 
   const usersList = useSelector((state: RootState) => state.usersInfoList);
   const getUserInfo = (address: string) => usersList.find(u => u.address === address);
@@ -350,7 +351,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
     });
   };
 
-  if (nft.isWithdrawn) {
+  if (nft.isWithdrawn && !isWithdrawing) {
     history.push(`/fractionalisation/collection/${params.collectionId}`);
     return null;
   }
@@ -615,6 +616,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
               collectionId={params.collectionId}
               nft={nft}
               setNft={setNft}
+              setWithdrawing={setWithdrawing}
             />
           </div>
         ) : (

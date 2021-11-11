@@ -516,7 +516,7 @@ export default function ProfileCard({
                 />
               )}
               <Box style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {item?.MediaName || item?.metadata?.name}
+                {item?.MediaName || item?.metadata?.name || item?.title}
               </Box>
             </Box>
 

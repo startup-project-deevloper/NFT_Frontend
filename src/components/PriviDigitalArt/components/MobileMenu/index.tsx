@@ -31,7 +31,7 @@ export default function MobileMenu() {
       //   return TABS[3];
     } else if (location.pathname.includes("loan")) {
       return TABS[3];
-    } else if (location.pathname.includes("like")) {
+    } else if (location.pathname.includes("saved-content")) {
       return TABS[4];
     } else if (
       location.pathname.includes("fractionalisation") ||
@@ -55,7 +55,7 @@ export default function MobileMenu() {
       // } else if (value === TABS[4]) {
       history.push("/loan");
     } else if (value === TABS[4]) {
-      history.push("/like");
+      history.push("/saved-content");
     } else if (value === TABS[5]) {
       history.push("/fractionalise");
     }

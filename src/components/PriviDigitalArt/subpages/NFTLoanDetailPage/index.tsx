@@ -137,7 +137,7 @@ const NFTLoanDetailPage = () => {
       .finally(() => {
         setLoadingLoan(false);
       });
-  }, [params.tokenAddress, params.tokenId]);
+  }, [params.loanId]);
 
   useEffect(() => {
     if (loan) {

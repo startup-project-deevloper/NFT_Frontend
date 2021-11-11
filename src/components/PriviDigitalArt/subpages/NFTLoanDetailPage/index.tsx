@@ -33,10 +33,9 @@ import { useLoanViewStyles } from "./index.styles";
 import DefaultConfig from "./Chart/DefaultConfig";
 import PrintLoanChart from "./Chart";
 
-import { LoanBlockchainNet } from "shared/constants/constants";
+import { BlockchainNets } from "shared/constants/constants";
 import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 
@@ -102,6 +101,7 @@ const NFTLoanDetailPage = () => {
         const data = res.data;
         if (data.success) {
           setLoan(data.data);
+          setCreator(data.data?.CreatorInfo);
           setLoanMedia(data.data?.nftData);
           setTotalViews(data.data?.totalViews ?? 0);
           const bidHistory = data.data.bidHistory;
@@ -223,12 +223,12 @@ const NFTLoanDetailPage = () => {
   const handleFollow = e => {
     e.stopPropagation();
     e.preventDefault();
-    if (!loanMedia) return;
+    if (!loan) return;
 
     if (!isFollowing) {
-      followUser(loanMedia.CreatorId).then(_ => setIsFollowing(1));
+      followUser(loan.CreatorId).then(_ => setIsFollowing(1));
     } else {
-      unfollowUser(loanMedia.CreatorId).then(_ => setIsFollowing(0));
+      unfollowUser(loan.CreatorId).then(_ => setIsFollowing(0));
     }
   };
 
@@ -352,48 +352,6 @@ const NFTLoanDetailPage = () => {
   useEffect(() => {
     if (loanMedia && loanMedia.Bookmarks && loanMedia.Bookmarks.some((id: string) => id === user.id))
       setBookmarked(true);
-
-    if (loanMedia && user) {
-      if (loan.CreatorAddress) {
-        if (loan.CreatorAddress === user?.address) {
-          setCreator({
-            ...user,
-            name: `${user.firstName} ${user.lastName}`,
-          });
-        } else {
-          const getCreatorData = async () => {
-            await Axios.get(`${URL()}/user/getBasicUserInfo/${loan.CreatorAddress}`)
-              .then(response => {
-                if (response.data.success && response.data.data) {
-                  let data = response.data.data;
-
-                  setCreator({
-                    ...data,
-                    name: data.name ?? `${data.firstName} ${data.lastName}`,
-                  });
-                } else {
-                  setCreator({
-                    imageUrl: getRandomAvatarForUserIdWithMemoization(loanMedia.creator),
-                    name: "User name",
-                    urlSlug: "",
-                  });
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
-          };
-
-          getCreatorData();
-        }
-      } else {
-        setCreator({
-          imageUrl: getRandomAvatarForUserIdWithMemoization(loanMedia.creator),
-          name: loanMedia.creator,
-          urlSlug: loanMedia.creator,
-        });
-      }
-    }
   }, [loanMedia, user]);
 
   useEffect(() => {
@@ -447,8 +405,8 @@ const NFTLoanDetailPage = () => {
   }, [loan]);
 
   useEffect(() => {
-    if (creator) setIsFollowing(isUserFollowed(creator.id));
-  }, [creator]);
+    if (loan) setIsFollowing(isUserFollowed(loan.CreatorId));
+  }, [loan]);
 
   const bookmarkMedia = () => {
     Axios.post(`${URL()}/media/bookmarkMedia/${loanMedia.MediaSymbol ?? loanMedia.id}`, {
@@ -510,7 +468,7 @@ const NFTLoanDetailPage = () => {
   };
 
   const handleEndLoan = async () => {
-    const targetChain = LoanBlockchainNet.find(net => net.value === loanMedia.BlockchainNetwork);
+    const targetChain = BlockchainNets.find(net => net.value === loanMedia.BlockchainNetwork);
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
       if (!isHere) {
@@ -722,15 +680,7 @@ const NFTLoanDetailPage = () => {
                         <div
                           className={classes.avatar}
                           style={{
-                            backgroundImage: creator
-                              ? `url(${getUserAvatar({
-                                  id: creator.id,
-                                  anon: creator.anon,
-                                  hasPhoto: creator.hasPhoto,
-                                  anonAvatar: creator.anonAvatar,
-                                  url: creator.url,
-                                })})`
-                              : "none",
+                            backgroundImage: creator ? `url(${creator.imageUrl})` : "none",
                           }}
                           onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
                         />
@@ -762,16 +712,6 @@ const NFTLoanDetailPage = () => {
                     <Box className={classes.fruitsContainer}>
                       <FruitSelect fruitObject={loanMedia} onGiveFruit={handleFruit} />
                     </Box>
-                    <Box mr={2}>
-                      <img
-                        src={require(bookmarked
-                          ? "assets/priviIcons/bookmark-filled-gray.svg"
-                          : "assets/priviIcons/bookmark-gray.svg")}
-                        alt="Bookmark"
-                        onClick={handleBookmark}
-                        style={{ cursor: "pointer", width: "24px", height: "24px" }}
-                      />
-                    </Box>
                     <Box mb={1}>
                       <div
                         onClick={handleOpenShareMenu}
@@ -793,7 +733,7 @@ const NFTLoanDetailPage = () => {
                   </Hidden>
                 )}
                 <SharePopup
-                  item={{ ...loanMedia, Type: "DIGITAL_ART_TYPE_LOAN" }}
+                  item={{ ...loan, Type: "DIGITAL_ART_TYPE_LOAN" }}
                   openMenu={openShareMenu}
                   anchorRef={anchorShareMenuRef}
                   handleCloseMenu={handleCloseShareMenu}

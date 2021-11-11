@@ -357,14 +357,14 @@ const MediaDetailsModal = (props: any) => {
                 </Text>
               </Box>
             )}
-            <Text size={FontSize.XL} color={Color.Black}>
-              💾 {media?.shareCount || 0}
-            </Text>
-            <div>
+            <Box marginLeft="auto">
+              <Text size={FontSize.XL} color={Color.Black} className={classes.shareCountText}>
+                💾 {media?.shareCount || 0}
+              </Text>
               <Text size={FontSize.XL} color={Color.Black}>
                 👀 {(props.mediaViews ? props.mediaViews : media?.TotalViews) || 0}
               </Text>
-            </div>
+            </Box>
           </Box>
           {/* {!media.metadata && (
             <>

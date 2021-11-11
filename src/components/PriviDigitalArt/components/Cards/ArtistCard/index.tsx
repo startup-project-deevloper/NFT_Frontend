@@ -47,7 +47,7 @@ export default function ArtistCard({ item }) {
     >
       <img src={item.imageUrl || getDefaultAvatar()} />
       <div className={classes.filter}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">
+        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px" minHeight={40}>
           {<b>{`${item.name || ""}`}</b>}
           {user && item.id !== user.id && isSignedin && (
             <button className={isFollowing ? classes.unfollow : classes.follow} onClick={handleFollow}>

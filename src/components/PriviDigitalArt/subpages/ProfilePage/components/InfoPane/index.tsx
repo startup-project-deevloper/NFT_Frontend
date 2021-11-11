@@ -93,7 +93,7 @@ const InfoPane = React.memo(
     }, []);
 
     useEffect(() => {
-      setImageIPFS(userProfile.urlIpfsImage ?? getDefaultAvatar());
+      setImageIPFS(userProfile.urlIpfsImage || getDefaultAvatar());
     }, [userProfile]);
 
     useEffect(() => {

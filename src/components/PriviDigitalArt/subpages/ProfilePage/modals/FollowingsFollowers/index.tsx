@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import cls from "classnames";
 
-import { RootState } from "store/reducers/Reducer";
 import URL from "shared/functions/getURL";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
@@ -14,7 +11,7 @@ import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { GreenText } from "components/PriviSocial/index.styles";
 import { GreenSlider } from "components/PriviSocial/subpages/Feed";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import ClosenessDegreeModal from "../ClosenessDegreeModal";
 import { profileFollowsModalStyles } from "./index.styles";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
@@ -50,8 +47,6 @@ const ProfileFollowsModal = React.memo(
     isLoadingFollows: boolean;
     ownUser: boolean;
   }) => {
-    const userSelector = useSelector((state: RootState) => state.user);
-    const users = useSelector((state: RootState) => state.usersInfoList);
     const userConnections = useUserConnections();
     const classes = profileFollowsModalStyles();
     const history = useHistory();
@@ -81,8 +76,8 @@ const ProfileFollowsModal = React.memo(
     };
 
     useEffect(() => {
-      if (users?.length > 0) getSuggesttedUsers();
-    }, [users]);
+      getSuggesttedUsers();
+    }, []);
 
     useEffect(() => {
       let us = [] as any;
@@ -106,37 +101,17 @@ const ProfileFollowsModal = React.memo(
     }, [list, closenessDegree, interestFilters]);
 
     const getSuggesttedUsers = () => {
-      if (loadingSuggestions) {
-        return;
-      }
       setLoadingSuggestions(true);
       axios
-        .get(`${URL()}/user/getSuggestedUsers/${userSelector.id}`)
+        .get(`${URL()}/artwork/topSellers`)
         .then(res => {
           const resp = res.data;
           if (resp.success) {
-            const data = resp.data;
+            const data = resp.userList;
 
             let suggestions = [...data];
 
-            if (suggestions.length > 0) {
-              suggestions.forEach((user, index) => {
-                const matchedUser = users.find(u => u.id === user.id || u.id === user.id?.user);
-                if (matchedUser) {
-                  suggestions[index].userImageURL = matchedUser.imageURL
-                    ? matchedUser.imageURL
-                    : matchedUser.imageUrl
-                    ? matchedUser.imageUrl
-                    : matchedUser.url
-                    ? matchedUser.url
-                    : require(`assets/anonAvatars/${matchedUser.anonAvatar}`);
-                  suggestions[index].urlSlug = matchedUser.urlSlug;
-                }
-              });
-            } else {
-              suggestions = users;
-            }
-
+            suggestions.sort((a, b) => b.myMediasCount - a.myMediasCount);
             setSuggestionsList(suggestions);
           }
         })
@@ -282,13 +257,7 @@ const ProfileFollowsModal = React.memo(
                         onClick={() => goToProfile(item.urlSlug ?? item.id)}
                       >
                         <Avatar
-                          url={
-                            item.userImageURL && item.userImageURL.length > 0
-                              ? item.userImageURL
-                              : item.url && item.url.length > 0
-                              ? item.url
-                              : getRandomAvatarForUserIdWithMemoization(item.id)
-                          }
+                          url={item.urlIpfsImage || getDefaultAvatar()}
                           size="small"
                         />
                         <Box ml={"14px"}>
@@ -336,13 +305,7 @@ const ProfileFollowsModal = React.memo(
                     onClick={() => goToProfile(item.urlSlug ?? item.id)}
                   >
                     <Avatar
-                      url={
-                        item.userImageURL && item.userImageURL.length > 0
-                          ? item.userImageURL
-                          : item.url && item.url.length > 0
-                          ? item.url
-                          : getRandomAvatarForUserIdWithMemoization(item.id)
-                      }
+                          url={item.imageUrl || getDefaultAvatar()}
                       size="small"
                     />
                     <Box ml={"14px"}>

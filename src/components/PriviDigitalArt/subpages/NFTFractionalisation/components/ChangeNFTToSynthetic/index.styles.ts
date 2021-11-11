@@ -382,6 +382,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     textTransform: "capitalize",
     marginBottom: 8,
     width: "100%",
+    maxWidth: 220,
     textOverflow: "ellipsis",
     overflow: "hidden",
     whiteSpace: "nowrap",

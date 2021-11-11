@@ -1,16 +1,20 @@
-import {onGetNonDecrypt} from "../ipfs/get";
-import {_arrayBufferToBase64} from "./commonFunctions";
-import useIPFS from "../utils-IPFS/useIPFS";
+import { onGetNonDecrypt } from "../ipfs/get";
+import { _arrayBufferToBase64 } from "./commonFunctions";
 
-const getPhotoIPFS = async (cid: string, fileName: string, downloadWithNonDecryption: any) : Promise<string> => {
+const getPhotoIPFS = async (
+  cid: string,
+  fileName: string,
+  downloadWithNonDecryption: any,
+  type: string = "image/png"
+): Promise<string> => {
   return new Promise(async (resolve, reject) => {
-    if(cid && fileName) {
+    if (cid && fileName) {
       let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
         downloadWithNonDecryption(fileCID, fileName, download)
       );
-      if (files) {
+      if (files && type) {
         let base64String = _arrayBufferToBase64(files.buffer);
-        resolve("data:image/png;base64," + base64String);
+        resolve(`data:${type};base64,${base64String}`);
       } else {
         resolve("");
       }
@@ -18,6 +22,6 @@ const getPhotoIPFS = async (cid: string, fileName: string, downloadWithNonDecryp
       resolve("");
     }
   });
-}
+};
 
 export default getPhotoIPFS;

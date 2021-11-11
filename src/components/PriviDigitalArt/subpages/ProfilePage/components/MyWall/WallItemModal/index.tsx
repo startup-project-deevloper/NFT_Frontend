@@ -4,8 +4,8 @@ import Moment from "react-moment";
 import ReactPlayer from "react-player";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { withStyles } from "@material-ui/styles";
-import { ClickAwayListener, Grow, MenuItem, Popper, MenuList, Paper } from "@material-ui/core";
+// import { withStyles } from "@material-ui/styles";
+// import { ClickAwayListener, Grow, MenuItem, Popper, MenuList, Paper } from "@material-ui/core";
 // import SvgIcon from "@material-ui/core/SvgIcon";
 
 import { GreenText } from "components/PriviSocial/index.styles";
@@ -19,7 +19,6 @@ import URL from "shared/functions/getURL";
 import { useShareMedia } from "shared/contexts/ShareMediaContext";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import DiscordVideoFullScreen from "shared/ui-kit/Page-components/Discord/DiscordVideoFullScreen/DiscordVideoFullScreen";
-import useIPFS from "shared/utils-IPFS/useIPFS";
 
 // import { ReactComponent as ShareAltSolid } from "assets/icons/share.svg";
 
@@ -138,8 +137,6 @@ export const WallPostModalContent = ({
   const handleCloseMorePicturesModal = () => {
     setOpenMorePicturesModal(false);
   };
-
-  const { downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     if (!onlyDisplay) {
@@ -360,7 +357,7 @@ export const WallPostModalContent = ({
 
       <Box className={styles.userPane} mb={"48px"}>
         <Box className={styles.userInfo} onClick={() => history.push(`/${item.createdBy}/profile`)}>
-          <Avatar url={creatorImage ? creatorImage : "none"} size={"large"} />
+          <Avatar url={creatorImage ?? getDefaultAvatar()} size={"large"} />
           <Box ml={"36px"}>
             <Box fontSize="22px" fontWeight={800}>
               {item.userInfo?.name}

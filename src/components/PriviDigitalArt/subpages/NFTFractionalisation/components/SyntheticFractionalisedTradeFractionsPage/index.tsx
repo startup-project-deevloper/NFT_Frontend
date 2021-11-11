@@ -1216,15 +1216,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         >
                           Buy on Quickswap
                         </PrimaryButton>
-
-                        <PrimaryButton
-                          className={classes.priceButton}
-                          size="medium"
-                          style={{ background: "#DDFF57", color: Color.Purple }}
-                          onClick={handleAddLiquidity}
-                        >
-                          Add liquidity on Quickswap
-                        </PrimaryButton>
                       </Box>
                     </Box>
                   </Grid>

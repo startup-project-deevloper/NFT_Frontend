@@ -70,7 +70,7 @@ const SidebarContent = ({ handleRefresh }) => {
     // } else if (value === TABS[4]) {
       history.push("/loan");
     } else if (value === TABS[4]) {
-      history.push("/like");
+      history.push("/saved-content");
     } else if (value === TABS[5]) {
       history.push("/option/explore");
     } else if (value === TABS[6]) {

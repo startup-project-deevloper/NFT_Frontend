@@ -455,10 +455,12 @@ const ProfilePage = () => {
           if (resp?.success) {
             const result: any[] = [];
             resp.data.map(d => {
-              const metadata = JSON.parse(d.metadata);
-              if (!!metadata.image) {
-                result.push({ ...d, metadata: metadata });
-              }
+              try {
+                const metadata = JSON.parse(d.metadata);
+                if (!!metadata.image) {
+                  result.push({ ...d, metadata: metadata });
+                }
+              } catch (e) {}
             });
             setMyMedia(result);
           }

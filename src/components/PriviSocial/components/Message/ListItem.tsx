@@ -68,7 +68,6 @@ export const ListItem: React.FunctionComponent<any> = ({
   }, [chat]);
 
   const handleClick = () => {
-    // if (currentChat && chat.room === currentChat.room) return;
     setCurrentChat(chat);
     dispatch(openChatModal(true));
     setChat();
@@ -77,7 +76,15 @@ export const ListItem: React.FunctionComponent<any> = ({
 
   return (
     <div
-      className={`item ${currentChat && currentChat.room === chat.room ? "selected" : ""}`}
+      className={`item ${
+        currentChat &&
+        ((chat.users.userFrom.userId === currentChat.users.userFrom.userId &&
+          chat.users.userTo.userId === currentChat.users.userTo.userId) ||
+          (chat.users.userFrom.userId === currentChat.users.userTo.userId &&
+            chat.users.userTo.userId === currentChat.users.userFrom.userId))
+          ? "selected"
+          : ""
+      }`}
       onClick={handleClick}
     >
       <div className="avatar-container">

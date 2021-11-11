@@ -12,6 +12,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 import { useBorrowModalStyles } from "./index.styles";
 import PolygonAPI from "shared/services/API/polygon";
+import { getCorrectNumber } from "shared/helpers/number";
 
 const BorrowModal = ({ open, onClose, onSuccess, market }) => {
   const classes = useBorrowModalStyles();
@@ -21,8 +22,9 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
   const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
-  const [isEntered, setIsEntered] = useState<boolean>(false);
-  const [borrowPower, setBorrowPower] = useState<any>(null);
+  const [isEntered, setIsEntered] = useState<boolean>(true);
+  const [borrowPower, setBorrowPower] = useState<number>(0);
+  const [borrowLimitUsed, setBorrowLimitUsed] = useState<number>(0);
   const [txnHash, setTxnHash] = useState<string>("");
 
   const { account, library, chainId } = useWeb3React();
@@ -30,18 +32,14 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
   useEffect(() => {
     if (!open) {
       setAmount(0)
-      setIsEntered(false)
+      setIsEntered(true)
       setOpenTransactionModal(false)
     } else {
-      setEnteredStatus()
     }
+    setEnteredStatus()
+    setAccountLiquidity()
   }, [open])
 
-  useEffect(() => {
-    if (isEntered) {
-      setAccountLiquidity()
-    }
-  }, [isEntered])
 
   const setEnteredStatus = async () => {
     if (library) {
@@ -59,8 +57,10 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
       const web3 = new Web3(library.provider);
       if (account && web3 && market) {
         const account_liquidity = await PolygonAPI.FractionalLoan.getAccountLiquidity(web3, account, market.Market);
-        console.log(account_liquidity)
-        setBorrowPower(account_liquidity)
+        const borrow_limit_used = await PolygonAPI.FractionalLoan.getBorrowingLimitUsed(web3, account, market.Market);
+        const priceInUsd = market?.token_info?.priceInUsd || 1
+        setBorrowPower(account_liquidity[0] * priceInUsd  / (10 ** 6))
+        setBorrowLimitUsed(borrow_limit_used * priceInUsd / (10 ** 6))
       }
     }
   }
@@ -134,7 +134,6 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
           variant: "success",
         });
         setTransactionSuccess(true);
-        onClose()
       }
     } catch (e) {
       console.log("handleSubmit error", e);
@@ -171,12 +170,12 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
       <Box className={classes.rateBox}>
         <Box display="flex" justifyContent="space-between">
           <Typography className={classes.small}>Borrowing power</Typography>
-          <Typography className={classes.smallBold}>2425 {market?.token_info?.Symbol}</Typography>
+          <Typography className={classes.smallBold}>{getCorrectNumber(borrowPower, 4)} {market?.token_info?.Symbol}</Typography>
         </Box>
         <Divider />
         <Box display="flex" justifyContent="space-between">
           <Typography className={classes.small}>Borrowing limit used</Typography>
-          <Typography className={classes.smallBold}>0 {market?.token_info?.Symbol}</Typography>
+          <Typography className={classes.smallBold}>{getCorrectNumber(borrowLimitUsed, 4)} {market?.token_info?.Symbol}</Typography>
         </Box>
       </Box>
       <Box className={classes.buttonContainer} display="flex" justifyContent="space-between">

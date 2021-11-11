@@ -12,6 +12,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 import { useLendModalStyles } from "./index.styles";
 import PolygonAPI from "shared/services/API/polygon";
+import { getCorrectNumber } from "shared/helpers/number";
 
 const LendModal = ({ open, onClose, onSuccess, market }) => {
   const classes = useLendModalStyles();
@@ -121,6 +122,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
         let _bn_number = amount * (10 ** decimals)
         handleOpenTransactionModal()
         await PolygonAPI.FractionalLoan.lend(web3, account, market.CToken, _bn_number,  setTxnHash);
+        onClose()
         onSuccess && onSuccess(amount);
         showAlertMessage(`Successfully lent ${amount} ${market?.token_info?.Symbol}!`, {
           variant: "success",
@@ -161,7 +163,7 @@ const LendModal = ({ open, onClose, onSuccess, market }) => {
       </Box>
       <Box marginTop="8px" display="flex">
         <Typography className={classes.small}>Wallet Balance</Typography>
-        <Typography className={classes.smallBold}>{`${balance} ${market?.token_info?.Symbol}`}</Typography>
+        <Typography className={classes.smallBold}>{`${getCorrectNumber(balance, 4)} ${market?.token_info?.Symbol}`}</Typography>
       </Box>
       <Box className={classes.rateBox} display="flex" justifyContent="space-between">
         <Typography className={classes.small}>Lending Rate</Typography>

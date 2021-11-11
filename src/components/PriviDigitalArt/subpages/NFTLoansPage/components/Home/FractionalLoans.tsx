@@ -73,8 +73,8 @@ const FractionalLoans = ({ loading, markets }) => {
         let total_borrow = 0
         let total_lend = 0
         if (total_borrow_list.length > 0) {
-          total_borrow = total_borrow_list[total_borrow_list.length - 1].total_borrow
-          total_lend = total_borrow_list[total_borrow_list.length - 1].total_reserves
+          total_borrow = total_borrow_list[0].total_borrow
+          total_lend = total_borrow_list[0].total_lend
         }
         return [
           {

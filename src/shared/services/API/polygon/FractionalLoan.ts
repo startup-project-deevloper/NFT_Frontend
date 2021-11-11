@@ -58,7 +58,7 @@ export async function isEntered(
   const contract = ContractInstance(web3, markets.abi, contract_address);
 
   const response = await contract.methods.isEntered(asset_address, account).call();
-  
+
   return response;
 }
 
@@ -71,10 +71,22 @@ export async function getAccountLiquidity(
   const contract = ContractInstance(web3, markets.abi, contract_address);
 
   const response = await contract.methods.getAccountLiquidity(account).call();
-  
+
   return response;
 }
 
+export async function getBorrowingLimitUsed(
+  web3: Web3,
+  account: string,
+  contract_address: string)
+  : Promise<any> {
+
+  const contract = ContractInstance(web3, markets.abi, contract_address);
+
+  const response = await contract.methods.getBorrowingLimitUsed(account).call();
+
+  return response;
+}
 
 export async function borrow(
   web3: Web3,

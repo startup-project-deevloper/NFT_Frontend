@@ -416,6 +416,7 @@ const InfoPane = React.memo(
               refreshFollowers={getFollowers}
               refreshFollowings={getFollowing}
               isLoadingFollows={isLoadingFollows}
+              userProfile={userProfile}
               number={
                 selectedHeaderFollows === "Followers" ? userProfile.numFollowers : userProfile.numFollowings
               }

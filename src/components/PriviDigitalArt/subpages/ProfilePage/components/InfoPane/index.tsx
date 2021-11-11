@@ -487,6 +487,7 @@ const InfoPane = React.memo(
             refreshFollowers={getFollowers}
             refreshFollowings={getFollowing}
             isLoadingFollows={isLoadingFollows}
+            userProfile={userProfile}
             ownUser={ownUser}
           />
         )}

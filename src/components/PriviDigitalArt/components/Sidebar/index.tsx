@@ -43,7 +43,7 @@ const SidebarContent = ({ handleRefresh }) => {
     //   return TABS[3];
     } else if (location.pathname.includes("loan")) {
       return TABS[3];
-    } else if (location.pathname.includes("like")) {
+    } else if (location.pathname.includes("saved-content")) {
       return TABS[4];
     } else if (location.pathname.includes("option")) {
       return TABS[5];

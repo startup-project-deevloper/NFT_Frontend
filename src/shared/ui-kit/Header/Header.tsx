@@ -599,7 +599,7 @@ const Header = props => {
 
   const handleProfile = e => {
     handleCloseMobileMenu(e);
-    history.push(`/${userSelector.id}/profile`);
+    history.push(`/${userSelector.urlSlug}/profile`);
     setAnchorEl(null);
   };
 

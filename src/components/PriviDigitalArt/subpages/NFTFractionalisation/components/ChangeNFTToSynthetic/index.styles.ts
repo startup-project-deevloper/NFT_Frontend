@@ -352,9 +352,9 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     alignItems: "center",
     color: "#fff",
     "& img": {
-      width: "100%",
-      height: "100%",
-      maxHeight: 250,
+      width: "210px",
+      height: "210px",
+      borderRadius: 20
     },
     [theme.breakpoints.between(960, 980)]: {
       padding: 12,
@@ -373,6 +373,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     marginBottom: 30,
+    marginTop: 30
   },
   ntfName: {
     fontSize: 16,
@@ -382,7 +383,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     textTransform: "capitalize",
     marginBottom: 8,
     width: "100%",
-    maxWidth: 220,
+    maxWidth: 210,
     textOverflow: "ellipsis",
     overflow: "hidden",
     whiteSpace: "nowrap",

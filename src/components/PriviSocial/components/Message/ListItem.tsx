@@ -77,11 +77,11 @@ export const ListItem: React.FunctionComponent<any> = ({
   return (
     <div
       className={`item ${
-        (currentChat &&
-          chat.users.userFrom.userId === currentChat.users.userFrom.userId &&
+        currentChat &&
+        ((chat.users.userFrom.userId === currentChat.users.userFrom.userId &&
           chat.users.userTo.userId === currentChat.users.userTo.userId) ||
-        (chat.users.userFrom.userId === currentChat.users.userTo.userId &&
-          chat.users.userTo.userId === currentChat.users.userFrom.userId)
+          (chat.users.userFrom.userId === currentChat.users.userTo.userId &&
+            chat.users.userTo.userId === currentChat.users.userFrom.userId))
           ? "selected"
           : ""
       }`}

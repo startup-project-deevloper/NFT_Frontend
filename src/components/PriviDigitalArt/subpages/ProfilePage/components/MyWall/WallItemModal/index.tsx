@@ -1,38 +1,50 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Avatar, Modal } from "shared/ui-kit";
-import styles from "./index.module.css";
+import React, { useEffect, useState } from "react";
+import Axios from "axios";
 import Moment from "react-moment";
+import ReactPlayer from "react-player";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { withStyles } from "@material-ui/styles";
+import { ClickAwayListener, Grow, MenuItem, Popper, MenuList, Paper } from "@material-ui/core";
+// import SvgIcon from "@material-ui/core/SvgIcon";
+
+import { GreenText } from "components/PriviSocial/index.styles";
+import MorePicturesModal from "./MorePicturesModal";
+import { RootState } from "store/reducers/Reducer";
+import { setSelectedUser } from "store/actions/SelectedUser";
+
+import { Avatar, Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { useShareMedia } from "shared/contexts/ShareMediaContext";
-import Axios from "axios";
-import SvgIcon from "@material-ui/core/SvgIcon";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store/reducers/Reducer";
-import { withStyles } from "@material-ui/styles";
-import { ClickAwayListener, Grow, MenuItem, Popper, MenuList, Paper } from "@material-ui/core";
-import { ReactComponent as ShareAltSolid } from "assets/icons/share.svg";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { setSelectedUser } from "store/actions/SelectedUser";
-import { useHistory } from "react-router-dom";
-import { GreenText } from "components/PriviSocial/index.styles";
-import MorePicturesModal from "./MorePicturesModal";
 import DiscordVideoFullScreen from "shared/ui-kit/Page-components/Discord/DiscordVideoFullScreen/DiscordVideoFullScreen";
-import ReactPlayer from "react-player";
-import { getRandomAvatarForUserIdWithMemoization, getUserAvatar } from "shared/services/user/getUserAvatar";
-import getPhotoIPFS from "../../../../../../../shared/functions/getPhotoIPFS";
-import useIPFS from "../../../../../../../shared/utils-IPFS/useIPFS";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+
+// import { ReactComponent as ShareAltSolid } from "assets/icons/share.svg";
+
+import styles from "./index.module.css";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const chatGreyIcon = require("assets/icons/message_gray.png");
-const CustomMenuItem = withStyles({
-  root: {
-    fontSize: "14px",
-    fontFamily: "Agrandir",
-  },
-})(MenuItem);
 
-export default function WallItemModal({ item, open, onClose, comments, setComments, creatorImage, imageWallIPFS, videoWallIPFS }) {
+// const CustomMenuItem = withStyles({
+//   root: {
+//     fontSize: "14px",
+//     fontFamily: "Agrandir",
+//   },
+// })(MenuItem);
 
+export default function WallItemModal({
+  item,
+  open,
+  onClose,
+  comments,
+  setComments,
+  creatorImage,
+  imageWallIPFS,
+  videoWallIPFS,
+}) {
   if (item)
     return (
       <Modal isOpen={open} theme="light" size="medium" showCloseIcon onClose={onClose}>
@@ -59,7 +71,7 @@ const ResponseWallPost = ({ response }) => {
         <div
           className={styles.authorPhotoWallPost}
           style={{
-            backgroundImage: response && response.url ? `url(${response.url})` : "none",
+            backgroundImage: `url(${response.imageUrl ?? getDefaultAvatar()})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -95,7 +107,7 @@ export const WallPostModalContent = ({
   setComments,
   creatorImage,
   imageWallIPFS,
-  videoWallIPFS
+  videoWallIPFS,
 }: {
   item: any;
   onlyDisplay?: boolean;
@@ -106,8 +118,6 @@ export const WallPostModalContent = ({
   videoWallIPFS: any;
 }) => {
   const userSelector = useSelector((state: RootState) => state.user);
-  const users = useSelector((state: RootState) => state.usersInfoList);
-
   const history = useHistory();
 
   const { shareMediaToSocial } = useShareMedia();
@@ -167,7 +177,7 @@ export const WallPostModalContent = ({
       let body = {
         blogPostId: item.id,
         userId: userSelector.id,
-        userName: userSelector.firstName,
+        userName: `${userSelector.firstName ?? ""} ${userSelector.lastName ?? ""}`,
         response: response,
       };
       setResponseLoader(true);
@@ -175,24 +185,7 @@ export const WallPostModalContent = ({
         .then(response => {
           if (response.data.success) {
             let responses: any[] = [...response.data.data];
-            let r = [] as any;
-
-            responses.forEach(async response => {
-              let slug = response.userName;
-              let image = "";
-
-              let thisUser = users.find(u => u.id === response.userId);
-              console.log('resp', response, thisUser);
-
-              if (thisUser) {
-                slug = thisUser.urlSlug;
-                image = await getReturnUserPhoto(thisUser);
-              }
-
-              r.push({ ...response, urlSlug: slug, url: image });
-            });
-
-            setComments && setComments(r);
+            setComments && setComments(responses);
             setResponse("");
             setResponseLoader(false);
           } else {
@@ -216,14 +209,6 @@ export const WallPostModalContent = ({
     }
   };
 
-  const getReturnUserPhoto = async (userFound: any) => {
-    if (userFound?.infoImage?.newFileCID && userFound?.infoImage?.metadata?.properties?.name) {
-      let imageUrl = await getPhotoIPFS(userFound.infoImage.newFileCID, userFound.infoImage.metadata.properties.name, downloadWithNonDecryption);
-      return(imageUrl);
-    } else {
-      return("");
-    }
-  }
   const handleKeyDown = event => {
     if (event.key === "Enter") {
       makeResponse();
@@ -270,7 +255,7 @@ export const WallPostModalContent = ({
       <Moment className={styles.date} fromNow>
         {!onlyDisplay ? item?.createdAt : new Date()}
       </Moment>
-      {(imageWallIPFS && (
+      {imageWallIPFS && (
         <Box className={styles.postImages} mt="24px">
           {imageWallIPFS && imageWallIPFS !== "" && (
             <div
@@ -336,7 +321,8 @@ export const WallPostModalContent = ({
               style={{
                 marginTop: imageWallIPFS && imageWallIPFS !== "" ? "4px" : 0,
                 marginLeft: !imageWallIPFS ? "4px" : 0,
-                borderRadius: imageWallIPFS && imageWallIPFS !== "" ? "0px 0px 67px 0px" : `0px 67px 67px 0px`,
+                borderRadius:
+                  imageWallIPFS && imageWallIPFS !== "" ? "0px 0px 67px 0px" : `0px 67px 67px 0px`,
                 height: imageWallIPFS && imageWallIPFS !== "" ? "50%" : "100%",
               }}
               onClick={handleOpenMorePicturesModal}
@@ -345,7 +331,7 @@ export const WallPostModalContent = ({
             </div>
           )}
         </Box>
-      ))}
+      )}
 
       {videoWallIPFS ? (
         <Box display="flex" justifyContent="center" mt={3} mb={3}>
@@ -364,31 +350,25 @@ export const WallPostModalContent = ({
             onClose={handleCloseModalDiscordVideoFullScreen}
             showCloseIcon
           >
-            <DiscordVideoFullScreen onCloseModal={handleCloseModalDiscordVideoFullScreen}
-                                    url={videoWallIPFS ? videoWallIPFS : ""} />
+            <DiscordVideoFullScreen
+              onCloseModal={handleCloseModalDiscordVideoFullScreen}
+              url={videoWallIPFS ? videoWallIPFS : ""}
+            />
           </Modal>
         </Box>
       ) : null}
 
       <Box className={styles.userPane} mb={"48px"}>
         <Box className={styles.userInfo} onClick={() => history.push(`/${item.createdBy}/profile`)}>
-          <Avatar
-            url={
-              creatorImage ? creatorImage : "none"
-            }
-            size={"large"}
-          />
+          <Avatar url={creatorImage ? creatorImage : "none"} size={"large"} />
           <Box ml={"36px"}>
             <Box fontSize="22px" fontWeight={800}>
-              {users.find(u => u.id === item?.createdBy)?.name ||
-                users.find(u => u.id === item?.createdBy)?.urlSlug}
+              {item.userInfo?.name}
             </Box>
             <Box className={styles.userDetail}>
               <Box display="flex" alignItems="center">
-                <GreenText fontSize="14px">
-                  @{users.find(u => u.id === item?.createdBy)?.urlSlug ?? "Username"}
-                </GreenText>
-                {users.find(u => u.id === item?.createdBy)?.verified && (
+                <GreenText fontSize="14px">@{item.userInfo?.urlSlug}</GreenText>
+                {item.userInfo?.verified && (
                   <img
                     src={require("assets/icons/verified_gray.png")}
                     alt="verified"
@@ -398,9 +378,7 @@ export const WallPostModalContent = ({
                   />
                 )}
               </Box>
-              <div className={styles.levelLabel}>{`level ${
-                users.find(u => u.id === item?.createdBy)?.level ?? 1
-              }`}</div>
+              <div className={styles.levelLabel}>{`level ${item.userInfo?.level ?? 1}`}</div>
             </Box>
           </Box>
         </Box>
@@ -440,63 +418,57 @@ export const WallPostModalContent = ({
           <div />
         )}
 
-        {!onlyDisplay ? (
-          <div className={styles.socialsRowPostItem}>
-            <span onClick={!onlyDisplay ? handleList : undefined}>
-              <img
-                src={require(isListed
-                  ? "assets/priviIcons/bookmark-filled.svg"
-                  : "assets/priviIcons/bookmark.svg")}
-                alt="bookmark"
-              />
-            </span>
-            <span onClick={!onlyDisplay ? handleToggleShareMenu : undefined} ref={anchorShareMenuRef}>
-              <SvgIcon htmlColor={"white"}>
-                <ShareAltSolid />
-              </SvgIcon>
-            </span>
-            {!onlyDisplay && (
-              <Popper
-                open={openShareMenu}
-                anchorEl={anchorShareMenuRef.current}
-                transition
-                disablePortal={false}
-                style={{ position: "inherit", zIndex: 1400 }}
+        {/* <div className={styles.socialsRowPostItem}>
+          <span onClick={!onlyDisplay ? handleList : undefined}>
+            <img
+              src={require(isListed
+                ? "assets/priviIcons/bookmark-filled.svg"
+                : "assets/priviIcons/bookmark.svg")}
+              alt="bookmark"
+            />
+          </span>
+          <span onClick={!onlyDisplay ? handleToggleShareMenu : undefined} ref={anchorShareMenuRef}>
+            <SvgIcon htmlColor={"white"}>
+              <ShareAltSolid />
+            </SvgIcon>
+          </span>
+          <Popper
+            open={openShareMenu}
+            anchorEl={anchorShareMenuRef.current}
+            transition
+            disablePortal={false}
+            style={{ position: "inherit", zIndex: 1400 }}
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  transformOrigin: placement === "bottom" ? "center top" : "center bottom",
+                  position: "inherit",
+                }}
               >
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{
-                      transformOrigin: placement === "bottom" ? "center top" : "center bottom",
-                      position: "inherit",
-                    }}
-                  >
-                    <Paper className={styles.paper}>
-                      <ClickAwayListener onClickAway={handleCloseShareMenu}>
-                        <MenuList
-                          autoFocusItem={openShareMenu}
-                          id="menu-list-grow"
-                          onKeyDown={handleListKeyDownShareMenu}
-                        >
-                          <CustomMenuItem onClick={handleOpenShareModal}>
-                            <img
-                              src={require("assets/icons/butterfly.png")}
-                              alt={"spaceship"}
-                              style={{ width: 20, height: 20, marginRight: 5 }}
-                            />
-                            Share on social media
-                          </CustomMenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Popper>
+                <Paper className={styles.paper}>
+                  <ClickAwayListener onClickAway={handleCloseShareMenu}>
+                    <MenuList
+                      autoFocusItem={openShareMenu}
+                      id="menu-list-grow"
+                      onKeyDown={handleListKeyDownShareMenu}
+                    >
+                      <CustomMenuItem onClick={handleOpenShareModal}>
+                        <img
+                          src={require("assets/icons/butterfly.png")}
+                          alt={"spaceship"}
+                          style={{ width: 20, height: 20, marginRight: 5 }}
+                        />
+                        Share on social media
+                      </CustomMenuItem>
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
             )}
-          </div>
-        ) : (
-          <></>
-        )}
+          </Popper>
+        </div> */}
       </Box>
 
       <LoadingWrapper theme="blue" loading={responseLoader}>

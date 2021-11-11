@@ -16,9 +16,9 @@ export const profileEditModalStyles = makeStyles(theme => ({
     justifyContent: "space-between",
   },
   infoHeaderEdit: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 400,
-    color: "#181818",
+    color: "#707582",
   },
   infoIconEdit: {
     width: 12,

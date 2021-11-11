@@ -12,7 +12,7 @@ import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { useDepositPageStyles } from "./index.styles";
-import { BlockchainNets, LoanBlockchainNet } from "shared/constants/constants";
+import { BlockchainNets } from "shared/constants/constants";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { switchNetwork } from "shared/functions/metamask";
 import { toNDecimals } from "shared/functions/web3";

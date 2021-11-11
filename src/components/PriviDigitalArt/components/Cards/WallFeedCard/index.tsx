@@ -83,7 +83,8 @@ export default function WallFeedCard({
       let videoUrl = await getPhotoIPFS(
         feedData.infoVideo.newFileCID,
         feedData.infoVideo.metadata.properties.name,
-        downloadWithNonDecryption
+        downloadWithNonDecryption,
+        feedData.infoVideo.metadata.object_type
       );
       setVideoWallIPFS(videoUrl);
     }
@@ -213,7 +214,7 @@ export default function WallFeedCard({
           item={feedData}
           comments={comments}
           setComments={setComments}
-          creatorImage={feedData.userInfo.imageUrl ?? getDefaultAvatar()}
+          creatorImage={feedData.userInfo?.imageUrl ?? getDefaultAvatar()}
           imageWallIPFS={imageWallIPFS}
           videoWallIPFS={videoWallIPFS}
         />

@@ -44,11 +44,7 @@ const NFTLoanDetailPage = () => {
   const classes = useLoanViewStyles();
   const user = useTypedSelector(state => state.user);
   const history = useHistory();
-  const params: {
-    loanId: string,
-    tokenAddress: string,
-    tokenId: string
-  } = useParams();
+  const params: { loanId: string } = useParams();
 
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");

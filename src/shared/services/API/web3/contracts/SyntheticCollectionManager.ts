@@ -627,7 +627,6 @@ const syntheticCollectionManager = (network: string) => {
             console.log(err);
             resolve(null);
           } else {
-            console.log("getBuybackPrice", result);
             resolve(toDecimals(result, decimals));
           }
         });

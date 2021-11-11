@@ -14,7 +14,7 @@ import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { GreenText } from "components/PriviSocial/index.styles";
 import { GreenSlider } from "components/PriviSocial/subpages/Feed";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import ClosenessDegreeModal from "../ClosenessDegreeModal";
 import { profileFollowsModalStyles } from "./index.styles";
 import { Skeleton } from "@material-ui/lab";
@@ -136,37 +136,15 @@ const ProfileFollowsModal = React.memo(
     const getSuggesttedUsers = () => {
       setLoadingSuggestions(true);
       axios
-        .get(`${URL()}/user/getSuggestedUsers/${userSelector.id}`)
+        .get(`${URL()}/artwork/topSellers`)
         .then(res => {
           const resp = res.data;
           if (resp.success) {
-            const data = resp.data;
+            const data = resp.userList;
 
             let suggestions = [...data];
 
-            if (suggestions.length > 0) {
-              suggestions.forEach((user, index) => {
-                if (!user.userImageURL && !user.name) {
-                  suggestions[index].userImageURL =
-                    users.find(u => u.id === user.id || u.id === user.id?.user)?.imageURL ??
-                    users.find(u => u.id === user.id || u.id === user.id?.user)?.url;
-                }
-                if (!user.urlSlug || user.urlSlug.startsWith("Px")) {
-                  suggestions[index].urlSlug = users
-                    .find(u => u.id === user.id || u.id === user.id?.user)
-                    ?.urlSlug?.startsWith("Px")
-                    ? users.find(u => u.id === user.id || u.id === user.id?.user)?.name
-                    : users.find(u => u.id === user.id || u.id === user.id?.user)?.urlSlug;
-                }
-              });
-            } else {
-              suggestions = users.map(user => {
-                if (!usersList.find(item => item.id === user.id)) {
-                  return { ...user, userImageURL: user.imageURL ?? user.url };
-                }
-              });
-            }
-
+            suggestions.sort((a, b) => b.myMediasCount - a.myMediasCount);
             setSuggestionsList(suggestions);
           }
         })
@@ -336,13 +314,7 @@ const ProfileFollowsModal = React.memo(
                         onClick={goToProfile}
                       >
                         <Avatar
-                          url={
-                            item.userImageURL && item.userImageURL.length > 0
-                              ? item.userImageURL
-                              : item.url && item.url.length > 0
-                              ? item.url
-                              : getRandomAvatarForUserIdWithMemoization(item.id)
-                          }
+                          url={item.urlIpfsImage || getDefaultAvatar()}
                           size="small"
                         />
                         <Box ml={"14px"}>
@@ -382,13 +354,7 @@ const ProfileFollowsModal = React.memo(
                 <Box mb={2} display="flex" alignItems="center" justifyContent="space-between">
                   <Box alignItems="center" display="flex" style={{ cursor: "pointer" }} onClick={goToProfile}>
                     <Avatar
-                      url={
-                        item.userImageURL && item.userImageURL.length > 0
-                          ? item.userImageURL
-                          : item.url && item.url.length > 0
-                          ? item.url
-                          : getRandomAvatarForUserIdWithMemoization(item.id)
-                      }
+                        url={item.imageUrl ?? getDefaultAvatar()}
                       size="small"
                     />
                     <Box ml={"14px"}>

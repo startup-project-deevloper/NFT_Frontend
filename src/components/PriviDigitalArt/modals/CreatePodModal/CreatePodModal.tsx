@@ -52,7 +52,7 @@ const CreatePodModal = (props: any) => {
   useEffect(() => {
     if (userSelector.address && !pod.Collabs.find(u => u.address == userSelector.address))
       pod.Collabs.push({
-        userId: userSelector.id,
+        id: userSelector.id,
         address: userSelector.address,
         name: userSelector.firstName,
         imageUrl: userSelector.url,
@@ -87,7 +87,8 @@ const CreatePodModal = (props: any) => {
         payload.imageUrl = "";
         payload.hashtags = [];
         payload.hasPhoto = !!(photo || photoImg);
-        payload.collabs = (pod.Collabs ?? []).map(user => ({ userId: user.urlSlug, address: user.address }));
+        
+        payload.collabs = (pod.Collabs ?? []).map(user => ({ userId: user.id, address: user.address }));
         payload.creatorAddress = userSelector.address;
         payload.creatorId = userSelector.id;
         payload.network =

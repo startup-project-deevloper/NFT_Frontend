@@ -20,9 +20,9 @@ export default function HomePage() {
   const classes = subPageStyles();
   const { setOpenFilters } = useContext(DigitalArtContext);
   const [showMoreArtists, setShowMoreArtists] = useState<boolean>(false);
-  const [loadingDigitalArts, setLoadingDigitalArts] = useState<boolean>(false);
+  const [loadingDigitalArts, setLoadingDigitalArts] = useState<boolean>(true);
   const [showMoreCollections, setShowMoreCollections] = useState<boolean>(false);
-  const [loadingArtists, setLoadingArtists] = useState<boolean>(false);
+  const [loadingArtists, setLoadingArtists] = useState<boolean>(true);
   const [digitalArts, setDigitalArts] = useState<any[]>([]);
   const [artists, setArtists] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([
@@ -54,7 +54,6 @@ export default function HomePage() {
   }, []);
 
   const getArtists = useCallback(() => {
-    if (loadingArtists) return;
     setLoadingArtists(true);
     axios
       .get(`${URL()}/artwork/topSellers`)
@@ -97,7 +96,7 @@ export default function HomePage() {
   }, []);
 
 
-
+  
   return (
     <div
       className={classes.page}

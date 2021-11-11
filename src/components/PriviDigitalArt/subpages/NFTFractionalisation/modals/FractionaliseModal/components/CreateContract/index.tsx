@@ -201,6 +201,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             pTokenLite: collection.pTokenLite_,
             perpetualPoolLiteAddress: collection.perpetualPoolLiteAddress_,
             poolInfo: collection.poolInfo,
+            OwnerAddress: account!,
             isAddCollection: true,
           };
         } else {
@@ -214,6 +215,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             OwnerSupply: supplyToKeep,
             isAddCollection: false,
             SellingSupply: 10000 - Number(supplyToKeep),
+            OwnerAddress: account!,
             SoldSupply: 0,
           };
         }

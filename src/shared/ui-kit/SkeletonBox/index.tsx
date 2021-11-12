@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, BoxProps } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
+import { useStyles } from "./index.style";
 
 interface SkeletonBoxProps extends BoxProps {
   loading: boolean;
@@ -8,6 +9,7 @@ interface SkeletonBoxProps extends BoxProps {
 }
 
 const SkeletonImageBox: React.FC<SkeletonBoxProps> = ({ loading, image, children, ...props }: SkeletonBoxProps) => {
+  const classes = useStyles()
   if (loading) {
     return (
       <Box
@@ -22,9 +24,10 @@ const SkeletonImageBox: React.FC<SkeletonBoxProps> = ({ loading, image, children
       {...props}
       style={{
         ...props.style,
-        backgroundImage: image ? `url(${image})` : undefined,
+        position: 'relative'
       }}
     >
+      <img src={image} className={classes.bgImage} />
       {children}
     </Box>
   }

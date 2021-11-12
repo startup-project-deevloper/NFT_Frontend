@@ -87,8 +87,8 @@ export default function ProfileCard({
       setBookmarked(true);
       setTotalView(item.TotalView);
 
-      if (item.CreatorAddress) {
-        axios.get(`${URL()}/user/getBasicUserInfo/${item.CreatorAddress}`).then(res => {
+      if (item.creator || item.CreatorAddress) {
+        axios.get(`${URL()}/user/getBasicUserInfo/${item.creator || item.CreatorAddress}`).then(res => {
           const resp = res.data;
           if (resp?.success) {
             const data = resp.data;
@@ -100,6 +100,12 @@ export default function ProfileCard({
             ]);
           }
         });
+      } else if (item.owner_of) {
+        setCreatorsData([
+          {
+            ...user
+          },
+        ]);
       }
     }
   }, [item, usersList]);
@@ -376,20 +382,7 @@ export default function ProfileCard({
             </div>
             <div className={cls({ [classes.hidden]: !onHover }, classes.aspectRatioWrapper)}>
               <div className={classes.content}>
-                <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-                  <Box>
-                    <Box fontSize="14px" alignItems="center" display="flex">
-                      <img
-                        src={require("assets/emojiIcons/fruits.png")}
-                        alt="fruits"
-                        width="22px"
-                        height="21px"
-                        style={{ marginRight: "8px" }}
-                      />
-                      Fruits
-                    </Box>
-                    <Box>{(item?.fruits ?? []).length}</Box>
-                  </Box>
+                <Box display="flex" alignItems="center" justifyContent="space-evenly" width="100%">
                   <Box>
                     <Box fontSize="14px" alignItems="center" display="flex">
                       <img
@@ -486,7 +479,7 @@ export default function ProfileCard({
                             className={classes.avatar}
                             style={{
                               backgroundImage: `url(${
-                                creator?.imageUrl ? creator?.imageUrl : getDefaultAvatar()
+                                creator?.urlIpfsImage || creator?.imageUrl || getDefaultAvatar()
                               })`,
                             }}
                           />
@@ -519,8 +512,6 @@ export default function ProfileCard({
                 {item?.MediaName || item?.metadata?.name || item?.title}
               </Box>
             </Box>
-
-            <FruitSelect fruitObject={item} members={type === "Crew" ? item.Members : []} />
           </Box>
           {item && item.Fraction && (
             <Box className={classes.fraction}>Fractionalized {Math.round(item.Fraction.Fraction * 100)}%</Box>

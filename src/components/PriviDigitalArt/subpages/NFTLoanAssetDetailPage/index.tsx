@@ -14,6 +14,10 @@ import Axios from "axios";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import LendModal from "./modals/LendModal";
 import BorrowModal from "./modals/BorrowModal";
+import { getCorrectNumber } from "shared/helpers/number";
+import Web3 from "web3";
+import { useWeb3React } from "@web3-react/core";
+import PolygonAPI from "shared/services/API/polygon";
 
 const PERIODS = ["Borrowing", "Lending"];
 
@@ -219,37 +223,11 @@ const NFTLoanAssetDetailPage = () => {
   const [DetailsData, setDetailsData] = useState<any>(_DetailsData);
   const [lendModalOpen, setLendModalOpen] = useState<boolean>(false);
   const [borrowModalOpen, setBorrowModalOpen] = useState<boolean>(false);
+  const { account, library, chainId } = useWeb3React();
 
   useEffect(() => {
     setLoadingMarket(true)
-    Axios.get(`${URL()}/nftLoan/getFractionalLoan/${params?.assetId}`)
-      .then(res => {
-        const data = res.data;
-        if (data.success) {
-          const _market = data.data.market
-          setMarket(_market)
-
-          const _details_data = JSON.parse(JSON.stringify(DetailsData))
-          _details_data[0].value = `$${_market?.token_info?.priceInUsd}`
-          _details_data[1].value = `0 ${_market?.token_info?.Symbol}`
-          _details_data[2].value = (_market?.lender || 0)
-          _details_data[3].value = (_market?.borrower || 0)
-          _details_data[4].attribute = `${_market?.token_info?.Symbol} Borrow CAP`
-          _details_data[4].value = '$0'
-          _details_data[5].value = `0 ${_market?.token_info?.Symbol}`
-          _details_data[6].value = `${_market?.borrowList.length > 0 ? _market?.borrowList[0].total_reserves : 0} ${_market?.token_info?.Symbol}`
-          _details_data[7].value = `${(_market?.reserve_factor || 0) * 100} %`
-          _details_data[8].value = `${(_market?.collateralFactor || 0) * 100} %`
-          _details_data[9].attribute = `${_market?.token_info?.Name} Minted`
-          _details_data[9].value = `${_market?.token_info?.total_supply || 0}`
-          _details_data[10].value = `1 ${_market?.token_info?.Symbol} = $${_market?.token_info?.priceInUsd}`
-          setDetailsData(_details_data)
-        }
-      })
-      .catch(err => console.log(err))
-      .finally(() => {
-        setLoadingMarket(false);
-      })
+    getMarket()
   }, [params?.assetId])
 
   useEffect(() => {
@@ -264,6 +242,37 @@ const NFTLoanAssetDetailPage = () => {
     setRewardConfig(newRewardConfig);
   }, [period]);
 
+  const getMarket = () => {
+
+    Axios.get(`${URL()}/nftLoan/getFractionalLoan/${params?.assetId}`)
+      .then(async res => {
+        const data = res.data;
+        if (data.success) {
+          const _market = data.data.market
+          setMarket(_market)
+          const _details_data = JSON.parse(JSON.stringify(DetailsData))
+          _details_data[0].value = `$${getCorrectNumber(_market?.token_info?.priceInUsd, 2)}`
+          _details_data[1].value = `${getCorrectNumber(_market?.borrowList.length > 0 ? _market?.borrowList[0].total_lend / (10 ** _market?.token_info?.Decimals) : 0, 2)} ${_market?.token_info?.Symbol}`
+          _details_data[2].value = (_market?.lender || 0)
+          _details_data[3].value = (_market?.borrower || 0)
+          _details_data[4].attribute = `${_market?.token_info?.Symbol} Borrow CAP`
+          _details_data[4].value = 'No Limit'
+          _details_data[5].value = `0 ${_market?.token_info?.Symbol}`
+          _details_data[6].value = `${_market?.borrowList.length > 0 ? _market?.borrowList[0].total_reserves / (10 ** _market?.token_info?.Decimals) : 0} ${_market?.token_info?.Symbol}`
+          _details_data[7].value = `${(_market?.initialReserveFactor || 0) * 100} %`
+          _details_data[8].value = `${(_market?.collateralFactor || 0) * 100} %`
+          _details_data[9].attribute = `c${_market?.token_info?.Symbol} Minted`
+          _details_data[9].value = `${_market?.c_total_supply / (10 ** market?.c_decimal)}`
+          _details_data[10].value = `1 ${_market?.token_info?.Symbol} = $${getCorrectNumber(_market?.initialExchangeRate)}`
+          setDetailsData(_details_data)
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingMarket(false);
+      })
+  }
+
   const getAllValues = React.useCallback(() => {
     const result: number[] = [];
     for (let index = 0; index <= 18; index++) {
@@ -272,6 +281,19 @@ const NFTLoanAssetDetailPage = () => {
 
     return result;
   }, []);
+
+  const borrowLendSuccess = (amount, isLend) => {
+    Axios.post(`${URL()}/nftLoan/updateLoanCounter/${market.token_info.Address}`, {
+      isLend
+    })
+      .then(res => {
+        const data = res.data;
+        getMarket()
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+      });
+  }
 
   const handleChangePeriod = (period: string) => () => {
     setPeriod(period);
@@ -292,7 +314,7 @@ const NFTLoanAssetDetailPage = () => {
             <PrimaryButton
               style={{ background: "#431AB7", minWidth: 148 }}
               size={isMobile ? "small" : "medium"}
-              onClick={() => { setBorrowModalOpen(true)}}
+              onClick={() => { setBorrowModalOpen(true) }}
             >
               Borrow
             </PrimaryButton>
@@ -308,11 +330,11 @@ const NFTLoanAssetDetailPage = () => {
         <div className={classes.assetInfoSection}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <div className={classes.typo2}>Total Lending</div>
-            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_reserves * market?.token_info.priceInUsd : 0}</div>
+            <div className={classes.typo3}>${getCorrectNumber(market?.borrowList?.length > 0 ? (market?.borrowList[0]?.total_lend / (10 ** market?.token_info?.Decimals)) * market?.token_info.priceInUsd : 0, 4)}</div>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
             <div className={classes.typo2}>Total Borrowing</div>
-            <div className={classes.typo3}>${market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_borrow * market?.token_info.priceInUsd : 0}</div>
+            <div className={classes.typo3}>${getCorrectNumber(market?.borrowList?.length > 0 ? (market?.borrowList[0]?.total_borrow / (10 ** market?.token_info?.Decimals)) * market?.token_info.priceInUsd : 0, 4)}</div>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
             <div className={classes.typo2}>Lending APY</div>
@@ -324,10 +346,10 @@ const NFTLoanAssetDetailPage = () => {
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" mt={isMobile ? 2 : 0}>
             <div className={classes.typo2}>Utility Ratio</div>
-            <div className={classes.typo3}>{(market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_borrow : 0) / (market?.borrowList?.length > 0 ? (market?.borrowList[0]?.total_reserves == 0 ? 1 : market?.borrowList[0]?.total_reserves) : 1)}</div>
+            <div className={classes.typo3}>{getCorrectNumber((market?.borrowList?.length > 0 ? market?.borrowList[0]?.total_borrow : 0) / (market?.borrowList?.length > 0 ? (market?.borrowList[0]?.total_lend == 0 ? 1 : market?.borrowList[0]?.total_lend) : 1), 4)}</div>
           </Box>
         </div>
-        <div className={classes.chartSection}>
+        {/* <div className={classes.chartSection}>
           <div className={classes.controlParentBox}>
             <div className={classes.controlBox}>
               <Box className={classes.liquidityBox}>
@@ -351,7 +373,7 @@ const NFTLoanAssetDetailPage = () => {
           <Box flex={1} width={1} className={classes.chartWrapper}>
             {rewardConfig && <PrintChart config={rewardConfig} />}
           </Box>
-        </div>
+        </div> */}
         <div className={classes.detailTableSection}>
           <div className={classes.typo4}>Details</div>
           <Box width={1} display="flex" flexDirection="column" mt={2}>
@@ -374,13 +396,13 @@ const NFTLoanAssetDetailPage = () => {
         <LendModal
           open={lendModalOpen}
           onClose={() => setLendModalOpen(false)}
-          onSuccess={() => {}}
+          onSuccess={(amount) => { borrowLendSuccess(amount, true) }}
           market={market}
         />
         <BorrowModal
           open={borrowModalOpen}
           onClose={() => setBorrowModalOpen(false)}
-          onSuccess={() => {}}
+          onSuccess={(amount) => { borrowLendSuccess(amount, false) }}
           market={market}
         />
       </LoadingWrapper>

@@ -245,6 +245,8 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
 
   const [imageIPFS, setImageIPFS] = useState(null);
 
+  const isOwner = user.id === userId;
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(getUnixEpochTimeStamp(new Date()));
@@ -650,7 +652,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
                 Token Actions
               </Box>
               <div className={classes.actionWrap}>
-                {user.id === userId && (
+                {isOwner && (
                   <>
                     <div
                       className={`${classes.actionBtn} ${classes.airdropTokenBtn}`}

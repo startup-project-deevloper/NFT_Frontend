@@ -326,7 +326,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   const refreshPageData = async () => {
     // get owner social token
     const token = await axios
-      .get(`${URL()}/social/getOwnSocialToken/${user.id}`)
+      .get(`${URL()}/social/getOwnSocialToken/${userId}`)
       .then(res => {
         const resp = res.data;
         if (resp.success) {

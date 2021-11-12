@@ -94,24 +94,28 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
 
       <div className={classes.bidStatus}>
         <div className={classes.topBid}>
-          <div className={classes.auctionTitle}>
-            <span role="img" aria-label="total offers">
-              🔥{" "}
-            </span>
-            Top bid
-          </div>
-          <span>{`${formatNumber(
-            auction.topBidInfo?.price || auction.reservePrice || 0,
-            auction.bidTokenSymbol || "USDT",
-            4
-          )}`}</span>
-          <div className={classes.hint}>
-            $
-            {convertTokenToUSD(
-              auction.bidTokenSymbol || "USDT",
-              auction.topBidInfo?.price || auction.reservePrice || 0
-            )}
-          </div>
+          {auction.topBidInfo && (
+            <>
+              <div className={classes.auctionTitle}>
+                <span role="img" aria-label="total offers">
+                  🔥{" "}
+                </span>
+                Top bid
+              </div>
+              <span>{`${formatNumber(
+                auction.topBidInfo?.price || auction.reservePrice || 0,
+                auction.bidTokenSymbol || "USDT",
+                4
+              )}`}</span>
+              <div className={classes.hint}>
+                $
+                {convertTokenToUSD(
+                  auction.bidTokenSymbol || "USDT",
+                  auction.topBidInfo?.price || auction.reservePrice || 0
+                )}
+              </div>
+            </>
+          )}
         </div>
         <div className={classes.auctionEnding}>
           <div className={classes.auctionTitle}>

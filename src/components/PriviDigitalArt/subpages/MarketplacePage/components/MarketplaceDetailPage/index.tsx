@@ -945,20 +945,13 @@ const MarketplaceDetailPage = () => {
 
   const approveToken = async (apiHandler, spender, token, amount) => {
     let balance = await apiHandler.Erc20[token].balanceOf(web3, { account });
-    let decimals = await apiHandler.Erc20[token].decimals(web3);
-    balance = Number(toDecimals(balance, decimals));
-    if (balance < amount) {
+    if (Number(balance) < Number(amount)) {
       setLoading(false);
       showAlertMessage(`Insufficient balance`, { variant: "error" });
       return;
     }
 
-    const approved = await apiHandler.Erc20[token].approve(
-      web3,
-      account!,
-      spender,
-      toNDecimals(amount, decimals)
-    );
+    const approved = await apiHandler.Erc20[token].approve(web3, account!, spender, amount);
     if (!approved) {
       setLoading(false);
       showAlertMessage(`Can't proceed to approve Token`, { variant: "error" });
@@ -989,6 +982,7 @@ const MarketplaceDetailPage = () => {
       if (!web3) return;
       let request;
       let contractParams;
+      let decimals;
       switch (operation) {
         case 1:
           break;
@@ -1001,7 +995,7 @@ const MarketplaceDetailPage = () => {
         case 5: // FRACTIONALISE: Delete sell offer
           break;
         case 6: // AUCTION: Place bid
-          let decimals = await web3APIHandler.Erc20[media.auction.bidTokenSymbol].decimals(web3);
+          decimals = await web3APIHandler.Erc20[media.auction.bidTokenSymbol].decimals(web3);
 
           contractParams = {
             tokenAddress: media.auction.tokenAddress,
@@ -1015,7 +1009,7 @@ const MarketplaceDetailPage = () => {
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_AUCTION,
             media.auction.bidTokenSymbol,
-            priceRef.current
+            toNDecimals(priceRef.current, decimals)
           );
 
           web3APIHandler.Auction.placeBid(web3, account!, contractParams).then(async res => {
@@ -1133,6 +1127,7 @@ const MarketplaceDetailPage = () => {
           );
           break;
         case 10: // EXCHANGE: Buy from selling offer
+          decimals = await web3APIHandler.Erc20[media?.exchange?.offerToken].decimals(web3);
           contractParams = {
             input: {
               exchangeId: media.exchange.exchangeId,
@@ -1144,8 +1139,8 @@ const MarketplaceDetailPage = () => {
           await approveToken(
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
-            media?.exchange?.offerToken ?? "USDT",
-            media?.exchange?.price
+            media?.exchange?.offerToken,
+            toNDecimals(media?.exchange?.price, decimals)
           );
 
           web3APIHandler.Exchange.BuyERC721TokenFromOffer(web3, account!, contractParams).then(async res => {
@@ -1264,7 +1259,7 @@ const MarketplaceDetailPage = () => {
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
             media.exchange.offerToken,
-            priceRef.current
+            toNDecimals(priceRef.current, offerTokenDecimals)
           );
 
           web3APIHandler.Exchange.PlaceERC721TokenBuyingOffer(web3, account!, contractParams).then(
@@ -1330,7 +1325,10 @@ const MarketplaceDetailPage = () => {
         </Box>
         <LoadingWrapper loading={!media || isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
           <Box mt={2}>
-            <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
+            <Box display="flex" alignItems="center">
+              <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
+              <Box style={{ color: Color.Red, marginLeft: 16 }}>Sold</Box>
+            </Box>
             <Grid className={classes.leftImage} container spacing={2} wrap="wrap">
               <Grid item xs={12} sm={6}>
                 {media?.content_url.endsWith("mp4") ? (

@@ -103,14 +103,16 @@ export const ListItem: React.FunctionComponent<any> = ({
         {/* <div className="message">{chat.lastMessage}</div> */}
         {typeof chat.lastMessage === "string" && (
           <div className="message" style={{ color: type === "pix" ? "#181818" : "#949BAB" }}>
-            {chat.lastMessage.includes("data:audio/wav;") ? (
-              <div style={{ display: "flex" }}>
-                <img src={require("assets/icons/music-solid.svg")} alt={"music-solid"} />
-                &nbsp;Audio
-              </div>
-            ) : (
-              chat.lastMessage
-            )}
+            <div style={{ overflow: "hidden", maxHeight: 38, maxWidth: 282 }}>
+              {chat.lastMessage.includes("data:audio/wav;") ? (
+                <div style={{ display: "flex" }}>
+                  <img src={require("assets/icons/music-solid.svg")} alt={"music-solid"} />
+                  &nbsp;Audio
+                </div>
+              ) : (
+                chat.lastMessage
+              )}
+            </div>
           </div>
         )}
         {chat.lastMessage && (

@@ -588,10 +588,14 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
         <div className={classes.NoTokenContent}>
           <img src={require("assets/pixImages/profile_social_token.png")} alt="social_token" />
           <div className={classes.typo1}>No Token Available</div>
-          <div className={classes.typo2}>Create your first social token.</div>
-          <div className={classes.createTokenBtn} onClick={() => setOpenCreateSocialTokenModal(true)}>
-            Create Social Token
-          </div>
+          {isOwner && (
+            <>
+              <div className={classes.typo2}>Create your first social token.</div>
+              <div className={classes.createTokenBtn} onClick={() => setOpenCreateSocialTokenModal(true)}>
+                Create Social Token
+              </div>
+            </>
+          )}
         </div>
       ) : (
         <Box display="flex" flexDirection="column" width={1} mb={10}>

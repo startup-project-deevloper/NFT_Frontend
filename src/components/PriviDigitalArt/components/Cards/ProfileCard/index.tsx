@@ -100,7 +100,7 @@ export default function ProfileCard({
             ]);
           }
         });
-      } else if (item.owner_of) {
+      } else if (item.owner_of?.toLowerCase() === user.address?.toLowerCase()) {
         setCreatorsData([
           {
             ...user
@@ -365,6 +365,7 @@ export default function ProfileCard({
                       : {
                           backgroundImage: `url(${mediaImage})`,
                           backgroundSize: "cover",
+                          backgroundPosition: "center"
                         }
                   }
                 >

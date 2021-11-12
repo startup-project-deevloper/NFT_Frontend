@@ -266,17 +266,14 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             <StyledSkeleton width="100%" height={226} variant="rect" />
           </Box>
         ) : (
-          <div
+          <img
+            src={
+              media.cid
+              ? imageIPFS
+              : media.Type && media.Type !== "DIGITAL_ART_TYPE"
+              ? media.UrlMainPhoto
+              : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()}
             className={cls(classes.media, classes.fixed)}
-            style={{
-              backgroundImage: `url(${
-                media.cid
-                  ? imageIPFS
-                  : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                  ? media.UrlMainPhoto
-                  : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-              })`,
-            }}
             onClick={handleOpenDigitalArtModal}
           />
         )

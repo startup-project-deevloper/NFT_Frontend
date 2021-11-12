@@ -137,6 +137,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           const newNFTs = data.data;
           const newData = [...newNFTs];
           setSyntheticNFTs(newData);
+          if (!newData.filter(nft => nft.isVerified && !nft.isWithdrawn).length) {
+            setSelectedTab("stake");
+          }
           lastIdRef.current = data.lastId;
           hasMoreRef.current = data.hasMore;
         }
@@ -562,12 +565,14 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
       <div className={classes.nftSection}>
         <Box width="100%" mb={4} style={{ overflowX: "auto" }}>
           <div className={classes.nftTabSection}>
-            <div
-              className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
-              onClick={() => setSelectedTab("nft")}
-            >
-              <span>NFTS IN COLLECTION</span>
-            </div>
+            {syntheticNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn).length ? (
+              <div
+                className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
+                onClick={() => setSelectedTab("nft")}
+              >
+                <span>NFTS IN COLLECTION</span>
+              </div>
+            ) : null}
             <div
               className={cls({ [classes.selectedTabSection]: selectedTab === "stake" }, classes.tabSection)}
               onClick={() => setSelectedTab("stake")}
@@ -583,16 +588,18 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             >
               <span>TRADE JOTS</span>
             </div>
-            <div
-              className={cls(
-                { [classes.selectedTabSection]: selectedTab === "auctions" },
-                classes.tabSection
-              )}
-              onClick={() => setSelectedTab("auctions")}
-            >
-              <span>AUCTIONS</span>
-              <Box className={classes.countCircle}>{auctionNFTs.length}</Box>
-            </div>
+            {auctionNFTs.length ? (
+              <div
+                className={cls(
+                  { [classes.selectedTabSection]: selectedTab === "auctions" },
+                  classes.tabSection
+                )}
+                onClick={() => setSelectedTab("auctions")}
+              >
+                <span>AUCTIONS</span>
+                <Box className={classes.countCircle}>{auctionNFTs.length}</Box>
+              </div>
+            ) : null}
             <div
               className={cls(
                 { [classes.selectedTabSection]: selectedTab === "redemption" },

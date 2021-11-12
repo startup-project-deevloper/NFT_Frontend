@@ -122,41 +122,31 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
       const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_PROTOCOL_ROUTER;
 
       const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
-      const tokenURI = selectedNFT.tokenURI || '';
-      console.log('token data', currentNFT.collection_id,
-      currentNFT.SyntheticID,
-      selectedNFT.BlockchainId,
-      tokenURI)
+      const tokenURI = selectedNFT.tokenURI || "";
+
       const gas = await contract.methods
-        .changeNFT(
-          currentNFT.collection_id,
-          currentNFT.SyntheticID,
-          selectedNFT.BlockchainId,
-          tokenURI
-        )
+        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.BlockchainId, tokenURI)
         .estimateGas({ from: account });
       const response = await contract.methods
-        .changeNFT(
-          currentNFT.collection_id,
-          currentNFT.SyntheticID,
-          selectedNFT.BlockchainId,
-          tokenURI
-        )
+        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.BlockchainId, tokenURI)
         .send({ from: account, gas })
         .on("transactionHash", hash => {
           setHash(hash);
           setIsLoading(false);
         });
 
-      
-      const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, currentNFT, {
-        tokenId: currentNFT.SyntheticID,
-      });
+      const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(
+        web3,
+        currentNFT,
+        {
+          tokenId: currentNFT.SyntheticID,
+        }
+      );
 
       const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, currentNFT, {
         tokenId: currentNFT.SyntheticID,
       });
-      
+
       if (!response) {
         setIsProceeding(false);
         setIsLoading(false);
@@ -173,6 +163,7 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
           OwnerSupply: currentNFT.OwnerSupply,
           SellingSupply: sellingSupply,
           SoldSupply: soldSupply,
+          OwnerAddress: account!,
         };
 
         const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);

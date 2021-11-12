@@ -286,7 +286,7 @@ const MediaDetailsModal = (props: any) => {
             <Box display="flex" flexDirection="row" alignItems="center">
               <Avatar
                 size="medium"
-                url={creator && creator.imageUrl ? creator.imageUrl : getDefaultAvatar()}
+                url={creator && creator?.urlIpfsImage || creator?.imageUrl || getDefaultAvatar()}
               />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
                 <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
@@ -310,17 +310,6 @@ const MediaDetailsModal = (props: any) => {
                 )}
             </Box>
             <div className={classes.fruitSection}>
-              <Box mr={2} style={{ background: "#9EACF2", borderRadius: "50%" }}>
-                <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
-              </Box>
-              <Box mr={2} display="flex">
-                <img
-                  src={require(`assets/icons/bookmark.png`)}
-                  alt="Bookmark"
-                  onClick={() => {}}
-                  style={{ cursor: "pointer" }}
-                />
-              </Box>
               <Box mb={1}>
                 <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
                   <img src={require(`assets/icons/more.png`)} alt="like" />
@@ -349,7 +338,7 @@ const MediaDetailsModal = (props: any) => {
                     key={`artist-${creator.id}`}
                     className={classes.artist}
                     size="small"
-                    url={creator.imageUrl ? creator.imageUrl : getDefaultAvatar()}
+                    url={creator?.urlIpfsImage || creator?.imageUrl || getDefaultAvatar()}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>

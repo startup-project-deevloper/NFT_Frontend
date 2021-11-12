@@ -85,18 +85,18 @@ const NFTLoansHome = ({ setOpenDepositPage }) => {
   };
 
   const loadMarkets = () => {
-    // setLoadingMarkets(true);
-    // Axios.get(`${URL()}/nftLoan/getFractionalLoans`)
-    //   .then(res => {
-    //     const data = res.data;
-    //     if (data.success) {
-    //       setMarkets(data.data.markets);
-    //     }
-    //   })
-    //   .catch(err => console.log(err))
-    //   .finally(() => {
-    //     setLoadingMarkets(false);
-    //   });
+    setLoadingMarkets(true);
+    Axios.get(`${URL()}/nftLoan/getFractionalLoans`)
+      .then(res => {
+        const data = res.data;
+        if (data.success) {
+          setMarkets(data.data.markets);
+        }
+      })
+      .catch(err => console.log(err))
+      .finally(() => {
+        setLoadingMarkets(false);
+      });
   };
 
   const loadHottestLoans = () => {

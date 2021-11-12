@@ -235,7 +235,7 @@ export default function CreateSocialTokenModal({
             <Box className={classes.title} mt={2}>
               Create Social Token
             </Box>
-            <div className={classes.label}>Generate you own token and see it grow!</div>
+            <div className={classes.label}>Generate own token and see it grow!</div>
             <PrimaryButton
               size="medium"
               isRounded
@@ -244,15 +244,6 @@ export default function CreateSocialTokenModal({
             >
               Get started
             </PrimaryButton>
-            <div className={classes.dividerText}>Aready have one?</div>
-            <SecondaryButton
-              size="medium"
-              isRounded
-              onClick={() => setPage(1)}
-              style={{ color: Color.MusicDAODark, border: `1px solid ${Color.MusicDAODark}`, width: "40%" }}
-            >
-              Import token
-            </SecondaryButton>
           </div>
         ) : (
           <div className={classes.content}>
@@ -282,14 +273,6 @@ export default function CreateSocialTokenModal({
             )}
 
             <div className={classes.buttons}>
-              <SecondaryButton
-                size="medium"
-                isRounded
-                onClick={saveProgress}
-                style={{ color: Color.MusicDAODark, border: `1px solid ${Color.MusicDAODark}`, width: "30%" }}
-              >
-                Save Progress
-              </SecondaryButton>
               {page !== 2 ? (
                 <PrimaryButton
                   size="medium"
@@ -297,7 +280,7 @@ export default function CreateSocialTokenModal({
                   onClick={() => {
                     setPage(page + 1);
                   }}
-                  style={{ background: Color.MusicDAODark, width: "40%" }}
+                  style={{ background: Color.MusicDAODark, width: "40%", marginLeft: 'auto' }}
                 >
                   Next
                 </PrimaryButton>
@@ -306,7 +289,7 @@ export default function CreateSocialTokenModal({
                   size="medium"
                   isRounded
                   onClick={handleCreateSocialToken}
-                  style={{ background: Gradient.Green1, width: "40%" }}
+                  style={{ background: Gradient.Green1, width: "40%", marginLeft: 'auto' }}
                 >
                   Create Social Token
                 </PrimaryButton>

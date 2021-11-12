@@ -28,6 +28,7 @@ import { getNfts } from "shared/services/API";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import NFTCard from "../NFTCard";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+import URL from "shared/functions/getURL";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -197,8 +198,8 @@ const CreateNftOption = () => {
 					Token_url : selectedNFT.nftTokenUrl,
 				}
 
-				// const response = await Axios.post(`${URL()}/marketplace/createExchange`, body);
 				const response = await Axios.post(`${URL()}/nftOption/createNFTOption`, body);
+				// const response = await Axios.post(`${URL()}/nftOption/createNFTOption`, body);
 				console.log(">>>---", response.data);
 
 				setHash(receipt.transactionHash);

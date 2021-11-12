@@ -72,7 +72,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
   const isMobile = useMediaQuery(theme.breakpoints.down(700));
 
-  const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
+  const [loadingNFTS, setLoadingNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [selectedNFT, setSelectedNFT] = useState<any>();
   const { account, library, chainId } = useWeb3React();
@@ -87,28 +87,24 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const [chainIdCopy, setChainIdCopy] = useState<number>(chainId!);
   const [openFractionaliseModal, setOpenFractionaliseModal] = useState<boolean>(false);
   const [fractionaliseSuccessed, setFractionaliseSuccessed] = useState<boolean>(false);
-  const [myNFTs, setMyNFTs] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    loadNFT();
-  }, [chainIdCopy, selectedChain, account, walletConnected, myNFTs]);
-
-  useEffect(() => {
-    try {
-      setLoading(true);
-      getMySyntheticFractionalisedNFT()
-        .then(res => {
-          if (res.success) {
-            setMyNFTs(res.nfts.filter(nft => !nft.isUnlocked) ?? []);
-          }
-          setLoading(false);
-        })
-        .catch(console.log);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
+    (async () => {
+      try {
+        setLoading(true);
+        let myNFTs = [];
+        const res = await getMySyntheticFractionalisedNFT();
+        if (res.success) {
+          myNFTs = res.nfts.filter(nft => !nft.isUnlocked) ?? [];
+        }
+        loadNFT(myNFTs);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
+    })();
   }, []);
 
   // sync selected chain with metamask chain
@@ -123,11 +119,11 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   };
 
   // sync metamask chain with dropdown chain selection and load nft balance from wallet
-  const loadNFT = async () => {
+  const loadNFT = async myNFTs => {
     if (walletConnected) {
-      const changed = await handleSyncChain();
+      const changed = true; //await handleSyncChain();
       if (changed) {
-        setLoadingnNFTS(true);
+        setLoadingNFTS(true);
         const { result } = await getNFTBalanceFromMoralis(account!, selectedChain.chainId!);
         if (result) {
           const pixCreatedNftMap = {};
@@ -152,11 +148,12 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
           }
           // set user nfts
           const nfts = [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(
-            item => !myNFTs.map(nft => nft.NftId).includes(item.BlockchainId)
+            item =>
+              !myNFTs.find(nft => nft.collection_id === item.tokenAddress && nft.NftId == item.BlockchainId)
           );
           setUserNFTs(nfts);
         }
-        setLoadingnNFTS(false);
+        setLoadingNFTS(false);
       } else {
         setUserNFTs([]);
       }
@@ -228,7 +225,7 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
                 : "Lock your NFT, get a synthetic copy, fractionalise it, create a derivative and get interest out of the trading fees."}
             </div>
             {walletConnected ? (
-              <LoadingWrapper loading={loadingnNFTS || loading} theme={"blue"}>
+              <LoadingWrapper loading={loadingNFTS || loading} theme={"blue"}>
                 {userNFTs && userNFTs.length > 0 ? (
                   <Box
                     width={1}

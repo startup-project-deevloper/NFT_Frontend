@@ -37,10 +37,10 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
     }
 
     try {
-      if (isAdd) {
-        const web3APIHandler = targetChain.apiHandler;
-        const web3 = new Web3(library.provider);
+      const web3APIHandler = targetChain.apiHandler;
+      const web3 = new Web3(library.provider);
 
+      if (isAdd) {
         const contractResponse = await web3APIHandler.JotPool.addLiquidity(web3, account!, collection, {
           amount,
           setHash,
@@ -69,18 +69,33 @@ export default function LiquidityModal({ open, onClose, onCompleted, amount, col
         setIsLoading(false);
         onCompleted({ ...res, totalStake });
       } else {
-        // const gas = await contract.methods.removeLiquidity(Number(amount)).estimateGas({ from: account });
-        // console.log("polygon gas", gas);
-        // response = await contract.methods
-        //   .removeLiquidity(parseInt(amount))
-        //   .send({ from: account, gas })
-        //   .on("receipt", receipt => {
-        //     setIsLoading(false);
-        //   })
-        //   .on("error", error => {
-        //     console.log("error", error);
-        //     setIsLoading(false);
-        //   });
+        const contractResponse = await web3APIHandler.JotPool.removeLiquidity(web3, account!, collection, {
+          amount,
+          setHash,
+        });
+
+        if (!contractResponse) {
+          setIsLoading(false);
+          setIsSuccess(false);
+          showAlertMessage("Failed to approve. Please try again", { variant: "error" });
+          return;
+        }
+
+        const totalStake = await web3APIHandler.JotPool.getTotalStake(web3, collection);
+        const res = await web3APIHandler.JotPool.getPosition(web3, account!, collection);
+
+        await addLiquidity({
+          collectionId: collection.collectionAddress,
+          totalLiquidity: res.totalLiquidity,
+          totalStaked: totalStake,
+        });
+
+        console.log("position response ...", res, totalStake);
+
+        setIsSuccess(true);
+        showAlertMessage("You added liquidity successuflly", { variant: "success" });
+        setIsLoading(false);
+        onCompleted({ ...res, totalStake });
       }
 
       // setHash(response.transactionHash);

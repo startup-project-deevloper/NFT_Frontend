@@ -314,18 +314,19 @@ const FileUpload = ({
                 </>
               ) : theme === "music dao" ? (
                 <>
-                  <Box
-                    fontSize="14px"
-                    color={Color.MusicDAODark}
-                    fontFamily="Montserrat"
-                    fontWeight={600}
-                    display="flex"
+                  <span
+                    style={{
+                      fontSize: '14px',
+                      color: Color.MusicDAODark,
+                      fontFamily: "Montserrat",
+                      fontWeight: 600
+                    }}
                   >
-                    Drag and drop your photo or
-                    <Box color="#431AB7" ml="8px">
+                    Drag image here or
+                    <span style={{ marginLeft: 8, color: "#431AB7" }}>
                       browse on your device
-                    </Box>
-                  </Box>
+                    </span>
+                  </span>
                   {extra && (
                     <Box mt="4px" color="#54658F" fontSize="14px" fontFamily="Montserrat" fontWeight={500}>
                       We suggest 600 x 200 px size for best viewing experience

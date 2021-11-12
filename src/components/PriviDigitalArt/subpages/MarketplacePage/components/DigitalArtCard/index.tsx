@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import cls from "classnames";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
-import { Avatar } from "shared/ui-kit";
+import { Avatar, Color } from "shared/ui-kit";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
@@ -265,29 +265,32 @@ export default function DigitalArtCard({ item, heightFixed }) {
           <img src={getChainImageUrl(media.chainsFullName)} alt={"chain"} className={classes.chain} />
         </Box>
 
-        {media.auction ? (
-          <div className={classes.gray}>
-            {(media.auction.currentBid ?? 0) > (media.auction.reservePrice ?? 0)
-              ? "Current bid"
-              : "Reserve price"}
-            <span>{`${Math.max(media.auction.currentBid ?? 0, media.auction.reservePrice ?? 0) || ""} ${
-              media.auction.tokenSymbol || "USDT"
-            }`}</span>
-          </div>
-        ) : (
-          <div className={classes.gray}>
-            <span style={{ marginLeft: "0px" }}>
-              {media.exchange.price &&
-              media.exchange.price !== "Error" &&
-              media.exchange.price !== "error" &&
-              media.exchange.price !== undefined
-                ? media.exchange.price
-                : ""}
-              &nbsp;
-              {media.exchange?.offerToken || "USDT"}
-            </span>
-          </div>
-        )}
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          {media.auction ? (
+            <div className={classes.gray}>
+              {(media.auction.currentBid ?? 0) > (media.auction.reservePrice ?? 0)
+                ? "Current bid"
+                : "Reserve price"}
+              <span>{`${Math.max(media.auction.currentBid ?? 0, media.auction.reservePrice ?? 0) || ""} ${
+                media.auction.tokenSymbol || "USDT"
+              }`}</span>
+            </div>
+          ) : (
+            <div className={classes.gray}>
+              <span style={{ marginLeft: "0px" }}>
+                {media.exchange.price &&
+                media.exchange.price !== "Error" &&
+                media.exchange.price !== "error" &&
+                media.exchange.price !== undefined
+                  ? media.exchange.price
+                  : ""}
+                &nbsp;
+                {media.exchange?.offerToken || "USDT"}
+              </span>
+            </div>
+          )}
+          {media.exchange?.status === "sold" && <div style={{ color: Color.Red }}>Sold</div>}
+        </Box>
 
         {media.auction && endTime && (
           <div className={classes.auction}>

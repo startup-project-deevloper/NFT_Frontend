@@ -105,6 +105,7 @@ const exchange = network => {
   const BuyERC721TokenFromOffer = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
+        console.log(payload);
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
         const gas = await contract.methods
           .BuyERC721TokenFromOffer(payload.input, payload.caller)

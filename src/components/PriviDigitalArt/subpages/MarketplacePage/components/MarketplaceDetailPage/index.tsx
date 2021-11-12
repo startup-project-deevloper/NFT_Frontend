@@ -611,6 +611,7 @@ const MarketplaceDetailPage = () => {
                 cell:
                   offer.bidder === user.id ? (
                     <Text
+                      style={{ cursor: "pointer" }}
                       onClick={() => {
                         handleCancelBuyingOffer(offer);
                       }}
@@ -620,6 +621,7 @@ const MarketplaceDetailPage = () => {
                     </Text>
                   ) : media?.exchange?.owner === user.id ? (
                     <Text
+                      style={{ cursor: "pointer" }}
                       onClick={() => {
                         handleSellFromBuyingOffer(offer);
                       }}
@@ -1327,7 +1329,7 @@ const MarketplaceDetailPage = () => {
           contractParams = {
             input: {
               exchangeId: media.exchange.exchangeId,
-              offerId: media.exchange.initialOfferId,
+              offerId: payload.offerId,
             },
             caller: account!,
           };

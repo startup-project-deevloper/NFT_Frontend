@@ -650,19 +650,23 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
                 Token Actions
               </Box>
               <div className={classes.actionWrap}>
-                <div
-                  className={`${classes.actionBtn} ${classes.airdropTokenBtn}`}
-                  onClick={() => setOpenAirdropTokenModal(true)}
-                >
-                  Airdrop Tokens
-                </div>
-                <div
-                  className={`${classes.actionBtn} ${classes.allocateTokenBtn}`}
-                  onClick={() => setOpenAllocateTokenModal(true)}
-                >
-                  Allocate Tokens
-                </div>
-                {!isMobile && <div style={{ width: "1px", height: "40px", background: "#E6E6E8" }}></div>}
+                {user.id === userId && (
+                  <>
+                    <div
+                      className={`${classes.actionBtn} ${classes.airdropTokenBtn}`}
+                      onClick={() => setOpenAirdropTokenModal(true)}
+                    >
+                      Airdrop Tokens
+                    </div>
+                    <div
+                      className={`${classes.actionBtn} ${classes.allocateTokenBtn}`}
+                      onClick={() => setOpenAllocateTokenModal(true)}
+                    >
+                      Allocate Tokens
+                    </div>
+                    {!isMobile && <div style={{ width: "1px", height: "40px", background: "#E6E6E8" }}></div>}
+                  </>
+                )}
                 <div
                   className={`${classes.actionBtn} ${classes.metaMaskBtn}`}
                   onClick={handleAddTokenToMetamask}

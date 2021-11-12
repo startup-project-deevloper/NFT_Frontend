@@ -140,8 +140,8 @@ export const MessageList = (props: any) => {
                 if (keyword.length > 0) {
                   const name =
                     userSelector.id === chat.users.userTo.userId
-                      ? chat.users.userFrom.name
-                      : chat.users.userTo.name;
+                      ? chat.users.userFrom.userName
+                      : chat.users.userTo.userName;
                   return name.toLowerCase().includes(keyword.toLowerCase());
                 }
                 return true;

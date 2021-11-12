@@ -55,6 +55,8 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({ chat, handleC
                 <img src={require("assets/icons/music-solid.svg")} alt={"music-solid"} />
                 &nbsp;Audio
               </div>
+            ) : chat.lastMessage.length > 75 ? (
+              `${chat.lastMessage.substring(0, 75)} ...`
             ) : (
               chat.lastMessage.substring(0, 75)
             )}

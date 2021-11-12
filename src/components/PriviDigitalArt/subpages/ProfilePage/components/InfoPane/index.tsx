@@ -140,7 +140,7 @@ const InfoPane = React.memo(
     };
 
     const showFollowersList = async () => {
-      if (!isSignedin) return;
+      if (!isSignedin || !ownUser) return;
 
       setSelectedHeaderFollows("Followers");
       handleOpenModalFollows();
@@ -149,7 +149,7 @@ const InfoPane = React.memo(
     };
 
     const showFollowingList = async () => {
-      if (!isSignedin) return;
+      if (!isSignedin || !ownUser) return;
 
       setSelectedHeaderFollows("Followings");
       handleOpenModalFollows();

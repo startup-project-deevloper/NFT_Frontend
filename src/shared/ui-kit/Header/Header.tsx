@@ -144,7 +144,13 @@ const Header = props => {
 
   const getPhotoUser = async () => {
     if (userSelector?.infoImage?.newFileCID && userSelector?.infoImage?.metadata?.properties?.name) {
-      setImageIPFS(await getPhotoIPFS(userSelector.infoImage.newFileCID, userSelector.infoImage.metadata.properties.name, downloadWithNonDecryption));
+      setImageIPFS(
+        await getPhotoIPFS(
+          userSelector.infoImage.newFileCID,
+          userSelector.infoImage.metadata.properties.name,
+          downloadWithNonDecryption
+        )
+      );
     }
   };
 
@@ -288,7 +294,11 @@ const Header = props => {
                   usr?.infoImage?.metadata?.properties?.name &&
                   (!usr.ipfsImage || usr.ipfsImage === "")
                 ) {
-                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, usr.infoImage.metadata.properties.name, downloadWithNonDecryption);
+                  usr.ipfsImage = await getPhotoIPFS(
+                    usr.infoImage.newFileCID,
+                    usr.infoImage.metadata.properties.name,
+                    downloadWithNonDecryption
+                  );
                 } else {
                   usr.ipfsImage = getDefaultAvatar();
                 }
@@ -311,7 +321,7 @@ const Header = props => {
   }, [unreadMessages]);
 
   useEffect(() => {
-    if (!usersInfoList || (usersInfoList.length === 0)) {
+    if (!usersInfoList || usersInfoList.length === 0) {
       axios
         .post(`${URL()}/chat/getUsers`)
         .then(response => {
@@ -368,7 +378,8 @@ const Header = props => {
                   user.email ?? "",
                   user.infoImage ?? {},
                   false,
-                  user.ipfsImage ?? ""
+                  user.ipfsImage ?? "",
+                  user.urlIpfsImage ?? ""
                 )
               );
             });

@@ -118,7 +118,7 @@ export default function UnlockNFT({ onClose, onCompleted, needLockLaterBtn = tru
                     </Box>
                   </CopyToClipboard>
                   <button className={classes.checkBtn} onClick={handleEtherScan}>
-                    Check on EtherScan
+                    Check on Etherscan
                   </button>
                 </>
               )}

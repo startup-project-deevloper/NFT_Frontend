@@ -4,7 +4,6 @@ import Web3 from "web3";
 import { Rating } from "react-simple-star-rating";
 import { useHistory, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
 import { format } from "date-fns";
 import ReactPlayer from "react-player";
@@ -27,7 +26,6 @@ import URL from "shared/functions/getURL";
 import Box from "shared/ui-kit/Box";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { ChooseWalletModal } from "shared/ui-kit/Modal/Modals/ChooseWalletModal";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
@@ -35,7 +33,6 @@ import PrintChart from "shared/ui-kit/Chart/Chart";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { getUser } from "store/selectors";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { getAuctionBidHistory, getExchangeBuyingOffers, getNft } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
@@ -58,8 +55,6 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { switchNetwork } from "shared/functions/metamask";
 
-const removeIcon = require("assets/icons/remove_red.png");
-const editIcon = require("assets/icons/edit_icon.svg");
 export const SaveIcon = ({ className, onClick }) => (
   <svg width="19" height="24" viewBox="0 0 19 24" fill="none" className={className} onClick={onClick}>
     <path
@@ -217,82 +212,6 @@ const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
   return config;
 };
 
-const RadialConfig = {
-  config: {
-    type: "doughnut",
-    data: {
-      datasets: [
-        {
-          data: [] as any,
-          backgroundColor: [] as any,
-          hoverOffset: 0,
-          labels: [] as any,
-        },
-      ],
-    },
-    options: {
-      cutoutPercentage: 80,
-      animation: false,
-      rotation: Math.PI / 2,
-      tooltips: { enabled: false },
-    },
-  },
-};
-
-const OfferHeaders: Array<CustomTableHeaderInfo> = [
-  {
-    headerName: "Token",
-    headerAlign: "center",
-  },
-  {
-    headerName: "SYMBOL",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Price",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Amount",
-    headerAlign: "center",
-  },
-  {
-    headerName: "",
-    headerAlign: "center",
-  },
-];
-
-const TradingTableHeaders: Array<CustomTableHeaderInfo> = [
-  {
-    headerName: "Event",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Token",
-    headerAlign: "center",
-  },
-  {
-    headerName: "SYMBOL",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Price",
-    headerAlign: "center",
-  },
-  {
-    headerName: "From",
-    headerAlign: "center",
-  },
-  {
-    headerName: "To",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Date",
-    headerAlign: "center",
-  },
-];
-
 const ExchangeOfferTableHeaders: Array<CustomTableHeaderInfo> = [
   {
     headerName: "FROM",
@@ -322,8 +241,6 @@ const MarketplaceDetailPage = () => {
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
 
-  const loggedUser = useSelector(getUser);
-
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const classes = marketplaceDetailPageStyles();
@@ -333,33 +250,20 @@ const MarketplaceDetailPage = () => {
   const [chooseWalletModal, setChooseWalletModal] = React.useState<boolean>(false);
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const user = useTypedSelector(state => state.user);
-  const userBalances = useTypedSelector(state => state.userBalances);
   const { convertTokenToUSD } = useTokenConversion();
   const [endTime, setEndTime] = useState<any>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [media, setMedia] = useState<any>(null);
   const [openPlaceOffer, setOpenPlaceOffer] = React.useState<boolean>(false);
-  const [comment, setComment] = useState<string>("");
   const [bookmarked, setBookmarked] = useState<boolean>(false);
   const [mediaImageLoaded, setMediaImageLoaded] = useState<boolean>(false);
 
   const payloadRef = useRef<any>();
   const operationRef = useRef<number>();
 
-  // fractionalise
-  const [distributionRadialConfig, setDistributionRadialConfig] = useState<any>();
-  const [fractionHistoryConfig, setFractionHistoryConfig] = useState<any>();
-  const [fractionPrice, setFractionPrice] = useState<number>(0); // in usd
-  const [fractionPriceChange, setFractionPriceChange] = useState<number>(0);
-  const [ownershipHistoryConfig, setOwnershipHistoryConfig] = useState<any>();
-  const [ownershipFraction, setOwnershipFraction] = useState<number>(0);
-  const [ownershipFractionChange, setOwnershipFractionChange] = useState<number>(0);
   const selectedOfferRef = useRef<any>({});
   const [openPlaceFractionOfferModal, setOpenPlaceFractionOfferModal] = useState<boolean>(false);
   const [openTraderFracctionOfferModal, setOpenTradeFractionOfferModadl] = useState<boolean>(false);
   const fractionOfferTypeRef = useRef<string>("buy");
-  const [buyingOffersData, setBuyingOffersData] = useState<any[]>([]);
-  const [sellingOffersData, setSellingOffersData] = useState<any[]>([]);
-  const [fractionTransactionsData, setFractionTransactionsData] = useState<any[]>([]);
 
   // auction
   const [auctionEnded, setAuctionEnded] = React.useState<boolean>(false);
@@ -387,8 +291,6 @@ const MarketplaceDetailPage = () => {
   // general stuff
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<number>(0);
-  const [comments, setComments] = useState<any[]>([]);
-  const [isViewComments, setIsViewComments] = useState<boolean>(false);
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
   const [mediaRatings, setRatings] = useState<any[]>([
     {
@@ -435,9 +337,6 @@ const MarketplaceDetailPage = () => {
 
   const { account, library, chainId } = useWeb3React();
   const [web3, setWeb3] = useState<Web3 | null>(null);
-  const [editedCommentId, setEditedCommentId] = useState<any>(null);
-  const [editedComment, setEditedComment] = useState<any>(null);
-  const isEditingComment = useRef<boolean>(false);
 
   const [disableBidBtn, setDisableBidBtn] = useState<boolean>(false);
 
@@ -515,23 +414,24 @@ const MarketplaceDetailPage = () => {
     if (library) setWeb3(new Web3(library.provider));
   }, [library]);
 
-  useEffect(() => {
-    if (media && media.Comments && media.Comments.length) {
-      setComments(media.Comments.reverse());
-    }
-  }, [media]);
-
   const loadMedia = async () => {
     if (isDataLoading || !params.tokenAddress || !params.tokenId) return;
     setIsDataLoading(true);
-    getNft({ tokenAddress: params.tokenAddress, tokenId: params.tokenId }).then(resp => {
-      setIsDataLoading(false);
-      if (resp && resp.success) {
-        let m = resp.data;
-        setMedia(m);
-        if (m.Rating) handleRatings(m.Rating);
-      }
-    });
+    getNft({ tokenAddress: params.tokenAddress, tokenId: params.tokenId })
+      .then(resp => {
+        if (resp && resp.success) {
+          let m = resp.data;
+          setMedia(m);
+          if (m.Rating) handleRatings(m.Rating);
+        }
+      })
+      .finally(() => {
+        setIsDataLoading(false);
+        axios.post(`${URL()}/marketplace/updateTotalViews`, {
+          tokenAddress: params.tokenAddress,
+          tokenId: params.tokenId,
+        });
+      });
   };
 
   const loadHistory = () => {
@@ -711,140 +611,6 @@ const MarketplaceDetailPage = () => {
     return [];
   }, [media]);
 
-  const handleChangeComment = e => {
-    setComment(e.target.value);
-  };
-
-  const addComment = () => {
-    if (!comment) return;
-    axios
-      .post(`${URL()}/marketplace/addComment`, {
-        tokenAddress: media?.token_address,
-        tokenId: media?.token_id,
-        userId: user.id,
-        comment: {
-          user: {
-            id: user.id,
-            name: `${user.firstName || ""} ${user.lastName || ""}`,
-          },
-          comment,
-          date: new Date(),
-        },
-      })
-      .then(res => {
-        if (res.data.success) {
-          showAlertMessage("Comment added successfully!", { variant: "success" });
-          setComments([
-            {
-              user: {
-                id: user.id,
-                name: `${user.firstName || ""} ${user.lastName || ""}`,
-                imageUrl: user.ipfsImage,
-              },
-              comment,
-              date: new Date(),
-            },
-            ...comments,
-          ]);
-          setComment("");
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const saveComment = comment => {
-    if (isEditingComment.current) return;
-    if (editedComment === comment) {
-      setEditedCommentId(null);
-      setEditedComment(null);
-    } else {
-      editComment();
-    }
-  };
-
-  const editComment = () => {
-    if (isEditingComment.current) return;
-    if (!editedCommentId || !editedComment) {
-      setEditedCommentId(null);
-      setEditedComment(null);
-      return;
-    }
-    isEditingComment.current = true;
-    const newComments = [...comments];
-    newComments[editedCommentId - 1].comment = editedComment;
-    const bodyComments = [...media.Comments];
-    bodyComments[bodyComments.length - editedCommentId].comment = editedComment;
-
-    axios
-      .post(`${URL()}/marketplace/editComment`, {
-        tokenAddress: media?.token_address,
-        tokenId: media?.token_id,
-        userId: user.id,
-        comments: bodyComments.map(c => ({
-          user: {
-            id: c.user.id,
-            name: c.name,
-          },
-          comment: c.comment,
-          date: c.date,
-        })),
-      })
-      .then(res => {
-        if (res.data.success) {
-          showAlertMessage("Comment edited successfully!", { variant: "success" });
-          setComments(newComments);
-        }
-        setEditedCommentId(null);
-        setEditedComment(null);
-        isEditingComment.current = false;
-      })
-      .catch(err => {
-        console.log(err);
-        setEditedCommentId(null);
-        setEditedComment(null);
-        isEditingComment.current = false;
-      });
-  };
-
-  const removeComment = removedCommentId => {
-    if (!removedCommentId) {
-      return;
-    }
-    isEditingComment.current = true;
-    const newComments = comments.filter((_, index) => index !== removedCommentId - 1);
-    const bodyComments = media.Comments.filter(
-      (_, index) => index !== media.Comments.length - removedCommentId
-    );
-
-    axios
-      .post(`${URL()}/marketplace/editComment`, {
-        tokenAddress: media?.token_address,
-        tokenId: media?.token_id,
-        userId: user.id,
-        comments: bodyComments.map(c => ({
-          user: {
-            id: c.user.id,
-            name: c.name,
-          },
-          comment: c.comment,
-          date: c.date,
-        })),
-      })
-      .then(res => {
-        if (res.data.success) {
-          showAlertMessage("Comment removed successfully!", { variant: "success" });
-          setComments(newComments);
-        }
-        isEditingComment.current = false;
-      })
-      .catch(err => {
-        console.log(err);
-        isEditingComment.current = false;
-      });
-  };
-
   const bookmarkMedia = () => {
     axios
       .post(`${URL()}/media/bookmarkMedia/${media?.symbol ?? media?.id}`, {
@@ -854,7 +620,6 @@ const MarketplaceDetailPage = () => {
       .then(res => {
         showAlertMessage("Bookmarked media", { variant: "success" });
         setBookmarked(true);
-        setComment("");
       })
       .catch(err => {
         console.log(err);
@@ -870,7 +635,6 @@ const MarketplaceDetailPage = () => {
       .then(res => {
         showAlertMessage("Removed bookmark", { variant: "success" });
         setBookmarked(false);
-        setComment("");
       })
       .catch(err => {
         console.log(err);
@@ -927,10 +691,9 @@ const MarketplaceDetailPage = () => {
       const ratingType = rating.key;
       if (newRating >= 0) {
         axios
-          .post(`${URL()}/media/rateMedia`, {
-            mediaId: media?.id,
-            mediaType: media?.Type,
-            mediaTag: media?.tag ?? "privi",
+          .post(`${URL()}/marketplace/rateMedia`, {
+            tokenAddress: params.tokenAddress,
+            tokenId: params.tokenId,
             userId: user.id,
             ratingType,
             ratingValue: newRating,
@@ -955,44 +718,25 @@ const MarketplaceDetailPage = () => {
   };
 
   const handleFruit = type => {
+    if (media.fruits?.filter(f => f.fruitId === type)?.find(f => f.userId === user.id)) {
+      showAlertMessage("You had already given this fruit.", { variant: "info" });
+      return;
+    }
+
     const body = {
       userId: user.id,
       fruitId: type,
-      mediaAddress: media.id,
-      mediaType: media.Type || media.type,
-      tag: media.tag,
-      subCollection: media.collection,
+      tokenAddress: params.tokenAddress,
+      tokenId: params.tokenId,
     };
-    axios.post(`${URL()}/media/fruit`, body).then(res => {
+    axios.post(`${URL()}/marketplace/fruit`, body).then(res => {
       const resp = res.data;
       if (resp.success) {
         const itemCopy = { ...media };
-        itemCopy.fruits = resp.fruitsArray;
+        itemCopy.fruits = resp.fruits;
         setMedia(itemCopy);
       }
     });
-  };
-
-  const handleDeleteBuyOffer = offer => {
-    const payload = {
-      OrderId: offer.OrderId,
-      RequesterAddress: user.address,
-      TokenSymbol: offer.TokenSymbol,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 4;
-    interactOnChain();
-  };
-
-  const handleDeleteSellOffer = offer => {
-    const payload = {
-      OrderId: offer.OrderId,
-      RequesterAddress: user.address,
-      TokenSymbol: offer.TokenSymbol,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 5;
-    interactOnChain();
   };
 
   // AUCTION: bid nft with own wallet
@@ -1529,7 +1273,7 @@ const MarketplaceDetailPage = () => {
                       <Box mr={2} style={{ background: "rgba(67, 26, 183, 0.32)", borderRadius: "50%" }}>
                         <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
                       </Box>
-                      <Box mr={2}>
+                      {/* <Box mr={2}>
                         <img
                           src={require(bookmarked
                             ? "assets/priviIcons/bookmark-filled-gray.svg"
@@ -1538,7 +1282,7 @@ const MarketplaceDetailPage = () => {
                           onClick={handleBookmark}
                           style={{ cursor: "pointer", width: "24px", height: "24px" }}
                         />
-                      </Box>
+                      </Box> */}
                       <Box mb={1}>
                         <div
                           onClick={handleOpenShareMenu}

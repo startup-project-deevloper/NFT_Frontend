@@ -35,7 +35,7 @@ const NFTFractionalisation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
-  const [selectedTab, setSelectedTab] = useState<"pure" | "synthetic">("pure");
+  const [selectedTab, setSelectedTab] = useState<"pure" | "synthetic">("synthetic");
   const [hasMoreMedias, setHasMoreMedias] = useState<boolean>(true);
   const [lastIdx, setLastIdx] = useState<string>("");
   const [medias, setMedias] = useState<any[]>([]);
@@ -126,12 +126,6 @@ const NFTFractionalisation = () => {
           </div>
           <Box width="100%" borderBottom="2px solid rgba(196,196,196,0.4)">
             <div className={classes.subTitleSection}>
-              <div
-                className={cls({ [classes.selectedTabSection]: selectedTab === "pure" }, classes.tabSection)}
-                onClick={handlePureClick}
-              >
-                <span>Pure Fractionalisation</span>
-              </div>
               <div
                 className={cls(
                   { [classes.selectedTabSection]: selectedTab === "synthetic" },

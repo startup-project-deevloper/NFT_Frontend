@@ -15,7 +15,7 @@ export default ({
   currentNFT
 }) => {
   const classes = ChangeToSyntheticModalStyles();
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(1);
   const [syntheticNFT, setSyntheticNFT] = useState<any>();
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [curNFT, setCurNFT] = useState<any>();

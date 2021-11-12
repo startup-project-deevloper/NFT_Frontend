@@ -1036,24 +1036,14 @@ const MarketplaceDetailPage = () => {
 
   // EXCHANGE: sell
   const handleSellFromBuyingOffer = offer => {
-    const payload = {
-      ExchangeId: offer.ExchangeId,
-      OfferId: offer.Id,
-      Address: user.address,
-      Amount: offer.Amount,
-    };
-    payloadRef.current = payload;
+    payloadRef.current = offer;
     operationRef.current = 11;
     interactOnChain();
   };
 
   // EXCHANGE: cancel buying Offer
   const handleCancelBuyingOffer = offer => {
-    const payload = {
-      ExchangeId: offer.ExchangeId,
-      OfferId: offer.Id,
-    };
-    payloadRef.current = payload;
+    payloadRef.current = offer;
     operationRef.current = 12;
     interactOnChain();
   };
@@ -1224,41 +1214,35 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 9: // EXCHANGE: Cancel selling offer
-          request = {
+          contractParams = {
             input: {
               exchangeId: media.exchange.exchangeId,
               offerId: media.exchange.initialOfferId,
             },
             caller: account!,
           };
-          web3APIHandler.Exchange.CancelERC721TokenSellingOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: media.exchange.exchangeId,
-                  OfferId: media.exchange.initialOfferId,
-                  MediaSymbol: media.symbol,
-                  MediaType: media.Type,
-                },
-              };
-              const response = await axios.post(`${URL()}/exchange/cancelSellingOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Exchange cancelled successfully", { variant: "success" });
-                loadData();
+          web3APIHandler.Exchange.CancelERC721TokenSellingOffer(web3, account!, contractParams).then(
+            async res => {
+              if (res) {
+                request = {
+                  id: media.exchange.id,
+                  type: "PIX",
+                };
+                const response = await axios.post(`${URL()}/marketplace/cancelSellingOffer`, request);
+                if (response?.data?.success) {
+                  showAlertMessage("Exchange cancelled successfully", { variant: "success" });
+                  history.push("/marketplace");
+                } else {
+                  showAlertMessage("Failed to cancel the exchange", { variant: "error" });
+                }
+                setLoading(false);
               } else {
+                setLoading(false);
+                setDisableBidBtn(false);
                 showAlertMessage("Failed to cancel the exchange", { variant: "error" });
               }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to cancel the exchange", { variant: "error" });
             }
-          });
+          );
           break;
         case 10: // EXCHANGE: Buy from selling offer
           contractParams = {
@@ -1268,7 +1252,6 @@ const MarketplaceDetailPage = () => {
             },
             caller: account!,
           };
-          console.log(contractParams);
 
           await approveToken(
             web3APIHandler,
@@ -1290,7 +1273,7 @@ const MarketplaceDetailPage = () => {
                 },
                 type: "PIX",
               };
-              const response = await axios.post(`${URL()}/marketplace/buyFromOffer`, request);
+              const response = await axios.post(`${URL()}/marketplace/buyFromSellingOffer`, request);
               if (response?.data?.success) {
                 showAlertMessage("NFT bought successfully", { variant: "success" });
                 loadData();
@@ -1306,27 +1289,26 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 11: // EXCHANGE: Sell from buying offer
-          request = {
+          contractParams = {
             input: {
-              exchangeId: payload.ExchangeId,
-              offerId: payload.OfferId,
+              exchangeId: media.auction.exchangeId,
+              offerId: payload.offerId,
             },
             caller: account!,
           };
-          web3APIHandler.Exchange.SellERC721TokenFromOffer(web3, account!, request).then(async res => {
+          web3APIHandler.Exchange.SellERC721TokenFromOffer(web3, account!, contractParams).then(async res => {
             if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: request.input.exchangeId,
-                  MediaSymbol: media.symbol,
-                  MediaType: media.Type,
+              const request = {
+                id: media.exchange.id,
+                offerId: payload.offerId,
+                transaction: {
+                  ...res.transaction,
+                  Event: "Sell",
+                  Price: payload.price,
                 },
+                type: "PIX",
               };
-              const response = await axios.post(`${URL()}/exchange/sellFromOffer/v2_p`, body);
+              const response = await axios.post(`${URL()}/marketplace/sellFromOffer`, request);
               if (response?.data?.success) {
                 showAlertMessage("NFT sold successfully", { variant: "success" });
                 loadData();
@@ -1342,39 +1324,41 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 12: // EXCHANGE: Cancel buying offer
-          request = {
+          contractParams = {
             input: {
-              exchangeId: payload.ExchangeId,
-              offerId: payload.OfferId,
+              exchangeId: media.exchange.exchangeId,
+              offerId: media.exchange.initialOfferId,
             },
             caller: account!,
           };
-          web3APIHandler.Exchange.CancelERC721TokenBuyingOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: request.input.exchangeId,
-                  OfferId: request.input.offerId,
-                },
-              };
-              const response = await axios.post(`${URL()}/exchange/cancelBuyingOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Cancelled successfully", { variant: "success" });
-                loadData();
+          web3APIHandler.Exchange.CancelERC721TokenBuyingOffer(web3, account!, contractParams).then(
+            async res => {
+              if (res) {
+                const request = {
+                  id: media.exchange.id,
+                  offerId: payload.offerId,
+                  transaction: {
+                    ...res.transaction,
+                    Event: "Cancel",
+                    Price: payload.price,
+                  },
+                  type: "PIX",
+                };
+                const response = await axios.post(`${URL()}/marketplace/cancelBuyingOffer`, request);
+                if (response?.data?.success) {
+                  showAlertMessage("Cancelled successfully", { variant: "success" });
+                  loadData();
+                } else {
+                  showAlertMessage("Failed to cancel offer", { variant: "error" });
+                }
+                setLoading(false);
               } else {
+                setLoading(false);
+                setDisableBidBtn(false);
                 showAlertMessage("Failed to cancel offer", { variant: "error" });
               }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to cancel offer", { variant: "error" });
             }
-          });
+          );
           break;
         case 13: // EXCHANGE: Place buying offer
           let offerTokenDecimals = await web3APIHandler.Erc20[media.exchange.offerToken].decimals(web3);
@@ -1845,7 +1829,7 @@ const MarketplaceDetailPage = () => {
                       </div>
                     )
                   ) : null}
-                  {media?.exchange ? (
+                  {media?.exchange && media.exchange.status !== "sold" ? (
                     media?.exchange.address === user.address ? (
                       <PrimaryButton
                         size="medium"
@@ -1874,21 +1858,23 @@ const MarketplaceDetailPage = () => {
                       </PrimaryButton>
                     )
                   ) : null}
-                  {media?.exchange && media.exchange.address !== user.address && (
-                    <PrimaryButton
-                      size="medium"
-                      onClick={() => setOpenBuyNFTModal(true)}
-                      className={classes.primaryBtn}
-                      style={{
-                        background: "#DDFF57",
-                        color: "#431AB7",
-                        marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                        marginLeft: `${isTableScreen ? "0px" : "8px"}`,
-                      }}
-                    >
-                      Place Buying Offer
-                    </PrimaryButton>
-                  )}
+                  {media?.exchange &&
+                    media?.exchange.status !== "sold" &&
+                    media?.exchange.address !== user.address && (
+                      <PrimaryButton
+                        size="medium"
+                        onClick={() => setOpenBuyNFTModal(true)}
+                        className={classes.primaryBtn}
+                        style={{
+                          background: "#DDFF57",
+                          color: "#431AB7",
+                          marginBottom: `${isTableScreen ? "5px" : "0px"}`,
+                          marginLeft: `${isTableScreen ? "0px" : "8px"}`,
+                        }}
+                      >
+                        Place Buying Offer
+                      </PrimaryButton>
+                    )}
                   {(media?.auction || media?.exchange) && (
                     <SecondaryButton
                       size="medium"

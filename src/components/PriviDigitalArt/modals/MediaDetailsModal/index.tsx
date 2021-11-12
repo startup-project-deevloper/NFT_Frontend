@@ -48,6 +48,10 @@ const MediaDetailsModal = (props: any) => {
   const [openFractionalise, setOpenFractionalise] = useState(false);
   const [showDetailsBtn, setShowDetailsBtn] = useState<boolean>(false);
 
+  useEffect(() => {
+    setCreator(props.creators[0])
+  }, [props.creators])
+
   const handleOpenFractionalise = () => {
     setOpenFractionalise(true);
   };
@@ -247,6 +251,8 @@ const MediaDetailsModal = (props: any) => {
     }
   };
 
+  console.log('939393939393', media, user)
+
   return (
     <Modal
       size="medium"
@@ -309,13 +315,18 @@ const MediaDetailsModal = (props: any) => {
                   </SecondaryButton>
                 )}
             </Box>
-            <div className={classes.fruitSection}>
-              <Box mb={1}>
-                <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
-                  <img src={require(`assets/icons/more.png`)} alt="like" />
+            {user &&
+              media?.CreatorId !== user.id &&
+              media?.CreatorAddress?.toLowerCase() !== user.address?.toLowerCase() &&
+              media.owner_of?.toLowerCase() !== user.address?.toLowerCase() && (
+                <div className={classes.fruitSection}>
+                  <Box mb={1}>
+                    <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
+                      <img src={require(`assets/icons/more.png`)} alt="like" />
+                    </div>
+                  </Box>
                 </div>
-              </Box>
-            </div>
+              )}
           </div>
           <SharePopup
             item={media}

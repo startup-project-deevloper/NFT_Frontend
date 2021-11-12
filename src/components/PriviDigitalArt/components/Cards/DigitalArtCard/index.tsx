@@ -100,7 +100,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         });
       }
 
-      setImageIPFS(media?.urlIpfsImage || "")
+      setImageIPFS(media?.metadata?.image || "")
 
       if (media.Auctions) {
         const timerId = setInterval(() => {

@@ -72,10 +72,6 @@
   color: #949bab;
   font-size: 14px;
 }
-.message-list-items .item-list .item-content .message::after {
-  display: block;
-  content: "...";
-}
 .message-list-items .item-list .item-content .date {
   margin-bottom: 3px;
   color: #949bab;

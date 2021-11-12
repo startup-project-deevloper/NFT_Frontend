@@ -50,16 +50,14 @@ export const ListItem: React.FunctionComponent<ListItemProps> = ({ chat, handleC
         <div className="name">{otherUser.userName}</div>
         {typeof chat.lastMessage === "string" && (
           <div className="message" style={{ color: Color.Black }}>
-            <div style={{ overflow: "hidden", maxHeight: 38, maxWidth: 282 }}>
-              {chat.lastMessage.includes("data:audio/wav;") ? (
-                <div style={{ display: "flex" }}>
-                  <img src={require("assets/icons/music-solid.svg")} alt={"music-solid"} />
-                  &nbsp;Audio
-                </div>
-              ) : (
-                chat.lastMessage
-              )}
-            </div>
+            {chat.lastMessage.includes("data:audio/wav;") ? (
+              <div style={{ display: "flex" }}>
+                <img src={require("assets/icons/music-solid.svg")} alt={"music-solid"} />
+                &nbsp;Audio
+              </div>
+            ) : (
+              chat.lastMessage.substring(0, 75)
+            )}
           </div>
         )}
         {chat.lastMessageDate && (

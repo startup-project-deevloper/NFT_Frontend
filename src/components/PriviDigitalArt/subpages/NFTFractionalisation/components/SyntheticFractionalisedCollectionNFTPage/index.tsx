@@ -35,6 +35,7 @@ import URL from "shared/functions/getURL";
 import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
 import FlipCoinInputGuessModal from "../../modals/FlipCoinInputGuessModal";
 import * as API from "shared/services/API/FractionalizeAPI";
+import {getUserByAddress} from "shared/services/API/UserAPI";
 const isProd = process.env.REACT_APP_ENV === "prod";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
@@ -75,6 +76,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [resultState, setResultState] = useState<number>(0);
   const [flipDisabled, setFlipDisabled] = useState<boolean>(false);
   const [isWithdrawing, setWithdrawing] = useState<boolean>(false);
+  const [owner, setOwner] = useState<any>();
 
   const usersList = useSelector((state: RootState) => state.usersInfoList);
   const getUserInfo = (address: string) => usersList.find(u => u.address === address);
@@ -124,13 +126,16 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       return;
     }
 
-    let nftData = {};
+    let nftData: any = {};
     const response = await getSyntheticNFT(params.collectionId, params.nftId);
     if (response?.success) {
       nftData = response.data;
       setLoadingData(false);
     }
-
+    if (nftData.OwnerAddress) {
+      const data = await getUserByAddress((nftData.OwnerAddress || '').toLowerCase());
+      setOwner(data.data);
+    }
     const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
     if (flipResp?.success) {
       setFlipHistory(flipResp.data);
@@ -414,11 +419,11 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             <Box display="flex" flexDirection="column">
               <div className={classes.typo1}>Owner</div>
               <Box display="flex" alignItems="center">
-                <Avatar size="small" url={require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)} />
+                <Avatar size="small" url={owner?.urlIpfsImage} />
                 <Box ml={1}>
                   <div
                     className={classes.typo2}
-                    onClick={() => history.push(`/${getUserInfo(nft.OwnerAddress)?.urlSlug}/profile`)}
+                    onClick={() => history.push(`/${owner?.urlSlug}/profile`)}
                   >
                     {userName}
                   </div>

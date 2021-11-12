@@ -107,6 +107,17 @@ export async function getUsersByAddresses(addresses: string[]): Promise<any> {
   }
 }
 
+export async function getUserByAddress(address: string): Promise<any> {
+  try {
+    let url = `${URL()}/user/getUserByAddress/${address}`;
+    const response = await axios.get(url);
+    return response?.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
 export async function checkUserConnected(userId: string): Promise<any> {
   try {
     const response = await axios.get(`${URL()}/user/checkUserConnected/${userId}`);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import Web3 from "web3";
+import Moment from "react-moment";
 import { Rating } from "react-simple-star-rating";
 import { useHistory, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -10,8 +11,14 @@ import ReactPlayer from "react-player";
 
 import { Grid, Hidden, useMediaQuery } from "@material-ui/core";
 
-import { sumTotalViews } from "shared/functions/totalViews";
 import { useTypedSelector } from "store/reducers/Reducer";
+import { BackButton } from "../../../../components/BackButton";
+import { MediaPhotoDetailsModal } from "../../../../modals/MediaPhotoDetailsModal";
+import DigitalArtDetailsModal from "../../../../modals/DigitalArtDetailsModal";
+import { PlaceBidModal } from "../../modals/PlaceBidModal";
+import BuyNFTModal from "../../../../modals/BuyNFTModal";
+import PlaceBuyingOfferModal from "../../../../modals/PlaceBuyingOfferModal";
+
 import {
   Avatar,
   Text,
@@ -40,20 +47,17 @@ import CreateFractionOfferModal from "components/PriviDigitalArt/modals/CreateOf
 import TradeFractionOfferModal from "components/PriviDigitalArt/modals/TradeOfferModal";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 
-import { BackButton } from "../../../../components/BackButton";
-import { MediaPhotoDetailsModal } from "../../../../modals/MediaPhotoDetailsModal";
-import DigitalArtDetailsModal from "../../../../modals/DigitalArtDetailsModal";
-import { PlaceBidModal } from "../../modals/PlaceBidModal";
-import BuyNFTModal from "../../../../modals/BuyNFTModal";
-import PlaceBuyingOfferModal from "../../../../modals/PlaceBuyingOfferModal";
 import { marketplaceDetailPageStyles, LinkIcon } from "./index.styles";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
-
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { switchNetwork } from "shared/functions/metamask";
+import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+
+const removeIcon = require("assets/icons/remove_red.png");
+const editIcon = require("assets/icons/edit_icon.svg");
 
 export const SaveIcon = ({ className, onClick }) => (
   <svg width="19" height="24" viewBox="0 0 19 24" fill="none" className={className} onClick={onClick}>
@@ -340,6 +344,13 @@ const MarketplaceDetailPage = () => {
 
   const [disableBidBtn, setDisableBidBtn] = useState<boolean>(false);
 
+  const [comment, setComment] = useState<string>("");
+  const [comments, setComments] = useState<any[]>([]);
+  const [editedCommentId, setEditedCommentId] = useState<any>(null);
+  const [editedComment, setEditedComment] = useState<any>(null);
+  const isEditingComment = useRef<boolean>(false);
+  const [isViewComments, setIsViewComments] = useState<boolean>(false);
+
   useEffect(() => {
     setOpenFilters(false);
   }, []);
@@ -352,13 +363,10 @@ const MarketplaceDetailPage = () => {
     if (media) {
       loadHistory();
     }
-  }, [media]);
-
-  useEffect(() => {
-    if (media?.tokenAddress) {
-      sumTotalViews(media);
+    if (media && media.Comments && media.Comments.length) {
+      setComments(media.Comments.reverse());
     }
-  }, [media?.tokenAddress]);
+  }, [media]);
 
   useEffect(() => {
     if (media?.CreatorId) {
@@ -610,6 +618,140 @@ const MarketplaceDetailPage = () => {
     // ];
     return [];
   }, [media]);
+
+  const handleChangeComment = e => {
+    setComment(e.target.value);
+  };
+
+  const addComment = () => {
+    if (!comment) return;
+    axios
+      .post(`${URL()}/marketplace/addComment`, {
+        tokenAddress: media?.token_address,
+        tokenId: media?.token_id,
+        userId: user.id,
+        comment: {
+          user: {
+            id: user.id,
+            name: `${user.firstName || ""} ${user.lastName || ""}`,
+          },
+          comment,
+          date: new Date(),
+        },
+      })
+      .then(res => {
+        if (res.data.success) {
+          showAlertMessage("Comment added successfully!", { variant: "success" });
+          setComments([
+            {
+              user: {
+                id: user.id,
+                name: `${user.firstName || ""} ${user.lastName || ""}`,
+                imageUrl: user.ipfsImage,
+              },
+              comment,
+              date: new Date(),
+            },
+            ...comments,
+          ]);
+          setComment("");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const saveComment = comment => {
+    if (isEditingComment.current) return;
+    if (editedComment === comment) {
+      setEditedCommentId(null);
+      setEditedComment(null);
+    } else {
+      editComment();
+    }
+  };
+
+  const editComment = () => {
+    if (isEditingComment.current) return;
+    if (!editedCommentId || !editedComment) {
+      setEditedCommentId(null);
+      setEditedComment(null);
+      return;
+    }
+    isEditingComment.current = true;
+    const newComments = [...comments];
+    newComments[editedCommentId - 1].comment = editedComment;
+    const bodyComments = [...media.Comments];
+    bodyComments[bodyComments.length - editedCommentId].comment = editedComment;
+
+    axios
+      .post(`${URL()}/marketplace/editComment`, {
+        tokenAddress: media?.token_address,
+        tokenId: media?.token_id,
+        userId: user.id,
+        comments: bodyComments.map(c => ({
+          user: {
+            id: c.user.id,
+            name: c.name,
+          },
+          comment: c.comment,
+          date: c.date,
+        })),
+      })
+      .then(res => {
+        if (res.data.success) {
+          showAlertMessage("Comment edited successfully!", { variant: "success" });
+          setComments(newComments);
+        }
+        setEditedCommentId(null);
+        setEditedComment(null);
+        isEditingComment.current = false;
+      })
+      .catch(err => {
+        console.log(err);
+        setEditedCommentId(null);
+        setEditedComment(null);
+        isEditingComment.current = false;
+      });
+  };
+
+  const removeComment = removedCommentId => {
+    if (!removedCommentId) {
+      return;
+    }
+    isEditingComment.current = true;
+    const newComments = comments.filter((_, index) => index !== removedCommentId - 1);
+    const bodyComments = media.Comments.filter(
+      (_, index) => index !== media.Comments.length - removedCommentId
+    );
+
+    axios
+      .post(`${URL()}/marketplace/editComment`, {
+        tokenAddress: media?.token_address,
+        tokenId: media?.token_id,
+        userId: user.id,
+        comments: bodyComments.map(c => ({
+          user: {
+            id: c.user.id,
+            name: c.name,
+          },
+          comment: c.comment,
+          date: c.date,
+        })),
+      })
+      .then(res => {
+        if (res.data.success) {
+          showAlertMessage("Comment removed successfully!", { variant: "success" });
+          setComments(newComments);
+        }
+        isEditingComment.current = false;
+      })
+      .catch(err => {
+        console.log(err);
+        isEditingComment.current = false;
+      });
+  };
 
   const bookmarkMedia = () => {
     axios
@@ -1757,6 +1899,145 @@ const MarketplaceDetailPage = () => {
               ))}
             </Grid>
             <hr className={classes.divider} />
+            {!media?.Fraction ? (
+              <>
+                <Header5>Comments</Header5>
+                <Box
+                  className={classes.message}
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  mb={2}
+                >
+                  <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getDefaultAvatar()} />
+                  <InputWithLabelAndTooltip
+                    transparent
+                    overriedClasses=""
+                    type="text"
+                    inputValue={comment}
+                    onInputValueChange={handleChangeComment}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") addComment();
+                    }}
+                    placeHolder="Add comment..."
+                    style={{ marginBottom: 4, flex: "1", width: "auto" }}
+                  />
+                  <Text
+                    size={FontSize.S}
+                    mr={isMobileScreen ? 1 : 2}
+                    onClick={() => setComment(`${comment}😍`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    😍
+                  </Text>
+                  <Text
+                    size={FontSize.S}
+                    mr={isMobileScreen ? 1 : 2}
+                    onClick={() => setComment(`${comment}😭`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    😭
+                  </Text>
+                  <img
+                    src={require("assets/icons/+.png")}
+                    onClick={addComment}
+                    style={{ cursor: "pointer" }}
+                  />
+                </Box>
+
+                {comments.length ? (
+                  !isViewComments ? (
+                    <Text className={classes.link} size={FontSize.S} onClick={() => setIsViewComments(true)}>
+                      View all {comments.length} comments
+                    </Text>
+                  ) : (
+                    comments.map((comment, index) => (
+                      <Box
+                        key={`comment-${index}`}
+                        mt={2}
+                        display="flex"
+                        alignContent="center"
+                        gridColumnGap={8}
+                      >
+                        <div
+                          className={classes.avatarImg}
+                          onClick={() => {
+                            history.push(`/${comment.user.urlSlug}/profile`);
+                          }}
+                        >
+                          <Avatar size="medium" url={comment.user.imageUrl} />
+                        </div>
+                        <Box
+                          display="flex"
+                          flexDirection="column"
+                          justifyContent="center"
+                          gridRowGap={4}
+                          maxWidth="70%"
+                          flex={1}
+                        >
+                          <span className={classes.commentUername}>{comment.user?.name}</span>
+                          {index === editedCommentId - 1 ? (
+                            <input
+                              className={classes.editComment}
+                              value={editedComment}
+                              onChange={e => {
+                                setEditedComment(e.target.value);
+                              }}
+                              onKeyDown={e => {
+                                if (e.key === "Enter") {
+                                  saveComment(comment.comment);
+                                }
+                              }}
+                              onBlur={() => saveComment(comment.comment)}
+                              autoFocus
+                            />
+                          ) : (
+                            <span className={classes.commentDescription}>{comment.comment}</span>
+                          )}
+                        </Box>
+                        <Box display="flex" alignItems="center" style={{ marginLeft: "auto", fontSize: 12 }}>
+                          <Box display="flex" alignItems="center" gridColumnGap={8} onClick={() => {}}>
+                            {user?.id === comment.user?.id && (
+                              <>
+                                {editedCommentId ? (
+                                  <SaveIcon
+                                    className={classes.commentIcon}
+                                    onClick={() => saveComment(comment.comment)}
+                                  />
+                                ) : (
+                                  <img
+                                    src={editIcon}
+                                    className={classes.commentIcon}
+                                    alt={"edit"}
+                                    onClick={() => {
+                                      if (isEditingComment.current) return;
+                                      setEditedCommentId(index + 1);
+                                      setEditedComment(comment.comment);
+                                    }}
+                                  />
+                                )}
+                                <img
+                                  src={removeIcon}
+                                  className={classes.commentIcon}
+                                  alt={"remove"}
+                                  onClick={() => {
+                                    if (isEditingComment.current) return;
+                                    setEditedCommentId(null);
+                                    setEditedComment(null);
+                                    removeComment(index + 1);
+                                  }}
+                                />
+                              </>
+                            )}
+                            <Moment fromNow>{comment.date}</Moment>
+                          </Box>
+                        </Box>
+                      </Box>
+                    ))
+                  )
+                ) : null}
+              </>
+            ) : null}
           </Box>
           {openDetailModal && (
             <DigitalArtDetailsModal

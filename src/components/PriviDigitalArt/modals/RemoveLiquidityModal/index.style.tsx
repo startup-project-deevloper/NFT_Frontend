@@ -18,6 +18,7 @@ export const RemoveLiquidityModalStyles = makeStyles(theme => ({
     fontSize: "16px",
     minWidth: "55px",
     fontWeight: "bold",
+    marginRight: 8
   },
   usdWrap: {
     display: "flex",

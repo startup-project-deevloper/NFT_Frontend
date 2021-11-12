@@ -802,30 +802,20 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           }}
                         >
                           <PrimaryButton
-                            className={classes.h4}
+                            className={`${classes.h4} ${classes.secondaryButton}`}
                             size="medium"
                             style={{
-                              background: Color.White,
-                              color: Color.Purple,
-                              border: "solid 0.7px",
-                              borderColor: Color.Purple,
-                              padding: "0px 25px",
                               maxWidth: 170,
-                              borderRadius: 4,
                             }}
                             onClick={handleOpenWithdrawJOTsModal}
                           >
                             Withdraw JOTs
                           </PrimaryButton>
                           <PrimaryButton
-                            className={classes.h4}
+                            className={`${classes.h4} ${classes.primaryButton}`}
                             size="medium"
                             style={{
-                              background: Color.Purple,
-                              color: Color.White,
-                              padding: "0px 25px",
                               maxWidth: 170,
-                              borderRadius: 4,
                             }}
                             onClick={handleOpenAddJOTsModal}
                           >
@@ -846,15 +836,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
                         </Box>
                         <PrimaryButton
-                          className={classes.h4}
+                          className={`${classes.h4} ${classes.primaryButton}`}
                           size="medium"
                           style={{
-                            background: Color.Purple,
-                            color: Color.White,
-                            padding: "0px 25px",
                             maxWidth: 215,
                             marginTop: 14,
-                            borderRadius: 4,
                           }}
                           onClick={handleOpenEditSupplyModal}
                         >
@@ -878,9 +864,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           </>
                         ) : null}
                         <PrimaryButton
-                          className={`${classes.buybackButton} ${classes.h4}`}
+                          className={`${classes.h4} ${classes.primaryButton}`}
                           size="medium"
                           onClick={handleBuyBack}
+                          style={{
+                            maxWidth: 250,
+                          }}
                         >
                           Buy Back to Withdraw
                         </PrimaryButton>
@@ -1104,7 +1093,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <PrimaryButton
                           className={classes.priceButton}
                           size="medium"
-                          style={{ background: "#DDFF57", color: Color.Purple, maxWidth: "220px", padding: "0 30px" }}
+                          style={{
+                            background: "#DDFF57",
+                            color: Color.Purple,
+                            maxWidth: "220px",
+                            padding: "0 30px",
+                          }}
                           disabled={!+nft.totalLiquidity}
                           onClick={handleBuyOnQuickSwap}
                         >

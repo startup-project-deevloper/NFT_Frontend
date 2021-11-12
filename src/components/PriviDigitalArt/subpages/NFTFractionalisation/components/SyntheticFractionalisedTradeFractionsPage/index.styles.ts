@@ -452,14 +452,24 @@ export const SyntheticFractionalisedTradeFractionsPageStyles = makeStyles(theme 
   popoverWrapper: {
     padding: "46px 46px 36px 46px",
   },
-  buybackButton: {
+  primaryButton: {
     color: "#ffffff",
     background: "#431AB7 !important",
     padding: "0px 25px !important",
-    maxWidth: 250,
     display: "flex",
     alignItems: "center",
-    borderRadius: 4,
+    borderRadius: "4px !important",
+    lineHeight: "20px !important",
+  },
+  secondaryButton: {
+    color: "#431AB7 !important",
+    background: "#ffffff !important",
+    padding: "0px 25px !important",
+    borderRadius: "4px !important",
+    display: "flex",
+    alignItems: "center",
+    border: "solid 0.7px #431AB7 !important",
+    lineHeight: "20px !important",
   },
   buybackPanel: {
     background: "#DDFF57",

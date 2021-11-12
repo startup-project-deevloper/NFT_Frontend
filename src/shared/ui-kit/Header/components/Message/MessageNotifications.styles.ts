@@ -51,10 +51,6 @@ export const messageNotificationsStyles = makeStyles({
       marginBottom: 3,
       color: "#949BAB",
       fontSize: 14,
-      "&::after": {
-        display: "block",
-        content: '"..."',
-      },
     },
     "& .item-content .date": {
       marginBottom: 3,

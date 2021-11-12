@@ -50,6 +50,10 @@ const NFTFractionalisation = () => {
   const location = useLocation();
 
   useEffect(() => {
+    history.push("/fractionalise/synthetic-derivative");
+  }, [])
+
+  useEffect(() => {
     if (selectedTab === "pure") {
       setLoading(true);
       getMySyntheticFractionalisedNFT().then(res => {

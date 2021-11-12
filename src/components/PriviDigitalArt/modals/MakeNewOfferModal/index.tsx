@@ -11,14 +11,19 @@ import { Grid } from "@material-ui/core";
 import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import { BlockchainNets } from "shared/constants/constants";
 
+
+
 export default function MakeNewOfferModal({ open, handleClose = () => {}, onConfirm }) {
   const classes = MakeNewOfferModalStyles();
   const { account, library, chainId } = useWeb3React();
-
+  // let data = ['1'];
   const [usdt, setUsdt] = React.useState<number>(0);
+  const [futurePrice, setFuturePrice] = React.useState<number>(0);
+  
   const [soldDays, setSoldDays] = React.useState<number>(0);
   const [disappearDays, setDisappearDays] = React.useState<number>(0);
-  const [collateral, setCollateral] = React.useState<number>(0);
+  const [collateral, setCollateral] = useState([0]);
+  const [collateralPriceToken, setCollateralPriceTokne] = useState([]);
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
   
   const [validateError, setValidateError] = useState(false);
@@ -27,23 +32,35 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
   const [selectedChain, setSelectedChain] = useState<any>(filteredBlockchainNets[0]);
   const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
   const [reservePriceToken, setReservePriceToken] = useState<string>("ETH");
+  const [futurePriceToken, setFuturePriceToken] = useState<string>("ETH");
 
   const [confirmSuccess, setConfirmSuccess] = useState(false);
 
+  const [collateralList, setCollateralList] = useState([{
+    value: 0,
+    token : 'ETH'
+  }]);
+  console.log(">>>>>", collateralList);
   useEffect(() => {
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
     setReservePriceToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);
   }, [selectedChain]);
-  useEffect(() => {
-    if(Number(collateral) !== 0) {
-      setValidateError(false);
-    } else {
-      setValidateError(true);
-    }
-  }, [collateral])
+  // useEffect(() => {
+  //   if(Number(collateral) !== 0) {
+  //     setValidateError(false);
+  //   } else {
+  //     setValidateError(true);
+  //   }
+  // }, [collateral])
 
   const handleAddToken = () => {
-
+    const addItem = {
+      value: 0,
+      token: 'ETH'
+    }
+    setCollateralList([...collateralList, addItem]);
+    console.log(collateralList);
+    // setCollateralPriceTokne
   }
   const handleConfirm = () => {
     console.log(collateral);
@@ -57,6 +74,18 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
     handleClose();
   }
 
+  const handleSetCollateral = (key, value) => {
+    let new_data = [...collateralList];
+    new_data[key].value = Number(value);
+    setCollateralList(new_data);
+  }
+
+  const handleReservePriceToken = (key, value) => {
+    let new_data = [...collateralList];
+    new_data[key].token = value;
+    setCollateralList(new_data);
+  }
+
   return (
     <Modal size="medium" isOpen={open} onClose={handleCloseModal} showCloseIcon className={classes.container}>
       {!confirmSuccess && (
@@ -65,19 +94,41 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
             <Box fontSize="24px" color="#431AB7">
               Make new offer
             </Box>
-            <Box className={classes.nameField}>
-              Future Price
-            </Box>
-            <InputWithLabelAndTooltip
-              inputValue={usdt}
-              onInputValueChange={e => setUsdt(e.target.value)}
-              overriedClasses={classes.inputJOT}
-              required
-              type="number"
-              theme="light"
-              minValue={0}
-              endAdornment={<div className={classes.purpleText}>USDT</div>}
-            />
+            <Grid container spacing={2}>
+              <Grid item sm={7}>
+                <Box className={classes.nameField}>
+                  Future Price
+                </Box>
+              </Grid>
+              <Grid item sm={5}>
+                <Box className={classes.nameField}>
+                  Reserve Token
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item sm={7}>
+                <InputWithLabelAndTooltip
+                  inputValue={futurePrice}
+                  onInputValueChange={e => setFuturePrice(e.target.value)}
+                  overriedClasses={classes.inputJOT}
+                  required
+                  type="number"
+                  theme="light"
+                  minValue={0}
+                />
+              </Grid>
+              <Grid item sm={5}>
+                <TokenSelect
+                  tokens={tokenList}
+                  value={futurePriceToken}
+                  onChange={e => {
+                    setFuturePriceToken(e.target.value as string);
+                  }}
+                  className={classes.inputJOT}
+                />
+              </Grid>
+            </Grid>
             <Box className={classes.nameField}>
               Fututre time when NFT will be sold 
             </Box>
@@ -94,43 +145,49 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
             <Box className={classes.nameField}>
               Collaterall  token
             </Box>
-            <Grid container spacing={2}>
-              <Grid item sm={7}>
-                <InputWithLabelAndTooltip
-                  inputValue={collateral}
-                  onInputValueChange={e => setCollateral(e.target.value)}
-                  overriedClasses={classes.inputJOT}
-                  required
-                  type="number"
-                  theme="light"
-                  minValue={0}
-                />
-              </Grid>
-              <Grid item sm={5}>
-                <TokenSelect
-                  tokens={tokenList}
-                  value={reservePriceToken}
-                  onChange={e => {
-                    setReservePriceToken(e.target.value as string);
-                  }}
-                  className={classes.inputJOT}
-                />
-              </Grid>
-            </Grid>
-            <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7" marginTop="14px">
-              <Box display="flex" alignItems="center" gridColumnGap="10px" fontSize="14px">
-                <span>Wallet Balance</span>
-                <Box className={classes.usdWrap} display="flex" alignItems="center">
-                  <Box className={classes.point}></Box>
-                  <Box fontWeight="700">{typeUnitValue(usdtBalance, 1)} USDT</Box>
+            {collateralList.map((item, key)=>
+              <>
+                <Grid container spacing={2}>
+                  <Grid item sm={7}>
+                    <InputWithLabelAndTooltip
+                      inputValue={item.value}
+                      // onInputValueChange={e => setCollateral(e.target.value)}
+                      onInputValueChange={e=>handleSetCollateral(key, e.target.value)}
+                      overriedClasses={classes.inputJOT}
+                      required
+                      type="number"
+                      theme="light"
+                      minValue={0}
+                    />
+                  </Grid>
+                  <Grid item sm={5}>
+                    <TokenSelect
+                      tokens={tokenList}
+                      value={item.token}
+                      // onChange={e => {
+                      //   setReservePriceToken(e.target.value as string);
+                      // }}
+                      onChange={e=>handleReservePriceToken(key, e.target.value)}
+                      className={classes.inputJOT}
+                    />
+                  </Grid>
+                </Grid>
+                <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7" marginTop="14px">
+                  <Box display="flex" alignItems="center" gridColumnGap="10px" fontSize="14px">
+                    <span>Wallet Balance</span>
+                    <Box className={classes.usdWrap} display="flex" alignItems="center">
+                      <Box className={classes.point}></Box>
+                      <Box fontWeight="700">{typeUnitValue(usdtBalance, 1)} USDT</Box>
+                    </Box>
+                  </Box>
+                  <Box display="flex" alignItems="center" fontSize="16px">
+                    <span>
+                      MAX
+                    </span>
+                  </Box>
                 </Box>
-              </Box>
-              <Box display="flex" alignItems="center" fontSize="16px">
-                <span>
-                  MAX
-                </span>
-              </Box>
-            </Box>
+              </>
+            )}
             <Box display="flex" alignItems="center" justifyContent="start">
               <SecondaryButton
                   size="medium"

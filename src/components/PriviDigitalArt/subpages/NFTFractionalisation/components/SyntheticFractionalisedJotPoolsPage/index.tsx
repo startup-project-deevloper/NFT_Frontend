@@ -406,6 +406,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
         open={openRemoveLiquidityModal}
         onClose={() => setOpenRemoveLiquidityModal(false)}
         onConfirm={handleConfirmRemoveLiquidity}
+        shareAmount={shareAmount}
       />
       <LiquidityModal
         open={openProceedModal}

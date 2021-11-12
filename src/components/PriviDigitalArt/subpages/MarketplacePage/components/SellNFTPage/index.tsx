@@ -24,6 +24,7 @@ import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProg
 import { getNfts } from "shared/services/API";
 import { v4 as uuidv4 } from "uuid";
 import { switchNetwork } from "shared/functions/metamask";
+import { toNDecimals } from "shared/functions/web3";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
 
@@ -151,6 +152,7 @@ const SellNFTPage = ({ goBack }) => {
     setOpenTransactionModal(true);
     setTransactionInProgress(true);
 
+    const decimals = await web3APIHandler.Erc20[token].decimals(web3);
     web3APIHandler.Erc721.setApprovalForAll(
       web3,
       account!,
@@ -168,7 +170,7 @@ const SellNFTPage = ({ goBack }) => {
             exchangeTokenAddress: selectedNFT.nftCollection.address,
             offerTokenAddress: web3Config.TOKEN_ADDRESSES[token],
             tokenId: tokenId,
-            price: price,
+            price: toNDecimals(price, decimals),
           },
           caller: account!,
         };

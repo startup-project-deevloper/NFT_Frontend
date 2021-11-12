@@ -1,20 +1,24 @@
 import React, { useEffect, useState, useMemo } from "react";
 import cls from "classnames";
-import { useHistory } from "react-router-dom";
 import Axios from "axios";
-import { Avatar, Color } from "shared/ui-kit";
+import { useHistory } from "react-router-dom";
+import ReactPlayer from "react-player";
+
 import { useTypedSelector } from "store/reducers/Reducer";
+
+import { Avatar, Color } from "shared/ui-kit";
 import { useAuth } from "shared/contexts/AuthContext";
 import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import URL from "shared/functions/getURL";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { SharePopup } from "shared/ui-kit/SharePopup";
-import { useStyles } from "./index.styles";
-import ReactPlayer from "react-player";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+
+import { useStyles } from "./index.styles";
 
 const getRandomImageUrl = () => {
   return require(`assets/backgrounds/digital_art_1.png`);
@@ -38,6 +42,8 @@ export default function DigitalArtCard({ item, heightFixed }) {
     return item;
   }, [item]);
 
+  const user = useTypedSelector(state => state.user);
+  const { showAlertMessage } = useAlertMessage();
   const [media, setMedia] = React.useState<any>(fixedUrlItem);
   const [creator, setCreator] = useState<any>({});
   const [auctionEnded, setAuctionEnded] = React.useState<boolean>(false);
@@ -146,22 +152,25 @@ export default function DigitalArtCard({ item, heightFixed }) {
   };
 
   const handleFruit = type => {
-    // const body = {
-    //   userId: user.id,
-    //   fruitId: type,
-    //   mediaAddress: media.token_address,
-    //   mediaType: media.Type || media.type,
-    //   tag: media.tag,
-    //   subCollection: media.collection,
-    // };
-    // Axios.post(`${URL()}/media/fruit`, body).then(res => {
-    //   const resp = res.data;
-    //   if (resp.success) {
-    //     const itemCopy = { ...media };
-    //     itemCopy.fruits = resp.fruitsArray;
-    //     setMedia(itemCopy);
-    //   }
-    // });
+    if (media.fruits?.filter(f => f.fruitId === type)?.find(f => f.userId === user.id)) {
+      showAlertMessage("You had already given this fruit.", { variant: "info" });
+      return;
+    }
+
+    const body = {
+      userId: user.id,
+      fruitId: type,
+      tokenAddress: media.token_address,
+      tokenId: media.token_id,
+    };
+    Axios.post(`${URL()}/marketplace/fruit`, body).then(res => {
+      const resp = res.data;
+      if (resp.success) {
+        const itemCopy = { ...media };
+        itemCopy.fruits = resp.fruits;
+        setMedia(itemCopy);
+      }
+    });
   };
 
   return (

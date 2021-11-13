@@ -271,7 +271,9 @@ export default function DigitalArtCard({ item, heightFixed }) {
 
       <div className={classes.info} onClick={handleOpenDigitalArtModal}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px">
-          <div className={cls(classes.black, classes.title)}>{media.metadata?.name}</div>
+          <div className={cls(classes.black, classes.title)}>
+            {media.media.metadata?.name || media?.media.name}
+          </div>
           <img src={getChainImageUrl(media.media.chainsFullName)} alt={"chain"} className={classes.chain} />
         </Box>
 

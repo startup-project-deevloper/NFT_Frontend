@@ -195,10 +195,10 @@ const CreateNftOption = () => {
 					Token_address : selectedNFT.nftCollection.address, 
 					Token_id : selectedNFT.nftTokenId, 
 					Token_url : selectedNFT.nftTokenUrl,
+					Chain_address : selectedChain.config.CONTRACT_ADDRESSES.ERC20_TEST_TOKEN
 				}
 
-				const response = await Axios.post(`${URL()}/nftOption/createNFTOption`, body);
-				// const response = await Axios.post(`${URL()}/nftOption/createNFTOption`, body);
+				const response = await Axios.post(`${URL()}/nftOption/createReservedNFT`, body);
 				console.log(">>>---", response.data);
 
 				setHash(receipt.transactionHash);

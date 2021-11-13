@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import { useWeb3React } from "@web3-react/core";
 
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -11,11 +10,16 @@ import { Grid } from "@material-ui/core";
 import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import { BlockchainNets } from "shared/constants/constants";
 
-
+import { injected } from "shared/connectors";
+import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+import Web3 from "web3";
+import { ContractInstance } from "shared/connectors/web3/functions";
+import NFTReservalManagerContract from "shared/connectors/web3/contracts/NFTReservalManagerContract.json";
+import Axios from "axios";
 
 export default function MakeNewOfferModal({ open, handleClose = () => {}, onConfirm }) {
   const classes = MakeNewOfferModalStyles();
-  const { account, library, chainId } = useWeb3React();
+  const { activate, account, library, chainId } = useWeb3React();
   // let data = ['1'];
   const [usdt, setUsdt] = React.useState<number>(0);
   const [futurePrice, setFuturePrice] = React.useState<number>(0);
@@ -53,6 +57,18 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
   //   }
   // }, [collateral])
 
+  const handleMetamaskConnect = () => {
+	
+    activate(injected, undefined, true).catch(error => {
+      if (error instanceof UnsupportedChainIdError) {
+        activate(injected);
+      } else {
+        console.info("Connection Error - ", error);
+        // setNoMetamask(true);
+      }
+    });
+  };
+
   const handleAddToken = () => {
     const addItem = {
       value: 0,
@@ -62,12 +78,63 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
     console.log(collateralList);
     // setCollateralPriceTokne
   }
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     console.log(collateral);
-    if(Number(collateral) === 0) setValidateError(true);
-    else {
-      setConfirmSuccess(true);
+    if(library === undefined) {
+      handleMetamaskConnect();
+      return;
     }
+    const web3 = new Web3(library.provider);
+    const web3Obj = new Web3(library.provider);
+    
+    let chain_id = await web3Obj.eth.getChainId();
+    const network = selectedChain.name === "ETHEREUM" ? "Ethereum" : "Polygon";
+    const contractAddress = "0x2C556dCc83b8027a6D2379b20c23D797eA28888d";
+    
+    const contract = await ContractInstance(web3, NFTReservalManagerContract.abi, contractAddress);
+    
+    console.log(contract);
+    let current_price = 1;
+    let ct = 0;
+
+    for(let i = 0 ; i < collateralList.length ; i ++) {
+      ct += collateralList[i].value * 1000
+    }
+
+    const reserval = await contract.methods.updateOffer(
+      12,
+      "0x9214dd01e5aaab026db23f0bc43f48024ee725c4", 
+      1, 
+      "0x296A01C48e17891a8Cab6C5942E5c10dE19B2351",
+      1,
+      15,
+      0
+    ).send({
+      from : account,
+      gas : 300000
+    })
+    .on("receipt", async (receipt) => {
+      console.log(">>>success", receipt);
+
+      const body = {
+        Owner : "0x9214dd01e5aaab026db23f0bc43f48024ee725c4",
+        Buyer : "0x132562434566ab026db23f0bc43f48131135dfec",
+        Future_price : futurePrice,
+        FuturePriceToken : futurePriceToken,
+        Disapper_day : disappearDays,
+        Collateral_list : collateralList,
+        Token_id : "4151413421351"
+      }
+
+      const response = await Axios.post(`http://194.146.57.180:8080/nftOption/createOfferedNFT`, body);
+      console.log(">>>---", response.data);
+      setConfirmSuccess(true);
+
+    })
+    .on("error", (err) => {
+      console.log(">>>err", err);
+    });
+    console.log("reserval ---- ", reserval);
   }
   const handleCloseModal = () => {
     setConfirmSuccess(false);

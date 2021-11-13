@@ -175,7 +175,9 @@ export const WallPostModalContent = ({
         blogPostId: item.id,
         userId: userSelector.id,
         userName: `${userSelector.firstName ?? ""} ${userSelector.lastName ?? ""}`,
+        urlSlug: userSelector.urlSlug,
         response: response,
+        imageUrl: userSelector.urlIpfsImage
       };
       setResponseLoader(true);
       Axios.post(`${URL()}/user/wall/makeResponse`, body)
@@ -472,8 +474,8 @@ export const WallPostModalContent = ({
         <>
           {!onlyDisplay && comments && comments.length > 0 ? (
             <div className={styles.commentsSection}>
-              {comments.map((item, i) => (
-                <ResponseWallPost key={i} response={item} />
+              {comments.map((comment, i) => (
+                <ResponseWallPost key={i} response={comment} />
               ))}
             </div>
           ) : null}

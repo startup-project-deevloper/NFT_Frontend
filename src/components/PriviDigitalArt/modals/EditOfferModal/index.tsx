@@ -7,14 +7,67 @@ import { EditOfferModalStyles } from "./index.style";
 import {typeUnitValue} from "shared/helpers/utils";
 import { DateInput } from "shared/ui-kit/DateTimeInput";
 
+import { injected } from "shared/connectors";
+import Web3 from "web3";
+import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+import { ContractInstance } from "shared/connectors/web3/functions";
+import NFTReservalManagerContract from "shared/connectors/web3/contracts/NFTReservalManagerContract.json";
+
 export default function EditOfferModal({ open, handleClose = () => {}, onConfirm }) {
   const classes = EditOfferModalStyles();
 
   const [usdt, setUsdt] = React.useState<number>(0);
   const [collateral, setCollateral] = React.useState<string>('0');
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
+  const { activate, account, library, chainId } = useWeb3React();
 
-  const handleConfirm = () => {
+  const handleMetamaskConnect = () => {
+	
+    activate(injected, undefined, true).catch(error => {
+      if (error instanceof UnsupportedChainIdError) {
+        activate(injected);
+      } else {
+        console.info("Connection Error - ", error);
+        // setNoMetamask(true);
+      }
+    });
+  };
+
+  const handleConfirm = async () => {
+    if(library === undefined) {
+      handleMetamaskConnect();
+      return;
+    }
+    const web3 = new Web3(library.provider);
+    const web3Obj = new Web3(library.provider);
+    
+    let chain_id = await web3Obj.eth.getChainId();
+    const contractAddress = "0x2C556dCc83b8027a6D2379b20c23D797eA28888d";
+    console.log(contractAddress);
+    // const contractAddress = user.address;
+    
+
+    const contract = await ContractInstance(web3, NFTReservalManagerContract.abi, contractAddress);
+    
+    const reserval = await contract.methods.updateReserval(
+      "0x9214dd01e5aaab026db23f0bc43f48024ee725c4", 
+      1, 
+      "0x296A01C48e17891a8Cab6C5942E5c10dE19B2351",
+      1,
+      50,
+      12
+    ).send({
+      from : account,
+      gas : 300000
+    })
+    .on("receipt", async (receipt) => {
+      console.log(">>>success", receipt);
+      handleCloseModal();
+    })
+    .on("error", (err) => {
+      console.log(">>>err", err);
+    });
+    console.log("reserval ---- ", reserval);
   }
 
   const handleCloseModal = () => {

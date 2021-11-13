@@ -108,22 +108,6 @@ const ManageOptionDetailPage = () => {
       <div className={classes.content}>
         <Box display="flex" justifyContent="space-between" width="100%">
           <BackButton purple overrideFunction={goBack}/>
-          <div style={{display:'flex'}}>
-            <div
-                className={classes.secondaryButton}
-                onClick={() => setOpenEditOfferModal(true)}
-                style={{padding:'11px 40px 7px 40px', marginRight:'10px'}}
-            >
-                Edit offer
-            </div>
-            <div
-                className={classes.primaryButton}
-                onClick={() => setOpenCancelListingModal(true)}
-                style={{padding:'11px 28px 7px 28px'}}
-            >
-                cancel listing <img src={require('assets/icons/info-circle.svg')} style={{position: 'absolute', marginLeft: '5px'}}></img>
-            </div>
-          </div>
         </Box>
         {loan && loanMedia ? (
           <LoadingWrapper loading={loadingLoan} theme={"blue"} height="calc(100vh - 100px)">
@@ -223,13 +207,22 @@ const ManageOptionDetailPage = () => {
                     <div className={classes.priceBoxPrice}>2545 USDT</div>
                 </Box>
                 <Box display="flex" style={{marginTop:'11px'}}>
-                    <div
+                  <div style={{display:'flex', width:'100%'}}>
+                    <div 
                         className={classes.secondaryButton}
-                        onClick={() => setOpenWithdrawCollateralModal(true)}
-                        style={{width:'100%'}}
+                        onClick={() => setOpenEditOfferModal(true)}
+                        style={{padding:'11px 40px 7px 40px', marginRight:'10px', width:'50%'}}
                     >
-                        Withdraw collaterall
+                        Edit offer
                     </div>
+                    <div 
+                        className={classes.primaryButton}
+                        onClick={() => setOpenCancelListingModal(true)}
+                        style={{padding:'11px 28px 7px 28px', width:'50%'}}
+                    >
+                        cancel listing <img src={require('assets/icons/info-circle.svg')} style={{position: 'absolute', marginLeft: '5px'}}></img>
+                    </div>
+                  </div>
                 </Box>
               </Box>
             </Box>

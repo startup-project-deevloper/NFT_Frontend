@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import ManageOptionCard from 'components/PriviDigitalArt/components/Cards/ManageOptionCard';
 import { manageOptionStyles } from './index.styles';
 import Box from "shared/ui-kit/Box";
 import { Grid } from '@material-ui/core';
 import cls from "classnames";
+import Axios from 'axios'
+import URL from "shared/functions/getURL";
 
 const ManagefuturesOption = () => {
     const classes = manageOptionStyles();
@@ -18,6 +20,18 @@ const ManagefuturesOption = () => {
         setSelectedSubTab("created");
         // history.push("/fractionalise");
     };
+    
+    useEffect(()=>{
+        getData();
+    }, []);
+    
+    const getData = async () => {
+        const body = {
+            Owner: "0x9214dd01e5aaab026db23f0bc43f48024ee725c4"
+        }
+        const response = await Axios.post(`${URL()}/nftOption/getOfferedNFTsByOwner`, body);
+        console.log(response);
+    }
     return (
         <>
             <div className={classes.content}>

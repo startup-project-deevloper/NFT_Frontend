@@ -5,12 +5,16 @@ import { exploreOptionStyles } from './index.styles';
 
 import Box from "shared/ui-kit/Box";
 import { Grid } from '@material-ui/core';
+import axios from 'axios';
 
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
 import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
 import NFTReservalManagerContract from "shared/connectors/web3/contracts/NFTReservalManagerContract.json";
+import URL from "shared/functions/getURL";
+
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 const ExploreOption = () => {
 
@@ -57,6 +61,24 @@ const ExploreOption = () => {
     //         console.log("CGI data is ", data);
     //     // }    
     // })   
+
+    // const response = await Axios.post(`${URL()}/nftOption/getAllNFTOptions`);
+
+    useEffect(() => {
+			getData();
+    }, []);
+
+		const getData = async () => {
+			console.log("getdata");
+			const body = {
+				type: "PIX",
+				mode: isProd ? "main" : "test"
+			}
+
+			const response = await axios.get(`${URL()}/nftOption/getAllReservedNFTs`, {params: body});
+			
+			console.log(">>>>>>>", response);
+		}
 
     const classes = exploreOptionStyles();
     return (

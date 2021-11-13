@@ -12,12 +12,14 @@ const CardsGrid = React.memo(
     ownUser,
     hasMore,
     handleRefresh = () => {},
+    userProfile
   }: {
     list: any[];
     type: "Social" | "Media" | "Crew" | "Media Pod";
     ownUser: boolean;
     hasMore: boolean;
     handleRefresh: () => void;
+    userProfile: any
   }) => {
     const classes = profileCardStyles();
     const [columns, setColumns] = React.useState({
@@ -157,6 +159,7 @@ const CardsGrid = React.memo(
                                   item={item}
                                   key={item.id ?? item.MediaSymbol ?? `media${index}`}
                                   handleRefresh={handleRefresh}
+                                  userProfile={userProfile}
                                 />
                               </div>
                             )}

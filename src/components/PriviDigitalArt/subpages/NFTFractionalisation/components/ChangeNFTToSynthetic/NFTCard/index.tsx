@@ -3,10 +3,21 @@ import Box from "shared/ui-kit/Box";
 import { normalNFTCardStyles } from "../index.styles";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import Tooltip from '@material-ui/core/Tooltip';
+import {sanitizeIfIpfsUrl} from "shared/helpers/utils";
 
 export default function NFTCard({ item, handleSelect, isSmall = false }) {
   const classes = normalNFTCardStyles();
   const [imageIPFS, setImageIPFS] = useState({});
+
+  const image = sanitizeIfIpfsUrl(
+    item?.cid
+    ? imageIPFS
+    : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
+    ? item?.UrlMainPhoto
+    : item?.UrlMainPhoto ??
+      item?.Url ??
+      item?.url
+  )
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
@@ -19,16 +30,7 @@ export default function NFTCard({ item, handleSelect, isSmall = false }) {
               </Tooltip>
             </Box>
             <img
-              src={
-                item?.cid
-                  ? imageIPFS
-                  : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
-                  ? item?.UrlMainPhoto
-                  : item?.UrlMainPhoto ??
-                    item?.Url ??
-                    item?.url ??
-                    require(`assets/backgrounds/nft-card-img.png`)
-              }
+              src={image ?? require(`assets/backgrounds/digital_art_1.png`)}
               alt={item.MediaName}
             />
             <div className={isSmall ? classes.smallStarGroup : classes.starGroup}>

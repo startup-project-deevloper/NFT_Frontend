@@ -328,7 +328,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                     MY LIQUIDITY VALUE
                   </Box>
                   <Box className={classes.h3} mt={1}>
-                    {myLiquidityValue} USD
+                    {myLiquidityValue} JOTs
                   </Box>
                 </Box>
               </Grid>

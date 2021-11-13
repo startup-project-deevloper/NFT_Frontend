@@ -267,7 +267,7 @@ export const MessageBox = ({ type = "social" }) => {
               </Box>
               <img src={userInfo?.userFoto ?? getDefaultAvatar} className="message-profile-avatar" />
               <Box display="flex" flexDirection="column" ml={2}>
-                <div className="name">{userInfo?.name}</div>
+                <div className="name">{userInfo?.userName}</div>
                 <div className="slug-container">
                   {userInfo?.urlSlug ? <div className="slug-name">@{userInfo.urlSlug}</div> : null}
                 </div>

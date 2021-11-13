@@ -18,7 +18,6 @@ const socialErc20 = network => {
 
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
-        console.log("Getting gas....");
         const gas = await contract.methods
           .allocateTokens(addresses, amounts, immediate, periods)
           .estimateGas({ from: account });

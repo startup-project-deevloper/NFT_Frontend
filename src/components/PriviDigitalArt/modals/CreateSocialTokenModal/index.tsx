@@ -28,6 +28,7 @@ export default function CreateSocialTokenModal({
   setTxSuccess,
   setTxModalOpen,
   setTxHash,
+  setToken
 }) {
   //REDUX
   const user = useTypedSelector(state => state.user);
@@ -158,6 +159,11 @@ export default function CreateSocialTokenModal({
   //   }
   // };
 
+  const setTnxModalOpen = (props) => {
+    setTxModalOpen(props);
+    setToken(socialToken);
+  }
+
   const handleCreateSocialToken = async () => {
     const targetChain = BlockchainNets.find(net => net.name === socialToken.Network);
 
@@ -192,7 +198,7 @@ export default function CreateSocialTokenModal({
         taxTo: account,
         logoUrl,
       },
-      setTxModalOpen,
+      setTnxModalOpen,
       setTxHash,
       handleClose
     );

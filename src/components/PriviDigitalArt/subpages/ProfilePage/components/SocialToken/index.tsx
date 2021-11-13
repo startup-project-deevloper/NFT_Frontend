@@ -218,6 +218,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   const [allocationsList, setAllocationList] = React.useState<Array<any>>([]);
   const [airdropList, setAirdropList] = React.useState<Array<any>>([]);
   const [accuredRewardsList, setAccuredRewardsList] = React.useState<Array<any>>([]);
+  const [socialToken, setSocialToken] = useState<any>(null);
 
   const [last7DaysAmount, setLast7DaysAmount] = React.useState(0);
 
@@ -876,6 +877,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
           setTxModalOpen={setTxModalOpen}
           setTxHash={setTxHash}
           setTxSuccess={setTxSuccess}
+          setToken={setSocialToken}
         />
       )}
       {openAirdropTokenModal && (
@@ -909,9 +911,11 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
         onClose={() => {
           setTxSuccess(null);
           setTxModalOpen(false);
+          setSocialToken(null);
         }}
         hash={txHash}
         txSuccess={txSuccess}
+        network={(socialToken ?? token)?.Network?.toLowerCase()}
       />
     </div>
   );

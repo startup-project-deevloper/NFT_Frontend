@@ -29,6 +29,7 @@ export const messageNotificationsStyles = makeStyles({
       alignItems: "center",
       filter: "drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2))",
       width: 54,
+      minWidth: 54,
       height: 54,
       marginRight: 20,
     },

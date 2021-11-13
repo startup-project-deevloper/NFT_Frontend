@@ -1677,20 +1677,18 @@ const MarketplaceDetailPage = () => {
                       )
                     ) : (
                       <div>
-                        {media.gathered ? (
-                          <PrimaryButton
-                            size="medium"
-                            onClick={handleWithdrawAuction}
-                            className={classes.primaryBtn}
-                            style={{
-                              background: "#DDFF57",
-                              color: "#431AB7",
-                              marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                            }}
-                          >
-                            Withdraw
-                          </PrimaryButton>
-                        ) : null}
+                        <PrimaryButton
+                          size="medium"
+                          onClick={handleWithdrawAuction}
+                          className={classes.primaryBtn}
+                          style={{
+                            background: "#DDFF57",
+                            color: "#431AB7",
+                            marginBottom: `${isTableScreen ? "5px" : "0px"}`,
+                          }}
+                        >
+                          Withdraw
+                        </PrimaryButton>
                         {!media.cancelled && (
                           <PrimaryButton
                             size="medium"
@@ -1885,6 +1883,125 @@ const MarketplaceDetailPage = () => {
               ))}
             </Grid>
             <hr className={classes.divider} />
+            <Header5>Comments</Header5>
+            <Box className={classes.message} display="flex" flexDirection="row" alignItems="center" mb={2}>
+              <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getDefaultAvatar()} />
+              <InputWithLabelAndTooltip
+                transparent
+                overriedClasses=""
+                type="text"
+                inputValue={comment}
+                onInputValueChange={handleChangeComment}
+                onKeyDown={e => {
+                  if (e.key === "Enter") addComment();
+                }}
+                placeHolder="Add comment..."
+                style={{ marginBottom: 4, flex: "1", width: "auto" }}
+              />
+              <Text
+                size={FontSize.S}
+                mr={isMobileScreen ? 1 : 2}
+                onClick={() => setComment(`${comment}😍`)}
+                style={{ cursor: "pointer" }}
+              >
+                😍
+              </Text>
+              <Text
+                size={FontSize.S}
+                mr={isMobileScreen ? 1 : 2}
+                onClick={() => setComment(`${comment}😭`)}
+                style={{ cursor: "pointer" }}
+              >
+                😭
+              </Text>
+              <img src={require("assets/icons/+.png")} onClick={addComment} style={{ cursor: "pointer" }} />
+            </Box>
+
+            {comments.length ? (
+              !isViewComments ? (
+                <Text className={classes.link} size={FontSize.S} onClick={() => setIsViewComments(true)}>
+                  View all {comments.length} comments
+                </Text>
+              ) : (
+                comments.map((comment, index) => (
+                  <Box key={`comment-${index}`} mt={2} display="flex" alignContent="center" gridColumnGap={8}>
+                    <div
+                      className={classes.avatarImg}
+                      onClick={() => {
+                        history.push(`/${comment.user.urlSlug}/profile`);
+                      }}
+                    >
+                      <Avatar size="medium" url={comment.user.imageUrl} />
+                    </div>
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      justifyContent="center"
+                      gridRowGap={4}
+                      maxWidth="70%"
+                      flex={1}
+                    >
+                      <span className={classes.commentUername}>{comment.user?.name}</span>
+                      {index === editedCommentId - 1 ? (
+                        <input
+                          className={classes.editComment}
+                          value={editedComment}
+                          onChange={e => {
+                            setEditedComment(e.target.value);
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === "Enter") {
+                              saveComment(comment.comment);
+                            }
+                          }}
+                          onBlur={() => saveComment(comment.comment)}
+                          autoFocus
+                        />
+                      ) : (
+                        <span className={classes.commentDescription}>{comment.comment}</span>
+                      )}
+                    </Box>
+                    <Box display="flex" alignItems="center" style={{ marginLeft: "auto", fontSize: 12 }}>
+                      <Box display="flex" alignItems="center" gridColumnGap={8} onClick={() => {}}>
+                        {user?.id === comment.user?.id && (
+                          <>
+                            {editedCommentId ? (
+                              <SaveIcon
+                                className={classes.commentIcon}
+                                onClick={() => saveComment(comment.comment)}
+                              />
+                            ) : (
+                              <img
+                                src={editIcon}
+                                className={classes.commentIcon}
+                                alt={"edit"}
+                                onClick={() => {
+                                  if (isEditingComment.current) return;
+                                  setEditedCommentId(index + 1);
+                                  setEditedComment(comment.comment);
+                                }}
+                              />
+                            )}
+                            <img
+                              src={removeIcon}
+                              className={classes.commentIcon}
+                              alt={"remove"}
+                              onClick={() => {
+                                if (isEditingComment.current) return;
+                                setEditedCommentId(null);
+                                setEditedComment(null);
+                                removeComment(index + 1);
+                              }}
+                            />
+                          </>
+                        )}
+                        <Moment fromNow>{comment.date}</Moment>
+                      </Box>
+                    </Box>
+                  </Box>
+                ))
+              )
+            ) : null}
           </Box>
           {openDetailModal && (
             <DigitalArtDetailsModal

@@ -105,7 +105,7 @@ export default function PriviPixRouter(props) {
         )}
       />
       <Route exact path="/nft/:id" component={MediaPage} />
-      <Route exact path="/marketplace/:tokenAddress/:tokenId" component={MarketplaceDetailPage} />
+      <Route exact path="/marketplace/:id" component={MarketplaceDetailPage} />
       <Route path="/" component={HomePage} />
     </Switch>
   );

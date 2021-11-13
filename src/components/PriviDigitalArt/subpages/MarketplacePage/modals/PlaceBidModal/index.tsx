@@ -41,16 +41,16 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
   };
 
   useEffect(() => {
-    const initPrice = Math.max(media.auction.reservePrice ?? 0).toString();
+    const initPrice = Math.max(media.reservePrice ?? 0).toString();
     setPrice(initPrice);
 
     const interval = setInterval(() => {
-      if (!media || !media.auction) return null;
+      if (!media) return null;
 
-      setAuction(media.auction);
+      setAuction(media);
 
       const currentDate = new Date().getTime() / 1000;
-      const diff = media.auction.endTime >= currentDate ? media.auction.endTime - currentDate : 0;
+      const diff = media.endTime >= currentDate ? media.endTime - currentDate : 0;
       setTimeFrame({
         days: Math.floor(diff / 86400),
         hours: Math.floor((diff % 86400) / 3600),

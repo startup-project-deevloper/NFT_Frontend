@@ -35,7 +35,7 @@ import URL from "shared/functions/getURL";
 import { fractionalisedCollectionStyles, ShareIcon, PlusIcon } from "./index.styles";
 import FlipCoinInputGuessModal from "../../modals/FlipCoinInputGuessModal";
 import * as API from "shared/services/API/FractionalizeAPI";
-import {getUserByAddress} from "shared/services/API/UserAPI";
+import { getUserByAddress } from "shared/services/API/UserAPI";
 const isProd = process.env.REACT_APP_ENV === "prod";
 
 const SyntheticFractionalisedCollectionNFTPage = ({
@@ -133,7 +133,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
       setLoadingData(false);
     }
     if (nftData.OwnerAddress) {
-      const data = await getUserByAddress((nftData.OwnerAddress || '').toLowerCase());
+      const data = await getUserByAddress((nftData.OwnerAddress || "").toLowerCase());
       setOwner(data.data);
     }
     const flipResp = await getSyntheticNFTFlipHistory(params.collectionId, params.nftId);
@@ -419,12 +419,12 @@ const SyntheticFractionalisedCollectionNFTPage = ({
             <Box display="flex" flexDirection="column">
               <div className={classes.typo1}>Owner</div>
               <Box display="flex" alignItems="center">
-                <Avatar size="small" url={owner?.urlIpfsImage} />
+                <Avatar
+                  size="small"
+                  url={owner?.urlIpfsImage ?? require(`assets/anonAvatars/ToyFaces_Colored_BG_001.jpg`)}
+                />
                 <Box ml={1}>
-                  <div
-                    className={classes.typo2}
-                    onClick={() => history.push(`/${owner?.urlSlug}/profile`)}
-                  >
+                  <div className={classes.typo2} onClick={() => history.push(`/${owner?.urlSlug}/profile`)}>
                     {userName}
                   </div>
                 </Box>

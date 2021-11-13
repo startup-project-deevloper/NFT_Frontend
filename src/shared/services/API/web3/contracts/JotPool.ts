@@ -136,24 +136,18 @@ const jotPool = (network: string) => {
         const { JotPoolAddress, JotAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, JotPoolAddress);
 
-        const jotAPI = JOT(network);
-
-        const decimals = await jotAPI.decimals(web3, JotAddress);
-
-        const balance = await jotAPI.balanceOf(web3, JotAddress, { account });
-
         const position = await contract.methods.getPositionByAddress(account).call();
         const totalLiquidity = Number(await contract.methods.totalLiquidity().call());
 
         const shareAmount = +position.liquidity;
         const poolOwnership = totalLiquidity ? shareAmount / totalLiquidity : 0;
-        const myLiquidityValue = poolOwnership * balance;
+        const myLiquidityValue = poolOwnership * totalLiquidity;
 
         if (position) {
           resolve({
             shareAmount,
             poolOwnership: Math.floor(poolOwnership * 100 * 100) / 100,
-            myLiquidityValue: toDecimals(myLiquidityValue, decimals),
+            myLiquidityValue: myLiquidityValue,
             totalLiquidity,
           });
         } else {

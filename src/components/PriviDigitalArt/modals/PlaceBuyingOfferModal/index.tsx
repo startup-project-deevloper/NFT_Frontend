@@ -78,7 +78,10 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
             <div>
               <h3>Price</h3>
               <div className={classes.flexCol}>
-                <h5>{media && `${convertTokenToUSD(media.offerToken, media.price).toFixed()}`}</h5>
+                <h5>
+                  {media && `${convertTokenToUSD(media.offerToken, media.price).toFixed()}`}{" "}
+                  {media.offerToken}
+                </h5>
                 <span>{media && `$${convertTokenToUSD(media.offerToken, media.price).toFixed(4)}`}</span>
               </div>
             </div>

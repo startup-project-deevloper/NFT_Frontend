@@ -34,12 +34,14 @@ export default function ProfileCard({
   heightFixed,
   noMargin,
   handleRefresh,
+  userProfile
 }: {
   item: any;
   type: "Social" | "Media" | "Crew" | "Media Pod";
   heightFixed?: boolean;
   noMargin?: boolean;
   handleRefresh?: any;
+  userProfile: any
 }) {
   const classes = profileCardStyles();
   const usersList = useTypedSelector(state => state.usersInfoList);
@@ -101,10 +103,10 @@ export default function ProfileCard({
             ]);
           }
         });
-      } else if (item.owner_of?.toLowerCase() === user.address?.toLowerCase()) {
+      } else if (item.owner_of?.toLowerCase() === userProfile.address?.toLowerCase()) {
         setCreatorsData([
           {
-            ...user
+            ...userProfile
           },
         ]);
       }

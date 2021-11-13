@@ -62,7 +62,7 @@ const SyntheticFractionalisedCollectionNFTPage = ({
   const [flipGuess, setFlipGuess] = useState<number>(0);
   const [flippingHash, setFlippingHash] = useState<string>("");
 
-  const [nft, setNft] = useState<any>({});
+  const [nft, setNft] = useState<any>({ SyntheticId: 0 });
   const [flipHistory, setFlipHistory] = useState<any>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));

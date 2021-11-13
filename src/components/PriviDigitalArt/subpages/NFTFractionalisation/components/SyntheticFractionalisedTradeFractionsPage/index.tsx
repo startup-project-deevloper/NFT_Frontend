@@ -35,13 +35,14 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import Axios from "axios";
-import URL, { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import URL from "shared/functions/getURL";
 import { SwitchButton } from "shared/ui-kit/SwitchButton";
 import AddLiquidityOnQuickswap from "components/PriviDigitalArt/modals/AddLiquidityToQuickswap";
 import LiquidityOnQuickswapModal from "../../modals/LiquidityOnQuickswapModal";
 import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundModal";
 import RemoveLiquidityQuickswap from "components/PriviDigitalArt/modals/RemoveLiquidityQuickswap";
 import TransactionResultModal from "../../../../modals/TransactionResultModal";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const FreeHoursChartConfig = {
   config: {
@@ -345,18 +346,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   React.useEffect(() => {
     fetchOwnerHistory();
-  }, []);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      fetchOwnerHistory();
-    }, 30000);
     getJotPrice();
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [collectionId, nft]);
+  }, [collectionId, nft.SyntheticId]);
 
   const getLiquidity = async () => {
     try {
@@ -414,22 +405,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const getJotPrice = async () => {
     const targetChain = BlockchainNets[1];
     const web3Config = targetChain.config;
-    Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-      headers: {
-        Authorization: `Basic ${PriceFeed_Token()}`,
-      },
-      params: {
-        token0: (nft.JotAddress || "").toLowerCase(),
-        token1: web3Config.TOKEN_ADDRESSES["USDT"].toLowerCase(),
-      },
-    }).then(res => {
-      const resp = res.data;
-
-      if (resp.success) {
-        const data = resp.data;
-        setJotPrice(data.token0Price);
-      }
-    });
+    const price = await getPrice(nft.JotAddress, web3Config["TOKEN_ADDRESSES"]["USDT"]);
+    setJotPrice(+price);
   };
 
   const fetchOwnerHistory = async () => {

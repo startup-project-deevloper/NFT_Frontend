@@ -3,14 +3,19 @@ import { ContractInstance } from "shared/connectors/polygon/functions";
 import config from "shared/connectors/polygon/config";
 
 const usdc_metadata = require("shared/connectors/polygon/contracts/USDC.json");
-export async function approve(web3: Web3, account: string, address: string) {
+export async function approve(web3: Web3, account: string, address: string, amount?: number, setTxnHash?: (hash: string) => void) {
   return new Promise(async resolve => {
     try {
       const contract = ContractInstance(web3, usdc_metadata.abi, config.TOKEN_ADDRESSES.USDC);
       console.log("Getting gas....");
-      const gas = await contract.methods.approve(address, web3.utils.toBN(10).pow(web3.utils.toBN(30))).estimateGas({ from: account });
+      const gas = await contract.methods
+        .approve(address, amount || web3.utils.toBN(10).pow(web3.utils.toBN(30)))
+        .estimateGas({ from: account })
+        .on("transactionHash", hash => {
+          setTxnHash && setTxnHash(hash);
+        });
       console.log("calced gas price is.... ", gas);
-      const response = await contract.methods.approve(address, web3.utils.toBN(10).pow(web3.utils.toBN(30))).send({ from: account, gas: gas });
+      const response = await contract.methods.approve(address, amount || web3.utils.toBN(10).pow(web3.utils.toBN(30))).send({ from: account, gas: gas });
       console.log("transaction succeed");
       resolve(true);
     } catch (e) {

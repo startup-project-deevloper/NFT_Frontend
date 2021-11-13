@@ -81,7 +81,9 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
               <div className={classes.flexCol}>
                 <h5>
                   {media && media.exchange
-                    ? `${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed()}`
+                    ? `${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed()} ${
+                        media.exchange.offerToken
+                      }`
                     : ""}
                 </h5>
                 <div>

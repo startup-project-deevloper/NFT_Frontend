@@ -30,12 +30,6 @@ const FractionalLoans = ({ loading, markets }) => {
 
   const [openHowModal, setOpenHowModal] = useState<boolean>(false);
 
-  const { setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "Asset",
@@ -79,8 +73,8 @@ const FractionalLoans = ({ loading, markets }) => {
         let total_borrow = 0
         let total_lend = 0
         if (total_borrow_list.length > 0) {
-          total_borrow = total_borrow_list[total_borrow_list.length - 1].total_borrow
-          total_lend = total_borrow_list[total_borrow_list.length - 1].total_reserves
+          total_borrow = total_borrow_list[0].total_borrow
+          total_lend = total_borrow_list[0].total_lend
         }
         return [
           {
@@ -126,7 +120,7 @@ const FractionalLoans = ({ loading, markets }) => {
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>{row.market_info.reserve_apy}%</span>,
+            cell: <span className={classes.marketValue}>{row.market_info.reserve_apy * 100}%</span>,
             cellAlign: "center",
           },
           {
@@ -134,7 +128,7 @@ const FractionalLoans = ({ loading, markets }) => {
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>{row.market_info.borrow_apy}%</span>,
+            cell: <span className={classes.marketValue}>{row.market_info.borrow_apy * 100}%</span>,
             cellAlign: "center",
           },
           {

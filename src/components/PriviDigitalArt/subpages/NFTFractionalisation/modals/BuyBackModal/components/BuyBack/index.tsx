@@ -192,16 +192,15 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
         const payload = {
           nft,
         };
-        web3APIHandler.SyntheticCollectionManager.getBuybackRequiredAmount(
-          web3,
-          payload
-        ).then(buybackRequiredAmount => setBuybackRequiredAmount(buybackRequiredAmount));
-        web3APIHandler.SyntheticCollectionManager.getAvailableBuyback(web3, payload).then(availableBuyback =>
-          setAvailableJots(+availableBuyback.jots)
-        );
-        web3APIHandler.SyntheticCollectionManager.getBuybackPrice(web3, payload).then(price =>
-          setBuybackPrice(price)
-        );
+        const buybackRequiredAmount =
+          await web3APIHandler.SyntheticCollectionManager.getBuybackRequiredAmount(web3, payload);
+        setBuybackRequiredAmount(buybackRequiredAmount);
+        const buybackPrice = await web3APIHandler.SyntheticCollectionManager.getBuybackPrice(web3, payload);
+        setBuybackPrice(buybackPrice);
+        const { ownerSupply, sellingSupply, liquiditySold } =
+          await web3APIHandler.SyntheticCollectionManager.getAvailableBuyback(web3, payload);
+        const availableJots = ownerSupply + sellingSupply + liquiditySold / buybackPrice;
+        setAvailableJots(availableJots);
       } catch (err) {}
     })();
   }, [nft]);
@@ -315,14 +314,15 @@ export default function BuyBack({ onClose, onCompleted, needBuyBackLaterBtn = tr
                 <span>Net owned JOTs</span>
                 <div className={classes.flexRow}>
                   <div className={classes.status} />
-                  <span>{`${availableJots} JOTs`}</span>
+                  <span>{`${availableJots.toFixed(4)} JOTs`}</span>
                 </div>
               </div>
               <div className={classes.detail}>
                 <div className={classes.detailRow}>
                   <p>Jots left to buy back</p>
                   <div>
-                    {Math.floor((10000 - availableJots) * 10000) / 10000}&nbsp;<span className={classes.unit}>JOT</span>
+                    {(10000 - availableJots).toFixed(4)}&nbsp;
+                    <span className={classes.unit}>JOT</span>
                   </div>
                 </div>
                 <div className={classes.divider} />

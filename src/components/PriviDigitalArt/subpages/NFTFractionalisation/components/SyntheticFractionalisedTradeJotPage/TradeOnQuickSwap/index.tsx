@@ -14,6 +14,7 @@ import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Web3Config from "shared/connectors/web3/config";
 import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
+import {switchNetwork} from "shared/functions/metamask";
 
 const IconJOT = (collection, classes) => {
   return (
@@ -25,6 +26,7 @@ const IconJOT = (collection, classes) => {
   );
 };
 
+const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 export default function TradeOnQuickSwap(props: any) {
   const classes = TradeOnQuickSwapStyles();
   const [collection, setCollection] = useState<any>(null);
@@ -33,7 +35,8 @@ export default function TradeOnQuickSwap(props: any) {
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
   const [swapButtonName, setSwapButtonName] = useState<string>("Swap");
   const { account, library, chainId } = useWeb3React();
-
+  const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+  
   const [tokenFrom, setTokenFrom] = useState<any>({
     balance: 0,
     price: 1,
@@ -65,7 +68,18 @@ export default function TradeOnQuickSwap(props: any) {
       getJotBalance();
       getUsdtBalance();
     }
-  }, [collection]);
+  }, [collection, chainId]);
+
+  useEffect(() => {
+    if (selectedChain && chainId && selectedChain.chainId !== chainId) {
+      (async () => {
+        const changed = await switchNetwork(selectedChain.chainId);
+        if (!changed) {
+          setSelectedChain(filteredBlockchainNets.find(b => b.chainId === chainId));
+        }
+      })();
+    }
+  }, [chainId, selectedChain]);
 
   const getJotBalance = async () => {
     (async () => {
@@ -143,14 +157,14 @@ export default function TradeOnQuickSwap(props: any) {
         web3,
         account,
         collection.JotAddress,
-        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"],
+        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_ROUTER_MANAGER"],
         amountInMax
       );
     else
       await web3APIHandler.Erc20.USDT.approve(
         web3,
         account,
-        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_FACTORY_MANAGER"],
+        web3Config.CONTRACT_ADDRESSES["QUICKSWAP_ROUTER_MANAGER"],
         amountInMax
       );
 
@@ -183,8 +197,8 @@ export default function TradeOnQuickSwap(props: any) {
     const amountIn = toNDecimals(_value, tokenFrom.decimals);
     const path =
       tokenTo.symbol === "USDT"
-        ? [collection.JotAddress, web3Config.TOKEN_ADDRESSES["USDT"]]
-        : [web3Config.TOKEN_ADDRESSES["USDT"], collection.JotAddress];
+        ? [collection.JotAddress.toLowerCase(), web3Config.TOKEN_ADDRESSES["USDT"].toLowerCase()]
+        : [web3Config.TOKEN_ADDRESSES["USDT"].toLowerCase(), collection.JotAddress.toLowerCase()];
 
     if (_value != 0) {
       const response = await web3APIHandler.QuickSwap.getAmountsOut(web3, amountIn, path);

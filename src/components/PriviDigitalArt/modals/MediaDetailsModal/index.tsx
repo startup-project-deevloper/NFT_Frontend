@@ -18,7 +18,7 @@ import {
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import FractionaliseModal from "components/PriviSocial/modals/FractionaliseMediaModal";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
@@ -47,6 +47,10 @@ const MediaDetailsModal = (props: any) => {
   const [openShareMenu, setOpenShareMenu] = useState(false);
   const [openFractionalise, setOpenFractionalise] = useState(false);
   const [showDetailsBtn, setShowDetailsBtn] = useState<boolean>(false);
+
+  useEffect(() => {
+    setCreator(props.creators[0])
+  }, [props.creators])
 
   const handleOpenFractionalise = () => {
     setOpenFractionalise(true);
@@ -247,6 +251,8 @@ const MediaDetailsModal = (props: any) => {
     }
   };
 
+  console.log('939393939393', media, user)
+
   return (
     <Modal
       size="medium"
@@ -264,15 +270,7 @@ const MediaDetailsModal = (props: any) => {
             <img src={media.metadata?.image} alt={media.metadata?.name || ""} className={classes.detailImg} />
           ) : (
             <object
-              data={
-                props.cidUrl ??
-                media.imageURL ??
-                media.UrlMainPhoto ??
-                media.Url ??
-                media.url ??
-                media.metadata?.image ??
-                `https://source.unsplash.com/random/${Math.floor(Math.random() * 1000)}`
-              }
+              data={media.metadata?.image ?? media.url ?? getDefaultBGImage()}
               type="image/png"
               className={classes.detailImg}
               style={{ height: "100%" }}
@@ -294,7 +292,7 @@ const MediaDetailsModal = (props: any) => {
             <Box display="flex" flexDirection="row" alignItems="center">
               <Avatar
                 size="medium"
-                url={creator && creator.imageUrl ? creator.imageUrl : getDefaultAvatar()}
+                url={creator && creator?.urlIpfsImage || creator?.imageUrl || getDefaultAvatar()}
               />
               <Box display="flex" flexDirection="column" ml={1} mr={1.25}>
                 <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
@@ -317,24 +315,18 @@ const MediaDetailsModal = (props: any) => {
                   </SecondaryButton>
                 )}
             </Box>
-            <div className={classes.fruitSection}>
-              <Box mr={2} style={{ background: "#9EACF2", borderRadius: "50%" }}>
-                <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
-              </Box>
-              <Box mr={2} display="flex">
-                <img
-                  src={require(`assets/icons/bookmark.png`)}
-                  alt="Bookmark"
-                  onClick={() => {}}
-                  style={{ cursor: "pointer" }}
-                />
-              </Box>
-              <Box mb={1}>
-                <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
-                  <img src={require(`assets/icons/more.png`)} alt="like" />
+            {user &&
+              media?.CreatorId !== user.id &&
+              media?.CreatorAddress?.toLowerCase() !== user.address?.toLowerCase() &&
+              media.owner_of?.toLowerCase() !== user.address?.toLowerCase() && (
+                <div className={classes.fruitSection}>
+                  <Box mb={1}>
+                    <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
+                      <img src={require(`assets/icons/more.png`)} alt="like" />
+                    </div>
+                  </Box>
                 </div>
-              </Box>
-            </div>
+              )}
           </div>
           <SharePopup
             item={media}
@@ -357,7 +349,7 @@ const MediaDetailsModal = (props: any) => {
                     key={`artist-${creator.id}`}
                     className={classes.artist}
                     size="small"
-                    url={creator.imageUrl ? creator.imageUrl : getDefaultAvatar()}
+                    url={creator?.urlIpfsImage || creator?.imageUrl || getDefaultAvatar()}
                   />
                 ))}
                 <Text color={Color.Purple} ml={2}>
@@ -365,22 +357,22 @@ const MediaDetailsModal = (props: any) => {
                 </Text>
               </Box>
             )}
-            <Text size={FontSize.XL} color={Color.Black}>
-              💾 {media?.shareCount || 0}
-            </Text>
-            <div>
+            <Box marginLeft="auto">
+              <Text size={FontSize.XL} color={Color.Black} className={classes.shareCountText}>
+                💾 {media?.shareCount || 0}
+              </Text>
               <Text size={FontSize.XL} color={Color.Black}>
                 👀 {(props.mediaViews ? props.mediaViews : media?.TotalViews) || 0}
               </Text>
-            </div>
+            </Box>
           </Box>
-          {!media.metadata && (
+          {/* {!media.metadata && (
             <>
               <hr className={classes.divider} />
               <Header5>Collection</Header5>
               {renderCollection()}
             </>
-          )}
+          )} */}
           {!!media.metadata?.description && (
             <>
               <hr className={classes.divider} />
@@ -392,13 +384,13 @@ const MediaDetailsModal = (props: any) => {
           {(media.BlockchainNetwork || media.chainsFullName) && (
             <Box display="flex" alignItems="center" mb={2} justifyContent="flex-end">
               <img src={getChainImage()} width="32px" />
-              <Box ml={2}>
+              {/* <Box ml={2}>
                 {media.chainsFullName
                   ? media.chainsFullName === "Mumbai" || media.chainsFullName === "Polygon"
                     ? "Polygon"
                     : "Ethereum"
                   : media.BlockchainNetwork}
-              </Box>
+              </Box> */}
             </Box>
           )}
           {/* {!media.metadata && (
@@ -425,7 +417,7 @@ const MediaDetailsModal = (props: any) => {
               )}
             </Box>
           )} */}
-          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={12}>
+          {/* <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-end" mt={12}>
             {showDetailsBtn && (
               <PrimaryButton
                 size={mobileMatches ? "small" : "medium"}
@@ -450,7 +442,7 @@ const MediaDetailsModal = (props: any) => {
                 Fractionalize
               </PrimaryButton>
             )}
-          </Box>
+          </Box> */}
         </Grid>
       </Grid>
       {openFractionalise && (

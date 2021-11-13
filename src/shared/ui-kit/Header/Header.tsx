@@ -132,23 +132,25 @@ const Header = props => {
   const [openMobileMenu, setOpenMobileMenu] = React.useState<boolean>(false);
   const anchorMobileMenuRef = React.useRef<HTMLDivElement>(null);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
   const { profileAvatarChanged } = usePageRefreshContext();
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
     getPhotoUser();
-  }, [ipfs, userSelector.id, profileAvatarChanged]);
+  }, [userSelector.id, profileAvatarChanged]);
 
   const getPhotoUser = async () => {
-    if (ipfs && userSelector && userSelector.infoImage && userSelector.infoImage.newFileCID) {
-      setImageIPFS(await getPhotoIPFS(userSelector.infoImage.newFileCID, downloadWithNonDecryption));
+    if (userSelector?.infoImage?.newFileCID && userSelector?.infoImage?.metadata?.properties?.name) {
+      setImageIPFS(
+        await getPhotoIPFS(
+          userSelector.infoImage.newFileCID,
+          userSelector.infoImage.metadata.properties.name,
+          downloadWithNonDecryption
+        )
+      );
     }
   };
 
@@ -260,12 +262,13 @@ const Header = props => {
     setUserId(userSelector.id);
     setOwnUser(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idUrl, ipfs]);
+  }, [idUrl]);
 
   const setUserWithIpfsImage = async () => {
-    if (ipfs && userSelector && userSelector.infoImage && userSelector.infoImage.newFileCID) {
+    if (userSelector?.infoImage?.newFileCID && userSelector?.infoImage?.metadata?.properties?.name) {
       userSelector.ipfsImage = await getPhotoIPFS(
         userSelector.infoImage.newFileCID,
+        userSelector.infoImage.metadata.properties.name,
         downloadWithNonDecryption
       );
     }
@@ -287,12 +290,15 @@ const Header = props => {
 
               for (let usr of uList) {
                 if (
-                  usr &&
-                  usr.infoImage &&
-                  usr.infoImage.newFileCID &&
+                  usr?.infoImage?.newFileCID &&
+                  usr?.infoImage?.metadata?.properties?.name &&
                   (!usr.ipfsImage || usr.ipfsImage === "")
                 ) {
-                  usr.ipfsImage = await getPhotoIPFS(usr.infoImage.newFileCID, downloadWithNonDecryption);
+                  usr.ipfsImage = await getPhotoIPFS(
+                    usr.infoImage.newFileCID,
+                    usr.infoImage.metadata.properties.name,
+                    downloadWithNonDecryption
+                  );
                 } else {
                   usr.ipfsImage = getDefaultAvatar();
                 }
@@ -315,7 +321,7 @@ const Header = props => {
   }, [unreadMessages]);
 
   useEffect(() => {
-    if (!usersInfoList || (usersInfoList.length === 0 && ipfs)) {
+    if (!usersInfoList || usersInfoList.length === 0) {
       axios
         .post(`${URL()}/chat/getUsers`)
         .then(response => {
@@ -372,7 +378,8 @@ const Header = props => {
                   user.email ?? "",
                   user.infoImage ?? {},
                   false,
-                  user.ipfsImage ?? ""
+                  user.ipfsImage ?? "",
+                  user.urlIpfsImage ?? ""
                 )
               );
             });
@@ -407,7 +414,7 @@ const Header = props => {
         user.rate = user.rate ?? 0;
       });
     }
-  }, [usersInfoList, userSelector.id, ipfs]);
+  }, [usersInfoList, userSelector.id]);
 
   useEffect(() => {
     setIsHideHeader(true);
@@ -603,7 +610,7 @@ const Header = props => {
 
   const handleProfile = e => {
     handleCloseMobileMenu(e);
-    history.push(`/${userSelector.id}/profile`);
+    history.push(`/${userSelector.urlSlug}/profile`);
     setAnchorEl(null);
   };
 
@@ -671,10 +678,11 @@ const Header = props => {
                         }}
                       />
                     </div>
-                    Profile
+                    My Profile
                   </MenuItem>
                   <PrimaryButton
                     className={classes.pixApp}
+                    style={{ fontWeight: 400 }}
                     size="medium"
                     isRounded
                     onClick={e => {
@@ -682,7 +690,7 @@ const Header = props => {
                       history.push("/");
                     }}
                   >
-                    Pix
+                    Privi Pix
                     <img src={require("assets/logos/privi_pix_simple.png")} alt="icon" />
                   </PrimaryButton>
                   <MenuItem onClick={handleSearch}>
@@ -717,7 +725,7 @@ const Header = props => {
                     </svg>
                     Messages
                   </MenuItem>
-                  <MenuItem>
+                  {/* <MenuItem>
                     {!isZoo && (
                       <ToolbarButtonWithPopper
                         theme="pop"
@@ -757,7 +765,7 @@ const Header = props => {
                         />
                       </ToolbarButtonWithPopper>
                     )}
-                  </MenuItem>
+                  </MenuItem> */}
                   {/* <MenuItem>
                     <PrimaryButton
                       size="medium"
@@ -786,6 +794,7 @@ const Header = props => {
                   <MenuItem>
                     <PrimaryButton
                       className={classes.createPix}
+                      style={{ fontWeight: 400 }}
                       size="medium"
                       isRounded
                       onClick={e => {

@@ -33,10 +33,9 @@ import { useLoanViewStyles } from "./index.styles";
 import DefaultConfig from "./Chart/DefaultConfig";
 import PrintLoanChart from "./Chart";
 
-import { LoanBlockchainNet } from "shared/constants/constants";
+import { BlockchainNets } from "shared/constants/constants";
 import { getLoanChainImageUrl } from "shared/functions/chainFucntions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 
@@ -44,7 +43,7 @@ const NFTLoanDetailPage = () => {
   const classes = useLoanViewStyles();
   const user = useTypedSelector(state => state.user);
   const history = useHistory();
-  const params: { id?: string } = useParams();
+  const params: { loanId: string } = useParams();
 
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
@@ -83,11 +82,7 @@ const NFTLoanDetailPage = () => {
 
   const { account, library, chainId } = useWeb3React();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState({});
 
@@ -97,12 +92,17 @@ const NFTLoanDetailPage = () => {
 
   const fetchLoanDetail = useCallback(() => {
     setLoadingLoan(true);
-    Axios.get(`${URL()}/nftLoan/getNFTLoan/${params.id}`)
+    Axios.get(`${URL()}/nftLoan/getNFTLoan/`, {
+      params: {
+        id: params.loanId,
+      },
+    })
       .then(res => {
         const data = res.data;
         if (data.success) {
           setLoan(data.data);
-          setLoanMedia(data.data?.media);
+          setCreator(data.data?.CreatorInfo);
+          setLoanMedia(data.data?.nftData);
           setTotalViews(data.data?.totalViews ?? 0);
           const bidHistory = data.data.bidHistory;
           if (bidHistory.length) {
@@ -133,7 +133,7 @@ const NFTLoanDetailPage = () => {
       .finally(() => {
         setLoadingLoan(false);
       });
-  }, [params.id]);
+  }, [params.loanId]);
 
   useEffect(() => {
     if (loan) {
@@ -165,20 +165,10 @@ const NFTLoanDetailPage = () => {
   }, [loan]);
 
   useEffect(() => {
-    if (loanMedia && loanMedia.cid) {
-      getImageIPFS(loanMedia.cid);
+    if (loanMedia?.urlIpfsImage) {
+      setImageIPFS(loanMedia.urlIpfsImage);
     }
-  }, [loanMedia, ipfs]);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
+  }, [loanMedia]);
 
   const handleOpenRepayLoan = () => {
     setOpenRepayLoanModal(loan);
@@ -233,12 +223,12 @@ const NFTLoanDetailPage = () => {
   const handleFollow = e => {
     e.stopPropagation();
     e.preventDefault();
-    if (!loanMedia) return;
+    if (!loan) return;
 
     if (!isFollowing) {
-      followUser(loanMedia.CreatorId).then(_ => setIsFollowing(1));
+      followUser(loan.CreatorId).then(_ => setIsFollowing(1));
     } else {
-      unfollowUser(loanMedia.CreatorId).then(_ => setIsFollowing(0));
+      unfollowUser(loan.CreatorId).then(_ => setIsFollowing(0));
     }
   };
 
@@ -263,9 +253,9 @@ const NFTLoanDetailPage = () => {
     ].sort((a, b) => a.date - b.date);
     const data: Array<Array<CustomTableCellInfo>> = transactions.map(row => {
       let priviScanLink = "https://priviscan.io/tx/";
-      if (loanMedia.BlockchainNetwork.toLowerCase().includes("polygon")) {
+      if (loan.BlockchainNetwork.toLowerCase().includes("polygon")) {
         priviScanLink = "https://mumbai.polygonscan.com/tx/" + (row.txnHash ?? "");
-      } else if (loanMedia.BlockchainNetwork.toLowerCase().includes("ethereum")) {
+      } else if (loan.BlockchainNetwork.toLowerCase().includes("ethereum")) {
         priviScanLink = "https://rinkeby.etherscan.io/tx/" + (row.txnHash ?? "");
       }
       return [
@@ -288,7 +278,7 @@ const NFTLoanDetailPage = () => {
         {
           cell: (
             <img
-              src={getLoanChainImageUrl(loan.Chain, loan.media.BlockchainNetwork)}
+              src={getLoanChainImageUrl(loan.Chain, loan.BlockchainNetwork)}
               alt={"chain"}
               className={classes.chain}
             />
@@ -362,48 +352,6 @@ const NFTLoanDetailPage = () => {
   useEffect(() => {
     if (loanMedia && loanMedia.Bookmarks && loanMedia.Bookmarks.some((id: string) => id === user.id))
       setBookmarked(true);
-
-    if (loanMedia && user) {
-      if (loan.CreatorAddress) {
-        if (loan.CreatorAddress === user?.address) {
-          setCreator({
-            ...user,
-            name: `${user.firstName} ${user.lastName}`,
-          });
-        } else {
-          const getCreatorData = async () => {
-            await Axios.get(`${URL()}/user/getBasicUserInfo/${loan.CreatorAddress}`)
-              .then(response => {
-                if (response.data.success && response.data.data) {
-                  let data = response.data.data;
-
-                  setCreator({
-                    ...data,
-                    name: data.name ?? `${data.firstName} ${data.lastName}`,
-                  });
-                } else {
-                  setCreator({
-                    imageUrl: getRandomAvatarForUserIdWithMemoization(loanMedia.creator),
-                    name: "User name",
-                    urlSlug: "",
-                  });
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
-          };
-
-          getCreatorData();
-        }
-      } else {
-        setCreator({
-          imageUrl: getRandomAvatarForUserIdWithMemoization(loanMedia.creator),
-          name: loanMedia.creator,
-          urlSlug: loanMedia.creator,
-        });
-      }
-    }
   }, [loanMedia, user]);
 
   useEffect(() => {
@@ -457,8 +405,8 @@ const NFTLoanDetailPage = () => {
   }, [loan]);
 
   useEffect(() => {
-    if (creator) setIsFollowing(isUserFollowed(creator.id));
-  }, [creator]);
+    if (loan) setIsFollowing(isUserFollowed(loan.CreatorId));
+  }, [loan]);
 
   const bookmarkMedia = () => {
     Axios.post(`${URL()}/media/bookmarkMedia/${loanMedia.MediaSymbol ?? loanMedia.id}`, {
@@ -520,7 +468,7 @@ const NFTLoanDetailPage = () => {
   };
 
   const handleEndLoan = async () => {
-    const targetChain = LoanBlockchainNet.find(net => net.value === loanMedia.BlockchainNetwork);
+    const targetChain = BlockchainNets.find(net => net.value === loanMedia.BlockchainNetwork);
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
       if (!isHere) {
@@ -596,9 +544,7 @@ const NFTLoanDetailPage = () => {
               flexDirection={isTableScreen || isMobileScreen ? "column" : "row"}
             >
               <Box display="flex" alignItems="center">
-                <div className={classes.mediaName}>
-                  {loanMedia.MediaName ?? loanMedia.name ?? loanMedia.title ?? "Media Name"}
-                </div>
+                <div className={classes.mediaName}>{loanMedia?.metadata?.name ?? loanMedia.name}</div>
                 {loanMedia.blockchain ? (
                   <img
                     src={require(`assets/priviIcons/${
@@ -717,13 +663,7 @@ const NFTLoanDetailPage = () => {
                 onClick={handleOpenMediaPhotoDetailModal}
               >
                 <img
-                  src={
-                    loanMedia.cid
-                      ? imageIPFS
-                      : loanMedia.Type === "VIDEO_TYPE"
-                      ? loanMedia.UrlMainPhoto
-                      : loanMedia.Url || loanMedia.url || require("assets/backgrounds/digital_art_1.png")
-                  }
+                  src={loanMedia?.metadata?.image || require("assets/backgrounds/digital_art_1.png")}
                   className={classes.detailImg}
                   width="100%"
                 />
@@ -740,15 +680,7 @@ const NFTLoanDetailPage = () => {
                         <div
                           className={classes.avatar}
                           style={{
-                            backgroundImage: creator
-                              ? `url(${getUserAvatar({
-                                  id: creator.id,
-                                  anon: creator.anon,
-                                  hasPhoto: creator.hasPhoto,
-                                  anonAvatar: creator.anonAvatar,
-                                  url: creator.url,
-                                })})`
-                              : "none",
+                            backgroundImage: creator ? `url(${creator.imageUrl})` : "none",
                           }}
                           onClick={() => creator.urlSlug && history.push(`/${creator.urlSlug}/profile`)}
                         />
@@ -780,16 +712,6 @@ const NFTLoanDetailPage = () => {
                     <Box className={classes.fruitsContainer}>
                       <FruitSelect fruitObject={loanMedia} onGiveFruit={handleFruit} />
                     </Box>
-                    <Box mr={2}>
-                      <img
-                        src={require(bookmarked
-                          ? "assets/priviIcons/bookmark-filled-gray.svg"
-                          : "assets/priviIcons/bookmark-gray.svg")}
-                        alt="Bookmark"
-                        onClick={handleBookmark}
-                        style={{ cursor: "pointer", width: "24px", height: "24px" }}
-                      />
-                    </Box>
                     <Box mb={1}>
                       <div
                         onClick={handleOpenShareMenu}
@@ -811,7 +733,7 @@ const NFTLoanDetailPage = () => {
                   </Hidden>
                 )}
                 <SharePopup
-                  item={{ ...loanMedia, Type: "DIGITAL_ART_TYPE_LOAN" }}
+                  item={{ ...loan, Type: "DIGITAL_ART_TYPE_LOAN" }}
                   openMenu={openShareMenu}
                   anchorRef={anchorShareMenuRef}
                   handleCloseMenu={handleCloseShareMenu}
@@ -938,13 +860,7 @@ const NFTLoanDetailPage = () => {
               <MediaPhotoDetailsModal
                 isOpen={isShowingMediaPhotoDetailModal}
                 onClose={handleCloseMediaPhotoDetailModal}
-                imageURL={
-                  loanMedia.cid
-                    ? imageIPFS
-                    : loanMedia.Type === "VIDEO_TYPE"
-                    ? loanMedia.UrlMainPhoto
-                    : loanMedia.Url || loanMedia.url || require("assets/backgrounds/digital_art_1.png")
-                }
+                imageURL={loanMedia?.metadata.image || require("assets/backgrounds/digital_art_1.png")}
               />
             )}
           </LoadingWrapper>

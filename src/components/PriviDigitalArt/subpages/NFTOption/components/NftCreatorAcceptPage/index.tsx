@@ -134,10 +134,8 @@ const NftCreatorAcceptPage = () => {
   const [openBidModal, setOpenBidModal] = useState<boolean>(false);
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
 
-  const { setMultiAddr } = useIPFS();
-
   const [imageIPFS, setImageIPFS] = useState({});
-  
+
   const handleOpenMediaPhotoDetailModal = () => {
     setIsShowingMediaPhotoDetailModal(true);
   };
@@ -185,7 +183,7 @@ const NftCreatorAcceptPage = () => {
         <Box display="flex" justifyContent="space-between" width="100%">
           <BackButton purple/>
           <div style={{display:'flex'}}>
-            <div 
+            <div
                 className={classes.primaryButton}
                 onClick={() => setOpenCancelReserveModal(true)}
                 style={{padding:'11px 28px 7px 28px'}}
@@ -237,9 +235,9 @@ const NftCreatorAcceptPage = () => {
                     </Box>
                   </Box>
                   <Box display="flex" flexDirection="row" alignItems="center">
-										<SecondaryButton 
-											size="small" 
-											// onClick={handleFollow} 
+										<SecondaryButton
+											size="small"
+											// onClick={handleFollow}
 											className={classes.checkOnBtn}
 										>
 											Check on
@@ -252,7 +250,7 @@ const NftCreatorAcceptPage = () => {
                   </Box>
                 </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-start">
-									<Avatar  
+									<Avatar
 											url={require("assets/anonAvatars/ToyFaces_Colored_BG_066.jpg")}
 											size="small"
 									/>
@@ -277,10 +275,10 @@ const NftCreatorAcceptPage = () => {
                     </Box>
                     <Box style={{ borderRight: '1px solid rgb(158 172 242 / 30%)', height: '45px'}}></Box>
                     <Box>
-											<SecondaryButton 
-												size="small" 
+											<SecondaryButton
+												size="small"
 												className={classes.checkOrderbookBtn}
-												onClick={()=>setOpenOrderBookModal(true)} 
+												onClick={()=>setOpenOrderBookModal(true)}
 											>
 												Check Orderbook
 											</SecondaryButton>
@@ -321,9 +319,9 @@ const NftCreatorAcceptPage = () => {
 												10s
 											</PrimaryButton>
 									</Box>
-                </Box>                
+                </Box>
               </Box>
-            </Box>           
+            </Box>
             <CancelReserveModal
 							open={openCancelReserveModal}
 							handleClose={() => setOpenCancelReserveModal(false)}
@@ -334,7 +332,7 @@ const NftCreatorAcceptPage = () => {
 							handleClose={() => setOpenOrderBookModal(false)}
 							onConfirm={handleConfirmOrderBook}
             />
-            
+
 						<div className={classes.transactionsSection}>
 							<div className={classes.coinFlipHistorySection}>
 								<Box sx={{padding:'37px 37px 0px 37px'}}>
@@ -349,7 +347,7 @@ const NftCreatorAcceptPage = () => {
 												style={{ background: "#F2604C", color: "#ffffff", padding:'5px 30px', fontSize:'16px', fontWeight:800}}
 											>
 												CLAIM LIQUIDATION
-											</PrimaryButton>	
+											</PrimaryButton>
 										</Box>
 									</Box>
 									<Box display="flex" justifyContent="space-between" marginTop="37px">
@@ -399,7 +397,7 @@ const NftCreatorAcceptPage = () => {
 														size="small"
 														style={{ color: "#431AB7", minWidth: "100%", border: "2px solid #431AB7" }}
 													>
-														Withdraw 
+														Withdraw
 													</SecondaryButton>
 												</Box>
 											),

@@ -16,6 +16,8 @@ import jotPool from "./contracts/JotPool";
 import syntheticFractionalisationAuctionsManager from "./contracts/SyntheticFractionalisationAuctionsManager";
 import syntheticNFTAuction from "./contracts/SyntheticNFTAuction";
 import redemptionPool from "./contracts/RedemptionPool";
+import socialErc20 from "./contracts/SocialERC20";
+import socialTokenDeployer from "./contracts/SocialTokenDeployer";
 
 const api = network => {
   return {
@@ -37,6 +39,8 @@ const api = network => {
     PodManager: podManager(network),
     PodWithdrawManager: podWithdrawManager(network),
     DistributionManager: distributionManager(network),
+    SocialERC20: socialErc20(network),
+    SocialTokenDeployer: socialTokenDeployer(network),
   };
 };
 

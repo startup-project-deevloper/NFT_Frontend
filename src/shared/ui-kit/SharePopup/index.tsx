@@ -28,6 +28,8 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
       setShareLink(`${getPrefixURL()}fractionalisation/collection/${item.collectionId}`);
     } else if (item?.Type === "MARKETPLACE") {
       setShareLink(`${getPrefixURL()}marketplace/${item.token_address}/${item.token_id}`);
+    } else if (item?.Type === "DIGITAL_ART_TYPE_LOAN") {
+      setShareLink(`${getPrefixURL()}loan/${item.id}`);
     } else {
       if (item?.MediaSymbol || item.PodAddress) {
         setShareLink(
@@ -70,6 +72,8 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
         "MARKETPLACE",
         `marketplace/${item.token_address}/${item.token_id}`
       );
+    } else if (item?.Type === "DIGITAL_ART_TYPE_LOAN") {
+      shareMediaToSocial(item.id, "DIGITAL_ART_TYPE_LOAN", "DIGITAL_ART_TYPE_LOAN", `loan/${item.id}`);
     } else {
       if (item?.MediaSymbol || item.PodAddress) {
         shareMediaToSocial(

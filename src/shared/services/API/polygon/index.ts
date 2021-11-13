@@ -10,6 +10,7 @@ import * as Song from "./Song";
 import * as VaultFactory from "./ERC721VaultFactory";
 import * as PodManager from "./PodManager";
 import * as PodWithdrawManager from './PodWithdrawManager';
+import * as FractionalLoan from './FractionalLoan';
 import Erc20 from "./ERC20Tokens";
 
 export default {
@@ -26,4 +27,5 @@ export default {
   VaultFactory,
   PodManager,
   PodWithdrawManager,
+  FractionalLoan
 };

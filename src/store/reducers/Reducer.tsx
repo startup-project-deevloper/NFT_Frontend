@@ -100,6 +100,7 @@ export interface RootState {
     whitelisted?: boolean;
     infoImage?: any;
     ipfsImage?: any;
+    urlIpfsImage: string;
   };
   userBalances: {
     [key: string]: BalanceModel;
@@ -214,7 +215,6 @@ export interface RootState {
   slug: { slug: string };
   messageBox: {
     isOpenMessageBox: boolean;
-    userInfo: UserInfo;
     message: string;
     isSendMessage: boolean;
     chat: any;

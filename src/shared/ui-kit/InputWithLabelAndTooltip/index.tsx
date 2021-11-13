@@ -251,7 +251,7 @@ export default function InputWithLabelAndTooltip({
           )}
         </label>
       )}
-      {type === "text" || type === "password" ? (
+      {type === "text" || type === "password" || type === "number" ? (
         <Input
           disableUnderline
           endAdornment={endAdornment}

@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import axios from "axios";
 
 import { Slider, withStyles } from "@material-ui/core";
 
 import Box from "shared/ui-kit/Box";
-import { RootState } from "store/reducers/Reducer";
 import URL from "shared/functions/getURL";
 import { Color } from "shared/ui-kit";
-import { getRandomAvatarForUserIdWithMemoization } from "shared/services/user/getUserAvatar";
 import FriendLabel from "./components/FriendLabel";
 import { feedStyles } from "./index.styles";
 import * as UserConnectionsAPI from "shared/services/API/UserConnectionsAPI";
-import { UserInfo } from "store/actions/UsersInfo";
-import { removeUndef } from "shared/helpers";
-import ShareVoiceMessage from "shared/ui-kit/Chat/ShareVoiceMessage";
+// import ShareVoiceMessage from "shared/ui-kit/Chat/ShareVoiceMessage";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import WallFeedCard from "components/PriviDigitalArt/components/Cards/WallFeedCard";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -31,17 +26,13 @@ const COLUMNS_COUNT_BREAK_POINTS = {
 
 const GUTTER = "40px";
 
-type UserInfoWithCloseDegree = UserInfo & { closenessDegree: number };
-
 const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
   const classes = feedStyles();
-  const users = useSelector((state: RootState) => state.usersInfoList);
-
   const [closenessDegree, setClosenessDegree] = useState<number[]>([1.6, 2.6]);
 
   const [searchValue, setSearchValue] = useState<string>("");
-  const [filteredFriends, setFilteredFriends] = useState<UserInfoWithCloseDegree[]>([]);
-  const [friends, setFriends] = useState<UserInfoWithCloseDegree[]>([]);
+  const [filteredFriends, setFilteredFriends] = useState<any[]>([]);
+  const [friends, setFriends] = useState<any[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
   const [sharedVoices, setSharedVoices] = useState<any[]>([]);
   const [isSharedVoicesLoading, setIsSharedVoicesLoading] = useState(false);
@@ -54,11 +45,11 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
   const [friendsCollapse, setFriendsCollapse] = useState(true);
 
   useEffect(() => {
-    if (userId && users && users.length > 0) {
-      getFriends(userId, users);
+    if (userId) {
+      getFriends(userId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users, userId]);
+  }, [userId]);
 
   useEffect(() => {
     if (userId) {
@@ -106,34 +97,6 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
           let data = [...resp.data];
 
           data.forEach((post, index) => {
-            if (userId === post?.createdBy) {
-              data[index].userImageURL = userProfile.anon
-                ? require(`assets/anonAvatars/${userProfile.anonAvatar}`)
-                : userProfile.hasPhoto
-                ? userProfile.url
-                : "";
-              data[index].userName = userProfile.firstName ?? userProfile.name ?? "User name";
-              data[index].urlSlug =
-                userProfile.urlSlug ?? userProfile.firstName ?? userProfile.name ?? "User name";
-              data[index].level = userProfile.level ?? 1;
-              data[index].verified = userProfile.verified ?? false;
-            } else {
-              const thisUser = users.find(user => user.id === post?.createdBy);
-              if (thisUser) {
-                data[index].userImageURL = thisUser.imageURL;
-                data[index].userName = thisUser.name;
-                data[index].urlSlug = thisUser.urlSlug ?? thisUser.name ?? "User name";
-                data[index].level = thisUser.level ?? 1;
-                data[index].verified = thisUser.verified ?? false;
-              } else {
-                data[index].userImageURL = getRandomAvatarForUserIdWithMemoization(post?.createdBy);
-                data[index].userName = "User name";
-                data[index].urlSlug = "Username";
-                data[index].level = 1;
-                data[index].verified = false;
-              }
-            }
-
             if (post.hasPhoto && !post.url) {
               data[index].url = `${URL()}/user/wall/getPostPhoto/${post.id}`;
             }
@@ -189,18 +152,11 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
       });
   };
 
-  const getFriends = async (userId: string, allUsers: UserInfo[]) => {
+  const getFriends = async (userId: string) => {
     const friendList = await UserConnectionsAPI.getFriends(userId);
-    const friends: UserInfoWithCloseDegree[] = friendList
-      .map(fr => {
-        const user: UserInfo | undefined = allUsers.find(u => u.id === fr.user);
-        if (user) {
-          return { ...user, closenessDegree: fr.closenessDegree || 0 };
-        } else {
-          return undefined;
-        }
-      })
-      .filter(removeUndef);
+    const friends: any[] = friendList.map(fr => {
+      return { ...fr, closenessDegree: fr.closenessDegree || 0 };
+    });
 
     setFriends(friends);
   };
@@ -246,7 +202,7 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
           </span>
           <img
             className={classes.arrowIcon}
-            style={!friendsCollapse ? {transform: 'rotate(-180deg)'} : undefined}
+            style={!friendsCollapse ? { transform: "rotate(-180deg)" } : undefined}
             src={ArrowIcon}
             alt="arrow-up"
             onClick={() => setFriendsCollapse(!friendsCollapse)}
@@ -292,9 +248,7 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
           />
         </Box> */}
       </Box>
-      <Box className={classes.collapseFriendContainer}>
-        {getMobileFriendsBox()}
-      </Box>
+      <Box className={classes.collapseFriendContainer}>{getMobileFriendsBox()}</Box>
       <Box className={classes.topFriendContainer} mb={5}>
         {getFriendsBox()}
       </Box>
@@ -303,14 +257,14 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
           {getFriendsBox()}
         </Box>
         <Box width={1}>
-          {ownUser && (
+          {/* {ownUser && (
             <ShareVoiceMessage
               theme="pix"
               handleShare={audio => {
                 setSharedVoices([...sharedVoices, audio]);
               }}
             />
-          )}
+          )} */}
           <Box className={classes.contentContainer}>
             {sharedVoices.map((voice, index) => (
               <SharedVoiceItem voice={voice} key={`shared-voices-${index}`} />

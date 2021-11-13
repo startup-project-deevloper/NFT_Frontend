@@ -10,6 +10,9 @@ const useStyles = makeStyles(() =>
         minWidth: "364px",
       },
     },
+    selectWrapper: {
+      minWidth: '325px !important'
+    }
   })
 );
 
@@ -27,6 +30,7 @@ export const BlockchainTokenSelect = ({ socialToken, setSocialToken, BlockchainN
             socialTokenCopy.Network = v.target.value;
             setSocialToken(socialTokenCopy);
           }}
+          MenuProps={{ classes: { paper: classes.selectWrapper } }}
           renderValue={() => (
             <div style={{ display: "flex", alignItems: "center" }}>
               {socialToken.Network &&

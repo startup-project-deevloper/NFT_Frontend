@@ -35,6 +35,7 @@ import { uploadNFTMetaData, getURLfromCID } from "shared/functions/ipfs/upload2I
 import getIPFSURL from "shared/functions/getIPFSURL";
 import FileUploadingModal from "../../../../shared/ui-kit/Modal/Modals/FileUploadingModal";
 import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
+import { injected } from "shared/connectors";
 
 const infoIcon = require("assets/icons/info.svg");
 const ethereumIcon = require("assets/icons/media.png");
@@ -86,6 +87,13 @@ const multiAddr = getIPFSURL();
 const polygonTokenList = Object.keys(Web3Config.Polygon.TOKEN_ADDRESSES);
 const ethereumTokenList = Object.keys(Web3Config.Ethereum.TOKEN_ADDRESSES);
 
+interface IMetadata {
+  name: string;
+  description: string;
+  external_url: string;
+  image: string;
+}
+
 const CreateMediaModal = (props: any) => {
   const { showAlertMessage } = useAlertMessage();
   const classes = createMediaModalStyles();
@@ -136,7 +144,7 @@ const CreateMediaModal = (props: any) => {
   const mediaPayloadRef = useRef<any>({});
   const mediaAdditionalDataRef = useRef<any>({});
 
-  const { account, library, chainId } = useWeb3React();
+  const { activate, account, library, chainId } = useWeb3React();
 
   const [hash, setHash] = useState<string>("");
   const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
@@ -205,6 +213,12 @@ const CreateMediaModal = (props: any) => {
 
   const createMedia = async () => {
     if (!validateMediaInfo()) return;
+
+    if (!library) {
+      activate(injected);
+      return;
+    }
+
     setDisableButton(true);
     const viewConditions = {
       ViewingType: mediaData.viewPricingMethod == "Streaming" ? "DYNAMIC" : "FIXED",
@@ -308,31 +322,30 @@ const CreateMediaModal = (props: any) => {
 
   const createMediaOnEth = async (metadataID: any, chain: string, imageName: string) => {
     setDisableButton(true);
+
     const targetChain = BlockchainNets.find(net => net.value === mediaData.blockchainNet);
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
       if (!isHere) {
-        showAlertMessage("Got failed while switching over to target netowrk", { variant: "error" });
+        showAlertMessage("Got failed while switching over to target network", { variant: "error" });
         setDisableButton(false);
         return;
       }
     }
-
-    setOpenTransactionModal(true);
-    setTransactionInProgress(true);
 
     const web3APIHandler = targetChain.apiHandler;
     const web3Config = targetChain.config;
     const web3 = new Web3(library.provider);
     // upload metadata to ipfs
     let uri;
+    let metadata: IMetadata;
     const tokenId = random();
     try {
       const { MediaName, MediaDescription } = mediaData;
       const external_url = `https://${window.location.hostname}/#/nft/${MediaName.replace(/\s/g, "")}`;
       const image = `${getURLfromCID(metadataID)}/${imageName}`;
-      const metaData = { name: MediaName, description: MediaDescription, external_url, image };
-      uri = getURLfromCID((await uploadNFTMetaData(metaData)).cid);
+      metadata = { name: MediaName, description: MediaDescription, external_url, image };
+      uri = getURLfromCID((await uploadNFTMetaData(metadata)).cid);
     } catch (err) {
       console.error("Error-UploadNFTMetaData", { err });
     }
@@ -341,6 +354,10 @@ const CreateMediaModal = (props: any) => {
       tokenId: tokenId,
       uri: uri,
     };
+
+    setOpenTransactionModal(true);
+    setTransactionInProgress(true);
+
     web3APIHandler.Erc721.mint(web3, account!, payload, setHash)
       .then(async res => {
         if (res) {
@@ -353,6 +370,8 @@ const CreateMediaModal = (props: any) => {
               BlockchainId: tokenId,
               TokenContractAddress: web3Config.CONTRACT_ADDRESSES.ERC721WithRoyalty,
               cid: metadataID,
+              metadata,
+              urlIpfsImage: metadata.image,
             },
             extra: mediaAdditionalDataRef.current,
           };
@@ -387,11 +406,10 @@ const CreateMediaModal = (props: any) => {
       showAlertMessage("NFT created!", { variant: "success" });
       reloadMediaPage();
 
-      // setTimeout(() => {
-      //   initForm();
-      //   props.handleClose();
-      //   if (props.handleRefresh) props.handleRefresh();
-      // }, 1000);
+      setTimeout(() => {
+        props.handleClose();
+        if (props.handleRefresh) props.handleRefresh();
+      }, 1000);
     } else {
       if ((resp as any).error) {
         showAlertMessage((resp as any).error, { variant: "error" });
@@ -994,7 +1012,7 @@ const CreateMediaModal = (props: any) => {
                 </>
               )}
               <Box width={1} display="flex" justifyContent="space-between" mt={4}>
-                <SecondaryButton size="medium" onClick={() => setPage(1)}>
+                <SecondaryButton size="medium" onClick={props.handleClose}>
                   Cancel
                 </SecondaryButton>
                 <PrimaryButton

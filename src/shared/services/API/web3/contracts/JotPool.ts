@@ -82,30 +82,72 @@ const jotPool = (network: string) => {
     });
   };
 
+  const removeLiquidity = async (
+    web3: Web3,
+    account: StepIconClasskey,
+    collection: any,
+    payload: any
+  ): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { amount, setHash } = payload;
+        const { JotPoolAddress, JotAddress } = collection;
+
+        const contract = ContractInstance(web3, metadata.abi, JotPoolAddress);
+
+        const jotAPI = JOT(network);
+
+        const decimals = await jotAPI.decimals(web3, JotAddress);
+        const tAmount = toNDecimals(amount, decimals);
+
+        const approve = await jotAPI.approve(web3, account, JotAddress, JotPoolAddress, tAmount);
+
+        console.log("approve.... ", approve);
+        if (!approve) {
+          resolve(null);
+        }
+
+        const gas = await contract.methods.removeLiquidity(amount).estimateGas({ from: account });
+
+        const response = await contract.methods
+          .removeLiquidity(amount)
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
+
+        console.log("removeLiquidity response.... ", response);
+
+        resolve({
+          data: {
+            hash: response.transactionHash,
+          },
+        });
+      } catch (e) {
+        console.log(e);
+        resolve(null);
+      }
+    });
+  };
+
   const getPosition = async (web3: Web3, account: StepIconClasskey, collection: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { JotPoolAddress, JotAddress } = collection;
         const contract = ContractInstance(web3, metadata.abi, JotPoolAddress);
 
-        const jotAPI = JOT(network);
-
-        const decimals = await jotAPI.decimals(web3, JotAddress);
-        const balance = await jotAPI.balanceOf(web3, JotAddress, { account });
-
-        const position = await contract.methods.getPosition().call();
-        const totalShares = Number(await contract.methods.totalShares().call());
+        const position = await contract.methods.getPositionByAddress(account).call();
         const totalLiquidity = Number(await contract.methods.totalLiquidity().call());
 
         const shareAmount = +position.liquidity;
         const poolOwnership = totalLiquidity ? shareAmount / totalLiquidity : 0;
-        const myLiquidityValue = poolOwnership * balance;
+        const myLiquidityValue = poolOwnership * totalLiquidity;
 
         if (position) {
           resolve({
             shareAmount,
-            poolOwnership: (poolOwnership * 100).toFixed(2),
-            myLiquidityValue,
+            poolOwnership: Math.floor(poolOwnership * 100 * 100) / 100,
+            myLiquidityValue: myLiquidityValue,
             totalLiquidity,
           });
         } else {
@@ -206,6 +248,7 @@ const jotPool = (network: string) => {
 
   return {
     addLiquidity,
+    removeLiquidity,
     getPosition,
     getLiquidityValue,
     getReward,

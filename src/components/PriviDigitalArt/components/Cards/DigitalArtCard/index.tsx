@@ -33,11 +33,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
 
   const { isSignedin } = useAuth();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState("");
 
@@ -104,9 +100,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         });
       }
 
-      if (media.cid) {
-        getImageIPFS(media.cid);
-      }
+      setImageIPFS(media?.metadata?.image || "")
 
       if (media.Auctions) {
         const timerId = setInterval(() => {
@@ -148,23 +142,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
         return () => clearInterval(timerId);
       } else return;
     }
-  }, [media, user, ipfs]);
-
-  useEffect(() => {
-    if (media.cid) {
-      getImageIPFS(media.cid);
-    }
-  }, [ipfs]);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
+  }, [media, user]);
 
   const handleOpenDigitalArtModal = () => {
     if (isSignedin && media && creator) {
@@ -288,17 +266,14 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
             <StyledSkeleton width="100%" height={226} variant="rect" />
           </Box>
         ) : (
-          <div
+          <img
+            src={
+              media.cid
+              ? imageIPFS
+              : media.Type && media.Type !== "DIGITAL_ART_TYPE"
+              ? media.UrlMainPhoto
+              : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()}
             className={cls(classes.media, classes.fixed)}
-            style={{
-              backgroundImage: `url(${
-                media.cid
-                  ? imageIPFS
-                  : media.Type && media.Type !== "DIGITAL_ART_TYPE"
-                  ? media.UrlMainPhoto
-                  : media.UrlMainPhoto ?? media.Url ?? media.url ?? getRandomImageUrl()
-              })`,
-            }}
             onClick={handleOpenDigitalArtModal}
           />
         )
@@ -309,7 +284,7 @@ export default function DigitalArtCard({ item, heightFixed, index = 0 }) {
               <StyledSkeleton width="100%" height={226} variant="rect" />
             </Box>
           )}
-          
+
           <img
             src={`${
               media.cid

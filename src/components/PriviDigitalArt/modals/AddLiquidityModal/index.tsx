@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import Axios from "axios";
 
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -11,8 +10,8 @@ import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { AddLiquidityModalStyles } from "./index.style";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
-import {typeUnitValue} from "shared/helpers/utils";
+import { typeUnitValue } from "shared/helpers/utils";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -50,15 +49,7 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
 
       if (JotAddress) {
         promises = [
-          Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-            params: {
-              token1: JotAddress.toLowerCase(),
-              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
-            },
-          }),
+          getPrice(JotAddress, web3Config["TOKEN_ADDRESSES"]["USDT"]),
           web3APIHandler.Erc20["JOT"].decimals(web3, JotAddress),
           web3APIHandler.Erc20["JOT"].balanceOf(web3, JotAddress, { account }),
           web3APIHandler.Erc20["USDT"].decimals(web3),
@@ -67,15 +58,12 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
       }
 
       const response: any = await Promise.all(promises);
-      const data = response[0].data ?? {};
 
-      if (data.success) {
-        const JotPrice = +data.data?.[0]?.token1Price;
-        if (JotPrice !== 0) {
-          const usdt = parseInt(toDecimals(response[4], response[3]));
+      const JotPrice = +response[0];
+      if (JotPrice !== 0) {
+        const usdt = parseInt(toDecimals(response[4], response[3]));
 
-          setJotsBalance(Math.floor(usdt / JotPrice));
-        }
+        setJotsBalance(Math.floor(usdt / JotPrice));
       }
 
       if (JotAddress && response[2]) {
@@ -116,7 +104,11 @@ export default function AddLiquidityModal({ open, handleClose = () => {}, JotAdd
             <span>
               MAX: <b>{typeUnitValue(maxJots, 1)}</b>
             </span>
-            <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => setLiquidity(Math.min(jotsBalance, maxJots))}>
+            <Box
+              paddingLeft="12px"
+              style={{ cursor: "pointer" }}
+              onClick={() => setLiquidity(Math.min(jotsBalance, maxJots))}
+            >
               Add All
             </Box>
           </Box>

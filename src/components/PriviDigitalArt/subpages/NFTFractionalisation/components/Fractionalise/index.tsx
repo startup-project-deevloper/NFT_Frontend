@@ -17,7 +17,7 @@ import { getNFTBalanceFromMoralis } from "shared/services/API/balances/externalA
 import { switchNetwork } from "shared/functions/metamask";
 import { useFractionaliseStyles, PurpleSlider } from "./index.styles";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
-import { saveExternallyFetchedNfts, getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
+import { getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
 
 // parse it to same format as fb collection
 const parseMoralisData = (data, address, selectedChain) => {
@@ -148,8 +148,6 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
               });
             }
           }
-          // save externally created nft to backend
-          saveExternallyFetchedNfts(externallyCreatedNft);
           // set user nfts
           setUserNFTs([...Object.values(pixCreatedNftMap), ...externallyCreatedNft]);
         }
@@ -330,7 +328,11 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                   )}
                   <StyledDivider type="solid" color={Color.GrayLight} margin={2} />
                   <div className={classes.detailsLabel}>Vault details</div>
-                  <Grid container spacing={isMobile ? 1 : 2} style={{ display: "flex", alignItems: "flex-end" }}>
+                  <Grid
+                    container
+                    spacing={isMobile ? 1 : 2}
+                    style={{ display: "flex", alignItems: "flex-end" }}
+                  >
                     <Grid item xs={6} sm={6}>
                       <InputWithLabelAndTooltip
                         labelName="Name"
@@ -454,7 +456,6 @@ const Fractionalise = ({ goBack, isSynthetic = false }) => {
                 </div>
               </Grid>
             )}
-
           </Grid>
           {/* right form */}
           {!isMobile && (

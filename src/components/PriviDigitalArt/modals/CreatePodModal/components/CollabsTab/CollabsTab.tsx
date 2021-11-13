@@ -25,15 +25,11 @@ const CollabsTab = ({ pod, setPod }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [autocompleteUsers, setAutocompleteUsers] = useState<IAutocompleteUsers[]>([]);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   // refresh autocomplete user list when searchValue changed
   useEffect(() => {
-    if (searchValue && users.length && user && ipfs) {
+    if (searchValue && users.length && user) {
       getMatchingUsers(searchValue, ["firstName", "address"]).then(async resp => {
         if (resp?.success) {
           const filteredUsers = resp.data.filter(u => u.address && u.address != user.address);
@@ -50,11 +46,11 @@ const CollabsTab = ({ pod, setPod }) => {
         }
       });
     } else setAutocompleteUsers([]);
-  }, [searchValue, ipfs, user, users]);
+  }, [searchValue, user, users]);
 
   const getUserPhoto = async (user: any) => {
-    if (user && user.infoImage && user.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, downloadWithNonDecryption);
+    if (user?.infoImage?.newFileCID && user?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(user.infoImage.newFileCID, user.infoImage.metadata.properties.name, downloadWithNonDecryption);
       return imageUrl;
     } else {
       return getDefaultAvatar();

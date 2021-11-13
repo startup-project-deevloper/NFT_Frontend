@@ -42,11 +42,8 @@ const ManageOptionDetailPage = () => {
   const [openBidModal, setOpenBidModal] = useState<boolean>(false);
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
 
-
-  const { setMultiAddr } = useIPFS();
-
   const [imageIPFS, setImageIPFS] = useState({});
-  
+
   const handleOpenMediaPhotoDetailModal = () => {
     setIsShowingMediaPhotoDetailModal(true);
   };
@@ -147,7 +144,7 @@ const ManageOptionDetailPage = () => {
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                   <Box display="flex" flexDirection={isMobileScreen ? "column" : "row"} alignItems="center">
                     <Box display="flex" flexDirection="row" alignItems="center">
-                      
+
                       <Box display="flex" flexDirection="column" ml={0.25} mr={1.25}>
                         <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                           Test
@@ -156,9 +153,9 @@ const ManageOptionDetailPage = () => {
                     </Box>
                   </Box>
                   <Box display="flex" flexDirection="row" alignItems="center">
-                        <SecondaryButton 
-                            size="small" 
-                            // onClick={handleFollow} 
+                        <SecondaryButton
+                            size="small"
+                            // onClick={handleFollow}
                             className={classes.checkOnBtn}
                         >
                           Check on
@@ -171,7 +168,7 @@ const ManageOptionDetailPage = () => {
                   </Box>
                 </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-start">
-                    <Avatar  
+                    <Avatar
                         url={require("assets/anonAvatars/ToyFaces_Colored_BG_066.jpg")}
                         size="small"
                     />
@@ -196,10 +193,10 @@ const ManageOptionDetailPage = () => {
                     </Box>
                     <Box style={{ borderRight: '1px solid rgb(158 172 242 / 30%)', height: '45px'}}></Box>
                     <Box>
-                        <SecondaryButton 
-                            size="small" 
+                        <SecondaryButton
+                            size="small"
                             className={classes.checkOrderbookBtn}
-                            onClick={()=>setOpenOrderBookModal(true)} 
+                            onClick={()=>setOpenOrderBookModal(true)}
                         >
                             Check Orderbook
                         </SecondaryButton>
@@ -226,14 +223,6 @@ const ManageOptionDetailPage = () => {
                         cancel listing <img src={require('assets/icons/info-circle.svg')} style={{position: 'absolute', marginLeft: '5px'}}></img>
                     </div>
                   </div>
-
-                    {/* <div 
-                        className={classes.secondaryButton}
-                        onClick={() => setOpenWithdrawCollateralModal(true)}
-                        style={{width:'100%'}}
-                    >
-                        Withdraw collaterall
-                    </div> */}
                 </Box>
               </Box>
             </Box>
@@ -246,7 +235,7 @@ const ManageOptionDetailPage = () => {
                 open={openCancelListingModal}
                 handleClose={() => setOpenCancelListingModal(false)}
                 onConfirm={handleConfirmCancelListing}
-            />            
+            />
             <WithdrawCollateralModal
                 open={openWithdrawCollateralModal}
                 handleClose={() => setOpenWithdrawCollateralModal(false)}
@@ -258,7 +247,7 @@ const ManageOptionDetailPage = () => {
                 onConfirm={handleConfirmOrderBook}
             />
 
-            
+
                 <div className={classes.transactionsSection}>
                     <div className={classes.coinFlipHistorySection}>
                         <div className={classes.typo8}>Buying offers</div>

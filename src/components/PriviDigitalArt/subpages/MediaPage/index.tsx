@@ -478,11 +478,7 @@ const MediaPage = () => {
   const isEditingComment = useRef<boolean>(false);
 
   const [disableBidBtn, setDisableBidBtn] = useState<boolean>(false);
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState("");
 
@@ -569,27 +565,10 @@ const MediaPage = () => {
 
       return () => clearInterval(timerId);
     }
-
-    if (media && media.cid) {
-      getImageIPFS(media.cid);
+    if (media?.urlIpfsImage) {
+      setImageIPFS(media.urlIpfsImage)
     }
   }, [media]);
-
-  useEffect(() => {
-    if (media?.cid) {
-      getImageIPFS(media.cid);
-    }
-  }, [ipfs]);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-  };
 
   useEffect(() => {
     if (library) setWeb3(new Web3(library.provider));

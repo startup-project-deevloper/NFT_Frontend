@@ -35,13 +35,14 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { useWeb3React } from "@web3-react/core";
 import { BlockchainNets } from "shared/constants/constants";
 import Axios from "axios";
-import URL, { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import URL from "shared/functions/getURL";
 import { SwitchButton } from "shared/ui-kit/SwitchButton";
 import AddLiquidityOnQuickswap from "components/PriviDigitalArt/modals/AddLiquidityToQuickswap";
 import LiquidityOnQuickswapModal from "../../modals/LiquidityOnQuickswapModal";
 import WithdrawFundsModal from "components/PriviDigitalArt/modals/WithdrawFundModal";
 import RemoveLiquidityQuickswap from "components/PriviDigitalArt/modals/RemoveLiquidityQuickswap";
 import TransactionResultModal from "../../../../modals/TransactionResultModal";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const FreeHoursChartConfig = {
   config: {
@@ -278,6 +279,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   collectionId,
   nft,
   setNft,
+  setWithdrawing,
 }: any) {
   const history = useHistory();
   const classes = SyntheticFractionalisedTradeFractionsPageStyles();
@@ -290,7 +292,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const [soldSupply, setSoldSupply] = React.useState<number>(nft.SoldSupply);
 
   const [jotPrice, setJotPrice] = React.useState<number>(0);
-  const [transList, setTransList] = React.useState<any[]>(tempHistory);
+  const [transList, setTransList] = React.useState<any[]>([]);
   const [openBuyJotsModal, setOpenBuyJotsModal] = React.useState<boolean>(false);
   const [openEditPriceModal, setOpenEditPriceModal] = React.useState<boolean>(false);
   const [openEditSupplyModal, setOpenEditSupplyModal] = React.useState<boolean>(false);
@@ -321,6 +323,12 @@ export default function SyntheticFractionalisedTradeFractionsPage({
     if (nft.SyntheticCollectionManagerAddress) getLiquidity();
   }, [nft.SyntheticCollectionManagerAddress, nft.SyntheticID]);
 
+  React.useEffect(() => {
+    if (setWithdrawing) {
+      setWithdrawing(openBuyBackModal);
+    }
+  }, [openBuyBackModal]);
+
   const isMobileScreen = useMediaQuery("(max-width:1080px)");
   const ownershipJot = +nft.OwnerSupply;
   const maxSupplyJot = +nft.SellingSupply;
@@ -338,18 +346,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
   React.useEffect(() => {
     fetchOwnerHistory();
-  }, []);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      fetchOwnerHistory();
-    }, 30000);
     getJotPrice();
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [collectionId, nft]);
+  }, [collectionId, nft.SyntheticId]);
 
   const getLiquidity = async () => {
     try {
@@ -384,7 +382,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         nft,
         setHash,
       });
-      console.log("updated price", price);
       if (!price) {
         setUpdateResult(-1);
         setLoading(false);
@@ -408,23 +405,8 @@ export default function SyntheticFractionalisedTradeFractionsPage({
   const getJotPrice = async () => {
     const targetChain = BlockchainNets[1];
     const web3Config = targetChain.config;
-    Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-      headers: {
-        Authorization: `Basic ${PriceFeed_Token()}`,
-      },
-      params: {
-        token0: web3Config.TOKEN_ADDRESSES["USDT"],
-        token1: nft.JotAddress,
-      },
-    }).then(res => {
-      const resp = res.data;
-
-      if (resp.success) {
-        const data = resp.data;
-        setJotPrice(data.token0Price);
-      }
-    });
-    nft.JotAddress;
+    const price = await getPrice(nft.JotAddress, web3Config["TOKEN_ADDRESSES"]["USDT"]);
+    setJotPrice(+price);
   };
 
   const fetchOwnerHistory = async () => {
@@ -504,12 +486,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
         tokenId: nft.SyntheticID,
       });
 
+      let newNFT = { ...nft };
+
       if (ownerSup) {
         setOwnerSupply(ownerSup);
-        setNft({
-          ...nft,
-          OwnerSupply: ownerSup,
-        });
+        newNFT.OwnerSupply = ownerSup;
       }
 
       const sellingSup = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft, {
@@ -518,10 +499,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (sellingSup) {
         setSellingSupply(sellingSup);
-        setNft({
-          ...nft,
-          SellingSupply: sellingSup,
-        });
+        newNFT.SellingSupply = sellingSup;
       }
 
       const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, nft, {
@@ -530,11 +508,9 @@ export default function SyntheticFractionalisedTradeFractionsPage({
 
       if (soldSupply) {
         setSoldSupply(soldSupply);
-        setNft({
-          ...nft,
-          SoldSupply: soldSupply,
-        });
+        newNFT.SoldSupply = soldSupply;
       }
+      setNft(newNFT);
 
       return { ownerSupply: ownerSup, sellingSupply: sellingSup, soldSupply };
     } catch (err) {
@@ -803,30 +779,20 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           }}
                         >
                           <PrimaryButton
-                            className={classes.h4}
+                            className={`${classes.h4} ${classes.secondaryButton}`}
                             size="medium"
                             style={{
-                              background: Color.White,
-                              color: Color.Purple,
-                              border: "solid 0.7px",
-                              borderColor: Color.Purple,
-                              padding: "0px 25px",
                               maxWidth: 170,
-                              borderRadius: 4,
                             }}
                             onClick={handleOpenWithdrawJOTsModal}
                           >
                             Withdraw JOTs
                           </PrimaryButton>
                           <PrimaryButton
-                            className={classes.h4}
+                            className={`${classes.h4} ${classes.primaryButton}`}
                             size="medium"
                             style={{
-                              background: Color.Purple,
-                              color: Color.White,
-                              padding: "0px 25px",
                               maxWidth: 170,
-                              borderRadius: 4,
                             }}
                             onClick={handleOpenAddJOTsModal}
                           >
@@ -847,15 +813,11 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           {sellingSupply === -1 ? maxSupplyJot : sellingSupply} JOTs
                         </Box>
                         <PrimaryButton
-                          className={classes.h4}
+                          className={`${classes.h4} ${classes.primaryButton}`}
                           size="medium"
                           style={{
-                            background: Color.Purple,
-                            color: Color.White,
-                            padding: "0px 25px",
                             maxWidth: 215,
                             marginTop: 14,
-                            borderRadius: 4,
                           }}
                           onClick={handleOpenEditSupplyModal}
                         >
@@ -864,35 +826,27 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                       </Box>
                     </Box>
                     <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-                      <Box
-                        className={classes.ownerInfo}
-                        style={{
-                          background: "#DDFF57",
-                          borderRadius: 12,
-                          padding: "21px 0 18px 31px",
-                          marginLeft: 18,
-                        }}
-                      >
-                        <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                          Current Reserve Price to Buy Back
-                        </Box>
-                        <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                          {(+buybackPrice).toFixed(4)} USDT
-                        </Box>
+                      <Box className={`${classes.ownerInfo} ${classes.buybackPanel}`}>
+                        {buybackPrice > 0 ? (
+                          <>
+                            <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
+                              Current Reserve Price to Buy Back
+                            </Box>
+                            <Box
+                              className={classes.h2}
+                              sx={{ justifyContent: "center", fontWeight: 800, marginBottom: 14 }}
+                            >
+                              {(+buybackPrice).toFixed(4)} USDT
+                            </Box>
+                          </>
+                        ) : null}
                         <PrimaryButton
-                          className={classes.h4}
+                          className={`${classes.h4} ${classes.primaryButton}`}
                           size="medium"
-                          style={{
-                            color: Color.White,
-                            background: Color.Purple,
-                            padding: "0px 25px",
-                            maxWidth: 250,
-                            marginTop: 14,
-                            display: "flex",
-                            alignItems: "center",
-                            borderRadius: 4,
-                          }}
                           onClick={handleBuyBack}
+                          style={{
+                            maxWidth: 250,
+                          }}
                         >
                           Buy Back to Withdraw
                         </PrimaryButton>
@@ -989,15 +943,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                   <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
                     {soldSupply ?? 0} JOTs
                   </Box>
-                </Box>
-              </Box>
-              <Box></Box>
-              <Box className={classes.col_half} sx={{ marginY: "15px", paddingY: "5px" }}>
-                <Box className={classes.h4} pb={1} sx={{ justifyContent: "center" }}>
-                  ACCRUED INTEREST
-                </Box>
-                <Box className={classes.h2} sx={{ justifyContent: "center", fontWeight: 800 }}>
-                  {nft.AccruedReward || 0} USDT
                 </Box>
               </Box>
             </Box>
@@ -1125,10 +1070,16 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         <PrimaryButton
                           className={classes.priceButton}
                           size="medium"
-                          style={{ background: "#DDFF57", color: Color.Purple, maxWidth: "220px" }}
-                          onClick={handleAddLiquidity}
+                          style={{
+                            background: "#DDFF57",
+                            color: Color.Purple,
+                            maxWidth: "220px",
+                            padding: "0 30px",
+                          }}
+                          disabled={!+nft.totalLiquidity}
+                          onClick={handleBuyOnQuickSwap}
                         >
-                          Add liquidity on Quickswap
+                          Buy on Quickswap
                         </PrimaryButton>
                       </Box>
                     </Box>
@@ -1219,15 +1170,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                         >
                           Buy on Quickswap
                         </PrimaryButton>
-
-                        <PrimaryButton
-                          className={classes.priceButton}
-                          size="medium"
-                          style={{ background: "#DDFF57", color: Color.Purple }}
-                          onClick={handleAddLiquidity}
-                        >
-                          Add liquidity on Quickswap
-                        </PrimaryButton>
                       </Box>
                     </Box>
                   </Grid>
@@ -1238,7 +1180,7 @@ export default function SyntheticFractionalisedTradeFractionsPage({
           )}
         </>
       )}
-      {isOwner && (
+      {isOwner && isOwnerShipTab && (
         <>
           <Box className={classes.outBox}>
             <Box display="flex" justifyContent="space-between" alignItems="center">

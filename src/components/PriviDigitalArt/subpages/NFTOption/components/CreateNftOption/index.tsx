@@ -22,7 +22,6 @@ import { injected } from "shared/connectors";
 import axios from 'axios';
 import Axios from "axios";
 
-// import CreateNftOptionProgressModal from 'components/PriviDigitalArt/modals/CreateNftOptionProgressModal';
 import CreateNftOptionProgressModal from "shared/ui-kit/Modal/Modals/CreateNftOptionProgressModal";
 import { getNfts } from "shared/services/API";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";

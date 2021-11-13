@@ -14,6 +14,7 @@ const LendingCard = ({markets}) => {
   useEffect(() => {
     let _totalBorrow = 0
     let _dailyVolume = 0
+    let _borrower = 0
     let _topMarkets: any = JSON.parse(JSON.stringify(markets))
     if (_topMarkets.length >= 2)
       for (let i = 0; i < _topMarkets.length - 1; i++) {
@@ -22,13 +23,13 @@ const LendingCard = ({markets}) => {
             _topMarkets[i].token_info.priceInUsd
             * (
               _topMarkets[i].market_info.borrowList.length > 0
-                ? _topMarkets[i].market_info.borrowList[0].total_reserves
+                ? _topMarkets[i].market_info.borrowList[0].total_lend
                 : 0)
             <
             _topMarkets[j].token_info.priceInUsd
             * (
               _topMarkets[j].market_info.borrowList.length > 0
-                ? _topMarkets[j].market_info.borrowList[0].total_reserves
+                ? _topMarkets[j].market_info.borrowList[0].total_lend
                 : 0)
           ) {
             _topMarkets[i] = markets[j]
@@ -54,9 +55,12 @@ const LendingCard = ({markets}) => {
       } else if (markets[i].market_info.borrowList.length > 1) {
         _dailyVolume += markets[i].market_info.borrowList[0].total_borrow
       }
+
+      _borrower += (markets[i].market_info?.borrower || 0)
     }
     setDailyVolume(_dailyVolume)
     setTotalBorrow(_totalBorrow)
+    setBorrowers(_borrower)
   }, [markets])
 
   return (
@@ -87,7 +91,7 @@ const LendingCard = ({markets}) => {
                   <Typography className={cls(classes.tokenLabel, classes.tokenDetail)}>{`${token.market_info.reserve_apy * 100}% APR`}</Typography>
                 </Grid>
                 <Grid item lg={2} md={3} sm={4} xs={4} container justify='flex-end'>
-                  <Typography className={cls(classes.tokenLabel, classes.tokenDetail)}>{`${token.market_info.borrowList.length > 0 ? token.market_info.borrowList[0].total_reserves : 0} ${token.token_info.Symbol}`}</Typography>
+                  <Typography className={cls(classes.tokenLabel, classes.tokenDetail)}>{`${token.market_info.borrowList.length > 0 ? token.market_info.borrowList[0].total_lend : 0} ${token.token_info.Symbol}`}</Typography>
                 </Grid>
               </Grid>
               {index < topMarkets.length - 1 &&

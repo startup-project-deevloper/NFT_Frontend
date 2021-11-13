@@ -115,41 +115,38 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
       );
 
       const web3 = new Web3(library.provider);
-      const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
+      const targetChain = BlockchainNets[1];
+
       const web3APIHandler = targetChain.apiHandler;
       const network = "Polygon";
       const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_PROTOCOL_ROUTER;
-      const jotContractAddress = config[network].CONTRACT_ADDRESSES.JOT;
 
       const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
-      const tokenURI = selectedNFT.tokenURI || '';
-      console.log('token data', currentNFT.collection_id,
-      currentNFT.SyntheticID,
-      selectedNFT.BlockchainId,
-      tokenURI)
+      const tokenURI = selectedNFT.tokenURI || "";
+
       const gas = await contract.methods
-        .changeNFT(
-          currentNFT.collection_id,
-          currentNFT.SyntheticID,
-          selectedNFT.BlockchainId,
-          tokenURI
-        )
+        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.BlockchainId, tokenURI)
         .estimateGas({ from: account });
-      console.log('gas... ', gas)
       const response = await contract.methods
-        .changeNFT(
-          currentNFT.collection_id,
-          currentNFT.SyntheticID,
-          selectedNFT.BlockchainId,
-          tokenURI
-        )
+        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.BlockchainId, tokenURI)
         .send({ from: account, gas })
         .on("transactionHash", hash => {
           setHash(hash);
           setIsLoading(false);
         });
 
-      console.log('response... ', response)
+      const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(
+        web3,
+        currentNFT,
+        {
+          tokenId: currentNFT.SyntheticID,
+        }
+      );
+
+      const soldSupply = await web3APIHandler.SyntheticCollectionManager.getSoldSupply(web3, currentNFT, {
+        tokenId: currentNFT.SyntheticID,
+      });
+
       if (!response) {
         setIsProceeding(false);
         setIsLoading(false);
@@ -164,6 +161,9 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
           isAddCollection: false,
           Price: currentNFT.Price,
           OwnerSupply: currentNFT.OwnerSupply,
+          SellingSupply: sellingSupply,
+          SoldSupply: soldSupply,
+          OwnerAddress: account!,
         };
 
         const { data } = await axios.post(`${URL()}/syntheticFractionalize/registerNFT`, params);

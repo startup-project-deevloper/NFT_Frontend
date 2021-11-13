@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Box from "shared/ui-kit/Box";
 import { normalNFTCardStyles } from "../index.styles";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default function NFTCard({ item, handleSelect, isSmall = false }) {
   const classes = normalNFTCardStyles();
@@ -11,9 +12,11 @@ export default function NFTCard({ item, handleSelect, isSmall = false }) {
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
       <div className={isSmall ? classes.selectedSmallOuterBox : classes.selectedOuterBox}>
         <div className={`${classes.card} ${item.selected ? classes.selected : ""}`}>
-          <div className={classes.innerBox} style={{ padding: isSmall ? 6 : 16 }}>
+          <div className={isSmall ? classes.selectedInnerBox : classes.innerBox} style={{ padding: isSmall ? 6 : 16 }}>
             <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} className={classes.nftNameContainer}>
-              <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{`${item.MediaName} #${item.BlockchainId}`}</div>
+              <Tooltip title={`${item.MediaName} #${item.BlockchainId}`}>
+                <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{`${item.MediaName} #${item.BlockchainId}`}</div>
+              </Tooltip>
             </Box>
             <img
               src={
@@ -28,7 +31,7 @@ export default function NFTCard({ item, handleSelect, isSmall = false }) {
               }
               alt={item.MediaName}
             />
-            <div className={classes.starGroup}>
+            <div className={isSmall ? classes.smallStarGroup : classes.starGroup}>
               <Box fontSize={8.5} mr={"2px"}>
                 🌟{" "}
               </Box>

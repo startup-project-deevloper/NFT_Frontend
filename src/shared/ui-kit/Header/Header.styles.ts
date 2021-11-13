@@ -75,6 +75,7 @@ export const headerStyles = makeStyles(theme => ({
     },
     "& .header-right .avatar-container": {
       marginLeft: 10,
+      marginRight: 8,
       [theme.breakpoints.down("sm")]: {
         marginLeft: 0,
       },
@@ -323,9 +324,16 @@ export const headerStyles = makeStyles(theme => ({
     "& .MuiListItem-root.MuiMenuItem-root": {
       fontSize: 14,
       "& svg": {
-        marginRight: 8,
+        marginRight: 20,
+        width: 20
       },
     },
+    "& .MuiMenuItem-root": {
+      marginRight: 0,
+      marginLeft: 0,
+      paddingLeft: 8,
+      paddingRight: 8
+    }
   },
   navButton: {
     border: "1px solid #77788E",
@@ -363,13 +371,14 @@ export const headerStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    margin: "8px auto",
     padding: "11px 16px !important",
     background: "transparent !important",
     color: "#431AB7 !important",
     fontSize: "16px !important",
     lineHeight: "21px !important",
     border: "1px solid #431AB7 !important",
-    width: "100% !important",
+    width: "calc(100% - 16px) !important",
     "& img": {
       width: "16.09px",
       height: "18.7px",
@@ -382,7 +391,7 @@ export const headerStyles = makeStyles(theme => ({
     background: "#9EACF2 !important",
     color: "#DDFF57 !important",
     fontSize: "14px !important",
-    lineHeight: "18px !important",
+    lineHeight: "17px !important",
     border: "none",
     margin: "0px !important",
     width: "100% !important",

@@ -1,22 +1,27 @@
 import React, { useEffect } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import Axios from "axios";
 
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { BlockchainNets } from "shared/constants/constants";
-import { toDecimals } from "shared/functions/web3";
 import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { AddLiquidityModalStyles } from "./index.style";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
-import {typeUnitValue} from "shared/helpers/utils";
+import { typeUnitValue } from "shared/helpers/utils";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
-export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, JotAddress, usdtBalance, onConfirm, jotsBalance }) {
+export default function AddLiquidityOnQuickswap({
+  open,
+  handleClose = () => {},
+  JotAddress,
+  usdtBalance,
+  onConfirm,
+  jotsBalance,
+}) {
   const classes = AddLiquidityModalStyles();
   const { account, library, chainId } = useWeb3React();
 
@@ -43,7 +48,7 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
     if (!open) {
       setInputUsdt(0);
     }
-  }, [open])
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -57,28 +62,16 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
 
       if (JotAddress) {
         promises = [
-          Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-            params: {
-              token1: JotAddress.toLowerCase(),
-              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
-            },
-          }),
+          getPrice(JotAddress, web3Config["TOKEN_ADDRESSES"]["USDT"]),
           web3APIHandler.Erc20["USDT"].balanceOf(web3, { account }),
         ];
       }
 
       const response: any = await Promise.all(promises);
-      const data = response[0].data ?? {};
-      setUsdt(+response[1])
-
-      if (data.success) {
-        const JotPrice = +data.data?.[0]?.token1Price;
-        if (JotPrice !== 0) {
-          setJotPrice(JotPrice);
-        }
+      setUsdt(+response[1]);
+      const JotPrice = +response[0];
+      if (JotPrice !== 0) {
+        setJotPrice(JotPrice);
       }
     })();
   }, [open, selectedChain]);
@@ -90,14 +83,14 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
           Add Liquidity to Quickswap
         </Box>
         <Box fontSize="14px" fontWeight="400" mt={1}>
-          Add  liquidity to Quicswap Pool to gain share in that pool and increase your revenue
+          Add liquidity to Quicswap Pool to gain share in that pool and increase your revenue
         </Box>
         <InputWithLabelAndTooltip
           inputValue={inputUsdt.toString()}
           onInputValueChange={e => {
-            const input = +e.target.value; 
-            setInputUsdt(input)
-            setJots(jotPrice ? input / jotPrice : 0)
+            const input = +e.target.value;
+            setInputUsdt(input);
+            setJots(jotPrice ? input / jotPrice : 0);
           }}
           overriedClasses={classes.inputLiquidity}
           required
@@ -115,24 +108,38 @@ export default function AddLiquidityOnQuickswap({ open, handleClose = () => {}, 
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">
-            <Box paddingLeft="12px" style={{ cursor: "pointer" }} onClick={() => {
+            <Box
+              paddingLeft="12px"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
                 setInputUsdt(usdtBalance);
                 setJots(jotPrice ? usdtBalance / jotPrice : 0);
-              }}>
+              }}
+            >
               Max
             </Box>
           </Box>
         </Box>
-        <Box mt={4} color="#431AB7" style={{ fontWeight: 700 }}>Amount of JOTs needed</Box>
-        <Box display="flex" alignItems="center" my={1} justifyContent="space-between" style={{
-          background: "rgba(158, 172, 242, 0.2)",
-          borderRadius: 12,
-          padding: 20
-        }}>
+        <Box mt={4} color="#431AB7" style={{ fontWeight: 700 }}>
+          Amount of JOTs needed
+        </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          my={1}
+          justifyContent="space-between"
+          style={{
+            background: "rgba(158, 172, 242, 0.2)",
+            borderRadius: 12,
+            padding: 20,
+          }}
+        >
           <span style={{ color: "#431AB7" }}>JOTs</span>
           <span className={classes.purpleText}>{jots}</span>
         </Box>
-        <Box color="#431AB7">JOT Balance <span style={{ fontWeight: 700 }}>{ jotsBalance } JOTs</span></Box>
+        <Box color="#431AB7">
+          JOT Balance <span style={{ fontWeight: 700 }}>{jotsBalance} JOTs</span>
+        </Box>
         <Box display="flex" alignItems="center" justifyContent="space-between" mt={5}>
           <SecondaryButton
             size="medium"

@@ -41,28 +41,24 @@ const FractionalLoans = () => {
   const [openHowModal, setOpenHowModal] = useState<boolean>(false);
   const [openCollapse, setOpenCollapse] = useState<string[]>([]);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       return "data:image/png;base64," + base64String;
     }
     return "";
   };
 
   useEffect(() => {
-    if (userSelector?.id && ipfs) {
+    if (userSelector?.id) {
       loadData();
     }
-  }, [userSelector, ipfs]);
+  }, [userSelector]);
 
   const loadData = () => {
     setIsDataLoading(true);
@@ -73,7 +69,7 @@ const FractionalLoans = () => {
         if (data.success) {
           const postionsData = await Promise.all(
             data.data?.map(async nft => {
-              const cidUrl = nft.media?.cid ? await getImageIPFS(nft.media?.cid) : "";
+              const cidUrl = nft.media?.urlIpfsImage ? nft.media?.urlIpfsImage : "";
               if (cidUrl) {
                 nft.media["cidUrl"] = cidUrl;
               }

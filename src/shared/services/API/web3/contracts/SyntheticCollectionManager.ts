@@ -595,16 +595,15 @@ const syntheticCollectionManager = (network: string) => {
 
         const contract = ContractInstance(web3, metadata.abi, SyntheticCollectionManagerAddress);
         const jotAPI = JOT(network);
-
-        const decimals = await jotAPI.decimals(web3, JotAddress);
-
-        contract.methods.getAvailableJotsForBuyback(SyntheticID).call((err, result) => {
-          if (err) {
-            console.log(err);
-            resolve(null);
-          } else {
-            resolve({ jots: toDecimals(result[0], decimals), funding: toDecimals(result[1], decimals) });
-          }
+        const jotDecimals = await jotAPI.decimals(web3, JotAddress);
+        const USDTAPI = USDT(network);
+        const usdtDecimals = await USDTAPI.decimals(web3);
+        const tokenInfo = await contract.methods.tokens(SyntheticID).call();
+        const { ownerSupply, sellingSupply, liquiditySold } = tokenInfo;
+        resolve({
+          ownerSupply: +toDecimals(ownerSupply, jotDecimals),
+          sellingSupply: +toDecimals(sellingSupply, jotDecimals),
+          liquiditySold: +toDecimals(liquiditySold, usdtDecimals),
         });
       } catch (err) {
         console.log(err);

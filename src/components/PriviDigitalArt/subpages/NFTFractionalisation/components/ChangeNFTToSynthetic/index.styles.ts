@@ -340,6 +340,29 @@ export const normalNFTCardStyles = makeStyles(theme => ({
       maxHeight: 250,
     },
   },
+  selectedInnerBox: {
+    background: "#9EACF2",
+    boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
+    borderRadius: 11.3,
+    clipPath: "polygon(100% 0%, 100% 80%,  50% 90%, 0% 80%, 0% 0%)",
+    padding: 16,
+    height: '100%',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    color: "#fff",
+    "& img": {
+      width: "110px",
+      height: "110px",
+      borderRadius: 10
+    },
+    [theme.breakpoints.between(960, 980)]: {
+      padding: 12,
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "10px 6px",
+    },
+  },
   innerBox: {
     background: "#9EACF2",
     boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
@@ -352,9 +375,9 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     alignItems: "center",
     color: "#fff",
     "& img": {
-      width: "100%",
-      height: "100%",
-      maxHeight: 250,
+      width: "210px",
+      height: "210px",
+      borderRadius: 20
     },
     [theme.breakpoints.between(960, 980)]: {
       padding: 12,
@@ -373,6 +396,13 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     marginBottom: 30,
+    marginTop: 30
+  },
+  smallStarGroup: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 30,
+    marginTop: 15
   },
   ntfName: {
     fontSize: 16,
@@ -382,6 +412,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     textTransform: "capitalize",
     marginBottom: 8,
     width: "100%",
+    maxWidth: 210,
     textOverflow: "ellipsis",
     overflow: "hidden",
     whiteSpace: "nowrap",

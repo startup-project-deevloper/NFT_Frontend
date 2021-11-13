@@ -13,7 +13,6 @@
 }
 
 .photoPost {
-  background-color: #b1ff00;
   width: 100%;
   height: 535px;
 }
@@ -212,10 +211,17 @@
 }
 
 .userCardImageWallPost {
-  width: 200px;
+  width: 250px;
   display: flex;
   align-items: center;
   padding-right: 24px;
+}
+
+.commentUserInfo {
+  max-width: 200;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .authorPhotoWallPost {

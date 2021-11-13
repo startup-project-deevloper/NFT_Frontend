@@ -1,13 +1,17 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { useDebounce } from "use-debounce/lib";
+
 import { makeStyles, Avatar } from "@material-ui/core";
-import { SearchInputBox } from "shared/ui-kit/SearchInputBox/SearchInputBox";
-import { getUsersInfoList } from "store/selectors/user";
+
 import { getUser } from "store/selectors/user";
 import { closeNewChatModal, startChat, addChatInList } from "store/actions/MessageActions";
-import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
+
+import { SearchInputBox } from "shared/ui-kit/SearchInputBox/SearchInputBox";
+import { getMatchingUsers } from "shared/services/API";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { LoadingWrapper } from "shared/ui-kit/Hocs";
 
 const useStyles = makeStyles({
   container: {
@@ -85,13 +89,55 @@ const useStyles = makeStyles({
 const NewChatModal = () => {
   const classes = useStyles();
   const location = useLocation();
-  const userSelector = useSelector(getUser);
-  const users = useSelector(getUsersInfoList);
-  const [keyword, setKeyword] = useState<string>("");
-  const [minimize, setMinimize] = useState<boolean>(true);
   const dispatch = useDispatch();
 
-  if (!userSelector) return null;
+  const scrollRef = useRef<any>();
+
+  const userSelector = useSelector(getUser);
+  const [keyword, setKeyword] = useState<string>("");
+  const [minimize, setMinimize] = useState<boolean>(true);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [lastValue, setLastValue] = useState<string>("");
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
+  const [debouncedKeyword] = useDebounce(keyword, 500);
+
+  useEffect(() => {
+    setLastValue("");
+    setUsers([]);
+    setHasMore(true);
+    getUsers("");
+  }, [debouncedKeyword]);
+
+  const getUsers = value => {
+    if (loading) return;
+    setLoading(true);
+    getMatchingUsers(debouncedKeyword, ["firstName"], value)
+      .then(res => {
+        if (res.success) {
+          setLastValue(res.lastValue);
+          setHasMore(res.hasMore);
+          setUsers(pre => [...pre, ...res.data]);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleScroll = React.useCallback(
+    e => {
+      const bottom =
+        scrollRef?.current &&
+        scrollRef?.current?.scrollHeight - scrollRef?.current?.scrollTop <=
+          scrollRef?.current?.clientHeight + 100;
+      if (bottom && hasMore) {
+        getUsers(lastValue);
+      }
+    },
+    [getUsers]
+  );
 
   const handleClose = () => {
     dispatch(closeNewChatModal());
@@ -99,42 +145,29 @@ const NewChatModal = () => {
 
   const handleClick = user => {
     if (!user) return;
+    const newChat = {
+      users: {
+        userFrom: {
+          userId: userSelector.id,
+          userName: userSelector.firstName + " " + userSelector.lastName,
+        },
+        userTo: {
+          userId: user.id,
+          userName: user.name,
+        },
+      },
+      receipientId: user.id,
+    };
     if (location.pathname.includes("/messages")) {
       dispatch(
         addChatInList({
-          chat: {
-            users: {
-              userFrom: {
-                userId: userSelector.id,
-                userName: userSelector.firstName + " " + userSelector.lastName,
-              },
-              userTo: {
-                userId: user.id,
-                userName: user.name,
-              },
-            },
-            receipientId: user.id,
-            userInfo: user,
-          },
+          chat: newChat,
         })
       );
     } else {
       dispatch(
         startChat({
-          chat: {
-            users: {
-              userFrom: {
-                userId: userSelector.id,
-                userName: userSelector.firstName + " " + userSelector.lastName,
-              },
-              userTo: {
-                userId: user.id,
-                userName: user.name,
-              },
-            },
-            receipientId: user.id,
-            userInfo: user,
-          },
+          chat: newChat,
         })
       );
     }
@@ -147,11 +180,8 @@ const NewChatModal = () => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.header}
-           onClick={handleMinimize}>
-        <div className={classes.title}>
-          New Message
-        </div>
+      <div className={classes.header} onClick={handleMinimize}>
+        <div className={classes.title}>New Message</div>
         <div className={classes.actionButtons}>
           {minimize === true ? (
             <img src={require("assets/icons/minimize.svg")} onClick={handleMinimize} />
@@ -161,12 +191,9 @@ const NewChatModal = () => {
       </div>
       {minimize && (
         <>
-          <SearchInputBox
-            keyword={keyword}
-            setKeyword={setKeyword}
-          />
+          <SearchInputBox keyword={keyword} setKeyword={setKeyword} style={{ background: "#F2FBF6" }} />
           <br />
-          <div className={classes.userList}>
+          <div className={classes.userList} ref={scrollRef} onScroll={handleScroll}>
             {users &&
               users
                 .filter(user => {
@@ -177,19 +204,17 @@ const NewChatModal = () => {
                 .map((user, index) => {
                   return (
                     <div className={classes.userItem} key={index} onClick={() => handleClick(user)}>
-                      <Avatar src={`${user.imageURL}`}
-                              alt={user.name} />
+                      <Avatar src={user.imageUrl ?? getDefaultAvatar()} alt={user.name} />
                       <div className={classes.userInfo}>
-                        <div className={classes.userName} style={{ fontWeight: 800 }}>
-                          {user.name}
-                        </div>
-                        <div className={classes.userSlug} style={{ color: "#000000" }}>
+                        <div className={classes.userName}>{user.name}</div>
+                        <div className={classes.userSlug} style={{ color: "#707582" }}>
                           @{user.urlSlug}
                         </div>
                       </div>
                     </div>
                   );
                 })}
+            <LoadingWrapper loading={loading} />
           </div>
         </>
       )}

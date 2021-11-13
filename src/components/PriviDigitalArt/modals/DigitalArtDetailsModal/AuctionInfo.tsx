@@ -41,7 +41,7 @@ export const OfferTable = ({ offers, token }) => {
     },
   ];
   const [tableData, setTableData] = React.useState<Array<Array<CustomTableCellInfo>>>([]);
-  console.log(offers);
+
   React.useEffect(() => {
     let data: Array<Array<CustomTableCellInfo>> = [];
     if (offers && offers.length) {

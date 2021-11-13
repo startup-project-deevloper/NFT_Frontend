@@ -47,7 +47,7 @@ export default function ArtistCard({ item }) {
     >
       <img src={item.imageUrl || getDefaultAvatar()} />
       <div className={classes.filter}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">
+        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px" minHeight={40}>
           {<b>{`${item.name || ""}`}</b>}
           {user && item.id !== user.id && isSignedin && (
             <button className={isFollowing ? classes.unfollow : classes.follow} onClick={handleFollow}>
@@ -67,7 +67,7 @@ export default function ArtistCard({ item }) {
         </Box>
         <Box display="flex" width="100%" justifyContent="space-between">
           <Box display="flex" flexDirection="column">
-            <b>🌟 Collections</b>
+            {/* <b>🌟 Collections</b>
             <Box marginTop="8px">
               {item.myMediasCount
                 ? `${
@@ -78,7 +78,7 @@ export default function ArtistCard({ item }) {
                       : item.myMediasCount
                   }${item.myMediasCount > 1000000 ? "M" : item.myMediasCount > 1000 ? "K" : ""}`
                 : 0}
-            </Box>
+            </Box> */}
           </Box>
 
           <Box display="flex" flexDirection="column" alignItems="flex-end">

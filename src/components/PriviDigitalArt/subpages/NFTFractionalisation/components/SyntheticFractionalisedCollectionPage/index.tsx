@@ -37,6 +37,7 @@ import URL from "shared/functions/getURL";
 import OrderBookModal from "../../modals/OrderBookModal";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -48,9 +49,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
   const { showAlertMessage } = useAlertMessage();
   const userSelector = useSelector((state: RootState) => state.user);
 
-  const [selectedTab, setSelectedTab] = useState<
-    "nft" | "stake" | "trade_jots" | "auctions" | "redemption"
-  >("nft");
+  const [selectedTab, setSelectedTab] = useState<"nft" | "stake" | "trade_jots" | "auctions" | "redemption">(
+    "nft"
+  );
 
   const [collection, setCollection] = useState<any>({});
   const [syntheticNFTs, setSyntheticNFTs] = useState<any>([]);
@@ -99,20 +100,12 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               Authorization: `Basic ${PriceFeed_Token()}`,
             },
           });
-          const JotPriceResponse = await axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-            params: {
-              token1: response.data.JotAddress.toLowerCase(),
-              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
-            },
-          });
-
-          if (JotPriceResponse.data?.success) {
-            const jotPrice = +JotPriceResponse.data?.data?.[0]?.token1Price ?? 0;
-            setJotPrice(Math.floor(jotPrice * 10000) / 10000);
-          }
+          const JotPriceResponse = await getPrice(
+            response.data.JotAddress,
+            web3Config["TOKEN_ADDRESSES"]["USDT"]
+          );
+          const jotPrice = +JotPriceResponse;
+          setJotPrice(Math.floor(jotPrice * 10000) / 10000);
         }
       } catch (err) {
         console.log(err);
@@ -137,6 +130,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
           const newNFTs = data.data;
           const newData = [...newNFTs];
           setSyntheticNFTs(newData);
+          if (!newData.filter(nft => nft.isVerified && !nft.isWithdrawn).length) {
+            setSelectedTab("stake");
+          }
           lastIdRef.current = data.lastId;
           hasMoreRef.current = data.hasMore;
         }
@@ -216,7 +212,7 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
 
   /// Circulating Supply = Locked NFTs * 10000
   const circulatingSupply = useMemo(() => {
-    const lockedCount = syntheticNFTs?.filter(nft => nft.isLocked).length || 0;
+    const lockedCount = syntheticNFTs?.filter(nft => nft.isVerified && !nft.isWithdrawn).length || 0;
     if (lockedCount >= 100) return `${lockedCount / 100}M JOTs`;
     return `${lockedCount * 10}K JOTs`;
   }, [syntheticNFTs]);
@@ -525,17 +521,15 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
               <div className={classes.typo6}>STAKING APR</div>
             </Box>
             <Box display="flex" flexDirection="column">
-              <div className={classes.typo5}>${collection.CumulativeRevenue ?? 0}</div>
-              <div className={classes.typo6}>ACCRUED REWARD</div>
-            </Box>
-            <Box display="flex" flexDirection="column">
-              <div className={classes.typo3}>{jotPrice || 'N/A'} </div>
+              <div className={classes.typo3}>{jotPrice || "N/A"} </div>
               <div className={classes.typo4}>JOT PRICE</div>
             </Box>
             {(isMobile || isTablet) && (
               <Box display="flex">
                 <Box display="flex" flexDirection="column">
-                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isVerified && !nft.isWithdrawn).length}</div>
+                  <div className={classes.typo3}>
+                    {syntheticNFTs?.filter(nft => nft.isVerified && !nft.isWithdrawn).length}
+                  </div>
                   <div className={classes.typo4}>locked NFTs in</div>
                 </Box>
                 <Box display="flex" flexDirection="column">
@@ -547,7 +541,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             {!isMobile && !isTablet && (
               <>
                 <Box display="flex" flexDirection="column">
-                  <div className={classes.typo3}>{syntheticNFTs?.filter(nft => nft.isVerified && !nft.isWithdrawn).length}</div>
+                  <div className={classes.typo3}>
+                    {syntheticNFTs?.filter(nft => nft.isVerified && !nft.isWithdrawn).length}
+                  </div>
                   <div className={classes.typo4}>locked NFTs in</div>
                 </Box>
                 <Box display="flex" flexDirection="column">
@@ -562,17 +558,16 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
       <div className={classes.nftSection}>
         <Box width="100%" mb={4} style={{ overflowX: "auto" }}>
           <div className={classes.nftTabSection}>
+            {syntheticNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn).length ? (
+              <div
+                className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
+                onClick={() => setSelectedTab("nft")}
+              >
+                <span>NFTS IN COLLECTION</span>
+              </div>
+            ) : null}
             <div
-              className={cls({ [classes.selectedTabSection]: selectedTab === "nft" }, classes.tabSection)}
-              onClick={() => setSelectedTab("nft")}
-            >
-              <span>NFTS IN COLLECTION</span>
-            </div>
-            <div
-              className={cls(
-                { [classes.selectedTabSection]: selectedTab === "stake" },
-                classes.tabSection
-              )}
+              className={cls({ [classes.selectedTabSection]: selectedTab === "stake" }, classes.tabSection)}
               onClick={() => setSelectedTab("stake")}
             >
               <span>STAKE</span>
@@ -586,15 +581,18 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             >
               <span>TRADE JOTS</span>
             </div>
-            <div
-              className={cls(
-                { [classes.selectedTabSection]: selectedTab === "auctions" },
-                classes.tabSection
-              )}
-              onClick={() => setSelectedTab("auctions")}
-            >
-              <span>AUCTIONS</span>
-            </div>
+            {auctionNFTs.length ? (
+              <div
+                className={cls(
+                  { [classes.selectedTabSection]: selectedTab === "auctions" },
+                  classes.tabSection
+                )}
+                onClick={() => setSelectedTab("auctions")}
+              >
+                <span>AUCTIONS</span>
+                <Box className={classes.countCircle}>{auctionNFTs.length}</Box>
+              </div>
+            ) : null}
             <div
               className={cls(
                 { [classes.selectedTabSection]: selectedTab === "redemption" },
@@ -609,16 +607,18 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         {selectedTab === "nft" ? (
           <div className={classes.allNFTSection}>
             <Grid container spacing={2}>
-              {syntheticNFTs.filter(nft => nft.isVerified && !nft.isWithdrawn).map((item, idx) => (
-                <Grid item xs={6} sm={4} md={4} lg={3}>
-                  <CollectionNFTCard
-                    item={item}
-                    handleSelect={() => {
-                      history.push(`/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`);
-                    }}
-                  />
-                </Grid>
-              ))}
+              {syntheticNFTs
+                .filter(nft => nft.isVerified && !nft.isWithdrawn)
+                .map((item, idx) => (
+                  <Grid item xs={6} sm={4} md={4} lg={3}>
+                    <CollectionNFTCard
+                      item={item}
+                      handleSelect={() => {
+                        history.push(`/fractionalisation/collection/${params.id}/nft/${item.SyntheticID}`);
+                      }}
+                    />
+                  </Grid>
+                ))}
             </Grid>
             {hasMoreRef.current && (
               <div

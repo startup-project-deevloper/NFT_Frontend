@@ -512,26 +512,14 @@ type MediaAndPriceSelectProps = {
 };
 
 const MediaImage = ({ media }) => {
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
   const [imageIPFS, setImageIPFS] = useState({});
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-  useEffect(() => {
-    if (media.cid) {
-      getImageIPFS(media.cid);
-    }
-  }, [ipfs]);
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
+  useEffect(() => {
+    if (media?.urlIpfsImage) {
+      setImageIPFS(media.urlIpfsImage)
     }
-  };
+  }, [media]);
 
   return (
     <div

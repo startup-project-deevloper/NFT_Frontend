@@ -5,51 +5,7 @@ const loan = network => {
   const contractAddress = config[network].CONTRACT_ADDRESSES.ERC721_COLLATRALISE_AUCTION;
   const metadata = require("shared/connectors/web3/contracts/ERC721Auction.json");
 
-  const instantiate = async (web3: Web3, account: string): Promise<any> => {
-    return new Promise(async resolve => {
-      try {
-        const contract = new web3.eth.Contract(metadata.abi);
-        console.log("calcing gas price....");
-        const gas = await contract
-          .deploy({
-            data: metadata.bytecode,
-            arguments: [config.CONTRACT_ADDRESSES.ERC721_WITH_ROYALTY],
-          })
-          .estimateGas({ from: account });
-        console.log("calced gas price: => ", gas);
-        contract
-          .deploy({
-            data: metadata.bytecode,
-            arguments: [config.CONTRACT_ADDRESSES.ERC721_WITH_ROYALTY],
-          })
-          .send(
-            {
-              from: account,
-              gas: gas,
-            },
-            (error, transactionHash) => {}
-          )
-          .on("error", error => {})
-          .on("transactionHash", transactionHash => {
-            console.log("Transaction Hash: => ", transactionHash);
-          })
-          .on("receipt", receipt => {
-            console.log("Contract Address: => ", receipt.contractAddress);
-          })
-          .on("confirmation", (confirmationNumber, receipt) => {
-            console.log("Confirmation Number: => ", confirmationNumber);
-          })
-          .then(newContractInstance => {
-            console.log("New Contract Instance: => ", newContractInstance);
-            resolve({ success: true });
-          });
-      } catch (e) {
-        console.log(e);
-        resolve(null);
-      }
-    });
-  };
-  const createAuction = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const createAuction = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
@@ -77,7 +33,10 @@ const loan = network => {
             payload.fee,
             payload.fundTokenAddress
           )
-          .send({ from: account, gas: gas });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
         console.log("transaction succeed ", response);
         const result = {
           data: response.events.AuctionCreated.returnValues,
@@ -95,7 +54,7 @@ const loan = network => {
       }
     });
   };
-  const placeBid = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const placeBid = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
@@ -106,7 +65,10 @@ const loan = network => {
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
           .placeBid(payload.tokenContractAddress, payload.tokenId, payload.bidAmount)
-          .send({ from: account, gas: gas });
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
         console.log("transaction succeed ", response);
         const result = {
           data: response.events.BidPlaced.returnValues,
@@ -189,9 +151,13 @@ const loan = network => {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
         console.log("Getting gas....");
-        const gas = await contract.methods.endAuction(payload.tokenContractAddress, payload.tokenId).estimateGas({ from: account });
+        const gas = await contract.methods
+          .endAuction(payload.tokenContractAddress, payload.tokenId)
+          .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
-        const response = await contract.methods.endAuction(payload.tokenContractAddress, payload.tokenId).send({ from: account, gas: gas });
+        const response = await contract.methods
+          .endAuction(payload.tokenContractAddress, payload.tokenId)
+          .send({ from: account, gas: gas });
         console.log("transaction succeed ", response);
         const result = {
           data: response.events.AuctionEnded.returnValues,
@@ -251,15 +217,17 @@ const loan = network => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
-        contract.methods.getAvailableFunds(payload.tokenContractAddress, payload.tokenId).call((err, result) => {
-          if (err) {
-            console.log(err);
-            resolve(null);
-          } else {
-            console.log("transaction succeed ", result);
-            resolve(result);
-          }
-        });
+        contract.methods
+          .getAvailableFunds(payload.tokenContractAddress, payload.tokenId)
+          .call((err, result) => {
+            if (err) {
+              console.log(err);
+              resolve(null);
+            } else {
+              console.log("transaction succeed ", result);
+              resolve(result);
+            }
+          });
       } catch (e) {
         console.log(e);
         resolve(null);

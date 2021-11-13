@@ -1,21 +1,26 @@
 import React, { useEffect } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import Axios from "axios";
 
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { BlockchainNets } from "shared/constants/constants";
-import { toDecimals } from "shared/functions/web3";
 import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { RemoveLiquidityQuickswapStyles } from "./index.style";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
-export default function RemoveLiquidityQuickswap({ open, handleClose = () => {}, JotAddress, usdtBalance, onConfirm, jotsBalance }) {
+export default function RemoveLiquidityQuickswap({
+  open,
+  handleClose = () => {},
+  JotAddress,
+  usdtBalance,
+  onConfirm,
+  jotsBalance,
+}) {
   const classes = RemoveLiquidityQuickswapStyles();
   const { account, library, chainId } = useWeb3React();
 
@@ -43,34 +48,19 @@ export default function RemoveLiquidityQuickswap({ open, handleClose = () => {},
     if (!open) return;
 
     (async () => {
-      const web3APIHandler = selectedChain.apiHandler;
       const web3Config = selectedChain.config;
-      const web3 = new Web3(library.provider);
 
       let promises: any = [];
 
       if (JotAddress) {
-        promises = [
-          Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-            params: {
-              token1: JotAddress.toLowerCase(),
-              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
-            },
-          })
-        ];
+        promises = [getPrice(JotAddress, web3Config["TOKEN_ADDRESSES"]["USDT"])];
       }
 
       const response: any = await Promise.all(promises);
-      const data = response[0].data ?? {};
 
-      if (data.success) {
-        const JotPrice = +data.data?.[0]?.token1Price;
-        if (JotPrice !== 0) {
-          setJotPrice(JotPrice);
-        }
+      const JotPrice = +response[0];
+      if (JotPrice !== 0) {
+        setJotPrice(JotPrice);
       }
     })();
   }, [open, selectedChain]);
@@ -82,13 +72,14 @@ export default function RemoveLiquidityQuickswap({ open, handleClose = () => {},
           Remove Liquidity
         </Box>
         <Box fontSize="14px" fontWeight="400" mt={1}>
-          Remove liquidity you provided to the Quickswap Pool by entering amount of share you would like to withdraw. 
+          Remove liquidity you provided to the Quickswap Pool by entering amount of share you would like to
+          withdraw.
         </Box>
         <InputWithLabelAndTooltip
           inputValue={share.toString()}
           onInputValueChange={e => {
-            const input = +e.target.value; 
-            setShare(input)
+            const input = +e.target.value;
+            setShare(input);
           }}
           overriedClasses={classes.inputLiquidity}
           required
@@ -97,13 +88,26 @@ export default function RemoveLiquidityQuickswap({ open, handleClose = () => {},
           minValue={1}
           endAdornment={<div className={classes.purpleText}>%SHARE</div>}
         />
-        <Box mt={2} color="#431AB7" style={{ fontWeight: 700 }}>Liquidity amount to be removed</Box>
-        <Box display="flex" flexDirection="column" mt={1} style={{
-          background: "rgba(158, 172, 242, 0.2)",
-          borderRadius: 12,
-          padding: 20
-        }}>
-          <Box width="100%" display="flex" justifyContent="space-between" pb={2} style={{ borderBottom: "1px solid #431AB710" }}>
+        <Box mt={2} color="#431AB7" style={{ fontWeight: 700 }}>
+          Liquidity amount to be removed
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          mt={1}
+          style={{
+            background: "rgba(158, 172, 242, 0.2)",
+            borderRadius: 12,
+            padding: 20,
+          }}
+        >
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            pb={2}
+            style={{ borderBottom: "1px solid #431AB710" }}
+          >
             <span style={{ color: "#431AB7" }}>USDT</span>
             <span className={classes.purpleText}>{usdt}</span>
           </Box>

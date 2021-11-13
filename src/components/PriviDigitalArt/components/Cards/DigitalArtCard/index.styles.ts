@@ -82,9 +82,7 @@ export const digitalArtCardStyles = makeStyles(theme => ({
     minHeight: 226,
   },
   fixed: {
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
+    objectFit: 'cover',
     height: 226,
     maxHeight: 226,
   },

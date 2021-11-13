@@ -46,25 +46,21 @@ export default function WallFeedCard({
   const handleCloseWallItemModal = () => {
     setOpenWallItemModal(false);
   };
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageAuthorIPFS, setImageAuthorIPFS] = useState<any>(null);
 
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if (feedData && feedData.createdBy && ipfs ) {
+    if (feedData && feedData.createdBy) {
       getUserPhotoIpfs(feedData.createdBy);
     }
-  }, [feedData, ipfs]);
+  }, [feedData]);
 
   const getUserPhotoIpfs = async (userId: any) => {
     const author = users.find(user => user.id == userId);
 
-    if (author && author.infoImage && author.infoImage.newFileCID) {
-      let imageUrl = await getPhotoIPFS(author.infoImage.newFileCID, downloadWithNonDecryption);
+    if (author?.infoImage?.newFileCID && author?.infoImage?.metadata?.properties?.name) {
+      let imageUrl = await getPhotoIPFS(author.infoImage.newFileCID, author.infoImage.metadata.properties.name, downloadWithNonDecryption);
       setImageAuthorIPFS(imageUrl);
     }
   };

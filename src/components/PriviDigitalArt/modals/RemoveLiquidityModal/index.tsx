@@ -7,10 +7,10 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { RemoveLiquidityModalStyles } from "./index.style";
 
-export default function RemoveLiquidityModal({ open, onClose, onConfirm }) {
+export default function RemoveLiquidityModal({ open, onClose, onConfirm, shareAmount }) {
   const classes = RemoveLiquidityModalStyles();
 
-  const [liquidity, setLiquidity] = React.useState<number>(0);
+  const [share, setShare] = React.useState<number>(0);
 
   return (
     <Modal size="medium" isOpen={open} onClose={onClose} showCloseIcon className={classes.container}>
@@ -20,27 +20,27 @@ export default function RemoveLiquidityModal({ open, onClose, onConfirm }) {
         </Box>
         <Header5></Header5>
         <InputWithLabelAndTooltip
-          inputValue={liquidity}
-          onInputValueChange={e => setLiquidity(e.target.value)}
+          inputValue={share.toString()}
+          onInputValueChange={e => setShare(+e.target.value)}
           overriedClasses={classes.inputLiquidity}
           minValue={1}
           required
           type="number"
           theme="light"
-          endAdornment={<div className={classes.purpleText}>JOTs</div>}
+          endAdornment={<div className={classes.purpleText}>SHARES</div>}
         />
         <Box display="flex" alignItems="center" justifyContent="space-between" color="#431AB7">
           <Box display="flex" alignItems="center" gridColumnGap="10px" fontSize="14px">
-            <span>Liquidity</span>
+            <span>Shares held</span>
             <Box className={classes.usdWrap} display="flex" alignItems="center">
               <Box className={classes.point}></Box>
               <Box fontWeight="700" marginLeft={1}>
-                200.00 JOTs
+                {shareAmount} SHARES
               </Box>
             </Box>
           </Box>
           <Box display="flex" alignItems="center" fontSize="16px">
-            <Box color="rgba(67, 26, 183, 0.3)">Max</Box>
+            <Box color="rgba(67, 26, 183)" style={{ cursor: 'pointer' }} onClick={() => setShare(shareAmount)}>Max</Box>
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mt={6} justifyContent="space-between">
@@ -54,7 +54,7 @@ export default function RemoveLiquidityModal({ open, onClose, onConfirm }) {
           <PrimaryButton
             size="medium"
             style={{ background: Color.GreenLight, width: "50%", color: Color.Purple }}
-            onClick={onConfirm}
+            onClick={() => onConfirm(share)}
           >
             Confirm
           </PrimaryButton>

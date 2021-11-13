@@ -192,9 +192,9 @@ const Discord = React.memo((props: any) => {
   const checkMessagesFile = async (msgs: any[]) => {
     if (ipfs) {
       for (let i = 0; i < msgs.length; i++) {
-        if (msgs[i] && msgs[i].type !== "text" && msgs[i].url && msgs[i].url.newFileCID) {
-          let file = await onDownloadNonDecrypt(msgs[i].url.newFileCID, fileCID =>
-            downloadWithNonDecryption(fileCID, false)
+        if (msgs[i] && msgs[i].type !== "text" && msgs[i].url && msgs[i]?.url?.metadata?.properties?.name && msgs[i].url.newFileCID) {
+          let file = await onDownloadNonDecrypt(msgs[i].url.newFileCID, msgs[i].url.metadata.properties.name, (fileCID, fileName) =>
+            downloadWithNonDecryption(fileCID, fileName, false)
           );
           msgs[i].file = file; // file includes -> {blob, fileName, content}
         }
@@ -496,9 +496,9 @@ const Discord = React.memo((props: any) => {
             : "",
       };
 
-      if (msg && msg.type !== "text" && msg.url && msg.url.newFileCID) {
-        let file = await onDownloadNonDecrypt(msg.url.newFileCID, fileCID =>
-          downloadWithNonDecryption(fileCID, false)
+      if (msg && msg.type !== "text" && msg?.url?.newFileCID && msg?.url?.metadata?.properties?.name) {
+        let file = await onDownloadNonDecrypt(msg.url.newFileCID, msg?.url?.metadata?.properties?.name, (fileCID, fileName) =>
+          downloadWithNonDecryption(fileCID, fileName, false)
         );
         msg.file = file; // file includes -> {blob, fileName, content}
       }

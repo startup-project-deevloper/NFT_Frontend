@@ -61,6 +61,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  width: 80%;
 }
 .message-list-items .item-list .item-content .name {
   margin-bottom: 3px;

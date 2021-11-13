@@ -19,7 +19,7 @@ import { getPixProfileItems } from "shared/services/API";
 import SyntheticCollectionCard from "components/PriviDigitalArt/components/Cards/SyntheticCollectionCard";
 import { getLikedSyntheticCollections } from "shared/services/API/SyntheticFractionalizeAPI";
 
-const Tabs = ["Art", "Synthetic Collections", ""];
+const Tabs = ["Art", "Synthetic Collections"];
 const sortOptions = ["Most Relevant", "Recently Added", "Alphabetical Order"];
 
 export default function LikedPage() {
@@ -194,7 +194,7 @@ export default function LikedPage() {
         <div className={likedClasses.headerTitle}>✨ Saved Content</div>
         <Box display="flex" marginBottom="16px">
           {Tabs.map((tab, index) =>
-            index !== Tabs.length - 1 ? (
+            index !== Tabs.length ? (
               <div
                 key={`tab-${index}`}
                 className={cls({ [classes.selectedTab]: index === selectedTab }, classes.tab)}

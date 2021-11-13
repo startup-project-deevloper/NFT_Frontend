@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Moment from "react-moment";
 import URL from "shared/functions/getURL";
 import ReactPlayer from "react-player";
@@ -15,9 +15,8 @@ import SvgIcon from "@material-ui/core/SvgIcon";
 import { ReactComponent as PlaySolid } from "assets/icons/play-solid.svg";
 import { ReactComponent as DownloadSolid } from "assets/icons/download-solid.svg";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "../../../../shared/functions/getPhotoIPFS";
-import {onGetNonDecrypt} from "../../../../shared/ipfs/get";
-import {_arrayBufferToBase64} from "../../../../shared/functions/commonFunctions";
+import { onGetNonDecrypt } from "../../../../shared/ipfs/get";
+import { _arrayBufferToBase64 } from "../../../../shared/functions/commonFunctions";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 const useStyles = makeStyles(theme => ({
@@ -74,7 +73,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     marginTop: "10px",
     marginBottom: "10px",
-    width: "100%"
+    width: "100%",
   },
   videoPlayer: {
     cursor: "pointer",
@@ -107,50 +106,45 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "social" }) => {
-  const { userInfo } = chat;
-  const playerVideo = useRef(null);
+const MessageItemFC = ({ user, message, mediaOnCommunity, type = "social" }) => {
+  const playerVideo = React.useRef(null);
   const classes = useStyles();
-  const [selectedPhoto, setSelectedPhoto] = useState<string>("");
-  const [selectedVideo, setSelectedVideo] = useState<string>("");
-  const [openModalPhotoFullScreen, setOpenModalPhotoFullScreen] = useState<boolean>(false);
-  const [openModalVideoFullScreen, setOpenModalVideoFullScreen] = useState<boolean>(false);
-  const isLeftItem =
-    (mediaOnCommunity && user && user !== message.from) || (userInfo && userInfo.id === message.from);
-  const isRightItem =
-    (mediaOnCommunity && user && user === message.from) || (userInfo && userInfo.id === message.to);
+  const [selectedPhoto, setSelectedPhoto] = React.useState<string>("");
+  const [selectedVideo, setSelectedVideo] = React.useState<string>("");
+  const [openModalPhotoFullScreen, setOpenModalPhotoFullScreen] = React.useState<boolean>(false);
+  const [openModalVideoFullScreen, setOpenModalVideoFullScreen] = React.useState<boolean>(false);
+  const isLeftItem = user?.userId === message.from;
+  const isRightItem = user?.userd !== message.from;
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [fileIPFS, setFileIPFS] = useState<any>(null);
   const [fileBlobIPFS, setFileBlobIPFS] = useState<any>(null);
 
-  console.log("============================", userInfo.ipfsImage)
-
   useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
-  useEffect(() => {
-    if(ipfs  &&
-      message && message.type && message.type !== "text" &&
-      message.message && message.message.newFileCID) {
-      getUserFileIpfs(message.message.newFileCID, message.type);
+    if (
+      message &&
+      message.type &&
+      message.type !== "text" &&
+      message?.message.newFileCID &&
+      message?.message?.metadata?.properties?.name
+    ) {
+      getUserFileIpfs(message.message.newFileCID, message.message.metadata.properties.name, message.type);
     }
-  }, [message, ipfs]);
+  }, [message]);
 
-  const getUserFileIpfs = async (cid: any, type: string) => {
-    let fileUrl : string = '';
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getUserFileIpfs = async (cid: any, fileName: string, type: string) => {
+    let fileUrl: string = "";
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
-    if(files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      if (type === 'photo') {
+    if (files) {
+      let base64String = _arrayBufferToBase64(files.buffer);
+      if (type === "photo") {
         fileUrl = "data:image/png;base64," + base64String;
-      } else if (type === 'video') {
+      } else if (type === "video") {
         fileUrl = "data:video/mp4;base64," + base64String;
-      } else if (type === 'audio') {
+      } else if (type === "audio") {
         fileUrl = "data:audio/mp3;base64," + base64String;
       } else {
         fileUrl = base64String;
@@ -158,7 +152,7 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
       }
     }
     setFileIPFS(fileUrl);
-  }
+  };
 
   const handleOpenModalPhotoFullScreen = () => {
     setOpenModalPhotoFullScreen(true);
@@ -175,14 +169,18 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
   };
 
   const downloadFile = () => {
-    if(fileBlobIPFS) {
-      saveAs(fileBlobIPFS,
-        message.message && message.message.metadata &&
-        message.message.metadata.properties && message.message.metadata.properties.name
-          ? message.message.metadata.properties.name : "File");
+    if (fileBlobIPFS) {
+      saveAs(
+        fileBlobIPFS,
+        message.message &&
+          message.message.metadata &&
+          message.message.metadata.properties &&
+          message.message.metadata.properties.name
+          ? message.message.metadata.properties.name
+          : "File"
+      );
     }
   };
-
   const downloadFileMediaOnCommunity = () => {
     saveAs(`${message.url}`, message.message);
   };
@@ -190,15 +188,11 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
   if (!isLeftItem && !isRightItem) return null;
   return (
     <>
-      <div className={isLeftItem ? "left-item" : "right-item"} id={message.id} key={key}>
+      <div className={isLeftItem ? "left-item" : "right-item"} id={message.id}>
         {isLeftItem && (
-          <div className="avatar-container">
+          <div className="avatar-container" style={{background:"transparent"}}>
             <img
-              src={
-                userInfo && userInfo.ipfsImage
-                  ? userInfo.ipfsImage
-                  : getDefaultAvatar()
-              }
+              src={user?.userFoto ?? getDefaultAvatar()}
               alt="Avatar"
               className="message-item-avatar"
               style={{
@@ -243,7 +237,7 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
               </div>
               <ReactPlayer
                 onClick={() => {
-                  if(fileIPFS) {
+                  if (fileIPFS) {
                     setSelectedVideo(fileIPFS);
                     handleOpenModalVideoFullScreen();
                   }
@@ -262,26 +256,26 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
           <div className={classes.container}>
             <div className={classes.itemMeta}>{message?.fromType?.toUpperCase()}</div>
             <div className={classes.audioContainer}>
-              {
-                fileIPFS ?
-                  <Waveform
-                    url={
-                      mediaOnCommunity
-                        ? `${URL()}/mediaOnCommunity/getMessageAudio/${message.chatId}/${message.from}/${
+              {fileIPFS ? (
+                <Waveform
+                  url={
+                    mediaOnCommunity
+                      ? `${URL()}/mediaOnCommunity/getMessageAudio/${message.chatId}/${message.from}/${
                           message.id
                         }`
-                        : fileIPFS ? fileIPFS : null
-                    }
-                    mine={false}
-                    showTime={false}
-                    onPauseFunction={null}
-                    onPlayFunction={null}
-                    onReadyFunction={null}
-                  /> :
-                  <p className={classes.noMessagesLabelChat}>
-                    Loading audio...
-                  </p>
-              }
+                      : fileIPFS
+                      ? fileIPFS
+                      : null
+                  }
+                  mine={false}
+                  showTime={false}
+                  onPauseFunction={null}
+                  onPlayFunction={null}
+                  onReadyFunction={null}
+                />
+              ) : (
+                <p className={classes.noMessagesLabelChat}>Loading audio...</p>
+              )}
             </div>
             <Moment fromNow className={classes.itemMeta}>
               {message.created}
@@ -292,10 +286,14 @@ const MessageItemFC = ({ key, user, message, chat, mediaOnCommunity, type = "soc
             <div className="item-subtitle">{message?.fromType?.toUpperCase()}</div>
             <div className="item-file">
               <div className="item-file-name">
-                {message.message && message.message.metadata &&
-                message.message.metadata.properties && message.message.metadata.properties.name
-                  ? message.message.metadata.properties.name : "File"}
-              </div>              <div
+                {message.message &&
+                message.message.metadata &&
+                message.message.metadata.properties &&
+                message.message.metadata.properties.name
+                  ? message.message.metadata.properties.name
+                  : "File"}
+              </div>
+              <div
                 onClick={() => {
                   if (mediaOnCommunity) {
                     downloadFileMediaOnCommunity();

@@ -1,18 +1,24 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import Web3 from "web3";
+import Moment from "react-moment";
 import { Rating } from "react-simple-star-rating";
 import { useHistory, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
 import { format } from "date-fns";
 import ReactPlayer from "react-player";
 
 import { Grid, Hidden, useMediaQuery } from "@material-ui/core";
 
-import { sumTotalViews } from "shared/functions/totalViews";
 import { useTypedSelector } from "store/reducers/Reducer";
+import { BackButton } from "../../../../components/BackButton";
+import { MediaPhotoDetailsModal } from "../../../../modals/MediaPhotoDetailsModal";
+import DigitalArtDetailsModal from "../../../../modals/DigitalArtDetailsModal";
+import { PlaceBidModal } from "../../modals/PlaceBidModal";
+import BuyNFTModal from "../../../../modals/BuyNFTModal";
+import PlaceBuyingOfferModal from "../../../../modals/PlaceBuyingOfferModal";
+
 import {
   Avatar,
   Text,
@@ -27,7 +33,6 @@ import URL from "shared/functions/getURL";
 import Box from "shared/ui-kit/Box";
 import { useUserConnections } from "shared/contexts/UserConnectionsContext";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { ChooseWalletModal } from "shared/ui-kit/Modal/Modals/ChooseWalletModal";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
@@ -35,59 +40,25 @@ import PrintChart from "shared/ui-kit/Chart/Chart";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { getUser } from "store/selectors";
-import {
-  generateDayLabelsFromDate,
-  calculateTimeFromNow,
-  generateMonthLabelsFromDate,
-  _arrayBufferToBase64,
-} from "shared/functions/commonFunctions";
-import {
-  // buyFraction,
-  // placeBid,
-  getFractionalisedMediaOffers,
-  getFractionalisedMediaTransactions,
-  getFractionalisedMediaPriceHistory,
-  getFractionalisedMediaSharedOwnershipHistory,
-  // deleteBuyOrder,
-  // deleteSellOrder,
-  // cancelAuction,
-  // withdrawAuction,
-  getAuctionBidHistory,
-  // getAuctionTransactions,
-  // cancelSellingOffer,
-  // buyFromOffer,
-  // sellFromOffer,
-  // getExchangePriceHistory,
-  getExchangeBuyingOffers,
-  // cancelBuyingOffer,
-  getNft,
-  getUsersByAddresses,
-} from "shared/services/API";
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
+import { getAuctionBidHistory, getExchangeBuyingOffers, getNft } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import CreateFractionOfferModal from "components/PriviDigitalArt/modals/CreateOfferModal";
 import TradeFractionOfferModal from "components/PriviDigitalArt/modals/TradeOfferModal";
 import { SharePopup } from "shared/ui-kit/SharePopup";
 
-import { BackButton } from "../../../../components/BackButton";
-import { MediaPhotoDetailsModal } from "../../../../modals/MediaPhotoDetailsModal";
-import DigitalArtDetailsModal from "../../../../modals/DigitalArtDetailsModal";
-import { PlaceBidModal } from "../../modals/PlaceBidModal";
-import BuyNFTModal from "../../../../modals/BuyNFTModal";
-import PlaceBuyingOfferModal from "../../../../modals/PlaceBuyingOfferModal";
-// import ConfirmPayment from "../../../../modals/ConfirmPayment";
 import { marketplaceDetailPageStyles, LinkIcon } from "./index.styles";
 import DigitalArtContext from "shared/contexts/DigitalArtContext";
-
 import { getChainImageUrl } from "shared/functions/chainFucntions";
-import Moment from "react-moment";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { switchNetwork } from "shared/functions/metamask";
+import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 
 const removeIcon = require("assets/icons/remove_red.png");
 const editIcon = require("assets/icons/edit_icon.svg");
+
 export const SaveIcon = ({ className, onClick }) => (
   <svg width="19" height="24" viewBox="0 0 19 24" fill="none" className={className} onClick={onClick}>
     <path
@@ -245,82 +216,6 @@ const configurer = (config: any, ref: CanvasRenderingContext2D): object => {
   return config;
 };
 
-const RadialConfig = {
-  config: {
-    type: "doughnut",
-    data: {
-      datasets: [
-        {
-          data: [] as any,
-          backgroundColor: [] as any,
-          hoverOffset: 0,
-          labels: [] as any,
-        },
-      ],
-    },
-    options: {
-      cutoutPercentage: 80,
-      animation: false,
-      rotation: Math.PI / 2,
-      tooltips: { enabled: false },
-    },
-  },
-};
-
-const OfferHeaders: Array<CustomTableHeaderInfo> = [
-  {
-    headerName: "Token",
-    headerAlign: "center",
-  },
-  {
-    headerName: "SYMBOL",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Price",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Amount",
-    headerAlign: "center",
-  },
-  {
-    headerName: "",
-    headerAlign: "center",
-  },
-];
-
-const TradingTableHeaders: Array<CustomTableHeaderInfo> = [
-  {
-    headerName: "Event",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Token",
-    headerAlign: "center",
-  },
-  {
-    headerName: "SYMBOL",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Price",
-    headerAlign: "center",
-  },
-  {
-    headerName: "From",
-    headerAlign: "center",
-  },
-  {
-    headerName: "To",
-    headerAlign: "center",
-  },
-  {
-    headerName: "Date",
-    headerAlign: "center",
-  },
-];
-
 const ExchangeOfferTableHeaders: Array<CustomTableHeaderInfo> = [
   {
     headerName: "FROM",
@@ -350,8 +245,6 @@ const MarketplaceDetailPage = () => {
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
 
-  const loggedUser = useSelector(getUser);
-
   const { setOpenFilters } = useContext(DigitalArtContext);
 
   const classes = marketplaceDetailPageStyles();
@@ -361,33 +254,20 @@ const MarketplaceDetailPage = () => {
   const [chooseWalletModal, setChooseWalletModal] = React.useState<boolean>(false);
   const [openShareMenu, setOpenShareMenu] = React.useState(false);
   const user = useTypedSelector(state => state.user);
-  const userBalances = useTypedSelector(state => state.userBalances);
   const { convertTokenToUSD } = useTokenConversion();
   const [endTime, setEndTime] = useState<any>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [media, setMedia] = useState<any>(null);
   const [openPlaceOffer, setOpenPlaceOffer] = React.useState<boolean>(false);
-  const [comment, setComment] = useState<string>("");
   const [bookmarked, setBookmarked] = useState<boolean>(false);
   const [mediaImageLoaded, setMediaImageLoaded] = useState<boolean>(false);
 
   const payloadRef = useRef<any>();
   const operationRef = useRef<number>();
 
-  // fractionalise
-  const [distributionRadialConfig, setDistributionRadialConfig] = useState<any>();
-  const [fractionHistoryConfig, setFractionHistoryConfig] = useState<any>();
-  const [fractionPrice, setFractionPrice] = useState<number>(0); // in usd
-  const [fractionPriceChange, setFractionPriceChange] = useState<number>(0);
-  const [ownershipHistoryConfig, setOwnershipHistoryConfig] = useState<any>();
-  const [ownershipFraction, setOwnershipFraction] = useState<number>(0);
-  const [ownershipFractionChange, setOwnershipFractionChange] = useState<number>(0);
   const selectedOfferRef = useRef<any>({});
   const [openPlaceFractionOfferModal, setOpenPlaceFractionOfferModal] = useState<boolean>(false);
   const [openTraderFracctionOfferModal, setOpenTradeFractionOfferModadl] = useState<boolean>(false);
   const fractionOfferTypeRef = useRef<string>("buy");
-  const [buyingOffersData, setBuyingOffersData] = useState<any[]>([]);
-  const [sellingOffersData, setSellingOffersData] = useState<any[]>([]);
-  const [fractionTransactionsData, setFractionTransactionsData] = useState<any[]>([]);
 
   // auction
   const [auctionEnded, setAuctionEnded] = React.useState<boolean>(false);
@@ -415,8 +295,6 @@ const MarketplaceDetailPage = () => {
   // general stuff
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<number>(0);
-  const [comments, setComments] = useState<any[]>([]);
-  const [isViewComments, setIsViewComments] = useState<boolean>(false);
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
   const [mediaRatings, setRatings] = useState<any[]>([
     {
@@ -463,36 +341,19 @@ const MarketplaceDetailPage = () => {
 
   const { account, library, chainId } = useWeb3React();
   const [web3, setWeb3] = useState<Web3 | null>(null);
+
+  const [disableBidBtn, setDisableBidBtn] = useState<boolean>(false);
+
+  const [comment, setComment] = useState<string>("");
+  const [comments, setComments] = useState<any[]>([]);
   const [editedCommentId, setEditedCommentId] = useState<any>(null);
   const [editedComment, setEditedComment] = useState<any>(null);
   const isEditingComment = useRef<boolean>(false);
-
-  const [disableBidBtn, setDisableBidBtn] = useState<boolean>(false);
+  const [isViewComments, setIsViewComments] = useState<boolean>(false);
 
   useEffect(() => {
     setOpenFilters(false);
   }, []);
-
-  // set fraction ownership graph
-  useEffect(() => {
-    if (media?.fraction?.fraction) {
-      const creatorFraction = userBalances[media.symbol] ? userBalances[media.symbol].Balance * 100 : 0;
-      const fractionForSale = media.fraction.fraction * 100;
-      const newDistrubtionRadial = JSON.parse(JSON.stringify(RadialConfig));
-      newDistrubtionRadial.config.data.datasets[0].labels = [
-        "Creator Fraction",
-        "Fractions For Sale",
-        "Sold Fractions",
-      ];
-      newDistrubtionRadial.config.data.datasets[0].data = [
-        creatorFraction,
-        fractionForSale,
-        100 - creatorFraction,
-      ];
-      newDistrubtionRadial.config.data.datasets[0].backgroundColor = ["#431AB7", "#DDFF57", "#9EACF2"];
-      setDistributionRadialConfig(newDistrubtionRadial);
-    }
-  }, [media?.fraction?.fraction, userBalances]);
 
   useEffect(() => {
     loadMedia();
@@ -502,13 +363,10 @@ const MarketplaceDetailPage = () => {
     if (media) {
       loadHistory();
     }
-  }, [media]);
-
-  useEffect(() => {
-    if (media?.tokenAddress) {
-      sumTotalViews(media);
+    if (media && media.Comments && media.Comments.length) {
+      setComments(media.Comments.reverse());
     }
-  }, [media?.tokenAddress]);
+  }, [media]);
 
   useEffect(() => {
     if (media?.CreatorId) {
@@ -564,23 +422,24 @@ const MarketplaceDetailPage = () => {
     if (library) setWeb3(new Web3(library.provider));
   }, [library]);
 
-  useEffect(() => {
-    if (media && media.Comments && media.Comments.length) {
-      setComments(media.Comments.reverse());
-    }
-  }, [media]);
-
   const loadMedia = async () => {
     if (isDataLoading || !params.tokenAddress || !params.tokenId) return;
     setIsDataLoading(true);
-    getNft({ tokenAddress: params.tokenAddress, tokenId: params.tokenId }).then(resp => {
-      setIsDataLoading(false);
-      if (resp && resp.success) {
-        let m = resp.data;
-        setMedia(m);
-        if (m.Rating) handleRatings(m.Rating);
-      }
-    });
+    getNft({ tokenAddress: params.tokenAddress, tokenId: params.tokenId })
+      .then(resp => {
+        if (resp && resp.success) {
+          let m = resp.data;
+          setMedia(m);
+          if (m.Rating) handleRatings(m.Rating);
+        }
+      })
+      .finally(() => {
+        setIsDataLoading(false);
+        axios.post(`${URL()}/marketplace/updateTotalViews`, {
+          tokenAddress: params.tokenAddress,
+          tokenId: params.tokenId,
+        });
+      });
   };
 
   const loadHistory = () => {
@@ -636,7 +495,7 @@ const MarketplaceDetailPage = () => {
                 cell: (
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <Avatar size="medium" url={offer.bidderInfo.imageUrl ?? getDefaultAvatar()} />
-                    <Box display="flex" flexDirection="column" alignItems="center">
+                    <Box display="flex" flexDirection="column" alignItems="flex-start">
                       <Text ml={1.5}>{offer.bidderInfo?.name}</Text>
                       <Text ml={1.5}>@{offer.bidderInfo?.urlSlug}</Text>
                     </Box>
@@ -660,6 +519,7 @@ const MarketplaceDetailPage = () => {
                 cell:
                   offer.bidder === user.id ? (
                     <Text
+                      style={{ cursor: "pointer" }}
                       onClick={() => {
                         handleCancelBuyingOffer(offer);
                       }}
@@ -669,6 +529,7 @@ const MarketplaceDetailPage = () => {
                     </Text>
                   ) : media?.exchange?.owner === user.id ? (
                     <Text
+                      style={{ cursor: "pointer" }}
                       onClick={() => {
                         handleSellFromBuyingOffer(offer);
                       }}
@@ -901,7 +762,6 @@ const MarketplaceDetailPage = () => {
       .then(res => {
         showAlertMessage("Bookmarked media", { variant: "success" });
         setBookmarked(true);
-        setComment("");
       })
       .catch(err => {
         console.log(err);
@@ -917,7 +777,6 @@ const MarketplaceDetailPage = () => {
       .then(res => {
         showAlertMessage("Removed bookmark", { variant: "success" });
         setBookmarked(false);
-        setComment("");
       })
       .catch(err => {
         console.log(err);
@@ -974,10 +833,9 @@ const MarketplaceDetailPage = () => {
       const ratingType = rating.key;
       if (newRating >= 0) {
         axios
-          .post(`${URL()}/media/rateMedia`, {
-            mediaId: media?.id,
-            mediaType: media?.Type,
-            mediaTag: media?.tag ?? "privi",
+          .post(`${URL()}/marketplace/rateMedia`, {
+            tokenAddress: params.tokenAddress,
+            tokenId: params.tokenId,
             userId: user.id,
             ratingType,
             ratingValue: newRating,
@@ -1002,44 +860,25 @@ const MarketplaceDetailPage = () => {
   };
 
   const handleFruit = type => {
+    if (media.fruits?.filter(f => f.fruitId === type)?.find(f => f.userId === user.id)) {
+      showAlertMessage("You had already given this fruit.", { variant: "info" });
+      return;
+    }
+
     const body = {
       userId: user.id,
       fruitId: type,
-      mediaAddress: media.id,
-      mediaType: media.Type || media.type,
-      tag: media.tag,
-      subCollection: media.collection,
+      tokenAddress: params.tokenAddress,
+      tokenId: params.tokenId,
     };
-    axios.post(`${URL()}/media/fruit`, body).then(res => {
+    axios.post(`${URL()}/marketplace/fruit`, body).then(res => {
       const resp = res.data;
       if (resp.success) {
         const itemCopy = { ...media };
-        itemCopy.fruits = resp.fruitsArray;
+        itemCopy.fruits = resp.fruits;
         setMedia(itemCopy);
       }
     });
-  };
-
-  const handleDeleteBuyOffer = offer => {
-    const payload = {
-      OrderId: offer.OrderId,
-      RequesterAddress: user.address,
-      TokenSymbol: offer.TokenSymbol,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 4;
-    interactOnChain();
-  };
-
-  const handleDeleteSellOffer = offer => {
-    const payload = {
-      OrderId: offer.OrderId,
-      RequesterAddress: user.address,
-      TokenSymbol: offer.TokenSymbol,
-    };
-    payloadRef.current = payload;
-    operationRef.current = 5;
-    interactOnChain();
   };
 
   // AUCTION: bid nft with own wallet
@@ -1085,24 +924,14 @@ const MarketplaceDetailPage = () => {
 
   // EXCHANGE: sell
   const handleSellFromBuyingOffer = offer => {
-    const payload = {
-      ExchangeId: offer.ExchangeId,
-      OfferId: offer.Id,
-      Address: user.address,
-      Amount: offer.Amount,
-    };
-    payloadRef.current = payload;
+    payloadRef.current = offer;
     operationRef.current = 11;
     interactOnChain();
   };
 
   // EXCHANGE: cancel buying Offer
   const handleCancelBuyingOffer = offer => {
-    const payload = {
-      ExchangeId: offer.ExchangeId,
-      OfferId: offer.Id,
-    };
-    payloadRef.current = payload;
+    payloadRef.current = offer;
     operationRef.current = 12;
     interactOnChain();
   };
@@ -1116,20 +945,13 @@ const MarketplaceDetailPage = () => {
 
   const approveToken = async (apiHandler, spender, token, amount) => {
     let balance = await apiHandler.Erc20[token].balanceOf(web3, { account });
-    let decimals = await apiHandler.Erc20[token].decimals(web3);
-    balance = Number(toDecimals(balance, decimals));
-    if (balance < amount) {
+    if (Number(balance) < Number(amount)) {
       setLoading(false);
       showAlertMessage(`Insufficient balance`, { variant: "error" });
       return;
     }
 
-    const approved = await apiHandler.Erc20[token].approve(
-      web3,
-      account!,
-      spender,
-      toNDecimals(amount, decimals)
-    );
+    const approved = await apiHandler.Erc20[token].approve(web3, account!, spender, amount);
     if (!approved) {
       setLoading(false);
       showAlertMessage(`Can't proceed to approve Token`, { variant: "error" });
@@ -1160,6 +982,7 @@ const MarketplaceDetailPage = () => {
       if (!web3) return;
       let request;
       let contractParams;
+      let decimals;
       switch (operation) {
         case 1:
           break;
@@ -1172,7 +995,7 @@ const MarketplaceDetailPage = () => {
         case 5: // FRACTIONALISE: Delete sell offer
           break;
         case 6: // AUCTION: Place bid
-          let decimals = await web3APIHandler.Erc20[media.auction.bidTokenSymbol].decimals(web3);
+          decimals = await web3APIHandler.Erc20[media.auction.bidTokenSymbol].decimals(web3);
 
           contractParams = {
             tokenAddress: media.auction.tokenAddress,
@@ -1186,7 +1009,7 @@ const MarketplaceDetailPage = () => {
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_AUCTION,
             media.auction.bidTokenSymbol,
-            priceRef.current
+            toNDecimals(priceRef.current, decimals)
           );
 
           web3APIHandler.Auction.placeBid(web3, account!, contractParams).then(async res => {
@@ -1273,43 +1096,6 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 9: // EXCHANGE: Cancel selling offer
-          request = {
-            input: {
-              exchangeId: media.exchange.exchangeId,
-              offerId: media.exchange.initialOfferId,
-            },
-            caller: account!,
-          };
-          web3APIHandler.Exchange.CancelERC721TokenSellingOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: media.exchange.exchangeId,
-                  OfferId: media.exchange.initialOfferId,
-                  MediaSymbol: media.symbol,
-                  MediaType: media.Type,
-                },
-              };
-              const response = await axios.post(`${URL()}/exchange/cancelSellingOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Exchange cancelled successfully", { variant: "success" });
-                loadData();
-              } else {
-                showAlertMessage("Failed to cancel the exchange", { variant: "error" });
-              }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to cancel the exchange", { variant: "error" });
-            }
-          });
-          break;
-        case 10: // EXCHANGE: Buy from selling offer
           contractParams = {
             input: {
               exchangeId: media.exchange.exchangeId,
@@ -1317,13 +1103,44 @@ const MarketplaceDetailPage = () => {
             },
             caller: account!,
           };
-          console.log(contractParams);
+          web3APIHandler.Exchange.CancelERC721TokenSellingOffer(web3, account!, contractParams).then(
+            async res => {
+              if (res) {
+                request = {
+                  id: media.exchange.id,
+                  type: "PIX",
+                };
+                const response = await axios.post(`${URL()}/marketplace/cancelSellingOffer`, request);
+                if (response?.data?.success) {
+                  showAlertMessage("Exchange cancelled successfully", { variant: "success" });
+                  history.push("/marketplace");
+                } else {
+                  showAlertMessage("Failed to cancel the exchange", { variant: "error" });
+                }
+                setLoading(false);
+              } else {
+                setLoading(false);
+                setDisableBidBtn(false);
+                showAlertMessage("Failed to cancel the exchange", { variant: "error" });
+              }
+            }
+          );
+          break;
+        case 10: // EXCHANGE: Buy from selling offer
+          decimals = await web3APIHandler.Erc20[media?.exchange?.offerToken].decimals(web3);
+          contractParams = {
+            input: {
+              exchangeId: media.exchange.exchangeId,
+              offerId: media.exchange.initialOfferId,
+            },
+            caller: account!,
+          };
 
           await approveToken(
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
-            media?.exchange?.offerToken ?? "USDT",
-            media?.exchange?.price
+            media?.exchange?.offerToken,
+            toNDecimals(media?.exchange?.price, decimals)
           );
 
           web3APIHandler.Exchange.BuyERC721TokenFromOffer(web3, account!, contractParams).then(async res => {
@@ -1339,7 +1156,7 @@ const MarketplaceDetailPage = () => {
                 },
                 type: "PIX",
               };
-              const response = await axios.post(`${URL()}/marketplace/buyFromOffer`, request);
+              const response = await axios.post(`${URL()}/marketplace/buyFromSellingOffer`, request);
               if (response?.data?.success) {
                 showAlertMessage("NFT bought successfully", { variant: "success" });
                 loadData();
@@ -1355,27 +1172,26 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 11: // EXCHANGE: Sell from buying offer
-          request = {
+          contractParams = {
             input: {
-              exchangeId: payload.ExchangeId,
-              offerId: payload.OfferId,
+              exchangeId: media.auction.exchangeId,
+              offerId: payload.offerId,
             },
             caller: account!,
           };
-          web3APIHandler.Exchange.SellERC721TokenFromOffer(web3, account!, request).then(async res => {
+          web3APIHandler.Exchange.SellERC721TokenFromOffer(web3, account!, contractParams).then(async res => {
             if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: request.input.exchangeId,
-                  MediaSymbol: media.symbol,
-                  MediaType: media.Type,
+              const request = {
+                id: media.exchange.id,
+                offerId: payload.offerId,
+                transaction: {
+                  ...res.transaction,
+                  Event: "Sell",
+                  Price: payload.price,
                 },
+                type: "PIX",
               };
-              const response = await axios.post(`${URL()}/exchange/sellFromOffer/v2_p`, body);
+              const response = await axios.post(`${URL()}/marketplace/sellFromOffer`, request);
               if (response?.data?.success) {
                 showAlertMessage("NFT sold successfully", { variant: "success" });
                 loadData();
@@ -1391,39 +1207,41 @@ const MarketplaceDetailPage = () => {
           });
           break;
         case 12: // EXCHANGE: Cancel buying offer
-          request = {
+          contractParams = {
             input: {
-              exchangeId: payload.ExchangeId,
-              offerId: payload.OfferId,
+              exchangeId: media.exchange.exchangeId,
+              offerId: payload.offerId,
             },
             caller: account!,
           };
-          web3APIHandler.Exchange.CancelERC721TokenBuyingOffer(web3, account!, request).then(async res => {
-            if (res) {
-              const tx = res.transaction;
-              const blockchainRes = { output: { Transactions: {} } };
-              blockchainRes.output.Transactions[tx.Id] = [tx];
-              const body = {
-                BlockchainRes: blockchainRes,
-                AdditionalData: {
-                  ExchangeId: request.input.exchangeId,
-                  OfferId: request.input.offerId,
-                },
-              };
-              const response = await axios.post(`${URL()}/exchange/cancelBuyingOffer/v2_p`, body);
-              if (response?.data?.success) {
-                showAlertMessage("Cancelled successfully", { variant: "success" });
-                loadData();
+          web3APIHandler.Exchange.CancelERC721TokenBuyingOffer(web3, account!, contractParams).then(
+            async res => {
+              if (res) {
+                const request = {
+                  id: media.exchange.id,
+                  offerId: payload.offerId,
+                  transaction: {
+                    ...res.transaction,
+                    Event: "Cancel",
+                    Price: payload.price,
+                  },
+                  type: "PIX",
+                };
+                const response = await axios.post(`${URL()}/marketplace/cancelBuyingOffer`, request);
+                if (response?.data?.success) {
+                  showAlertMessage("Cancelled successfully", { variant: "success" });
+                  loadData();
+                } else {
+                  showAlertMessage("Failed to cancel offer", { variant: "error" });
+                }
+                setLoading(false);
               } else {
+                setLoading(false);
+                setDisableBidBtn(false);
                 showAlertMessage("Failed to cancel offer", { variant: "error" });
               }
-              setLoading(false);
-            } else {
-              setLoading(false);
-              setDisableBidBtn(false);
-              showAlertMessage("Failed to cancel offer", { variant: "error" });
             }
-          });
+          );
           break;
         case 13: // EXCHANGE: Place buying offer
           let offerTokenDecimals = await web3APIHandler.Erc20[media.exchange.offerToken].decimals(web3);
@@ -1441,7 +1259,7 @@ const MarketplaceDetailPage = () => {
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
             media.exchange.offerToken,
-            priceRef.current
+            toNDecimals(priceRef.current, offerTokenDecimals)
           );
 
           web3APIHandler.Exchange.PlaceERC721TokenBuyingOffer(web3, account!, contractParams).then(
@@ -1507,44 +1325,10 @@ const MarketplaceDetailPage = () => {
         </Box>
         <LoadingWrapper loading={!media || isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
           <Box mt={2}>
-            <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
-            {media?.fraction ? (
-              <Box
-                className={classes.fraction}
-                display="flex"
-                flexDirection="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Interest Rate</span>
-                  <span className={classes.fractionValue}>{media.fraction.InterestRate * 100}%</span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Creator Royalty</span>
-                  <span className={classes.fractionValue}>{media.Royalty ?? 1}%</span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Fraction Price</span>
-                  <span className={classes.fractionValue}>
-                    {media.fraction.FundingToken} {media.fraction.InitialPrice}
-                  </span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  <span className={classes.fractionTitle}>Buy Back Price</span>
-                  <span className={classes.fractionValue}>
-                    {media.fraction.FundingToken} {media.fraction.BuyBackPrice}
-                  </span>
-                </Box>
-                <Box display="flex" flexDirection="column">
-                  {media?.fraction?.OwnerAddress != user.address && (
-                    <PrimaryButton size="small" className={classes.fractionBuy}>
-                      Buy Fraction
-                    </PrimaryButton>
-                  )}
-                </Box>
-              </Box>
-            ) : null}
+            <Box display="flex" alignItems="center">
+              <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
+              <Box style={{ color: Color.Red, marginLeft: 16 }}>Sold</Box>
+            </Box>
             <Grid className={classes.leftImage} container spacing={2} wrap="wrap">
               <Grid item xs={12} sm={6}>
                 {media?.content_url.endsWith("mp4") ? (
@@ -1629,7 +1413,7 @@ const MarketplaceDetailPage = () => {
                       <Box mr={2} style={{ background: "rgba(67, 26, 183, 0.32)", borderRadius: "50%" }}>
                         <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
                       </Box>
-                      <Box mr={2}>
+                      {/* <Box mr={2}>
                         <img
                           src={require(bookmarked
                             ? "assets/priviIcons/bookmark-filled-gray.svg"
@@ -1638,7 +1422,7 @@ const MarketplaceDetailPage = () => {
                           onClick={handleBookmark}
                           style={{ cursor: "pointer", width: "24px", height: "24px" }}
                         />
-                      </Box>
+                      </Box> */}
                       <Box mb={1}>
                         <div
                           onClick={handleOpenShareMenu}
@@ -1745,68 +1529,9 @@ const MarketplaceDetailPage = () => {
                       Link
                     </PrimaryButton>
                   )}
-                  {!!media?.fraction && (
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      borderRadius={8}
-                      bgcolor={Color.GreenLight}
-                      width={"50%"}
-                      padding={2}
-                    >
-                      <span className={classes.fractionTitle}>Fractionalised</span>
-                      <span className={classes.fractionValue}>{media.fraction.fraction * 100}%</span>
-                    </Box>
-                  )}
                 </Box>
                 {media?.price && <Box>{`Price ${media?.price}`}</Box>}
-                {media?.fraction ? (
-                  <>
-                    <hr className={classes.divider} />
-                    <Box>
-                      <Text size={FontSize.XL} color={Color.Black}>
-                        Ownership Distribution
-                      </Text>
-                      <Grid container style={{ marginTop: "16px" }}>
-                        <Grid item xs={12} sm={3}>
-                          {distributionRadialConfig && (
-                            <PrintChart config={distributionRadialConfig} canvasHeight={250} />
-                          )}
-                        </Grid>
-                        <Grid item xs={12} sm={5}>
-                          <Box style={{ marginLeft: "12px" }}>
-                            {distributionRadialConfig &&
-                              distributionRadialConfig.config.data.datasets[0].labels.map((item, index) => (
-                                <Box key={"labels-" + index}>
-                                  <Box display="flex" alignItems="center" justifyContent="space-between">
-                                    <Box display="flex" flexDirection="row" alignItems="center">
-                                      <Box
-                                        width={12}
-                                        height={12}
-                                        style={{
-                                          background:
-                                            distributionRadialConfig.config.data.datasets[0].backgroundColor[
-                                              index
-                                            ],
-                                        }}
-                                      />
-                                      <Box ml={1} className={classes.radialText}>
-                                        {item}
-                                      </Box>
-                                    </Box>
-                                    <Box className={classes.radialText}>
-                                      ${distributionRadialConfig.config.data.datasets[0].data[index]}%
-                                    </Box>
-                                  </Box>
-                                  <hr className={classes.divider} style={{ margin: "12px 0" }} />
-                                </Box>
-                              ))}
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </>
-                ) : media?.exchange ? (
+                {media?.exchange ? (
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <Text color={Color.Black} size={FontSize.XL}>
                       Price
@@ -1990,7 +1715,7 @@ const MarketplaceDetailPage = () => {
                       </div>
                     )
                   ) : null}
-                  {media?.exchange ? (
+                  {media?.exchange && media.exchange.status !== "sold" ? (
                     media?.exchange.address === user.address ? (
                       <PrimaryButton
                         size="medium"
@@ -2019,21 +1744,23 @@ const MarketplaceDetailPage = () => {
                       </PrimaryButton>
                     )
                   ) : null}
-                  {media?.exchange && media.exchange.address !== user.address && (
-                    <PrimaryButton
-                      size="medium"
-                      onClick={() => setOpenBuyNFTModal(true)}
-                      className={classes.primaryBtn}
-                      style={{
-                        background: "#DDFF57",
-                        color: "#431AB7",
-                        marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                        marginLeft: `${isTableScreen ? "0px" : "8px"}`,
-                      }}
-                    >
-                      Place Buying Offer
-                    </PrimaryButton>
-                  )}
+                  {media?.exchange &&
+                    media?.exchange.status !== "sold" &&
+                    media?.exchange.address !== user.address && (
+                      <PrimaryButton
+                        size="medium"
+                        onClick={() => setOpenBuyNFTModal(true)}
+                        className={classes.primaryBtn}
+                        style={{
+                          background: "#DDFF57",
+                          color: "#431AB7",
+                          marginBottom: `${isTableScreen ? "5px" : "0px"}`,
+                          marginLeft: `${isTableScreen ? "0px" : "8px"}`,
+                        }}
+                      >
+                        Place Buying Offer
+                      </PrimaryButton>
+                    )}
                   {(media?.auction || media?.exchange) && (
                     <SecondaryButton
                       size="medium"
@@ -2049,170 +1776,7 @@ const MarketplaceDetailPage = () => {
                 </Box>
               </Grid>
             </Grid>
-            {media?.fraction ? (
-              <Box display="flex" flexDirection="column">
-                {/* <Text size={FontSize.XL} color={Color.Black}>
-                  History
-                </Text>
-                <hr className={classes.divider} />
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Box className={classes.card}>
-                      <Text>Fraction Price (1%)</Text>
-                      <Box
-                        display="flex"
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Box display="flex" flexDirection="row" alignItems="center">
-                          <Text size={FontSize.XXL} color={Color.Black}>
-                            {formatNumber(fractionPrice, "USD", 2)}
-                          </Text>
-                          <Text size={FontSize.L} color={Color.Black} ml={1}>
-                            per fraction
-                          </Text>
-                        </Box>
-                        <Text size={FontSize.XXL} color={Color.Violet}>
-                          {fractionPriceChange > 0 ? "+" : ""}
-                          {fractionPriceChange * 100}%
-                        </Text>
-                      </Box>
-                      <hr className={classes.divider} />
-                      {fractionHistoryConfig && (
-                        <Box height="250px">
-                          <PrintChart config={fractionHistoryConfig} />
-                        </Box>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Box className={classes.card}>
-                      <Text>Shared Ownership History</Text>
-                      <Box
-                        display="flex"
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Box display="flex" flexDirection="row" alignItems="center">
-                          <Text size={FontSize.XXL} color={Color.Black}>
-                            {ownershipFraction * 100}
-                          </Text>
-                          <Text size={FontSize.L} color={Color.Black} ml={1}>
-                            fractions
-                          </Text>
-                        </Box>
-                        <Text size={FontSize.XXL} color={Color.Violet}>
-                          {ownershipFractionChange > 0 ? "+" : ""}
-                          {ownershipFractionChange * 100}%
-                        </Text>
-                      </Box>
-                      <hr className={classes.divider} />
-                      {ownershipHistoryConfig && (
-                        <Box height="250px">
-                          <PrintChart config={ownershipHistoryConfig} />
-                        </Box>
-                      )}
-                    </Box>
-                  </Grid>
-                </Grid>
-                <hr className={classes.divider} /> */}
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Box>
-                        <Text size={FontSize.XL} color={Color.Black}>
-                          Buying Offers
-                        </Text>
-                        <Text
-                          color={Color.Purple}
-                          onClick={() => {
-                            fractionOfferTypeRef.current = "buy";
-                            setOpenPlaceFractionOfferModal(true);
-                          }}
-                          ml={1}
-                        >
-                          Place Buying Offer
-                        </Text>
-                      </Box>
-                      <Text color={Color.Purple}>View All</Text>
-                    </Box>
-                    <Box className={classes.table}>
-                      <CustomTable
-                        headers={OfferHeaders}
-                        rows={buyingOffersData}
-                        placeholderText="No Offers"
-                        theme="offers blue"
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Box
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Box>
-                        <Text size={FontSize.XL} color={Color.Black}>
-                          Selling Offers
-                        </Text>
-                        <Text
-                          color={Color.Purple}
-                          onClick={() => {
-                            if (userBalances[media.symbol]) {
-                              fractionOfferTypeRef.current = "sell";
-                              setOpenPlaceFractionOfferModal(true);
-                            } else
-                              showAlertMessage("You dont have any ownership of this media", {
-                                variant: "error",
-                              });
-                          }}
-                          ml={1}
-                        >
-                          Place Selling Offer
-                        </Text>
-                      </Box>
-                      <Text color={Color.Purple}>View All</Text>
-                    </Box>
-                    <Box className={classes.table}>
-                      <CustomTable
-                        headers={OfferHeaders}
-                        rows={sellingOffersData}
-                        placeholderText="No Offers"
-                        theme="offers blue"
-                      />
-                    </Box>
-                  </Grid>
-                </Grid>
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  mt={3}
-                >
-                  <Text size={FontSize.XL} color={Color.Black}>
-                    Trading History
-                  </Text>
-                  <Text color={Color.Purple}>View All</Text>
-                </Box>
-                <Box className={classes.table} mb={5}>
-                  <CustomTable
-                    headers={TradingTableHeaders}
-                    rows={fractionTransactionsData}
-                    placeholderText="No Offers"
-                    theme="offers blue"
-                  />
-                </Box>
-              </Box>
-            ) : media?.auction ? (
+            {media?.auction ? (
               <>
                 {isValidBidHistory() && (
                   <>
@@ -2333,7 +1897,7 @@ const MarketplaceDetailPage = () => {
               ))}
             </Grid>
             <hr className={classes.divider} />
-            {!media?.fraction ? (
+            {!media?.Fraction ? (
               <>
                 <Header5>Comments</Header5>
                 <Box
@@ -2399,7 +1963,7 @@ const MarketplaceDetailPage = () => {
                             history.push(`/${comment.user.urlSlug}/profile`);
                           }}
                         >
-                          <Avatar size="medium" url={comment.user && comment.user.imageUrl} />
+                          <Avatar size="medium" url={comment.user.imageUrl} />
                         </div>
                         <Box
                           display="flex"
@@ -2431,7 +1995,7 @@ const MarketplaceDetailPage = () => {
                         </Box>
                         <Box display="flex" alignItems="center" style={{ marginLeft: "auto", fontSize: 12 }}>
                           <Box display="flex" alignItems="center" gridColumnGap={8} onClick={() => {}}>
-                            {loggedUser?.id === comment.user?.id && (
+                            {user?.id === comment.user?.id && (
                               <>
                                 {editedCommentId ? (
                                   <SaveIcon

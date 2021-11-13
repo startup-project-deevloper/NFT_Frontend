@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
-import { useTypedSelector } from "store/reducers/Reducer";
-
 import CreateMediaModal from "../../modals/CreateMediaModal";
 import { SellModal } from "../../modals/SellModal";
 
 import styles from "shared/ui-kit/PriviAppSidebar/index.module.css";
 import AppSidebar from "shared/ui-kit/PriviAppSidebar";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
-import { PrimaryButton } from "shared/ui-kit";
 import { Widget } from "@maticnetwork/wallet-widget";
 
 const TABS = [
   "HOME",
   "EXPLORE",
   "MARKETPLACE",
-  "PODS",
+  // "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
   "NFT OPTIONS",
@@ -31,7 +28,6 @@ export default function Sidebar({ handleRefresh }) {
 }
 
 const SidebarContent = ({ handleRefresh }) => {
-  const user = useTypedSelector(state => state.user);
   const location = useLocation();
   const history = useHistory();
 
@@ -43,20 +39,20 @@ const SidebarContent = ({ handleRefresh }) => {
       return TABS[1];
     } else if (location.pathname.includes("marketplace")) {
       return TABS[2];
-    } else if (location.pathname.includes("pods")) {
-      return TABS[3];
+    // } else if (location.pathname.includes("pods")) {
+    //   return TABS[3];
     } else if (location.pathname.includes("loan")) {
+      return TABS[3];
+    } else if (location.pathname.includes("saved-content")) {
       return TABS[4];
-    } else if (location.pathname.includes("like")) {
-      return TABS[5];
     } else if (location.pathname.includes("option")) {
-      return TABS[6];
+      return TABS[5];
     } else if (
       location.pathname.includes("fractionalisation") ||
       location.pathname.includes("fractionalise") ||
       location.pathname.includes("mynft")
     ) {
-      return TABS[7];
+      return TABS[6];
     }
 
     return TABS[0];
@@ -70,41 +66,45 @@ const SidebarContent = ({ handleRefresh }) => {
     } else if (value === TABS[2]) {
       history.push("/marketplace");
     } else if (value === TABS[3]) {
-      history.push("/pods");
-    } else if (value === TABS[4]) {
+    //   history.push("/pods");
+    // } else if (value === TABS[4]) {
       history.push("/loan");
+    } else if (value === TABS[4]) {
+      history.push("/saved-content");
     } else if (value === TABS[5]) {
-      history.push("/like");
-    } else if (value === TABS[6]) {
       history.push("/option/explore");
-    } else if (value === TABS[7]) {
+    } else if (value === TABS[6]) {
       history.push("/fractionalise");
     }
   };
 
-  const setBridgeWidget = () => {
-    const widget = new Widget({
-      target: "",
-      appName: "priviPix",
-      autoShowTime: 0.1,
-      position: "center",
-      height: 630,
-      width: 540,
-      overlay: false,
-      network: "testnet",
-      closable: true,
-    });
-    widget.create();
-  };
+  // const setBridgeWidget = () => {
+  //   const widget = new Widget({
+  //     target: "",
+  //     appName: "priviPix",
+  //     autoShowTime: 0.1,
+  //     position: "center",
+  //     height: 630,
+  //     width: 540,
+  //     overlay: false,
+  //     network: "testnet",
+  //     closable: true,
+  //   });
+  //   widget.create();
+  // };
+
   const handleOpenCreateContentModal = () => {
     setOpenCreateContentModal(true);
   };
+
   const handleOpenSellStartAuctionModal = () => {
     setOpenSellStartAuctionModal(true);
   };
+
   const handleCloseCreateContentModal = () => {
     setOpenCreateContentModal(false);
   };
+
   const handleCloseSellStartAuctionModal = () => {
     setOpenSellStartAuctionModal(false);
   };

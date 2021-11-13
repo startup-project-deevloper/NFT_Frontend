@@ -12,7 +12,7 @@ import ChatsList from "shared/ui-kit/Page-components/Chats/ChatsList/ChatsList";
 import Chat from "shared/ui-kit/Page-components/Chats/Chat/Chat";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { PrimaryButton } from "shared/ui-kit";
-import Box from 'shared/ui-kit/Box';
+import Box from "shared/ui-kit/Box";
 
 const OffersTab = (props: any) => {
   const classes = offersTabStyles();
@@ -28,9 +28,9 @@ const OffersTab = (props: any) => {
   const [status, setStatus] = useState<any>("");
 
   useEffect(() => {
-    getChatInfo();
+    if (userSelector.id) getChatInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userSelector.id]);
 
   useEffect(() => {
     let offers = props.item.Offers;

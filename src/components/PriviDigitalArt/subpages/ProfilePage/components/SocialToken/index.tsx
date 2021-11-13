@@ -241,13 +241,11 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
 
   const { library } = useWeb3React();
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
+  const { downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState(null);
 
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const isOwner = user.id === userId;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -257,13 +255,13 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   }, []);
 
   useEffect(() => {
-    if (token && token.infoImage && token.infoImage.newFileCID && ipfs ) {
-      getImageIpfs(token.infoImage.newFileCID);
+    if (token?.infoImage?.newFileCID && token?.infoImage?.metadata?.properties?.name) {
+      getImageIpfs(token.infoImage.newFileCID, token.infoImage.metadata.properties.name);
     }
-  }, [token, ipfs]);
+  }, [token]);
 
-  const getImageIpfs = async cid => {
-    let imageUrl: any = await getPhotoIPFS(cid, downloadWithNonDecryption);
+  const getImageIpfs = async (cid, fileName) => {
+    let imageUrl: any = await getPhotoIPFS(cid, fileName, downloadWithNonDecryption);
     setImageIPFS(imageUrl);
   };
 
@@ -330,7 +328,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   const refreshPageData = async () => {
     // get owner social token
     const token = await axios
-      .get(`${URL()}/social/getOwnSocialToken/${user.id}`)
+      .get(`${URL()}/social/getOwnSocialToken/${userId}`)
       .then(res => {
         const resp = res.data;
         if (resp.success) {
@@ -590,10 +588,14 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
         <div className={classes.NoTokenContent}>
           <img src={require("assets/pixImages/profile_social_token.png")} alt="social_token" />
           <div className={classes.typo1}>No Token Available</div>
-          <div className={classes.typo2}>Create your first social token.</div>
-          <div className={classes.createTokenBtn} onClick={() => setOpenCreateSocialTokenModal(true)}>
-            Create Social Token
-          </div>
+          {isOwner && (
+            <>
+              <div className={classes.typo2}>Create your first social token.</div>
+              <div className={classes.createTokenBtn} onClick={() => setOpenCreateSocialTokenModal(true)}>
+                Create Social Token
+              </div>
+            </>
+          )}
         </div>
       ) : (
         <Box display="flex" flexDirection="column" width={1} mb={10}>
@@ -654,19 +656,23 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
                 Token Actions
               </Box>
               <div className={classes.actionWrap}>
-                <div
-                  className={`${classes.actionBtn} ${classes.airdropTokenBtn}`}
-                  onClick={() => setOpenAirdropTokenModal(true)}
-                >
-                  Airdrop Tokens
-                </div>
-                <div
-                  className={`${classes.actionBtn} ${classes.allocateTokenBtn}`}
-                  onClick={() => setOpenAllocateTokenModal(true)}
-                >
-                  Allocate Tokens
-                </div>
-                {!isMobile && <div style={{ width: "1px", height: "40px", background: "#E6E6E8" }}></div>}
+                {isOwner && (
+                  <>
+                    <div
+                      className={`${classes.actionBtn} ${classes.airdropTokenBtn}`}
+                      onClick={() => setOpenAirdropTokenModal(true)}
+                    >
+                      Airdrop Tokens
+                    </div>
+                    <div
+                      className={`${classes.actionBtn} ${classes.allocateTokenBtn}`}
+                      onClick={() => setOpenAllocateTokenModal(true)}
+                    >
+                      Allocate Tokens
+                    </div>
+                    {!isMobile && <div style={{ width: "1px", height: "40px", background: "#E6E6E8" }}></div>}
+                  </>
+                )}
                 <div
                   className={`${classes.actionBtn} ${classes.metaMaskBtn}`}
                   onClick={handleAddTokenToMetamask}

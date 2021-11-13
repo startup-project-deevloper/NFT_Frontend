@@ -38,11 +38,7 @@ export default function NFTPodCard({ item }) {
 
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
-  const { isIPFSAvailable, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
+  const { isIPFSAvailable, downloadWithNonDecryption } = useIPFS();
 
   useEffect(() => {
     let pod = { ...item };
@@ -107,17 +103,17 @@ export default function NFTPodCard({ item }) {
   }, [item.Id]);
 
   useEffect(() => {
-    if (isIPFSAvailable && item) {
-      getImageIPFS(item.InfoImage?.newFileCID);
+    if (isIPFSAvailable && item?.InfoImage?.newFileCID && item?.InfoImage?.metadata?.properties?.name) {
+      getImageIPFS(item.InfoImage.newFileCID, item.InfoImage.metadata.properties.name);
     }
   }, [isIPFSAvailable, item]);
 
-  const getImageIPFS = async (cid: string) => {
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
+  const getImageIPFS = async (cid: string, fileName: string) => {
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
+      downloadWithNonDecryption(fileCID, fileName, download)
     );
     if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
+      let base64String = _arrayBufferToBase64(files.buffer);
       setImageIPFS("data:image/png;base64," + base64String);
     } else {
       setImageIPFS(getDefaultBGImage());

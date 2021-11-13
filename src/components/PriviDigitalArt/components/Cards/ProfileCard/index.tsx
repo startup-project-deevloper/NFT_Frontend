@@ -10,15 +10,13 @@ import Box from "shared/ui-kit/Box";
 import { FruitSelect } from "shared/ui-kit/Select/FruitSelect";
 import { useShareMedia } from "shared/contexts/ShareMediaContext";
 import { useTypedSelector } from "store/reducers/Reducer";
-import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { getDefaultAvatar, getDefaultBGImage } from "shared/services/user/getUserAvatar";
 import MediaDetailsModal from "components/PriviDigitalArt/modals/MediaDetailsModal";
 import { getBidHistory } from "shared/services/API";
-import { useTokenConversion } from "shared/contexts/TokenConversionContext";
-import useIPFS from "shared/utils-IPFS/useIPFS";
-import { onGetNonDecrypt } from "shared/ipfs/get";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { profileCardStyles } from "./index.styles";
+import { sanitizeIfIpfsUrl } from "shared/helpers";
 
 enum MediaType {
   Video = "VIDEO_TYPE",
@@ -29,10 +27,6 @@ enum MediaType {
   BlogSnap = "BLOG_SNAP_TYPE",
   DigitalArt = "DIGITAL_ART_TYPE",
 }
-
-const getRandomImageUrl = () => {
-  return require(`assets/podImages/2.png`);
-};
 
 export default function ProfileCard({
   item,
@@ -47,7 +41,6 @@ export default function ProfileCard({
   noMargin?: boolean;
   handleRefresh?: any;
 }) {
-  const { convertTokenToUSD } = useTokenConversion();
   const classes = profileCardStyles();
   const usersList = useTypedSelector(state => state.usersInfoList);
   const user = useTypedSelector(state => state.user);
@@ -66,14 +59,7 @@ export default function ProfileCard({
 
   const [openMediaDetailsModal, setOpenMediaDetailsModal] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
-
-  useEffect(() => {
-    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
-  }, []);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [imageIPFS, setImageIPFS] = useState("");
 
   // get 24h change for auction
   useEffect(() => {
@@ -102,8 +88,8 @@ export default function ProfileCard({
       setBookmarked(true);
       setTotalView(item.TotalView);
 
-      if (item.CreatorAddress) {
-        axios.get(`${URL()}/user/getBasicUserInfo/${item.CreatorAddress}`).then(res => {
+      if (item.creator || item.CreatorAddress) {
+        axios.get(`${URL()}/user/getBasicUserInfo/${item.creator || item.CreatorAddress}`).then(res => {
           const resp = res.data;
           if (resp?.success) {
             const data = resp.data;
@@ -115,19 +101,15 @@ export default function ProfileCard({
             ]);
           }
         });
-      }
-
-      if (item.cid) {
-        getImageIPFS(item.cid);
+      } else if (item.owner_of?.toLowerCase() === user.address?.toLowerCase()) {
+        setCreatorsData([
+          {
+            ...user
+          },
+        ]);
       }
     }
   }, [item, usersList]);
-
-  useEffect(() => {
-    if (item?.cid) {
-      getImageIPFS(item.cid);
-    }
-  }, [ipfs]);
 
   useEffect(() => {
     if (item.Auctions) {
@@ -170,18 +152,6 @@ export default function ProfileCard({
       return () => clearInterval(timerId);
     } else return;
   }, [item]);
-
-  const getImageIPFS = async (cid: string) => {
-    setIsLoading(true);
-    let files = await onGetNonDecrypt(cid, (fileCID, download) =>
-      downloadWithNonDecryption(fileCID, download)
-    );
-    if (files) {
-      let base64String = _arrayBufferToBase64(files.content);
-      setImageIPFS("data:image/png;base64," + base64String);
-    }
-    setIsLoading(false);
-  };
 
   const isBookmarked = () => {
     if (item.Bookmarks) {
@@ -266,6 +236,8 @@ export default function ProfileCard({
     setOpenMediaDetailsModal(true);
     setTotalView(value => value + 1);
   };
+
+  const mediaImage = sanitizeIfIpfsUrl(item.metadata?.image ?? item.url) ?? getDefaultBGImage();
 
   return (
     <>
@@ -384,51 +356,30 @@ export default function ProfileCard({
               {!item.cid || type === "Social" ? (
                 <div
                   className={classes.image}
-                  style={
-                    type === "Social"
-                      ? {
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }
-                      : {
-                          backgroundImage: `url(${item?.metadata?.image ?? getRandomImageUrl()})`,
-                          backgroundSize: "cover",
-                        }
-                  }
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
                   {type === "Social" && (
                     <img className={classes.socialTokenImg} src={item.imageURL} alt={"card"} />
+                  )}
+                  {type !== "Social" && (
+                    <img className={classes.img} src={mediaImage} alt={"card"} />
                   )}
                 </div>
               ) : isLoading ? (
                 <StyledSkeleton width="100%" height="100%" variant="rect" />
               ) : (
-                <object
-                  data={item.cid ? imageIPFS : ""}
-                  type="image/png"
-                  className={cls(classes.image, classes.img)}
-                >
+                <object data={mediaImage} type="image/png" className={cls(classes.image, classes.img)}>
                   <div className={classes.image} />
                 </object>
               )}
             </div>
             <div className={cls({ [classes.hidden]: !onHover }, classes.aspectRatioWrapper)}>
               <div className={classes.content}>
-                <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-                  <Box>
-                    <Box fontSize="14px" alignItems="center" display="flex">
-                      <img
-                        src={require("assets/emojiIcons/fruits.png")}
-                        alt="fruits"
-                        width="22px"
-                        height="21px"
-                        style={{ marginRight: "8px" }}
-                      />
-                      Fruits
-                    </Box>
-                    <Box>{(item?.fruits ?? []).length}</Box>
-                  </Box>
+                <Box display="flex" alignItems="center" justifyContent="space-evenly" width="100%">
                   <Box>
                     <Box fontSize="14px" alignItems="center" display="flex">
                       <img
@@ -457,12 +408,12 @@ export default function ProfileCard({
                   </Box>
                 </Box>
 
-                <Box width="100%">
+                {/* <Box width="100%">
                   <StyledDivider color={Color.White} type="solid" margin={3} />
                 </Box>
 
                 <Box display="flex" alignItems="flex-start" justifyContent="space-between" width="100%">
-                  {/* <Box>
+                  <Box>
                     <Box fontSize="14px">Price</Box>
                     <Box>
                       {`${
@@ -478,7 +429,7 @@ export default function ProfileCard({
                           : ""
                       }`}
                     </Box>
-                  </Box> */}
+                  </Box>
                   <Box>
                     <Box fontSize="14px">Bid</Box>
                     {item.Auctions ? (
@@ -498,7 +449,7 @@ export default function ProfileCard({
                       {(change24h * 100).toFixed(2)}%
                     </Box>
                   </Box>
-                </Box>
+                </Box> */}
                 {item.ExchangeData > 0 && (
                   <Box width="100%">
                     <StyledDivider color={Color.White} type="solid" margin={3} />
@@ -525,7 +476,7 @@ export default function ProfileCard({
                             className={classes.avatar}
                             style={{
                               backgroundImage: `url(${
-                                creator?.imageUrl ? creator?.imageUrl : getDefaultAvatar()
+                                creator?.urlIpfsImage || creator?.imageUrl || getDefaultAvatar()
                               })`,
                             }}
                           />
@@ -555,11 +506,9 @@ export default function ProfileCard({
                 />
               )}
               <Box style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {item?.MediaName || item?.metadata?.name}
+                {item?.MediaName || item?.metadata?.name || item?.title}
               </Box>
             </Box>
-
-            <FruitSelect fruitObject={item} members={type === "Crew" ? item.Members : []} />
           </Box>
           {item && item.Fraction && (
             <Box className={classes.fraction}>Fractionalized {Math.round(item.Fraction.Fraction * 100)}%</Box>
@@ -594,7 +543,6 @@ export default function ProfileCard({
           handleRefresh={handleRefresh}
           media={item}
           mediaViews={totalView}
-          cidUrl={item?.cid ? imageIPFS : ""}
           creators={creatorsData}
         />
       )}

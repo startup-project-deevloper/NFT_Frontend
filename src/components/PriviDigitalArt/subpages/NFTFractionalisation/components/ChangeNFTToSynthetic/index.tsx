@@ -7,7 +7,7 @@ import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork } from "shared/functions/metamask";
 import { getNFTBalanceFromMoralis } from "shared/services/API/balances/externalAPI";
-import { saveExternallyFetchedNfts, getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
+import { getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
 
 import { useFractionaliseStyles } from "./index.styles";
 import NFTCard from "./NFTCard";
@@ -94,10 +94,12 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
               });
             }
           }
-          // save externally created nft to backend
-          saveExternallyFetchedNfts(externallyCreatedNft);
           // set user nfts
-          setUserNFTs([...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter((item) => item.BlockchainId !== nft.NftId));
+          setUserNFTs(
+            [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(
+              item => item.BlockchainId !== nft.NftId
+            )
+          );
         }
         setLoadingnNFTS(false);
       } else {
@@ -117,8 +119,8 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
   const handleProceed = () => {
     setOpenChangeToSyntheticModal(true);
   };
-  
-  const fractionaliseSuccess = () => { };
+
+  const fractionaliseSuccess = () => {};
 
   return (
     <div className={classes.root}>
@@ -130,7 +132,11 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
             <div className={classes.text}>You will create a synthetic copy of the NFT you are selecting.</div>
           </Box>
           {userNFTs && userNFTs.length > 0 && (
-            <button disabled={!walletConnected || !selectedNFT} className={classes.nftsButton} onClick={handleProceed}>
+            <button
+              disabled={!walletConnected || !selectedNFT}
+              className={classes.nftsButton}
+              onClick={handleProceed}
+            >
               Continue
             </button>
           )}

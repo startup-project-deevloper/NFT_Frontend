@@ -13,7 +13,6 @@ const ProofAuthenticity = ({ media }) => {
   const classes = useStyles();
   const allUsers = useTypedSelector(state => state.usersInfoList);
 
-  console.log(media);
   const creator = React.useMemo(() => {
     return allUsers.find(user => user.id === media.CreatorId);
   }, [allUsers, media]);
@@ -36,22 +35,24 @@ const ProofAuthenticity = ({ media }) => {
       </Box>
       <Box display="flex" flexDirection="row" mb={5}>
         <Text color={Color.Black}>Created:</Text>
-        {media.synced_at && <Text ml={1}>{format(new Date(media.synced_at), "MMMM dd, yyyy")}</Text>}
+        {media.media.synced_at && (
+          <Text ml={1}>{format(new Date(media.media.synced_at), "MMMM dd, yyyy")}</Text>
+        )}
       </Box>
       <Header5>Chain</Header5>
       <StyledDivider type="solid" mb={3} />
       <Box display="flex" flexDirection="row" mb={1}>
         <Text color={Color.Black}>Token name:</Text>
-        <Text ml={1}>{media.symbol}</Text>
+        <Text ml={1}>{media.media.name}</Text>
       </Box>
       <Box display="flex" flexDirection="row" mb={1}>
         <Text color={Color.Black}>ID:</Text>
-        <Text ml={1}>#{media.token_id}</Text>
+        <Text ml={1}>#{media.tokenId}</Text>
       </Box>
       <Box display="flex" flexDirection="row" mb={1}>
         <Text color={Color.Black}>Contract ID:</Text>
         <Text ml={1} className={classes.mintGradient}>
-          {media.token_address}
+          {media.tokenAddress}
         </Text>
       </Box>
       <Box display="flex" flexDirection="row" mb={5}>

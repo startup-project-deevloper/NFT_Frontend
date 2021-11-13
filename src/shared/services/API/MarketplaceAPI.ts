@@ -13,9 +13,9 @@ export async function getNfts(payload: any): Promise<any> {
   }
 }
 
-export async function getNft(payload: any): Promise<any> {
+export async function getMarketplaceMedia(payload: any): Promise<any> {
   try {
-    const response = await axios.get(`${URL()}/marketplace/getNft`, {
+    const response = await axios.get(`${URL()}/marketplace/getMarketplaceMedia`, {
       params: payload,
     });
     return response.data;

@@ -206,7 +206,7 @@ export const marketplaceDetailPageStyles = makeStyles(theme => ({
       },
       [theme.breakpoints.down("xs")]: {
         padding: "8px",
-      }
+      },
     },
     "& .MuiTableContainer-root": {
       borderRadius: 16,
@@ -221,7 +221,7 @@ export const marketplaceDetailPageStyles = makeStyles(theme => ({
           },
           [theme.breakpoints.down("xs")]: {
             fontSize: 12,
-          }
+          },
         },
       },
     },
@@ -233,8 +233,8 @@ export const marketplaceDetailPageStyles = makeStyles(theme => ({
         },
         [theme.breakpoints.down("xs")]: {
           fontSize: 9,
-        }
-      }
+        },
+      },
     },
   },
   bidBox: {
@@ -257,12 +257,8 @@ export const marketplaceDetailPageStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 40,
-    paddingRight: theme.spacing(6),
-    [theme.breakpoints.down("sm")]: {
-      marginBottom: 34,
-      paddingRight: theme.spacing(3),
-    },
+    justifyContent: "space-between",
+    width: "100%",
   },
   reactPlayer: {
     width: "100% !important",
@@ -294,7 +290,7 @@ export const marketplaceDetailPageStyles = makeStyles(theme => ({
     border: "none",
     "&:focus": {
       outline: "none",
-    }
+    },
   },
   mediaInfo: {
     display: "flex",
@@ -309,7 +305,7 @@ export const marketplaceDetailPageStyles = makeStyles(theme => ({
       justifyContent: "space-between",
       width: "100%",
     },
-  }
+  },
 }));
 
 export const LinkIcon = () => (

@@ -220,15 +220,15 @@ const PriceHistory = ({ media, makeOffer }) => {
   }, [priceHistory]);
 
   const loadData = () => {
-    if (media?.auction) {
+    if (media?.type === "auction") {
       getAuctionBidHistory({
-        id: media.auction.id,
+        id: media.id,
         type: "PIX",
       }).then(resp => {
         if (resp?.success) setPriceHistory(resp.data);
       });
-    } else if (media?.exchange) {
-      getExchangePriceHistory(media.exchange.id).then(resp => {
+    } else if (media?.type === "exchange") {
+      getExchangePriceHistory(media.id).then(resp => {
         if (resp?.success) setPriceHistory(resp.data);
       });
     }
@@ -252,10 +252,7 @@ const PriceHistory = ({ media, makeOffer }) => {
             </Select>
             <Box mt={2}>
               <Box style={{ fontSize: 18 }}>
-                {convertTokenToUSD(
-                  media?.Auctions?.TokenSymbol ?? "USDT",
-                  bidPriceInfo.lastPrice ?? 0
-                ).toFixed(4)}
+                {convertTokenToUSD(media?.bidTokenSymbol ?? "USDT", bidPriceInfo.lastPrice ?? 0).toFixed(4)}
               </Box>
               <Box
                 color={bidPriceInfo.priceChange ?? 0 >= 0 ? "#65CB63" : "#F2A07E"}
@@ -263,10 +260,9 @@ const PriceHistory = ({ media, makeOffer }) => {
                 mt={1}
               >
                 {bidPriceInfo.priceChange ?? 0 > 0 ? "+" : ""}
-                {convertTokenToUSD(
-                  media?.auction?.bidTokenSymbol ?? "USDT",
-                  bidPriceInfo.priceChange ?? 0
-                ).toFixed(4)}{" "}
+                {convertTokenToUSD(media?.bidTokenSymbol ?? "USDT", bidPriceInfo.priceChange ?? 0).toFixed(
+                  4
+                )}{" "}
                 ({bidPriceInfo.priceChangePct ?? 0 > 0 ? "+" : ""}
                 {bidPriceInfo.priceChangePct}%)
               </Box>
@@ -280,7 +276,7 @@ const PriceHistory = ({ media, makeOffer }) => {
         )}
         <Box mt={3} display="flex" flexDirection="row" justifyContent="space-between" mb={1}>
           {/* <SecondaryButton size="medium">Cancel</SecondaryButton> */}
-          {media?.auction && media.auction.owner !== user.id && (
+          {media.owner !== user.id && (
             <PrimaryButton size="medium" onClick={makeOffer} style={{ background: "#431AB7" }}>
               Make offer
             </PrimaryButton>

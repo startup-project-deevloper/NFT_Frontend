@@ -167,7 +167,7 @@ const CreateOfferModal = ({ open, handleClose, handleRefresh, media, offerType }
           Amount: selectedFraction,
           Price: selectedPrice,
           Token: selectedToken,
-          TokenSymbol: media.MediaSymbol,
+          TokenSymbol: media.media.symbol,
           BAddress: user.address,
         };
       } else {
@@ -175,7 +175,7 @@ const CreateOfferModal = ({ open, handleClose, handleRefresh, media, offerType }
           Amount: selectedFraction,
           Price: selectedPrice,
           Token: selectedToken,
-          TokenSymbol: media.MediaSymbol,
+          TokenSymbol: media.media.symbol,
           SAddress: user.address,
         };
       }

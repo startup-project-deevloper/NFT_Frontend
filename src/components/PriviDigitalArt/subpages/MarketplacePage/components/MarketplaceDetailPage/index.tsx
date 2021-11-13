@@ -41,7 +41,7 @@ import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import { getAuctionBidHistory, getExchangeBuyingOffers, getNft } from "shared/services/API";
+import { getAuctionBidHistory, getExchangeBuyingOffers, getMarketplaceMedia } from "shared/services/API";
 import { BlockchainNets } from "shared/constants/constants";
 import CreateFractionOfferModal from "components/PriviDigitalArt/modals/CreateOfferModal";
 import TradeFractionOfferModal from "components/PriviDigitalArt/modals/TradeOfferModal";
@@ -238,9 +238,12 @@ const ExchangeOfferTableHeaders: Array<CustomTableHeaderInfo> = [
   },
 ];
 
+const AUCTION_TYPE = "auction";
+const EXCHANGE_TYPE = "exchange";
+
 const MarketplaceDetailPage = () => {
   const history = useHistory();
-  const params: { tokenAddress?: string; tokenId?: string } = useParams();
+  const params: { id?: string } = useParams();
 
   const isMobileScreen = useMediaQuery("(max-width:375px)");
   const isTableScreen = useMediaQuery("(max-width:768px)");
@@ -357,7 +360,7 @@ const MarketplaceDetailPage = () => {
 
   useEffect(() => {
     loadMedia();
-  }, [params?.tokenAddress]);
+  }, [params?.id]);
 
   useEffect(() => {
     if (media) {
@@ -377,10 +380,10 @@ const MarketplaceDetailPage = () => {
   useEffect(() => {
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))
       setBookmarked(true);
-    if (media && media?.auction) {
+    if (media?.type === AUCTION_TYPE) {
       const timerId = setInterval(() => {
         const now = new Date();
-        let delta = Math.floor(media?.auction.endTime - now.getTime() / 1000);
+        let delta = Math.floor(media?.endTime - now.getTime() / 1000);
         if (delta < 0) {
           setAuctionEnded(true);
           setEndTime({
@@ -416,16 +419,16 @@ const MarketplaceDetailPage = () => {
 
       return () => clearInterval(timerId);
     }
-  }, [media?.symbol]);
+  }, [media]);
 
   useEffect(() => {
     if (library) setWeb3(new Web3(library.provider));
   }, [library]);
 
   const loadMedia = async () => {
-    if (isDataLoading || !params.tokenAddress || !params.tokenId) return;
+    if (isDataLoading || !params.id) return;
     setIsDataLoading(true);
-    getNft({ tokenAddress: params.tokenAddress, tokenId: params.tokenId })
+    getMarketplaceMedia({ id: params.id })
       .then(resp => {
         if (resp && resp.success) {
           let m = resp.data;
@@ -436,8 +439,7 @@ const MarketplaceDetailPage = () => {
       .finally(() => {
         setIsDataLoading(false);
         axios.post(`${URL()}/marketplace/updateTotalViews`, {
-          tokenAddress: params.tokenAddress,
-          tokenId: params.tokenId,
+          id: params.id,
         });
       });
   };
@@ -445,9 +447,9 @@ const MarketplaceDetailPage = () => {
   const loadHistory = () => {
     if (!media) return;
     // AUCTION
-    if (media.auction) {
+    if (media.type === AUCTION_TYPE) {
       getAuctionBidHistory({
-        id: media.auction.id,
+        id: media.id,
         type: "PIX",
       }).then(resp => {
         if (resp?.success) {
@@ -481,9 +483,9 @@ const MarketplaceDetailPage = () => {
       });
     }
     // EXCHANGE
-    if (media.exchange) {
+    if (media?.type === EXCHANGE_TYPE) {
       getExchangeBuyingOffers({
-        id: media.exchange.id,
+        id: media.id,
         type: "PIX",
       }).then(resp => {
         if (resp?.success) {
@@ -505,15 +507,11 @@ const MarketplaceDetailPage = () => {
               },
               {
                 cell: (
-                  <img
-                    src={require(`assets/tokenImages/${media.exchange.offerToken}.png`)}
-                    width={24}
-                    height={24}
-                  />
+                  <img src={require(`assets/tokenImages/${media.offerToken}.png`)} width={24} height={24} />
                 ),
                 cellAlign: "center",
               },
-              { cell: media.exchange.offerToken, cellAlign: "center" },
+              { cell: media.offerToken, cellAlign: "center" },
               { cell: offer.price, cellAlign: "center" },
               {
                 cell:
@@ -604,7 +602,7 @@ const MarketplaceDetailPage = () => {
   };
 
   const topBidPrice = React.useMemo(() => {
-    return media?.auction?.topBidInfo?.price || "N/A";
+    return media?.topBidInfo?.price || "N/A";
   }, [media]);
 
   const owners = React.useMemo(() => {
@@ -627,8 +625,8 @@ const MarketplaceDetailPage = () => {
     if (!comment) return;
     axios
       .post(`${URL()}/marketplace/addComment`, {
-        tokenAddress: media?.token_address,
-        tokenId: media?.token_id,
+        tokenAddress: media?.tokenAddress,
+        tokenId: media?.tokenId,
         userId: user.id,
         comment: {
           user: {
@@ -687,8 +685,8 @@ const MarketplaceDetailPage = () => {
 
     axios
       .post(`${URL()}/marketplace/editComment`, {
-        tokenAddress: media?.token_address,
-        tokenId: media?.token_id,
+        tokenAddress: media?.tokenAddress,
+        tokenId: media?.tokenId,
         userId: user.id,
         comments: bodyComments.map(c => ({
           user: {
@@ -755,7 +753,7 @@ const MarketplaceDetailPage = () => {
 
   const bookmarkMedia = () => {
     axios
-      .post(`${URL()}/media/bookmarkMedia/${media?.symbol ?? media?.id}`, {
+      .post(`${URL()}/media/bookmarkMedia/${media?.id}`, {
         userId: user.id,
         mediaType: media?.Type,
       })
@@ -770,7 +768,7 @@ const MarketplaceDetailPage = () => {
 
   const unBookmarkMedia = () => {
     axios
-      .post(`${URL()}/media/removeBookmarkMedia/${media?.symbol ?? media?.id}`, {
+      .post(`${URL()}/media/removeBookmarkMedia/${media?.id}`, {
         userId: user.id,
         mediaType: media?.Type,
       })
@@ -834,8 +832,7 @@ const MarketplaceDetailPage = () => {
       if (newRating >= 0) {
         axios
           .post(`${URL()}/marketplace/rateMedia`, {
-            tokenAddress: params.tokenAddress,
-            tokenId: params.tokenId,
+            id: params.id,
             userId: user.id,
             ratingType,
             ratingValue: newRating,
@@ -866,10 +863,9 @@ const MarketplaceDetailPage = () => {
     }
 
     const body = {
+      id: params.id,
       userId: user.id,
       fruitId: type,
-      tokenAddress: params.tokenAddress,
-      tokenId: params.tokenId,
     };
     axios.post(`${URL()}/marketplace/fruit`, body).then(res => {
       const resp = res.data;
@@ -883,15 +879,14 @@ const MarketplaceDetailPage = () => {
 
   // AUCTION: bid nft with own wallet
   const handlePlaceBid = (price: number) => {
-    const topBidPrice =
-      (media.auction.topBidInfo?.price || media.auction.reservePrice) + media.auction.bidIncrement;
+    const topBidPrice = (media.topBidInfo?.price || media.reservePrice) + media.bidIncrement;
     if (price >= topBidPrice) {
       setDisableBidBtn(true);
       priceRef.current = price;
       operationRef.current = 6;
       interactOnChain();
     } else {
-      showAlertMessage(`Bid should be greater than ${topBidPrice} ${media?.auction?.bidTokenSymbol}`, {
+      showAlertMessage(`Bid should be greater than ${topBidPrice} ${media?.bidTokenSymbol}`, {
         variant: "error",
       });
       setDisableBidBtn(false);
@@ -961,7 +956,7 @@ const MarketplaceDetailPage = () => {
 
   // media relevant contract interaction on polygon chain
   const interactOnChain = async () => {
-    const targetChain = BlockchainNets.find(n => n.chainName === media.chainsFullName);
+    const targetChain = BlockchainNets.find(n => n.chainName === media.media.chainsFullName);
 
     if (chainId != targetChain.chainId) {
       const changed = await switchNetwork(targetChain.chainId);
@@ -995,11 +990,11 @@ const MarketplaceDetailPage = () => {
         case 5: // FRACTIONALISE: Delete sell offer
           break;
         case 6: // AUCTION: Place bid
-          decimals = await web3APIHandler.Erc20[media.auction.bidTokenSymbol].decimals(web3);
+          decimals = await web3APIHandler.Erc20[media.bidTokenSymbol].decimals(web3);
 
           contractParams = {
-            tokenAddress: media.auction.tokenAddress,
-            tokenId: media.auction.tokenId,
+            tokenAddress: media.tokenAddress,
+            tokenId: media.tokenId,
             _address: user.address,
             amount: toNDecimals(priceRef.current, decimals),
             fromAddress: user.address,
@@ -1008,14 +1003,14 @@ const MarketplaceDetailPage = () => {
           await approveToken(
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_AUCTION,
-            media.auction.bidTokenSymbol,
+            media.bidTokenSymbol,
             toNDecimals(priceRef.current, decimals)
           );
 
           web3APIHandler.Auction.placeBid(web3, account!, contractParams).then(async res => {
             if (res) {
               request = {
-                id: media.auction.id,
+                id: media.id,
                 amount: priceRef.current,
                 bidder: user.id,
                 hash: res.transaction.Id,
@@ -1045,13 +1040,13 @@ const MarketplaceDetailPage = () => {
           break;
         case 7: // AUCTION: Cancel auction
           contractParams = {
-            tokenAddress: media.auction.tokenAddress,
-            tokenId: media.auction.tokenId,
+            tokenAddress: media.tokenAddress,
+            tokenId: media.tokenId,
           };
           web3APIHandler.Auction.cancelAuction(web3, account!, contractParams).then(async res => {
             if (res) {
               request = {
-                id: media.auction.id,
+                id: media.id,
                 type: "PIX",
               };
               const response = await axios.post(`${URL()}/marketplace/cancelAuction`, request);
@@ -1071,13 +1066,13 @@ const MarketplaceDetailPage = () => {
           break;
         case 8: // AUCTION: Withdraw auction
           contractParams = {
-            tokenAddress: media.auction.tokenAddress,
-            tokenId: media.auction.tokenId,
+            tokenAddress: media.tokenAddress,
+            tokenId: media.tokenId,
           };
           web3APIHandler.Auction.withdrawAuction(web3, account!, contractParams).then(async res => {
             if (res) {
               request = {
-                id: media.auction.id,
+                id: media.id,
                 type: "PIX",
               };
               const response = await axios.post(`${URL()}/marketplace/withdrawAuction`, request);
@@ -1098,8 +1093,8 @@ const MarketplaceDetailPage = () => {
         case 9: // EXCHANGE: Cancel selling offer
           contractParams = {
             input: {
-              exchangeId: media.exchange.exchangeId,
-              offerId: media.exchange.initialOfferId,
+              exchangeId: media.exchangeId,
+              offerId: media.initialOfferId,
             },
             caller: account!,
           };
@@ -1107,7 +1102,7 @@ const MarketplaceDetailPage = () => {
             async res => {
               if (res) {
                 request = {
-                  id: media.exchange.id,
+                  id: media.id,
                   type: "PIX",
                 };
                 const response = await axios.post(`${URL()}/marketplace/cancelSellingOffer`, request);
@@ -1127,11 +1122,11 @@ const MarketplaceDetailPage = () => {
           );
           break;
         case 10: // EXCHANGE: Buy from selling offer
-          decimals = await web3APIHandler.Erc20[media?.exchange?.offerToken].decimals(web3);
+          decimals = await web3APIHandler.Erc20[media?.offerToken].decimals(web3);
           contractParams = {
             input: {
-              exchangeId: media.exchange.exchangeId,
-              offerId: media.exchange.initialOfferId,
+              exchangeId: media.exchangeId,
+              offerId: media.initialOfferId,
             },
             caller: account!,
           };
@@ -1139,20 +1134,20 @@ const MarketplaceDetailPage = () => {
           await approveToken(
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
-            media?.exchange?.offerToken,
-            toNDecimals(media?.exchange?.price, decimals)
+            media.offerToken,
+            toNDecimals(media.price, decimals)
           );
 
           web3APIHandler.Exchange.BuyERC721TokenFromOffer(web3, account!, contractParams).then(async res => {
             if (res) {
               request = {
-                id: media.exchange.id,
+                id: media.id,
                 bidder: user.id,
                 hash: res.transaction.Id,
                 transaction: {
                   ...res.transaction,
                   Event: "Buy",
-                  Price: media.exchange.price,
+                  Price: media.price,
                 },
                 type: "PIX",
               };
@@ -1174,7 +1169,7 @@ const MarketplaceDetailPage = () => {
         case 11: // EXCHANGE: Sell from buying offer
           contractParams = {
             input: {
-              exchangeId: media.auction.exchangeId,
+              exchangeId: media.exchangeId,
               offerId: payload.offerId,
             },
             caller: account!,
@@ -1182,7 +1177,7 @@ const MarketplaceDetailPage = () => {
           web3APIHandler.Exchange.SellERC721TokenFromOffer(web3, account!, contractParams).then(async res => {
             if (res) {
               const request = {
-                id: media.exchange.id,
+                id: media.id,
                 offerId: payload.offerId,
                 transaction: {
                   ...res.transaction,
@@ -1209,7 +1204,7 @@ const MarketplaceDetailPage = () => {
         case 12: // EXCHANGE: Cancel buying offer
           contractParams = {
             input: {
-              exchangeId: media.exchange.exchangeId,
+              exchangeId: media.exchangeId,
               offerId: payload.offerId,
             },
             caller: account!,
@@ -1218,7 +1213,7 @@ const MarketplaceDetailPage = () => {
             async res => {
               if (res) {
                 const request = {
-                  id: media.exchange.id,
+                  id: media.id,
                   offerId: payload.offerId,
                   transaction: {
                     ...res.transaction,
@@ -1244,12 +1239,12 @@ const MarketplaceDetailPage = () => {
           );
           break;
         case 13: // EXCHANGE: Place buying offer
-          let offerTokenDecimals = await web3APIHandler.Erc20[media.exchange.offerToken].decimals(web3);
+          let offerTokenDecimals = await web3APIHandler.Erc20[media.offerToken].decimals(web3);
 
           contractParams = {
             input: {
-              exchangeId: media.exchange.exchangeId,
-              tokenId: media.token_id,
+              exchangeId: media.exchangeId,
+              tokenId: media.tokenId,
               price: toNDecimals(priceRef.current, offerTokenDecimals),
             },
             caller: account!,
@@ -1258,7 +1253,7 @@ const MarketplaceDetailPage = () => {
           await approveToken(
             web3APIHandler,
             web3Config.CONTRACT_ADDRESSES.ERC721_TOKEN_EXCHANGE,
-            media.exchange.offerToken,
+            media.offerToken,
             toNDecimals(priceRef.current, offerTokenDecimals)
           );
 
@@ -1266,7 +1261,7 @@ const MarketplaceDetailPage = () => {
             async res => {
               if (res) {
                 request = {
-                  id: media.exchange.id,
+                  id: media.id,
                   offerId: res.data.offerId,
                   price: priceRef.current,
                   hash: res.transaction.Id,
@@ -1312,10 +1307,10 @@ const MarketplaceDetailPage = () => {
   return (
     <div className={classes.page}>
       <Helmet>
-        <title>{media?.metadata?.name || media?.name}</title>
-        <meta name="description" content={media?.metadata?.description} />
-        <meta property="og:image" content={media?.content_url} />
-        <meta name="og:image" content={media?.content_url} />
+        <title>{media?.media.metadata?.name || media?.media.name}</title>
+        <meta name="description" content={media?.media.metadata?.description} />
+        <meta property="og:image" content={media?.media.content_url} />
+        <meta name="og:image" content={media?.media.content_url} />
         <meta property="og:image:width" content="1280" />
         <meta property="og:image:height" content="720" />
       </Helmet>
@@ -1326,15 +1321,15 @@ const MarketplaceDetailPage = () => {
         <LoadingWrapper loading={!media || isDataLoading} theme={"blue"} height="calc(100vh - 100px)">
           <Box mt={2}>
             <Box display="flex" alignItems="center">
-              <Header3 noMargin>{media?.metadata?.name || media?.name}</Header3>
-              <Box style={{ color: Color.Red, marginLeft: 16 }}>Sold</Box>
+              <Header3 noMargin>{media?.media.metadata?.name || media?.media.name}</Header3>
+              {media?.status === "sold" && <Box style={{ color: Color.Red, marginLeft: 16 }}>Sold</Box>}
             </Box>
             <Grid className={classes.leftImage} container spacing={2} wrap="wrap">
               <Grid item xs={12} sm={6}>
-                {media?.content_url.endsWith("mp4") ? (
+                {media?.media.content_url.endsWith("mp4") ? (
                   <Box onClick={() => setIsPlaying(prev => !prev)}>
                     <ReactPlayer
-                      url={media?.content_url}
+                      url={media?.media.content_url}
                       className={classes.reactPlayer}
                       muted={true}
                       loop={true}
@@ -1360,7 +1355,7 @@ const MarketplaceDetailPage = () => {
                       </Box>
                     )}
                     <img
-                      src={media?.content_url}
+                      src={media?.media.content_url}
                       className={classes.detailImg}
                       onLoad={() => setMediaImageLoaded(true)}
                     />
@@ -1373,8 +1368,8 @@ const MarketplaceDetailPage = () => {
                 sm={6}
                 style={{
                   marginTop: "8px",
-                  paddingTop: media?.auction ? 0 : 2,
-                  paddingBottom: media?.auction ? 0 : 2,
+                  paddingTop: media?.type === AUCTION_TYPE ? 0 : 2,
+                  paddingBottom: media?.type === AUCTION_TYPE ? 0 : 2,
                 }}
               >
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
@@ -1402,7 +1397,7 @@ const MarketplaceDetailPage = () => {
                         )}
                       </Box>
                     </Box>
-                    {user && !media?.tag && media?.owner_of !== user.address && (
+                    {user && media?.owner !== user.id && (
                       <SecondaryButton size="small" onClick={handleFollow} className={classes.followBtn}>
                         {isFollowing === 2 ? "Unfollow" : isFollowing === 1 ? "Requested" : "Follow"}
                       </SecondaryButton>
@@ -1513,40 +1508,38 @@ const MarketplaceDetailPage = () => {
                 >
                   <Box display="flex" alignItems="center" width={"50%"}>
                     <img
-                      src={getChainImageUrl(media?.chainsFullName)}
+                      src={getChainImageUrl(media?.media.chainsFullName)}
                       width="32px"
                       style={{ borderRadius: "50%" }}
                     />
                   </Box>
-                  {(media?.metadata?.external_link || media?.metadata?.external_url) && (
+                  {(media?.media.metadata?.external_link || media?.media.metadata?.external_url) && (
                     <PrimaryButton
                       className={classes.primaryBtn}
                       size="small"
                       onClick={() => {
-                        window.open(media?.metadata?.external_link || media?.metadata?.external_url);
+                        window.open(
+                          media?.media.metadata?.external_link || media?.media.metadata?.external_url
+                        );
                       }}
                     >
                       Link
                     </PrimaryButton>
                   )}
                 </Box>
-                {media?.price && <Box>{`Price ${media?.price}`}</Box>}
-                {media?.exchange ? (
+                {media?.type === EXCHANGE_TYPE ? (
                   <Box display="flex" flexDirection="row" alignItems="center">
                     <Text color={Color.Black} size={FontSize.XL}>
                       Price
                     </Text>
                     <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                      {`${media?.exchange?.offerToken ?? "ETH"} ${media?.exchange?.price ?? 0}`}
+                      {`${media?.offerToken ?? "ETH"} ${media?.price ?? 0}`}
                     </Text>
                     <Text color={Color.Black} size={FontSize.S}>
-                      {`$(${convertTokenToUSD(
-                        media?.exchange?.offerToken ?? "USDT",
-                        media?.exchange?.price ?? 0
-                      ).toFixed(6)})`}
+                      {`$(${convertTokenToUSD(media?.offerToken ?? "USDT", media?.price ?? 0).toFixed(6)})`}
                     </Text>
                   </Box>
-                ) : media?.auction ? (
+                ) : media?.type === AUCTION_TYPE ? (
                   <>
                     <>
                       {topBidPrice !== "N/A" && (
@@ -1555,20 +1548,20 @@ const MarketplaceDetailPage = () => {
                             Top bid
                           </Text>
                           <Text color={Color.Purple} size={FontSize.XXL} ml={1} mr={1}>
-                            {`${media?.auction.bidTokenSymbol} ${topBidPrice}`}
+                            {`${media?.bidTokenSymbol} ${topBidPrice}`}
                           </Text>
                           <Text color={Color.Black} size={FontSize.S}>
-                            {`$(${convertTokenToUSD(media?.auction.bidTokenSymbol, topBidPrice).toFixed(6)})`}
+                            {`$(${convertTokenToUSD(media?.bidTokenSymbol, topBidPrice).toFixed(6)})`}
                           </Text>
                         </Box>
                       )}
                       <Box mb={1}>
                         <Text size={FontSize.S} color={Color.Black}>
-                          {`Bidding token is ${media?.auction.bidTokenSymbol}`}
+                          {`Bidding token is ${media?.bidTokenSymbol}`}
                         </Text>
                       </Box>
                     </>
-                    {media?.auction && (
+                    {media?.type === AUCTION_TYPE && (
                       <Box
                         display="flex"
                         flexDirection="row"
@@ -1593,7 +1586,7 @@ const MarketplaceDetailPage = () => {
                             size={FontSize.XL}
                             bold
                             style={{ width: "100%", overflow: "hidden", textOverflow: "ellipsis" }}
-                          >{`${media.auction.reservePrice ?? 0} ${media.auction.bidTokenSymbol}`}</Text>
+                          >{`${media.reservePrice ?? 0} ${media.bidTokenSymbol}`}</Text>
                         </Box>
                         <Box display="flex" flexDirection="column" alignItems="flex-end" width="50%">
                           <Text color={Color.Purple} mb={0.5}>
@@ -1612,12 +1605,12 @@ const MarketplaceDetailPage = () => {
                       </Box>
                     )}
                     <Box display="flex" alignItems="center" justifyContent="space-between" mt={2}>
-                      {media?.auction?.topBidInfo && (
+                      {media?.topBidInfo && (
                         <Box className={classes.bidBox} style={{ background: "#9EACF2" }} width={1} mr={1}>
                           <Avatar
                             size="medium"
                             url={
-                              media.auction.topBidInfo.imageUrl ||
+                              media.topBidInfo.imageUrl ||
                               require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
                             }
                           />
@@ -1626,12 +1619,12 @@ const MarketplaceDetailPage = () => {
                               Top Bid Placed By
                             </Box>
                             <Box className={classes.header2} style={{ color: "white" }} mt={0.5}>
-                              {media.auction.topBidInfo.name}
+                              {media.topBidInfo.name}
                             </Box>
                           </Box>
                         </Box>
                       )}
-                      {media?.auction?.replacedBidInfo && (
+                      {media?.replacedBidInfo && (
                         <Box
                           className={classes.bidBox}
                           style={{ border: "1px solid #9EACF2" }}
@@ -1641,7 +1634,7 @@ const MarketplaceDetailPage = () => {
                           <Avatar
                             size="medium"
                             url={
-                              media.auction.replacedBidInfo.imageUrl ||
+                              media.replacedBidInfo.imageUrl ||
                               require(`assets/anonAvatars/ToyFaces_Colored_BG_111.jpg`)
                             }
                           />
@@ -1650,7 +1643,7 @@ const MarketplaceDetailPage = () => {
                               Displaced Bidder
                             </Box>
                             <Box className={classes.header2} style={{ color: "#9EACF2" }} mt={0.5}>
-                              {media.auction.replacedBidInfo.name}
+                              {media.replacedBidInfo.name}
                             </Box>
                           </Box>
                         </Box>
@@ -1666,8 +1659,8 @@ const MarketplaceDetailPage = () => {
                   mt={3}
                   gridRowGap={12}
                 >
-                  {media?.auction ? (
-                    media.auction.owner !== user.id ? (
+                  {media?.type === AUCTION_TYPE ? (
+                    media.owner !== user.id ? (
                       !auctionEnded && (
                         <PrimaryButton
                           size="medium"
@@ -1684,7 +1677,7 @@ const MarketplaceDetailPage = () => {
                       )
                     ) : (
                       <div>
-                        {media.auction.gathered ? (
+                        {media.gathered ? (
                           <PrimaryButton
                             size="medium"
                             onClick={handleWithdrawAuction}
@@ -1698,7 +1691,7 @@ const MarketplaceDetailPage = () => {
                             Withdraw
                           </PrimaryButton>
                         ) : null}
-                        {!media.auction.cancelled && (
+                        {!media.cancelled && (
                           <PrimaryButton
                             size="medium"
                             onClick={handleCancelAuction}
@@ -1715,8 +1708,8 @@ const MarketplaceDetailPage = () => {
                       </div>
                     )
                   ) : null}
-                  {media?.exchange && media.exchange.status !== "sold" ? (
-                    media?.exchange.address === user.address ? (
+                  {media?.type === EXCHANGE_TYPE && media.status !== "sold" ? (
+                    media?.address === user.address ? (
                       <PrimaryButton
                         size="medium"
                         onClick={() => handleCancelSellingOffer()}
@@ -1744,9 +1737,9 @@ const MarketplaceDetailPage = () => {
                       </PrimaryButton>
                     )
                   ) : null}
-                  {media?.exchange &&
-                    media?.exchange.status !== "sold" &&
-                    media?.exchange.address !== user.address && (
+                  {media?.type === EXCHANGE_TYPE &&
+                    media?.status !== "sold" &&
+                    media?.address !== user.address && (
                       <PrimaryButton
                         size="medium"
                         onClick={() => setOpenBuyNFTModal(true)}
@@ -1761,22 +1754,20 @@ const MarketplaceDetailPage = () => {
                         Place Buying Offer
                       </PrimaryButton>
                     )}
-                  {(media?.auction || media?.exchange) && (
-                    <SecondaryButton
-                      size="medium"
-                      onClick={handleOpenDetailModal}
-                      className={classes.transparentBtn}
-                      style={{
-                        marginBottom: `${isTableScreen ? "5px" : "0px"}`,
-                      }}
-                    >
-                      View More Details
-                    </SecondaryButton>
-                  )}
+                  <SecondaryButton
+                    size="medium"
+                    onClick={handleOpenDetailModal}
+                    className={classes.transparentBtn}
+                    style={{
+                      marginBottom: `${isTableScreen ? "5px" : "0px"}`,
+                    }}
+                  >
+                    View More Details
+                  </SecondaryButton>
                 </Box>
               </Grid>
             </Grid>
-            {media?.auction ? (
+            {media?.type === AUCTION_TYPE ? (
               <>
                 {isValidBidHistory() && (
                   <>
@@ -1786,7 +1777,7 @@ const MarketplaceDetailPage = () => {
                         <Box mt={2}>
                           <Box style={{ fontSize: 18 }}>
                             {convertTokenToUSD(
-                              media?.auction?.bidTokenSymbol ?? "USDT",
+                              media?.bidTokenSymbol ?? "USDT",
                               bidPriceInfo.lastPrice ?? 0
                             ).toFixed(1)}{" "}
                             $
@@ -1798,7 +1789,7 @@ const MarketplaceDetailPage = () => {
                           >
                             {bidPriceInfo.priceChange ?? 0 > 0 ? "+" : ""}
                             {convertTokenToUSD(
-                              media?.auction?.bidTokenSymbol ?? "USDT",
+                              media?.bidTokenSymbol ?? "USDT",
                               bidPriceInfo.priceChange ?? 0
                             ).toFixed(4)}
                             {"$"}
@@ -1812,30 +1803,27 @@ const MarketplaceDetailPage = () => {
                   </>
                 )}
 
-                <Grid container>
+                <Grid container spacing={isMobileScreen ? 4 : 10}>
                   {auctionHistoryData &&
                     auctionHistoryData.length > 0 &&
                     auctionHistoryData.map(row => {
                       const bidder = row.bidderInfo;
-                      const token = media.auction.bidTokenSymbol;
+                      const token = media.bidTokenSymbol;
                       return (
-                        <Grid item sm={12} md={6} lg={4} className={classes.bidderInfoItem}>
-                          <Avatar size="small" url={bidder?.imageUrl ?? getDefaultAvatar()} />
-                          <Box
-                            display="flex"
-                            flexDirection="column"
-                            ml={2}
-                            mr={isTableScreen || isMobileScreen ? "18px" : "104px"}
-                          >
-                            <Box fontSize={14} fontWeight={400} color="#181818" mb={1}>
-                              Bid placed by <span className={classes.text1}>@{bidder?.name}</span>
-                            </Box>
-                            <Box fontSize={14} fontWeight={800} color="#9EACF2">
-                              {`${row.price?.toFixed(4)} ${token}`}{" "}
-                              <span className={classes.text2}>{`On ${format(
-                                new Date(row.date),
-                                "MMMM dd, yyyy"
-                              )} at ${format(new Date(row.date), "p")}`}</span>
+                        <Grid item sm={12} md={6} className={classes.bidderInfoItem}>
+                          <Box display="flex">
+                            <Avatar size="small" url={bidder?.imageUrl ?? getDefaultAvatar()} />
+                            <Box display="flex" flexDirection="column" ml={2}>
+                              <Box fontSize={14} fontWeight={400} color="#181818" mb={1}>
+                                Bid placed by <span className={classes.text1}>@{bidder?.name}</span>
+                              </Box>
+                              <Box fontSize={14} fontWeight={800} color="#9EACF2">
+                                {`${row.price?.toFixed(4)} ${token}`}{" "}
+                                <span className={classes.text2}>{`On ${format(
+                                  new Date(row.date),
+                                  "MMMM dd, yyyy"
+                                )} at ${format(new Date(row.date), "p")}`}</span>
+                              </Box>
                             </Box>
                           </Box>
                           <Box
@@ -1843,8 +1831,8 @@ const MarketplaceDetailPage = () => {
                             onClick={() => {
                               window.open(
                                 `${
-                                  BlockchainNets.find(net => net.chainName === media.chainsFullName)?.scan
-                                    .url || "https://priviscan.io"
+                                  BlockchainNets.find(net => net.chainName === media.media.chainsFullName)
+                                    ?.scan.url || "https://priviscan.io"
                                 }/tx/${row.hash}`,
                                 "_blank",
                                 "noopener,noreferrer"
@@ -1858,7 +1846,7 @@ const MarketplaceDetailPage = () => {
                     })}
                 </Grid>
               </>
-            ) : media?.exchange ? (
+            ) : media?.type === EXCHANGE_TYPE ? (
               <>
                 <Box my={3}>Offers</Box>
                 <Box className={classes.table} mb={5}>
@@ -1871,11 +1859,11 @@ const MarketplaceDetailPage = () => {
                 </Box>
               </>
             ) : null}
-            {media?.metadata?.description && (
-              <>
+            {media?.media.metadata?.description && (
+              <Box mt={4}>
                 <Header5>Description</Header5>
-                <Text style={{ overflowWrap: "anywhere" }}>{media?.metadata?.description}</Text>
-              </>
+                <Text style={{ overflowWrap: "anywhere" }}>{media?.media.metadata?.description}</Text>
+              </Box>
             )}
             <hr className={classes.divider} />
             <Header5>Rate this Digital Art</Header5>
@@ -1897,145 +1885,6 @@ const MarketplaceDetailPage = () => {
               ))}
             </Grid>
             <hr className={classes.divider} />
-            {!media?.Fraction ? (
-              <>
-                <Header5>Comments</Header5>
-                <Box
-                  className={classes.message}
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  mb={2}
-                >
-                  <Avatar size="medium" url={user && user.ipfsImage ? user.ipfsImage : getDefaultAvatar()} />
-                  <InputWithLabelAndTooltip
-                    transparent
-                    overriedClasses=""
-                    type="text"
-                    inputValue={comment}
-                    onInputValueChange={handleChangeComment}
-                    onKeyDown={e => {
-                      if (e.key === "Enter") addComment();
-                    }}
-                    placeHolder="Add comment..."
-                    style={{ marginBottom: 4, flex: "1", width: "auto" }}
-                  />
-                  <Text
-                    size={FontSize.S}
-                    mr={isMobileScreen ? 1 : 2}
-                    onClick={() => setComment(`${comment}😍`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    😍
-                  </Text>
-                  <Text
-                    size={FontSize.S}
-                    mr={isMobileScreen ? 1 : 2}
-                    onClick={() => setComment(`${comment}😭`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    😭
-                  </Text>
-                  <img
-                    src={require("assets/icons/+.png")}
-                    onClick={addComment}
-                    style={{ cursor: "pointer" }}
-                  />
-                </Box>
-
-                {comments.length ? (
-                  !isViewComments ? (
-                    <Text className={classes.link} size={FontSize.S} onClick={() => setIsViewComments(true)}>
-                      View all {comments.length} comments
-                    </Text>
-                  ) : (
-                    comments.map((comment, index) => (
-                      <Box
-                        key={`comment-${index}`}
-                        mt={2}
-                        display="flex"
-                        alignContent="center"
-                        gridColumnGap={8}
-                      >
-                        <div
-                          className={classes.avatarImg}
-                          onClick={() => {
-                            history.push(`/${comment.user.urlSlug}/profile`);
-                          }}
-                        >
-                          <Avatar size="medium" url={comment.user.imageUrl} />
-                        </div>
-                        <Box
-                          display="flex"
-                          flexDirection="column"
-                          justifyContent="center"
-                          gridRowGap={4}
-                          maxWidth="70%"
-                          flex={1}
-                        >
-                          <span className={classes.commentUername}>{comment.user?.name}</span>
-                          {index === editedCommentId - 1 ? (
-                            <input
-                              className={classes.editComment}
-                              value={editedComment}
-                              onChange={e => {
-                                setEditedComment(e.target.value);
-                              }}
-                              onKeyDown={e => {
-                                if (e.key === "Enter") {
-                                  saveComment(comment.comment);
-                                }
-                              }}
-                              onBlur={() => saveComment(comment.comment)}
-                              autoFocus
-                            />
-                          ) : (
-                            <span className={classes.commentDescription}>{comment.comment}</span>
-                          )}
-                        </Box>
-                        <Box display="flex" alignItems="center" style={{ marginLeft: "auto", fontSize: 12 }}>
-                          <Box display="flex" alignItems="center" gridColumnGap={8} onClick={() => {}}>
-                            {user?.id === comment.user?.id && (
-                              <>
-                                {editedCommentId ? (
-                                  <SaveIcon
-                                    className={classes.commentIcon}
-                                    onClick={() => saveComment(comment.comment)}
-                                  />
-                                ) : (
-                                  <img
-                                    src={editIcon}
-                                    className={classes.commentIcon}
-                                    alt={"edit"}
-                                    onClick={() => {
-                                      if (isEditingComment.current) return;
-                                      setEditedCommentId(index + 1);
-                                      setEditedComment(comment.comment);
-                                    }}
-                                  />
-                                )}
-                                <img
-                                  src={removeIcon}
-                                  className={classes.commentIcon}
-                                  alt={"remove"}
-                                  onClick={() => {
-                                    if (isEditingComment.current) return;
-                                    setEditedCommentId(null);
-                                    setEditedComment(null);
-                                    removeComment(index + 1);
-                                  }}
-                                />
-                              </>
-                            )}
-                            <Moment fromNow>{comment.date}</Moment>
-                          </Box>
-                        </Box>
-                      </Box>
-                    ))
-                  )
-                ) : null}
-              </>
-            ) : null}
           </Box>
           {openDetailModal && (
             <DigitalArtDetailsModal
@@ -2105,33 +1954,14 @@ const MarketplaceDetailPage = () => {
             <MediaPhotoDetailsModal
               isOpen={isShowingMediaPhotoDetailModal}
               onClose={handleCloseMediaPhotoDetailModal}
-              imageURL={media?.content_url}
-            />
-          )}
-          {openPlaceFractionOfferModal && (
-            <CreateFractionOfferModal
-              open={openPlaceFractionOfferModal}
-              handleClose={() => setOpenPlaceFractionOfferModal(false)}
-              handleRefresh={loadData}
-              offerType={fractionOfferTypeRef.current}
-              media={media}
-            />
-          )}
-          {openTraderFracctionOfferModal && (
-            <TradeFractionOfferModal
-              open={openTraderFracctionOfferModal}
-              handleClose={() => setOpenTradeFractionOfferModadl(false)}
-              handleRefresh={loadData}
-              offerType={fractionOfferTypeRef.current}
-              offer={selectedOfferRef.current}
-              media={media}
+              imageURL={media?.media.content_url}
             />
           )}
           {media && (
             <LoadingScreen
               loading={loading}
               title={`Transaction \nin progress`}
-              subTitle={`Transaction is proceeding on ${media.chainsFullName} Chain.\nThis can take a moment, please be patient...`}
+              subTitle={`Transaction is proceeding on ${media.media.chainsFullName} Chain.\nThis can take a moment, please be patient...`}
               handleClose={() => setLoading(false)}
             />
           )}

@@ -158,13 +158,25 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
     if (step === 0) {
       setStep(1);
     } else if (step === 1) {
+      if (usersList.length !== Object.keys(usersVDate).length) {
+        showAlertMessage("Please select Vesting Date for each user", { variant: "error" });
+        return
+      }
+      if (usersList.length !== Object.keys(usersTKN).length) {
+        showAlertMessage("Please enter Amount for each user", { variant: "error" });
+        return
+      }
+      if (usersList.length !== Object.keys(usersITKN).length) {
+        showAlertMessage("Please enter Immediate Allocation for each user", { variant: "error" });
+        return
+      }
       setStep(2);
     }
   };
 
   // create requests and make transfers in parallel
   const handleSubmit = async () => {
-    const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
+    const targetChain = BlockchainNets.find(net => net.name === socialToken.Network);
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
       if (!isHere) {

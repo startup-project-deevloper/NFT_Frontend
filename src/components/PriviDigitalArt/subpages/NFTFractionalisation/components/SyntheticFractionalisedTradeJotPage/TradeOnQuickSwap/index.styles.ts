@@ -15,7 +15,7 @@ export const TradeOnQuickSwapStyles = makeStyles(theme => ({
   },
   backButtonContainer: {
     width: "100%",
-    margin: "50px 0 80px 0",
+    margin: "50px 0 30px 0",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -26,6 +26,43 @@ export const TradeOnQuickSwapStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       margin: "50px 0 50px 0",
     },
+  },
+  tabContainer: {
+    marginBottom : "80px",
+    width : '320px',
+    height: "40px",
+    background: '#FFFFFF',
+    border: '1px solid #9EACF2',
+    boxSizing: 'border-box',
+    borderRadius: '77px',
+    color: '#431AB7',
+    fontFamily: 'Agrandir',
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    lineHeight: '23px',
+    cursor:'pointer'
+  },
+  selectedTabSection: {
+    background: '#431AB7',
+    borderRadius: '77px',
+    color: '#FFFFFF',
+    
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    height: '40px'
+  },
+  liquidityBox: {
+    textAlign: 'center',
+    fontFamily: 'Montserrat',
+    fontStyle: 'normal',
+    fontWeight: 600,
+    fontSize: '20px',
+    lineHeight: '120%',
+    color: '#1A1B1C',
+    mixBlendMode: 'normal',
+    marginBottom: '24px',
   },
   backBtn: {
     position: "absolute",
@@ -89,6 +126,14 @@ export const TradeOnQuickSwapStyles = makeStyles(theme => ({
     [theme.breakpoints.down("xs")]: {
       fontSize: 18,
     },
+  },
+  priceRow: {
+    fontSize: 14,
+    lineHeight: "120%",
+    color: "#1A1B1C",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
 
   swapBtn: {

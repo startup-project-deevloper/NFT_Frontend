@@ -18,8 +18,9 @@ import { useTypedSelector } from "store/reducers/Reducer";
 import { getUnixEpochTimeStamp } from "shared/helpers";
 import { BlockchainNets } from "shared/constants/constants";
 import { toDecimals } from "shared/functions/web3";
-import useIPFS from "../../../../../../shared/utils-IPFS/useIPFS";
-import getPhotoIPFS from "../../../../../../shared/functions/getPhotoIPFS";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import getPhotoIPFS from "shared/functions/getPhotoIPFS";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 import TransactionProgressModal from "../../../../modals/TransactionProgressModal";
 import CreateSocialTokenModal from "../../../../modals/CreateSocialTokenModal";
@@ -456,7 +457,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
             cellAlign: "center",
             cell: (
               <Box display="flex" alignItems="center" justifyContent="left">
-                <Avatar url={item.from.avatar} size={"small"} />
+                <Avatar url={item.from.avatar ?? getDefaultAvatar()} size={"small"} />
                 <Box display="flex" flexDirection="column" ml={3}>
                   <Box fontSize={14} fontWeight={500} color="#431AB7">
                     {item.from.name}

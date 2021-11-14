@@ -4,24 +4,26 @@ import Axios from "axios";
 
 import { Grid, IconButton, InputAdornment, SvgIcon, useMediaQuery, useTheme } from "@material-ui/core";
 
+import { RootState } from "store/reducers/Reducer";
+import { SocialPrimaryButton, SocialSecondaryButton } from "components/PriviSocial/index.styles";
+import { WallPostModalContent } from "../WallItemModal";
+
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import AuthorSchedulePost from "shared/ui-kit/Page-components/AuthorSchedulePost";
 import ImageTitleDescription from "shared/ui-kit/Page-components/ImageTitleDescription";
 import Post from "shared/ui-kit/Page-components/Post";
-import { ReactComponent as PlusSolid } from "assets/icons/plus-solid.svg";
-import { RootState } from "store/reducers/Reducer";
 import CustomSwitchLabels from "shared/ui-kit/CustomSwitchOptions";
-import { SocialPrimaryButton, SocialSecondaryButton } from "components/PriviSocial/index.styles";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import URL from "shared/functions/getURL";
-import { WallPostModalContent } from "../WallItemModal";
-import { wallStyles } from "../index.styles";
-import useIPFS from "../../../../../../../shared/utils-IPFS/useIPFS";
-import { onUploadNonEncrypt } from "../../../../../../../shared/ipfs/upload";
+import useIPFS from "shared/utils-IPFS/useIPFS";
+import { onUploadNonEncrypt } from "shared/ipfs/upload";
 
+import { wallStyles } from "../index.styles";
+
+import { ReactComponent as PlusSolid } from "assets/icons/plus-solid.svg";
 const infoIcon = require("assets/icons/info_gray.png");
 const uploadIcon = require("assets/icons/upload.png");
 
@@ -52,13 +54,10 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
   const [hashTags, setHashTags] = useState<any[]>([]);
 
   const [editor, setEditor] = useState<any>(null);
-
   const [video, setVideo] = useState<any>(null);
-  const [videoUrl, setVideoUrl] = useState<any>(null);
-
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const { ipfs, setMultiAddr, uploadWithNonEncryption, downloadWithNonDecryption } = useIPFS();
+  const { setMultiAddr, uploadWithNonEncryption } = useIPFS();
 
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
@@ -186,48 +185,48 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
     }
   };
 
-  const uploadUserWallPostImage = async id => {
-    return new Promise((resolve, reject) => {
-      const formData = new FormData();
-      formData.append("image", photo, id);
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
-      Axios.post(`${URL()}/user/wall/changePostPhoto`, formData, config)
-        .then(response => {
-          resolve(true);
-        })
-        .catch(error => {
-          console.log(error);
+  // const uploadUserWallPostImage = async id => {
+  //   return new Promise((resolve, reject) => {
+  //     const formData = new FormData();
+  //     formData.append("image", photo, id);
+  //     const config = {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //       },
+  //     };
+  //     Axios.post(`${URL()}/user/wall/changePostPhoto`, formData, config)
+  //       .then(response => {
+  //         resolve(true);
+  //       })
+  //       .catch(error => {
+  //         console.log(error);
 
-          reject(true);
-        });
-    });
-  };
+  //         reject(true);
+  //       });
+  //   });
+  // };
 
-  const uploadUserVideo = async id => {
-    return new Promise((resolve, reject) => {
-      let now = Date.now();
-      const formData = new FormData();
-      formData.append("video", video, id);
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
-      Axios.post(`${URL()}/user/wall/addVideo`, formData, config)
-        .then(response => {
-          resolve(true);
-        })
-        .catch(error => {
-          console.log(error);
+  // const uploadUserVideo = async id => {
+  //   return new Promise((resolve, reject) => {
+  //     let now = Date.now();
+  //     const formData = new FormData();
+  //     formData.append("video", video, id);
+  //     const config = {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //       },
+  //     };
+  //     Axios.post(`${URL()}/user/wall/addVideo`, formData, config)
+  //       .then(response => {
+  //         resolve(true);
+  //       })
+  //       .catch(error => {
+  //         console.log(error);
 
-          reject(true);
-        });
-    });
-  };
+  //         reject(true);
+  //       });
+  //   });
+  // };
 
   const handleFilesVideo = (files: any) => {
     for (let i = 0; i < files.length; i++) {
@@ -253,12 +252,6 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
 
   const onChangeVideo = (file: any) => {
     setVideo(file);
-
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      setVideoUrl(reader.result);
-    });
   };
 
   const handleRemoveTag = value => {
@@ -408,7 +401,14 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
                       <img
                         src={infoIcon}
                         alt="info"
-                        style={{ position: "absolute", top: -5, right: -15, width: "12px", height: "12px", marginLeft: "4px" }}
+                        style={{
+                          position: "absolute",
+                          top: -5,
+                          right: -15,
+                          width: "12px",
+                          height: "12px",
+                          marginLeft: "4px",
+                        }}
                       />
                     </span>
                   </Box>
@@ -432,7 +432,14 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
                       <img
                         src={infoIcon}
                         alt="info"
-                        style={{ position: "absolute", top: -5, right: -15, width: "12px", height: "12px", marginLeft: "4px" }}
+                        style={{
+                          position: "absolute",
+                          top: -5,
+                          right: -15,
+                          width: "12px",
+                          height: "12px",
+                          marginLeft: "4px",
+                        }}
                       />
                     </span>
                   </Box>

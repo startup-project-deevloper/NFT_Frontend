@@ -106,7 +106,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const MessageItem = ({ key, user, message, mediaOnCommunity }) => {
+export const MessageItem = ({ user, message, mediaOnCommunity }) => {
   const playerVideo = React.useRef(null);
   const classes = useStyles();
   const [selectedPhoto, setSelectedPhoto] = React.useState<string>("");
@@ -133,7 +133,7 @@ export const MessageItem = ({ key, user, message, mediaOnCommunity }) => {
     }
   }, [message]);
 
-  const getUserFileIpfs = async (cid: any, fileName: string,type: string) => {
+  const getUserFileIpfs = async (cid: any, fileName: string, type: string) => {
     let fileUrl: string = "";
     let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
       downloadWithNonDecryption(fileCID, fileName, download)
@@ -188,7 +188,7 @@ export const MessageItem = ({ key, user, message, mediaOnCommunity }) => {
   if (!isLeftItem && !isRightItem) return null;
   return (
     <>
-      <div className={isLeftItem ? "left-item" : "right-item"} id={message.id} key={key}>
+      <div className={isLeftItem ? "left-item" : "right-item"} id={message.id}>
         {isLeftItem && (
           <div className="avatar-container">
             <img

@@ -21,14 +21,15 @@ export default ({
   const [curNFT, setCurNFT] = useState<any>();
 
   const handleCompleteStep = stepIndex => {
+    if (stepIndex === 2) {
+      onClose();
+      onSuccess();
+    }
     setStep(stepIndex + 1);
     if (completedSteps.includes(stepIndex)) {
       return;
     }
     setCompletedSteps([...completedSteps, stepIndex]);
-    if (stepIndex === 0) {
-      onSuccess();
-    }
   };
 
   useEffect(() => {

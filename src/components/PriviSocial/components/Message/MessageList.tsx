@@ -83,9 +83,7 @@ export const MessageList = (props: any) => {
   const getChats = () => {
     setLoading(true);
     axios
-      .post(`${URL()}/chat/getChats`, {
-        userId: userSelector.id,
-      })
+      .post(`${URL()}/chat/getChats`)
       .then(response => {
         if (response.data.success) {
           const cs = response.data.data;

@@ -307,7 +307,7 @@ const ChatModal = ({ chat }) => {
           <Avatar src={differentUser.ipfsImage ? differentUser.ipfsImage : ""} alt={differentUser.name} />
           {differentUser.connected && <span className="online" />}
           <div className={classes.user}>
-            <div className={classes.userName}>{differentUser.name ?? differentUser.userName ?? ""}</div>
+            <div className={classes.userName}>{differentUser.userName ?? ""}</div>
             <div className={classes.userSlug}>{differentUser.urlSlug}</div>
           </div>
         </div>

@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Axios from "axios";
+import { useDebounce } from "use-debounce/lib";
 
 import { InputBase } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 
 import { RootState } from "store/reducers/Reducer";
-import { shareMedia } from "shared/services/API/MediaAPI";
-import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
-import URL from "shared/functions/getURL";
+import { shareMediaToPriviModalStyles, useAutoCompleteStyles } from "./ShareMediaToPriviModal.styles";
 
+import { shareMedia } from "shared/services/API/MediaAPI";
+import URL from "shared/functions/getURL";
 import { Modal, PrimaryButton } from "shared/ui-kit";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-import { shareMediaToPriviModalStyles, useAutoCompleteStyles } from "./ShareMediaToPriviModal.styles";
+import { getMatchingUsers } from "shared/services/API";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 const spaceshipIcon = require("assets/icons/spaceship.png");
 const searchIcon = require("assets/icons/search.png");
@@ -30,14 +33,12 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
   onClose,
   isOpen,
 }) => {
-  const users = useSelector((state: RootState) => state.usersInfoList);
   const currentUser = useSelector((state: RootState) => state.user);
 
   const classes = shareMediaToPriviModalStyles();
   const autocompleteStyle = useAutoCompleteStyles();
+  const { showAlertMessage } = useAlertMessage();
 
-  const [searchName, setSearchName] = useState<string>("");
-  const [usersList, setUsersList] = useState<string[]>([]);
   const [autocompleteKey, setAutocompleteKey] = useState<number>(new Date().getTime()); //key changes everytime an item is added to the list so it's cleared
 
   const [showSignature, setShowSignature] = useState<boolean>(false);
@@ -46,9 +47,22 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
   const [address, setAddress] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
-  const [status, setStatus] = useState<any>("");
-  const estimatedProfit = (media?.SharingPct ?? 0) * (media?.Price ?? 0);
-  const estimatedProfitCurrency = media?.ViewConditions?.ViewingToken;
+  const [usersList, setUsersList] = useState<string[]>([]);
+  const [searchName, setSearchName] = useState<string>("");
+  const [debouncedKeyword] = useDebounce(searchName, 500);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [lastValue, setLastValue] = useState<string>("");
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  // const estimatedProfit = (media?.SharingPct ?? 0) * (media?.Price ?? 0);
+  // const estimatedProfitCurrency = media?.ViewConditions?.ViewingToken;
+
+  useEffect(() => {
+    setLastValue("");
+    setUsers([]);
+    setHasMore(true);
+    getUsers("");
+  }, [debouncedKeyword]);
 
   const handleShareWall = () => {
     setSharingToWallProgress(true);
@@ -91,29 +105,17 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
       .then(async response => {
         const resp = response.data;
         if (resp.success) {
-          setStatus({
-            msg: "Shared successfully!",
-            key: Math.random(),
+          showAlertMessage("Shared successfully!", {
             variant: "success",
           });
           onClose();
         } else {
-          setStatus({
-            msg: resp.error,
-            key: Math.random(),
-            variant: "error",
-          });
+          showAlertMessage(resp.error, { variant: "error" });
         }
         setSharingToWallProgress(false);
       })
       .catch(error => {
-        console.log(error);
-
-        setStatus({
-          msg: "Error when making the request",
-          key: Math.random(),
-          variant: "error",
-        });
+        showAlertMessage("Error when making the request", { variant: "error" });
         setSharingToWallProgress(false);
       });
   };
@@ -133,18 +135,31 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
       .then(result => {
         if (result.success) {
           setUsersList([]);
-          setStatus({
-            msg: "Shared successfully!",
-            key: Math.random(),
-            variant: "success",
-          });
+          showAlertMessage("Shared successfully!", { variant: "success" });
           onClose();
         }
-        setSharingProgress(false);
       })
       .catch(error => {
         console.log(error);
+      })
+      .finally(() => {
         setSharingProgress(false);
+      });
+  };
+
+  const getUsers = value => {
+    if (loading) return;
+    setLoading(true);
+    getMatchingUsers(debouncedKeyword, ["firstName"], value)
+      .then(res => {
+        if (res.success) {
+          setLastValue(res.lastValue);
+          setHasMore(res.hasMore);
+          setUsers(pre => [...pre, ...res.data]);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -188,7 +203,6 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
                   options={[
                     ...users.filter(user => !usersList.includes(user.id) && user.id !== currentUser.id),
                   ]}
-                  // style={{ margin: 0, padding: 0 }}
                   renderOption={(option, { selected }) => (
                     <div
                       style={{
@@ -205,10 +219,7 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
                         <div
                           className={classes.userImage}
                           style={{
-                            backgroundImage:
-                              typeof option !== "string" && option.imageURL
-                                ? `url(${option.imageURL})`
-                                : "none",
+                            backgroundImage: `url(${option.imageUrl ?? getDefaultAvatar()})`,
                             backgroundRepeat: "no-repeat",
                             backgroundSize: "cover",
                             backgroundPosition: "center",
@@ -251,6 +262,17 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
                       placeholder="Search users"
                     />
                   )}
+                  ListboxProps={{
+                    onScroll: (event: React.SyntheticEvent) => {
+                      const listboxNode = event.currentTarget;
+                      if (
+                        listboxNode.scrollTop + listboxNode.clientHeight === listboxNode.scrollHeight &&
+                        hasMore
+                      ) {
+                        getUsers(lastValue);
+                      }
+                    },
+                  }}
                 />
                 <img src={searchIcon} alt={"search"} />
               </div>
@@ -335,16 +357,6 @@ export const PriviShareModal: React.FunctionComponent<PriviShareModalProps> = ({
             </PrimaryButton>
           </div>
         )}
-        <div className={classes.alertMessage}>
-          {status && (
-            <AlertMessage
-              key={status.key}
-              message={status.msg}
-              variant={status.variant}
-              onClose={() => setStatus(undefined)}
-            />
-          )}
-        </div>
       </div>
     </Modal>
   );

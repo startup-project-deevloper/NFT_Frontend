@@ -161,13 +161,13 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
     setFriends(friends);
   };
 
-  const handleClosenessDegreeChange = (event: any, newValue: number | number[]) => {
-    setClosenessDegree(newValue as number[]);
-  };
+  // const handleClosenessDegreeChange = (event: any, newValue: number | number[]) => {
+  //   setClosenessDegree(newValue as number[]);
+  // };
 
-  const handleClosenessDegreeChanged = () => {
-    getPosts(true);
-  };
+  // const handleClosenessDegreeChanged = () => {
+  //   getPosts(true);
+  // };
 
   const getFriendsBox = () => {
     return (
@@ -209,7 +209,7 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
           />
         </Box>
         {!friendsCollapse && (
-          <Box overflow="auto">
+          <Box overflow="auto" maxHeight="300px">
             {filteredFriends.map((friend, index) => (
               <FriendLabel friend={friend} key={`friend-${index}`} />
             ))}

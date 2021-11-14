@@ -15,9 +15,9 @@ import { getMessageBox } from "store/selectors/user";
 
 import URL from "shared/functions/getURL";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 import "./MessageBox.css";
-import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 export const MessageBox = ({ type = "social" }) => {
   const dispatch = useDispatch();
@@ -267,14 +267,13 @@ export const MessageBox = ({ type = "social" }) => {
               </Box>
               <img src={userInfo?.userFoto ?? getDefaultAvatar} className="message-profile-avatar" />
               <Box display="flex" flexDirection="column" ml={2}>
-                <div className="name">{userInfo?.name}</div>
+                <div className="name">{userInfo?.userName}</div>
                 <div className="slug-container">
                   {userInfo?.urlSlug ? <div className="slug-name">@{userInfo.urlSlug}</div> : null}
                 </div>
               </Box>
             </Box>
             <Box display="flex" flexDirection="row" alignItems="center" className={"profile-actions"}>
-              {/* <img src={require("assets/icons/minimize.svg")} alt="minimize" /> */}
               <img
                 src={require("assets/icons/close.svg")}
                 alt="close"

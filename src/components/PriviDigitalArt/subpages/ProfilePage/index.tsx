@@ -600,6 +600,7 @@ const ProfilePage = () => {
             type={"Media"}
             ownUser={ownUser}
             hasMore={paginationHasMore}
+            userProfile={userProfile}
             handleRefresh={() => {
               setLastMediaId("null");
               setPaginationHasMore(true);

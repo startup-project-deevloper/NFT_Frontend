@@ -20,12 +20,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/reducers/Reducer";
 import { injected } from "shared/connectors";
 import axios from 'axios';
+import Axios from "axios";
 
 import CreateNftOptionProgressModal from "shared/ui-kit/Modal/Modals/CreateNftOptionProgressModal";
 import { getNfts } from "shared/services/API";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import NFTCard from "../NFTCard";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+import URL from "shared/functions/getURL";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -144,10 +146,9 @@ const CreateNftOption = () => {
 			const web3Obj = new Web3(library.provider);
 			
 			let chain_id = await web3Obj.eth.getChainId();
-			console.log("<<<<>>>>>", chain_id);
 			const network = selectedChain.name === "ETHEREUM" ? "Ethereum" : "Polygon";
 			// const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_PROTOCOL_ROUTER;
-			const contractAddress = "0xa788E2497FaBf92521B5f7F3dD711A4a98C5e033";
+			const contractAddress = "0x2C556dCc83b8027a6D2379b20c23D797eA28888d";
 			console.log(contractAddress);
 			// const contractAddress = user.address;
 			
@@ -162,20 +163,43 @@ const CreateNftOption = () => {
 			axios.get('https://api.coingecko.com/api/v3/simple/price?ids=Ethereum&vs_currencies=usd')
       .then(res => {
 				console.log(res.data);
-			})
-
-			await contract.methods.createReserval(
+			});
+			console.log("axios");
+			let ct = pct * 1000;
+			let collateral_to_keep = 4819 * price * ct;
+			console.log("ct>>", ct);
+			const reserval = await contract.methods.updateReserval(
 				selectedNFT.nftCollection.address, 
 				period, 
 				selectedChain.config.CONTRACT_ADDRESSES.ERC20_TEST_TOKEN,
 				price,
-				pct * price * 4819.44
+				ct,
+				0
 			).send({
 				from : account,
 				gas : 300000
 			})
-			.on("receipt", (receipt) => {
+			.on("receipt", async (receipt) => {
 				console.log(">>>success", receipt);
+
+				const body = {
+					Period : period,
+					Price : price,
+					Pct : ct,
+					Metadata : selectedNFT.nftMetadata,
+					Name : selectedNFT.nftName,
+					Owner : selectedNFT.nftCollection.address,
+					Symbol : selectedNFT.nftCollection.symbol,
+					Block_number : receipt.blockNumber,
+					Token_address : selectedNFT.nftCollection.address, 
+					Token_id : selectedNFT.nftTokenId, 
+					Token_url : selectedNFT.nftTokenUrl,
+					Chain_address : selectedChain.config.CONTRACT_ADDRESSES.ERC20_TEST_TOKEN
+				}
+
+				const response = await Axios.post(`${URL()}/nftOption/createReservedNFT`, body);
+				console.log(">>>---", response.data);
+
 				setHash(receipt.transactionHash);
 				setTxSuccess(true);
 				setReserveInProgress(false);
@@ -187,7 +211,7 @@ const CreateNftOption = () => {
 				setReserveInProgress(false);
 				setReserveSuccess(false);
 			});
-
+			console.log("reserval ---- ", reserval);
 		}
 
     return(

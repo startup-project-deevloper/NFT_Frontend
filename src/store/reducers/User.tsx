@@ -103,7 +103,8 @@ const initialState: State = {
   uninterestedMedias: [],
   whitelisted: false,
   infoImage: {},
-  ipfsImage: ''
+  ipfsImage: "",
+  urlIpfsImage: "",
 };
 
 // Set a User into the global state
@@ -251,7 +252,7 @@ const reducer = (state = initialState, action: Action) => {
     case actionTypes.UPDATE_ANON_AVATAR:
       return updateAnonAvatar(state, action);
     case actionTypes.UPDATE_PROFILE_BACKGROUND:
-        return updateProfileBackground(state, action);
+      return updateProfileBackground(state, action);
     case actionTypes.UPDATE_TUTORIALS_SEEN:
       return updateTutorialsSeen(state, action);
     case actionTypes.UPDATE_WALLET_ADDRESS:

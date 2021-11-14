@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import Axios from "axios";
 
 import { Modal } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
@@ -11,11 +10,11 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { RedeemJotsModalStyles } from "./index.style";
 import { typeUnitValue } from "shared/helpers/utils";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import TransactionResultModal, { CopyIcon } from "../TransactionResultModal";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { toDecimals } from "shared/functions/web3";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 export default function RedeemJotsModal({ open, handleClose = () => {}, collection, price, onCompleted }) {
@@ -58,28 +57,17 @@ export default function RedeemJotsModal({ open, handleClose = () => {}, collecti
 
       if (JotAddress) {
         promises = [
-          Axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-            params: {
-              token1: JotAddress.toLowerCase(),
-              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
-            },
-          }),
+          getPrice(JotAddress, web3Config["TOKEN_ADDRESSES"]["USDT"]),
           web3APIHandler.Erc20["JOT"].decimals(web3, JotAddress),
           web3APIHandler.Erc20["JOT"].balanceOf(web3, JotAddress, { account }),
         ];
       }
 
       const response: any = await Promise.all(promises);
-      const data = response[0]?.data ?? {};
 
-      if (data.success) {
-        const JotPrice = +data.data?.[0]?.token1Price;
-        if (JotPrice !== 0) {
-          setJotPrice(JotPrice);
-        }
+      const JotPrice = +response[0];
+      if (JotPrice !== 0) {
+        setJotPrice(JotPrice);
       }
 
       if (response[2]) {

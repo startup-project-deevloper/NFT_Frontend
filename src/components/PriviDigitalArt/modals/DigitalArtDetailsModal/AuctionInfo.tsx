@@ -41,7 +41,7 @@ export const OfferTable = ({ offers, token }) => {
     },
   ];
   const [tableData, setTableData] = React.useState<Array<Array<CustomTableCellInfo>>>([]);
-  console.log(offers);
+
   React.useEffect(() => {
     let data: Array<Array<CustomTableCellInfo>> = [];
     if (offers && offers.length) {
@@ -93,9 +93,9 @@ const AuctionInfo = ({ media, makeOffer }) => {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      if (!media || !media.auction) return null;
+      if (!media) return null;
       const currentDate = new Date().getTime() / 1000;
-      const diff = media.auction.endTime >= currentDate ? media.auction.endTime - currentDate : 0;
+      const diff = media.endTime >= currentDate ? media.endTime - currentDate : 0;
       setTimeFrame({
         days: Math.floor(diff / 86400),
         hours: Math.floor((diff % 86400) / 3600),
@@ -130,7 +130,7 @@ const AuctionInfo = ({ media, makeOffer }) => {
 
   const loadData = () => {
     getAuctionBidHistory({
-      id: media.auction.id,
+      id: media.id,
       type: "PIX",
     }).then(resp => {
       setBidHistory(resp.data);
@@ -139,7 +139,7 @@ const AuctionInfo = ({ media, makeOffer }) => {
 
   React.useEffect(() => {
     loadData();
-  }, [media.auction.id]);
+  }, [media.id]);
 
   const isTableScreen = useMediaQuery("(max-width:768px)");
 
@@ -156,13 +156,13 @@ const AuctionInfo = ({ media, makeOffer }) => {
         <Box display="flex" flexDirection="column" mb={isTableScreen ? 2 : 0}>
           <Text mb={1}>🤑 Initial price</Text>
           <Header4 noMargin>{`${formatNumber(
-            media.auction.reservePrice ?? 0,
-            media.auction.bidTokenSymbol,
+            media.reservePrice ?? 0,
+            media.bidTokenSymbol,
             4
           )}`}</Header4>
           <Text mt={1} size={FontSize.S}>
             {formatNumber(
-              convertTokenToUSD(media.auction.bidTokenSymbol, media.auction.reservePrice || 0),
+              convertTokenToUSD(media.bidTokenSymbol, media.reservePrice || 0),
               "USD",
               4
             )}
@@ -171,13 +171,13 @@ const AuctionInfo = ({ media, makeOffer }) => {
         <Box display="flex" flexDirection="column" mb={isTableScreen ? 2 : 0}>
           <Text mb={1}>🔥 Top bid</Text>
           <Header4 noMargin>{`${formatNumber(
-            media.auction?.topBidInfo?.price ?? 0,
-            media.auction.bidTokenSymbol,
+            media?.topBidInfo?.price ?? 0,
+            media.bidTokenSymbol,
             4
           )}`}</Header4>
           <Text mt={1} size={FontSize.S}>
             {formatNumber(
-              convertTokenToUSD(media.auction.bidTokenSymbol, media.auction?.topBidInfo?.price ?? 0),
+              convertTokenToUSD(media.bidTokenSymbol, media?.topBidInfo?.price ?? 0),
               "USD",
               4
             )}
@@ -197,13 +197,13 @@ const AuctionInfo = ({ media, makeOffer }) => {
       <StyledDivider type="dashed" margin={3} />
       <Box display="flex" flexDirection="row" alignItems="center">
         <img
-          src={require(`assets/tokenImages/${media.auction.bidTokenSymbol}.png`)}
+          src={require(`assets/tokenImages/${media.bidTokenSymbol}.png`)}
           width={18}
           height={18}
           alt="token"
         />
         <Text ml={1.5}>
-          Bidding token is <b>{media.auction.bidTokenSymbol}</b>
+          Bidding token is <b>{media.bidTokenSymbol}</b>
         </Text>
       </Box>
       <StyledDivider type="dashed" margin={3} />
@@ -219,8 +219,8 @@ const AuctionInfo = ({ media, makeOffer }) => {
         <Box display="flex" flexDirection="row" alignItems="center" marginBottom={isTableScreen ? 2 : 0}>
           <img src={require("assets/icons/calendar_icon.png")} />
           <Text ml={1}>
-            Started <b>{getDateDiff(media.auction.startTime)} ago</b> (
-            {format(new Date(media.auction.startTime * 1000), "PPpp")})
+            Started <b>{getDateDiff(media.startTime)} ago</b> (
+            {format(new Date(media.startTime * 1000), "PPpp")})
           </Text>
         </Box>
         <Box display="flex" flexDirection="row" alignItems="center">
@@ -229,20 +229,20 @@ const AuctionInfo = ({ media, makeOffer }) => {
             <Text ml={1}>Ended already</Text>
           ) : (
             <Text ml={1}>
-              Ends in <b>{getDateDiff(media.auction.endTime)}</b> (
-              {format(new Date(media.auction.endTime * 1000), "PPpp")})
+              Ends in <b>{getDateDiff(media.endTime)}</b> (
+              {format(new Date(media.endTime * 1000), "PPpp")})
             </Text>
           )}
         </Box>
       </Box>
       <StyledDivider type="solid" margin={3} />
       <Text size={FontSize.XL}>{`👋 Total offers: ${bidHistory.length}`}</Text>
-      <OfferTable offers={bidHistory} token={media.auction.bidTokenSymbol} />
+      <OfferTable offers={bidHistory} token={media.bidTokenSymbol} />
       <Box mt={3} display="flex" flexDirection="row" justifyContent="space-between">
         <SecondaryButton size="medium" className={classes.transparentBtn}>
           Cancel
         </SecondaryButton>
-        {media.auction.owner !== user.id && (
+        {media.owner !== user.id && (
           <PrimaryButton
             size="medium"
             className={classes.primaryBtn}

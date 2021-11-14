@@ -297,7 +297,7 @@ export const PixMessageProfile = ({ chat, type = "pix" }) => {
           }
           className="message-profile-avatar"
         />
-        <div className="name">{userInfo && userInfo.name}</div>
+        <div className="name">{userInfo && userInfo.userName}</div>
         <div className="slug-container">
           {userInfo && userInfo.urlSlug ? (
             <div className="slug-name" style={type === "trax" ? { color: Color.MusicDAOGreen } : {}}>

@@ -41,9 +41,7 @@ export const MessageNotifications: React.FC<MessageNotificationsProps> = ({ hand
 
   const getChats = () => {
     axios
-      .post(`${URL()}/chat/getChats`, {
-        userId: userSelector.id,
-      })
+      .post(`${URL()}/chat/getChats`)
       .then(response => {
         if (response.data.success) {
           const cs = response.data.data as any[];

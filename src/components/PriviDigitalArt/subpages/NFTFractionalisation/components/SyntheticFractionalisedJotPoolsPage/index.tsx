@@ -171,7 +171,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
 
   const { account, library, chainId } = useWeb3React();
 
-  const [shareAmount, setShareAmount] = React.useState(1);
+  const [shareAmount, setShareAmount] = React.useState(0);
   const [poolOwnership, setPoolOwnership] = React.useState(0);
   const [myLiquidityValue, setMyLiquidityValue] = React.useState(0);
   const [rewardValue, setRewardValue] = React.useState(0);
@@ -328,7 +328,7 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
                     MY LIQUIDITY VALUE
                   </Box>
                   <Box className={classes.h3} mt={1}>
-                    {myLiquidityValue} USD
+                    {myLiquidityValue} JOTs
                   </Box>
                 </Box>
               </Grid>

@@ -117,7 +117,7 @@ export default function WallFeedCard({
           <Avatar size={"small"} url={feedData.userInfo?.imageUrl ?? getDefaultAvatar()} />
           <Box ml="8px" fontSize="12px">
             {userSelector.id !== feedData.createdBy ? <span>{feedData.userInfo?.name}</span> : "You"}
-            {!feedItem
+            {/* {!feedItem
               ? feedData.name === ` ` && feedData.textShort === ` `
                 ? userSelector.id !== feedData.createdBy
                   ? ` sent `
@@ -138,7 +138,7 @@ export default function WallFeedCard({
               ? ` an image`
               : !feedItem
               ? `${!ownUserWall ? "'s" : ""} wall`
-              : ""}
+              : ""} */}
           </Box>
         </Box>
         <Box mb={"16px"} display="flex" alignItems="flex-start" flexDirection="column" gridColumnGap={16}>

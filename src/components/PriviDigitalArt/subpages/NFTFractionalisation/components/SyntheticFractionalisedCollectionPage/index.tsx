@@ -24,7 +24,6 @@ import {
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import {
   fractionalisedCollectionStyles,
   EthIcon,
@@ -37,6 +36,7 @@ import URL from "shared/functions/getURL";
 import OrderBookModal from "../../modals/OrderBookModal";
 import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import TransactionResultModal from "components/PriviDigitalArt/modals/TransactionResultModal";
+import { getPrice } from "shared/functions/priceFeedUtils";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
 
@@ -94,30 +94,20 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         const response = await getSyntheticCollection(params.id);
         if (response.success) {
           setCollection(response.data);
-          axios.get(`${PriceFeed_URL()}/quickswap/pairs`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-          });
-          const JotPriceResponse = await axios.get(`${PriceFeed_URL()}/quickswap/pair`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-            params: {
-              token1: response.data.JotAddress.toLowerCase(),
-              token0: web3Config["TOKEN_ADDRESSES"]["USDT"].toLowerCase(),
-            },
-          });
-
-          if (JotPriceResponse.data?.success) {
-            const jotPrice = +JotPriceResponse.data?.data?.[0]?.token1Price ?? 0;
-            setJotPrice(Math.floor(jotPrice * 10000) / 10000);
-          }
+          const JotPriceResponse = await getPrice(
+            response.data.JotAddress,
+            web3Config["TOKEN_ADDRESSES"]["USDT"]
+          );
+          const jotPrice = +JotPriceResponse;
+          setJotPrice(Math.floor(jotPrice * 10000) / 10000);
         }
       } catch (err) {
         console.log(err);
       }
     })();
+  }, [params.id, selectedTab]);
+
+  useEffect(() => {
     loadNFTs(params.id);
   }, [params.id]);
 

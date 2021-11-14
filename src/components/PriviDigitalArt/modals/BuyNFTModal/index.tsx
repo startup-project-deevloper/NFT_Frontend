@@ -7,6 +7,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import { buyNFTModalStyles } from "./index.styles";
+import { roundFloat } from "shared/helpers/number";
 
 type BuyNFTModalProps = {
   open: boolean;
@@ -33,7 +34,7 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
   const { convertTokenToUSD } = useTokenConversion();
 
   const handleNFTPage = () => {
-    history.push(`/media/sale/${media.MediaSymbol ?? media.id}`);
+    history.push(`/media/sale/${media.id}`);
   };
 
   const handleBuy = () => {
@@ -43,21 +44,11 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
   };
 
   const validate = () => {
-    if (
-      !media ||
-      !media.exchange ||
-      !media.exchange.id ||
-      !media.exchange.initialAmount ||
-      !media.exchange.offerToken ||
-      !media.exchange.price
-    ) {
+    if (!media || !media.id || !media.initialAmount || !media.offerToken || !media.price) {
       showAlertMessage("Media exchange data error", { variant: "error" });
       return false;
-    } else if (
-      !userBalances[media.exchange.offerToken] ||
-      userBalances[media.exchange.offerToken].Balance < media.exchange.price
-    ) {
-      showAlertMessage(`Insufficient ${media.exchange.offerToken} funds`, { variant: "error" });
+    } else if (!userBalances[media.offerToken] || userBalances[media.offerToken].Balance < media.price) {
+      showAlertMessage(`Insufficient ${media.offerToken} funds`, { variant: "error" });
       return false;
     }
     return true;
@@ -72,28 +63,23 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
             <div>
               <h3>Item</h3>
               <div className={classes.nftInfo}>
-                <img src={media.content_url} />
-                <h2>{media && media.metadata?.name}</h2>
+                <img src={media.media.content_url} />
+                <h2>{media && media.media.metadata?.name}</h2>
               </div>
             </div>
             <div>
               <h3>Price</h3>
               <div className={classes.flexCol}>
                 <h5>
-                  {media && media.exchange
-                    ? `${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed()}`
-                    : ""}
+                  {media &&
+                    `${convertTokenToUSD(media.offerToken, media.price).toFixed()} ${media.offerToken}`}
                 </h5>
-                <div>
-                  {media && media.exchange
-                    ? `$${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed(4)}`
-                    : ""}
-                </div>
+                <div>{media && `($${roundFloat(convertTokenToUSD(media.offerToken, media.price), 4)})`}</div>
               </div>
             </div>
           </div>
           <div className={classes.divider} />
-          <p className={classes.nftDesc}>{media && media.metadata?.description}</p>
+          <p className={classes.nftDesc}>{media && media.media.metadata?.description}</p>
           <div className={classes.actionButtons}>
             <SecondaryButton
               size="medium"

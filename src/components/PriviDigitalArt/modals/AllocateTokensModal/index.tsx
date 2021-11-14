@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useWeb3React } from "@web3-react/core";
+import Web3 from "web3";
 
 import { InputBase, Grid, useMediaQuery, useTheme } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
@@ -9,15 +11,14 @@ import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import Box from "shared/ui-kit/Box";
 import { DateInput } from "shared/ui-kit/DateTimeInput";
 import { Color, Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
-import { allocateTokensModalStyles, useAutoCompleteStyles } from "./index.styles";
 import { BlockchainNets } from "shared/constants/constants";
-import { useWeb3React } from "@web3-react/core";
-import Web3 from "web3";
 import { toNDecimals } from "shared/functions/web3";
-import { allocateSocialToken, createSocialToken } from "shared/services/API";
+import { allocateSocialToken } from "shared/services/API";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { switchNetwork } from "shared/functions/metamask";
 import { getUnixEpochTimeStamp } from "shared/helpers";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import { allocateTokensModalStyles, useAutoCompleteStyles } from "./index.styles";
 
 const AllocateTokenImg = require("assets/pixImages/allocate_token.png");
 const searchIcon = require("assets/icons/search.png");
@@ -157,13 +158,25 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
     if (step === 0) {
       setStep(1);
     } else if (step === 1) {
+      if (usersList.length !== Object.keys(usersVDate).length) {
+        showAlertMessage("Please select Vesting Date for each user", { variant: "error" });
+        return
+      }
+      if (usersList.length !== Object.keys(usersTKN).length) {
+        showAlertMessage("Please enter Amount for each user", { variant: "error" });
+        return
+      }
+      if (usersList.length !== Object.keys(usersITKN).length) {
+        showAlertMessage("Please enter Immediate Allocation for each user", { variant: "error" });
+        return
+      }
       setStep(2);
     }
   };
 
   // create requests and make transfers in parallel
   const handleSubmit = async () => {
-    const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
+    const targetChain = BlockchainNets.find(net => net.name === socialToken.Network);
     if (chainId && chainId !== targetChain?.chainId) {
       const isHere = await switchNetwork(targetChain?.chainId || 0);
       if (!isHere) {
@@ -293,7 +306,9 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
                     className={classes.userImage}
                     style={{
                       backgroundImage:
-                        typeof option !== "string" && option.imageURL ? `url(${option.imageURL})` : "none",
+                        typeof option !== "string" && option.urlIpfsImage
+                          ? `url(${option.urlIpfsImage})`
+                          : `url(${getDefaultAvatar()})`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       backgroundPosition: "center",
@@ -361,11 +376,9 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
                     className={classes.avatarSection}
                     style={{
                       backgroundImage:
-                        users.find(u => u.address === user) &&
-                        users[userIndex].imageURL &&
-                        users[userIndex].imageURL.length > 0
-                          ? `url(${users[userIndex].imageURL})`
-                          : "none",
+                        users.find(u => u.address === user) && users[userIndex].urlIpfsImage
+                          ? `url(${users[userIndex].urlIpfsImage})`
+                          : `url(${getDefaultAvatar()})`,
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                       backgroundPosition: "center",
@@ -459,11 +472,9 @@ const AllocateTokensModal: React.FC<AllocateTokensModalProps> = ({
                         className={classes.avatarSection}
                         style={{
                           backgroundImage:
-                            users.find(u => u.address === user) &&
-                            users[userIndex].imageURL &&
-                            users[userIndex].imageURL.length > 0
-                              ? `url(${users[userIndex].imageURL})`
-                              : "none",
+                            users.find(u => u.address === user) && users[userIndex].urlIpfsImage
+                              ? `url(${users[userIndex].urlIpfsImage})`
+                              : `url(${getDefaultAvatar()})`,
                           backgroundRepeat: "no-repeat",
                           backgroundSize: "cover",
                           backgroundPosition: "center",

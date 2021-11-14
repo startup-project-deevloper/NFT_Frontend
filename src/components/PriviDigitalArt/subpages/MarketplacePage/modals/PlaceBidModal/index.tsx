@@ -41,16 +41,16 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
   };
 
   useEffect(() => {
-    const initPrice = Math.max(media.auction.reservePrice ?? 0).toString();
+    const initPrice = Math.max(media.reservePrice ?? 0).toString();
     setPrice(initPrice);
 
     const interval = setInterval(() => {
-      if (!media || !media.auction) return null;
+      if (!media) return null;
 
-      setAuction(media.auction);
+      setAuction(media);
 
       const currentDate = new Date().getTime() / 1000;
-      const diff = media.auction.endTime >= currentDate ? media.auction.endTime - currentDate : 0;
+      const diff = media.endTime >= currentDate ? media.endTime - currentDate : 0;
       setTimeFrame({
         days: Math.floor(diff / 86400),
         hours: Math.floor((diff % 86400) / 3600),
@@ -94,24 +94,28 @@ export const PlaceBidModal: React.FunctionComponent<PlaceBidModalProps> = ({
 
       <div className={classes.bidStatus}>
         <div className={classes.topBid}>
-          <div className={classes.auctionTitle}>
-            <span role="img" aria-label="total offers">
-              🔥{" "}
-            </span>
-            Top bid
-          </div>
-          <span>{`${formatNumber(
-            auction.topBidInfo?.price || auction.reservePrice || 0,
-            auction.bidTokenSymbol || "USDT",
-            4
-          )}`}</span>
-          <div className={classes.hint}>
-            $
-            {convertTokenToUSD(
-              auction.bidTokenSymbol || "USDT",
-              auction.topBidInfo?.price || auction.reservePrice || 0
-            )}
-          </div>
+          {auction.topBidInfo && (
+            <>
+              <div className={classes.auctionTitle}>
+                <span role="img" aria-label="total offers">
+                  🔥{" "}
+                </span>
+                Top bid
+              </div>
+              <span>{`${formatNumber(
+                auction.topBidInfo?.price || auction.reservePrice || 0,
+                auction.bidTokenSymbol || "USDT",
+                4
+              )}`}</span>
+              <div className={classes.hint}>
+                $
+                {convertTokenToUSD(
+                  auction.bidTokenSymbol || "USDT",
+                  auction.topBidInfo?.price || auction.reservePrice || 0
+                )}
+              </div>
+            </>
+          )}
         </div>
         <div className={classes.auctionEnding}>
           <div className={classes.auctionTitle}>

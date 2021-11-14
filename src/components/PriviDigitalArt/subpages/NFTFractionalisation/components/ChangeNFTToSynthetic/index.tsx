@@ -228,7 +228,8 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
 const COLUMNS_COUNT_BREAK_POINTS_TWO = {
   586: 2,
   800: 3,
-  1440: 5,
+  1440: 4,
+  1920: 5
 };
 
 export default ChangeNFTToSynthetic;

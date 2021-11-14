@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Web3 from "web3";
 
-import { useMediaQuery, useTheme } from "@material-ui/core";
+import { Select, useMediaQuery, useTheme } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 
@@ -15,6 +15,7 @@ import Web3Config from "shared/connectors/web3/config";
 import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
 import {switchNetwork} from "shared/functions/metamask";
+import cls from "classnames";
 
 const IconJOT = (collection, classes) => {
   return (
@@ -36,6 +37,8 @@ export default function TradeOnQuickSwap(props: any) {
   const [swapButtonName, setSwapButtonName] = useState<string>("Swap");
   const { account, library, chainId } = useWeb3React();
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+
+  const [selectedTab, setSelectedTab] = useState<"swap" | "liquidity">("swap");
   
   const [tokenFrom, setTokenFrom] = useState<any>({
     balance: 0,
@@ -213,6 +216,10 @@ export default function TradeOnQuickSwap(props: any) {
     }
   };
 
+  const handleSwapOnClick = (value) => {
+    setSelectedTab(value);
+  }
+
   return (
     <Box className={classes.root}>
       {/* back button and title */}
@@ -221,95 +228,171 @@ export default function TradeOnQuickSwap(props: any) {
           <BackButton purple />
         </Box>
         <Box className={classes.title}>
-          <span>Swap on</span>
           <QuickSwapIcon className={classes.swapIcon} />
           Quickswap
         </Box>
       </Box>
-      {/* swap box */}
-      <Box className={classes.swapBox}>
-        {/* from group */}
-        <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
-          {/* firs row - name */}
-          <Box className={classes.nameRow}>
-            <Box>From</Box>
-            <Box>Balance: {tokenFrom.balance}</Box>
-          </Box>
-          {/* second row - value */}
-          <Box className={classes.valueRow}>
-            <Box className={classes.inputBox}>
-              <input
-                placeholder="0.0"
-                style={{
-                  color: "#1A1B1C",
-                  fontSize: isMobile ? "18px" : "24px",
-                  maxWidth: isMobile ? "120px" : "200px",
-                }}
-                value={fromBalance}
-                onChange={({ target: { value } }) => {
-                  handleChangeFromBalance(value);
-                }}
-              />
-            </Box>
-            <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
-              {tokenFrom.symbol === "USDT" ? (
-                <IconUSDC />
-              ) : (
-                <IconJOT collection={collection} classes={classes} />
-              )}
-              <span style={{ paddingLeft: "10px" }}>
-                {tokenFrom.symbol === "USDT" ? "USDT" : collection?.JotSymbol}
-              </span>
-            </Box>
-          </Box>
-        </Box>
-        {/* arrow down */}
-        <Box display="flex" alignItems="center" justifyContent="center" py={2} onClick={handleSwapToken}>
-          <ArrowDown />
-        </Box>
-        {/* to group */}
-        <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
-          {/* firs row - name */}
-          <Box className={classes.nameRow}>
-            <Box>To</Box>
-            <Box></Box>
-          </Box>
-          {/* second row - value */}
-          <Box className={classes.valueRow}>
-            <Box color="#C3C5CA">{toBalance}</Box>
-            <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
-              {tokenTo.symbol === "USDT" ? (
-                <IconUSDC />
-              ) : (
-                <IconJOT collection={collection} classes={classes} />
-              )}
-              <span style={{ paddingLeft: "15px" }}>
-                {tokenTo.symbol === "USDT" ? "USDT" : collection?.JotSymbol}
-              </span>
-            </Box>
-          </Box>
-        </Box>
-        {/* price row */}
-        <Box
-          color="#1A1B1C"
-          fontWeight={500}
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          mx={2}
-          mt={2}
-        >
-          <Box>Price</Box>
-          <Box>
-            1 {tokenFrom.symbol} = {tokenFrom.price / tokenTo.price}
-            {tokenTo.symbol}
-          </Box>
-        </Box>
-        {/* swap button */}
-        <Box className={swapButtonName != "Swap" ? classes.disable : classes.swapBtn} onClick={handleSwap}>
-          {swapButtonName}
-        </Box>
+      <Box className={classes.tabContainer} display="flex" alignItems="center" justifyContent="center">
+        <Box 
+          width="100%" 
+          textAlign="center"
+          className={cls({ [classes.selectedTabSection]: selectedTab === "swap" })}
+          onClick={e=>handleSwapOnClick('swap')}
+        >Swap</Box>
+        <Box 
+          width="100%" 
+          textAlign="center"
+          className={cls({ [classes.selectedTabSection]: selectedTab === "liquidity" })}
+          onClick={e=>handleSwapOnClick('liquidity')}
+        >Add Liquidity</Box>
       </Box>
+      {/* swap box */}
+      {selectedTab === 'swap' && (
+        <Box className={classes.swapBox}>
+          {/* from group */}
+          <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
+            {/* firs row - name */}
+            <Box className={classes.nameRow}>
+              <Box>From</Box>
+              <Box>Balance: {tokenFrom.balance}</Box>
+            </Box>
+            {/* second row - value */}
+            <Box className={classes.valueRow}>
+              <Box className={classes.inputBox}>
+                <input
+                  placeholder="0.0"
+                  style={{
+                    color: "#1A1B1C",
+                    fontSize: isMobile ? "18px" : "24px",
+                    maxWidth: isMobile ? "120px" : "200px",
+                  }}
+                  value={fromBalance}
+                  onChange={({ target: { value } }) => {
+                    handleChangeFromBalance(value);
+                  }}
+                />
+              </Box>
+              <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
+                {tokenFrom.symbol === "USDT" ? (
+                  <IconUSDC />
+                ) : (
+                  <IconJOT collection={collection} classes={classes} />
+                )}
+                <span style={{ paddingLeft: "10px" }}>
+                  {tokenFrom.symbol === "USDT" ? "USDT" : collection?.JotSymbol}
+                </span>
+              </Box>
+            </Box>
+          </Box>
+          {/* arrow down */}
+          <Box display="flex" alignItems="center" justifyContent="center" py={2} onClick={handleSwapToken}>
+            <ArrowDown />
+          </Box>
+          {/* to group */}
+          <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
+            {/* firs row - name */}
+            <Box className={classes.nameRow}>
+              <Box>To</Box>
+              <Box></Box>
+            </Box>
+            {/* second row - value */}
+            <Box className={classes.valueRow}>
+              <Box color="#C3C5CA">{toBalance}</Box>
+              <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
+                {tokenTo.symbol === "USDT" ? (
+                  <IconUSDC />
+                ) : (
+                  <IconJOT collection={collection} classes={classes} />
+                )}
+                <span style={{ paddingLeft: "15px" }}>
+                  {tokenTo.symbol === "USDT" ? "USDT" : collection?.JotSymbol}
+                </span>
+              </Box>
+            </Box>
+          </Box>
+          {/* price row */}
+          <Box
+            color="#1A1B1C"
+            fontWeight={500}
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mx={2}
+            mt={2}
+          >
+            <Box>Price</Box>
+            <Box>
+              1 {tokenFrom.symbol} = {tokenFrom.price / tokenTo.price}
+              {tokenTo.symbol}
+            </Box>
+          </Box>
+          {/* swap button */}
+          <Box className={swapButtonName != "Swap" ? classes.disable : classes.swapBtn} onClick={handleSwap}>
+            {swapButtonName}
+          </Box>
+        </Box>
+      )}
+      {selectedTab === 'liquidity' && (
+        <Box className={classes.swapBox}>
+          {/* from group */}
+          <Box className={classes.liquidityBox}>
+            Add Liquidity
+          </Box>
+          <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
+            {/* firs row - name */}
+            <Box className={classes.nameRow}>
+              <Box>Input</Box>
+              <Box>Balance: {tokenFrom.balance}</Box>
+            </Box>
+            {/* second row - value */}
+            <Box className={classes.valueRow}>
+              <Box className={classes.inputBox}>
+                <input
+                  placeholder="0.0"
+                  style={{
+                    color: "#1A1B1C",
+                    fontSize: isMobile ? "18px" : "24px",
+                    maxWidth: isMobile ? "120px" : "200px",
+                  }}
+                  value="0"
+                />
+              </Box>
+              <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
+                <IconJOT collection={collection} classes={classes} />
+                <span style={{ paddingLeft: "10px" }}>
+                  JOTS
+                </span>
+              </Box>
+            </Box>
+          </Box>
+          {/* arrow down */}
+          <Box display="flex" alignItems="center" justifyContent="center" py={2} onClick={handleSwapToken}>
+          </Box>
+          {/* to group */}
+          <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
+            {/* firs row - name */}
+            <Box className={classes.nameRow}>
+              <Box>Input</Box>
+              <Box></Box>
+            </Box>
+            {/* second row - value */}
+            <Box className={classes.valueRow}>
+              <Box color="#C3C5CA">{toBalance}</Box>
+              <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
+                <IconUSDC />
+                <span style={{ paddingLeft: "10px" }}>
+                  USDT
+                </span>
+              </Box>
+            </Box>
+          </Box>
+
+          <Box className={swapButtonName != "Swap" ? classes.disable : classes.swapBtn} onClick={handleSwap}>
+            Add Liquidity
+          </Box>
+        </Box>
+      )}
+
     </Box>
   );
 }

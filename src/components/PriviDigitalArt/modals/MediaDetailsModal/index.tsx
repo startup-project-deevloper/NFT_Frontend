@@ -27,6 +27,7 @@ import { SharePopup } from "shared/ui-kit/SharePopup";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { mediaDetailsModalStyles } from "./index.styles";
+import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
 
 const MediaDetailsModal = (props: any) => {
   const classes = mediaDetailsModalStyles();
@@ -47,6 +48,10 @@ const MediaDetailsModal = (props: any) => {
   const [openShareMenu, setOpenShareMenu] = useState(false);
   const [openFractionalise, setOpenFractionalise] = useState(false);
   const [showDetailsBtn, setShowDetailsBtn] = useState<boolean>(false);
+
+  useEffect(() => {
+    setCreator(props.creators[0])
+  }, [props.creators])
 
   const handleOpenFractionalise = () => {
     setOpenFractionalise(true);
@@ -247,6 +252,7 @@ const MediaDetailsModal = (props: any) => {
     }
   };
 
+  const mediaImage = sanitizeIfIpfsUrl(media.metadata?.image ?? media.url) ?? getDefaultBGImage();
   return (
     <Modal
       size="medium"
@@ -261,10 +267,10 @@ const MediaDetailsModal = (props: any) => {
       <Grid container spacing={2} style={{ marginTop: "16px", marginBottom: "16px" }}>
         <Grid item xs={12} sm={6} style={{ textAlign: "center" }}>
           {media.metadata?.image ? (
-            <img src={media.metadata?.image} alt={media.metadata?.name || ""} className={classes.detailImg} />
+            <img src={mediaImage} alt={media.metadata?.name || ""} className={classes.detailImg} />
           ) : (
             <object
-              data={media.metadata?.image ?? media.url ?? getDefaultBGImage()}
+              data={mediaImage}
               type="image/png"
               className={classes.detailImg}
               style={{ height: "100%" }}
@@ -309,13 +315,18 @@ const MediaDetailsModal = (props: any) => {
                   </SecondaryButton>
                 )}
             </Box>
-            <div className={classes.fruitSection}>
-              <Box mb={1}>
-                <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
-                  <img src={require(`assets/icons/more.png`)} alt="like" />
+            {user &&
+              media?.CreatorId !== user.id &&
+              media?.CreatorAddress?.toLowerCase() !== user.address?.toLowerCase() &&
+              media.owner_of?.toLowerCase() !== user.address?.toLowerCase() && (
+                <div className={classes.fruitSection}>
+                  <Box mb={1}>
+                    <div onClick={handleOpenShareMenu} ref={anchorShareMenuRef} style={{ cursor: "pointer" }}>
+                      <img src={require(`assets/icons/more.png`)} alt="like" />
+                    </div>
+                  </Box>
                 </div>
-              </Box>
-            </div>
+              )}
           </div>
           <SharePopup
             item={media}

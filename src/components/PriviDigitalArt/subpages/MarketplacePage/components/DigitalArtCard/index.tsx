@@ -24,6 +24,9 @@ const getRandomImageUrl = () => {
   return require(`assets/backgrounds/digital_art_1.png`);
 };
 
+const AUCTION_TYPE = "auction";
+const EXCHANGE_TYPE = "exchange";
+
 export default function DigitalArtCard({ item, heightFixed }) {
   const classes = useStyles();
   const history = useHistory();
@@ -33,11 +36,11 @@ export default function DigitalArtCard({ item, heightFixed }) {
   const fixedUrlItem = useMemo(() => {
     const GENERATOR_ARTBLOCK_URL = "https://generator.artblocks.io/";
     const API_ARTBLOCK_URL = "https://api.artblocks.io/image/";
-    if (item?.token_uri && item.token_uri.includes(GENERATOR_ARTBLOCK_URL)) {
-      item.token_uri = item.token_uri.replace(GENERATOR_ARTBLOCK_URL, API_ARTBLOCK_URL);
+    if (item?.media.token_uri && item.media.token_uri.includes(GENERATOR_ARTBLOCK_URL)) {
+      item.media.token_uri = item.media.token_uri.replace(GENERATOR_ARTBLOCK_URL, API_ARTBLOCK_URL);
     }
-    if (item.metadata && typeof item.metadata === "string") {
-      item.metadata = JSON.parse(item.metadata);
+    if (item.media.metadata && typeof item.media.metadata === "string") {
+      item.media.metadata = JSON.parse(item.media.metadata);
     }
     return item;
   }, [item]);
@@ -54,7 +57,7 @@ export default function DigitalArtCard({ item, heightFixed }) {
 
   useEffect(() => {
     if (media) {
-      const ownerId = media.auction ? media.auction.owner : media.exchange?.owner;
+      const ownerId = media.owner;
       if (ownerId) {
         const getCreatorData = async creatorId => {
           try {
@@ -93,10 +96,10 @@ export default function DigitalArtCard({ item, heightFixed }) {
         });
       }
 
-      if (media.auction) {
+      if (media.type === AUCTION_TYPE) {
         const timerId = setInterval(() => {
           const now = new Date();
-          let delta = Math.floor(media.auction.endTime - now.getTime() / 1000);
+          let delta = Math.floor(media.endTime - now.getTime() / 1000);
           if (delta < 0) {
             setAuctionEnded(true);
             setEndTime({
@@ -145,9 +148,7 @@ export default function DigitalArtCard({ item, heightFixed }) {
 
   const handleOpenDigitalArtModal = () => {
     if (isSignedin && media && creator) {
-      history.push(
-        `/marketplace/${encodeURIComponent(media.token_address)}/${encodeURIComponent(media.token_id)}`
-      );
+      history.push(`/marketplace/${encodeURIComponent(media.id)}`);
     }
   };
 
@@ -160,8 +161,8 @@ export default function DigitalArtCard({ item, heightFixed }) {
     const body = {
       userId: user.id,
       fruitId: type,
-      tokenAddress: media.token_address,
-      tokenId: media.token_id,
+      tokenAddress: media.tokenAddress,
+      tokenId: media.tokenId,
     };
     Axios.post(`${URL()}/marketplace/fruit`, body).then(res => {
       const resp = res.data;
@@ -225,11 +226,11 @@ export default function DigitalArtCard({ item, heightFixed }) {
           />
         </Box>
       </div>
-      {!media.UrlMainPhoto && !media.content_url && media.content_url?.endsWith("mp4") ? (
+      {media.media.content_url && media.media.content_url?.endsWith("mp4") ? (
         <div style={{ borderRadius: "16px", position: "relative", overflow: "hidden" }}>
           <Box className={cls(classes.media)}>
             <ReactPlayer
-              url={media.content_url}
+              url={media.media.content_url}
               className={classes.reactPlayer}
               muted={true}
               loop={true}
@@ -238,7 +239,7 @@ export default function DigitalArtCard({ item, heightFixed }) {
           </Box>
         </div>
       ) : heightFixed ? (
-        media?.cid ? (
+        !media.media.content_url ? (
           <Box my={1}>
             <StyledSkeleton width="100%" height={226} variant="rect" />
           </Box>
@@ -246,7 +247,7 @@ export default function DigitalArtCard({ item, heightFixed }) {
           <div
             className={cls(classes.media, classes.fixed)}
             style={{
-              backgroundImage: `url(${media.content_url ?? getRandomImageUrl()})`,
+              backgroundImage: `url(${media.media.content_url ?? getRandomImageUrl()})`,
             }}
             onClick={handleOpenDigitalArtModal}
           />
@@ -259,9 +260,9 @@ export default function DigitalArtCard({ item, heightFixed }) {
             </Box>
           )}
           <img
-            src={`${media.content_url}`}
+            src={`${media.media.content_url}`}
             onLoad={() => setImageLoaded(true)}
-            alt={media.symbol ?? media.token_id}
+            alt={media.media.symbol ?? media.media.token_id}
             className={classes.media}
             onClick={handleOpenDigitalArtModal}
           />
@@ -270,38 +271,34 @@ export default function DigitalArtCard({ item, heightFixed }) {
 
       <div className={classes.info} onClick={handleOpenDigitalArtModal}>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb="8px">
-          <div className={cls(classes.black, classes.title)}>{media.metadata?.name}</div>
-          <img src={getChainImageUrl(media.chainsFullName)} alt={"chain"} className={classes.chain} />
+          <div className={cls(classes.black, classes.title)}>
+            {media.media.metadata?.name || media?.media.name}
+          </div>
+          <img src={getChainImageUrl(media.media.chainsFullName)} alt={"chain"} className={classes.chain} />
         </Box>
 
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          {media.auction ? (
+          {media.type === AUCTION_TYPE && (
             <div className={classes.gray}>
-              {(media.auction.currentBid ?? 0) > (media.auction.reservePrice ?? 0)
-                ? "Current bid"
-                : "Reserve price"}
-              <span>{`${Math.max(media.auction.currentBid ?? 0, media.auction.reservePrice ?? 0) || ""} ${
-                media.auction.tokenSymbol || "USDT"
+              {(media.currentBid ?? 0) > (media.reservePrice ?? 0) ? "Current bid" : "Reserve price"}
+              <span>{`${Math.max(media.currentBid ?? 0, media.reservePrice ?? 0) || ""} ${
+                media.tokenSymbol || "USDT"
               }`}</span>
             </div>
-          ) : (
+          )}
+          {media.type === EXCHANGE_TYPE && (
             <div className={classes.gray}>
               <span style={{ marginLeft: "0px" }}>
-                {media.exchange.price &&
-                media.exchange.price !== "Error" &&
-                media.exchange.price !== "error" &&
-                media.exchange.price !== undefined
-                  ? media.exchange.price
-                  : ""}
+                {media.price || 0}
                 &nbsp;
-                {media.exchange?.offerToken || "USDT"}
+                {media.offerToken || "USDT"}
               </span>
             </div>
           )}
-          {media.exchange?.status === "sold" && <div style={{ color: Color.Red }}>Sold</div>}
+          {media.status === "sold" && <div style={{ color: Color.Red }}>Sold</div>}
         </Box>
 
-        {media.auction && endTime && (
+        {media.type === AUCTION_TYPE && endTime && (
           <div className={classes.auction}>
             <div>{!auctionEnded ? "Auction Ending In" : "Auction Ended"}</div>
             {!auctionEnded && (

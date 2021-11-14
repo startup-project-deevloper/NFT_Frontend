@@ -22,7 +22,7 @@ const ExchangeTabs = ["Price History", "Market activity", "Proof of authenticity
 export default function DigitalArtDetailsModal({ open, handleClose, media, makeOffer }) {
   const [tabIndex, setTabIndex] = React.useState<number>(0);
 
-  if (media?.auction)
+  if (media?.type === "auction")
     return (
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon>
         <Box>
@@ -44,7 +44,7 @@ export default function DigitalArtDetailsModal({ open, handleClose, media, makeO
         </Box>
       </Modal>
     );
-  else if (media?.exchange)
+  else if (media?.type === "exchange")
     return (
       <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon>
         <Box>

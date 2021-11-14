@@ -32,16 +32,16 @@ const MarketActivity = ({ media }) => {
   const [transactionHistory, setTransactionHistory] = useState<any>([]);
 
   useEffect(() => {
-    if (media?.auction)
+    if (media?.type === "auction")
       getAuctionBidHistory({
-        id: media.auction.id,
+        id: media.id,
         type: "PIX",
       }).then(resp => {
         console.log(resp);
         if (resp?.success) setTransactionHistory(resp.data);
       });
-    else if (media?.exchange)
-      getExchangeTransactions(media.exchange.id).then(resp => {
+    else if (media?.type === "exchange")
+      getExchangeTransactions(media.id).then(resp => {
         if (resp?.success) setTransactionHistory(resp.data);
       });
   }, [media]);
@@ -58,10 +58,10 @@ const MarketActivity = ({ media }) => {
             cell: (
               <img
                 src={require(`assets/tokenImages/${
-                  media.auction
-                    ? media.auction.bidTokenSymbol
-                    : media.exchange
-                    ? media.exchange.offerToken
+                  media.type === "auction"
+                    ? media.bidTokenSymbol
+                    : media.type === "exchange"
+                    ? media.offerToken
                     : "USDT"
                 }.png`)}
                 width={24}

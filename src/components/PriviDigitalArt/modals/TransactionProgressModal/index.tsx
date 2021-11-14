@@ -7,26 +7,36 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { useTransactionProgressModalStyles } from "./index.styles";
 
 require("dotenv").config();
-const isDev = process.env.REACT_APP_ENV === "dev";
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 export default function TransactionProgressModal({
   open,
   onClose,
   txSuccess,
   hash,
+  network
 }: {
   open: boolean;
   onClose: () => void;
   txSuccess: boolean | null;
   hash: string;
+  network?: string
 }) {
   const classes = useTransactionProgressModalStyles();
   const { showAlertMessage } = useAlertMessage();
-
-  const url = `${isDev ? "https://mumbai.polygonscan.com/tx/" : "https://mumbai.polygonscan.com/tx/"}${hash}`;
+  const isEth = (network || '').includes('ethereum')
+  const isPolygon = (network || '').includes('polygon')
 
   const handleOpenTx = () => {
-    window.open(url, "_blank");
+    if (network) {
+      if (isPolygon) {
+        window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
+      } else if (isEth) {
+        window.open(`https://${!isProd ? "rinkeby." : ""}etherscan.io/tx/${hash}`, "_blank");
+      }
+    } else {
+      window.open(`https://${!isProd ? "mumbai." : ""}polygonscan.com/tx/${hash}`, "_blank");
+    }
   };
 
   return (
@@ -55,7 +65,7 @@ export default function TransactionProgressModal({
           ? "Everything went well. You can check your transaction link below."
           : txSuccess === false
           ? "Unfortunatelly transaction didn’t went through, please try again later. You can check your transaction link below."
-          : " Transaction is proceeding on Polygon Chain. \n This can take a moment, please be patient..."}
+          : ` Transaction is proceeding on ${ network && isEth ? 'Ethereum' : 'Polygon' } Chain. \n This can take a moment, please be patient...`}
       </Box>
       {hash && (
         <>
@@ -81,7 +91,7 @@ export default function TransactionProgressModal({
             isRounded
             onClick={handleOpenTx}
           >
-            Check on Polygon Scan
+            Check on { network && isEth ? 'Ethereum' : 'Polygon' } Scan
           </PrimaryButton>
         </>
       )}

@@ -16,6 +16,7 @@ import { getBidHistory } from "shared/services/API";
 import { getChainImageUrl } from "shared/functions/chainFucntions";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { profileCardStyles } from "./index.styles";
+import { sanitizeIfIpfsUrl } from "shared/helpers";
 
 enum MediaType {
   Video = "VIDEO_TYPE",
@@ -33,12 +34,14 @@ export default function ProfileCard({
   heightFixed,
   noMargin,
   handleRefresh,
+  userProfile
 }: {
   item: any;
   type: "Social" | "Media" | "Crew" | "Media Pod";
   heightFixed?: boolean;
   noMargin?: boolean;
   handleRefresh?: any;
+  userProfile: any
 }) {
   const classes = profileCardStyles();
   const usersList = useTypedSelector(state => state.usersInfoList);
@@ -100,10 +103,10 @@ export default function ProfileCard({
             ]);
           }
         });
-      } else if (item.owner_of) {
+      } else if (item.owner_of?.toLowerCase() === userProfile.address?.toLowerCase()) {
         setCreatorsData([
           {
-            ...user
+            ...userProfile
           },
         ]);
       }
@@ -236,7 +239,7 @@ export default function ProfileCard({
     setTotalView(value => value + 1);
   };
 
-  const mediaImage = item.metadata?.image ?? item.url ?? getDefaultBGImage();
+  const mediaImage = sanitizeIfIpfsUrl(item.metadata?.image ?? item.url) ?? getDefaultBGImage();
 
   return (
     <>
@@ -355,21 +358,17 @@ export default function ProfileCard({
               {!item.cid || type === "Social" ? (
                 <div
                   className={classes.image}
-                  style={
-                    type === "Social"
-                      ? {
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }
-                      : {
-                          backgroundImage: `url(${mediaImage})`,
-                          backgroundSize: "cover",
-                        }
-                  }
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
                   {type === "Social" && (
                     <img className={classes.socialTokenImg} src={item.imageURL} alt={"card"} />
+                  )}
+                  {type !== "Social" && (
+                    <img className={classes.img} src={mediaImage} alt={"card"} />
                   )}
                 </div>
               ) : isLoading ? (

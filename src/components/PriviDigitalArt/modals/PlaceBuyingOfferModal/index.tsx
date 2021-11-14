@@ -25,7 +25,7 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
 }) => {
   const classes = placeBuyingOfferModalStyles();
   const { showAlertMessage } = useAlertMessage();
-  const [price, setPrice] = useState<string>(media?.exchange?.price ?? 0);
+  const [price, setPrice] = useState<string>(media?.price ?? 0);
   const [selectedToken, setSelectedToken] = useState<string>("PRIVI");
   const [tokenList, setTokenList] = useState<any[]>([]);
   const { convertTokenToUSD } = useTokenConversion();
@@ -39,7 +39,7 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
         data.forEach(obj => {
           newTokenList.push({ name: obj.name, token: obj.token });
         });
-        if (newTokenList.length > 0) setSelectedToken(media.exchange.offerToken);
+        if (newTokenList.length > 0) setSelectedToken(media.offerToken);
         setTokenList(newTokenList);
       }
     });
@@ -55,7 +55,7 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
     if (!selectedToken) {
       showAlertMessage("No token selected", { variant: "error" });
       return false;
-    } else if (!media || !media.exchange || !media.exchange.exchangeId || !media.exchange.initialAmount) {
+    } else if (!media || !media.exchangeId || !media.initialAmount) {
       showAlertMessage(`Media exchange data error`, { variant: "error" });
       return false;
     }
@@ -71,23 +71,18 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
             <div>
               <h3>Item</h3>
               <div className={classes.nftInfo}>
-                <img src={media.content_url} />
-                <h2>{media && media.metadata?.name}</h2>
+                <img src={media.media.content_url} />
+                <h2>{media && media.media.metadata?.name}</h2>
               </div>
             </div>
             <div>
               <h3>Price</h3>
               <div className={classes.flexCol}>
                 <h5>
-                  {media && media.exchange
-                    ? `${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed()}`
-                    : ""}
+                  {media && `${convertTokenToUSD(media.offerToken, media.price).toFixed()}`}{" "}
+                  {media.offerToken}
                 </h5>
-                <span>
-                  {media && media.exchange
-                    ? `$${convertTokenToUSD(media.exchange.offerToken, media.exchange.price).toFixed(4)}`
-                    : ""}
-                </span>
+                <span>{media && `$${convertTokenToUSD(media.offerToken, media.price).toFixed(4)}`}</span>
               </div>
             </div>
           </div>
@@ -115,7 +110,7 @@ const PlaceBuyingOfferModal: React.FunctionComponent<PlaceBuyingOfferModalProps>
             </div>
           </div>
           <div className={classes.divider} />
-          <p className={classes.nftDesc}>{media && media.MediaDescription}</p>
+          <p className={classes.nftDesc}>{media && media.media.metadata.description}</p>
           <div className={classes.actionButtons}>
             <PrimaryButton
               size="medium"

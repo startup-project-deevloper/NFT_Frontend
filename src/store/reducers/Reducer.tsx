@@ -100,6 +100,7 @@ export interface RootState {
     whitelisted?: boolean;
     infoImage?: any;
     ipfsImage?: any;
+    urlIpfsImage: string;
   };
   userBalances: {
     [key: string]: BalanceModel;

@@ -366,18 +366,30 @@ export default function TradeOnQuickSwap(props: any) {
             </Box>
           </Box>
           {/* arrow down */}
-          <Box display="flex" alignItems="center" justifyContent="center" py={2} onClick={handleSwapToken}>
+          <Box display="flex" alignItems="center" justifyContent="center" py={2}>
+            <IconPlus />
           </Box>
           {/* to group */}
           <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
             {/* firs row - name */}
             <Box className={classes.nameRow}>
               <Box>Input</Box>
-              <Box></Box>
+              <Box>Balance: {tokenTo.balance}</Box>
             </Box>
             {/* second row - value */}
             <Box className={classes.valueRow}>
-              <Box color="#C3C5CA">{toBalance}</Box>
+              
+              <Box className={classes.inputBox}>
+                <input
+                  placeholder="0.0"
+                  style={{
+                    color: "#C3C5CA",
+                    fontSize: isMobile ? "18px" : "24px",
+                    maxWidth: isMobile ? "120px" : "200px",
+                  }}
+                  value="0"
+                />
+              </Box>
               <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
                 <IconUSDC />
                 <span style={{ paddingLeft: "10px" }}>
@@ -427,5 +439,10 @@ const IconUSDC = () => (
         <rect width="28.4793" height="28.4793" fill="white" transform="translate(0.714844 0.401367)" />
       </clipPath>
     </defs>
+  </svg>
+);
+const IconPlus = () => (
+  <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13.2942 7.3165H8.25924V12.2685H5.9354V7.3165H0.900415V5.13098H5.9354V0.151322H8.25924V5.13098H13.2942V7.3165Z" fill="#575A68"/>
   </svg>
 );

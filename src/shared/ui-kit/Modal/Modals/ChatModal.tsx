@@ -314,7 +314,7 @@ const ChatModal = ({ chat }) => {
         <div className={classes.chatInfo}>
           <Avatar
             src={differentUser.userFoto ?? getDefaultAvatar()}
-            alt={differentUser.name}
+            alt={differentUser.userName}
             style={{
               filter: "drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2))",
               backgroundColor: "#fff",

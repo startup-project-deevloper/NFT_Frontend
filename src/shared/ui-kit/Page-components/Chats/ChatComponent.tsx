@@ -30,9 +30,7 @@ export default function ChatComponent(props) {
   // Chat Functions
   const getChatInfo = () => {
     axios
-      .post(`${URL()}/chat/getChats`, {
-        userId: userSelector.id,
-      })
+      .post(`${URL()}/chat/getChats`)
       .then((response) => {
         if (response.data.success) {
           let cs = [] as any;

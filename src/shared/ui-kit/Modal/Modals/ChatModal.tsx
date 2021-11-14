@@ -82,6 +82,10 @@ const useStyles = makeStyles({
     color: "#9EACF2",
     marginTop: 4,
     fontWeight: 800,
+    maxWidth: 200,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   chatContent: {
     position: "relative",
@@ -140,6 +144,7 @@ const ChatModal = ({ chat }) => {
   const [minimize, setMinimize] = useState<boolean>(true);
 
   const [messages, setMessages] = useState<any[]>([]);
+  const [chatUsers, setChatUsers] = React.useState([]);
   const [messagesCharged, setMessagesCharged] = useState<boolean>(true);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -196,8 +201,18 @@ const ChatModal = ({ chat }) => {
         });
     };
 
-    // if (chat && chat.room && socket) {
     if (chat && chat.room) {
+      socket.on("message", message => {
+        setMessages(msgs => {
+          let msgsArray = [...msgs];
+          msgsArray.push(message);
+          return msgsArray;
+        });
+
+        if (chatUsers["userTo"] && chatUsers["userTo"].userId === message.from) {
+          updateMessageLastView();
+        }
+      });
       updateMessageLastView();
     }
   }, [chat]);
@@ -217,6 +232,7 @@ const ChatModal = ({ chat }) => {
         lastView: null,
       },
     };
+    setChatUsers(users);
 
     axios
       .post(`${URL()}/chat/newChat`, { users: users })
@@ -311,7 +327,7 @@ const ChatModal = ({ chat }) => {
         <div className={classes.chatInfo}>
           <Avatar
             src={differentUser.userFoto ?? getDefaultAvatar()}
-            alt={differentUser.name}
+            alt={differentUser.userName}
             style={{
               filter: "drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.2))",
               backgroundColor: "#fff",
@@ -321,8 +337,8 @@ const ChatModal = ({ chat }) => {
           />
           {differentUser.connected && <span className="online" />}
           <div className={classes.user}>
-            <div className={classes.userName}>{differentUser.name ?? ""}</div>
-            {/* <div className={classes.userSlug}>{"@" + differentUser.urlSlug}</div> */}
+            <div className={classes.userName}>{differentUser.userName ?? ""}</div>
+            <div className={classes.userSlug}>{"@" + differentUser.urlSlug}</div>
           </div>
         </div>
         <div className={classes.actionBtns}>

@@ -15,9 +15,9 @@ import { getMessageBox } from "store/selectors/user";
 
 import URL from "shared/functions/getURL";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
+import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 import "./MessageBox.css";
-import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
 
 export const MessageBox = ({ type = "social" }) => {
   const dispatch = useDispatch();
@@ -274,7 +274,6 @@ export const MessageBox = ({ type = "social" }) => {
               </Box>
             </Box>
             <Box display="flex" flexDirection="row" alignItems="center" className={"profile-actions"}>
-              {/* <img src={require("assets/icons/minimize.svg")} alt="minimize" /> */}
               <img
                 src={require("assets/icons/close.svg")}
                 alt="close"

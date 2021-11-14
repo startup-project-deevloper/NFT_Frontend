@@ -84,7 +84,8 @@ const useStyles = makeStyles({
     fontWeight: 800,
     maxWidth: 200,
     overflow: "hidden",
-    textOverflow: "ellipsis"
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap"
   },
   chatContent: {
     position: "relative",

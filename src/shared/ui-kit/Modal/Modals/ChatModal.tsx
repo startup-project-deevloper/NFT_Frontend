@@ -82,6 +82,9 @@ const useStyles = makeStyles({
     color: "#9EACF2",
     marginTop: 4,
     fontWeight: 800,
+    maxWidth: 200,
+    overflow: "hidden",
+    textOverflow: "ellipsis"
   },
   chatContent: {
     position: "relative",
@@ -321,8 +324,8 @@ const ChatModal = ({ chat }) => {
           />
           {differentUser.connected && <span className="online" />}
           <div className={classes.user}>
-            <div className={classes.userName}>{differentUser.name ?? ""}</div>
-            {/* <div className={classes.userSlug}>{"@" + differentUser.urlSlug}</div> */}
+            <div className={classes.userName}>{differentUser.userName ?? ""}</div>
+            <div className={classes.userSlug}>{"@" + differentUser.urlSlug}</div>
           </div>
         </div>
         <div className={classes.actionBtns}>

@@ -375,7 +375,7 @@ const MarketplaceDetailPage = () => {
     if (media?.CreatorId) {
       setIsFollowing(isUserFollowed(media?.CreatorId));
     }
-  }, [media?.CreatorId]);
+  }, [media?.CreatorId, isUserFollowed]);
 
   useEffect(() => {
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))

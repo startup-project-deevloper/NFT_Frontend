@@ -79,6 +79,7 @@ const ExploreOption = () => {
 			
 			console.log(">>>>>>>", response);
 			setReservedNftList(response.data.reservedNFTs);
+
 		}
 
 		const [reservedNftList, setReservedNftList] = useState([]);

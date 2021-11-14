@@ -146,7 +146,6 @@ const CreateNftOption = () => {
 			const web3Obj = new Web3(library.provider);
 			
 			let chain_id = await web3Obj.eth.getChainId();
-			console.log("<<<<>>>>>", chain_id);
 			const network = selectedChain.name === "ETHEREUM" ? "Ethereum" : "Polygon";
 			// const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_PROTOCOL_ROUTER;
 			const contractAddress = "0x2C556dCc83b8027a6D2379b20c23D797eA28888d";

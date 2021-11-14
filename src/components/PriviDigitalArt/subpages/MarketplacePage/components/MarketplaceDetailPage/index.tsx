@@ -55,6 +55,7 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+import { roundFloat } from "shared/helpers/number";
 
 const removeIcon = require("assets/icons/remove_red.png");
 const editIcon = require("assets/icons/edit_icon.svg");
@@ -375,7 +376,7 @@ const MarketplaceDetailPage = () => {
     if (media?.CreatorId) {
       setIsFollowing(isUserFollowed(media?.CreatorId));
     }
-  }, [media?.CreatorId]);
+  }, [media?.CreatorId, isUserFollowed]);
 
   useEffect(() => {
     if (media && media?.Bookmarks && media?.Bookmarks.some((id: string) => id === user.id))
@@ -625,9 +626,7 @@ const MarketplaceDetailPage = () => {
     if (!comment) return;
     axios
       .post(`${URL()}/marketplace/addComment`, {
-        tokenAddress: media?.tokenAddress,
-        tokenId: media?.tokenId,
-        userId: user.id,
+        id: params.id,
         comment: {
           user: {
             id: user.id,
@@ -685,9 +684,7 @@ const MarketplaceDetailPage = () => {
 
     axios
       .post(`${URL()}/marketplace/editComment`, {
-        tokenAddress: media?.tokenAddress,
-        tokenId: media?.tokenId,
-        userId: user.id,
+        id: params.id,
         comments: bodyComments.map(c => ({
           user: {
             id: c.user.id,
@@ -726,9 +723,7 @@ const MarketplaceDetailPage = () => {
 
     axios
       .post(`${URL()}/marketplace/editComment`, {
-        tokenAddress: media?.token_address,
-        tokenId: media?.token_id,
-        userId: user.id,
+        id: params.id,
         comments: bodyComments.map(c => ({
           user: {
             id: c.user.id,
@@ -1475,7 +1470,7 @@ const MarketplaceDetailPage = () => {
                         <Box mr={2} style={{ background: "rgba(67, 26, 183, 0.32)", borderRadius: "50%" }}>
                           <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
                         </Box>
-                        <Box mr={2}>
+                        {/* <Box mr={2}>
                           <img
                             src={require(bookmarked
                               ? "assets/priviIcons/bookmark-filled-gray.svg"
@@ -1484,7 +1479,7 @@ const MarketplaceDetailPage = () => {
                             onClick={handleBookmark}
                             style={{ cursor: "pointer", width: "24px", height: "24px" }}
                           />
-                        </Box>
+                        </Box> */}
                         <Box mb={1}>
                           <div
                             onClick={handleOpenShareMenu}
@@ -1536,7 +1531,7 @@ const MarketplaceDetailPage = () => {
                       {`${media?.offerToken ?? "ETH"} ${media?.price ?? 0}`}
                     </Text>
                     <Text color={Color.Black} size={FontSize.S}>
-                      {`$(${convertTokenToUSD(media?.offerToken ?? "USDT", media?.price ?? 0).toFixed(6)})`}
+                      {`($${roundFloat(convertTokenToUSD(media?.offerToken ?? "USDT", media?.price ?? 0), 6)})`}
                     </Text>
                   </Box>
                 ) : media?.type === AUCTION_TYPE ? (
@@ -1551,7 +1546,7 @@ const MarketplaceDetailPage = () => {
                             {`${media?.bidTokenSymbol} ${topBidPrice}`}
                           </Text>
                           <Text color={Color.Black} size={FontSize.S}>
-                            {`$(${convertTokenToUSD(media?.bidTokenSymbol, topBidPrice).toFixed(6)})`}
+                            {`($${roundFloat(convertTokenToUSD(media?.bidTokenSymbol, topBidPrice), 6)})`}
                           </Text>
                         </Box>
                       )}
@@ -1770,7 +1765,7 @@ const MarketplaceDetailPage = () => {
                 {isValidBidHistory() && (
                   <>
                     <Box my={3}>Bid History</Box>
-                    <Box className={classes.graphBox} height="200px" mb={3}>
+                    {/* <Box className={classes.graphBox} height="200px" mb={3}>
                       <Box display="flex" style={{ position: "absolute", left: "16px", top: "8px" }}>
                         <Box mt={2}>
                           <Box style={{ fontSize: 18 }}>
@@ -1791,13 +1786,11 @@ const MarketplaceDetailPage = () => {
                               bidPriceInfo.priceChange ?? 0
                             ).toFixed(4)}
                             {"$"}
-                            {/* ({bidPriceInfo.priceChangePct ?? 0 > 0 ? "+" : ""}
-                        {bidPriceInfo.priceChangePct}%) */}
                           </Box>
                         </Box>
                       </Box>
                       {bidHistoryConfig && <PrintChart config={bidHistoryConfig} />}
-                    </Box>
+                    </Box> */}
                   </>
                 )}
 
@@ -1816,8 +1809,8 @@ const MarketplaceDetailPage = () => {
                                 Bid placed by <span className={classes.text1}>@{bidder?.name}</span>
                               </Box>
                               <Box fontSize={14} fontWeight={800} color="#9EACF2">
-                                {`${row.price?.toFixed(4)} ${token}`}{" "}
-                                <span className={classes.text2}>{`On ${format(
+                                {`${roundFloat(row.price, 4)} ${token}`}{" "}
+                                <span className={classes.text2}>{`on ${format(
                                   new Date(row.date),
                                   "MMMM dd, yyyy"
                                 )} at ${format(new Date(row.date), "p")}`}</span>
@@ -1931,7 +1924,7 @@ const MarketplaceDetailPage = () => {
                         history.push(`/${comment.user.urlSlug}/profile`);
                       }}
                     >
-                      <Avatar size="medium" url={comment.user.imageUrl} />
+                      <Avatar size="medium" url={comment.user.imageUrl ?? getDefaultAvatar()} />
                     </div>
                     <Box
                       display="flex"

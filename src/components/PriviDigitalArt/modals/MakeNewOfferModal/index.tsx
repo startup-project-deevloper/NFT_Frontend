@@ -44,7 +44,6 @@ export default function MakeNewOfferModal({ open, handleClose = () => {}, onConf
     value: 0,
     token : 'ETH'
   }]);
-  console.log(">>>>>", collateralList);
   useEffect(() => {
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
     setReservePriceToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);

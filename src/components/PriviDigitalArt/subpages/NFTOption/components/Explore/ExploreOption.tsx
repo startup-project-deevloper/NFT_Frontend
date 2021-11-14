@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import ExploreOptionCard from 'components/PriviDigitalArt/components/Cards/ExploreOptionCard';
 import { exploreOptionStyles } from './index.styles';
@@ -78,8 +78,11 @@ const ExploreOption = () => {
 			const response = await axios.get(`${URL()}/nftOption/getAllReservedNFTs`, {params: body});
 			
 			console.log(">>>>>>>", response);
+			setReservedNftList(response.data.reservedNFTs);
 		}
 
+		const [reservedNftList, setReservedNftList] = useState([]);
+		console.log(reservedNftList);
     const classes = exploreOptionStyles();
     return (
         <>

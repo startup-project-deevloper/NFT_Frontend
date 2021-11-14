@@ -1076,7 +1076,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                             maxWidth: "220px",
                             padding: "0 30px",
                           }}
-                          disabled={!+nft.totalLiquidity}
                           onClick={handleBuyOnQuickSwap}
                         >
                           Buy on Quickswap
@@ -1166,7 +1165,6 @@ export default function SyntheticFractionalisedTradeFractionsPage({
                           size="medium"
                           style={{ background: "#431AB7", color: Color.White }}
                           onClick={handleBuyOnQuickSwap}
-                          disabled={!+nft.totalLiquidity}
                         >
                           Buy on Quickswap
                         </PrimaryButton>

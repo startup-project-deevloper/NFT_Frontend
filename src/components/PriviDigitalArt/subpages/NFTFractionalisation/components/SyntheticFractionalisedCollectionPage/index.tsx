@@ -24,7 +24,6 @@ import {
 import { BlockchainNets } from "shared/constants/constants";
 import { switchNetwork, addJotAddress } from "shared/functions/metamask";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import {
   fractionalisedCollectionStyles,
   EthIcon,
@@ -95,11 +94,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         const response = await getSyntheticCollection(params.id);
         if (response.success) {
           setCollection(response.data);
-          axios.get(`${PriceFeed_URL()}/quickswap/pairs`, {
-            headers: {
-              Authorization: `Basic ${PriceFeed_Token()}`,
-            },
-          });
           const JotPriceResponse = await getPrice(
             response.data.JotAddress,
             web3Config["TOKEN_ADDRESSES"]["USDT"]
@@ -111,6 +105,9 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
         console.log(err);
       }
     })();
+  }, [params.id, selectedTab]);
+
+  useEffect(() => {
     loadNFTs(params.id);
   }, [params.id]);
 

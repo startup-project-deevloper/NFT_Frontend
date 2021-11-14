@@ -368,13 +368,9 @@ export default function TradeOnQuickSwap(props: any) {
                 </span>
               </Box>
             </Box>
-            <Box className={classes.priceRow}>
-              <Box>~$ 63,892.3</Box>
-            </Box>
           </Box>
           {/* arrow down */}
           <Box display="flex" alignItems="center" justifyContent="center" py={2} onClick={handleSwapToken}>
-            <IconPlus />
           </Box>
           {/* to group */}
           <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
@@ -389,7 +385,6 @@ export default function TradeOnQuickSwap(props: any) {
               <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
                 <select
                   value="Select a token"
-                  // displayEmpty
                   style={{
                     background: '#2891F9',
                     borderRadius: '14px',
@@ -403,16 +398,13 @@ export default function TradeOnQuickSwap(props: any) {
                     mixBlendMode: 'normal',
                   }}
                 >
-                  <option>Select a token</option>
+                  <option>USDT</option>
+                  <option>JOT</option>
                 </select>
               </Box>
             </Box>
-            <Box className={classes.priceRow}>
-              <Box color="#C3C5CA">~$ 00.00</Box>
-            </Box>
           </Box>
 
-          {/* swap button */}
           <Box className={swapButtonName != "Swap" ? classes.disable : classes.swapBtn} onClick={handleSwap}>
             Add Liquidity
           </Box>

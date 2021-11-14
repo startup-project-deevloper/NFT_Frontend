@@ -16,8 +16,7 @@
  * @returns URL to connect to the backend
  */
 const URL = (): string => {
-  // return process.env.REACT_APP_PRIVI_BACKEND_URL ?? "http://localhost:3000";
-  return "http://194.146.57.180:8080";
+  return process.env.REACT_APP_PRIVI_BACKEND_URL ?? "http://localhost:3000";
 };
 
 export const PriceFeed_URL = (): string => {

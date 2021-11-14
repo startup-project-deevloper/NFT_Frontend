@@ -55,6 +55,7 @@ import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import { StyledSkeleton } from "shared/ui-kit/Styled-components/StyledComponents";
 import { switchNetwork } from "shared/functions/metamask";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
+import { roundFloat } from "shared/helpers/number";
 
 const removeIcon = require("assets/icons/remove_red.png");
 const editIcon = require("assets/icons/edit_icon.svg");
@@ -1469,7 +1470,7 @@ const MarketplaceDetailPage = () => {
                         <Box mr={2} style={{ background: "rgba(67, 26, 183, 0.32)", borderRadius: "50%" }}>
                           <FruitSelect fruitObject={media} onGiveFruit={handleFruit} />
                         </Box>
-                        <Box mr={2}>
+                        {/* <Box mr={2}>
                           <img
                             src={require(bookmarked
                               ? "assets/priviIcons/bookmark-filled-gray.svg"
@@ -1478,7 +1479,7 @@ const MarketplaceDetailPage = () => {
                             onClick={handleBookmark}
                             style={{ cursor: "pointer", width: "24px", height: "24px" }}
                           />
-                        </Box>
+                        </Box> */}
                         <Box mb={1}>
                           <div
                             onClick={handleOpenShareMenu}
@@ -1530,7 +1531,7 @@ const MarketplaceDetailPage = () => {
                       {`${media?.offerToken ?? "ETH"} ${media?.price ?? 0}`}
                     </Text>
                     <Text color={Color.Black} size={FontSize.S}>
-                      {`$(${convertTokenToUSD(media?.offerToken ?? "USDT", media?.price ?? 0).toFixed(6)})`}
+                      {`($${roundFloat(convertTokenToUSD(media?.offerToken ?? "USDT", media?.price ?? 0), 6)})`}
                     </Text>
                   </Box>
                 ) : media?.type === AUCTION_TYPE ? (

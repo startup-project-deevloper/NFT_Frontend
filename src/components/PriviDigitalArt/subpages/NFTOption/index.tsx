@@ -14,7 +14,6 @@ const NFTOption = () => {
     const theme = useTheme();
     const history = useHistory();
     const { id } = useParams();
-    console.log("id----", id);
     const classes = useNFTOptionsStyles();
     const [selectedTab, setSelectedTab] = useState<"explore" | "managefutures">("explore");
     

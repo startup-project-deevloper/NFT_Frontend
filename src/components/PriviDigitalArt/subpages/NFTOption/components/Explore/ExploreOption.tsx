@@ -74,10 +74,7 @@ const ExploreOption = () => {
 				type: "PIX",
 				mode: isProd ? "main" : "test"
 			}
-
-			const response = await axios.get(`${URL()}/nftOption/getAllReservedNFTs`, {params: body});
-			
-			console.log(">>>>>>>", response);
+			const response = await axios.get(`${URL()}/nftOption/getAllReservedNFTs`, {params: body});			
 		}
 
     const classes = exploreOptionStyles();

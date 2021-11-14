@@ -7,6 +7,7 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { Modal, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { useTokenConversion } from "shared/contexts/TokenConversionContext";
 import { buyNFTModalStyles } from "./index.styles";
+import { roundFloat } from "shared/helpers/number";
 
 type BuyNFTModalProps = {
   open: boolean;
@@ -73,7 +74,7 @@ const BuyNFTModal: React.FunctionComponent<BuyNFTModalProps> = ({
                   {media &&
                     `${convertTokenToUSD(media.offerToken, media.price).toFixed()} ${media.offerToken}`}
                 </h5>
-                <div>{media && `$${convertTokenToUSD(media.offerToken, media.price).toFixed(4)}`}</div>
+                <div>{media && `($${roundFloat(convertTokenToUSD(media.offerToken, media.price), 4)})`}</div>
               </div>
             </div>
           </div>

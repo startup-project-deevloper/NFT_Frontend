@@ -358,11 +358,7 @@ export default function TradeOnQuickSwap(props: any) {
                 />
               </Box>
               <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
-                {tokenFrom.symbol === "USDT" ? (
-                  <IconUSDC />
-                ) : (
-                  <IconJOT collection={collection} classes={classes} />
-                )}
+                <IconJOT collection={collection} classes={classes} />
                 <span style={{ paddingLeft: "10px" }}>
                   JOTS
                 </span>
@@ -383,24 +379,10 @@ export default function TradeOnQuickSwap(props: any) {
             <Box className={classes.valueRow}>
               <Box color="#C3C5CA">{toBalance}</Box>
               <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
-                <select
-                  value="Select a token"
-                  style={{
-                    background: '#2891F9',
-                    borderRadius: '14px',
-                    padding: '12px',
-                    fontFamily: 'Montserrat',
-                    fontStyle: 'normal',
-                    fontWeight: 600,
-                    fontSize: '18px',
-                    lineHeight: '120%',
-                    color: '#FFFFFF',
-                    mixBlendMode: 'normal',
-                  }}
-                >
-                  <option>USDT</option>
-                  <option>JOT</option>
-                </select>
+                <IconUSDC />
+                <span style={{ paddingLeft: "10px" }}>
+                  USDT
+                </span>
               </Box>
             </Box>
           </Box>
@@ -447,14 +429,3 @@ const IconUSDC = () => (
     </defs>
   </svg>
 );
-const IconPlus = () => (
-  <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13.2942 7.3165H8.25924V12.2685H5.9354V7.3165H0.900415V5.13098H5.9354V0.151322H8.25924V5.13098H13.2942V7.3165Z" fill="#575A68"/>
-  </svg>
-);
-
-// const IconPlus = () => {
-  // <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-  //   <path d="M13.2942 7.3165H8.25924V12.2685H5.9354V7.3165H0.900415V5.13098H5.9354V0.151322H8.25924V5.13098H13.2942V7.3165Z" fill="#575A68"/>
-  // </svg>
-// }

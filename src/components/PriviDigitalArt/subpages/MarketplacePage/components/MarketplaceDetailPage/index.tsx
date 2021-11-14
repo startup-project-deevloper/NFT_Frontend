@@ -1546,7 +1546,7 @@ const MarketplaceDetailPage = () => {
                             {`${media?.bidTokenSymbol} ${topBidPrice}`}
                           </Text>
                           <Text color={Color.Black} size={FontSize.S}>
-                            {`$(${convertTokenToUSD(media?.bidTokenSymbol, topBidPrice).toFixed(6)})`}
+                            {`($${roundFloat(convertTokenToUSD(media?.bidTokenSymbol, topBidPrice), 6)})`}
                           </Text>
                         </Box>
                       )}
@@ -1765,7 +1765,7 @@ const MarketplaceDetailPage = () => {
                 {isValidBidHistory() && (
                   <>
                     <Box my={3}>Bid History</Box>
-                    <Box className={classes.graphBox} height="200px" mb={3}>
+                    {/* <Box className={classes.graphBox} height="200px" mb={3}>
                       <Box display="flex" style={{ position: "absolute", left: "16px", top: "8px" }}>
                         <Box mt={2}>
                           <Box style={{ fontSize: 18 }}>
@@ -1786,13 +1786,11 @@ const MarketplaceDetailPage = () => {
                               bidPriceInfo.priceChange ?? 0
                             ).toFixed(4)}
                             {"$"}
-                            {/* ({bidPriceInfo.priceChangePct ?? 0 > 0 ? "+" : ""}
-                        {bidPriceInfo.priceChangePct}%) */}
                           </Box>
                         </Box>
                       </Box>
                       {bidHistoryConfig && <PrintChart config={bidHistoryConfig} />}
-                    </Box>
+                    </Box> */}
                   </>
                 )}
 
@@ -1811,8 +1809,8 @@ const MarketplaceDetailPage = () => {
                                 Bid placed by <span className={classes.text1}>@{bidder?.name}</span>
                               </Box>
                               <Box fontSize={14} fontWeight={800} color="#9EACF2">
-                                {`${row.price?.toFixed(4)} ${token}`}{" "}
-                                <span className={classes.text2}>{`On ${format(
+                                {`${roundFloat(row.price, 4)} ${token}`}{" "}
+                                <span className={classes.text2}>{`on ${format(
                                   new Date(row.date),
                                   "MMMM dd, yyyy"
                                 )} at ${format(new Date(row.date), "p")}`}</span>

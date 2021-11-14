@@ -120,7 +120,9 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
     setOpenChangeToSyntheticModal(true);
   };
 
-  const fractionaliseSuccess = () => {};
+  const fractionaliseSuccess = () => {
+    goBack();
+  };
 
   return (
     <div className={classes.root}>

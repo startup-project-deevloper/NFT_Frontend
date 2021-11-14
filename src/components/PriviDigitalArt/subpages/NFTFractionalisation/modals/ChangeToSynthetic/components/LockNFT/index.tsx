@@ -29,6 +29,7 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
   const { account, library, chainId } = useWeb3React();
   const { showAlertMessage } = useAlertMessage();
   const [approveBtn, setApproveBtn] = useState<number>(0);
+  const [isApproving, setIsApproving] = useState<boolean>(false);
 
   const handleProceed = () => {
     setApproveBtn(1)
@@ -92,6 +93,7 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
   const handleApprove = async () => {
     if (approveBtn !== 1) return;
 
+    setIsApproving(true);
     console.log("chainId", chainId);
     if (chainId !== 1 && chainId !== 4) {
       let changed = await switchNetwork(isProd ? 1 : 4);
@@ -122,6 +124,7 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
         return;
       }
 
+      setIsApproving(false);
       setApproveBtn(2)
     } catch (err) {
       console.log("error", err);
@@ -215,8 +218,9 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
               <Box display="flex" justifyContent="space-evenly">
                 <button 
                   className={classes.btn}
-                  style={{ padding: "8px 60px", backgroundColor: approveBtn === 1 ? "#431AB7" : "#431AB750" }}
+                  style={{ padding: "8px 60px", backgroundColor: approveBtn !== 1 || isApproving ? "#431AB750" : "#431AB7" }}
                   onClick={handleApprove}
+                  disabled={isApproving}
                 >
                   Approve
                 </button>

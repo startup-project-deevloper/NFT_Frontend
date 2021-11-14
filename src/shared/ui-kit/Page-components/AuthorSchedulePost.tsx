@@ -1,9 +1,9 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 
-import { DateInput } from "shared/ui-kit/DateTimeInput";
 import { authorSchedulePostStyles } from "./AuthorSchedulePost.styles";
-import { StyledSelectComponent } from "../Select/TokenSelect";
+// import { StyledSelectComponent } from "../Select/TokenSelect";
+import { DateInput } from "shared/ui-kit/DateTimeInput";
 import Box from "shared/ui-kit/Box";
 
 const infoIcon = require("assets/icons/info_gray.png");
@@ -36,7 +36,7 @@ const AuthorSchedulePost = ({
       fontSize="14px"
     >
       <Grid container direction="row" alignItems="flex-start" justify="flex-start" spacing={2}>
-        <Grid item xs={12} md={6}>
+        {/* <Grid item xs={12} md={6}>
           <Box display="flex" alignItems="center" mb={1}>
             <Box mr="4px" color={theme && theme === "dark" ? "white" : "#707582"}>
               Author
@@ -57,8 +57,8 @@ const AuthorSchedulePost = ({
             }}
             options={authorArray}
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid> */}
+        <Grid item xs={12}>
           <Box display="flex" alignItems="center">
             <Box mr="4px" color={theme && theme === "dark" ? "white" : "#707582"}>
               Schedule post

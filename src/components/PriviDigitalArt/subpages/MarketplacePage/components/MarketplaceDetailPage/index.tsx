@@ -625,9 +625,7 @@ const MarketplaceDetailPage = () => {
     if (!comment) return;
     axios
       .post(`${URL()}/marketplace/addComment`, {
-        tokenAddress: media?.tokenAddress,
-        tokenId: media?.tokenId,
-        userId: user.id,
+        id: params.id,
         comment: {
           user: {
             id: user.id,
@@ -685,9 +683,7 @@ const MarketplaceDetailPage = () => {
 
     axios
       .post(`${URL()}/marketplace/editComment`, {
-        tokenAddress: media?.tokenAddress,
-        tokenId: media?.tokenId,
-        userId: user.id,
+        id: params.id,
         comments: bodyComments.map(c => ({
           user: {
             id: c.user.id,
@@ -726,9 +722,7 @@ const MarketplaceDetailPage = () => {
 
     axios
       .post(`${URL()}/marketplace/editComment`, {
-        tokenAddress: media?.token_address,
-        tokenId: media?.token_id,
-        userId: user.id,
+        id: params.id,
         comments: bodyComments.map(c => ({
           user: {
             id: c.user.id,
@@ -1931,7 +1925,7 @@ const MarketplaceDetailPage = () => {
                         history.push(`/${comment.user.urlSlug}/profile`);
                       }}
                     >
-                      <Avatar size="medium" url={comment.user.imageUrl} />
+                      <Avatar size="medium" url={comment.user.imageUrl ?? getDefaultAvatar()} />
                     </div>
                     <Box
                       display="flex"

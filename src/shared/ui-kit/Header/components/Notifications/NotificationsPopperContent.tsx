@@ -44,7 +44,9 @@ const NotificationItem = ({
 
   useEffect(() => {
     (async () => {
-      if (notification && notification.avatar) {
+      if (notification && notification.type === 233) {
+        setAvatar(require("assets/pixImages/liquidation_notification.png"));
+      } else if (notification && notification.avatar) {
         setAvatar(notification.avatar);
       } else {
         setAvatar(getDefaultAvatar());

@@ -31,6 +31,10 @@ export type Notification = {
   comment: string;
   podType?: string;
   externalData: any;
+  nftName: string;
+  margin: number;
+  nftId: string;
+  collectionId: string;
 };
 
 type GetNotificationsResult =

@@ -25,6 +25,10 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
     otherItemId,
     podType,
     externalData,
+    nftName,
+    margin,
+    nftId,
+    collectionId,
   } = notification;
 
   const history = useHistory();
@@ -1927,6 +1931,19 @@ export const NotificationContent: React.FunctionComponent<NotificationContentPro
         <div>
           {follower} has created <b onClick={() => history.push(`/pods/${itemId}`)}>{pod}</b>&nbsp;pod and
           invited you.&nbsp;
+        </div>
+      ) : type === 233 ? (
+        <div>
+          <div>
+            Your JOT margin on {nftName} level is {
+              margin >= 50 && margin < 75 ? '' 
+                : margin >= 75 && margin < 85 ? 'high '
+                : margin >= 85 && margin < 90 ? 'very high '
+                : margin >= 90 ? 'extremely high '
+                : ''
+            }at {margin}%. To avoid being liquidated, please add more JOTs to your position.
+          </div>
+          <b style={{ color: '#431AB7' }} onClick={() => history.push(`/fractionalisation/collection/${collectionId}/nft/${nftId}`)}>Go to NFT</b>
         </div>
       ) : null}
     </>

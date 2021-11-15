@@ -75,7 +75,9 @@ export default ({ collection }) => {
     },
   ];
 
-  const setShowAllNFTs = () => {};
+  const setShowAllNFTs = () => {
+    history.push(`/withdrawn_nfts/${collection.id}`);
+  };
 
   const historyRows: any[] = history.map(row => [
     {
@@ -290,53 +292,6 @@ export default ({ collection }) => {
             </Carousel>
           </div>
         </LoadingWrapper>
-        <Box display="flex" alignItems="center" justifyContent="center">
-          <Box
-            className={classes.carouselNav}
-            onClick={() => {
-              carouselRef.current.slidePrev();
-            }}
-          >
-            <svg
-              width="20"
-              height="16"
-              viewBox="0 0 20 16"
-              fill="none"
-              stroke="#431AB7"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.14546 14.6185L1.29284 7.98003M1.29284 7.98003L8.14546 1.34155M1.29284 7.98003H18.707"
-                strokeWidth="1.5122"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Box>
-          <Box
-            ml={3}
-            className={classes.carouselNav}
-            onClick={() => {
-              carouselRef.current.slideNext();
-            }}
-          >
-            <svg
-              width="20"
-              height="16"
-              viewBox="0 0 20 16"
-              fill="none"
-              stroke="#431AB7"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.8545 14.6185L18.7072 7.98003M18.7072 7.98003L11.8545 1.34155M18.7072 7.98003H1.29297"
-                strokeWidth="1.5122"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Box>
-        </Box>
       </Box>
       <Box className={classes.outBox} style={{ background: "white" }}>
         <div className={classes.h2}>Redemption history</div>

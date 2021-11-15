@@ -36,6 +36,17 @@ export async function getSyntheticCollection(id): Promise<any> {
   }
 }
 
+export async function getWithdrawnNFTs(params): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getWithdrawnNFTs`, {
+      params,
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
 export async function getSyntheticNFT(collectionId, syntheticId): Promise<any> {
   try {
     const response = await axios.get(`${URL()}/syntheticFractionalize/getSyntheticNFT`, {

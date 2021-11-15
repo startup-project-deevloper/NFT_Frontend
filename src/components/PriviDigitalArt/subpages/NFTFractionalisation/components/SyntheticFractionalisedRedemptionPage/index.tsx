@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from 'react-router-dom';
 import Web3 from "web3";
 import Carousel from "react-elastic-carousel";
 import Pagination from "@material-ui/lab/Pagination";
@@ -32,7 +33,8 @@ export default ({ collection }) => {
   const [loadingNFTs, setLoadingNFTs] = useState<boolean>(false);
   const lastIdRef = useRef(null);
   const hasMoreRef = useRef(null);
-  const [history, setHistory] = useState<any[]>(collection.redemptionHistory ?? []);
+  const [historyList, setHistory] = useState<any[]>(collection.redemptionHistory ?? []);
+  const history = useHistory();
 
   const { account, library, chainId } = useWeb3React();
   const theme = createTheme({
@@ -76,10 +78,11 @@ export default ({ collection }) => {
   ];
 
   const setShowAllNFTs = () => {
+    console.log('3939399393939939')
     history.push(`/withdrawn_nfts/${collection.id}`);
   };
 
-  const historyRows: any[] = history.map(row => [
+  const historyRows: any[] = historyList.map(row => [
     {
       cellAlign: "center",
       cell: "Redemption",
@@ -184,7 +187,7 @@ export default ({ collection }) => {
 
     // auto refresh data
     const timestamp = Date.now();
-    let updateHistory = [...history];
+    let updateHistory = [...historyList];
     updateHistory.unshift({
       ...data,
       id: timestamp.toString(),

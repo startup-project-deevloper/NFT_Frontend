@@ -39,7 +39,7 @@ const WithdrawnNFTs = () => {
 
   useEffect(() => {
     try {
-      setLoading(true);
+      setIsLoadingNFTs(true);
       getWithdrawnNFTs({ collectionId, lastId: undefined })
         .then(res => {
           if (res.success) {
@@ -47,12 +47,12 @@ const WithdrawnNFTs = () => {
             setHasMoreNFTs(res.hasMore);
             setLastId(res.lastId);
           }
-          setLoading(false);
+          setIsLoadingNFTs(false);
         })
         .catch(console.log);
     } catch (err) {
       console.log(err);
-      setLoading(false);
+      setIsLoadingNFTs(false);
     }
   }, []);
 

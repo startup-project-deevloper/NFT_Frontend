@@ -177,7 +177,7 @@ export const WallPostModalContent = ({
         userName: `${userSelector.firstName ?? ""} ${userSelector.lastName ?? ""}`,
         urlSlug: userSelector.urlSlug,
         response: response,
-        imageUrl: userSelector.urlIpfsImage
+        imageUrl: userSelector.urlIpfsImage,
       };
       setResponseLoader(true);
       Axios.post(`${URL()}/user/wall/makeResponse`, body)
@@ -335,25 +335,28 @@ export const WallPostModalContent = ({
       {videoWallIPFS ? (
         <Box display="flex" justifyContent="center" mt={3} mb={3}>
           <ReactPlayer
-            onClick={() => {
-              handleOpenModalDiscordVideoFullScreen();
-            }}
+            // onClick={() => {
+            //   handleOpenModalDiscordVideoFullScreen();
+            // }}
             url={videoWallIPFS ? videoWallIPFS : null}
             className={styles.reactPlayer}
             progressInterval={200}
+            controls
           />
-          <Modal
-            size="small"
-            className={styles.reactPlayerModal}
-            isOpen={openModalDiscordVideoFullScreen}
-            onClose={handleCloseModalDiscordVideoFullScreen}
-            showCloseIcon
-          >
-            <DiscordVideoFullScreen
-              onCloseModal={handleCloseModalDiscordVideoFullScreen}
-              url={videoWallIPFS ? videoWallIPFS : ""}
-            />
-          </Modal>
+          {openModalDiscordVideoFullScreen && (
+            <Modal
+              size="small"
+              className={styles.reactPlayerModal}
+              isOpen={openModalDiscordVideoFullScreen}
+              onClose={handleCloseModalDiscordVideoFullScreen}
+              showCloseIcon
+            >
+              <DiscordVideoFullScreen
+                onCloseModal={handleCloseModalDiscordVideoFullScreen}
+                url={videoWallIPFS ? videoWallIPFS : ""}
+              />
+            </Modal>
+          )}
         </Box>
       ) : null}
 

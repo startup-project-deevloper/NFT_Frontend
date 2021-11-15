@@ -10,6 +10,7 @@ import NFTLoansPage from "./subpages/NFTLoansPage";
 import NFTLoanDetailPage from "./subpages/NFTLoanDetailPage";
 import NFTLoanAssetDetailPage from "./subpages/NFTLoanAssetDetailPage";
 import NFTManageLoansPage from "./subpages/NFTManageLoansPage";
+import WithdrawnNFTPage from "./subpages/WithdrawnNFTPage";
 // import PodPage from "./subpages/PodPage";
 // import PodPageIndividual from "./subpages/PodPageIndividual";
 import WallPostPage from "./subpages/PodPageIndividual/components/Discussion/components/WallPostPage";
@@ -53,6 +54,7 @@ export default function PriviPixRouter(props) {
   return (
     <Switch>
       <Route exact path="/mynft" component={MyNFTPage} />
+      <Route exact path="/withdrawn_nfts/:collectionId" component={WithdrawnNFTPage} />
       <Route exact path="/explorer" component={ExplorePage} />
       <Route exact path="/explorer/:collectionName" component={CollectionPage} />
       <Route exact path="/saved-content" component={LikedPage} />

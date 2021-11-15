@@ -51,11 +51,16 @@ export default function MyNFTCard({
           <Box display="flex" justifyContent="space-between" alignItems="center" width={1} mb={1}>
             <div className={classes.nftName}>{`${item.collectionName} #${item.NftId}`}</div>
             {item?.isVerified ? (
-              item?.isWithdrawn ? (
-                <div className={classes.unVerifiedLabel}>
-                  <span>Unverified</span>
-                </div>
-              ) : (
+              item?.isWithdrawn ?
+                item?.isUnlocked ? (
+                  <div className={classes.withdrawnLabel}>
+                    <span>Withdrawn</span>
+                  </div>
+                ) : (
+                  <div className={classes.unVerifiedLabel}>
+                    <span>Unverified</span>
+                  </div>
+                ) : (
                 <div className={classes.lockLabel}>
                   <span>Verified</span>
                 </div>

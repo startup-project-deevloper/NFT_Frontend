@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from 'react-router-dom';
 import Web3 from "web3";
 import Carousel from "react-elastic-carousel";
 import Pagination from "@material-ui/lab/Pagination";
@@ -32,7 +33,8 @@ export default ({ collection }) => {
   const [loadingNFTs, setLoadingNFTs] = useState<boolean>(false);
   const lastIdRef = useRef(null);
   const hasMoreRef = useRef(null);
-  const [history, setHistory] = useState<any[]>(collection.redemptionHistory ?? []);
+  const [historyList, setHistory] = useState<any[]>(collection.redemptionHistory ?? []);
+  const history = useHistory();
 
   const { account, library, chainId } = useWeb3React();
   const theme = createTheme({
@@ -75,9 +77,12 @@ export default ({ collection }) => {
     },
   ];
 
-  const setShowAllNFTs = () => {};
+  const setShowAllNFTs = () => {
+    console.log('3939399393939939')
+    history.push(`/withdrawn_nfts/${collection.id}`);
+  };
 
-  const historyRows: any[] = history.map(row => [
+  const historyRows: any[] = historyList.map(row => [
     {
       cellAlign: "center",
       cell: "Redemption",
@@ -182,7 +187,7 @@ export default ({ collection }) => {
 
     // auto refresh data
     const timestamp = Date.now();
-    let updateHistory = [...history];
+    let updateHistory = [...historyList];
     updateHistory.unshift({
       ...data,
       id: timestamp.toString(),
@@ -290,53 +295,6 @@ export default ({ collection }) => {
             </Carousel>
           </div>
         </LoadingWrapper>
-        <Box display="flex" alignItems="center" justifyContent="center">
-          <Box
-            className={classes.carouselNav}
-            onClick={() => {
-              carouselRef.current.slidePrev();
-            }}
-          >
-            <svg
-              width="20"
-              height="16"
-              viewBox="0 0 20 16"
-              fill="none"
-              stroke="#431AB7"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.14546 14.6185L1.29284 7.98003M1.29284 7.98003L8.14546 1.34155M1.29284 7.98003H18.707"
-                strokeWidth="1.5122"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Box>
-          <Box
-            ml={3}
-            className={classes.carouselNav}
-            onClick={() => {
-              carouselRef.current.slideNext();
-            }}
-          >
-            <svg
-              width="20"
-              height="16"
-              viewBox="0 0 20 16"
-              fill="none"
-              stroke="#431AB7"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.8545 14.6185L18.7072 7.98003M18.7072 7.98003L11.8545 1.34155M18.7072 7.98003H1.29297"
-                strokeWidth="1.5122"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Box>
-        </Box>
       </Box>
       <Box className={classes.outBox} style={{ background: "white" }}>
         <div className={classes.h2}>Redemption history</div>

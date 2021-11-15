@@ -264,8 +264,6 @@ export const WallPostModalContent = ({
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "contain",
                 backgroundPosition: "center",
-                borderRadius:
-                  item.descriptionImages && item.descriptionImages.length > 0 ? `67px 0px 0px 67px` : "67px",
               }}
             />
           )}
@@ -294,20 +292,7 @@ export const WallPostModalContent = ({
                         backgroundSize: "cover",
                         marginTop: imageWallIPFS && imageWallIPFS !== "" && index === 1 ? "4px" : 0,
                         marginLeft: !imageWallIPFS && index === 1 ? "4px" : 0,
-                        height: imageWallIPFS && imageWallIPFS !== "" ? "50%" : "100%",
                         backgroundPosition: "center",
-                        borderRadius:
-                          index === 0
-                            ? imageWallIPFS && imageWallIPFS !== ""
-                              ? item.descriptionImages.length > 1
-                                ? `0px 67px 0px 0px`
-                                : `0px 67px 67px 0px`
-                              : item.descriptionImages.length > 1
-                              ? `67px 0px 0px 67px`
-                              : `67px 67px 67px 67px`
-                            : imageWallIPFS && imageWallIPFS !== ""
-                            ? "0px 0px 67px 0px"
-                            : `0px 67px 67px 0px`,
                       }}
                     />
                   ))}
@@ -320,8 +305,6 @@ export const WallPostModalContent = ({
               style={{
                 marginTop: imageWallIPFS && imageWallIPFS !== "" ? "4px" : 0,
                 marginLeft: !imageWallIPFS ? "4px" : 0,
-                borderRadius:
-                  imageWallIPFS && imageWallIPFS !== "" ? "0px 0px 67px 0px" : `0px 67px 67px 0px`,
                 height: imageWallIPFS && imageWallIPFS !== "" ? "50%" : "100%",
               }}
               onClick={handleOpenMorePicturesModal}
@@ -333,7 +316,7 @@ export const WallPostModalContent = ({
       )}
 
       {videoWallIPFS ? (
-        <Box display="flex" justifyContent="center" mt={3} mb={3}>
+        <Box display="flex" justifyContent="center" mt={1} mb={3}>
           <ReactPlayer
             // onClick={() => {
             //   handleOpenModalDiscordVideoFullScreen();

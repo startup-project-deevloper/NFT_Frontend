@@ -14,7 +14,7 @@
 
 .photoPost {
   width: 100%;
-  height: 535px;
+  height: 500px;
 }
 
 .postImages .photoPost:first-child:not(.postImages .photoPost:last-child) {
@@ -272,10 +272,10 @@
 }
 
 .reactPlayer {
-  height: 180;
+  height: auto !important;
   border-radius: 14;
   transform: none;
-  width: 180;
+  width: 100% !important;
   cursor: pointer;
 }
 
@@ -327,5 +327,9 @@
   .levelLabel {
     margin-left: 0;
     margin-top: 5px;
+  }
+
+  .photoPost {
+    height: 240px;
   }
 }

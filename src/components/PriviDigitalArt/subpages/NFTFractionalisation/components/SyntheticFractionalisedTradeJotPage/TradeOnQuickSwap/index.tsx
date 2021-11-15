@@ -11,11 +11,18 @@ import Box from "shared/ui-kit/Box";
 import { TradeOnQuickSwapStyles } from "./index.styles";
 import { ReactComponent as QuickSwapIcon } from "assets/icons/quick-swap-icon.svg";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
+import { LoadingScreen } from "shared/ui-kit/Hocs/LoadingScreen";
 import Web3Config from "shared/connectors/web3/config";
 import { getSyntheticCollection } from "shared/services/API/SyntheticFractionalizeAPI";
 import { toDecimals, toNDecimals } from "shared/functions/web3";
-import {switchNetwork} from "shared/functions/metamask";
+import { switchNetwork } from "shared/functions/metamask";
 import cls from "classnames";
+
+import { ContractInstance } from "shared/connectors/web3/functions";
+import FundingTokenMock from "shared/connectors/polygon/contracts/FundingTokenMock.json";
+import UniswapRouter from "shared/connectors/web3/contracts/UniswapRouter.json";
+import Jot from "shared/connectors/web3/contracts/Jot.json";
+import TransactionResultModal from "../../../../../modals/TransactionResultModal";
 
 const IconJOT = (collection, classes) => {
   return (
@@ -28,6 +35,7 @@ const IconJOT = (collection, classes) => {
 };
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
+
 export default function TradeOnQuickSwap(props: any) {
   const classes = TradeOnQuickSwapStyles();
   const [collection, setCollection] = useState<any>(null);
@@ -37,9 +45,14 @@ export default function TradeOnQuickSwap(props: any) {
   const [swapButtonName, setSwapButtonName] = useState<string>("Swap");
   const { account, library, chainId } = useWeb3React();
   const [selectedChain, setSelectedChain] = React.useState<any>(filteredBlockchainNets[0]);
+  const [addJotAmount, setAddJotAmount] = React.useState(0);
+  const [addUsdtAmount, setAddUsdtAmount] = React.useState(0);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [hash, setHash] = useState<string>("");
+  const [updateResult, setUpdateResult] = useState<number>(0);
 
   const [selectedTab, setSelectedTab] = useState<"swap" | "liquidity">("swap");
-  
+
   const [tokenFrom, setTokenFrom] = useState<any>({
     balance: 0,
     price: 1,
@@ -71,7 +84,7 @@ export default function TradeOnQuickSwap(props: any) {
       getJotBalance();
       getUsdtBalance();
     }
-  }, [collection, chainId]);
+  }, [collection, chainId, selectedTab]);
 
   useEffect(() => {
     if (selectedChain && chainId && selectedChain.chainId !== chainId) {
@@ -112,7 +125,6 @@ export default function TradeOnQuickSwap(props: any) {
       const web3APIHandler = targetChain.apiHandler;
 
       const decimals = await web3APIHandler.Erc20.USDT.decimals(web3);
-      console.log(decimals);
       const balance = await web3APIHandler.Erc20.USDT.balanceOf(web3, {
         account: account!,
       });
@@ -216,9 +228,81 @@ export default function TradeOnQuickSwap(props: any) {
     }
   };
 
-  const handleSwapOnClick = (value) => {
+  const handleSwapOnClick = value => {
     setSelectedTab(value);
-  }
+  };
+
+  const handleAddLiquidity = async () => {
+    try {
+      const web3 = new Web3(library.provider);
+      const web3Config = selectedChain.config;
+      const web3APIHandler = selectedChain.apiHandler;
+
+      const timestampLimit = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365;
+      const uniswapContract = ContractInstance(
+        web3,
+        UniswapRouter.abi,
+        web3Config["CONTRACT_ADDRESSES"]["UNISWAP_ROUTER"]
+      );
+
+      const jotApproveResponse = await web3APIHandler.Erc20["JOT"].approve(
+        web3,
+        account!,
+        collection.JotAddress,
+        web3Config["CONTRACT_ADDRESSES"]["UNISWAP_ROUTER"],
+        toNDecimals(addJotAmount, tokenFrom.decimals)
+      );
+      if (!jotApproveResponse) {
+        return;
+      }
+      const usdtApproveResponse = await web3APIHandler.Erc20["USDT"].approve(
+        web3,
+        account!,
+        web3Config["CONTRACT_ADDRESSES"]["UNISWAP_ROUTER"],
+        toNDecimals(addUsdtAmount, tokenTo.decimals)
+      );
+      if (!usdtApproveResponse) {
+        return;
+      }
+      setLoading(true);
+      setUpdateResult(0);
+      const gas = await uniswapContract.methods
+        .addLiquidity(
+          collection.JotAddress,
+          web3Config["TOKEN_ADDRESSES"]["USDT"],
+          toNDecimals(addJotAmount, tokenFrom.decimals),
+          toNDecimals(addUsdtAmount, tokenTo.decimals),
+          1,
+          1,
+          account!,
+          timestampLimit
+        )
+        .estimateGas({ from: account });
+      const response = await uniswapContract.methods
+        .addLiquidity(
+          collection.JotAddress,
+          web3Config["TOKEN_ADDRESSES"]["USDT"],
+          toNDecimals(addJotAmount, tokenFrom.decimals),
+          toNDecimals(addUsdtAmount, tokenTo.decimals),
+          1,
+          1,
+          account!,
+          timestampLimit
+        )
+        .send({ from: account, gas })
+        .on("transactionHash", function (hash) {
+          if (setHash) {
+            setHash(hash);
+          }
+        });
+      setUpdateResult(1);
+      setLoading(false);
+    } catch (err) {
+      console.log("err", err);
+      setUpdateResult(-1);
+      setLoading(false);
+    }
+  };
 
   return (
     <Box className={classes.root}>
@@ -233,28 +317,32 @@ export default function TradeOnQuickSwap(props: any) {
         </Box>
       </Box>
       <Box className={classes.tabContainer} display="flex" alignItems="center" justifyContent="center">
-        <Box 
-          width="100%" 
+        <Box
+          width="100%"
           textAlign="center"
           className={cls({ [classes.selectedTabSection]: selectedTab === "swap" })}
-          onClick={e=>handleSwapOnClick('swap')}
-        >Swap</Box>
-        <Box 
-          width="100%" 
+          onClick={e => handleSwapOnClick("swap")}
+        >
+          Swap
+        </Box>
+        <Box
+          width="100%"
           textAlign="center"
           className={cls({ [classes.selectedTabSection]: selectedTab === "liquidity" })}
-          onClick={e=>handleSwapOnClick('liquidity')}
-        >Add Liquidity</Box>
+          onClick={e => handleSwapOnClick("liquidity")}
+        >
+          Add Liquidity
+        </Box>
       </Box>
       {/* swap box */}
-      {selectedTab === 'swap' && (
+      {selectedTab === "swap" && (
         <Box className={classes.swapBox}>
           {/* from group */}
           <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
             {/* firs row - name */}
             <Box className={classes.nameRow}>
               <Box>From</Box>
-              <Box>Balance: {tokenFrom.balance}</Box>
+              <Box>Balance: {(+tokenFrom.balance).toFixed(4)}</Box>
             </Box>
             {/* second row - value */}
             <Box className={classes.valueRow}>
@@ -332,17 +420,15 @@ export default function TradeOnQuickSwap(props: any) {
           </Box>
         </Box>
       )}
-      {selectedTab === 'liquidity' && (
+      {selectedTab === "liquidity" && (
         <Box className={classes.swapBox}>
           {/* from group */}
-          <Box className={classes.liquidityBox}>
-            Add Liquidity
-          </Box>
+          <Box className={classes.liquidityBox}>Add Liquidity</Box>
           <Box width={1} border="1px solid #eee" borderRadius="24px" p={3}>
             {/* firs row - name */}
             <Box className={classes.nameRow}>
               <Box>Input</Box>
-              <Box>Balance: {tokenFrom.balance}</Box>
+              <Box>Balance: {(+tokenFrom.balance).toFixed(4)}</Box>
             </Box>
             {/* second row - value */}
             <Box className={classes.valueRow}>
@@ -354,14 +440,13 @@ export default function TradeOnQuickSwap(props: any) {
                     fontSize: isMobile ? "18px" : "24px",
                     maxWidth: isMobile ? "120px" : "200px",
                   }}
-                  value="0"
+                  value={addJotAmount}
+                  onChange={e => setAddJotAmount(+e.target.value)}
                 />
               </Box>
               <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
                 <IconJOT collection={collection} classes={classes} />
-                <span style={{ paddingLeft: "10px" }}>
-                  JOTS
-                </span>
+                <span style={{ paddingLeft: "10px" }}>JOTS</span>
               </Box>
             </Box>
           </Box>
@@ -374,37 +459,49 @@ export default function TradeOnQuickSwap(props: any) {
             {/* firs row - name */}
             <Box className={classes.nameRow}>
               <Box>Input</Box>
-              <Box>Balance: {tokenTo.balance}</Box>
+              <Box>Balance: {(+tokenTo.balance).toFixed(4)}</Box>
             </Box>
             {/* second row - value */}
             <Box className={classes.valueRow}>
-              
               <Box className={classes.inputBox}>
                 <input
                   placeholder="0.0"
                   style={{
-                    color: "#C3C5CA",
+                    color: "#1A1B1C",
                     fontSize: isMobile ? "18px" : "24px",
                     maxWidth: isMobile ? "120px" : "200px",
                   }}
-                  value="0"
+                  value={addUsdtAmount}
+                  onChange={e => setAddUsdtAmount(+e.target.value)}
                 />
               </Box>
               <Box display="flex" alignItems="center" color="#1A1B1C" fontFamily="Agrandir" fontSize={16}>
                 <IconUSDC />
-                <span style={{ paddingLeft: "10px" }}>
-                  USDT
-                </span>
+                <span style={{ paddingLeft: "10px" }}>USDT</span>
               </Box>
             </Box>
           </Box>
 
-          <Box className={swapButtonName != "Swap" ? classes.disable : classes.swapBtn} onClick={handleSwap}>
+          <Box
+            className={swapButtonName != "Swap" ? classes.disable : classes.swapBtn}
+            onClick={handleAddLiquidity}
+          >
             Add Liquidity
           </Box>
         </Box>
       )}
-
+      <LoadingScreen
+        loading={loading}
+        title={`Transaction \nin progress`}
+        subTitle={`Transaction is proceeding on ${BlockchainNets[1].value}.\nThis can take a moment, please be patient...`}
+        handleClose={() => {}}
+      ></LoadingScreen>
+      <TransactionResultModal
+        open={updateResult !== 0}
+        onClose={() => setUpdateResult(0)}
+        isSuccess={updateResult > 0}
+        hash={hash}
+      />
     </Box>
   );
 }
@@ -443,6 +540,9 @@ const IconUSDC = () => (
 );
 const IconPlus = () => (
   <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13.2942 7.3165H8.25924V12.2685H5.9354V7.3165H0.900415V5.13098H5.9354V0.151322H8.25924V5.13098H13.2942V7.3165Z" fill="#575A68"/>
+    <path
+      d="M13.2942 7.3165H8.25924V12.2685H5.9354V7.3165H0.900415V5.13098H5.9354V0.151322H8.25924V5.13098H13.2942V7.3165Z"
+      fill="#575A68"
+    />
   </svg>
 );

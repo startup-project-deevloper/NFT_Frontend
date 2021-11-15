@@ -36,6 +36,16 @@ export default function EditJOTsModal({ open, onClose, collectionId, nft, handle
   const selectedChain = BlockchainNets[1];
 
   React.useEffect(() => {
+    if (!open) {
+      setOpenLoading(false)
+      setHash("")
+      setMaxSupply(0)
+      setNFTSupply(0)
+      setMode(false)
+    }
+  }, [open])
+
+  React.useEffect(() => {
     if (!open) return;
 
     (async () => {
@@ -98,9 +108,6 @@ export default function EditJOTsModal({ open, onClose, collectionId, nft, handle
       );
     }
 
-    const sellingSupply = await web3APIHandler.SyntheticCollectionManager.getSellingSupply(web3, nft);
-    setMaxSupply(sellingSupply);
-
     if (!contractResponse.success) {
       setLoading(false);
       setOpenLoading(false);
@@ -108,13 +115,17 @@ export default function EditJOTsModal({ open, onClose, collectionId, nft, handle
       return;
     }
     
+    const { sellingSupply, ownerSupply } = await handleRefresh();
+    setMaxSupply(sellingSupply);
+
+
     const response = await updateSellingSupply({
       collectionId,
       syntheticId: nft.SyntheticID,
+      ownerSupply: ownerSupply,
       supply: sellingSupply,
     });
 
-    await handleRefresh();
 
     setLoading(false);
 

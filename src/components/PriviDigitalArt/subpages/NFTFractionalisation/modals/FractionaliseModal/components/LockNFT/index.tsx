@@ -47,9 +47,9 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         account!,
         {
           to: contractAddress,
-          tokenId: selectedNFT.BlockchainId,
+          tokenId: selectedNFT.nftTokenId,
         },
-        selectedNFT.tokenAddress
+        selectedNFT.nftCollection.address
       );
       if (!response.success) {
         setIsProceeding(false);
@@ -58,8 +58,8 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
       }
 
       const payload = {
-        tokenAddress: selectedNFT.tokenAddress,
-        tokenId: selectedNFT.BlockchainId,
+        tokenAddress: selectedNFT.nftCollection.address,
+        tokenId: selectedNFT.nftTokenId,
         setHash,
       };
 
@@ -70,7 +70,7 @@ export default function LockNFT({ onClose, onCompleted, needLockLaterBtn = true,
         return;
       }
       await axios.post(`${URL()}/syntheticFractionalize/lockNFT`, {
-        collectionAddress: selectedNFT.tokenAddress,
+        collectionAddress: selectedNFT.nftCollection.address,
         syntheticID,
       });
       onCompleted();

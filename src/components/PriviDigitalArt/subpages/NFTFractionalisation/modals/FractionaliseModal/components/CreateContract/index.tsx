@@ -4,7 +4,6 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Box from "shared/ui-kit/Box";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 import Web3 from "web3";
@@ -105,17 +104,6 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
     setIsProceeding(true);
 
     try {
-      const { data: collectionInfo } = await axios.get(
-        `${PriceFeed_URL()}/nft/collection-address?contract=${selectedNFT.tokenAddress}${
-          !isProd ? "&network=rinkeby" : ""
-        }`,
-        {
-          headers: {
-            Authorization: `Basic ${PriceFeed_Token()}`,
-          },
-        }
-      );
-
       const web3 = new Web3(library.provider);
       const targetChain = BlockchainNets.find(net => net.value === "Polygon Chain");
       const web3APIHandler = targetChain.apiHandler;
@@ -129,18 +117,18 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
       const jotAPI = JOT(network);
       const decimals = await jotAPI.decimals(web3, jotContractAddress);
       const tSupply = toNDecimals(+supplyToKeep, decimals);
-      const tokenURI = selectedNFT.tokenURI ?? "";
+      const tokenURI = selectedNFT.nftTokenUrl ?? "";
       const gas = await contract.methods
-        .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
-          originalName: collectionInfo.data.name,
-          originalSymbol: collectionInfo.data.symbol,
+        .registerNFT(selectedNFT.nftCollection.address, selectedNFT.nftTokenId, tSupply, price, {
+          originalName: selectedNFT.nftCollection.name,
+          originalSymbol: selectedNFT.nftCollection.symbol,
           metadata: tokenURI,
         })
         .estimateGas({ from: account });
       const response = await contract.methods
-        .registerNFT(selectedNFT.tokenAddress, selectedNFT.BlockchainId, tSupply, price, {
-          originalName: collectionInfo.data.name,
-          originalSymbol: collectionInfo.data.symbol,
+        .registerNFT(selectedNFT.nftCollection.address, selectedNFT.nftTokenId, tSupply, price, {
+          originalName: selectedNFT.nftCollection.name,
+          originalSymbol: selectedNFT.nftCollection.symbol,
           metadata: tokenURI,
         })
         .send({ from: account, gas })
@@ -158,8 +146,8 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         const nftInfo = response.events?.TokenRegistered?.returnValues;
         if (collection) {
           const tokenParams = {
-            Symbol: `JOT_${selectedNFT.MediaSymbol}`,
-            Name: `Privi Jot ${selectedNFT.MediaName}`,
+            Symbol: `JOT_${selectedNFT.nftCollection.symbol}`,
+            Name: `Privi Jot ${selectedNFT.nftCollection.name}`,
             Decimals: decimals,
             ImageUrl: "",
             Type: "Crypto",
@@ -174,13 +162,13 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
         let params = {};
         if (collection) {
           params = {
-            collectionAddress: selectedNFT.tokenAddress,
+            collectionAddress: selectedNFT.nftCollection.address,
             SyntheticID: nftInfo.syntheticTokenId,
-            NFTId: selectedNFT.BlockchainId,
-            NFTName: selectedNFT.MediaName,
-            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.Url),
-            JotName: `Privi Jot ${selectedNFT.MediaName}`,
-            JotSymbol: `JOT_${selectedNFT.MediaSymbol}`,
+            NFTId: selectedNFT.nftTokenId,
+            NFTName: selectedNFT.nftName,
+            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.nftPictureUrl),
+            JotName: `Privi Jot ${selectedNFT.nftCollection.name}`,
+            JotSymbol: `JOT_${selectedNFT.nftCollection.symbol}`,
             JotAddress: collection.jotAddress,
             JotPoolAddress: collection.jotPoolAddress,
             SyntheticCollectionManagerAddress: collection.collectionManagerAddress,
@@ -190,10 +178,10 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             OwnerSupply: supplyToKeep,
             SellingSupply: 10000 - Number(supplyToKeep),
             SoldSupply: 0,
-            collectionName: collectionInfo.data.name,
-            collectionSymbol: collectionInfo.data.symbol,
-            description: collectionInfo.data.description,
-            imageUrl: sanitizeIfIpfsUrl(collectionInfo.data.imageUrl ?? selectedNFT.Url),
+            collectionName: selectedNFT.nftCollection.name,
+            collectionSymbol: selectedNFT.nftCollection.symbol,
+            description: "",
+            imageUrl: sanitizeIfIpfsUrl(selectedNFT.nftPictureUrl),
             quickSwapAddress: collection.jotPairAddress,
             collectionManagerID: collection.collectionManagerID,
             auctionAddress: collection.auctionAddress,
@@ -206,11 +194,11 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
           };
         } else {
           params = {
-            collectionAddress: selectedNFT.tokenAddress,
+            collectionAddress: selectedNFT.nftCollection.address,
             SyntheticID: nftInfo.syntheticTokenId,
-            NFTId: selectedNFT.BlockchainId,
-            NFTName: selectedNFT.MediaName,
-            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.Url),
+            NFTId: selectedNFT.nftTokenId,
+            NFTName: selectedNFT.nftName,
+            NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.nftPictureUrl),
             Price: priceFraction,
             OwnerSupply: supplyToKeep,
             isAddCollection: false,

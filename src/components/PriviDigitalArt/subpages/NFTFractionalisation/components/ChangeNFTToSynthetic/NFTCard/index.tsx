@@ -1,38 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Box from "shared/ui-kit/Box";
 import { normalNFTCardStyles } from "../index.styles";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import Tooltip from '@material-ui/core/Tooltip';
-import {sanitizeIfIpfsUrl} from "shared/helpers/utils";
+import Tooltip from "@material-ui/core/Tooltip";
+import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
 
 export default function NFTCard({ item, handleSelect, isSmall = false }) {
   const classes = normalNFTCardStyles();
   const [imageIPFS, setImageIPFS] = useState({});
 
-  const image = sanitizeIfIpfsUrl(
-    item?.cid
-    ? imageIPFS
-    : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
-    ? item?.UrlMainPhoto
-    : item?.UrlMainPhoto ??
-      item?.Url ??
-      item?.url
-  )
+  const imgSrc = useMemo(() => {
+    let src = item.nftPictureUrl ?? require(`assets/backgrounds/digital_art_1.png`);
+    return sanitizeIfIpfsUrl(src);
+  }, [item]);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
       <div className={isSmall ? classes.selectedSmallOuterBox : classes.selectedOuterBox}>
         <div className={`${classes.card} ${item.selected ? classes.selected : ""}`}>
-          <div className={isSmall ? classes.selectedInnerBox : classes.innerBox} style={{ padding: isSmall ? 6 : 16 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="baseline" width={1} className={classes.nftNameContainer}>
-              <Tooltip title={`${item.MediaName} #${item.BlockchainId}`}>
-                <div className={classes.ntfName} style={{ fontSize: isSmall ? 8 : 16, lineHeight: isSmall ? "13px" : "21px", marginBottom: isSmall ? 0 : 8 }}>{`${item.MediaName} #${item.BlockchainId}`}</div>
+          <div
+            className={isSmall ? classes.selectedInnerBox : classes.innerBox}
+            style={{ padding: isSmall ? 6 : 16 }}
+          >
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="baseline"
+              width={1}
+              className={classes.nftNameContainer}
+            >
+              <Tooltip title={`${item.nftName ?? ""} #${item.nftTokenId}`}>
+                <div
+                  className={classes.ntfName}
+                  style={{
+                    fontSize: isSmall ? 8 : 16,
+                    lineHeight: isSmall ? "13px" : "21px",
+                    marginBottom: isSmall ? 0 : 8,
+                  }}
+                >{`${item.nftName ?? ""} #${item.nftTokenId}`}</div>
               </Tooltip>
             </Box>
-            <img
-              src={image ?? require(`assets/backgrounds/digital_art_1.png`)}
-              alt={item.MediaName}
-            />
+            <img src={imgSrc} alt={item.nftName} />
             <div className={isSmall ? classes.smallStarGroup : classes.starGroup}>
               <Box fontSize={8.5} mr={"2px"}>
                 🌟{" "}

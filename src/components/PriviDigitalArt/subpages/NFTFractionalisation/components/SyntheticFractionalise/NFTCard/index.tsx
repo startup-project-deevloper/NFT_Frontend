@@ -5,27 +5,15 @@ import useIPFS from "shared/utils-IPFS/useIPFS";
 import { onGetNonDecrypt } from "shared/ipfs/get";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from "@material-ui/core/Tooltip";
 
 export default function NFTCard({ item, handleSelect }) {
   const classes = normalNFTCardStyles();
-  const { downloadWithNonDecryption } = useIPFS();
-  const [imageIPFS, setImageIPFS] = useState({});
-
-  useEffect(() => {
-    if (item?.urlIpfsImage) {
-      setImageIPFS(item.urlIpfsImage)
-    }
-  }, [item]);
 
   const imgSrc = useMemo(() => {
-    let src = item?.cid
-      ? imageIPFS
-      : item?.Type && item?.Type !== "DIGITAL_ART_TYPE"
-      ? item?.UrlMainPhoto
-      : item?.UrlMainPhoto ?? item?.Url ?? item?.url ?? require(`assets/backgrounds/digital_art_1.png`);
+    let src = item.nftPictureUrl ?? require(`assets/backgrounds/digital_art_1.png`);
     return sanitizeIfIpfsUrl(src);
-  }, [item, imageIPFS]);
+  }, [item]);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" onClick={handleSelect}>
@@ -43,11 +31,11 @@ export default function NFTCard({ item, handleSelect }) {
         <div className={item.selected ? classes.selectedCard : ""}>
           <div className={classes.innerBox}>
             <Box display="flex" justifyContent="center" width={1}>
-              <Tooltip title={`${item.MediaName} #${item.BlockchainId}`}>
-                <div className={classes.ntfName}>{`${item.MediaName} #${item.BlockchainId}`}</div>
+              <Tooltip title={`${item.nftName ?? ""} #${item.nftTokenId}`}>
+                <div className={classes.ntfName}>{`${item.nftName ?? ""} #${item.nftTokenId}`}</div>
               </Tooltip>
             </Box>
-            <img src={imgSrc} alt={item.MediaName} />
+            <img src={imgSrc} alt={item.nftName} />
             <div className={classes.starGroup}>
               <Box fontSize={10} mr={"2px"}>
                 🌟{" "}

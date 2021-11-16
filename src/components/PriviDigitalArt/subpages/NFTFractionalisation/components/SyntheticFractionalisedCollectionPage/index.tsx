@@ -17,6 +17,7 @@ import AuctionCard from "../../../../components/Cards/AuctionCard";
 import SyntheticFractionalisedJotPoolsPage from "../SyntheticFractionalisedJotPoolsPage";
 import SyntheticFractionalisedTradeJotPage from "../SyntheticFractionalisedTradeJotPage";
 import SyntheticFractionalisedRedemptionPage from "../SyntheticFractionalisedRedemptionPage";
+import { ReactComponent as QuickSwapIcon } from "assets/icons/quick-swap-icon.svg";
 import {
   getSyntheticCollection,
   startSyntheticNFTAuction,
@@ -569,15 +570,6 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             >
               <span>STAKE</span>
             </div>
-            <div
-              className={cls(
-                { [classes.selectedTabSection]: selectedTab === "trade_jots" },
-                classes.tabSection
-              )}
-              onClick={() => setSelectedTab("trade_jots")}
-            >
-              <span>TRADE JOTS</span>
-            </div>
             {auctionNFTs.length ? (
               <div
                 className={cls(
@@ -599,6 +591,16 @@ const SyntheticFractionalisedCollectionPage = ({ goBack, match }) => {
             >
               <span>REDEMPTION</span>
             </div>
+            <Box
+              onClick={() => history.push(`/fractionalisation/collection/quick_swap/${params.id}`)}
+              className={classes.tradeOnQuickswap}
+              display="flex"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
+              Trade on quickswap
+              <QuickSwapIcon />
+            </Box>
           </div>
         </Box>
         {selectedTab === "nft" ? (

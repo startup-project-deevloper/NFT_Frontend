@@ -106,38 +106,34 @@ export default function SyntheticFractionalisedTradeJotPage({ collection }) {
     <Box className={classes.root}>
       <Box className={classes.infoWrap}>
         <LoadingWrapper loading={loadingTradingInfo}>
-          {!graphData || graphData[0].data.data.length ? (
-            <>
-              <Grid item md={3} xs={12}>
-                <Box className={classes.leftJots}>
-                  <Box className={classes.jotWrapper}>
-                    <Box className={classes.jotLabel}>TVL</Box>
-                    <Box className={classes.jotTitle}>${formatNumber(tvl)}</Box>
-                  </Box>
-                  <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
-                  <Box className={classes.jotWrapper}>
-                    <Box className={classes.jotLabel}>24h Trading Vol</Box>
-                    <Box className={classes.jotTitle}>${formatNumber(volume24h)}</Box>
-                  </Box>
-                  <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
-                  <Box className={classes.jotWrapper}>
-                    <Box className={classes.jotLabel}>7d Trading Vol</Box>
-                    <Box className={classes.jotTitle}>${formatNumber(volume7h)}</Box>
-                  </Box>
-                </Box>
-              </Grid>
-              {/* chart gird */}
-              <Grid item md={9} xs={12}>
-                <PriceGraph
-                  graphData={graphData}
-                  title={
-                    unit === "BTC" ? `${formatNumber(token1Price)}USDC` : `${formatNumber(token0Price, 8)}BTC`
-                  }
-                  subTitle={moment().format("YYYY MMM DD")}
-                />
-              </Grid>
-            </>
-          ) : null}
+          <Grid item md={3} xs={12}>
+            <Box className={classes.leftJots}>
+              <Box className={classes.jotWrapper}>
+                <Box className={classes.jotLabel}>TVL</Box>
+                <Box className={classes.jotTitle}>${formatNumber(tvl)}</Box>
+              </Box>
+              <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
+              <Box className={classes.jotWrapper}>
+                <Box className={classes.jotLabel}>24h Trading Vol</Box>
+                <Box className={classes.jotTitle}>${formatNumber(volume24h)}</Box>
+              </Box>
+              <Divider color="rgba(0, 0, 0, 0.1)" className={classes.jotDivider} />
+              <Box className={classes.jotWrapper}>
+                <Box className={classes.jotLabel}>7d Trading Vol</Box>
+                <Box className={classes.jotTitle}>${formatNumber(volume7h)}</Box>
+              </Box>
+            </Box>
+          </Grid>
+          {/* chart gird */}
+          <Grid item md={9} xs={12}>
+            <PriceGraph
+              graphData={graphData}
+              title={
+                unit === "BTC" ? `${formatNumber(token1Price)}USDC` : `${formatNumber(token0Price, 8)}BTC`
+              }
+              subTitle={moment().format("YYYY MMM DD")}
+            />
+          </Grid>
         </LoadingWrapper>
       </Box>
       <Box className={classes.outBox}>

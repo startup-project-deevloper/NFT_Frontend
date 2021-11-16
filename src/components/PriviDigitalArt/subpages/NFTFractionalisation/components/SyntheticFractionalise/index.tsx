@@ -22,6 +22,9 @@ import axios from "axios";
 import URL from "shared/functions/getURL";
 import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
 import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
+import { getNfts } from "shared/services/API";
+
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 // parse it to same format as fb collection
 const parseMoralisData = async (data, address, selectedChain) => {
@@ -35,7 +38,6 @@ const parseMoralisData = async (data, address, selectedChain) => {
         const { data: tokenResp } = await axios.post(`${URL()}/syntheticFractionalize/getTokenInfo`, {
           url: tokenURI,
         });
-        console.log("tokenResp", tokenResp);
         if (tokenResp.success) {
           metadata = tokenResp.data;
         }
@@ -90,73 +92,23 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        let myNFTs = [];
-        const res = await getMySyntheticFractionalisedNFT();
-        if (res.success) {
-          myNFTs = res.nfts.filter(nft => !nft.isUnlocked) ?? [];
-        }
-        loadNFT(myNFTs);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-      }
-    })();
-  }, []);
+    loadNFT();
+  }, [chainIdCopy, walletConnected]);
 
-  // sync selected chain with metamask chain
-  const handleSyncChain = async () => {
-    if (chainId != selectedChain.chainId) {
-      const changed = await switchNetwork(selectedChain.chainId);
-      if (!changed) setSelectedChain(prevSelectedChain);
-      else setChainIdCopy(selectedChain.chainId);
-      return changed;
-    }
-    return true;
-  };
-
-  // sync metamask chain with dropdown chain selection and load nft balance from wallet
-  const loadNFT = async myNFTs => {
+  const loadNFT = async () => {
     if (walletConnected) {
-      const changed = true; //await handleSyncChain();
-      if (changed) {
-        setLoadingNFTS(true);
-        const { result } = await getNFTBalanceFromMoralis(account!, selectedChain.chainId!);
-        if (result) {
-          const pixCreatedNftMap = {};
-          const externallyCreatedNft: any[] = [];
-          for (let obj of result) {
-            const data = await parseMoralisData(obj, account, selectedChain);
-            if (["PRIVIERC721", "PNR"].includes(data.MediaSymbol)) pixCreatedNftMap[data.BlockchainId] = data;
-            else externallyCreatedNft.push(data);
-          }
-          // get pix created nft data from backend
-          if (Object.keys(pixCreatedNftMap).length) {
-            const resp = await getNftDataByTokenIds(Object.keys(pixCreatedNftMap));
-            if (resp?.success) {
-              let data = resp.data;
-              Object.keys(data).forEach(k => {
-                pixCreatedNftMap[k] = {
-                  ...data[k],
-                  tokenAddress: selectedChain.config.CONTRACT_ADDRESSES.PRIVIERC721,
-                };
-              });
-            }
-          }
-          // set user nfts
-          const nfts = [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(
-            item =>
-              !myNFTs.find(nft => nft.collection_id === item.tokenAddress && nft.NftId == item.BlockchainId)
-          );
-          setUserNFTs(nfts);
-        }
-        setLoadingNFTS(false);
+      setLoadingNFTS(true);
+
+      const response = await getNfts({
+        mode: isProd ? "main" : "test",
+        network: selectedChain.chainName,
+      });
+      if (response.success) {
+        setUserNFTs(response.data);
       } else {
-        setUserNFTs([]);
+        showAlertMessage(`Can't fetch nfts`);
       }
+      setLoadingNFTS(false);
     }
   };
 
@@ -171,17 +123,10 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
     } else if (!initialPrice || Number(initialPrice) <= 0) {
       showAlertMessage("Please enter a valid initial fraction price", { variant: "error" });
       return false;
-      // } else if (!supply || Number(supply) <= 0) {
-      //   showAlertMessage("Please enter a valid supply", { variant: "error" });
-      //   return false;
     } else if (+supply > 10000) {
       showAlertMessage("Please enter a valid JOTs number(< 10000)", { variant: "error" });
       return false;
     }
-    //  else if (!minUnlockingDate) {
-    //   showAlertMessage("Please set Minimum Unlocking Date", { variant: "error" });
-    //   return false;
-    // }
     return true;
   };
 

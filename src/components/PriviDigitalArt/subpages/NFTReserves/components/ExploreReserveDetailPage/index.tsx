@@ -16,7 +16,7 @@ import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferMod
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 
 
-const ExploreOptionDetailPage = () => {
+const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
   const { img_id } = useParams();
   const history = useHistory();
@@ -275,4 +275,4 @@ const ExploreOptionDetailPage = () => {
   );
 };
 
-export default React.memo(ExploreOptionDetailPage);
+export default React.memo(ExploreReserveDetailPage);

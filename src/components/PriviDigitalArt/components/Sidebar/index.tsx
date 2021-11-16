@@ -16,7 +16,7 @@ const TABS = [
   // "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
-  "NFT OPTIONS",
+  "NFT RESERVES",
   "NFT FRACTIONALISATION",
 ];
 

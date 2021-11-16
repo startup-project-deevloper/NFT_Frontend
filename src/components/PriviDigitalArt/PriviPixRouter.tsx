@@ -24,18 +24,18 @@ import SyntheticFractionalisedCollectionPage from "./subpages/NFTFractionalisati
 import SyntheticFractionalisedCollectionNFTPage from "./subpages/NFTFractionalisation/components/SyntheticFractionalisedCollectionNFTPage";
 import NFTPositionManagerPage from "./subpages/NFTPositionManagerPage";
 import MyNFTPage from "./subpages/MyNFTPage";
-import NFTOption from "./subpages/NFTOption";
-import CreateNftOption from "./subpages/NFTOption/components/CreateNftOption";
-import ExploreOptionDetailPage from "./subpages/NFTOption/components/ExploreOptionDetailPage";
-import ManageOptionDetailPage from "./subpages/NFTOption/components/ManageOptionDetailPage";
-import NftCreatorAcceptPage from "./subpages/NFTOption/components/NftCreatorAcceptPage";
-import OfferAcceptedPage from "./subpages/NFTOption/components/OfferAcceptedPage";
-import BoughtNftView from "./subpages/NFTOption/components/BoughtNftView";
-import OfferPlacedDetailPage from "./subpages/NFTOption/components/OfferPlacedDetailPage";
-import PaymentPage from "./subpages/NFTOption/components/PaymentPage";
-import ExpirationDayFailedToPay from "./subpages/NFTOption/components/ExpirationDayFailedToPay";
-import ExpirationDayPaid from "./subpages/NFTOption/components/ExpirationDayPaid";
-import AfterOfferAccepted from "./subpages/NFTOption/components/AfterOfferAccepted";
+import NFTReserves from "./subpages/NFTReserves";
+import CreateNftOption from "./subpages/NFTReserves/components/CreateNftOption";
+import ExploreReserveDetailPage from "./subpages/NFTReserves/components/ExploreReserveDetailPage";
+import ManageOptionDetailPage from "./subpages/NFTReserves/components/ManageOptionDetailPage";
+import NftCreatorAcceptPage from "./subpages/NFTReserves/components/NftCreatorAcceptPage";
+import OfferAcceptedPage from "./subpages/NFTReserves/components/OfferAcceptedPage";
+import BoughtNftView from "./subpages/NFTReserves/components/BoughtNftView";
+import OfferPlacedDetailPage from "./subpages/NFTReserves/components/OfferPlacedDetailPage";
+import PaymentPage from "./subpages/NFTReserves/components/PaymentPage";
+import ExpirationDayFailedToPay from "./subpages/NFTReserves/components/ExpirationDayFailedToPay";
+import ExpirationDayPaid from "./subpages/NFTReserves/components/ExpirationDayPaid";
+import AfterOfferAccepted from "./subpages/NFTReserves/components/AfterOfferAccepted";
 import TradeOnQuickSwap from "./subpages/NFTFractionalisation/components/SyntheticFractionalisedTradeJotPage/TradeOnQuickSwap";
 import MarketplaceDetailPage from "./subpages/MarketplacePage/components/MarketplaceDetailPage";
 import Fractionalise from "./subpages/NFTFractionalisation/components/Fractionalise";
@@ -67,7 +67,7 @@ export default function PriviPixRouter(props) {
       <Route exact path="/loan/:loanId" component={NFTLoanDetailPage} />
       <Route exact path="/loan/asset/:assetId" component={NFTLoanAssetDetailPage} />
       <Route exact path="/option/create_nft_option" component={CreateNftOption} />
-      <Route exact path="/option/explore/:img_id" component={ExploreOptionDetailPage} />
+      <Route exact path="/option/explore/:img_id" component={ExploreReserveDetailPage} />
       <Route exact path="/option/managefutures/:img_id" component={ManageOptionDetailPage} />
       <Route exact path="/option/nft_creator" component={NftCreatorAcceptPage} />
       <Route exact path="/option/offer_accepted" component={OfferAcceptedPage} />
@@ -77,7 +77,7 @@ export default function PriviPixRouter(props) {
       <Route exact path="/option/expiration_day_failed_pay" component={ExpirationDayFailedToPay} />
       <Route exact path="/option/expiration_day_paid" component={ExpirationDayPaid} />
       <Route exact path="/option/after_offer_accepted" component={AfterOfferAccepted} />
-      <Route exact path="/option/:id" component={NFTOption} />
+      <Route exact path="/option/:id" component={NFTReserves} />
       <Route exact path="/fractionalisation/:id" component={FractionPage} />
       <Route exact path="/fractionalisation/synthetic/:id" component={SyntheticFractionPage} />
       <Route

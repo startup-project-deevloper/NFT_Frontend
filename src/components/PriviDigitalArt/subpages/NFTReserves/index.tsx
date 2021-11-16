@@ -38,7 +38,10 @@ const NFTOption = () => {
             <Box className={classes.main}>
                 <div className={classes.content}>
                     <div className={classes.titleBar}>
-                        <div className={classes.title}>FUTURE MARKETPLACE</div>
+                        <Box display="flex" flexDirection="column">
+                            <div className={classes.title}>Not your average NFT marketplace</div>
+                            <div className={classes.subTitle}>Rent, borrow and reserve to buy later.</div>
+                        </Box>
                         <SecondaryButton
                             size="medium"
                             className={classes.manageButton}
@@ -46,27 +49,16 @@ const NFTOption = () => {
                             history.push("/option/create_nft_option");
                             }}
                         >
-                            <span style={{ margin: 'auto', paddingTop: '6px'}}>Sell NFT in Futures</span>
+                            <span style={{ margin: 'auto', paddingTop: '6px'}}>Manage Your NFTs</span>
                         </SecondaryButton>
                     </div>
                     <Box width="100%" borderBottom="2px solid rgba(196,196,196,0.4)">
                         <div className={classes.subTitleSection}>
                             <div
-                            className={cls({ [classes.selectedTabSection]: selectedTab === "explore" }, classes.tabSection)}
-                            onClick={handleExploreClick}
+                                className={cls({ [classes.selectedTabSection]: selectedTab === "explore" }, classes.tabSection)}
+                                onClick={handleExploreClick}
                             >
-                            <span>EXPLORE</span>
-                            </div>
-                            <div
-                            className={cls(
-                                { [classes.selectedTabSection]: selectedTab === "managefutures" },
-                                classes.tabSection
-                            )}
-                            onClick={handleManagefuturesClick}
-                            >
-                            <span>
-                                MANAGEFUTURES
-                            </span>
+                            <span>EXPLORE ALL</span>
                             </div>
                         </div>
                     </Box>

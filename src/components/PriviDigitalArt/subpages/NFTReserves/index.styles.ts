@@ -67,9 +67,22 @@ export const useNFTOptionsStyles = makeStyles(theme => ({
   },
   title: {
     fontFamily: "Agrandir GrandHeavy",
-    fontSize: 40,
+    fontSize: 32,
     fontWeight: 800,
     color: "#431AB7",
+    [theme.breakpoints.down(950)]: {
+      fontSize: 28,
+    },
+    [theme.breakpoints.down("xs")]: {
+      paddingBottom: 8,
+    },
+  },
+  subTitle: {
+    fontFamily: "Agrandir",
+    fontSize: 20,
+    fontWeight: 400,
+    color: "#431AB7",
+    marginTop: 8,
     [theme.breakpoints.down(950)]: {
       fontSize: 28,
     },
@@ -80,7 +93,7 @@ export const useNFTOptionsStyles = makeStyles(theme => ({
   manageButton: {
     position: "relative",
     background: "linear-gradient(269.78deg, #418DFF 1.15%, #4541FF 52.53%, #EF41CB 94.95%), #000000",
-    borderRadius: "8px !important",
+    borderRadius: "25px !important",
     color: "#fff !important",
     border: "none !important",
     display: "flex",
@@ -89,6 +102,7 @@ export const useNFTOptionsStyles = makeStyles(theme => ({
     fontSize: "18px !important",
     padding: "0 50px !important",
     lineHeight: "24px !important",
+    marginBottom: 25
   },
   subTitleSection: {
     display: "flex",
@@ -118,6 +132,8 @@ export const useNFTOptionsStyles = makeStyles(theme => ({
     alignItems: "center",
     textAlign: "center",
     margin: "0 40px",
+    fontSize: 18,
+    fontFamily: "Agrandir GrandHeavy",
     [theme.breakpoints.down(1250)]: {
       minWidth: 420,
     },

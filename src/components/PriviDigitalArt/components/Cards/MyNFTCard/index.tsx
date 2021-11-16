@@ -23,6 +23,7 @@ export default function MyNFTCard({
   onVerifyCompleted,
   handleClick,
 }: IProps) {
+  console.log('3939393939939393', item)
   const classes = myNFTCardStyles();
   const history = useHistory();
   const { isSignedin } = useAuth();
@@ -76,7 +77,7 @@ export default function MyNFTCard({
             )}
           </Box>
           <img
-            src={item.imageUrl || require("assets/backgrounds/digital_art_1.png")}
+            src={item.Url || require("assets/backgrounds/digital_art_1.png")}
             alt="nft image"
             style={{ borderRadius: 16 }}
           />

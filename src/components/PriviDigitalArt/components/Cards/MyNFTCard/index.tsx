@@ -76,7 +76,7 @@ export default function MyNFTCard({
             )}
           </Box>
           <img
-            src={item.imageUrl || require("assets/backgrounds/digital_art_1.png")}
+            src={item.Url || require("assets/backgrounds/digital_art_1.png")}
             alt="nft image"
             style={{ borderRadius: 16 }}
           />

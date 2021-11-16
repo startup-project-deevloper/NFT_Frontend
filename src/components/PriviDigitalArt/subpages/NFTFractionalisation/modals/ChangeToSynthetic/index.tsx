@@ -7,13 +7,7 @@ import ProgressBar from "./components/ProgressBar";
 import VerifyNFTLock from "./components/VerifyNFTLock";
 import { ChangeToSyntheticModalStyles } from "./index.styles";
 
-export default ({
-  open,
-  onClose,
-  onSuccess,
-  selectedNFT,
-  currentNFT
-}) => {
+export default ({ open, onClose, onSuccess, selectedNFT, currentNFT }) => {
   const classes = ChangeToSyntheticModalStyles();
   const [step, setStep] = useState<number>(0);
   const [syntheticNFT, setSyntheticNFT] = useState<any>();
@@ -33,10 +27,10 @@ export default ({
   };
 
   useEffect(() => {
-    if (currentNFT.NftId !== selectedNFT.BlockchainId) {
-      setCurNFT(currentNFT)
+    if (currentNFT.NftId !== selectedNFT.nftTokenId) {
+      setCurNFT(currentNFT);
     }
-  }, [currentNFT])
+  }, [currentNFT]);
 
   return (
     <Modal size="small" isOpen={open} onClose={onClose} showCloseIcon className={classes.root}>
@@ -48,7 +42,7 @@ export default ({
         {step === 0 ? (
           <RequestChangeNFT
             onClose={onClose}
-            onCompleted={(nft) => {
+            onCompleted={nft => {
               setSyntheticNFT(nft);
               handleCompleteStep(0);
             }}

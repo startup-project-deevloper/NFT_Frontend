@@ -148,11 +148,9 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
             <Box display="flex" alignItems="center" justifyContent="space-evenly">
               <NFTCard
                 item={{
-                  tokenAddress: currentNFT.collectionAddress,
-                  BlockchainId: currentNFT.NftId,
-                  MediaName: currentNFT.name,
-                  Url: currentNFT.Url,
-                  BlockchainNetwork: "Ethereum Chain",
+                  nftTokenId: currentNFT.NftId,
+                  nftName: currentNFT.name,
+                  nftPictureUrl: currentNFT.Url,
                 }}
                 handleSelect={() => {}}
                 isSmall
@@ -192,11 +190,9 @@ export default function LockNFT({ onClose, onCompleted, selectedNFT, currentNFT 
             <Box display="flex" alignItems="center" justifyContent="space-evenly">
               <NFTCard
                 item={{
-                  tokenAddress: currentNFT.collectionAddress,
-                  BlockchainId: currentNFT.NftId,
-                  MediaName: currentNFT.name,
-                  Url: currentNFT.Url,
-                  BlockchainNetwork: "Ethereum Chain",
+                  nftTokenId: currentNFT.NftId,
+                  nftName: currentNFT.name,
+                  nftPictureUrl: currentNFT.Url,
                 }}
                 handleSelect={() => {}}
                 isSmall

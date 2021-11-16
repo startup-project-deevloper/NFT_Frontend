@@ -5,9 +5,9 @@ import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import { BlockchainNets } from "shared/constants/constants";
-import { switchNetwork } from "shared/functions/metamask";
-import { getNFTBalanceFromMoralis } from "shared/services/API/balances/externalAPI";
-import { getNftDataByTokenIds, mint } from "shared/services/API/FractionalizeAPI";
+import { getMySyntheticFractionalisedNFT } from "shared/services/API/SyntheticFractionalizeAPI";
+import { getNfts } from "shared/services/API";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 import { useFractionaliseStyles } from "./index.styles";
 import NFTCard from "./NFTCard";
@@ -15,10 +15,11 @@ import ChangeToSyntheticModal from "../../modals/ChangeToSynthetic";
 import { useWeb3React } from "@web3-react/core";
 
 const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
+const isProd = process.env.REACT_APP_ENV === "prod";
 
 const ChangeNFTToSynthetic = ({ goBack, nft }) => {
   const classes = useFractionaliseStyles();
-  const [loadingnNFTS, setLoadingnNFTS] = useState<boolean>(false);
+  const [loadingNFTS, setLoadingNFTS] = useState<boolean>(false);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [selectedNFT, setSelectedNFT] = useState<any>();
   const { account, library, chainId } = useWeb3React();
@@ -33,84 +34,40 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
   const isTablet = useMediaQuery(theme.breakpoints.between(769, 960));
   const isMiniTablet = useMediaQuery(theme.breakpoints.between(700, 769));
   const isMobile = useMediaQuery(theme.breakpoints.down(700));
+  const { showAlertMessage } = useAlertMessage();
 
-  // parse it to same format as fb collection
-  const parseMoralisData = (data, address, selectedChain) => {
-    const metadata = data.metadata ? JSON.parse(data.metadata) : {};
-    return {
-      BlockchainId: data.token_id,
-      BlockchainNetwork: selectedChain.value,
-      Collabs: {},
-      CreatorAddress: address,
-      HasPhoto: metadata.image != undefined,
-      Hashtags: [],
-      MediaDescription: metadata.description,
-      MediaName: metadata.name ? metadata.name : data.name ? data.name : data.symbol,
-      MediaSymbol: data.symbol ? data.symbol : data.name,
-      Type: "DIGITAL_ART_TYPE",
-      Url: metadata.image,
-      chainId: selectedChain.chainId,
-      contractType: data.contract_type,
-      tokenAddress: data.token_address,
-    };
-  };
-
-  // sync selected chain with metamask chain
-  const handleSyncChain = async () => {
-    if (chainId != selectedChain.chainId) {
-      const changed = await switchNetwork(selectedChain.chainId);
-      if (!changed) setSelectedChain(prevSelectedChain);
-      else setChainIdCopy(selectedChain.chainId);
-      return changed;
-    }
-    return true;
-  };
+  useEffect(() => {
+    loadNFT();
+  }, [chainIdCopy, walletConnected]);
 
   // sync metamask chain with dropdown chain selection and load nft balance from wallet
   const loadNFT = async () => {
     if (walletConnected) {
-      const changed = await handleSyncChain();
-      if (changed) {
-        setLoadingnNFTS(true);
-        const { result } = await getNFTBalanceFromMoralis(account!, selectedChain.chainId!);
-        if (result) {
-          const pixCreatedNftMap = {};
-          const externallyCreatedNft: any[] = [];
-          for (let obj of result) {
-            const data = parseMoralisData(obj, account, selectedChain);
-            if (["PRIVIERC721", "PNR"].includes(data.MediaSymbol)) pixCreatedNftMap[data.BlockchainId] = data;
-            else externallyCreatedNft.push(data);
-          }
-          // get pix created nft data from backend
-          if (Object.keys(pixCreatedNftMap).length) {
-            const resp = await getNftDataByTokenIds(Object.keys(pixCreatedNftMap));
-            if (resp?.success) {
-              let data = resp.data;
-              Object.keys(data).forEach(k => {
-                pixCreatedNftMap[k] = {
-                  ...data[k],
-                  tokenAddress: selectedChain.config.CONTRACT_ADDRESSES.PRIVIERC721,
-                };
-              });
-            }
-          }
-          // set user nfts
-          setUserNFTs(
-            [...Object.values(pixCreatedNftMap), ...externallyCreatedNft].filter(
-              item => item.BlockchainId !== nft.NftId
-            )
-          );
-        }
-        setLoadingnNFTS(false);
-      } else {
-        setUserNFTs([]);
+      setLoadingNFTS(true);
+      let myNFTs: any[] = [];
+      const res = await getMySyntheticFractionalisedNFT();
+      if (res.success) {
+        myNFTs = res.nfts.filter(nft => !nft.isUnlocked) ?? [];
       }
+      const response = await getNfts({
+        mode: isProd ? "main" : "test",
+        network: selectedChain.chainName,
+      });
+      if (response.success) {
+        setUserNFTs(
+          response.data.filter(
+            item =>
+              !myNFTs.find(
+                nft => nft.collection_id === item.nftCollection.address && nft.NftId == item.nftTokenId
+              )
+          )
+        );
+      } else {
+        showAlertMessage(`Can't fetch nfts`);
+      }
+      setLoadingNFTS(false);
     }
   };
-
-  useEffect(() => {
-    loadNFT();
-  }, [chainIdCopy, selectedChain, account, walletConnected]);
 
   const handleConnectWallet = () => {
     setWalletConnected(true);
@@ -158,7 +115,7 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
           )}
 
           {walletConnected && (
-            <LoadingWrapper loading={loadingnNFTS} theme={"blue"}>
+            <LoadingWrapper loading={loadingNFTS} theme={"blue"}>
               {userNFTs && userNFTs.length > 0 ? (
                 <Box
                   width={1}
@@ -229,7 +186,7 @@ const COLUMNS_COUNT_BREAK_POINTS_TWO = {
   586: 2,
   800: 3,
   1440: 4,
-  1920: 5
+  1920: 5,
 };
 
 export default ChangeNFTToSynthetic;

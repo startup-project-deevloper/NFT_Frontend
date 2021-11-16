@@ -4,7 +4,6 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Box from "shared/ui-kit/Box";
 import { ReactComponent as CopyIcon } from "assets/icons/copy-icon.svg";
-import { PriceFeed_URL, PriceFeed_Token } from "shared/functions/getURL";
 import axios from "axios";
 import URL from "shared/functions/getURL";
 import Web3 from "web3";
@@ -15,8 +14,8 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
 import { ContractInstance } from "shared/connectors/web3/functions";
 import config from "shared/connectors/web3/config";
-import JOT from "shared/services/API/web3/contracts/ERC20Tokens/JOT";
 import SyntheticProtocolRouter from "shared/connectors/web3/contracts/SyntheticProtocolRouter.json";
+import { sanitizeIfIpfsUrl } from "shared/helpers/utils";
 
 declare let window: any;
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -103,17 +102,6 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
     setIsProceeding(true);
 
     try {
-      const { data: collectionInfo } = await axios.get(
-        `${PriceFeed_URL()}/nft/collection-address?contract=${selectedNFT.tokenAddress}${
-          !isProd ? "&network=rinkeby" : ""
-        }`,
-        {
-          headers: {
-            Authorization: `Basic ${PriceFeed_Token()}`,
-          },
-        }
-      );
-
       const web3 = new Web3(library.provider);
       const targetChain = BlockchainNets[1];
 
@@ -122,13 +110,13 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
       const contractAddress = config[network].CONTRACT_ADDRESSES.SYNTHETIC_PROTOCOL_ROUTER;
 
       const contract = ContractInstance(web3, SyntheticProtocolRouter.abi, contractAddress);
-      const tokenURI = selectedNFT.tokenURI || "";
+      const tokenURI = selectedNFT.nftTokenUrl || "";
 
       const gas = await contract.methods
-        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.BlockchainId, tokenURI)
+        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.nftTokenId, tokenURI)
         .estimateGas({ from: account });
       const response = await contract.methods
-        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.BlockchainId, tokenURI)
+        .changeNFT(currentNFT.collection_id, currentNFT.SyntheticID, selectedNFT.nftTokenId, tokenURI)
         .send({ from: account, gas })
         .on("transactionHash", hash => {
           setHash(hash);
@@ -153,11 +141,11 @@ export default function RequestChangeNFT({ onClose, onCompleted, selectedNFT, cu
       } else {
         setIsLoading(false);
         let params = {
-          collectionAddress: selectedNFT.tokenAddress,
+          collectionAddress: selectedNFT.nftCollection.address,
           SyntheticID: currentNFT.SyntheticID,
-          NFTId: selectedNFT.BlockchainId,
-          NFTName: selectedNFT.MediaName,
-          NFTImageUrl: selectedNFT.Url,
+          NFTId: selectedNFT.nftTokenId,
+          NFTName: selectedNFT.nftName,
+          NFTImageUrl: sanitizeIfIpfsUrl(selectedNFT.nftPictureUrl),
           isAddCollection: false,
           Price: currentNFT.Price,
           OwnerSupply: currentNFT.OwnerSupply,

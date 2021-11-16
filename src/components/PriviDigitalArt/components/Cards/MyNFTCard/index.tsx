@@ -23,7 +23,6 @@ export default function MyNFTCard({
   onVerifyCompleted,
   handleClick,
 }: IProps) {
-  console.log('3939393939939393', item)
   const classes = myNFTCardStyles();
   const history = useHistory();
   const { isSignedin } = useAuth();

@@ -98,13 +98,24 @@ const SyntheticFractionalise = ({ goBack, isSynthetic = false }) => {
   const loadNFT = async () => {
     if (walletConnected) {
       setLoadingNFTS(true);
-
+      let myNFTs: any[] = [];
+      const res = await getMySyntheticFractionalisedNFT();
+      if (res.success) {
+        myNFTs = res.nfts.filter(nft => !nft.isUnlocked) ?? [];
+      }
       const response = await getNfts({
         mode: isProd ? "main" : "test",
         network: selectedChain.chainName,
       });
       if (response.success) {
-        setUserNFTs(response.data);
+        setUserNFTs(
+          response.data.filter(
+            item =>
+              !myNFTs.find(
+                nft => nft.collection_id === item.nftCollection.address && nft.NftId == item.nftTokenId
+              )
+          )
+        );
       } else {
         showAlertMessage(`Can't fetch nfts`);
       }

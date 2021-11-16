@@ -6,15 +6,14 @@ import Box from "shared/ui-kit/Box";
 import { Color, PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { Avatar, Text } from "shared/ui-kit";
-import { getJotPoolBalanceHistory } from "shared/services/API/SyntheticFractionalizeAPI";
+import { getStakingHistory } from "shared/services/API/SyntheticFractionalizeAPI";
 import { SyntheticFractionalisedJotPoolsPageStyles } from "./index.styles";
 import AddLiquidityModal from "components/PriviDigitalArt/modals/AddLiquidityModal";
 import RemoveLiquidityModal from "components/PriviDigitalArt/modals/RemoveLiquidityModal";
-import { ReactComponent as ArrowUp } from "assets/icons/arrow_up.svg";
-import { ReactComponent as ArrowDown } from "assets/icons/arrow_down.svg";
 import LiquidityModal from "../../modals/LiquidityModal";
 import { BlockchainNets } from "shared/constants/constants";
 import { useWeb3React } from "@web3-react/core";
+import { format } from "date-fns";
 import PriceGraph from "../../../../components/PriceGraph";
 
 const isProd = process.env.REACT_APP_ENV === "prod";
@@ -159,8 +158,6 @@ export const CoinFlipHistoryTable = ({ datas, nfts }) => {
 export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const { collection } = props;
   const classes = SyntheticFractionalisedJotPoolsPageStyles();
-  const PERIODS = ["1D", "7D", "1M", "YTD"];
-  const [period, setPeriod] = React.useState<string>(PERIODS[0]);
 
   const [openLiquidityModal, setOpenLiquidityModal] = React.useState<boolean>(false);
   const [openRemoveLiquidityModal, setOpenRemoveLiquidityModal] = React.useState<boolean>(false);
@@ -175,16 +172,21 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
   const [poolOwnership, setPoolOwnership] = React.useState(0);
   const [myLiquidityValue, setMyLiquidityValue] = React.useState(0);
   const [rewardValue, setRewardValue] = React.useState(0);
-  const [jotPoolBalanceHistory, setJotPoolBalanceHistory] = React.useState([]);
+  const [graphData, setGraphData] = useState<any>(null);
 
   React.useEffect(() => {
     (async () => {
-      const resp = await getJotPoolBalanceHistory(collection.collectionAddress);
+      const resp = await getStakingHistory(collection.collectionAddress);
       if (resp?.success) {
-        setJotPoolBalanceHistory(resp.data);
+        setGraphData(resp.data.map((d) => {
+          return d.map(item => ({
+            value: +item.totalStaked,
+            time: Math.floor(+item.time / 1000)
+          }))
+        }));
       }
     })();
-  }, [period]);
+  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -268,10 +270,9 @@ export default function SyntheticFractionalisedJotPoolsPage(props: any) {
               </Grid>
               <Grid item md={9} xs={12}>
                 <PriceGraph
-                  data={jotPoolBalanceHistory}
+                  graphData={graphData}
                   title="4245,24 USDC"
                   subTitle="12 Sep 2021"
-                  filterDisable
                 />
               </Grid>
             </Grid>

@@ -116,6 +116,19 @@ export async function getJotPoolBalanceHistory(collectionId): Promise<any> {
   }
 }
 
+export async function getStakingHistory(collectionId): Promise<any> {
+  try {
+    const response = await axios.get(`${URL()}/syntheticFractionalize/getStakingHistory`, {
+      params: {
+        collectionId,
+      },
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
 /////////////////////////// POST /////////////////////////
 
 export async function buyJots(payload): Promise<any> {

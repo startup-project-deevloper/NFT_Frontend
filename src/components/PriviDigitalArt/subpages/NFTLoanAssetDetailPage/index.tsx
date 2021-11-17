@@ -259,11 +259,11 @@ const NFTLoanAssetDetailPage = () => {
           _details_data[4].value = 'No Limit'
           _details_data[5].value = `0 ${_market?.token_info?.Symbol}`
           _details_data[6].value = `${_market?.borrowList.length > 0 ? _market?.borrowList[0].total_reserves / (10 ** _market?.token_info?.Decimals) : 0} ${_market?.token_info?.Symbol}`
-          _details_data[7].value = `${(_market?.initialReserveFactor || 0) * 100} %`
+          _details_data[7].value = `${(_market?.reserve_factor || 0) * 100} %`
           _details_data[8].value = `${(_market?.collateralFactor || 0) * 100} %`
           _details_data[9].attribute = `c${_market?.token_info?.Symbol} Minted`
-          _details_data[9].value = `${_market?.c_total_supply / (10 ** market?.c_decimal)}`
-          _details_data[10].value = `1 ${_market?.token_info?.Symbol} = $${getCorrectNumber(_market?.initialExchangeRate)}`
+          _details_data[9].value = `${Number(_market?.c_total_supply) / (10 ** Number(_market?.c_decimal))}`
+          _details_data[10].value = `1 ${_market?.token_info?.Symbol} = ${getCorrectNumber(_market?.exchange_rate)} c${_market?.token_info?.Symbol}`
           setDetailsData(_details_data)
         }
       })

@@ -149,15 +149,15 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             Symbol: `JOT_${selectedNFT.nftCollection.symbol}`,
             Name: `Privi Jot ${selectedNFT.nftCollection.name}`,
             Decimals: decimals,
-            ImageUrl: "",
+            ImageUrl: sanitizeIfIpfsUrl(selectedNFT.nftPictureUrl),
             Type: "Crypto",
             Network: network,
             Address: collection.jotAddress,
           };
           const { data } = await axios.post(`${URL()}/token/addTokenInfo`, tokenParams);
-          // if (!data?.success) {
-          //   showAlertMessage(`Got failed while registering NFT`, { variant: "error" });
-          // }
+          if (!data?.success) {
+            console.log("failed to save new jot token info");
+          }
         }
         let params = {};
         if (collection) {

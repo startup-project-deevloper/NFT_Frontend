@@ -6,12 +6,12 @@ import cls from "classnames";
 import { Avatar, Color, PrimaryButton, SecondaryButton, Text } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
-import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import ReserveNftModal from "components/PriviDigitalArt/modals/ReserveNftModal";
+import ReserveNftModal from "components/PriviDigitalArt/modals/BlockNFTModal";
+import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 import BlockingTabSection from "./BlockingTabSection";
 import RentingTabSection from "./RentingTabSection";
@@ -276,7 +276,11 @@ const ExploreReserveDetailPage = () => {
                 <Box display="flex" alignItems="center" mb={3.5} mt={2.5}>
                   <Text className={classes.pricingText1}>Blocking Price:</Text>
                   <Text className={classes.pricingText2}>1ETH for 90 Days</Text>
-                  <PrimaryButton size="small" className={classes.pricingButton}>
+                  <PrimaryButton
+                    size="small"
+                    className={classes.pricingButton}
+                    onClick={() => setOpenReserveNftModal(true)}
+                  >
                     BLOCK
                   </PrimaryButton>
                 </Box>

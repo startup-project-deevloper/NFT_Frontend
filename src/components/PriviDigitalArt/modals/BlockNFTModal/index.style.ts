@@ -2,7 +2,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const ReserveNftModalStyles = makeStyles((theme) => ({
   container: {
-    maxWidth: "508px !important",
     padding:'0px !important'
   },
   nameField: {
@@ -61,7 +60,7 @@ export const ReserveNftModalStyles = makeStyles((theme) => ({
     fontSize: "16px"
   },
   totalText: {
-    fontFamily: 'Agrandir',
+    fontFamily: 'Agrandir GrandHeavy',
     fontStyle: 'normal',
     fontWeight: 800,
     fontSize: '14px',
@@ -72,5 +71,11 @@ export const ReserveNftModalStyles = makeStyles((theme) => ({
   footer: {
     padding: '18px 25px 25px 25px',
     background: '#e0e0e53b',
+  },
+  primaryButton: {
+    color: "#fff !important",
+    padding: "0 37px !important",
+    height: "40px !important",
+    border: "none !important"
   }
 }));

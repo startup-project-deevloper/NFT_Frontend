@@ -51,24 +51,28 @@ const NFTFractionalisation = () => {
 
   useEffect(() => {
     history.push("/fractionalise/synthetic-derivative");
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (selectedTab === "pure") {
-      setLoading(true);
-      getMySyntheticFractionalisedNFT().then(res => {
-        setPortofolioCount(res?.nfts?.length);
-      });
-      getFractionalizeVaults("")
-        .then(resp => {
-          const data = resp.data;
-          setMedias(data.data);
-          setHasMoreMedias(data.hasMore);
-          setLastIdx(data.data && data.data.length ? data.data[data.data.length - 1].MediaSymbol : "");
-          setLoading(false);
-        })
-        .catch(console.log);
-    }
+    getMySyntheticFractionalisedNFT().then(res => {
+      const myNFTs = (res?.nfts || []).filter(
+        nft =>
+          (nft.isVerified && !nft.isWithdrawn) ||
+          !nft.isLocked ||
+          (nft.isLocked && !nft.isVerified) ||
+          (nft.isWithdrawn && !nft.isUnlocked)
+      );
+      setPortofolioCount(myNFTs.length);
+    });
+    // getFractionalizeVaults("")
+    //   .then(resp => {
+    //     const data = resp.data;
+    //     setMedias(data.data);
+    //     setHasMoreMedias(data.hasMore);
+    //     setLastIdx(data.data && data.data.length ? data.data[data.data.length - 1].MediaSymbol : "");
+    //     setLoading(false);
+    //   })
+    //   .catch(console.log);
   }, [openFractionalize]);
 
   useEffect(() => {

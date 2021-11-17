@@ -47,7 +47,7 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
       let myNFTs: any[] = [];
       const res = await getMySyntheticFractionalisedNFT();
       if (res.success) {
-        myNFTs = res.nfts.filter(nft => !nft.isUnlocked) ?? [];
+        myNFTs = res.nfts.filter(nft => !nft.isUnlocked && nft) ?? [];
       }
       const response = await getNfts({
         mode: isProd ? "main" : "test",
@@ -58,8 +58,8 @@ const ChangeNFTToSynthetic = ({ goBack, nft }) => {
           response.data.filter(
             item =>
               !myNFTs.find(
-                nft => nft.collection_id === item.nftCollection.address && nft.NftId == item.nftTokenId
-              )
+                myNFT => myNFT.collection_id === item.nftCollection.address && myNFT.NftId == item.nftTokenId
+              ) && item.nftCollection.address === nft.collection_id
           )
         );
       } else {

@@ -5,12 +5,6 @@ import Box from "shared/ui-kit/Box";
 import { PrimaryButton } from "shared/ui-kit";
 import { CancelOfferModalStyles } from "./index.style";
 
-import { injected } from "shared/connectors";
-import Web3 from "web3";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
-import { ContractInstance } from "shared/connectors/web3/functions";
-import NFTReservalManagerContract from "shared/connectors/web3/contracts/NFTReservalManagerContract.json";
-
 export default function CancelOfferModal({ open, handleClose = () => {}, onConfirm }) {
   const classes = CancelOfferModalStyles();
   const [step, setStep] = useState<number>(0);

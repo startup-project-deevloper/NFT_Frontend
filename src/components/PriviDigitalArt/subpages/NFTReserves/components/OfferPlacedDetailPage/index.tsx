@@ -11,7 +11,7 @@ import { OfferPlacedDetailPageStyles } from "./index.styles";
 
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import ReserveNftModal from "components/PriviDigitalArt/modals/ReserveNftModal";
+import ReserveNftModal from "components/PriviDigitalArt/modals/BlockNFTModal";
 import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 

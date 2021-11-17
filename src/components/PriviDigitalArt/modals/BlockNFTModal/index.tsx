@@ -13,7 +13,7 @@ import { BlockchainNets } from "shared/constants/constants";
 
 import ExploreOptionCard from 'components/PriviDigitalArt/components/Cards/ExploreOptionCard';
 
-export default function ReserveNftModal({ open, handleClose = () => {}, onConfirm, img_url }) {
+export default function BlockNFTModal({ open, handleClose = () => {}, onConfirm, img_url }) {
   const classes = ReserveNftModalStyles();
   const { account, library, chainId } = useWeb3React();
 
@@ -22,6 +22,7 @@ export default function ReserveNftModal({ open, handleClose = () => {}, onConfir
   const [disappearDays, setDisappearDays] = React.useState<number>(0);
   const [collateral, setCollateral] = React.useState<number>(0);
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
+  const [step, setStep] = useState<number>(0);
 
 
   const filteredBlockchainNets = BlockchainNets.filter(b => b.name != "PRIVI");
@@ -35,11 +36,22 @@ export default function ReserveNftModal({ open, handleClose = () => {}, onConfir
     setReservePriceToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);
   }, [selectedChain]);
 
-  const handleAddToken = () => {
+  useEffect(() => {
+    if(!open) {
+      setStep(0)
+    }
+  }, [open])
 
+  const handleApprove = () => {
+    if (step !== 0) return;
+
+    setStep(1)
   }
 
   const handleConfirm = () => {
+    if (step !== 1) return;
+
+    setStep(2)
     setConfirmSuccess(true);
   }
 
@@ -49,12 +61,21 @@ export default function ReserveNftModal({ open, handleClose = () => {}, onConfir
   }
 
   return (
-    <Modal size="medium" isOpen={open} onClose={handleCloseModal} showCloseIcon className={classes.container}>
+    <Modal
+      size="medium"
+      isOpen={open}
+      onClose={handleCloseModal}
+      showCloseIcon
+      className={classes.container}
+      style={{
+        maxWidth: confirmSuccess ? 775 : 508
+      }}
+    >
       {!confirmSuccess && (
         <>
           <Box style={{padding:'25px'}}>
             <Box fontSize="24px" color="#431AB7">
-              Reserve NFT
+              Block NFT
             </Box>
             <Box className={classes.nameField}>
             </Box>
@@ -83,7 +104,7 @@ export default function ReserveNftModal({ open, handleClose = () => {}, onConfir
               </Box>
             </Box>
             <Box className={classes.nameField}>
-              Required x% Collateral
+              Required x% as Collateral
             </Box>
             <Grid container spacing={2}>
               <Grid item sm={7}>
@@ -122,15 +143,6 @@ export default function ReserveNftModal({ open, handleClose = () => {}, onConfir
                 </span>
               </Box>
             </Box>
-            <Box display="flex" alignItems="center" justifyContent="start">
-              <SecondaryButton
-                  size="medium"
-                  style={{ color: "#431AB7", maxWidth: "100px", border: "2px solid #431AB7", padding:'0px', margin:'27px 0px 40px 0px'}}
-                  onClick={handleAddToken}
-                >
-                  + AddToken
-              </SecondaryButton>
-            </Box>
           </Box>
           <Box className={classes.footer} >
             <Box className={classes.totalText}>
@@ -138,35 +150,47 @@ export default function ReserveNftModal({ open, handleClose = () => {}, onConfir
             </Box>
             <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box style={{color:'#431AB7', fontSize:'14px', fontFamily:'Montserrat', fontWeight: 500}}>
-                  Collateral at 40% / 50%
+                  Collateral at 40% / <b>50</b>%
                 </Box>
                 <Box style={{color:'#431AB7', fontSize:'14px', fontFamily:'Montserrat', fontWeight: 500}}>
                   22 225 USDT
                 </Box>
             </Box>
-            <Box display="flex" alignItems="center" justifyContent="space-between" mt={3}>
+            <Box display="flex" alignItems="center" justifyContent="flex-end" mt={3}>
               <SecondaryButton
                 size="medium"
-                style={{ color: "#431AB7", maxWidth: "50px", border: "2px solid #431AB7" }}
-                onClick={handleCloseModal}
+                className={classes.primaryButton}
+                style={{ backgroundColor: step !== 0 ? "#431AB750" : "#431AB7" }}
+                onClick={handleApprove}
               >
-                Cancel
+                Approve
               </SecondaryButton>
               <PrimaryButton
                 size="medium"
-                style={{ background: "#431AB7", color: "#ffffff", minWidth: "56%" }}
+                className={classes.primaryButton}
+                style={{ backgroundColor: step !== 1 ? "#431AB750" : "#431AB7" }}
                 onClick={handleConfirm}
               >
-                Confirm
+                Confirm Offer
               </PrimaryButton>
             </Box>
           </Box>
         </>
       )}
       {confirmSuccess && (
-        <Box style={{padding:'25px'}} display="flex" justifyContent="center" flexWrap="wrap">
+        <Box
+          style={{
+            padding:'50px 144px', 
+            maxWidth: "900px !important"
+          }}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          flexWrap="wrap"
+        >
             <ExploreOptionCard xs={6} sm={6} md={6} lg={6}  img_url={img_url} nft_name="test1" period="10" price="2300" pct="10"/>
-            <div style={{color:'#2D3047', fontSize:'22px', fontWeight: 800, marginTop:'31px'}}>You’ve reserved your NFT price.</div>
+            <div style={{ fontFamily: 'Agrandir GrandHeavy', color:'#2D3047', fontSize:'22px', fontWeight: 800, marginTop:'31px', textAlign: 'center'}}>You’ve blocked your NFT <br /> for purchase.</div>
             <div style={{color:'#54658F', fontSize:'16px', marginTop:'20px', textAlign:'center'}}>Congrat,s you’ve succesfully reserved a price to<br/> buy  [ NFT name] in future at [Price]</div>
             <PrimaryButton
               size="medium"

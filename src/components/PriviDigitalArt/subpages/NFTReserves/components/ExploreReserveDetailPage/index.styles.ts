@@ -344,7 +344,7 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     fontSize: 18,
     fontWeight: 800,
     lineHeight: "104.5%",
-    fontFamily: "Agrandir",
+    fontFamily: "Agrandir GrandHeavy",
     display: 'flex',
     alignItems: 'center',
     color: "rgba(67, 26, 183, 1)",

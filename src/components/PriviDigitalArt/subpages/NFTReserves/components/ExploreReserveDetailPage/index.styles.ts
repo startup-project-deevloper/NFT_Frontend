@@ -474,6 +474,16 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     lineHeight: '37px !important',
     height: '37px !important'
   },
+  cancelOfferButton: {
+    background: "#431AB7 !important",
+    color: "#ffffff !important",
+    padding:'0px 30px !important',
+    fontSize:'16px !important',
+    fontWeight: 700,
+    lineHeight: '37px !important',
+    height: '37px !important',
+    marginLeft: 55
+  },
   subTitleSection: {
     display: "flex",
     width: "100%",

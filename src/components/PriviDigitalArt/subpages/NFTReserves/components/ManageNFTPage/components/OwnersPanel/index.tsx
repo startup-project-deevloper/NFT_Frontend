@@ -9,6 +9,34 @@ const OwnersPanel = () => {
 
   return (
     <div className={classes.content}>
+      <Grid container className={classes.infoPanel}>
+        <Grid item sm={12} md={6} className={classes.subPanel}>
+          <span className={classes.infoTitle}>SALES REVENUE</span>
+          <Box className={classes.infoRow}>
+            <Box className={classes.infoSubPanel}>
+              <span className={classes.infoLabel}>Total</span>
+              <span className={classes.infoValue}>2455 USDT</span>
+            </Box>
+            <Box className={classes.infoSubPanel}>
+              <span className={classes.infoLabel}>Recent Month</span>
+              <span className={classes.infoValue}>24555 USDT</span>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item sm={12} md={6} className={classes.subPanel}>
+          <span className={classes.infoTitle}>RENTING REVENUE</span>
+          <Box className={classes.infoRow}>
+            <Box className={classes.infoSubPanel}>
+              <span className={classes.infoLabel}>Total</span>
+              <span className={classes.infoValue}>224.55 USDT</span>
+            </Box>
+            <Box className={classes.infoSubPanel}>
+              <span className={classes.infoLabel}>Recent Month</span>
+              <span className={classes.infoValue}>0.55 USDT</span>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           <ExploreCard

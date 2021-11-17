@@ -1,17 +1,17 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const MakeNewOfferModalStyles = makeStyles((theme) => ({
+export const MakeNewOfferModalStyles = makeStyles(theme => ({
   container: {
     maxWidth: "508px !important",
-    padding:'0px !important'
+    padding: "0px !important",
   },
   nameField: {
-    margin: '27px 0px 7px 0px',
-    fontFamily: 'Montserrat',
-    fontStyle: 'normal',
+    margin: "27px 0px 7px 0px",
+    fontFamily: "Montserrat",
+    fontStyle: "normal",
     fontWeight: 500,
-    fontSize: '14px',
-    color: '#1A1B1C',
+    fontSize: "14px",
+    color: "#1A1B1C",
   },
   inputJOT: {
     background: "rgba(144, 155, 255, 0.16)",
@@ -26,7 +26,7 @@ export const MakeNewOfferModalStyles = makeStyles((theme) => ({
     color: "#431AB7",
     fontSize: "16px",
     minWidth: "55px",
-    fontWeight: 700
+    fontWeight: 700,
   },
   usdWrap: {
     display: "flex",
@@ -51,26 +51,32 @@ export const MakeNewOfferModalStyles = makeStyles((theme) => ({
     marginTop: "22px",
     "& span": {
       color: "#431AB7",
-      fontSize: "16px"
-    }
+      fontSize: "16px",
+    },
   },
   usdt: {
     fontFamily: "Agrandir GrandHeavy !important",
     color: "#431AB7",
     fontWeight: 800,
-    fontSize: "16px"
+    fontSize: "16px",
   },
   totalText: {
-    fontFamily: 'Agrandir',
-    fontStyle: 'normal',
+    fontFamily: "Agrandir",
+    fontStyle: "normal",
     fontWeight: 800,
-    fontSize: '14px',
-    lineHeight: '150%',
-    letterSpacing: '0.02em',
-    color: '#431AB7',
+    fontSize: "14px",
+    lineHeight: "150%",
+    letterSpacing: "0.02em",
+    color: "#431AB7",
   },
   footer: {
-    padding: '18px 25px 25px 25px',
-    background: '#e0e0e53b',
-  }
+    padding: "18px 25px 25px 25px",
+    background: "#e0e0e53b",
+  },
+  primaryButton: {
+    color: "#fff !important",
+    padding: "0 37px !important",
+    height: "40px !important",
+    border: "none !important",
+  },
 }));

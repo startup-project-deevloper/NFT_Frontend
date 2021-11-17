@@ -25,7 +25,7 @@ import SyntheticFractionalisedCollectionNFTPage from "./subpages/NFTFractionalis
 import NFTPositionManagerPage from "./subpages/NFTPositionManagerPage";
 import MyNFTPage from "./subpages/MyNFTPage";
 import NFTReserves from "./subpages/NFTReserves";
-import CreateNftOption from "./subpages/NFTReserves/components/CreateNftOption";
+import ManageNFTPage from "./subpages/NFTReserves/components/ManageNFTPage";
 import ExploreReserveDetailPage from "./subpages/NFTReserves/components/ExploreReserveDetailPage";
 import ManageOptionDetailPage from "./subpages/NFTReserves/components/ManageOptionDetailPage";
 import NftCreatorAcceptPage from "./subpages/NFTReserves/components/NftCreatorAcceptPage";
@@ -66,18 +66,18 @@ export default function PriviPixRouter(props) {
       <Route exact path="/loan/manage_loans" component={NFTManageLoansPage} />
       <Route exact path="/loan/:loanId" component={NFTLoanDetailPage} />
       <Route exact path="/loan/asset/:assetId" component={NFTLoanAssetDetailPage} />
-      <Route exact path="/option/create_nft_option" component={CreateNftOption} />
-      <Route exact path="/option/explore/:img_id" component={ExploreReserveDetailPage} />
-      <Route exact path="/option/managefutures/:img_id" component={ManageOptionDetailPage} />
-      <Route exact path="/option/nft_creator" component={NftCreatorAcceptPage} />
-      <Route exact path="/option/offer_accepted" component={OfferAcceptedPage} />
-      <Route exact path="/option/bought_nft_view" component={BoughtNftView} />
-      <Route exact path="/option/offer_placed" component={OfferPlacedDetailPage} />
-      <Route exact path="/option/payment" component={PaymentPage} />
-      <Route exact path="/option/expiration_day_failed_pay" component={ExpirationDayFailedToPay} />
-      <Route exact path="/option/expiration_day_paid" component={ExpirationDayPaid} />
-      <Route exact path="/option/after_offer_accepted" component={AfterOfferAccepted} />
-      <Route exact path="/option/:id" component={NFTReserves} />
+      <Route exact path="/reserve/manage_nft/:tab?" component={ManageNFTPage} />
+      <Route exact path="/reserve/explore/:img_id" component={ExploreReserveDetailPage} />
+      <Route exact path="/reserve/managefutures/:img_id" component={ManageOptionDetailPage} />
+      <Route exact path="/reserve/nft_creator" component={NftCreatorAcceptPage} />
+      <Route exact path="/reserve/offer_accepted" component={OfferAcceptedPage} />
+      <Route exact path="/reserve/bought_nft_view" component={BoughtNftView} />
+      <Route exact path="/reserve/offer_placed" component={OfferPlacedDetailPage} />
+      <Route exact path="/reserve/payment" component={PaymentPage} />
+      <Route exact path="/reserve/expiration_day_failed_pay" component={ExpirationDayFailedToPay} />
+      <Route exact path="/reserve/expiration_day_paid" component={ExpirationDayPaid} />
+      <Route exact path="/reserve/after_offer_accepted" component={AfterOfferAccepted} />
+      <Route exact path="/reserve/:id" component={NFTReserves} />
       <Route exact path="/fractionalisation/:id" component={FractionPage} />
       <Route exact path="/fractionalisation/synthetic/:id" component={SyntheticFractionPage} />
       <Route

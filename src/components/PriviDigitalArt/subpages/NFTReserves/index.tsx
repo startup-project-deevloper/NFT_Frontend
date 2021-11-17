@@ -9,7 +9,7 @@ import { SecondaryButton } from "shared/ui-kit";
 
 import ExploreOption from "./components/Explore/ExploreOption";
 
-const NFTOption = () => {
+const NFTReserves = () => {
   const theme = useTheme();
   const history = useHistory();
   const { id } = useParams();
@@ -66,4 +66,4 @@ const NFTOption = () => {
   );
 };
 
-export default NFTOption;
+export default NFTReserves;

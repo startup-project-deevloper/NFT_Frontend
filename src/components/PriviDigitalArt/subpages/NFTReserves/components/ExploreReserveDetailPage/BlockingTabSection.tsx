@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { PrimaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
+import CancelOfferModal from "components/PriviDigitalArt/modals/CancelOfferModal";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 import { TagIcon, HistoryIcon } from "./index";
 
-import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-
 export default ({ offerData, historyData }) => {
   const classes = exploreOptionDetailPageStyles();
+  const [openCancelOfferModal, setOpenCancelOfferModal] = useState<boolean>(false);
   const offerTableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "USER",
@@ -75,7 +75,22 @@ export default ({ offerData, historyData }) => {
                   headers={offerTableHeaders}
                   rows={offerData.map(item => [
                     {
-                      cell: item.user,
+                      cell: (
+                        <Box display="flex" alignItems="center">
+                          <span>{item.user === "0xeec982f8" ? 'Your Offer' : item.user}</span>
+                          {
+                            item.user === "0xeec982f8" && (
+                              <PrimaryButton
+                                size="small"
+                                className={classes.cancelOfferButton}
+                                onClick={() => setOpenCancelOfferModal(true)}
+                              >
+                                CANCEL OFFER
+                              </PrimaryButton>
+                            )
+                          }
+                        </Box>
+                      )
                     },
                     {
                       cell: item.price,
@@ -95,7 +110,7 @@ export default ({ offerData, historyData }) => {
                       cellAlign: "center",
                       cell: (
                         <div>
-                        <img src={require("assets/icons/icon_ethscan.png")} />
+                          <img src={require("assets/icons/icon_ethscan.png")} />
                         </div>
                       ),
                     },
@@ -115,7 +130,7 @@ export default ({ offerData, historyData }) => {
                   headers={historyTableHeaders}
                   rows={historyData.map(item => [
                     {
-                      cell: item.user,
+                      cell: item.user
                     },
                     {
                       cell: item.price,
@@ -130,7 +145,7 @@ export default ({ offerData, historyData }) => {
                       cellAlign: "center",
                       cell: (
                         <div>
-                        <img src={require("assets/icons/icon_ethscan.png")} />
+                          <img src={require("assets/icons/icon_ethscan.png")} />
                         </div>
                       ),
                     },
@@ -140,6 +155,11 @@ export default ({ offerData, historyData }) => {
             </div>
         </div>
       </div>
+      <CancelOfferModal
+        open={openCancelOfferModal}
+        handleClose={() => setOpenCancelOfferModal(false)}
+        onConfirm={() => setOpenCancelOfferModal(false)}
+      />
     </>
   )
 }

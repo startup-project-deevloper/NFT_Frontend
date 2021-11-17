@@ -8,26 +8,19 @@ import Box from 'shared/ui-kit/Box';
 import { SecondaryButton } from "shared/ui-kit";
 
 import ExploreOption from './components/Explore/ExploreOption';
-import ManagefuturesOption from './components/Managefutures/ManagefuturesOption';
 
 const NFTOption = () => {
     const theme = useTheme();
     const history = useHistory();
     const { id } = useParams();
     const classes = useNFTOptionsStyles();
-    const [selectedTab, setSelectedTab] = useState<"explore" | "managefutures">("explore");
+    const [selectedTab, setSelectedTab] = useState<"explore">("explore");
     
     useEffect(()=>{
         if(id === "explore") {
             setSelectedTab("explore");
-        } else {
-            setSelectedTab("managefutures");
         }
     }, id)
-    const handleManagefuturesClick = () => {
-        setSelectedTab("managefutures");
-        // history.push("/fractionalise/synthetic-derivative");
-    };
     
     const handleExploreClick = () => {
         setSelectedTab("explore");
@@ -65,9 +58,6 @@ const NFTOption = () => {
 
                     {selectedTab === 'explore' && (
                         <ExploreOption />
-                    )}
-                    {selectedTab === 'managefutures' && (
-                        <ManagefuturesOption />
                     )}
                 </div>
             </Box>

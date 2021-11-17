@@ -27,7 +27,6 @@ const ExploreReserveDetailPage = () => {
   const [loanMedia, setLoanMedia] = useState<any>(true);
   const [loadingLoan, setLoadingLoan] = useState<boolean>(false);
 
-  const [openBidModal, setOpenBidModal] = useState<boolean>(false);
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
 
   const [imageIPFS, setImageIPFS] = useState({});

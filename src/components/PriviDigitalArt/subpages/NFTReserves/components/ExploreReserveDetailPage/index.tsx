@@ -10,7 +10,7 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
-import ReserveNftModal from "components/PriviDigitalArt/modals/BlockNFTModal";
+import BlockNFTModal from "components/PriviDigitalArt/modals/BlockNFTModal";
 import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 import BlockingTabSection from "./BlockingTabSection";
@@ -51,7 +51,7 @@ const ExploreReserveDetailPage = () => {
       etherscan: "sss",
     },
     {
-      user: "0xeec9...82f8",
+      user: "0xeec982f8",
       price: "2450 USDT",
       collateral: "232 USDT",
       settlement: "3 Days",
@@ -344,7 +344,7 @@ const ExploreReserveDetailPage = () => {
                 <RentingTabSection offerData={rentingOfferData} historyData={rentingHistoryData} />
               )}
             </Box>
-            <ReserveNftModal
+            <BlockNFTModal
               open={openReserveNftModal}
               handleClose={() => setOpenReserveNftModal(false)}
               onConfirm={handleConfirmReserveNft}

@@ -174,19 +174,54 @@ const ExploreReserveDetailPage = () => {
   ]);
 
   const [buyingOfferData, setBuyingOfferData] = useState<any>([
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
   ]);
 
   const [buyingHistoryData, setBuyingHistoryData] = useState<any>([
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
   ]);
 
   const [Offershowed, setOfferShowed] = useState<boolean>(false);
@@ -200,7 +235,7 @@ const ExploreReserveDetailPage = () => {
     setOpenOrderBookModal(false);
   };
   const goBack = () => {
-    history.push("/option/explore");
+    history.push("/reserve/explore");
   };
   return (
     <Box style={{ position: "relative", width: "100%" }}>
@@ -353,21 +388,15 @@ const ExploreReserveDetailPage = () => {
                   <span>BLOCKING</span>
                 </div>
               </div>
-              {
-                selectedTab === "buying" && (
-                  <BuyingTabSection offerData={buyingOfferData} historyData={buyingHistoryData} />
-                )
-              }
-              {
-                selectedTab === "blocking" && (
-                  <BlockingTabSection offerData={blockingOfferData} historyData={blockingHistoryData} />
-                )
-              }
-              {
-                selectedTab === "renting" && (
-                  <RentingTabSection offerData={rentingOfferData} historyData={rentingHistoryData} />
-                )
-              }
+              {selectedTab === "buying" && (
+                <BuyingTabSection offerData={buyingOfferData} historyData={buyingHistoryData} />
+              )}
+              {selectedTab === "blocking" && (
+                <BlockingTabSection offerData={blockingOfferData} historyData={blockingHistoryData} />
+              )}
+              {selectedTab === "renting" && (
+                <RentingTabSection offerData={rentingOfferData} historyData={rentingHistoryData} />
+              )}
             </Box>
             <BlockNFTModal
               open={openReserveNftModal}

@@ -13,7 +13,7 @@ import { BlockchainNets } from "shared/constants/constants";
 
 import ExploreOptionCard from 'components/PriviDigitalArt/components/Cards/ExploreOptionCard';
 
-export default function ReserveNftModal({ open, handleClose = () => {}, onConfirm, img_url }) {
+export default function BlockNFTModal({ open, handleClose = () => {}, onConfirm, img_url }) {
   const classes = ReserveNftModalStyles();
   const { account, library, chainId } = useWeb3React();
 

@@ -15,19 +15,15 @@ export default ({ offerData, historyData }) => {
       headerName: "USER",
     },
     {
-      headerName: "PRICE",
+      headerName: "PRICE PER SECOND",
       headerAlign: "center",
     },
     {
-      headerName: "COLLATERAL %",
+      headerName: "ESTIMATED COST",
       headerAlign: "center",
     },
     {
-      headerName: "SETTLEMENT",
-      headerAlign: "center",
-    },
-    {
-      headerName: "DURATION",
+      headerName: "RENTAL TIME",
       headerAlign: "center",
     },
     {
@@ -40,15 +36,19 @@ export default ({ offerData, historyData }) => {
       headerName: "USER",
     },
     {
-      headerName: "PRICE",
+      headerName: "PRICE PER SECOND",
       headerAlign: "center",
     },
     {
-      headerName: "PERIOD",
+      headerName: "ESTIMATED COST",
       headerAlign: "center",
     },
     {
-      headerName: "COLLATERAL %",
+      headerName: "RENTAL TIME",
+      headerAlign: "center",
+    },
+    {
+      headerName: "DATE",
       headerAlign: "center",
     },
     {
@@ -62,12 +62,12 @@ export default ({ offerData, historyData }) => {
       <div className={classes.transactionsSection}>
         <div className={classes.coinFlipHistorySection}>
             <Box display="flex" alignItems="center" justifyContent="space-between" m="36px 30px 0 50px">
-              <div className={classes.typo8}><TagIcon /><span>Blocking offers</span></div>
+              <div className={classes.typo8}><TagIcon /><span>Rental offers</span></div>
               <PrimaryButton
                 size="small"
                 className={classes.pricingButton}
               >
-                MAKE BLOCKING OFFER
+                MAKE RENTAL OFFER
               </PrimaryButton>
             </Box>
             <div className={classes.table}>
@@ -81,15 +81,10 @@ export default ({ offerData, historyData }) => {
                       cell: item.price,
                     },
                     {
-                      cell: item.collateral
+                      cell: item.estimated
                     },
                     {
-                      cellAlign: "center",
-                      cell: item.settlement,
-                    },
-                    {
-                      cellAlign: "center",
-                      cell: item.duration,
+                      cell: item.time,
                     },
                     {
                       cellAlign: "center",
@@ -108,7 +103,7 @@ export default ({ offerData, historyData }) => {
       <div className={classes.transactionsSection}>
         <div className={classes.coinFlipHistorySection}>
             <Box display="flex" alignItems="center" justifyContent="space-between" m="36px 30px 0 50px">
-              <div className={classes.typo8}><HistoryIcon /><span>Blocking History</span></div>
+              <div className={classes.typo8}><HistoryIcon /><span>Rental History</span></div>
             </Box>
             <div className={classes.table}>
                 <CustomTable
@@ -121,10 +116,13 @@ export default ({ offerData, historyData }) => {
                       cell: item.price,
                     },
                     {
-                      cell: item.period,
+                      cell: item.estimated,
                     },
                     {
-                      cell: item.collateral
+                      cell: item.time
+                    },
+                    {
+                      cell: item.date
                     },
                     {
                       cellAlign: "center",

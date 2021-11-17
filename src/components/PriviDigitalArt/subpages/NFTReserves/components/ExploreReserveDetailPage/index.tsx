@@ -10,12 +10,12 @@ import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 
-import useIPFS from "shared/utils-IPFS/useIPFS";
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import ReserveNftModal from "components/PriviDigitalArt/modals/ReserveNftModal";
 import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 import BlockingTabSection from "./BlockingTabSection";
+import RentingTabSection from "./RentingTabSection";
 
 
 const ExploreReserveDetailPage = () => {
@@ -25,7 +25,7 @@ const ExploreReserveDetailPage = () => {
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
 
-  
+
   const [loan, setLoan] = useState<any>(true);
   const [loanMedia, setLoanMedia] = useState<any>(true);
   const [loadingLoan, setLoadingLoan] = useState<boolean>(false);
@@ -58,6 +58,22 @@ const ExploreReserveDetailPage = () => {
     {user:'0xeec9...82f8', price:'2450 USDT', period:'20 DAYS', collateral:'3 %', etherscan:'sss'},
     {user:'0xeec9...82f8', price:'2450 USDT', period:'20 DAYS', collateral:'3 %', etherscan:'sss'},
     {user:'0xeec9...82f8', price:'2450 USDT', period:'20 DAYS', collateral:'3 %', etherscan:'sss'},
+  ]);
+  
+  const [rentingOfferData, setRentingOfferData] = useState<any>([
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', etherscan:'sss'},
+  ]);
+
+  const [rentingHistoryData, setRentingHistoryData] = useState<any>([
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
+    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
   ]);
 
   const [Offershowed, setOfferShowed] = useState<boolean>(false);
@@ -219,6 +235,11 @@ const ExploreReserveDetailPage = () => {
               {
                 selectedTab === "blocking" && (
                   <BlockingTabSection offerData={blockingOfferData} historyData={blockingHistoryData} />
+                )
+              }
+              {
+                selectedTab === "renting" && (
+                  <RentingTabSection offerData={rentingOfferData} historyData={rentingHistoryData} />
                 )
               }
             </Box>

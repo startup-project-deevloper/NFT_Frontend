@@ -5,6 +5,7 @@ import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferModal";
 import CancelOfferModal from "components/PriviDigitalArt/modals/CancelOfferModal";
+import BlockProceedModal from "components/PriviDigitalArt/modals/BlockProceedModal";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 import { TagIcon, HistoryIcon } from "./index";
 
@@ -12,60 +13,63 @@ export default ({ offerData, historyData, isOwnership }) => {
   const classes = exploreOptionDetailPageStyles();
   const [openMakeNewOfferModal, setOpenMakeNewOfferModal] = useState<boolean>(false);
   const [openCancelOfferModal, setOpenCancelOfferModal] = useState<boolean>(false);
+  const [proceedItem, setProceedItem] = useState<any>(null);
 
   const handleConfirmMakeNewOffer = () => {
     setOpenMakeNewOfferModal(false);
   };
 
-  const offerTableHeaders: Array<CustomTableHeaderInfo> = isOwnership ? [
-    {
-      headerName: "USER",
-    },
-    {
-      headerName: "PRICE",
-      headerAlign: "center",
-    },
-    {
-      headerName: "PERIOD",
-      headerAlign: "center",
-    },
-    {
-      headerName: "COLLATERAL %",
-      headerAlign: "center",
-    },
-    {
-      headerName: "EXPIRATION",
-      headerAlign: "center",
-    },
-    {
-      headerName: "ETHERSCAN",
-      headerAlign: isOwnership ? "left" : "center",
-    },
-  ] : [
-    {
-      headerName: "USER",
-    },
-    {
-      headerName: "PRICE",
-      headerAlign: "center",
-    },
-    {
-      headerName: "COLLATERAL %",
-      headerAlign: "center",
-    },
-    {
-      headerName: "SETTLEMENT",
-      headerAlign: "center",
-    },
-    {
-      headerName: "DURATION",
-      headerAlign: "center",
-    },
-    {
-      headerName: "ETHERSCAN",
-      headerAlign: isOwnership ? "left" : "center",
-    },
-  ];
+  const offerTableHeaders: Array<CustomTableHeaderInfo> = isOwnership
+    ? [
+        {
+          headerName: "USER",
+        },
+        {
+          headerName: "PRICE",
+          headerAlign: "center",
+        },
+        {
+          headerName: "PERIOD",
+          headerAlign: "center",
+        },
+        {
+          headerName: "COLLATERAL %",
+          headerAlign: "center",
+        },
+        {
+          headerName: "EXPIRATION",
+          headerAlign: "center",
+        },
+        {
+          headerName: "ETHERSCAN",
+          headerAlign: isOwnership ? "left" : "center",
+        },
+      ]
+    : [
+        {
+          headerName: "USER",
+        },
+        {
+          headerName: "PRICE",
+          headerAlign: "center",
+        },
+        {
+          headerName: "COLLATERAL %",
+          headerAlign: "center",
+        },
+        {
+          headerName: "SETTLEMENT",
+          headerAlign: "center",
+        },
+        {
+          headerName: "DURATION",
+          headerAlign: "center",
+        },
+        {
+          headerName: "ETHERSCAN",
+          headerAlign: isOwnership ? "left" : "center",
+        },
+      ];
 
   const historyTableHeaders: Array<CustomTableHeaderInfo> = [
     {
@@ -89,6 +93,14 @@ export default ({ offerData, historyData, isOwnership }) => {
     },
   ];
 
+  const handleAcceptOffer = item => {
+    setProceedItem({ type: "accept", item });
+  };
+
+  const handleDeclineOffer = item => {
+    setProceedItem({ type: "decline", item });
+  };
+
   return (
     <>
       <div className={classes.transactionsSection}>
@@ -98,17 +110,15 @@ export default ({ offerData, historyData, isOwnership }) => {
               <TagIcon />
               <span>Blocking offers</span>
             </div>
-            {
-              !isOwnership && (
-                <PrimaryButton
-                  size="small"
-                  className={classes.pricingButton}
-                  onClick={() => setOpenMakeNewOfferModal(true)}
-                >
-                  MAKE BLOCKING OFFER
-                </PrimaryButton>
-              )
-            }
+            {!isOwnership && (
+              <PrimaryButton
+                size="small"
+                className={classes.pricingButton}
+                onClick={() => setOpenMakeNewOfferModal(true)}
+              >
+                MAKE BLOCKING OFFER
+              </PrimaryButton>
+            )}
           </Box>
           <div className={classes.table}>
             <CustomTable
@@ -145,16 +155,31 @@ export default ({ offerData, historyData, isOwnership }) => {
                 {
                   cellAlign: isOwnership ? "left" : "center",
                   cell: (
-                    <Box display="flex" alignItems="center" justifyContent={isOwnership ? "space-between" : "center"} ml={isOwnership ? 4.5 : 0}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent={isOwnership ? "space-between" : "center"}
+                      ml={isOwnership ? 4.5 : 0}
+                    >
                       <img src={require("assets/icons/icon_ethscan.png")} />
-                      {
-                        isOwnership && (
-                          <Box display="flex" alignItems="center" ml={3}>
-                            <SecondaryButton size="small" className={classes.secondaryBtn}> DECLINE</SecondaryButton>
-                            <PrimaryButton size="small" className={classes.primaryBtn}> ACCEPT</PrimaryButton>
-                          </Box>
-                        )
-                      }
+                      {isOwnership && (
+                        <Box display="flex" alignItems="center" ml={3}>
+                          <SecondaryButton
+                            size="small"
+                            className={classes.secondaryBtn}
+                            onClick={() => handleDeclineOffer(item)}
+                          >
+                            DECLINE
+                          </SecondaryButton>
+                          <PrimaryButton
+                            size="small"
+                            className={classes.primaryBtn}
+                            onClick={() => handleAcceptOffer(item)}
+                          >
+                            ACCEPT
+                          </PrimaryButton>
+                        </Box>
+                      )}
                     </Box>
                   ),
                 },
@@ -212,6 +237,15 @@ export default ({ offerData, historyData, isOwnership }) => {
         handleClose={() => setOpenCancelOfferModal(false)}
         onConfirm={() => setOpenCancelOfferModal(false)}
       />
+      {proceedItem && (
+        <BlockProceedModal
+          open={true}
+          offer={proceedItem?.item}
+          type={proceedItem?.type}
+          handleClose={() => setProceedItem(null)}
+          onConfirm={() => {}}
+        />
+      )}
     </>
   );
 };

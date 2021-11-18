@@ -9,9 +9,9 @@ import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 
-import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import BlockNFTModal from "components/PriviDigitalArt/modals/BlockNFTModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
+import InstantBuyModal from "components/PriviDigitalArt/modals/InstantBuyModal";
 import RentNFTModal from "components/PriviDigitalArt/modals/RentNFTModal";
 import BlockingTabSection from "./BlockingTabSection";
 import RentingTabSection from "./RentingTabSection";
@@ -228,10 +228,12 @@ const ExploreReserveDetailPage = () => {
   const [Offershowed, setOfferShowed] = useState<boolean>(false);
 
   const [openReserveNftModal, setOpenReserveNftModal] = useState<boolean>(false);
+  const [openOrderBookModal, setOpenOrderBookModal] = useState<boolean>(false);
+  const [openInstantModal, setOpenInstantModal] = useState<boolean>(false);
+
   const handleConfirmReserveNft = () => {
     setOpenReserveNftModal(false);
   };
-  const [openOrderBookModal, setOpenOrderBookModal] = useState<boolean>(false);
   const handleConfirmOrderBook = () => {
     setOpenOrderBookModal(false);
   };
@@ -320,7 +322,11 @@ const ExploreReserveDetailPage = () => {
                 <Box display="flex" alignItems="center" my={3.5}>
                   <Text className={classes.pricingText1}>Selling Price:</Text>
                   <Text className={classes.pricingText2}>10ETH</Text>
-                  <PrimaryButton size="small" className={classes.pricingButton}>
+                  <PrimaryButton
+                    size="small"
+                    className={classes.pricingButton}
+                    onClick={() => setOpenInstantModal(true)}
+                  >
                     BUY
                   </PrimaryButton>
                 </Box>
@@ -415,6 +421,11 @@ const ExploreReserveDetailPage = () => {
               open={openOrderBookModal}
               handleClose={() => setOpenOrderBookModal(false)}
               onConfirm={handleConfirmOrderBook}
+            />
+            <InstantBuyModal
+              open={openInstantModal}
+              handleClose={() => setOpenInstantModal(false)}
+              onConfirm={() => setOpenInstantModal(false)}
             />
           </LoadingWrapper>
         ) : (

@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { PrimaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { exploreOptionDetailPageStyles } from "./index.styles";
+import MakeBuyOfferModal from "components/PriviDigitalArt/modals/MakeBuyOfferModal";
 import { TagIcon, HistoryIcon } from "./index";
 
 export default ({ offerData, historyData }) => {
   const classes = exploreOptionDetailPageStyles();
+  const [openMakeOfferModal, setOpenMakeOfferModal] = useState<boolean>(false);
+
   const offerTableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "USER",
@@ -60,6 +63,7 @@ export default ({ offerData, historyData }) => {
               <PrimaryButton
                 size="small"
                 className={classes.pricingButton}
+                onClick={() => setOpenMakeOfferModal(true)}
               >
                 MAKE BUY OFFER
               </PrimaryButton>
@@ -129,6 +133,11 @@ export default ({ offerData, historyData }) => {
             </div>
         </div>
       </div>
+      <MakeBuyOfferModal
+        open={openMakeOfferModal}
+        handleClose={() => setOpenMakeOfferModal(false)}
+        onConfirm={() => setOpenMakeOfferModal(false)}
+      />
     </>
   )
 }

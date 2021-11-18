@@ -1,12 +1,12 @@
 import React from "react";
 
-import { PrimaryButton } from "shared/ui-kit";
+import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 import { TagIcon, HistoryIcon } from "./index";
 
-export default ({ offerData, historyData }) => {
+export default ({ offerData, historyData, isOwnership }) => {
   const classes = exploreOptionDetailPageStyles();
   const offerTableHeaders: Array<CustomTableHeaderInfo> = [
     {
@@ -22,7 +22,7 @@ export default ({ offerData, historyData }) => {
     },
     {
       headerName: "ETHERSCAN",
-      headerAlign: "center",
+      headerAlign: isOwnership ? "left" : "center",
     },
   ];
   const historyTableHeaders: Array<CustomTableHeaderInfo> = [
@@ -57,12 +57,16 @@ export default ({ offerData, historyData }) => {
         <div className={classes.coinFlipHistorySection}>
             <Box display="flex" alignItems="center" justifyContent="space-between" m="36px 30px 0 50px">
               <div className={classes.typo8}><TagIcon /><span>Buy offers</span></div>
-              <PrimaryButton
-                size="small"
-                className={classes.pricingButton}
-              >
-                MAKE BUY OFFER
-              </PrimaryButton>
+            {
+              !isOwnership && (
+                <PrimaryButton
+                  size="small"
+                  className={classes.pricingButton}
+                >
+                  MAKE BUY OFFER
+                </PrimaryButton>
+              )
+            }
             </Box>
             <div className={classes.table}>
                 <CustomTable
@@ -78,11 +82,19 @@ export default ({ offerData, historyData }) => {
                       cell: item.date
                     },
                     {
-                      cellAlign: "center",
+                      cellAlign: isOwnership ? "left" : "center",
                       cell: (
-                        <div>
-                        <img src={require("assets/icons/icon_ethscan.png")} />
-                        </div>
+                        <Box display="flex" alignItems="center" justifyContent={isOwnership ? "space-between" : "center"} ml={isOwnership ? 4.5 : 0}>
+                          <img src={require("assets/icons/icon_ethscan.png")} />
+                          {
+                            isOwnership && (
+                              <Box display="flex" alignItems="center" ml={3}>
+                                <SecondaryButton size="small" className={classes.secondaryBtn}> DECLINE</SecondaryButton>
+                                <PrimaryButton size="small" className={classes.primaryBtn}> ACCEPT</PrimaryButton>
+                              </Box>
+                            )
+                          }
+                        </Box>
                       ),
                     },
                   ])}

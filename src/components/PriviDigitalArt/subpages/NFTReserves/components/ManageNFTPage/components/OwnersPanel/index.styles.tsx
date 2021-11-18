@@ -2,8 +2,17 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const ownersPanelStyles = makeStyles(theme => ({
   content: {
-    padding: "35px",
     width: "100%",
+    height: "100%",
+    padding: 35,
+    position: "relative",
+    display: "flex",
+    maxHeight: "calc(100vh - 200px)",
+    minHeight: "calc(100vh - 200px)",
+    overflowX: "hidden",
+    overflowY: "auto",
+    alignItems: "flex-start",
+    flexDirection: "column",
   },
   infoPanel: {
     border: "1px solid #E8E3F6",

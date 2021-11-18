@@ -59,7 +59,7 @@ export const useManageNFTPageStyles = makeStyles(theme => ({
 
   backButtonContainer: {
     width: "100%",
-    margin: "50px 0 30px 0",
+    margin: "10px 0 30px 0",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

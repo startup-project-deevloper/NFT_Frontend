@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ownersPanelStyles } from "./index.styles";
 import Box from "shared/ui-kit/Box";
 import { Grid } from "@material-ui/core";
@@ -6,6 +6,32 @@ import ExploreCard from "components/PriviDigitalArt/components/Cards/ExploreCard
 
 const OwnersPanel = () => {
   const classes = ownersPanelStyles();
+  const [userNFTs, setUserNFTs] = useState<any[]>([]);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    const mockNfts: any[] = [];
+    const types = ["OPTION", "LISTED", "RENTED", "BLOCKED"];
+    for (let i = 0; i < 8; i++) {
+      const typeIndex = Math.floor(Math.random() * types.length);
+      mockNfts.push({
+        id: i,
+        imageUrl: i + 1,
+        name: `test${i + 1}`,
+        ownerAddress: "0x7Fa11671e546dB93f558531c1e3bC5D4FFed29a5",
+        sellingPrice: 10,
+        blockingPrice: 1,
+        blockingPeriod: 90,
+        rentalPrice: 0.1,
+        rentalPriceCycle: "Day",
+        type: types[typeIndex],
+      });
+    }
+    setUserNFTs(mockNfts);
+  };
 
   return (
     <div className={classes.content}>
@@ -39,94 +65,11 @@ const OwnersPanel = () => {
       </Grid>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={1}
-            nft_name="test1"
-            period="10"
-            price="2300"
-            pct="10"
-          />
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={2}
-            nft_name="test2"
-            period="20"
-            price="1300"
-            pct="20"
-          />
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={3}
-            nft_name="test3"
-            period="30"
-            price="1000"
-            pct="15"
-          />
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={4}
-            nft_name="test4"
-            period="15"
-            price="700"
-            pct="13"
-          />
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={5}
-            nft_name="test5"
-            period="6"
-            price="1700"
-            pct="30"
-          />
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={6}
-            nft_name="test6"
-            period="16"
-            price="2200"
-            pct="20"
-          />
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={7}
-            nft_name="test7"
-            period="10"
-            price="2300"
-            pct="18"
-          />
-          <ExploreCard
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            img_url={8}
-            nft_name="test8"
-            period="19"
-            price="1000"
-            pct="5"
-          />
+          {userNFTs.map(nft => (
+            <Grid item xs={12} sm={6} md={4} lg={3}>
+              <ExploreCard nft={nft} key={nft.id} />
+            </Grid>
+          ))}
         </Grid>
       </Box>
     </div>

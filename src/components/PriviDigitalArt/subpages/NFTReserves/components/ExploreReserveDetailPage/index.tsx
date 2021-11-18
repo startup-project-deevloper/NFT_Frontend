@@ -19,8 +19,8 @@ import BuyingTabSection from "./BuyingTabSection";
 
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
-  const { img_id, owner_ship } = useParams();
-  const isOwnership = owner_ship === 'true';
+  const { img_id } = useParams();
+  const isOwnership = 'true';
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
@@ -430,6 +430,7 @@ const ExploreReserveDetailPage = () => {
                   onClick={() => setSelectedTab("renting")}
                 >
                   <span>RENTING</span>
+                  <div>{5}</div>
                 </div>
                 <div
                   className={cls(
@@ -439,6 +440,7 @@ const ExploreReserveDetailPage = () => {
                   onClick={() => setSelectedTab("blocking")}
                 >
                   <span>BLOCKING</span>
+                  <div>{12}</div>
                 </div>
               </div>
               {selectedTab === "buying" && (

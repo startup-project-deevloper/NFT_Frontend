@@ -67,7 +67,7 @@ export default function PriviPixRouter(props) {
       <Route exact path="/loan/:loanId" component={NFTLoanDetailPage} />
       <Route exact path="/loan/asset/:assetId" component={NFTLoanAssetDetailPage} />
       <Route exact path="/reserve/manage_nft/:tab?" component={ManageNFTPage} />
-      <Route exact path="/reserve/explore/:img_id/:owner_ship" component={ExploreReserveDetailPage} />
+      <Route exact path="/reserve/explore/:img_id" component={ExploreReserveDetailPage} />
       <Route exact path="/reserve/managefutures/:img_id" component={ManageOptionDetailPage} />
       <Route exact path="/reserve/nft_creator" component={NftCreatorAcceptPage} />
       <Route exact path="/reserve/offer_accepted" component={OfferAcceptedPage} />

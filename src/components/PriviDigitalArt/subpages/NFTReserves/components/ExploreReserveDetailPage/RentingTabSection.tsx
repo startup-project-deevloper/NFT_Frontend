@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { PrimaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
+import MakeRentalOfferModal from "components/PriviDigitalArt/modals/MakeRentalOfferModal";
 import { exploreOptionDetailPageStyles } from "./index.styles";
 import { TagIcon, HistoryIcon } from "./index";
 
@@ -10,6 +11,8 @@ import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 
 export default ({ offerData, historyData }) => {
   const classes = exploreOptionDetailPageStyles();
+  const [openMakeRentalModal, setOpenMakeRentalModal] = useState<boolean>(false);
+
   const offerTableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "USER",
@@ -66,6 +69,7 @@ export default ({ offerData, historyData }) => {
               <PrimaryButton
                 size="small"
                 className={classes.pricingButton}
+                onClick={() => setOpenMakeRentalModal(true)}
               >
                 MAKE RENTAL OFFER
               </PrimaryButton>
@@ -138,6 +142,11 @@ export default ({ offerData, historyData }) => {
             </div>
         </div>
       </div>
+      <MakeRentalOfferModal
+        open={openMakeRentalModal}
+        handleClose={() => setOpenMakeRentalModal(false)}
+        onConfirm={() => setOpenMakeRentalModal(false)}
+      />
     </>
   )
 }

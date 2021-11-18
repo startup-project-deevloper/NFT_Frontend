@@ -11,8 +11,8 @@ import { exploreOptionDetailPageStyles } from "./index.styles";
 
 import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import BlockNFTModal from "components/PriviDigitalArt/modals/BlockNFTModal";
-import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
+import RentNFTModal from "components/PriviDigitalArt/modals/RentNFTModal";
 import BlockingTabSection from "./BlockingTabSection";
 import RentingTabSection from "./RentingTabSection";
 import BuyingTabSection from "./BuyingTabSection";
@@ -27,6 +27,7 @@ const ExploreReserveDetailPage = () => {
   const [loan, setLoan] = useState<any>(true);
   const [loanMedia, setLoanMedia] = useState<any>(true);
   const [loadingLoan, setLoadingLoan] = useState<boolean>(false);
+  const [openRentNFTModal, setOpenRentNFTModal] = useState<boolean>(false);
 
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
 
@@ -351,6 +352,7 @@ const ExploreReserveDetailPage = () => {
                       border: "1px solid #431AB7",
                       height: 37,
                     }}
+                    onClick={() => setOpenRentNFTModal(true)}
                   >
                     RENT
                   </PrimaryButton>
@@ -403,6 +405,11 @@ const ExploreReserveDetailPage = () => {
               handleClose={() => setOpenReserveNftModal(false)}
               onConfirm={handleConfirmReserveNft}
               img_url={img_id}
+            />
+            <RentNFTModal
+              open={openRentNFTModal}
+              handleClose={() => setOpenRentNFTModal(false)}
+              onConfirm={() => setOpenRentNFTModal(false)}
             />
             <OrderBookModal
               open={openOrderBookModal}

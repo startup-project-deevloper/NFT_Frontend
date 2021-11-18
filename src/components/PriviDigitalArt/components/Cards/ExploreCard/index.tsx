@@ -78,7 +78,7 @@ const ExploreCard = ({ nft }) => {
             <div className={classes.cardContentDiv}>
               <span className={classes.cardContentText}>BLOCKING PRICE</span>
               <span className={classes.cardContentAmount}>
-                {nft.blockingPrice} for {nft.blockingPeriod} for 90 days
+                {nft.blockingPrice} ETH for {nft.blockingPeriod} days
               </span>
             </div>
             <div className={classes.cardContentDiv}>

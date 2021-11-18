@@ -57,6 +57,9 @@ const useStyles = makeStyles(() =>
         fontSize: FontSize.M,
         color: Color.Black,
       },
+      "& .MuiTableCell-alignLeft": {
+        textAlign: 'left'
+      },
       "& .MuiTableCell-body": {
         fontSize: FontSize.M,
         color: Color.GrayDark,

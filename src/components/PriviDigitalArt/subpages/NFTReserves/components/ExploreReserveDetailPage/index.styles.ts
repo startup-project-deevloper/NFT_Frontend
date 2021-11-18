@@ -514,6 +514,21 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     margin: "0 40px",
     fontSize: 18,
     fontFamily: "Agrandir GrandHeavy",
+    '& div': {
+      width: "20px",
+      height: "20px",
+      fontSize: "10px",
+      background: "#431AB760",
+      color: "#431AB7",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: "50%",
+      lineHeight: "9px",
+      top: "14px",
+      right: "15px",
+      marginLeft: "8px",
+    },
     [theme.breakpoints.down(1250)]: {
       minWidth: 420,
     },
@@ -537,5 +552,30 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
   selectedTabSection: {
     borderBottom: "4px solid #431AB7",
     color: "#431AB7",
+    '& div': {
+      background: "#431AB7",
+      color: "#fff",
+    },
   },
+  secondaryBtn: {
+    fontSize: 16,
+    lineHeight: 21,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    color: '#4218B5 !important',
+    backgroundColor: '#fff',
+    height: 30,
+    padding: "0 14px",
+    borderColor: "#4218B5 !important"
+  },
+  primaryBtn: {
+    fontSize: 16,
+    lineHeight: 21,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    color: '#fff',
+    backgroundColor: '#4218B5 !important',
+    height: 30,
+    padding: "0 14px",
+  }
 }));

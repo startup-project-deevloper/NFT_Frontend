@@ -20,6 +20,7 @@ import BuyingTabSection from "./BuyingTabSection";
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
   const { img_id } = useParams();
+  const isOwnership = 'true';
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
@@ -81,6 +82,49 @@ const ExploreReserveDetailPage = () => {
       collateral: "232 USDT",
       settlement: "3 Days",
       duration: "2 days 20h 21min",
+      etherscan: "sss",
+    },
+  ]);
+
+  const [blockingOwnershipOfferData, setBlockingOwnershipOfferData] = useState<any>([
+    {
+      user: "0xeec9...82f8",
+      price: "2450 USDT",
+      period: "20 Days",
+      collateral: "232 USDT",
+      expiration: "3 Days",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "2450 USDT",
+      period: "20 Days",
+      collateral: "232 USDT",
+      expiration: "3 Days",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "2450 USDT",
+      period: "20 Days",
+      collateral: "232 USDT",
+      expiration: "3 Days",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "2450 USDT",
+      period: "20 Days",
+      collateral: "232 USDT",
+      expiration: "3 Days",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "2450 USDT",
+      period: "20 Days",
+      collateral: "232 USDT",
+      expiration: "3 Days",
       etherscan: "sss",
     },
   ]);
@@ -316,7 +360,7 @@ const ExploreReserveDetailPage = () => {
                       fontFamily: "Agrandir GrandHeavy",
                     }}
                   >
-                    Pricing Details
+                    Instant Pricing Details
                   </Text>
                 </Box>
                 <Box display="flex" alignItems="center" my={3.5}>
@@ -327,7 +371,7 @@ const ExploreReserveDetailPage = () => {
                     className={classes.pricingButton}
                     onClick={() => setOpenInstantModal(true)}
                   >
-                    BUY
+                    {isOwnership ? 'EDIT' : 'BUY'}
                   </PrimaryButton>
                 </Box>
                 <hr className={classes.divider} />
@@ -339,7 +383,7 @@ const ExploreReserveDetailPage = () => {
                     className={classes.pricingButton}
                     onClick={() => setOpenReserveNftModal(true)}
                   >
-                    BLOCK
+                    {isOwnership ? 'EDIT' : 'BLOCK'}
                   </PrimaryButton>
                 </Box>
                 <hr className={classes.divider} />
@@ -360,7 +404,7 @@ const ExploreReserveDetailPage = () => {
                     }}
                     onClick={() => setOpenRentNFTModal(true)}
                   >
-                    RENT
+                    {isOwnership ? 'EDIT' : 'RENT'}
                   </PrimaryButton>
                 </Box>
                 <hr className={classes.divider} />
@@ -376,6 +420,7 @@ const ExploreReserveDetailPage = () => {
                   onClick={() => setSelectedTab("buying")}
                 >
                   <span>BUYING</span>
+                  <div>{2}</div>
                 </div>
                 <div
                   className={cls(
@@ -385,6 +430,7 @@ const ExploreReserveDetailPage = () => {
                   onClick={() => setSelectedTab("renting")}
                 >
                   <span>RENTING</span>
+                  <div>{5}</div>
                 </div>
                 <div
                   className={cls(
@@ -394,16 +440,29 @@ const ExploreReserveDetailPage = () => {
                   onClick={() => setSelectedTab("blocking")}
                 >
                   <span>BLOCKING</span>
+                  <div>{12}</div>
                 </div>
               </div>
               {selectedTab === "buying" && (
-                <BuyingTabSection offerData={buyingOfferData} historyData={buyingHistoryData} />
+                <BuyingTabSection
+                  offerData={buyingOfferData}
+                  historyData={buyingHistoryData}
+                  isOwnership={isOwnership}
+                />
               )}
               {selectedTab === "blocking" && (
-                <BlockingTabSection offerData={blockingOfferData} historyData={blockingHistoryData} />
+                <BlockingTabSection
+                  offerData={isOwnership ? blockingOwnershipOfferData : blockingOfferData} 
+                  historyData={blockingHistoryData}
+                  isOwnership={isOwnership}
+                />
               )}
               {selectedTab === "renting" && (
-                <RentingTabSection offerData={rentingOfferData} historyData={rentingHistoryData} />
+                <RentingTabSection
+                  offerData={rentingOfferData}
+                  historyData={rentingHistoryData}
+                  isOwnership={isOwnership}
+                />
               )}
             </Box>
             <BlockNFTModal

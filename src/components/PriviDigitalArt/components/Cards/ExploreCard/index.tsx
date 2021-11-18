@@ -9,7 +9,7 @@ const ExploreCard = ({ xs, sm, md, lg, img_url, nft_name, period, price, pct }) 
   const history = useHistory();
   const classes = cardStyles();
   const handleOpenExplore = () => {
-    history.push("/reserve/explore/" + img_url);
+    history.push(`/reserve/explore/${img_url}`);
   };
   return (
     <>

@@ -59,6 +59,18 @@ export default function BlockNFTModal({ open, handleClose = () => {}, onConfirm,
     handleClose();
   };
 
+  const nft = {
+    imageUrl: img_url,
+    name: "test1",
+    ownerAddress: "0x7Fa11671e546dB93f558531c1e3bC5D4FFed29a5",
+    sellingPrice: 10,
+    blockingPrice: 1,
+    blockingPeriod: 90,
+    rentalPrice: 0.1,
+    rentalPriceCycle: "Day",
+    type: "LISTED",
+  };
+
   return (
     <Modal
       size="medium"
@@ -191,17 +203,9 @@ export default function BlockNFTModal({ open, handleClose = () => {}, onConfirm,
           alignItems="center"
           flexWrap="wrap"
         >
-          <ExploreCard
-            xs={6}
-            sm={6}
-            md={6}
-            lg={6}
-            img_url={img_url}
-            nft_name="test1"
-            period="10"
-            price="2300"
-            pct="10"
-          />
+          <Grid xs={6} sm={6} md={6} lg={6}>
+            <ExploreCard nft={nft} />
+          </Grid>
           <div
             style={{
               fontFamily: "Agrandir GrandHeavy",

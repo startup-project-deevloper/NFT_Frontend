@@ -50,3 +50,49 @@ export const GradientSlider = withStyles({
     },
   },
 })(Slider);
+
+export const SecondaryGradientSlider = withStyles({
+  root: {
+    height: 8,
+    padding: 0,
+    border: "3px solid rgba(255, 255, 255, 0.5)",
+    borderRadius: 4,
+  },
+  thumb: {
+    height: "20px !important",
+    width: "10px !important",
+    background: "#431AB7",
+    border: "2.54949px solid #FFFFFF",
+    boxShadow: "0px 1.91212px 5.73635px rgba(0, 0, 0, 0.21)",
+    marginTop: "-6px !important",
+    borderRadius: 4,
+  },
+  mark: {
+    marginTop: 3,
+    backgroundColor: Color.Mint,
+  },
+  markLabel: {
+    color: "#ffffff",
+  },
+  track: {
+    background:
+      "linear-gradient(90deg, #B5F400 0%, #B5F400 15.64%, #FFE600 32.88%, #FFE600 42.11%, #FF6B00 65.18%, #FF0F00 75.74%, #C70000 100%)",
+    height: 8,
+    borderRadius: 4,
+  },
+  rail: {
+    background: "transparent",
+    height: 8,
+    borderRadius: 4,
+  },
+  valueLabel: {
+    marginLeft: "12px",
+    "& span": {
+      background: "#EFF2F8",
+      color: "#707582",
+      fontFamily: "Agrandir",
+      fontSize: "14px",
+    },
+  },
+})(Slider);
+

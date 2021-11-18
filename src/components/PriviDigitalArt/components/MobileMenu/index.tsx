@@ -14,6 +14,7 @@ const TABS = [
   "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
+  "NFT RESERVES",
   "NFT FRACTIONALISATION",
 ];
 
@@ -27,17 +28,20 @@ export default function MobileMenu() {
       return TABS[1];
     } else if (location.pathname.includes("marketplace")) {
       return TABS[2];
-      } else if (location.pathname.includes("pods")) {
-        return TABS[3];
-    } else if (location.pathname.includes("loan")) {
+    } else if (location.pathname.includes("pods")) {
       return TABS[3];
-    } else if (location.pathname.includes("saved-content")) {
+    } else if (location.pathname.includes("loan")) {
       return TABS[4];
+    } else if (location.pathname.includes("saved-content")) {
+      return TABS[5];
+    } else if (location.pathname.includes("reserve")) {
+      return TABS[6];
     } else if (
       location.pathname.includes("fractionalisation") ||
-      location.pathname.includes("fractionalise")
+      location.pathname.includes("fractionalise") ||
+      location.pathname.includes("mynft")
     ) {
-      return TABS[5];
+      return TABS[7];
     }
 
     return TABS[0];
@@ -51,13 +55,15 @@ export default function MobileMenu() {
     } else if (value === TABS[2]) {
       history.push("/marketplace");
     } else if (value === TABS[3]) {
-        history.push("/pods");
-      } else if (value === TABS[4]) {
-      history.push("/loan");
+      history.push("/pods");
     } else if (value === TABS[4]) {
-      history.push("/saved-content");
+      history.push("/loan");
     } else if (value === TABS[5]) {
-      history.push("/fractionalise");
+      history.push("/saved-content");
+    } else if (value === TABS[6]) {
+      history.push("/reserve/explore");
+    } else if (value === TABS[7]) {
+      history.push("/fractionalise/synthetic-derivative");
     }
   };
 

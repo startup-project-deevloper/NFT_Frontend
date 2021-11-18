@@ -150,7 +150,7 @@ export default function CreateContract({ onClose, onCompleted, selectedNFT, supp
             Name: `Privi Jot ${selectedNFT.nftCollection.name}`,
             Decimals: decimals,
             ImageUrl: sanitizeIfIpfsUrl(selectedNFT.nftPictureUrl),
-            Type: "Crypto",
+            Type: "JOTS",
             Network: network,
             Address: collection.jotAddress,
           };

@@ -13,6 +13,11 @@ import BlockNFTModal from "components/PriviDigitalArt/modals/BlockNFTModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 import InstantBuyModal from "components/PriviDigitalArt/modals/InstantBuyModal";
 import RentNFTModal from "components/PriviDigitalArt/modals/RentNFTModal";
+
+import EditSellingPriceModal from "components/PriviDigitalArt/modals/EditSellingPriceModal";
+import EditBlockingPriceModal from "components/PriviDigitalArt/modals/EditBlockingPriceModal";
+import EditRentalPriceModal from "components/PriviDigitalArt/modals/EditRentalPriceModal";
+
 import BlockingTabSection from "./BlockingTabSection";
 import RentingTabSection from "./RentingTabSection";
 import BuyingTabSection from "./BuyingTabSection";
@@ -29,6 +34,9 @@ const ExploreReserveDetailPage = () => {
   const [loanMedia, setLoanMedia] = useState<any>(true);
   const [loadingLoan, setLoadingLoan] = useState<boolean>(false);
   const [openRentNFTModal, setOpenRentNFTModal] = useState<boolean>(false);
+  const [openEditSellingPriceModal, setOpenEditSellingPriceModal] = useState<boolean>(false);
+  const [openEditBlockingPriceModal, setOpenEditBlockingPriceModal] = useState<boolean>(false);
+  const [openEditRentalPriceModal, setOpenEditRentalPriceModal] = useState<boolean>(false);
 
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
 
@@ -369,7 +377,13 @@ const ExploreReserveDetailPage = () => {
                   <PrimaryButton
                     size="small"
                     className={classes.pricingButton}
-                    onClick={() => setOpenInstantModal(true)}
+                    onClick={() => {
+                      if(isOwnership) {
+                        setOpenEditSellingPriceModal(true)
+                      } else {
+                        setOpenInstantModal(true)
+                      }
+                    }}
                   >
                     {isOwnership ? 'EDIT' : 'BUY'}
                   </PrimaryButton>
@@ -381,7 +395,13 @@ const ExploreReserveDetailPage = () => {
                   <PrimaryButton
                     size="small"
                     className={classes.pricingButton}
-                    onClick={() => setOpenReserveNftModal(true)}
+                    onClick={() => {
+                      if(isOwnership) {
+                        setOpenEditBlockingPriceModal(true)
+                      } else {
+                        setOpenReserveNftModal(true)
+                      }
+                    }}
                   >
                     {isOwnership ? 'EDIT' : 'BLOCK'}
                   </PrimaryButton>
@@ -402,7 +422,13 @@ const ExploreReserveDetailPage = () => {
                       border: "1px solid #431AB7",
                       height: 37,
                     }}
-                    onClick={() => setOpenRentNFTModal(true)}
+                    onClick={() => {
+                      if(isOwnership) {
+                        setOpenEditRentalPriceModal(true)
+                      } else {
+                        setOpenRentNFTModal(true)
+                      }
+                    }}
                   >
                     {isOwnership ? 'EDIT' : 'RENT'}
                   </PrimaryButton>
@@ -485,6 +511,21 @@ const ExploreReserveDetailPage = () => {
               open={openInstantModal}
               handleClose={() => setOpenInstantModal(false)}
               onConfirm={() => setOpenInstantModal(false)}
+            />
+            <EditSellingPriceModal
+              open={openEditSellingPriceModal}
+              handleClose={() => setOpenEditSellingPriceModal(false)}
+              onConfirm={() => setOpenEditSellingPriceModal(false)}
+            />
+            <EditBlockingPriceModal
+              open={openEditBlockingPriceModal}
+              handleClose={() => setOpenEditBlockingPriceModal(false)}
+              onConfirm={() => setOpenEditBlockingPriceModal(false)}
+            />
+            <EditRentalPriceModal
+              open={openEditRentalPriceModal}
+              handleClose={() => setOpenEditRentalPriceModal(false)}
+              onConfirm={() => setOpenEditRentalPriceModal(false)}
             />
           </LoadingWrapper>
         ) : (

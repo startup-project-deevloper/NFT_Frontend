@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Fade, Tooltip, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import Box from "shared/ui-kit/Box";
@@ -54,9 +54,6 @@ const GeneralNFTMediaTab = (props: any) => {
         <Grid item xs={12} md={12}>
           <Box className={classes.label} mb={1}>
             <div>Pod Image</div>
-            <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} arrow title={""}>
-              <img src={require("assets/icons/info_music_dao.png")} alt="info" />
-            </Tooltip>
           </Box>
           <FileUpload
             photo={props.photo}

@@ -14,9 +14,9 @@ import { Modal, PrimaryButton, SecondaryButton, CircularLoadingIndicator } from 
 import Box from "shared/ui-kit/Box";
 import CollabsTab from "./components/CollabsTab/CollabsTab";
 import GeneralNFTMediaTab from "./components/GeneralNFTMediaTab/GeneralNFTMediaTab";
-import { createPodModalStyles } from "./CreatePodModal.styles";
 import useIPFS from "../../../../shared/utils-IPFS/useIPFS";
 import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
+import { createPodModalStyles } from "./CreatePodModal.styles";
 
 const CreatePodModal = (props: any) => {
   const { showAlertMessage } = useAlertMessage();
@@ -87,7 +87,7 @@ const CreatePodModal = (props: any) => {
         payload.imageUrl = "";
         payload.hashtags = [];
         payload.hasPhoto = !!(photo || photoImg);
-        
+
         payload.collabs = (pod.Collabs ?? []).map(user => ({ userId: user.id, address: user.address }));
         payload.creatorAddress = userSelector.address;
         payload.creatorId = userSelector.id;
@@ -130,13 +130,7 @@ const CreatePodModal = (props: any) => {
       showCloseIcon
       style={{
         maxWidth: "514px",
-        padding: acceptWarning
-          ? isMobile
-            ? "22px 25px 32px"
-            : "22px 25px 32px"
-          : isMobile
-          ? "26px 35px 46px"
-          : "26px 35px 46px",
+        padding: acceptWarning ? "64px 25px 32px" : "26px 35px 46px",
       }}
     >
       <div>
@@ -158,7 +152,11 @@ const CreatePodModal = (props: any) => {
               <br />
               collection you wont be able to change it in the future
             </p>
-            <PrimaryButton size="medium" style={{ height: 40, width: "calc(100% - 24px)"}} onClick={() => setAcceptWarning(true)}>
+            <PrimaryButton
+              size="medium"
+              style={{ height: 40, width: "calc(100% - 24px)" }}
+              onClick={() => setAcceptWarning(true)}
+            >
               Continue
             </PrimaryButton>
           </div>
@@ -214,7 +212,7 @@ const CreatePodModal = (props: any) => {
                       }
                     }}
                     size="medium"
-                    style={{ height: 40, width: '44%' }}
+                    style={{ height: 40, width: "44%" }}
                   >
                     {tabCreateNFTMedia !== 0 ? "Back" : "Cancel"}
                   </SecondaryButton>
@@ -231,7 +229,7 @@ const CreatePodModal = (props: any) => {
                         }
                       }}
                       size="medium"
-                      style={{ height: 40, width: '51%' }}
+                      style={{ height: 40, width: "51%" }}
                     >
                       {tabCreateNFTMedia === 1 ? "Create" : "Next"}
                     </PrimaryButton>

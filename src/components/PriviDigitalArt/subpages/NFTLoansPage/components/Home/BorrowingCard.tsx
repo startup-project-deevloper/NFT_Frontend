@@ -3,6 +3,7 @@ import cls from 'classnames';
 import { Typography, Grid, Divider } from '@material-ui/core';
 
 import { useNFTLoansPageStyles } from "../../index.styles";
+import { getCorrectNumber } from 'shared/helpers/number';
 
 const BorrowingCard = ({ markets }) => {
   const classes = useNFTLoansPageStyles();
@@ -49,17 +50,17 @@ const BorrowingCard = ({ markets }) => {
             ? markets[i].market_info.borrowList[0].total_lend
             : 0
         )
-      )
+      ) / (10 ** markets[i].token_info.Decimals)
       if (markets[i].market_info.borrowList.length > 1) {
-        _dailyVolume += (markets[i].market_info.borrowList[0].total_lend - markets[i].market_info.borrowList[1].total_lend)
+        _dailyVolume += (markets[i].market_info.borrowList[0].total_lend - markets[i].market_info.borrowList[1].total_lend) / (10 ** markets[i].token_info.Decimals)
       } else if (markets[i].market_info.borrowList.length > 1) {
-        _dailyVolume += markets[i].market_info.borrowList[0].total_lend
+        _dailyVolume += markets[i].market_info.borrowList[0].total_lend / (10 ** markets[i].token_info.Decimals)
       }
       _lender += (markets[i].market_info?.lender || 0)
     }
-    setDailyVolume(_dailyVolume)
-    setTotalLent(_totalLent)
-    setLenders(_lender)
+    setDailyVolume(getCorrectNumber(_dailyVolume, 2))
+    setTotalLent(getCorrectNumber(_totalLent, 2))
+    setLenders(getCorrectNumber(_lender))
   }, [markets])
 
   return (
@@ -87,10 +88,10 @@ const BorrowingCard = ({ markets }) => {
                   <Typography>{token.token_info.Name.toUpperCase()}</Typography>
                 </Grid>
                 <Grid item lg={2} md={3} sm={3} xs={3}>
-                  <Typography className={cls(classes.tokenLabel, classes.tokenDetail)}>{`${token.market_info.borrow_apy * 100}% APR`}</Typography>
+                  <Typography className={cls(classes.tokenLabel, classes.tokenDetail)}>{`${getCorrectNumber(token.market_info.borrow_apy * 100, 2)}% APR`}</Typography>
                 </Grid>
                 <Grid item lg={2} md={3} sm={4} xs={4} container justify='flex-end'>
-                  <Typography className={cls(classes.tokenLabel, classes.tokenDetail)}>{`${token.market_info.borrowList.length > 0 ? token.market_info.borrowList[0].total_borrow : 0} ${token.token_info.Symbol}`}</Typography>
+                  <Typography className={cls(classes.tokenLabel, classes.tokenDetail)}>{`${token.market_info.borrowList.length > 0 ? getCorrectNumber(token.market_info.borrowList[0].total_borrow / (10 ** token.token_info.Decimals), 2) : 0} ${token.token_info.Symbol}`}</Typography>
                 </Grid>
               </Grid>
               {index < topMarkets.length - 1 &&

@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const collabsTabStyles = makeStyles((theme) => ({
+export const collabsTabStyles = makeStyles(theme => ({
   inputContainer: {
     background: "rgba(255, 255, 255, 0.4)",
     border: "1px solid #DADADB",
@@ -31,23 +31,23 @@ export const collabsTabStyles = makeStyles((theme) => ({
       height: "10px",
     },
   },
-  addButton: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    padding: "6px 15px 6px 6px",
-    margin: "50px 0px 0px",
-    background: "#F0F5F8",
-    borderRadius: "41px",
-    color: "#431AB7",
-    fontSize: "14px",
-    fontWeight: 800,
-    "& svg": {
-      marginRight: "10px",
-      width: "10px",
-      height: "10px",
-    },
-  },
+  // addButton: {
+  //   display: "flex",
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   padding: "6px 15px 6px 6px",
+  //   margin: "50px 0px 0px",
+  //   background: "#F0F5F8",
+  //   borderRadius: "41px",
+  //   color: "#431AB7",
+  //   fontSize: "14px",
+  //   fontWeight: 800,
+  //   "& svg": {
+  //     marginRight: "10px",
+  //     width: "10px",
+  //     height: "10px",
+  //   },
+  // },
 
   userTile: {
     padding: "20px 0px",
@@ -79,6 +79,18 @@ export const collabsTabStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
     overflow: "hidden",
     marginLeft: 10,
+    whiteSpace: "nowrap",
+  },
+  renderItemBox: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "14px 26px",
+    width: "100%",
+    borderBottom: "1px solid #00000021",
+    [theme.breakpoints.down(560)]: {
+      paddingLeft: "0px",
+    },
   },
   invitationSentBtn: {
     fontSize: 14,

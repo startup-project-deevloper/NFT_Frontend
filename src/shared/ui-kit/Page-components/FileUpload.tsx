@@ -221,12 +221,12 @@ const FileUpload = ({
               : theme === "privi-pix"
               ? {
                   ...styleWrapper,
-                  backgroundColor: "transparent",
-                  border: "1px solid #A4A4A4",
                   height: "97px",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
+                  border: "1px dashed #788BA2",
+                  background: "#EFF2FD",
                 }
               : {
                   ...styleWrapper,
@@ -252,7 +252,7 @@ const FileUpload = ({
                   : theme === "music dao"
                   ? { marginRight: "27px", width: "26px", height: "25px" }
                   : {
-                      marginBottom: smallSize ? "15px" : 0,
+                      marginBottom: smallSize ? "15px" : 8,
                       marginRight: smallSize ? 0 : "20px",
                     }
               }
@@ -262,7 +262,7 @@ const FileUpload = ({
             <div
               style={{
                 textAlign: "center",
-                marginTop: "8px",
+                marginTop: "px",
                 color: theme ? Color.White : Color.MusicDAODark,
                 fontWeight: 600,
                 marginBottom: "8px",
@@ -316,16 +316,14 @@ const FileUpload = ({
                 <>
                   <span
                     style={{
-                      fontSize: '14px',
+                      fontSize: "14px",
                       color: Color.MusicDAODark,
                       fontFamily: "Montserrat",
-                      fontWeight: 600
+                      fontWeight: 600,
                     }}
                   >
                     Drag image here or
-                    <span style={{ marginLeft: 8, color: "#431AB7" }}>
-                      browse on your device
-                    </span>
+                    <span style={{ marginLeft: 8, color: "#431AB7" }}>browse on your device</span>
                   </span>
                   {extra && (
                     <Box mt="4px" color="#54658F" fontSize="14px" fontFamily="Montserrat" fontWeight={500}>

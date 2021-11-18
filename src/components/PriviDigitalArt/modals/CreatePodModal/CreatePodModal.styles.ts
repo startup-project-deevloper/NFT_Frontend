@@ -7,8 +7,9 @@ export const createPodModalStyles = makeStyles(theme => ({
     fontWeight: 800,
     fontSize: "22px",
     lineHeight: "130%",
-    color: "#2D3047",
+    color: "#1A1B1C",
     marginBottom: "31px",
+    textAlign: "center",
     "& span": {
       color: "#7F6FFF",
       marginLeft: "10px",
@@ -19,7 +20,8 @@ export const createPodModalStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
     "& img:first-child": {
-      marginTop: 20,
+      marginTop: 24,
+      marginLeft: 8,
     },
     "& h3": {
       marginTop: 23,
@@ -28,7 +30,7 @@ export const createPodModalStyles = makeStyles(theme => ({
       fontWeight: 800,
       fontSize: 24,
       textAlign: "center",
-      color: "black",
+      color: "#1A1B1C",
       fontFamily: "Agrandir",
       lineHeight: "130%",
     },
@@ -37,7 +39,7 @@ export const createPodModalStyles = makeStyles(theme => ({
       fontWeight: 400,
       lineHeight: "25.6px",
       textAlign: "center",
-      color: "black",
+      color: "#1A1B1C",
       marginTop: 0,
       marginBottom: "19px",
     },
@@ -143,7 +145,7 @@ export const createPodModalStyles = makeStyles(theme => ({
   buttons: {
     justifyContent: "space-between",
     width: "100%",
-    marginTop: "32px",
+    marginTop: "48px",
     "& button": {
       height: "59px",
       borderRadius: "4px",

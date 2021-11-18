@@ -44,7 +44,7 @@ const ManageNFTPage = () => {
   ];
 
   return (
-    <Box width="100%">
+    <Box width="100%" style={{ overflow: "auto" }}>
       <Box className={classes.backButtonContainer}>
         <Box className={classes.backBtn} onClick={() => history.goBack()}>
           <BackButton purple />

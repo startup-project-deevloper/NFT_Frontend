@@ -24,7 +24,7 @@ const BlockedByMe = () => {
     },
   ]
   return (
-    <Box p={4}>
+    <Box p={4} mb={8}>
       {nfts.map((item) => (
         <BlockedByMeNFT item={item} />
       ))}

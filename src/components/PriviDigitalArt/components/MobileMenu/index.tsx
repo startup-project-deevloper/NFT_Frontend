@@ -11,7 +11,7 @@ const TABS = [
   "HOME",
   "EXPLORE",
   "MARKETPLACE",
-  // "PODS",
+  "PODS",
   "NFT LOANS",
   "SAVED CONTENT",
   "NFT FRACTIONALISATION",
@@ -27,8 +27,8 @@ export default function MobileMenu() {
       return TABS[1];
     } else if (location.pathname.includes("marketplace")) {
       return TABS[2];
-      // } else if (location.pathname.includes("pods")) {
-      //   return TABS[3];
+      } else if (location.pathname.includes("pods")) {
+        return TABS[3];
     } else if (location.pathname.includes("loan")) {
       return TABS[3];
     } else if (location.pathname.includes("saved-content")) {
@@ -51,8 +51,8 @@ export default function MobileMenu() {
     } else if (value === TABS[2]) {
       history.push("/marketplace");
     } else if (value === TABS[3]) {
-      //   history.push("/pods");
-      // } else if (value === TABS[4]) {
+        history.push("/pods");
+      } else if (value === TABS[4]) {
       history.push("/loan");
     } else if (value === TABS[4]) {
       history.push("/saved-content");

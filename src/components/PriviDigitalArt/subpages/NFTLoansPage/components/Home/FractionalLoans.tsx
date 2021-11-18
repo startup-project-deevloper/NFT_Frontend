@@ -15,6 +15,7 @@ import HowItWorksModal from "components/PriviDigitalArt/modals/HowItWorksModal";
 import LendingCard from "./LendingCard";
 import BorrowingCard from "./BorrowingCard";
 import MarketsTable from "./MarketsTable";
+import { getCorrectNumber } from "shared/helpers/number";
 
 const FractionalLoans = ({ loading, markets }) => {
   const theme = useTheme();
@@ -73,8 +74,8 @@ const FractionalLoans = ({ loading, markets }) => {
         let total_borrow = 0
         let total_lend = 0
         if (total_borrow_list.length > 0) {
-          total_borrow = total_borrow_list[0].total_borrow
-          total_lend = total_borrow_list[0].total_lend
+          total_borrow = getCorrectNumber(total_borrow_list[0].total_borrow / (10 ** row.token_info.Decimals) * row.token_info.priceInUsd, 2)
+          total_lend = getCorrectNumber(total_borrow_list[0].total_lend / (10 ** row.token_info.Decimals), 2)
         }
         return [
           {
@@ -120,15 +121,15 @@ const FractionalLoans = ({ loading, markets }) => {
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>{row.market_info.reserve_apy * 100}%</span>,
+            cell: <span className={classes.marketValue}>{getCorrectNumber(row.market_info.reserve_apy * 100, 2)}%</span>,
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>{`${total_borrow} ${row.token_info.Symbol}`}</span>,
+            cell: <span className={classes.marketValue}>${total_borrow}</span>,
             cellAlign: "center",
           },
           {
-            cell: <span className={classes.marketValue}>{row.market_info.borrow_apy * 100}%</span>,
+            cell: <span className={classes.marketValue}>{getCorrectNumber(row.market_info.borrow_apy * 100, 2)}%</span>,
             cellAlign: "center",
           },
           {

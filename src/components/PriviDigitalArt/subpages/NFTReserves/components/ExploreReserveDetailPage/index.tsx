@@ -12,6 +12,7 @@ import { exploreOptionDetailPageStyles } from "./index.styles";
 import BlockNFTModal from "components/PriviDigitalArt/modals/BlockNFTModal";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 import InstantBuyModal from "components/PriviDigitalArt/modals/InstantBuyModal";
+import RentNFTModal from "components/PriviDigitalArt/modals/RentNFTModal";
 import BlockingTabSection from "./BlockingTabSection";
 import RentingTabSection from "./RentingTabSection";
 import BuyingTabSection from "./BuyingTabSection";
@@ -26,6 +27,7 @@ const ExploreReserveDetailPage = () => {
   const [loan, setLoan] = useState<any>(true);
   const [loanMedia, setLoanMedia] = useState<any>(true);
   const [loadingLoan, setLoadingLoan] = useState<boolean>(false);
+  const [openRentNFTModal, setOpenRentNFTModal] = useState<boolean>(false);
 
   const [isShowingMediaPhotoDetailModal, setIsShowingMediaPhotoDetailModal] = useState<boolean>(false);
 
@@ -173,19 +175,54 @@ const ExploreReserveDetailPage = () => {
   ]);
 
   const [buyingOfferData, setBuyingOfferData] = useState<any>([
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', date:'232 USDT', etherscan:'sss'},
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
+    { user: "0xeec9...82f8", price: "0.000245 USDT", date: "232 USDT", etherscan: "sss" },
   ]);
 
   const [buyingHistoryData, setBuyingHistoryData] = useState<any>([
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
-    {user:'0xeec9...82f8', price:'0.000245 USDT', estimated:'232 USDT', time:'3 Days', date: '21.11.2021', etherscan:'sss'},
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
+    {
+      user: "0xeec9...82f8",
+      price: "0.000245 USDT",
+      estimated: "232 USDT",
+      time: "3 Days",
+      date: "21.11.2021",
+      etherscan: "sss",
+    },
   ]);
 
   const [Offershowed, setOfferShowed] = useState<boolean>(false);
@@ -201,7 +238,7 @@ const ExploreReserveDetailPage = () => {
     setOpenOrderBookModal(false);
   };
   const goBack = () => {
-    history.push("/option/explore");
+    history.push("/reserve/explore");
   };
   return (
     <Box style={{ position: "relative", width: "100%" }}>
@@ -321,6 +358,7 @@ const ExploreReserveDetailPage = () => {
                       border: "1px solid #431AB7",
                       height: 37,
                     }}
+                    onClick={() => setOpenRentNFTModal(true)}
                   >
                     RENT
                   </PrimaryButton>
@@ -358,27 +396,26 @@ const ExploreReserveDetailPage = () => {
                   <span>BLOCKING</span>
                 </div>
               </div>
-              {
-                selectedTab === "buying" && (
-                  <BuyingTabSection offerData={buyingOfferData} historyData={buyingHistoryData} />
-                )
-              }
-              {
-                selectedTab === "blocking" && (
-                  <BlockingTabSection offerData={blockingOfferData} historyData={blockingHistoryData} />
-                )
-              }
-              {
-                selectedTab === "renting" && (
-                  <RentingTabSection offerData={rentingOfferData} historyData={rentingHistoryData} />
-                )
-              }
+              {selectedTab === "buying" && (
+                <BuyingTabSection offerData={buyingOfferData} historyData={buyingHistoryData} />
+              )}
+              {selectedTab === "blocking" && (
+                <BlockingTabSection offerData={blockingOfferData} historyData={blockingHistoryData} />
+              )}
+              {selectedTab === "renting" && (
+                <RentingTabSection offerData={rentingOfferData} historyData={rentingHistoryData} />
+              )}
             </Box>
             <BlockNFTModal
               open={openReserveNftModal}
               handleClose={() => setOpenReserveNftModal(false)}
               onConfirm={handleConfirmReserveNft}
               img_url={img_id}
+            />
+            <RentNFTModal
+              open={openRentNFTModal}
+              handleClose={() => setOpenRentNFTModal(false)}
+              onConfirm={() => setOpenRentNFTModal(false)}
             />
             <OrderBookModal
               open={openOrderBookModal}

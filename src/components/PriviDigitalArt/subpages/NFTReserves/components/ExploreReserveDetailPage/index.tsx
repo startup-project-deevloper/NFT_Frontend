@@ -15,6 +15,7 @@ import BlockedDetailSection from "./components/BlockedDetailSection";
 import BlockedStatusSection from "./components/BlockedStatusSection";
 import RegularBlockedDetailSection from "./components/RegularBlockedDetailSection";
 import RegularBlockedStatusSection from "./components/RegularBlockedStatusSection";
+import ExpiredPayDetailSection from "./components/ExpiredPayDetailSection";
 
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
@@ -23,9 +24,11 @@ const ExploreReserveDetailPage = () => {
   // todo: 
   const isOwnership = false;
   const isRentedNFT = false; // nft.owner == current user && nft.isRent == true
-  const isBlockedNFT = true; // nft.owner == current user && nft.isBlocked == true
+  const isBlockedNFT = false; // nft.owner == current user && nft.isBlocked == true
   const isPaidBlocking = false;
   const isUnpaidReserval = false;
+  const isExpired = true;
+  const isExpiredPaySuccess = true;
 
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
@@ -121,16 +124,22 @@ const ExploreReserveDetailPage = () => {
                 </Box>
                 <hr className={classes.divider} />
                 {
-                  isRentedNFT ? (
-                    <RentedDetailSection />
-                  ) : isBlockedNFT ? (
-                    isOwnership ? (
+                  isOwnership ? (
+                    isRentedNFT ? (
+                      <RentedDetailSection />
+                    ) : isBlockedNFT ? (
                       <BlockedDetailSection isPaidBlocking={isPaidBlocking} isUnpaidReserval={isUnpaidReserval}/>
                     ) : (
-                      <RegularBlockedDetailSection />
+                      <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
                     )
                   ) : (
-                    <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                    isBlockedNFT ? (
+                      <RegularBlockedDetailSection />
+                    ) : isExpired ? (
+                      <ExpiredPayDetailSection isSuccess={isExpiredPaySuccess} />
+                    ) : (
+                      <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                    )
                   )
                 }
                 {
@@ -169,13 +178,21 @@ const ExploreReserveDetailPage = () => {
               </Box>
             </Box>
             {
-              isRentedNFT || isBlockedNFT && isPaidBlocking || isBlockedNFT && isUnpaidReserval ?
-                null 
-                : isBlockedNFT ? (
-                  isOwnership ? <BlockedStatusSection /> : <RegularBlockedStatusSection />
+              isOwnership ? (
+                isRentedNFT || isBlockedNFT && isPaidBlocking || isBlockedNFT && isUnpaidReserval ? (
+                  null
+                ) : isBlockedNFT ? (
+                  <BlockedStatusSection />
                 ) : (
                   <NFTDetailTabSection isOwnership={isOwnership} />
                 )
+              ) : (
+                isBlockedNFT ? (
+                  <RegularBlockedStatusSection />
+                ) :  (
+                  <NFTDetailTabSection isOwnership={isOwnership} />
+                )
+              )
             }
           </LoadingWrapper>
         ) : (

@@ -595,6 +595,18 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     borderRadius: 16,
     fontSize: 18
   },
+  ExpiredPayFailed: {
+    background: 'rgba(242, 198, 158, 0.16)',
+    border: '1px solid #FF8E3C',
+    borderRadius: 8,
+    fontSize: 14
+  },
+  ExpiredPaySuccess: {
+    background: 'rgba(158, 172, 242, 0.16)',
+    border: '1px solid rgba(158, 172, 242, 0.2)',
+    borderRadius: 8,
+    fontSize: 14
+  },
   BlockedDetailBottomSection: {
     background: '#431AB710',
     borderBottomLeftRadius: 16,

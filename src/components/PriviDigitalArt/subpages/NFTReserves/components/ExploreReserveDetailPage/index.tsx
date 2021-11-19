@@ -13,17 +13,19 @@ import GeneralDetailSection from "./components/GeneralDetailSection";
 import RentedDetailSection from "./components/RentedDetailSection";
 import BlockedDetailSection from "./components/BlockedDetailSection";
 import BlockedStatusSection from "./components/BlockedStatusSection";
+import RegularBlockedDetailSection from "./components/RegularBlockedDetailSection";
+import RegularBlockedStatusSection from "./components/RegularBlockedStatusSection";
 
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
   const { img_id } = useParams();
 
   // todo: 
-  const isOwnership = true;
+  const isOwnership = false;
   const isRentedNFT = false; // nft.owner == current user && nft.isRent == true
   const isBlockedNFT = true; // nft.owner == current user && nft.isBlocked == true
   const isPaidBlocking = false;
-  const isUnpaidReserval = true;
+  const isUnpaidReserval = false;
 
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
@@ -122,7 +124,11 @@ const ExploreReserveDetailPage = () => {
                   isRentedNFT ? (
                     <RentedDetailSection />
                   ) : isBlockedNFT ? (
-                    <BlockedDetailSection isPaidBlocking={isPaidBlocking} isUnpaidReserval={isUnpaidReserval}/>
+                    isOwnership ? (
+                      <BlockedDetailSection isPaidBlocking={isPaidBlocking} isUnpaidReserval={isUnpaidReserval}/>
+                    ) : (
+                      <RegularBlockedDetailSection />
+                    )
                   ) : (
                     <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
                   )
@@ -166,7 +172,7 @@ const ExploreReserveDetailPage = () => {
               isRentedNFT || isBlockedNFT && isPaidBlocking || isBlockedNFT && isUnpaidReserval ?
                 null 
                 : isBlockedNFT ? (
-                  <BlockedStatusSection />
+                  isOwnership ? <BlockedStatusSection /> : <RegularBlockedStatusSection />
                 ) : (
                   <NFTDetailTabSection isOwnership={isOwnership} />
                 )

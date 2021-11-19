@@ -16,6 +16,7 @@ import BlockedStatusSection from "./components/BlockedStatusSection";
 import RegularBlockedDetailSection from "./components/RegularBlockedDetailSection";
 import RegularBlockedStatusSection from "./components/RegularBlockedStatusSection";
 import ExpiredPayDetailSection from "./components/ExpiredPayDetailSection";
+import ExpiredPayStatusSection from "./components/ExpiredPayStatusSection";
 
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
@@ -28,7 +29,7 @@ const ExploreReserveDetailPage = () => {
   const isPaidBlocking = false;
   const isUnpaidReserval = false;
   const isExpired = true;
-  const isExpiredPaySuccess = true;
+  const isExpiredPaySuccess = false;
 
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
@@ -189,7 +190,11 @@ const ExploreReserveDetailPage = () => {
               ) : (
                 isBlockedNFT ? (
                   <RegularBlockedStatusSection />
-                ) :  (
+                ) : isExpired ? (
+                  isExpiredPaySuccess ? null : (
+                    <ExpiredPayStatusSection />
+                  )
+                ) : (
                   <NFTDetailTabSection isOwnership={isOwnership} />
                 )
               )

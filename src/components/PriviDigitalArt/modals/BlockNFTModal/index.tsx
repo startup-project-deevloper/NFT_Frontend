@@ -18,8 +18,6 @@ export default function BlockNFTModal({ open, handleClose = () => {}, onConfirm,
   const { account, library, chainId } = useWeb3React();
 
   const [usdt, setUsdt] = React.useState<number>(0);
-  const [soldDays, setSoldDays] = React.useState<number>(0);
-  const [disappearDays, setDisappearDays] = React.useState<number>(0);
   const [collateral, setCollateral] = React.useState<number>(0);
   const [usdtBalance, setUsdtBalance] = React.useState<number>(0);
   const [step, setStep] = useState<number>(0);

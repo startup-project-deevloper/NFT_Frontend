@@ -577,5 +577,16 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     backgroundColor: '#4218B5 !important',
     height: 30,
     padding: "0 14px",
+  },
+  RentedDetailSection: {
+    background: '#FAFBFF',
+    border: '1px solid #E9E9F2',
+    borderRadius: 16,
+    fontSize: 16
+  },
+  RentedDetailSectionOne: {
+    background: '#ffffff',
+    border: '1px solid #E9E9F2',
+    borderRadius: 16
   }
 }));

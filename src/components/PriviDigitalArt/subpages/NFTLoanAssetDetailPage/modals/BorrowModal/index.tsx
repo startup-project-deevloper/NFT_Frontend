@@ -170,7 +170,7 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
       <Box className={classes.rateBox}>
         <Box display="flex" justifyContent="space-between">
           <Typography className={classes.small}>Borrowing power</Typography>
-          <Typography className={classes.smallBold}>{getCorrectNumber((borrowPower + borrowLimitUsed), 4)} {market?.token_info?.Symbol}</Typography>
+          <Typography className={classes.smallBold}>{getCorrectNumber((Number(borrowPower) + Number(borrowLimitUsed)), 4)} {market?.token_info?.Symbol}</Typography>
         </Box>
         <Divider />
         <Box display="flex" justifyContent="space-between">

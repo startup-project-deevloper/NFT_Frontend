@@ -6,3 +6,7 @@ export const getCorrectNumber = (value: number, precision?: number) => {
     _value = _value.toFixed(precision)
   return _value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export const numberWithCommas = x => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};

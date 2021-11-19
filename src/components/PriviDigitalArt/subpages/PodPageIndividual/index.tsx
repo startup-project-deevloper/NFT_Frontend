@@ -5,13 +5,11 @@ import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 import SimpleCarousel from "react-simply-carousel";
 
-import Staking from "./subPages/Staking";
 import Investments from "./subPages/Investments";
 import Discussion from "./subPages/Discussion";
 import Chat from "./subPages/Chat";
 import { Media } from "./subPages/Media";
 import Discord from "./Discord";
-import { Proposals } from "./subPages/Proposals";
 import { ProposalPodCard } from "components/PriviDigitalArt/components/Cards/ProposalPodCard";
 import NewDistributionModal from "components/PriviDigitalArt/modals/NewDistributionModal";
 import PodHeader from "./Header";
@@ -20,8 +18,8 @@ import { useTypedSelector } from "store/reducers/Reducer";
 
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs/LoadingWrapper";
-import { getPod } from "shared/services/API/PriviPodAPI";
-import { Color, SecondaryButton } from "shared/ui-kit";
+import { getPod, priviPodAcceptInvitation } from "shared/services/API/PriviPodAPI";
+import { Color, Gradient, SecondaryButton } from "shared/ui-kit";
 import { default as ServerURL } from "shared/functions/getURL";
 import { BlockchainNets } from "shared/constants/constants";
 import { onGetNonDecrypt } from "shared/ipfs/get";
@@ -29,35 +27,22 @@ import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 
 import { usePodPageIndividualStyles } from "./index.styles";
+import { useAlertMessage } from "shared/hooks/useAlertMessage";
+import { useAuth } from "shared/contexts/AuthContext";
+import { getPodStatus } from "shared/functions/utilsPriviPod";
+import { switchNetwork } from "shared/functions/metamask";
+import Governance from "./subPages/Governance";
+import Copyright from "./subPages/Copyright";
 
-const apiType = "pix";
-const PODSTABOPTIONS = ["Media", "Reward", "Investments", "Discussion", "Chat", "Proposals"];
-
-const getPodState = pod => {
-  if (pod && pod.FundingDate && pod.FundingDate > Math.trunc(Date.now() / 1000)) {
-    pod.status = "Funding";
-  } else if (
-    pod &&
-    pod.FundingDate &&
-    pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
-    (pod.RaisedFunds || 0) < pod.FundingTarget
-  ) {
-    pod.status = "Funding Failed";
-  } else if (
-    pod &&
-    pod.FundingDate &&
-    pod.FundingDate <= Math.trunc(Date.now() / 1000) &&
-    (pod.RaisedFunds || 0) >= pod.FundingTarget
-  ) {
-    pod.status = "Funded";
-  }
-  return pod;
-};
+const PODSTABOPTIONS = ["Media", "Governance", "Investments", "Discussion", "Chat", "Proposals"];
 
 const PodPageIndividual = () => {
   const classes = usePodPageIndividualStyles();
+  const { showAlertMessage } = useAlertMessage();
+
   const params: any = useParams();
   const user = useTypedSelector(state => state.user);
+  const { isSignedin } = useAuth();
 
   const [podMenuSelection, setPodMenuSelection] = useState<string>(PODSTABOPTIONS[0]);
   const [pod, setPod] = useState<any>();
@@ -68,7 +53,6 @@ const PodPageIndividual = () => {
   const [generalChat, setGeneralChat] = useState<string>("");
 
   const [activeSlide, setActiveSlide] = useState<number>(0);
-  const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [discussions, setDiscussions] = useState<any>();
   const [openDistributionTopic, setOpenDistributionTopic] = useState<boolean>(false);
 
@@ -80,11 +64,11 @@ const PodPageIndividual = () => {
     seconds: 0,
   });
 
-  const { library } = useWeb3React();
+  const { library, chainId, account } = useWeb3React();
 
   const podId = params?.podId;
 
-  const { downloadWithNonDecryption } = useIPFS();
+  const { ipfs, setMultiAddr, downloadWithNonDecryption } = useIPFS();
 
   const [imageIPFS, setImageIPFS] = useState({});
 
@@ -93,18 +77,27 @@ const PodPageIndividual = () => {
       pod &&
       pod.FundingDate &&
       pod.FundingDate < Math.trunc(Date.now() / 1000) &&
-      (+pod.RaisedFunds || 0) >= +pod.FundingTarget,
+      (pod.RaisedFunds || 0) >= pod.FundingTarget,
     [pod]
   );
 
+  const isAllVoted = React.useMemo(() => {
+    if (!pod) return false;
+
+    return pod.CreatorsData.find(item => item.vote !== true && item.vote !== false) ? true : false;
+  }, [pod]);
+
   const [isExpired, setExpired] = useState<boolean>(true);
 
+  useEffect(() => {
+    setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
+  }, []);
 
   useEffect(() => {
-    if (podId) {
+    if (podId && ipfs && Object.keys(ipfs).length !== 0) {
       loadData();
     }
-  }, [podId]);
+  }, [podId, ipfs]);
 
   useEffect(() => {
     if (pod?.FundingDate) {
@@ -143,9 +136,10 @@ const PodPageIndividual = () => {
             seconds,
           });
         }
-
-        const podRef = pod;
-        setPod(getPodState(podRef));
+        const status = getPodStatus(pod);
+        if (pod.status !== status) {
+          setPod(prev => ({ ...prev, status: getPodStatus(pod) }));
+        }
       }, 1000);
 
       return () => clearInterval(timerId);
@@ -156,23 +150,48 @@ const PodPageIndividual = () => {
     if (!pod || !pod.PodAddress) return;
 
     (async () => {
-      const web3APIHandler = BlockchainNets[1].apiHandler;
-      const web3 = new Web3(library.provider);
+      if (ipfs && Object.keys(ipfs).length !== 0) {
+        const targetChain = BlockchainNets[1];
+        if (chainId && chainId !== targetChain?.chainId) {
+          const isHere = await switchNetwork(targetChain?.chainId || 0);
+          if (!isHere) {
+            showAlertMessage("Got failed while switching over to target netowrk", { variant: "error" });
+            return;
+          }
+        }
 
-      const podInfo = await web3APIHandler?.PodManager.getPodInfo(web3, {
-        podAddress: pod.PodAddress,
-        fundingToken: pod.FundingToken,
-      });
-      setPodInfo(podInfo);
+        const web3APIHandler = targetChain.apiHandler;
+        if (library) {
+          const web3 = new Web3(library.provider);
+
+          const info = await web3APIHandler?.PodManager.getPodInfo(web3, {
+            podAddress: pod.PodAddress,
+            fundingToken: pod.FundingToken,
+          });
+          setPodInfo(info);
+
+          if (info) {
+            const stakingGovernance = await web3APIHandler?.DistributionManager.stakingGovernance(web3, {
+              contractAddress: info.distributionManagerAddress,
+            });
+            const stakingERC721 = await web3APIHandler?.DistributionManager.stakingERC721(web3, {
+              contractAddress: info.distributionManagerAddress,
+            });
+            setPodInfo({ ...info, stakingERC721, stakingGovernance });
+          }
+        }
+      }
     })();
 
-    const podRef = pod;
-    setPod(getPodState(podRef));
+    const status = getPodStatus(pod);
+    if (pod.status !== status) {
+      setPod(prev => ({ ...prev, status: getPodStatus(pod) }));
+    }
   }, [pod, pod?.PodAddress]);
 
   const getImageIPFS = async (cid: string, fileName: string) => {
-    let files = await onGetNonDecrypt(cid, fileName, (fileCID, fileName, download) =>
-      downloadWithNonDecryption(fileCID, fileName, download)
+    let files = await onGetNonDecrypt(cid, fileName, (fileCID, download) =>
+      downloadWithNonDecryption(fileCID, download)
     );
     if (files) {
       let base64String = _arrayBufferToBase64(files.buffer);
@@ -187,7 +206,7 @@ const PodPageIndividual = () => {
         description,
         podId,
         createdBy: user.id,
-        podType: "PIX",
+        podType: "TRAX",
       })
       .then(response => {
         const resp = response.data.data;
@@ -199,9 +218,24 @@ const PodPageIndividual = () => {
   const loadData = async () => {
     if (podId) {
       try {
-        const resp = await getPod(podId, apiType);
+        const resp = await getPod(podId, "PIX");
         if (resp?.success) {
           let podData = resp.data;
+
+          // If the invited user didn't accept the proposal and directly go into the pod, then accept it automatically.
+          const isInvitedUser = podData.CreatorsData.find(item => item.id === user.id);
+          const isAccepted = podData.Collabs.find(item => item.userId === user.id);
+          if (isInvitedUser && !isAccepted) {
+            const acceptResponse = await priviPodAcceptInvitation({
+              podId: podData.Id,
+              userId: user.id,
+              type: "PIX",
+            });
+            if (acceptResponse.success) {
+              loadData();
+              return;
+            }
+          }
 
           const cur = new Date().getTime() - podData.Created;
           const deadline = podData.ProposalDeadline._seconds * 1000 - podData.Created;
@@ -211,7 +245,7 @@ const PodPageIndividual = () => {
             setExpired(false);
           }
 
-          podData = getPodState(podData);
+          podData.status = getPodStatus(podData);
 
           if (!podData.distributionProposalAccepted) {
             let privateChats: any[] = podData.PrivateChats;
@@ -222,8 +256,8 @@ const PodPageIndividual = () => {
             }
           }
 
-          let isCollab = podData.Collabs.findIndex(collab => collab.userId === user.id);
-          if (podData.CreatorId === user.id || isCollab !== -1) {
+          let isCollab = podData.Collabs.filter(collab => collab.address === user.address).length > 0;
+          if (podData.CreatorId === user.id || isCollab) {
             setIsCreatorOrCollab(true);
           }
 
@@ -260,21 +294,33 @@ const PodPageIndividual = () => {
         <PodArtists pod={pod} />
         {pod.distributionProposalAccepted && (
           <div className={classes.podSubPageHeader}>
-            <Box className={classes.flexBox} justifyContent="center">
+            <Box className={`${classes.flexBox} ${classes.xscroll}`}>
               {PODSTABOPTIONS.map((item, index) => {
-                if (item !== "Proposals" || (isCreatorOrCollab && isFunded)) {
-                  if (item !== "Reward" || isFunded) {
-                    return (
-                      <Box
-                        key={`pod-detail-tab-${index}`}
-                        className={`${classes.tabBox} ${
-                          podMenuSelection === item ? classes.selectedTabBox : ""
-                        }`}
-                        onClick={() => setPodMenuSelection(item)}
-                      >
-                        {item}
-                      </Box>
-                    );
+                if (item !== "Chat" || isCreatorOrCollab) {
+                  if (item !== "Governance" || (isCreatorOrCollab && isFunded)) {
+                    if (item !== "Copyright" || isFunded) {
+                      if (
+                        !(
+                          item === "Governance" ||
+                          item === "Discussion" ||
+                          item === "Chat" ||
+                          item === "Copyright"
+                        ) ||
+                        isSignedin
+                      ) {
+                        return (
+                          <Box
+                            key={`pod-detail-tab-${index}`}
+                            className={`${classes.tabBox} ${
+                              podMenuSelection === item ? classes.selectedTabBox : ""
+                            }`}
+                            onClick={() => setPodMenuSelection(item)}
+                          >
+                            {item}
+                          </Box>
+                        );
+                      }
+                    }
                   }
                 }
               })}
@@ -285,11 +331,14 @@ const PodPageIndividual = () => {
           {pod.distributionProposalAccepted && (
             <Box pt={1}>
               {podMenuSelection === PODSTABOPTIONS[0] && (
-                <Media medias={pod.Medias} pod={pod} handleRefresh={loadData} />
+                <Media medias={pod.Medias} pod={pod} podInfo={podInfo} handleRefresh={loadData} />
               )}
               {podMenuSelection === PODSTABOPTIONS[1] && (
-                <Staking pod={pod} handleRefresh={loadData} podInfo={podInfo} />
+                <Governance pod={pod} handleRefresh={loadData} podInfo={podInfo} />
               )}
+              {/* {podMenuSelection === PODSTABOPTIONS[1] && (
+                <Staking pod={pod} handleRefresh={loadData} podInfo={podInfo} />
+              )} */}
               {podMenuSelection === PODSTABOPTIONS[2] && podInfo && (
                 <Investments pod={pod} podInfo={podInfo} handleRefresh={loadData} />
               )}
@@ -297,7 +346,7 @@ const PodPageIndividual = () => {
                 <Discussion
                   podId={podId}
                   pod={pod}
-                  refreshPod={() => loadData()}
+                  refreshPod={loadData}
                   isCreatorOrCollab={isCreatorOrCollab}
                 />
               )}
@@ -310,8 +359,8 @@ const PodPageIndividual = () => {
                   openProposal={() => setPodMenuSelection("Proposals")}
                 />
               )}
-              {podMenuSelection === "Proposals" && isCreatorOrCollab && isFunded && (
-                <Proposals pod={pod} podId={podId} podInfo={podInfo} handleRefresh={loadData} />
+              {podMenuSelection === PODSTABOPTIONS[5] && (
+                <Copyright podId={podId} pod={pod} podInfo={podInfo} refreshPod={() => loadData()} />
               )}
             </Box>
           )}
@@ -319,7 +368,7 @@ const PodPageIndividual = () => {
             <Box>
               {/* Proposals title bar */}
               <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box className={classes.header4}>Proposals</Box>
+                <Box className={classes.header4}>All Proposals</Box>
                 {pod.Proposals && pod.Proposals.length !== 0 ? (
                   <Box display="flex" alignItems="center">
                     <Box
@@ -375,9 +424,9 @@ const PodPageIndividual = () => {
                     speed={400}
                     infinite={false}
                   >
-                    {pod.Proposals.map((proposal, i) => {
+                    {pod.Proposals.map((proposal, index) => {
                       return (
-                        <Box width={"600px"} pr={2} key={i} className={classes.ProposalPodCardContainer}>
+                        <Box pr={2} key={`proposals-${index}`}>
                           <ProposalPodCard
                             podId={podId}
                             pod={pod}
@@ -398,31 +447,22 @@ const PodPageIndividual = () => {
                   size="medium"
                   onClick={() => setOpenDistributionTopic(true)}
                   isRounded
-                  disabled={isExpired}
-                  style={{
-                    border: "none",
-                    background: "#DDFF57",
-                    borderRadius: "8px",
-                    padding: "0 66px",
-                    color: Color.Purple,
-                    fontSize: "18px",
-                    lineHeight: "104.5%",
-                  }}
+                  disabled={isExpired || isAllVoted}
+                  style={{ border: "none", background: Gradient.Green1, color: "white" }}
                 >
                   New Pod Proposal
                 </SecondaryButton>
               </Box>
               {/* Discussion card */}
               <Box className={classes.discussionContent}>
-                <LoadingWrapper loading={isDataLoading}>
-                  <Discord
-                    podId={podId}
-                    chatType={"PrivateChat"}
-                    chatId={generalChat}
-                    sidebar={false}
-                    theme="dark"
-                  />
-                </LoadingWrapper>
+                <Discord
+                  podId={podId}
+                  chatType={"PrivateChat"}
+                  chatId={generalChat}
+                  sidebar={false}
+                  theme="dark"
+                  imageIPFS={imageIPFS}
+                />
               </Box>
             </Box>
           )}
@@ -440,11 +480,11 @@ const PodPageIndividual = () => {
       )}
     </Box>
   ) : (
-    <LoadingWrapper loading />
+    <Box height={1} display="flex" alignItems="center">
+      <LoadingWrapper loading />
+    </Box>
   );
 };
-
-export default PodPageIndividual;
 
 const LeftArrowIcon = () => (
   <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -458,13 +498,4 @@ const LeftArrowIcon = () => (
   </svg>
 );
 
-const MessageIcon = () => (
-  <svg width="17" height="19" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M16.4827 1H0.896484V13H3.8189V18L8.68959 13H16.4827V1Z"
-      stroke="#431AB7"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
-);
+export default PodPageIndividual;

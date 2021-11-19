@@ -1,6 +1,5 @@
 import Web3 from "web3";
 import { ContractInstance } from "shared/connectors/web3/functions";
-import config from "shared/connectors/web3/config";
 import api from "../api";
 import { toNDecimals } from "shared/functions/web3";
 
@@ -45,7 +44,6 @@ const distributionManager = network => {
             setHash(hash);
           });
         console.log("transaction succeed");
-        console.log(response);
         resolve({
           success: true,
           data: {
@@ -99,7 +97,6 @@ const distributionManager = network => {
             setHash(hash);
           });
         console.log("transaction succeed");
-        console.log(response);
         resolve({
           success: true,
           data: {
@@ -115,46 +112,27 @@ const distributionManager = network => {
     });
   };
 
-  const stakePodTokens = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
+  const stakeCopyrightNFT = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { amount, contractAddress, token } = payload;
-
-        const podDecimals = await api(network).Erc20["POD"].decimals(web3, token);
-
-        const approve = await api(network).Erc20["POD"].approve(
-          web3,
-          account,
-          token,
-          contractAddress,
-          toNDecimals(amount, podDecimals)
-        );
-
-        if (!approve) {
-          resolve({ success: false });
-        }
+        const { contractAddress, tokenId } = payload;
 
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
         console.log("Getting gas....");
-        const gas = await contract.methods
-          .stakePodTokens(toNDecimals(amount, podDecimals))
-          .estimateGas({ from: account });
+        const gas = await contract.methods.stakeCopyrightNFT(tokenId).estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
-          .stakePodTokens(toNDecimals(amount, podDecimals))
+          .stakeCopyrightNFT(tokenId)
           .send({ from: account, gas: gas })
           .on("transactionHash", hash => {
             setHash(hash);
           });
         console.log("transaction succeed");
-        console.log(response);
         resolve({
           success: true,
           data: {
-            amount,
-            tokenId: response.events.PodStaked.returnValues.tokenId,
-            staker: response.events.PodStaked.returnValues.staker,
+            tokenId: response.events.CopyrightStaked.returnValues.tokenId,
           },
         });
       } catch (e) {
@@ -164,47 +142,30 @@ const distributionManager = network => {
     });
   };
 
-  const unstakePodTokens = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
+  const unstakeCopyrightNFT = async (
+    web3: Web3,
+    account: string,
+    payload: any,
+    setHash: any
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { amount, contractAddress, token, id } = payload;
-
-        const podDecimals = await api(network).Erc20["POD"].decimals(web3, token);
-
-        const approve = await api(network).Erc20["POD"].approve(
-          web3,
-          account,
-          token,
-          contractAddress,
-          toNDecimals(amount, podDecimals)
-        );
-
-        if (!approve) {
-          resolve({ success: false });
-        }
+        const { contractAddress, id } = payload;
 
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
         console.log("Getting gas....");
-        const gas = await contract.methods
-          .unstakePodTokens(id, toNDecimals(amount, podDecimals))
-          .estimateGas({ from: account });
+        const gas = await contract.methods.unstakeCopyrightNFT(id).estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
-          .unstakePodTokens(id, toNDecimals(amount, podDecimals))
+          .unstakeCopyrightNFT(id)
           .send({ from: account, gas: gas })
           .on("transactionHash", hash => {
             setHash(hash);
           });
         console.log("transaction succeed");
-        console.log(response);
         resolve({
           success: true,
-          data: {
-            amount,
-            tokenId: response.events.PodUnstaked.returnValues.tokenId,
-            destination: response.events.PodUnstaked.returnValues.destination,
-          },
         });
       } catch (e) {
         console.log(e);
@@ -234,49 +195,10 @@ const distributionManager = network => {
             setHash(hash);
           });
         console.log("transaction succeed");
-        console.log(response);
         resolve({
           success: true,
           data: {
-            claimTo: response.events.RewardsClaimed.returnValues.claimTo,
             reward: response.events.RewardsClaimed.returnValues.reward,
-            tokenId: response.events.RewardsClaimed.returnValues.tokenId,
-          },
-        });
-      } catch (e) {
-        console.log(e);
-        resolve({ success: false });
-      }
-    });
-  };
-
-  const claimPodTokenRewards = async (
-    web3: Web3,
-    account: string,
-    payload: any,
-    setHash: any
-  ): Promise<any> => {
-    return new Promise(async resolve => {
-      try {
-        const { id, contractAddress } = payload;
-        const contract = ContractInstance(web3, metadata.abi, contractAddress);
-
-        console.log("Getting gas....");
-        const gas = await contract.methods.claimPodTokenRewards(id).estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
-        const response = await contract.methods
-          .claimPodTokenRewards(id)
-          .send({ from: account, gas: gas })
-          .on("transactionHash", hash => {
-            setHash(hash);
-          });
-        console.log("transaction succeed");
-        resolve({
-          success: true,
-          data: {
-            claimTo: response.events.RewardsClaimed.returnValues.claimTo,
-            reward: response.events.RewardsClaimed.returnValues.reward,
-            tokenId: response.events.RewardsClaimed.returnValues.tokenId,
           },
         });
       } catch (e) {
@@ -293,26 +215,6 @@ const distributionManager = network => {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
         const response = await contract.methods.getCopyrightRewards(id).call();
-
-        if (response) {
-          resolve(response);
-        } else {
-          response(null);
-        }
-      } catch (e) {
-        console.log(e);
-        resolve(null);
-      }
-    });
-  };
-
-  const getPodRewards = async (web3: Web3, payload: any): Promise<any> => {
-    return new Promise(async resolve => {
-      try {
-        const { id, contractAddress } = payload;
-        const contract = ContractInstance(web3, metadata.abi, contractAddress);
-
-        const response = await contract.methods.getPodRewards(id).call();
 
         if (response) {
           resolve(response);
@@ -346,13 +248,33 @@ const distributionManager = network => {
     });
   };
 
-  const getPodStakingPositions = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const stakingGovernance = async (web3: Web3, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const { contractAddress } = payload;
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
-        const response = await contract.methods.getPodStakingPositions(account).call();
+        const response = await contract.methods.stakingGovernance().call();
+
+        if (response) {
+          resolve(response);
+        } else {
+          response(null);
+        }
+      } catch (e) {
+        console.log(e);
+        resolve(null);
+      }
+    });
+  };
+
+  const stakingERC721 = async (web3: Web3, payload: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const { contractAddress } = payload;
+        const contract = ContractInstance(web3, metadata.abi, contractAddress);
+
+        const response = await contract.methods.copyrightFractionStakingNFT().call();
 
         if (response) {
           resolve(response);
@@ -369,14 +291,13 @@ const distributionManager = network => {
   return {
     stakeCopyrightFractions,
     unstakeCopyrightFractions,
-    stakePodTokens,
-    unstakePodTokens,
+    stakeCopyrightNFT,
+    unstakeCopyrightNFT,
     claimCopyrightFractionRewards,
-    claimPodTokenRewards,
     getCopyrightRewards,
-    getPodRewards,
-    getPodStakingPositions,
     getCopyrightStakingPositions,
+    stakingGovernance,
+    stakingERC721,
   };
 };
 

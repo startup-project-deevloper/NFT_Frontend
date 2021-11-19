@@ -7,10 +7,13 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(2.5),
     display: "flex",
     padding: theme.spacing(2),
+    "&:hover": {
+      boxShadow: "0px 16px 24px rgba(19, 45, 38, 0.25), 0px 31px 44px -13px rgba(0, 0, 0, 0.02)",
+    },
     [theme.breakpoints.down("xs")]: {
       marginLeft: "-16px",
-      marginRight:"-16px"
-    }
+      marginRight: "-16px",
+    },
   },
   podImageContent: {
     width: "224px",
@@ -19,13 +22,16 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     flexDirection: "column",
     [theme.breakpoints.down("xs")]: {
       width: "138px",
-      height: "100%"
+      height: "100%",
     },
   },
   podImage: {
     width: "100%",
     height: "100%",
     borderRadius: theme.spacing(2),
+    "& img": {
+      borderRadius: 16,
+    },
   },
   header1: {
     fontSize: 14,
@@ -35,7 +41,7 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     fontSize: 18,
     fontWeight: 700,
     [theme.breakpoints.down("xs")]: {
-      fontSize: 14
+      fontSize: 14,
     },
   },
   header3: {
@@ -51,7 +57,7 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     height: theme.spacing(4.5),
     [theme.breakpoints.down("xs")]: {
       width: 32,
-      height: 32
+      height: 32,
     },
     borderRadius: "50%",
     display: "flex",
@@ -59,19 +65,19 @@ export const PodProposalCardStyles = makeStyles(theme => ({
     alignItems: "center",
   },
   botWrap: {
-    display:"flex",
-    alignItems:"center",
-    justifyContent:"space-between",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 16,
     [theme.breakpoints.down("sm")]: {
-      flexDirection:"column",
-      alignItems:"start",
-      marginTop: 0
+      flexDirection: "column",
+      alignItems: "start",
+      marginTop: 0,
     },
   },
-  username:{
+  username: {
     [theme.breakpoints.down("xs")]: {
-      maxWidth: 80
-    }
+      maxWidth: 80,
+    },
   },
 }));

@@ -11,6 +11,8 @@ import { exploreOptionDetailPageStyles } from "./index.styles";
 import NFTDetailTabSection from "./components/NFTDetailTabSection";
 import GeneralDetailSection from "./components/GeneralDetailSection";
 import RentedDetailSection from "./components/RentedDetailSection";
+import BlockedDetailSection from "./components/BlockedDetailSection";
+import BlockedStatusSection from "./components/BlockedStatusSection";
 
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
@@ -18,7 +20,8 @@ const ExploreReserveDetailPage = () => {
 
   // todo: 
   const isOwnership = true;
-  const isRentedNFT = true; // nft.owner == current user && nft.isRent == true
+  const isRentedNFT = false; // nft.owner == current user && nft.isRent == true
+  const isBlockedNFT = true; // nft.owner == current user && nft.isBlocked == true
 
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
@@ -108,13 +111,23 @@ const ExploreReserveDetailPage = () => {
                 {
                   isRentedNFT ? (
                     <RentedDetailSection />
+                  ) : isBlockedNFT ? (
+                    <BlockedDetailSection />
                   ) : (
                     <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
                   )
                 }
               </Box>
             </Box>
-            { !isRentedNFT && <NFTDetailTabSection isOwnership={isOwnership} /> }
+            {
+              isRentedNFT ?
+                null 
+                : isBlockedNFT ? (
+                  <BlockedStatusSection />
+                ) : (
+                  <NFTDetailTabSection isOwnership={isOwnership} />
+                )
+            }
           </LoadingWrapper>
         ) : (
           <LoadingWrapper loading={true} theme={"blue"} height="calc(100vh - 100px)" />

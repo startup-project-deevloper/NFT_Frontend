@@ -22,8 +22,8 @@ const ExploreReserveDetailPage = () => {
   const isOwnership = true;
   const isRentedNFT = false; // nft.owner == current user && nft.isRent == true
   const isBlockedNFT = true; // nft.owner == current user && nft.isBlocked == true
-  const isPaidBlocking = true;
-  const isUnpaidReserval = false;
+  const isPaidBlocking = false;
+  const isUnpaidReserval = true;
 
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
@@ -40,6 +40,10 @@ const ExploreReserveDetailPage = () => {
   };
 
   const handleClaimPayment = () => {
+
+  }
+
+  const handleClaimCollateral = () => {
     
   }
 
@@ -136,6 +140,23 @@ const ExploreReserveDetailPage = () => {
                       onClick={handleClaimPayment}
                     >
                       CLAIM PAYMENT
+                    </PrimaryButton>
+                  )
+                }
+                {
+                  isUnpaidReserval && (
+                    <PrimaryButton
+                      size="medium"
+                      style={{
+                        width: '100%',
+                        height: 52,
+                        backgroundColor: "#431AB7",
+                        marginTop: 14,
+                        textTransform: 'uppercase'
+                      }}
+                      onClick={handleClaimCollateral}
+                    >
+                      claim Collateral & nft back
                     </PrimaryButton>
                   )
                 }

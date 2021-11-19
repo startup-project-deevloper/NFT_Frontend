@@ -4,27 +4,26 @@ import { useWeb3React } from "@web3-react/core";
 import { switchNetwork } from "shared/functions/metamask";
 
 import { Typography } from "@material-ui/core";
-import { Divider, Modal, PrimaryButton } from "shared/ui-kit";
+import { Modal, PrimaryButton } from "shared/ui-kit";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import TransactionProgressModal from "shared/ui-kit/Modal/Modals/TransactionProgressModal";
 import Box from "shared/ui-kit/Box";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 
-import { useBorrowModalStyles } from "./index.styles";
+import { useRepayModalStyles } from "./index.styles";
 import PolygonAPI from "shared/services/API/polygon";
 import { getCorrectNumber } from "shared/helpers/number";
 
-const BorrowModal = ({ open, onClose, onSuccess, market }) => {
-  const classes = useBorrowModalStyles();
+const RepayModal = ({ open, onClose, onSuccess, market }) => {
+  const classes = useRepayModalStyles();
   const { showAlertMessage } = useAlertMessage();
   const [amount, setAmount] = useState<number>(0);
+  const [isApproved, setIsApproved] = useState<boolean>(false);
+  const [balance, setBalance] = useState<number>(0);
   const [network, setNetwork] = useState<string>("");
   const [transactionInProgress, setTransactionInProgress] = useState<boolean>(false);
   const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
   const [openTransactionModal, setOpenTransactionModal] = useState<boolean>(false);
-  const [isEntered, setIsEntered] = useState<boolean>(true);
-  const [borrowPower, setBorrowPower] = useState<number>(0);
-  const [borrowLimitUsed, setBorrowLimitUsed] = useState<number>(0);
   const [txnHash, setTxnHash] = useState<string>("");
 
   const { account, library, chainId } = useWeb3React();
@@ -32,35 +31,23 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
   useEffect(() => {
     if (!open) {
       setAmount(0)
-      setIsEntered(true)
+      setIsApproved(false)
       setOpenTransactionModal(false)
-    } else {
     }
-    setEnteredStatus()
-    setAccountLiquidity()
   }, [open])
 
+  useEffect(() => {
+    handleSetBalance()
+  }, [market])
 
-  const setEnteredStatus = async () => {
+  const handleSetBalance = async () => {
     if (library) {
       const web3 = new Web3(library.provider);
       if (account && web3 && market) {
-        const enteredStatus = await PolygonAPI.FractionalLoan.isEntered(web3, account, market.CToken);
-        console.log(enteredStatus)
-        setIsEntered(enteredStatus)
-      }
-    }
-  }
-
-  const setAccountLiquidity = async () => {
-    if (library) {
-      const web3 = new Web3(library.provider);
-      if (account && web3 && market) {
-        const account_liquidity = await PolygonAPI.FractionalLoan.getAccountLiquidity(web3, account);
-        const borrow_limit_used = await PolygonAPI.FractionalLoan.getBorrowingLimitUsed(web3, account);
-        const priceInUsd = market?.token_info?.priceInUsd || 1
-        setBorrowPower(account_liquidity[0] * priceInUsd  / (10 ** 6))
-        setBorrowLimitUsed(borrow_limit_used * priceInUsd / (10 ** 6))
+        let _balance = await PolygonAPI.Erc20[market.token_info.Symbol].balanceOf(web3, { account });
+        let _decimals = await PolygonAPI.Erc20[market.token_info.Symbol].decimals(web3, { account });
+        _balance = _balance / Math.pow(10, _decimals);
+        setBalance(_balance)
       }
     }
   }
@@ -75,7 +62,7 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
     setOpenTransactionModal(false);
   };
 
-  const handleEnter = async () => {
+  const handleApprove = async () => {
     try {
       if (chainId && chainId !== 80001) {
         const isOnPolygon = await switchNetwork(80001);
@@ -95,9 +82,15 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
             return;
           }
           handleOpenTransactionModal()
-          await PolygonAPI.FractionalLoan.enter(web3, account, market.CToken, setTxnHash);
-          setIsEntered(true);
-          showAlertMessage(`Successfully entered to the ${market.token_info.Name} market!`, {
+          const approved = await PolygonAPI.Erc20[market.token_info.Symbol].approve(web3, account!, market.CToken, amount * (10 ** decimals), setTxnHash);
+          if (!approved) {
+            showAlertMessage(`Can't proceed to approve`, { variant: "error" });
+            setTransactionInProgress(false);
+            setTransactionSuccess(false);
+            return;
+          }
+          setIsApproved(true);
+          showAlertMessage(`Successfully approved ${amount} ${market.token_info.Symbol}!`, {
             variant: "success",
           });
           setTransactionSuccess(true);
@@ -110,11 +103,11 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
       });
     } finally {
       setTransactionInProgress(false);
-      setTxnHash('');
     }
   };
 
-  const handleBorrow = async () => {
+  const handleLend = async () => {
+    setTxnHash('')
     if (chainId && chainId !== 80001) {
       const isOnPolygon = await switchNetwork(80001);
       if (!isOnPolygon) {
@@ -128,12 +121,14 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
         let decimals = await PolygonAPI.Erc20[market.token_info.Symbol].decimals(web3, { account });
         let _bn_number = amount * (10 ** decimals)
         handleOpenTransactionModal()
-        await PolygonAPI.FractionalLoan.borrow(web3, account, market.CToken, _bn_number, setTxnHash);
+        await PolygonAPI.FractionalLoan.repay(web3, account, market.CToken, _bn_number,  setTxnHash);
+        onClose()
         onSuccess && onSuccess(amount);
-        showAlertMessage(`Successfully borrowed ${amount} ${market?.token_info?.Symbol}!`, {
+        showAlertMessage(`Successfully repaid ${amount} ${market?.token_info?.Symbol}!`, {
           variant: "success",
         });
         setTransactionSuccess(true);
+        onClose()
       }
     } catch (e) {
       console.log("handleSubmit error", e);
@@ -151,41 +146,33 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
     <Modal size="medium" isOpen={open} onClose={onClose} className={classes.modal} showCloseIcon={true}>
       <Box display="flex" alignItems="center">
         <img src={market?.token_info?.ImageUrl} alt={`${market?.token_info?.Name} asset`} width="40px" />
-        <Typography className={classes.title}>Borrow {market?.token_info?.Symbol}</Typography>
+        <Typography className={classes.title}>Repay {market?.token_info?.Symbol}</Typography>
       </Box>
-      <Typography className={classes.content}>Set the borrow amount . Your borrowing power depends on deposited tokens. </Typography>
-      <Typography className={classes.inputTitle}>Amount to borrow</Typography>
-      <Box>
+      <Typography className={classes.content}>Set the repay amount.</Typography>
+      <Box marginTop="30px">
         <InputWithLabelAndTooltip
           inputValue={amount !== 0 ? amount.toString() : ""}
           type="number"
-          placeHolder="Borrow amount"
+          placeHolder="Repay amount"
           onInputValueChange={e => {
             setAmount(Number(e.target.value));
           }}
           startAdornment={<img width="25px" src={market?.token_info?.ImageUrl} style={{ margin: '0px 10px 0px 0px' }} />}
-          disabled={!isEntered}
+          disabled={isApproved}
         />
       </Box>
-      <Box className={classes.rateBox}>
-        <Box display="flex" justifyContent="space-between">
-          <Typography className={classes.small}>Borrowing power</Typography>
-          <Typography className={classes.smallBold}>{getCorrectNumber((borrowPower + borrowLimitUsed), 4)} {market?.token_info?.Symbol}</Typography>
-        </Box>
-        <Divider />
-        <Box display="flex" justifyContent="space-between">
-          <Typography className={classes.small}>Borrowing limit used</Typography>
-          <Typography className={classes.smallBold}>{getCorrectNumber(borrowLimitUsed, 4)} {market?.token_info?.Symbol}</Typography>
-        </Box>
+      <Box marginTop="8px" display="flex">
+        <Typography className={classes.small}>Wallet Balance</Typography>
+        <Typography className={classes.smallBold}>{`${getCorrectNumber(balance, 4)} ${market?.token_info?.Symbol}`}</Typography>
       </Box>
       <Box className={classes.buttonContainer} display="flex" justifyContent="space-between">
-        <PrimaryButton className={classes.placeBtn} onClick={handleEnter} size="medium" disabled={!market || isEntered || transactionInProgress}>
+        <PrimaryButton className={classes.placeBtn} onClick={handleApprove} size="medium" disabled={!market || isApproved || transactionInProgress || amount == 0}>
           {
-            isEntered ? 'Entered' : 'Enter'
+            isApproved ? 'Approved' : 'Approve'
           }
         </PrimaryButton>
-        <PrimaryButton className={classes.placeBtn} onClick={handleBorrow} size="medium" disabled={!market || !isEntered || transactionInProgress || amount == 0}>
-          Borrow
+        <PrimaryButton className={classes.placeBtn} onClick={handleLend} size="medium" disabled={!market || !isApproved || transactionInProgress || amount == 0}>
+          Repay
         </PrimaryButton>
       </Box>
       <TransactionProgressModal
@@ -200,4 +187,4 @@ const BorrowModal = ({ open, onClose, onSuccess, market }) => {
   );
 };
 
-export default BorrowModal;
+export default RepayModal;

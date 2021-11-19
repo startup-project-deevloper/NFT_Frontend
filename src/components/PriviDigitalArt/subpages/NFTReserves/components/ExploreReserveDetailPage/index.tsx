@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useMediaQuery } from "@material-ui/core";
 
-import { Avatar, Color, SecondaryButton, Text } from "shared/ui-kit";
+import { Avatar, Color, SecondaryButton, Text, PrimaryButton } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
 import Box from "shared/ui-kit/Box";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
@@ -22,6 +22,8 @@ const ExploreReserveDetailPage = () => {
   const isOwnership = true;
   const isRentedNFT = false; // nft.owner == current user && nft.isRent == true
   const isBlockedNFT = true; // nft.owner == current user && nft.isBlocked == true
+  const isPaidBlocking = true;
+  const isUnpaidReserval = false;
 
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
@@ -36,6 +38,10 @@ const ExploreReserveDetailPage = () => {
   const goBack = () => {
     history.push("/reserve/explore");
   };
+
+  const handleClaimPayment = () => {
+    
+  }
 
   return (
     <Box style={{ position: "relative", width: "100%" }}>
@@ -112,15 +118,31 @@ const ExploreReserveDetailPage = () => {
                   isRentedNFT ? (
                     <RentedDetailSection />
                   ) : isBlockedNFT ? (
-                    <BlockedDetailSection />
+                    <BlockedDetailSection isPaidBlocking={isPaidBlocking} isUnpaidReserval={isUnpaidReserval}/>
                   ) : (
                     <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                  )
+                }
+                {
+                  isPaidBlocking && (
+                    <PrimaryButton
+                      size="medium"
+                      style={{
+                        width: '100%',
+                        height: 52,
+                        backgroundColor: "#431AB7",
+                        marginTop: 14
+                      }}
+                      onClick={handleClaimPayment}
+                    >
+                      CLAIM PAYMENT
+                    </PrimaryButton>
                   )
                 }
               </Box>
             </Box>
             {
-              isRentedNFT ?
+              isRentedNFT || isBlockedNFT && isPaidBlocking || isBlockedNFT && isUnpaidReserval ?
                 null 
                 : isBlockedNFT ? (
                   <BlockedStatusSection />

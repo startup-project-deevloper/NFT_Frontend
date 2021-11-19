@@ -595,6 +595,18 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     borderRadius: 16,
     fontSize: 18
   },
+  ExpiredPayFailed: {
+    background: 'rgba(242, 198, 158, 0.16)',
+    border: '1px solid #FF8E3C',
+    borderRadius: 8,
+    fontSize: 14
+  },
+  ExpiredPaySuccess: {
+    background: 'rgba(158, 172, 242, 0.16)',
+    border: '1px solid rgba(158, 172, 242, 0.2)',
+    borderRadius: 8,
+    fontSize: 14
+  },
   BlockedDetailBottomSection: {
     background: '#431AB710',
     borderBottomLeftRadius: 16,
@@ -605,11 +617,26 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     height: "52px !important",
     backgroundColor: "#F2604C !important"
   },
+  addCollateral: {
+    padding: "0 37px !important",
+    height: "52px !important",
+    backgroundColor: "#fff !important",
+    color: "#4218B5 !important",
+    border: "1px solid #4218B5 !important",
+  },
   tableHeader: {
     color: "#707582",
     fontSize: 18,
     lineHeight: "19.5px",
     fontWeight: 600,
     fontFamily: "Montserrat"
+  },
+  time: {
+    background: "#4218B5",
+    borderRadius: 6,
+    padding: "8px 12px",
+    margin: 2,
+    color: "#fff",
+    fontSize: 16
   }
 }));

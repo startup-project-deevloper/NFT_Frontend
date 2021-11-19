@@ -13,17 +13,22 @@ import GeneralDetailSection from "./components/GeneralDetailSection";
 import RentedDetailSection from "./components/RentedDetailSection";
 import BlockedDetailSection from "./components/BlockedDetailSection";
 import BlockedStatusSection from "./components/BlockedStatusSection";
+import RegularBlockedDetailSection from "./components/RegularBlockedDetailSection";
+import RegularBlockedStatusSection from "./components/RegularBlockedStatusSection";
+import ExpiredPayDetailSection from "./components/ExpiredPayDetailSection";
 
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
   const { img_id } = useParams();
 
   // todo: 
-  const isOwnership = true;
+  const isOwnership = false;
   const isRentedNFT = false; // nft.owner == current user && nft.isRent == true
-  const isBlockedNFT = true; // nft.owner == current user && nft.isBlocked == true
-  const isPaidBlocking = true;
+  const isBlockedNFT = false; // nft.owner == current user && nft.isBlocked == true
+  const isPaidBlocking = false;
   const isUnpaidReserval = false;
+  const isExpired = true;
+  const isExpiredPaySuccess = true;
 
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
@@ -40,6 +45,10 @@ const ExploreReserveDetailPage = () => {
   };
 
   const handleClaimPayment = () => {
+
+  }
+
+  const handleClaimCollateral = () => {
     
   }
 
@@ -115,12 +124,22 @@ const ExploreReserveDetailPage = () => {
                 </Box>
                 <hr className={classes.divider} />
                 {
-                  isRentedNFT ? (
-                    <RentedDetailSection />
-                  ) : isBlockedNFT ? (
-                    <BlockedDetailSection isPaidBlocking={isPaidBlocking} isUnpaidReserval={isUnpaidReserval}/>
+                  isOwnership ? (
+                    isRentedNFT ? (
+                      <RentedDetailSection />
+                    ) : isBlockedNFT ? (
+                      <BlockedDetailSection isPaidBlocking={isPaidBlocking} isUnpaidReserval={isUnpaidReserval}/>
+                    ) : (
+                      <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                    )
                   ) : (
-                    <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                    isBlockedNFT ? (
+                      <RegularBlockedDetailSection />
+                    ) : isExpired ? (
+                      <ExpiredPayDetailSection isSuccess={isExpiredPaySuccess} />
+                    ) : (
+                      <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                    )
                   )
                 }
                 {
@@ -139,16 +158,41 @@ const ExploreReserveDetailPage = () => {
                     </PrimaryButton>
                   )
                 }
+                {
+                  isUnpaidReserval && (
+                    <PrimaryButton
+                      size="medium"
+                      style={{
+                        width: '100%',
+                        height: 52,
+                        backgroundColor: "#431AB7",
+                        marginTop: 14,
+                        textTransform: 'uppercase'
+                      }}
+                      onClick={handleClaimCollateral}
+                    >
+                      claim Collateral & nft back
+                    </PrimaryButton>
+                  )
+                }
               </Box>
             </Box>
             {
-              isRentedNFT || isBlockedNFT && isPaidBlocking || isBlockedNFT && isUnpaidReserval ?
-                null 
-                : isBlockedNFT ? (
+              isOwnership ? (
+                isRentedNFT || isBlockedNFT && isPaidBlocking || isBlockedNFT && isUnpaidReserval ? (
+                  null
+                ) : isBlockedNFT ? (
                   <BlockedStatusSection />
                 ) : (
                   <NFTDetailTabSection isOwnership={isOwnership} />
                 )
+              ) : (
+                isBlockedNFT ? (
+                  <RegularBlockedStatusSection />
+                ) :  (
+                  <NFTDetailTabSection isOwnership={isOwnership} />
+                )
+              )
             }
           </LoadingWrapper>
         ) : (

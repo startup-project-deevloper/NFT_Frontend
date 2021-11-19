@@ -221,12 +221,14 @@ export const useNFTPodsPageStyles = makeStyles(theme => ({
     cursor: "pointer",
   },
   tabItemActive: {
-    borderBottom: "1px solid #000000",
+    borderBottom: "1px solid #431AB7",
     opacity: 1,
   },
   header5: {
     fontSize: 16,
     fontWeight: 800,
+    fontFamily: 'Agrandir GrandHeavy',
+    color: '#431AB7',
     lineHeight: "130%",
   },
   optionSection: {

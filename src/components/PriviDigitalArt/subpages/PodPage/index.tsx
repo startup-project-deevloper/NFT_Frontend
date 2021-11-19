@@ -10,9 +10,6 @@ import NFTPodCard from "components/PriviDigitalArt/components/Cards/NFTPodCard";
 import CreatePodModal from "components/PriviDigitalArt/modals/CreatePodModal/CreatePodModal";
 import PodProposalCard from "components/PriviDigitalArt/components/Cards/PodProposalCard";
 import { COLUMNS_COUNT_BREAK_POINTS_FOUR } from "components/PriviDigitalArt/subpages/ExplorePage";
-import { SearchIcon } from "../../components/Icons/SvgIcons";
-// import CustomPopup from "components/PriviDigitalArt/components/CustomPopup";
-
 import { getRaisedTrendingPods, getPods, getPodsProposal } from "shared/services/API/PriviPodAPI";
 import { getPodStatus } from "shared/functions/utilsPriviPod";
 import { PrimaryButton, CircularLoadingIndicator, Color } from "shared/ui-kit";
@@ -21,7 +18,7 @@ import { LoadingWrapper } from "shared/ui-kit/Hocs";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
 import useWindowDimensions from "shared/hooks/useWindowDimensions";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
-
+import { SearchIcon } from "../../components/Icons/SvgIcons";
 import { useNFTPodsPageStyles } from "./index.styles";
 
 import { ReactComponent as GovernanceImg } from "assets/icons/governance.svg";
@@ -34,9 +31,6 @@ const LoadingIndicatorWrapper = styled.div`
   align-items: center;
   padding-top: 20px;
 `;
-
-// const filterTagOptions = ["Trending", "Hot", "New"];
-// const filterTagMorOptions = ["MoreOption1", "MoreOption2", "MoreOption3", "MoreOption4"];
 
 const PodPage = () => {
   const classes = useNFTPodsPageStyles();
@@ -151,16 +145,6 @@ const PodPage = () => {
       .finally(() => setIsLoadingProposals(false));
   };
 
-  // const onClickFilterTag = tag => {
-  //   setFilterOption(tag);
-  //   setFilterMore("More");
-  // };
-
-  // const onChangeFilterMore = val => {
-  //   setFilterMore(val);
-  //   setFilterOption("");
-  // };
-
   const handleScroll = async e => {
     if (e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight - 42) {
       if (hasMore) {
@@ -210,7 +194,6 @@ const PodPage = () => {
           className={classes.flexBox}
           justifyContent="space-between"
           width={1}
-          mt={4}
           zIndex={1}
           borderBottom="1px solid #00000022"
         >
@@ -265,33 +248,6 @@ const PodPage = () => {
         </Box>
         {activeTab === 0 ? (
           <>
-            {/* filter tags */}
-            {/* <Box display="flex" alignItems="flex-end" pb={3} pt={1} flexWrap="wrap">
-              {filterTagOptions.map(tag => (
-                <>
-                  <Box
-                    className={`${classes.filterTag} ${filterOption === tag ? classes.filterActive : ""}`}
-                    onClick={() => {
-                      onClickFilterTag(tag);
-                    }}
-                  >
-                    {tag}
-                  </Box>
-                </>
-              ))}
-              <Box
-                className={`${classes.filterTag} ${
-                  filterMore.length > 0 && filterMore !== "More" ? classes.filterActive : ""
-                }`}
-              >
-                <CustomPopup
-                  items={filterTagMorOptions}
-                  onSelect={onChangeFilterMore}
-                  value={filterMore}
-                  theme="light"
-                />
-              </Box>
-            </Box> */}
             <LoadingWrapper loading={loadingTrendingPods} theme={"blue"}>
               <div className={classes.artCards} style={{ marginTop: 10 }}>
                 <MasonryGrid

@@ -157,7 +157,7 @@ const TOKENLIST = [
   },
 ];
 
-export default function PodStakingModal({ open, onClose, handleRefresh, podInfo, pod }) {
+export default function PodStakingModal({ open, onClose, handleRefresh, podInfo, pod, stakings }) {
   const classes = useStyles();
 
   const { showAlertMessage } = useAlertMessage();

@@ -10,7 +10,7 @@ import { RootState } from "store/reducers/Reducer";
 import { getCryptosRateAsList, priviPodRegisterPodProposal } from "shared/services/API";
 import { Modal, PrimaryButton, SecondaryButton, CircularLoadingIndicator } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
-import CopyRightFractionTab from "./components/CopyRightFractionTab";
+import DistributionTab from "./components/DistributionTab";
 import TokenomicsTab from "./components/TokenomicsTab";
 import GeneralTab from "./components/GeneralTab";
 import { newDistributionModalStyles } from "./index.styles";
@@ -22,8 +22,8 @@ import { _arrayBufferToBase64 } from "../../../../shared/functions/commonFunctio
 import { onUploadNonEncrypt } from "../../../../shared/ipfs/upload";
 import TransactionProgressModal from "../TransactionProgressModal";
 
-// const startDate = Math.floor(Date.now() / 1000 + 3600 * 24 * 7); // one week later
-const startDate = Math.floor(Date.now() / 1000 + 3600 * 25); // 20 mins later
+// const startDate = Math.floor(Date.now() / 1000 + 3600 * 25); // next day
+const startDate = Math.floor(Date.now() / 1000 + 1800); // 30 mins later
 
 export default function NewDistributionModal(props: any) {
   const userSelector = useSelector((state: RootState) => state.user);
@@ -60,7 +60,7 @@ export default function NewDistributionModal(props: any) {
   }, []);
 
   useEffect(() => {
-    if (ipfs  && tokenPhoto) {
+    if (ipfs && Object.keys(ipfs).length !== 0 && tokenPhoto) {
       uploadPhoto();
     }
   }, [tokenPhoto, ipfs]);
@@ -74,9 +74,6 @@ export default function NewDistributionModal(props: any) {
     if (pod && pod.id && pod.HasPhoto) {
       setPhotoImg(`${pod.Url}?${Date.now()}`);
     }
-    // if (pod && pod.id && pod.HasPhotoToken) {
-    //   setTokenPhotoImg(`${pod.UrlToken}?${Date.now()}`);
-    // }
   }, [pod.id, pod.HasPhoto]);
 
   // get token list from backend
@@ -95,7 +92,7 @@ export default function NewDistributionModal(props: any) {
 
   const validateForm = () => {
     if (!pod.Medias || pod.Medias.length === 0) {
-      showAlertMessage(`Minimum one song required`, { variant: "error" });
+      showAlertMessage(`Minimum one image required`, { variant: "error" });
       return false;
     } else if (!pod.TokenName || pod.TokenName === "" || pod.TokenName.length < 5) {
       showAlertMessage(`Token Name field invalid. Minimum 5 characters required`, { variant: "error" });
@@ -121,25 +118,15 @@ export default function NewDistributionModal(props: any) {
         variant: "error",
       });
       return false;
-    } else if (!pod.InvestorShare || pod.InvestorShare < 0 || pod.InvestorShare > 100) {
-      showAlertMessage(`Investor Share field invalid. Value must be between 0 and 100.`, {
-        variant: "error",
-      });
-      return false;
-    } else if (!pod.SharingPercentage || pod.SharingPercentage < 0 || pod.SharingPercentage > 100) {
-      showAlertMessage(`Sharing Percentage field invalid. Value must be between 0 and 100.`, {
-        variant: "error",
-      });
-      return false;
     } else if (!pod.FundingPrice || pod.FundingPrice <= 0) {
       showAlertMessage(`Funding Price field invalid. Value must be greater than 0`, { variant: "error" });
       return false;
     } else {
-      const creatorsSum = pod.CreatorsData?.map((e: any) => Number(e.sharingPercent ?? 0)).reduce(
+      const creatorsSum = pod.Collabs?.map((e: any) => Number(e.sharingPercent ?? 0)).reduce(
         (a: number, b: number) => a + b,
         0
       );
-      if (creatorsSum + Number(pod.CopyrightInvestorShare ?? 0) !== 100) {
+      if (creatorsSum + Number(pod.InvestorShare ?? 0) !== 100) {
         showAlertMessage(`All distribution share sum percentage should be 100%`, { variant: "error" });
         return false;
       }
@@ -157,7 +144,7 @@ export default function NewDistributionModal(props: any) {
         if (chainId && chainId !== targetChain?.chainId) {
           const isHere = await switchNetwork(targetChain?.chainId || 0);
           if (!isHere) {
-            showAlertMessage("Got failed while switching over to target netowrk", { variant: "error" });
+            showAlertMessage("Got failed while switching over to target network", { variant: "error" });
             return;
           }
         }
@@ -169,7 +156,7 @@ export default function NewDistributionModal(props: any) {
           if (resp) {
             setTransactionSuccess(true);
 
-            await priviPodRegisterPodProposal({
+            let data: any = {
               podId: props.podId,
               proposal: {
                 Id: resp.data.id,
@@ -182,21 +169,29 @@ export default function NewDistributionModal(props: any) {
                 TokenSymbol: pod.TokenSymbol,
                 TokenDescription: pod.TokenDescription,
                 TokenInfoImage: imageIPFSTokenPhoto || null,
-                CopyRightSupply: pod.CopyRightSupply,
-                CopyRightAllocation: pod.CreatorsData.map(data => data.sharingPercent),
-                CopyRightSymbol: pod.CopyRightSymbol,
-                CopyrightInvestorShare: pod.CopyrightInvestorShare,
+                Distribution: pod.Collabs.map(data => data.sharingPercent),
+                InvestorShare: pod.InvestorShare,
                 Royalty: pod.Royalty,
                 FundingToken: pod.FundingToken,
                 FundingPrice: pod.FundingPrice,
                 FundingTarget: pod.FundingTarget,
                 FundingDate: pod.FundingDate,
                 Proposer: userSelector.id,
-                InvestorShare: pod.InvestorShare,
-                SharingPercentage: pod.SharingPercentage,
+                Hash: resp.data.hash,
               },
               type: "PIX",
-            });
+            };
+
+            if (resp.data.podAddress) {
+              data = {
+                ...data,
+                proposal: {
+                  ...data.proposal,
+                  PodAddress: resp.data.podAddress,
+                },
+              };
+            }
+            await priviPodRegisterPodProposal(data);
             props.handleRefresh();
             props.onClose();
             setIsLoading(false);
@@ -211,7 +206,7 @@ export default function NewDistributionModal(props: any) {
         });
       }
     })();
-  }, [pod, chainId]);
+  }, [pod, chainId, library]);
 
   return (
     <>
@@ -288,7 +283,7 @@ export default function NewDistributionModal(props: any) {
                     )}
                     onClick={() => setTabCreateNFTMedia(2)}
                   >
-                    Copyright Fractionalisation
+                    Distribution
                   </div>
                 </div>
                 {pod && (
@@ -298,7 +293,7 @@ export default function NewDistributionModal(props: any) {
                       <GeneralTab pod={pod} setPod={nv => setPod(nv)} />
                     </div>
                     <div style={{ display: tabCreateNFTMedia === 1 ? "block" : "none" }}>
-                      <div className={classes.headerCreatePod}>Pod’s Token</div>
+                      <div className={classes.headerCreatePod}>Media Fractions</div>
                       <TokenomicsTab
                         pod={pod}
                         setPod={setPod}
@@ -312,8 +307,8 @@ export default function NewDistributionModal(props: any) {
                       />
                     </div>
                     <div style={{ display: tabCreateNFTMedia === 2 ? "block" : "none" }}>
-                      <div className={classes.headerCreatePod}>Copyright Fractionalisation</div>
-                      <CopyRightFractionTab
+                      <div className={classes.headerCreatePod}>Media Fractionalisations Distribution</div>
+                      <DistributionTab
                         pod={pod}
                         setPod={nv => setPod(nv)}
                         setPhoto={nv => setPhoto(nv)}

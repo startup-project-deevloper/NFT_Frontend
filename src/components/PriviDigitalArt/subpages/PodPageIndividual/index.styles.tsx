@@ -413,4 +413,8 @@ export const usePodPageIndividualStyles = makeStyles(theme => ({
     height: 229,
     margin: "0 24px 10px 5px !important",
   },
+
+  xscroll: {
+    overflowX: "scroll",
+  },
 }));

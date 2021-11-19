@@ -26,6 +26,8 @@ const TokenomicsTab = (props: any) => {
 
   const { setMultiAddr } = useIPFS();
 
+  const pickerMinDate = new Date().setDate(new Date().getDate() + 1);
+
   useEffect(() => {
     setMultiAddr("https://peer1.ipfsprivi.com:5001/api/v0");
   }, []);
@@ -50,83 +52,16 @@ const TokenomicsTab = (props: any) => {
     }
   }, [props.isCreator]);
 
-  const ValidatedField = (propsFunction: any) => {
-    return (
-      <Box
-        style={
-          propsFunction.isFlex && !propsFunction.marginApplied
-            ? {
-                marginLeft: "5px",
-                display: "flex",
-                alignItems: "center",
-                width: "30px",
-              }
-            : propsFunction.isFlex && propsFunction.marginApplied
-            ? {
-                marginLeft: "5px",
-                display: "flex",
-                alignItems: "center",
-                width: "30px",
-                marginBottom: "8px",
-              }
-            : { marginBottom: "25px", marginLeft: "5px" }
-        }
-      >
-        {propsFunction.field ? (
-          <Box
-            style={
-              propsFunction.isCreator
-                ? { color: "#64c89e", fontSize: "30px", cursor: "pointer" }
-                : { color: "#64c89e", fontSize: "30px" }
-            }
-            onClick={() => {
-              if (propsFunction.isCreator) {
-                // setField(false);
-                propsFunction.validateFieldFalse();
-              }
-            }}
-          >
-            <SvgIcon>
-              <CheckCircleSolid />
-            </SvgIcon>
-          </Box>
-        ) : (
-          <Box
-            style={
-              propsFunction.isCreator
-                ? {
-                    color: "rgb(101, 110, 126)",
-                    fontSize: "30px",
-                    cursor: "pointer",
-                  }
-                : { color: "rgb(101, 110, 126)", fontSize: "30px" }
-            }
-            onClick={() => {
-              if (propsFunction.isCreator) {
-                // setField(true);
-                propsFunction.validateFieldTrue();
-              }
-            }}
-          >
-            <SvgIcon>
-              <CheckCircleRegular />
-            </SvgIcon>
-          </Box>
-        )}
-      </Box>
-    );
-  };
-
   return (
-    <Box className={classes.tokenomicsTab}>
+    <div className={classes.tokenomicsTab}>
       {props.pod || !props.creation ? (
-        <Box>
+        <div>
           <Grid container spacing={2} direction="row" alignItems="flex-start" justify="flex-start">
             <Grid item xs={12} md={6}>
               <RenderInputCreateModal
-                name={"Pod Token Name"}
-                info={"Pod Token Name"}
-                placeholder={"Hastags divided by comma"}
+                name={"Fractions Name"}
+                info={"Fraction Token Name"}
+                placeholder={"Your Fraction Token Name"}
                 type={"text"}
                 width={-1}
                 item={"TokenName"}
@@ -138,9 +73,9 @@ const TokenomicsTab = (props: any) => {
             </Grid>
             <Grid item xs={12} md={6}>
               <RenderInputCreateModal
-                name={"Pod Token Symbol"}
-                info={"Pod Token Symbol"}
-                placeholder={"Your name here"}
+                name={"Fractions Symbol"}
+                info={"Fraction Token Symbol"}
+                placeholder={"Your Fraction Token symbol"}
                 type={"text"}
                 width={-1}
                 item={"TokenSymbol"}
@@ -153,7 +88,7 @@ const TokenomicsTab = (props: any) => {
           </Grid>
           <Grid container spacing={2} direction="row" alignItems="flex-start" justify="flex-start">
             <Grid item xs={12}>
-              <Box
+              <div
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -162,7 +97,7 @@ const TokenomicsTab = (props: any) => {
                   marginTop: 16,
                 }}
               >
-                <Box className={classes.infoHeaderCreatePod}>Pod Token Image</Box>
+                <div className={classes.infoHeaderCreatePod}>Fraction Token Image</div>
                 <Tooltip
                   TransitionComponent={Fade}
                   TransitionProps={{ timeout: 600 }}
@@ -172,7 +107,7 @@ const TokenomicsTab = (props: any) => {
                 >
                   <img src={infoIcon} alt={"info"} />
                 </Tooltip>
-              </Box>
+              </div>
               <FileUpload
                 photo={props.tokenPhoto}
                 photoImg={props.tokenPhotoImg}
@@ -206,7 +141,7 @@ const TokenomicsTab = (props: any) => {
             <Grid item xs={12} md={4}>
               <Box mt={"28px"}>
                 <Box display="flex" alignItems="center" justifyContent="space-between" mb={"11px"}>
-                  <Box className={classes.infoHeaderCreatePod}>{""}</Box>
+                  <div className={classes.infoHeaderCreatePod}>{""}</div>
                   <Tooltip
                     TransitionComponent={Fade}
                     TransitionProps={{ timeout: 600 }}
@@ -255,46 +190,9 @@ const TokenomicsTab = (props: any) => {
               isCreator={isCreator}
             />
           </Box>
-          <Grid container spacing={2} direction="row" alignItems="flex-start" justify="flex-start">
-            <Grid item xs={12} md={6}>
-              <Box className={classes.flexRowInputs}>
-                <RenderInputCreateModal
-                  name="Investor Share"
-                  info="Investor Share"
-                  placeholder="Share of revenue for investors"
-                  width={-1}
-                  type="number"
-                  max={100}
-                  item="InvestorShare"
-                  pod={props.pod}
-                  setPod={props.setPod}
-                  creation={props.creation}
-                  isCreator={isCreator}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box className={classes.flexRowInputs}>
-                <RenderInputCreateModal
-                  name="Sharing Percentage"
-                  info="Sharing Percentage"
-                  placeholder="Share for sharing your content"
-                  width={-1}
-                  type="number"
-                  min={0}
-                  max={100}
-                  item="SharingPercentage"
-                  pod={props.pod}
-                  setPod={props.setPod}
-                  creation={props.creation}
-                  isCreator={isCreator}
-                />
-              </Box>
-            </Grid>
-          </Grid>
           <Box className={classes.flexRowInputs} flexDirection="column">
             <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Box className={classes.infoHeaderCreatePod}>Funding Date</Box>
+              <div className={classes.infoHeaderCreatePod}>Funding Date</div>
               <Tooltip
                 TransitionComponent={Fade}
                 TransitionProps={{ timeout: 600 }}
@@ -305,7 +203,7 @@ const TokenomicsTab = (props: any) => {
                 <img src={infoIcon} alt={"info"} />
               </Tooltip>
             </Box>
-            <Box
+            <div
               className={classes.textFieldCreatePod}
               style={{
                 display: "flex",
@@ -316,7 +214,7 @@ const TokenomicsTab = (props: any) => {
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                   id="date-picker-funding-date"
-                  minDate={new Date().setDate(new Date().getDate() + 1)}
+                  minDate={pickerMinDate}
                   format="MM.dd.yyyy"
                   placeholder="Select date..."
                   value={
@@ -334,11 +232,11 @@ const TokenomicsTab = (props: any) => {
                   className={classes.datePicker}
                 />
               </MuiPickersUtilsProvider>
-            </Box>
+            </div>
           </Box>
-        </Box>
+        </div>
       ) : null}
-    </Box>
+    </div>
   );
 };
 

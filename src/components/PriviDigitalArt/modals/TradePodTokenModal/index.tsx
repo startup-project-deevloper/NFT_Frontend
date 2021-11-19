@@ -250,6 +250,7 @@ const SquareInvestTop = ({ pod, fundingTokenBalance, fundingQuantity, setFunding
           onInputValueChange={e => {
             setFundingQuantity(e.target.value);
           }}
+          maxValue={fundingTokenBalance}
         />
         <Box className={classes.balance} textAlign="end">
           <Box>{formatNumber(convertTokenToUSD(pod.FundingToken, fundingQuantity), "USD", 4)}</Box>
@@ -347,66 +348,10 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
   // get pod token to receive in investment each time investing amount changes
   useEffect(() => {
     if (mode && podQuantity) {
-      // if (mode == "buy") {
-      //   setDisableSubmit(true);
-      //   musicDaoGetBuyingPodFundingTokenAmount(pod.PodAddress, Number(podQuantity))
-      //     .then(resp => {
-      //       if (resp.success) {
-      //         setFundingQuantity(String(Number(podQuantity) * Number(resp.data)));
-      //       }
-      //       setDisableSubmit(false);
-      //     })
-      //     .catch(e => {
-      //       showAlertMessage(e, { variant: "error" });
-      //       setDisableSubmit(false);
-      //     });
-      // } else if (mode == "sell") {
-      //   setDisableSubmit(true);
-      //   musicDaoGetSellingPodFundingTokenAmount(pod.PodAddress, Number(podQuantity))
-      //     .then(resp => {
-      //       if (resp.success) {
-      //         setFundingQuantity(String(Number(resp.data) * Number(podQuantity)));
-      //       }
-      //       setDisableSubmit(false);
-      //     })
-      //     .catch(e => {
-      //       showAlertMessage(e, { variant: "error" });
-      //       setDisableSubmit(false);
-      //     });
-      // }
-      // // investing
-      // else
       setFundingQuantity(String(Number(podQuantity) * pod.FundingPrice ?? 0));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podQuantity, mode]);
-
-  // const handleOpenSignatureModal = () => {
-  //   const values = { podQuantity };
-  //   const validatedErrors = validate(values);
-  //   if (Object.keys(validatedErrors).length === 0) {
-  //     let payload;
-  //     if (mode == "invest")
-  //       payload = {
-  //         Investor: user.address,
-  //         PodAddress: pod.PodAddress,
-  //         Amount: Number(podQuantity),
-  //       };
-  //     else
-  //       payload = {
-  //         Trader: user.address,
-  //         PodAddress: pod.PodAddress,
-  //         Amount: Number(podQuantity),
-  //       };
-  //     if (payload) {
-  //       payloadRef.current = payload;
-  //       setSignRequestModalDetail(buildJsxFromObject(payload));
-  //       setOpenSignRequestModal(true);
-  //     }
-  //   } else {
-  //     setErrors(validatedErrors);
-  //   }
-  // };
 
   const closeAndRefresh = () => {
     setTimeout(() => {
@@ -446,27 +391,6 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
     const web3 = new Web3(library.provider);
 
     if (Object.keys(payload).length) {
-      // if (mode === "buy") {
-      //   setDisableSubmit(true);
-      //   const buyResponse = await musicDaoBuyPodTokens(payload, {});
-      //   setDisableSubmit(false);
-      //   if (buyResponse.success) {
-      //     showAlertMessage(`buy success`, { variant: "success" });
-      //     closeAndRefresh();
-      //   } else {
-      //     showAlertMessage(`buy failed`, { variant: "error" });
-      //   }
-      // } else if (mode == "sell") {
-      //   setDisableSubmit(true);
-      //   const buyResponse = await musicDaoSellPodTokens(payload, {});
-      //   setDisableSubmit(false);
-      //   if (buyResponse.success) {
-      //     showAlertMessage(`sell success`, { variant: "success" });
-      //     closeAndRefresh();
-      //   } else {
-      //     showAlertMessage(`sell failed`, { variant: "error" });
-      //   }
-      // } else {
       setDisableSubmit(true);
       let buyResponse;
       if (pod.blockchainNetwork === BlockchainNets[1].value) {
@@ -508,6 +432,7 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
           {
             podAddress: pod.PodAddress,
             amount,
+            fundingToken: pod.FundingToken,
           },
           setHash
         );
@@ -524,11 +449,18 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
         buyResponse = await priviPodInvestPod({
           podId: pod.Id,
           podAddress: pod.PodAddress,
-          amount: payload.Amount,
+          amount: contractResponse.data.amount,
           hash: contractResponse.hash,
           investor: account!,
           type: "PIX",
         });
+
+        setDisableSubmit(false);
+        if (buyResponse.success) {
+          closeAndRefresh();
+        }
+      } else {
+        buyResponse = await priviPodInvestPod(payload);
 
         setDisableSubmit(false);
         if (buyResponse.success) {
@@ -538,29 +470,17 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
           showAlertMessage(`invest failed`, { variant: "error" });
         }
       }
-      //  else {
-      //   buyResponse = await musicDaoInvestPod(payload);
-
-      //   setDisableSubmit(false);
-      //   if (buyResponse.success) {
-      //     showAlertMessage(`invest success`, { variant: "success" });
-      //     closeAndRefresh();
-      //   } else {
-      //     showAlertMessage(`invest failed`, { variant: "error" });
-      //   }
-      // }
-      // }
     }
   };
 
   function validate(values: { [key: string]: string }): { [key: string]: string } {
     var errors: { [key: string]: string } = {};
     if (values.fundingQuantity === null || !Number(values.fundingQuantity)) {
-      errors.fundingQuantity = "invalid fundingQuantity";
+      errors.fundingQuantity = "invalid Amount";
     } else if (Number(values.fundingQuantity) === 0) {
-      errors.fundingQuantity = "fundingQuantity cant be 0";
+      errors.fundingQuantity = "Amount cant be 0";
     } else if (Number(values.fundingQuantity) < 0) {
-      errors.fundingQuantity = "fundingQuantity cant be negative";
+      errors.fundingQuantity = "Amount cant be negative";
     } else if (Number(values.fundingQuantity) > fundingTokenBalance) {
       errors.fundingQuantity = "insufficient fund to invest";
     }
@@ -590,7 +510,7 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
      handleOk={handleBuyOrSell}
      handleClose={() => setOpenSignRequestModal(false)}
    /> */}
-          <Box className={classes.title}>{mode.charAt(0).toUpperCase() + mode.slice(1)} Media Pod Token</Box>
+          <Box className={classes.title}>{mode.charAt(0).toUpperCase() + mode.slice(1)} Media Fractions</Box>
           {mode === "buy" || mode === "invest" ? (
             <SquareInvestTop
               pod={pod}
@@ -661,11 +581,11 @@ export default function TradePodTokenModal({ open, mode, setMode, pod, handleClo
             {mode === "invest" && (
               <Box className={classes.valueBox}>
                 <Box className={classes.titleLabel} flex={1}>
-                  Pod tokens you'll receive
+                  Media Fractions you'll receive
                 </Box>
                 <Box textAlign="end" flex={1}>
                   <Box className={classes.contentValue}>
-                    {Number(fundingQuantity) / +pod.FundingPrice} Pod Tokens
+                    {Number(fundingQuantity) / +pod.FundingPrice} Media Fractions
                   </Box>
                 </Box>
               </Box>

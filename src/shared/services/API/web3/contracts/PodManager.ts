@@ -26,13 +26,11 @@ const podManager = network => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
         const stableDecimals = await api(network).Erc20[payload.FundingToken].decimals(web3);
-        const copyrightDecimals = await api(network).Erc20["COPYRIGHT"].decimals(web3, copyrightTokenAddress);
 
         const pod = {
           owners: payload.Collabs.map(collab => collab.address) || [],
           podAddress: contractAddress,
           fundingDate: payload.FundingDate,
-          spread: 10,
           fundingToken: config[network].TOKEN_ADDRESSES[payload.FundingToken],
           fundingTokenPrice: toNDecimals(payload.FundingPrice, stableDecimals),
           fundingTarget: toNDecimals(payload.FundingTarget, stableDecimals),
@@ -44,12 +42,11 @@ const podManager = network => {
           podTokenName: payload.TokenName,
           podTokenSymbol: payload.TokenSymbol,
         };
-        const copyrightTokenSupply = toNDecimals(payload.CopyRightSupply, copyrightDecimals);
+        const investorShare = payload.InvestorShare;
         const copyrightAllocation = [
-          ...payload.CreatorsData.map(data => data.sharingPercent),
-          payload.CopyrightInvestorShare || 0,
+          ...payload.Collabs.map(data => data.sharingPercent),
+          payload.InvestorShare || 0,
         ];
-        const investorShare = toNDecimals(payload.InvestorShare, 16);
 
         console.log("Getting gas....");
         const gas = await contract.methods
@@ -58,7 +55,6 @@ const podManager = network => {
             mediaIds,
             royaltyPercentage,
             podDescription,
-            copyrightTokenSupply,
             investorShare,
             copyrightAllocation
           )
@@ -70,7 +66,6 @@ const podManager = network => {
             mediaIds,
             royaltyPercentage,
             podDescription,
-            copyrightTokenSupply,
             investorShare,
             copyrightAllocation
           )
@@ -81,7 +76,9 @@ const podManager = network => {
         console.log("transaction succeed");
         resolve({
           data: {
+            podAddress: response.events.CreatePod ? response.events.CreatePod.returnValues.podAddress : null,
             id: response.events.PodProposalCreated.returnValues.id,
+            hash: response.transactionHash,
           },
         });
       } catch (e) {
@@ -117,6 +114,7 @@ const podManager = network => {
           data: {
             id: response.events.ProposalVoted.returnValues.id,
             voter: response.events.ProposalVoted.returnValues.voter,
+            podAddress: response.events.CreatePod ? response.events.CreatePod.returnValues.podAddress : null,
           },
         });
       } catch (e) {
@@ -128,49 +126,13 @@ const podManager = network => {
     });
   };
 
-  const executePodProposal = async (
-    web3: Web3,
-    account: string,
-    payload: any,
-    setHash,
-    count = 0
-  ): Promise<any> => {
-    return new Promise(async resolve => {
-      try {
-        const { id } = payload;
-        const contract = ContractInstance(web3, metadata.abi, contractAddress);
-
-        console.log("Getting gas....");
-        const gas = await contract.methods.executePodProposal(id).estimateGas({ from: account });
-        console.log("calced gas price is.... ", gas);
-        const response = await contract.methods
-          .executePodProposal(id)
-          .send({ from: account, gas: gas })
-          .on("transactionHash", hash => {
-            setHash(hash);
-          });
-        console.log("transaction succeed");
-        resolve({
-          data: {
-            podAddress: response.events.CreatePod.returnValues.podAddress,
-          },
-        });
-      } catch (e) {
-        if (count === 2) {
-          console.log(e);
-          resolve(null);
-        } else {
-          executePodProposal(web3, account, payload, setHash, count + 1);
-        }
-      }
-    });
-  };
-
   const investPod = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
-        const { podAddress, amount } = payload;
+        const { podAddress, amount, fundingToken } = payload;
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
+
+        const stableDecimals = await api(network).Erc20[fundingToken].decimals(web3);
 
         console.log("Getting gas....");
         const gas = await contract.methods.investPod(podAddress, amount).estimateGas({ from: account });
@@ -183,6 +145,9 @@ const podManager = network => {
           });
         console.log("transaction succeed");
         resolve({
+          data: {
+            amount: +toDecimals(response.events.InvestPod.returnValues.amount, stableDecimals),
+          },
           hash: response.transactionHash,
         });
       } catch (e) {
@@ -270,6 +235,8 @@ const podManager = network => {
         resolve({
           copyrightSupplyInvestors: +toDecimals(response.copyrightSupplyInvestors, copyrightDecimals),
           copyrightToken: response.copyrightToken,
+          copyrightNftContract: response.copyrightNftContract,
+          copyrightTokenSupply: +response.copyrightTokenSupply,
           distributionManagerAddress: response.distributionManagerAddress,
           mediaIds: response.mediaIds,
           nftContract: response.nftContract,
@@ -295,23 +262,22 @@ const podManager = network => {
 
         console.log("Getting gas....");
         const gas = await contract.methods
-          .uploadMedia(podAddress, web3.utils.keccak256(mediaId), uri)
+          .uploadMedia(podAddress, mediaId, uri)
           .estimateGas({ from: account });
         console.log("calced gas price is.... ", gas);
         const response = await contract.methods
-          .uploadMedia(podAddress, web3.utils.keccak256(mediaId), uri)
+          .uploadMedia(podAddress, mediaId, uri)
           .send({ from: account, gas: gas })
           .on("transactionHash", hash => {
             setHash(hash);
           });
         console.log("transaction succeed");
 
-        console.log(response);
         if (response) {
           resolve({
             success: true,
             data: {
-              nftId: response.events.UploadMedia.returnValues.nftId,
+              tokenId: response.events.UploadMedia.returnValues.nftId,
               hash: response.transactionHash,
             },
           });
@@ -327,7 +293,6 @@ const podManager = network => {
   return {
     registerPodProposal,
     voteForPodProposal,
-    executePodProposal,
     investPod,
     claimPodTokens,
     getPodInfo,

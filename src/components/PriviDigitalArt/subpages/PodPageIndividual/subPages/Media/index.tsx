@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const Media = ({ medias, pod, handleRefresh }) => {
+export const Media = ({ medias, pod, podInfo, handleRefresh }) => {
   const classes = useStyles();
 
   const [podMedias, setPodMedias] = React.useState<any[]>([]);

@@ -26,7 +26,7 @@ import { useNFTPodsPageStyles } from "./index.styles";
 
 import { ReactComponent as GovernanceImg } from "assets/icons/governance.svg";
 
-const apiType = "pix";
+const apiType = "PIX";
 const LoadingIndicatorWrapper = styled.div`
   width: 100%;
   display: flex;

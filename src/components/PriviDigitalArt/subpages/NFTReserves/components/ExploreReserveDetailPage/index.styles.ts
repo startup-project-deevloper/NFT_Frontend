@@ -588,5 +588,28 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     background: '#ffffff',
     border: '1px solid #E9E9F2',
     borderRadius: 16
+  },
+  BlockedDetailSection: {
+    background: 'rgba(158, 172, 242, 0.16)',
+    border: '1px solid rgba(158, 172, 242, 0.2)',
+    borderRadius: 16,
+    fontSize: 18
+  },
+  BlockedDetailBottomSection: {
+    background: '#431AB710',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+  },
+  claimButton: {
+    padding: "0 37px !important",
+    height: "52px !important",
+    backgroundColor: "#F2604C !important"
+  },
+  tableHeader: {
+    color: "#707582",
+    fontSize: 18,
+    lineHeight: "19.5px",
+    fontWeight: 600,
+    fontFamily: "Montserrat"
   }
 }));

@@ -10,11 +10,16 @@ import { exploreOptionDetailPageStyles } from "./index.styles";
 
 import NFTDetailTabSection from "./components/NFTDetailTabSection";
 import GeneralDetailSection from "./components/GeneralDetailSection";
+import RentedDetailSection from "./components/RentedDetailSection";
 
 const ExploreReserveDetailPage = () => {
   const classes = exploreOptionDetailPageStyles();
   const { img_id } = useParams();
-  const isOwnership = 'true';
+
+  // todo: 
+  const isOwnership = true;
+  const isRentedNFT = true; // nft.owner == current user && nft.isRent == true
+
   const history = useHistory();
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
@@ -63,7 +68,12 @@ const ExploreReserveDetailPage = () => {
                 ml={isMobileScreen || isTableScreen ? 0 : "20px"}
                 py={2}
               >
-                <Box className={classes.badge}>Listed</Box>
+                <Box
+                  className={classes.badge}
+                  style={{ backgroundColor: isRentedNFT ? '#8D65FF' : '#1FC88B'}}
+                >
+                  {isRentedNFT ? 'RENTED' : 'Listed'}
+                </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                   <Box display="flex" flexDirection={isMobileScreen ? "column" : "row"} alignItems="center">
                     <Box display="flex" flexDirection="row" alignItems="center">
@@ -95,10 +105,16 @@ const ExploreReserveDetailPage = () => {
                   <Text style={{ color: "#431AB7" }}>0xeec9...82f8</Text>
                 </Box>
                 <hr className={classes.divider} />
-                <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                {
+                  isRentedNFT ? (
+                    <RentedDetailSection />
+                  ) : (
+                    <GeneralDetailSection isOwnership={isOwnership} img_id={img_id} />
+                  )
+                }
               </Box>
             </Box>
-            <NFTDetailTabSection isOwnership={isOwnership} />
+            { !isRentedNFT && <NFTDetailTabSection isOwnership={isOwnership} /> }
           </LoadingWrapper>
         ) : (
           <LoadingWrapper loading={true} theme={"blue"} height="calc(100vh - 100px)" />

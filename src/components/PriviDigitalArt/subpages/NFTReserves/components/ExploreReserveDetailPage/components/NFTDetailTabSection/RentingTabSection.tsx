@@ -3,14 +3,16 @@ import React, { useState } from "react";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import { exploreOptionDetailPageStyles } from "./index.styles";
-import MakeBuyOfferModal from "components/PriviDigitalArt/modals/MakeBuyOfferModal";
-import BuyProceedModal from "components/PriviDigitalArt/modals/BuyProceedModal";
+import MakeRentalOfferModal from "components/PriviDigitalArt/modals/MakeRentalOfferModal";
+import RentProceedModal from "components/PriviDigitalArt/modals/RentProceedModal";
+import { exploreOptionDetailPageStyles } from "../../index.styles";
 import { TagIcon, HistoryIcon } from "./index";
+
+import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 
 export default ({ offerData, historyData, isOwnership }) => {
   const classes = exploreOptionDetailPageStyles();
-  const [openMakeOfferModal, setOpenMakeOfferModal] = useState<boolean>(false);
+  const [openMakeRentalModal, setOpenMakeRentalModal] = useState<boolean>(false);
   const [proceedItem, setProceedItem] = useState<any>(null);
 
   const offerTableHeaders: Array<CustomTableHeaderInfo> = [
@@ -18,11 +20,15 @@ export default ({ offerData, historyData, isOwnership }) => {
       headerName: "USER",
     },
     {
-      headerName: "PRICE",
+      headerName: "PRICE PER SECOND",
       headerAlign: "center",
     },
     {
-      headerName: "EXPIRATION DATE",
+      headerName: "ESTIMATED COST",
+      headerAlign: "center",
+    },
+    {
+      headerName: "RENTAL TIME",
       headerAlign: "center",
     },
     {
@@ -71,15 +77,15 @@ export default ({ offerData, historyData, isOwnership }) => {
           <Box display="flex" alignItems="center" justifyContent="space-between" m="36px 30px 0 50px">
             <div className={classes.typo8}>
               <TagIcon />
-              <span>Buy offers</span>
+              <span>Rental offers</span>
             </div>
             {!isOwnership && (
               <PrimaryButton
                 size="small"
                 className={classes.pricingButton}
-                onClick={() => setOpenMakeOfferModal(true)}
+                onClick={() => setOpenMakeRentalModal(true)}
               >
-                MAKE BUY OFFER
+                MAKE RENTAL OFFER
               </PrimaryButton>
             )}
           </Box>
@@ -94,7 +100,10 @@ export default ({ offerData, historyData, isOwnership }) => {
                   cell: item.price,
                 },
                 {
-                  cell: item.date,
+                  cell: item.estimated,
+                },
+                {
+                  cell: item.time,
                 },
                 {
                   cellAlign: isOwnership ? "left" : "center",
@@ -138,7 +147,7 @@ export default ({ offerData, historyData, isOwnership }) => {
           <Box display="flex" alignItems="center" justifyContent="space-between" m="36px 30px 0 50px">
             <div className={classes.typo8}>
               <HistoryIcon />
-              <span>Buy History</span>
+              <span>Rental History</span>
             </div>
           </Box>
           <div className={classes.table}>
@@ -174,13 +183,13 @@ export default ({ offerData, historyData, isOwnership }) => {
           </div>
         </div>
       </div>
-      <MakeBuyOfferModal
-        open={openMakeOfferModal}
-        handleClose={() => setOpenMakeOfferModal(false)}
-        onConfirm={() => setOpenMakeOfferModal(false)}
+      <MakeRentalOfferModal
+        open={openMakeRentalModal}
+        handleClose={() => setOpenMakeRentalModal(false)}
+        onConfirm={() => setOpenMakeRentalModal(false)}
       />
       {proceedItem && (
-        <BuyProceedModal
+        <RentProceedModal
           open={true}
           offer={proceedItem?.item}
           type={proceedItem?.type}

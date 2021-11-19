@@ -3,57 +3,88 @@ import React, { useState } from "react";
 import { PrimaryButton, SecondaryButton } from "shared/ui-kit";
 import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableHeaderInfo } from "shared/ui-kit/Table";
-import MakeRentalOfferModal from "components/PriviDigitalArt/modals/MakeRentalOfferModal";
-import RentProceedModal from "components/PriviDigitalArt/modals/RentProceedModal";
-import { exploreOptionDetailPageStyles } from "./index.styles";
+import MakeNewOfferModal from "components/PriviDigitalArt/modals/MakeNewOfferModal";
+import CancelOfferModal from "components/PriviDigitalArt/modals/CancelOfferModal";
+import BlockProceedModal from "components/PriviDigitalArt/modals/BlockProceedModal";
+import { exploreOptionDetailPageStyles } from "../../index.styles";
 import { TagIcon, HistoryIcon } from "./index";
-
-import { _arrayBufferToBase64 } from "shared/functions/commonFunctions";
 
 export default ({ offerData, historyData, isOwnership }) => {
   const classes = exploreOptionDetailPageStyles();
-  const [openMakeRentalModal, setOpenMakeRentalModal] = useState<boolean>(false);
+  const [openMakeNewOfferModal, setOpenMakeNewOfferModal] = useState<boolean>(false);
+  const [openCancelOfferModal, setOpenCancelOfferModal] = useState<boolean>(false);
   const [proceedItem, setProceedItem] = useState<any>(null);
 
-  const offerTableHeaders: Array<CustomTableHeaderInfo> = [
-    {
-      headerName: "USER",
-    },
-    {
-      headerName: "PRICE PER SECOND",
-      headerAlign: "center",
-    },
-    {
-      headerName: "ESTIMATED COST",
-      headerAlign: "center",
-    },
-    {
-      headerName: "RENTAL TIME",
-      headerAlign: "center",
-    },
-    {
-      headerName: "ETHERSCAN",
-      headerAlign: isOwnership ? "left" : "center",
-    },
-  ];
+  const handleConfirmMakeNewOffer = () => {
+    setOpenMakeNewOfferModal(false);
+  };
+
+  const offerTableHeaders: Array<CustomTableHeaderInfo> = isOwnership
+    ? [
+        {
+          headerName: "USER",
+        },
+        {
+          headerName: "PRICE",
+          headerAlign: "center",
+        },
+        {
+          headerName: "PERIOD",
+          headerAlign: "center",
+        },
+        {
+          headerName: "COLLATERAL %",
+          headerAlign: "center",
+        },
+        {
+          headerName: "EXPIRATION",
+          headerAlign: "center",
+        },
+        {
+          headerName: "ETHERSCAN",
+          headerAlign: isOwnership ? "left" : "center",
+        },
+      ]
+    : [
+        {
+          headerName: "USER",
+        },
+        {
+          headerName: "PRICE",
+          headerAlign: "center",
+        },
+        {
+          headerName: "COLLATERAL %",
+          headerAlign: "center",
+        },
+        {
+          headerName: "SETTLEMENT",
+          headerAlign: "center",
+        },
+        {
+          headerName: "DURATION",
+          headerAlign: "center",
+        },
+        {
+          headerName: "ETHERSCAN",
+          headerAlign: isOwnership ? "left" : "center",
+        },
+      ];
+
   const historyTableHeaders: Array<CustomTableHeaderInfo> = [
     {
       headerName: "USER",
     },
     {
-      headerName: "PRICE PER SECOND",
+      headerName: "PRICE",
       headerAlign: "center",
     },
     {
-      headerName: "ESTIMATED COST",
+      headerName: "PERIOD",
       headerAlign: "center",
     },
     {
-      headerName: "RENTAL TIME",
-      headerAlign: "center",
-    },
-    {
-      headerName: "DATE",
+      headerName: "COLLATERAL %",
       headerAlign: "center",
     },
     {
@@ -77,15 +108,15 @@ export default ({ offerData, historyData, isOwnership }) => {
           <Box display="flex" alignItems="center" justifyContent="space-between" m="36px 30px 0 50px">
             <div className={classes.typo8}>
               <TagIcon />
-              <span>Rental offers</span>
+              <span>Blocking offers</span>
             </div>
             {!isOwnership && (
               <PrimaryButton
                 size="small"
                 className={classes.pricingButton}
-                onClick={() => setOpenMakeRentalModal(true)}
+                onClick={() => setOpenMakeNewOfferModal(true)}
               >
-                MAKE RENTAL OFFER
+                MAKE BLOCKING OFFER
               </PrimaryButton>
             )}
           </Box>
@@ -94,16 +125,32 @@ export default ({ offerData, historyData, isOwnership }) => {
               headers={offerTableHeaders}
               rows={offerData.map(item => [
                 {
-                  cell: item.user,
+                  cell: (
+                    <Box display="flex" alignItems="center">
+                      <span>{item.user === "0xeec982f8" ? "Your Offer" : item.user}</span>
+                      {item.user === "0xeec982f8" && (
+                        <PrimaryButton
+                          size="small"
+                          className={classes.cancelOfferButton}
+                          onClick={() => setOpenCancelOfferModal(true)}
+                        >
+                          CANCEL OFFER
+                        </PrimaryButton>
+                      )}
+                    </Box>
+                  ),
                 },
                 {
                   cell: item.price,
                 },
                 {
-                  cell: item.estimated,
+                  cell: isOwnership ? item.period : item.collateral,
                 },
                 {
-                  cell: item.time,
+                  cell: isOwnership ? item.collateral : item.settlement,
+                },
+                {
+                  cell: isOwnership ? item.expiration : item.duration,
                 },
                 {
                   cellAlign: isOwnership ? "left" : "center",
@@ -147,7 +194,7 @@ export default ({ offerData, historyData, isOwnership }) => {
           <Box display="flex" alignItems="center" justifyContent="space-between" m="36px 30px 0 50px">
             <div className={classes.typo8}>
               <HistoryIcon />
-              <span>Rental History</span>
+              <span>Blocking History</span>
             </div>
           </Box>
           <div className={classes.table}>
@@ -161,13 +208,10 @@ export default ({ offerData, historyData, isOwnership }) => {
                   cell: item.price,
                 },
                 {
-                  cell: item.estimated,
+                  cell: item.period,
                 },
                 {
-                  cell: item.time,
-                },
-                {
-                  cell: item.date,
+                  cell: item.collateral,
                 },
                 {
                   cellAlign: "center",
@@ -183,13 +227,18 @@ export default ({ offerData, historyData, isOwnership }) => {
           </div>
         </div>
       </div>
-      <MakeRentalOfferModal
-        open={openMakeRentalModal}
-        handleClose={() => setOpenMakeRentalModal(false)}
-        onConfirm={() => setOpenMakeRentalModal(false)}
+      <MakeNewOfferModal
+        open={openMakeNewOfferModal}
+        handleClose={() => setOpenMakeNewOfferModal(false)}
+        onConfirm={handleConfirmMakeNewOffer}
+      />
+      <CancelOfferModal
+        open={openCancelOfferModal}
+        handleClose={() => setOpenCancelOfferModal(false)}
+        onConfirm={() => setOpenCancelOfferModal(false)}
       />
       {proceedItem && (
-        <RentProceedModal
+        <BlockProceedModal
           open={true}
           offer={proceedItem?.item}
           type={proceedItem?.type}

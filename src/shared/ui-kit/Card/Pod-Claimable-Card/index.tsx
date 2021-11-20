@@ -337,8 +337,7 @@ export default function ClaimablePodCard({ media, trending }) {
     <div className={cls({ [classes.songCardTrending]: trending }, classes.songCard)}>
       <div
         onClick={() => {
-          if (isArtist)
-            history.push(`/pods/ClaimablePod/${song.id ?? song.urlSlug ?? song.PodAddress}`);
+          if (isArtist) history.push(`/pods/ClaimablePod/${song.id ?? song.urlSlug ?? song.PodAddress}`);
         }}
         className={classes.cardHeader}
         style={
@@ -440,8 +439,7 @@ export default function ClaimablePodCard({ media, trending }) {
         <div
           className={classes.title}
           onClick={() => {
-            if (isArtist)
-              history.push(`/pods/ClaimablePod/${song.id ?? song.urlSlug ?? song.PodAddress}`);
+            if (isArtist) history.push(`/pods/ClaimablePod/${song.id ?? song.urlSlug ?? song.PodAddress}`);
           }}
         >
           {song.common && song.common.title ? song.common.title : "Song title"}
@@ -505,14 +503,14 @@ export default function ClaimablePodCard({ media, trending }) {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDownShareMenu}
                   >
-                    <CustomMenuItem onClick={() => {}}>
+                    {/* <CustomMenuItem onClick={() => {}}>
                       <img
                         src={require("assets/icons/spaceship.png")}
                         alt={"spaceship"}
                         style={{ width: 20, height: 20, marginRight: 5 }}
                       />
                       <b style={{ marginRight: 5 }}>{"Share & Earn"}</b> to Privi
-                    </CustomMenuItem>
+                    </CustomMenuItem> */}
                     <CustomMenuItem onClick={() => {}}>
                       <img
                         src={require("assets/icons/butterfly.png")}

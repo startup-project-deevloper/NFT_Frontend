@@ -1,13 +1,15 @@
 import React, { useRef } from "react";
 import ReactPlayer from "react-player";
 
-import "./FileUpload.css";
-import Box from "shared/ui-kit/Box";
+import { useMediaQuery, useTheme } from "@material-ui/core";
 import SvgIcon from "@material-ui/core/SvgIcon";
+
+import Box from "shared/ui-kit/Box";
 import { ReactComponent as CloseSolid } from "assets/icons/close-solid.svg";
 import { ReactComponent as UploadIcon } from "assets/icons/upload.svg";
 import { Color, Gradient } from "shared/constants/const";
 import { v4 as uuidv4 } from "uuid";
+import "./FileUpload.css";
 
 const audioIcon = require("assets/icons/audio_icon.png");
 const videoIcon = require("assets/icons/camera_icon.png");
@@ -47,6 +49,9 @@ const FileUpload = ({
 }) => {
   const randomId = uuidv4();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const themeStyle = useTheme();
+  const isMobile = useMediaQuery(themeStyle.breakpoints.down("xs"));
 
   const dragOver = e => {
     e.preventDefault();
@@ -339,6 +344,7 @@ const FileUpload = ({
                     fontFamily="Montserrat"
                     fontWeight="600"
                     display="flex"
+                    flexDirection={isMobile ? "column" : "row"}
                   >
                     Drag and drop your photo or
                     <Box color="#431AB7" ml="8px">

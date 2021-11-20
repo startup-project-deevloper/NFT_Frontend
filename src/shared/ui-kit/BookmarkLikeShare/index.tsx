@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import Axios from "axios";
 import AddToPlaylistModal from "shared/ui-kit/Modal/Modals/AddToPlaylistModal";
- import { useShareMedia } from "shared/contexts/ShareMediaContext";
+import { useShareMedia } from "shared/contexts/ShareMediaContext";
 import React, { useEffect, useState } from "react";
 import URL from "shared/functions/getURL";
 import { useTypedSelector } from "store/reducers/Reducer";
@@ -345,7 +345,7 @@ export const BookmarkLikeShare: React.FunctionComponent<BookmarkLikeShareProps> 
                         id="menu-list-grow"
                         onKeyDown={handleListKeyDownShareMenu}
                       >
-                        {!hideShareOnPrivi && (
+                        {/* {!hideShareOnPrivi && (
                           <CustomMenuItem onClick={handleOpenPriviShareModal}>
                             <img
                               src={require("assets/icons/spaceship.png")}
@@ -354,7 +354,7 @@ export const BookmarkLikeShare: React.FunctionComponent<BookmarkLikeShareProps> 
                             />
                             <b style={{ marginRight: 5 }}>{"Share & Earn"}</b> to Privi
                           </CustomMenuItem>
-                        )}
+                        )} */}
                         <CustomMenuItem onClick={handleOpenShareModal}>
                           <img
                             src={require("assets/icons/butterfly.png")}

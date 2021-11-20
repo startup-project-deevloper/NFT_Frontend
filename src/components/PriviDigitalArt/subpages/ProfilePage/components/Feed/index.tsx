@@ -6,16 +6,15 @@ import { Slider, withStyles } from "@material-ui/core";
 import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { Color } from "shared/ui-kit";
-import FriendLabel from "./components/FriendLabel";
-import { feedStyles } from "./index.styles";
 import * as UserConnectionsAPI from "shared/services/API/UserConnectionsAPI";
-// import ShareVoiceMessage from "shared/ui-kit/Chat/ShareVoiceMessage";
 import AlertMessage from "shared/ui-kit/Alert/AlertMessage";
 import WallFeedCard from "components/PriviDigitalArt/components/Cards/WallFeedCard";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingWrapper } from "shared/ui-kit/Hocs";
-import { SharedVoiceItem } from "./components/SharedVoiceItem";
 import { MasonryGrid } from "shared/ui-kit/MasonryGrid/MasonryGrid";
+import { SharedVoiceItem } from "./components/SharedVoiceItem";
+import FriendLabel from "./components/FriendLabel";
+import { feedStyles } from "./index.styles";
 
 const ArrowIcon = require("assets/icons/arrow-up.svg");
 
@@ -66,9 +65,6 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
         !searchValue ||
         (searchValue && f.name && f.name.toUpperCase().includes(searchValue.toUpperCase())) ||
         (f.urlSlug && f.urlSlug.toUpperCase().includes(searchValue.toUpperCase()))
-        // &&
-        // f.closenessDegree >= closenessDegree[0] &&
-        // f.closenessDegree <= closenessDegree[1]
       ) {
         fends.push(f);
       }
@@ -161,14 +157,6 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
     setFriends(friends);
   };
 
-  // const handleClosenessDegreeChange = (event: any, newValue: number | number[]) => {
-  //   setClosenessDegree(newValue as number[]);
-  // };
-
-  // const handleClosenessDegreeChanged = () => {
-  //   getPosts(true);
-  // };
-
   const getFriendsBox = () => {
     return (
       <div className={classes.friends}>
@@ -230,24 +218,7 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
 
   return (
     <>
-      <Box mt={3} display="flex" width={1} justifyContent="flex-end" mb={2}>
-        {/* <Box className={classes.filterContainer}>
-          <Box color="#181818" mr="12px" flexShrink={0}>
-            💫&nbsp;&nbsp;Filter by Closeness Degree
-          </Box>
-          <GreenSlider
-            min={0}
-            marks
-            step={0.1}
-            max={3}
-            value={closenessDegree}
-            onChange={handleClosenessDegreeChange}
-            onChangeCommitted={handleClosenessDegreeChanged}
-            className={classes.slider}
-            valueLabelDisplay="auto"
-          />
-        </Box> */}
-      </Box>
+      <Box mt={3} display="flex" width={1} justifyContent="flex-end" mb={2}></Box>
       <Box className={classes.collapseFriendContainer}>{getMobileFriendsBox()}</Box>
       <Box className={classes.topFriendContainer} mb={5}>
         {getFriendsBox()}
@@ -257,27 +228,10 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
           {getFriendsBox()}
         </Box>
         <Box width={1}>
-          {/* {ownUser && (
-            <ShareVoiceMessage
-              theme="pix"
-              handleShare={audio => {
-                setSharedVoices([...sharedVoices, audio]);
-              }}
-            />
-          )} */}
           <Box className={classes.contentContainer}>
             {sharedVoices.map((voice, index) => (
               <SharedVoiceItem voice={voice} key={`shared-voices-${index}`} />
             ))}
-            {/* <VirtualizedMasnory
-              list={posts}
-              loadMore={getPosts}
-              hasMore={hasMore}
-              scrollElement={scrollRef.current}
-              itemRender={(item, index) => (
-                <WallFeedCard feedItem item={item} userProfile={userProfile} key={`feed-item-${index}`} />
-              )}
-            /> */}
             <InfiniteScroll
               style={{ overflowX: "hidden" }}
               hasChildren={posts.length > 0}
@@ -287,11 +241,6 @@ const Feed = ({ userId, userProfile, scrollRef, ownUser = true }) => {
               hasMore={hasMore}
               loader={<LoadingWrapper loading theme={"blue"} />}
             >
-              {/* {posts.map((item, index) => (
-                <Box mt={index > 0 ? 3 : 0}>
-                  <WallFeedCard feedItem item={item} userProfile={userProfile} key={`feed-item-${index}`} />
-                </Box>
-              ))} */}
               <MasonryGrid
                 data={posts}
                 renderItem={(item, index) => (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+
 import { useMediaQuery, useTheme } from "@material-ui/core";
 
 import { setSelectedUser } from "store/actions/SelectedUser";

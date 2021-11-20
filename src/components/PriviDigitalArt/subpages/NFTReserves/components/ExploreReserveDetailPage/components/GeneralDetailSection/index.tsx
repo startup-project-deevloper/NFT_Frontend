@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import Box from 'shared/ui-kit/Box'
+import React, { useState } from "react";
+import Box from "shared/ui-kit/Box";
 import { PrimaryButton, Text } from "shared/ui-kit";
 
 import BlockNFTModal from "components/PriviDigitalArt/modals/BlockNFTModal";
@@ -10,7 +10,7 @@ import EditSellingPriceModal from "components/PriviDigitalArt/modals/EditSelling
 import EditBlockingPriceModal from "components/PriviDigitalArt/modals/EditBlockingPriceModal";
 import EditRentalPriceModal from "components/PriviDigitalArt/modals/EditRentalPriceModal";
 
-import { exploreOptionDetailPageStyles } from '../../index.styles';
+import { exploreOptionDetailPageStyles } from "../../index.styles";
 
 export default ({ isOwnership, img_id }) => {
   const classes = exploreOptionDetailPageStyles();
@@ -45,14 +45,14 @@ export default ({ isOwnership, img_id }) => {
           size="small"
           className={classes.pricingButton}
           onClick={() => {
-            if(isOwnership) {
-              setOpenEditSellingPriceModal(true)
+            if (isOwnership) {
+              setOpenEditSellingPriceModal(true);
             } else {
-              setOpenInstantModal(true)
+              setOpenInstantModal(true);
             }
           }}
         >
-          {isOwnership ? 'EDIT' : 'BUY'}
+          {isOwnership ? "EDIT" : "BUY"}
         </PrimaryButton>
       </Box>
       <hr className={classes.divider} />
@@ -63,14 +63,14 @@ export default ({ isOwnership, img_id }) => {
           size="small"
           className={classes.pricingButton}
           onClick={() => {
-            if(isOwnership) {
-              setOpenEditBlockingPriceModal(true)
+            if (isOwnership) {
+              setOpenEditBlockingPriceModal(true);
             } else {
-              setOpenReserveNftModal(true)
+              setOpenReserveNftModal(true);
             }
           }}
         >
-          {isOwnership ? 'EDIT' : 'BLOCK'}
+          {isOwnership ? "MAKE NEW OFFER" : "BLOCK"}
         </PrimaryButton>
       </Box>
       <hr className={classes.divider} />
@@ -90,14 +90,14 @@ export default ({ isOwnership, img_id }) => {
             height: 37,
           }}
           onClick={() => {
-            if(isOwnership) {
-              setOpenEditRentalPriceModal(true)
+            if (isOwnership) {
+              setOpenEditRentalPriceModal(true);
             } else {
-              setOpenRentNFTModal(true)
+              setOpenRentNFTModal(true);
             }
           }}
         >
-          {isOwnership ? 'EDIT' : 'RENT'}
+          {isOwnership ? "EDIT" : "RENT"}
         </PrimaryButton>
       </Box>
       <hr className={classes.divider} />
@@ -126,6 +126,7 @@ export default ({ isOwnership, img_id }) => {
         open={openEditBlockingPriceModal}
         handleClose={() => setOpenEditBlockingPriceModal(false)}
         onConfirm={() => setOpenEditBlockingPriceModal(false)}
+        nftDetailData={{ tokenId: 21, nftAddress: "0x28e041c8fdbb8ef06e638c30a833c2e97e629002" }}
       />
       <EditRentalPriceModal
         open={openEditRentalPriceModal}
@@ -133,5 +134,5 @@ export default ({ isOwnership, img_id }) => {
         onConfirm={() => setOpenEditRentalPriceModal(false)}
       />
     </>
-  )
-}
+  );
+};

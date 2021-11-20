@@ -10,14 +10,16 @@ export const podCardStyles = makeStyles(theme => ({
     color: "#431AB7",
     boxShadow: "0px 4px 8px #9EACF2",
     padding: "24px 16px",
+    "&:hover": {
+      boxShadow: "0px 16px 24px rgba(19, 45, 38, 0.25), 0px 31px 44px -13px rgba(0, 0, 0, 0.02)",
+      transform: "scale(1.02)",
+    },
   },
-
   podImageContent: {
     height: "264px",
     widht: "100%",
     borderRadius: theme.spacing(2),
   },
-
   podImage: {
     width: "100%",
     cursor: "pointer",
@@ -27,8 +29,10 @@ export const podCardStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    "& img": {
+      borderRadius: 16,
+    },
   },
-
   avatar: {
     width: theme.spacing(4),
     height: theme.spacing(4),
@@ -41,7 +45,55 @@ export const podCardStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
   },
-
+  avatar1: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    borderRadius: "100%",
+    border: "2px solid #ffffff",
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
+    marginLeft: "-10px",
+    transform: "translate(0, 50%)",
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarPlus: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    borderRadius: "100%",
+    border: "2px solid #ffffff",
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
+    background: "#fff",
+    transform: "translate(0, 50%)",
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 11,
+    fontWeight: 800,
+    lineHeight: 9,
+    color: "#2D3047",
+  },
+  collabList: {
+    fontSize: 14,
+    borderRadius: 16,
+  },
+  collabItem: {
+    padding: "10px 16px",
+  },
+  collabAvatar: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    borderRadius: "100%",
+    border: "2px solid #ffffff",
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
+    background: "#fff",
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   podMainInfo: {
     cursor: "pointer",
     marginTop: "40px",
@@ -55,12 +107,10 @@ export const podCardStyles = makeStyles(theme => ({
       margin: 0,
     },
   },
-
   podMainInfoContent: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-
     "& div": {
       display: "flex",
       flexDirection: "column",
@@ -70,12 +120,10 @@ export const podCardStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-
     "& div": {
       fontSize: "14px",
     },
   },
-
   divider: {
     width: "100%",
     height: "1px",

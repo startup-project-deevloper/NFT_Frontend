@@ -41,7 +41,7 @@ export default ({ isPaidBlocking, isUnpaidReserval }) => {
         </Box>
         <Box className={classes.BlockedDetailBottomSection}>
           <Box display="flex" justifyContent="space-between" padding="32px 0" marginX="32px" color="#4218B5" style={{ borderBottom: "1px solid #431AB721", position: 'relative' }}>
-            <Box fontSize={16}>Already paid</Box>
+            <Box fontSize={16} fontWeight={700}>Already paid</Box>
             <Box style={{ fontWeight: 800, fontFamily: 'Agrandir GrandHeavy' }}>1200 <span style={{ opacity: 0.6 }}>USDT</span></Box>
             { isPaidBlocking && (<Box position='absolute' bottom={"calc(50% - 30px)"} right={0} fontSize={14} fontWeight={700}>100% PAID</Box> )}
           </Box>

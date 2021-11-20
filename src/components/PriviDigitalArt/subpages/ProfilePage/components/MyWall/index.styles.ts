@@ -55,5 +55,13 @@ export const wallStyles = makeStyles(theme => ({
     top: 10,
     width: 16,
     height: 17,
-  }
+  },
+  commentBox: {
+    display: "flex",
+    alignItems: "flex-end",
+    flexDirection: "column",
+    [theme.breakpoints.down("sm")]: {
+      alignItems: "flex-start",
+    },
+  },
 }));

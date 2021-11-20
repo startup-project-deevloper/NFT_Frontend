@@ -241,22 +241,11 @@ export default function NFTPodCard({ item }) {
           onClick={handleToggleCollabMenu}
           ref={anchorCollabsRef}
         >
-          <SkeletonImageBox
-            loading={false}
-            image={podData?.creatorImageUrl ?? getDefaultAvatar()}
-            className={styles.avatar}
-            style={{
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              cursor: "pointer",
-            }}
-          />
-          {collabCount > 1 && (
+          <Box display="flex" alignItems="center">
             <SkeletonImageBox
-              className={styles.avatar1}
-              loading={!imageIPFS1}
-              image={imageIPFS1}
+              loading={false}
+              image={podData?.creatorImageUrl ?? getDefaultAvatar()}
+              className={styles.avatar}
               style={{
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
@@ -264,67 +253,85 @@ export default function NFTPodCard({ item }) {
                 cursor: "pointer",
               }}
             />
-          )}
-          {collabCount > 2 && <Box className={styles.avatarPlus}>+{collabCount - 2}</Box>}
-          <Popper
-            open={openCollabList}
-            anchorEl={anchorCollabsRef.current}
-            transition
-            disablePortal={false}
-            placement="bottom"
-            style={{ position: "inherit" }}
-          >
-            {({ TransitionProps }) => (
-              <Grow {...TransitionProps}>
-                <Paper className={styles.collabList}>
-                  <ClickAwayListener onClickAway={handleCloseCollabMenu}>
-                    <MenuList
-                      autoFocusItem={openCollabList}
-                      id="pod-card_collabs-list-grow"
-                      onKeyDown={handleListKeyDownCollabMenu}
-                    >
-                      <div style={{ color: "#707582", margin: "20px 30px 10px", fontSize: "16px" }}>
-                        All artists
-                      </div>
-                      {podData.collabUserData?.map(v => {
-                        return (
-                          <MenuItem
-                            className={styles.collabItem}
-                            onClick={() => {
-                              if (podData.CreatorId) {
-                                history.push(`/artists/${podData.CreatorId}`);
-                                dispatch(setSelectedUser(podData.CreatorId));
-                              }
-                            }}
-                          >
-                            <Box display="flex" alignItems="center" justifyContent="space-between" width={1}>
-                              <Box display="flex" alignItems="center">
-                                <SkeletonImageBox
-                                  className={styles.collabAvatar}
-                                  loading={false}
-                                  image={v.userImage.urlIpfsImage}
-                                  style={{
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                    cursor: "pointer",
-                                  }}
-                                />
-                                <div style={{ margin: "0 50px 0 15px", color: "#404658" }}>
-                                  {v.firstName + " " + v.lastName}
-                                </div>
-                              </Box>
-                              <div style={{ color: "#7E7D95" }}>{v.numFollowers} Followers</div>
-                            </Box>
-                          </MenuItem>
-                        );
-                      })}
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
+            {collabCount > 1 && (
+              <SkeletonImageBox
+                className={styles.avatar1}
+                loading={!imageIPFS1}
+                image={imageIPFS1}
+                style={{
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  cursor: "pointer",
+                }}
+              />
             )}
-          </Popper>
+            {collabCount > 2 && <Box className={styles.avatarPlus}>+{collabCount - 2}</Box>}
+            <Popper
+              open={openCollabList}
+              anchorEl={anchorCollabsRef.current}
+              transition
+              disablePortal={false}
+              placement="bottom"
+              style={{ position: "inherit" }}
+            >
+              {({ TransitionProps }) => (
+                <Grow {...TransitionProps}>
+                  <Paper className={styles.collabList}>
+                    <ClickAwayListener onClickAway={handleCloseCollabMenu}>
+                      <MenuList
+                        autoFocusItem={openCollabList}
+                        id="pod-card_collabs-list-grow"
+                        onKeyDown={handleListKeyDownCollabMenu}
+                      >
+                        <div style={{ color: "#707582", margin: "20px 30px 10px", fontSize: "16px" }}>
+                          All artists
+                        </div>
+                        {podData.collabUserData?.map(v => {
+                          return (
+                            <MenuItem
+                              className={styles.collabItem}
+                              onClick={() => {
+                                if (podData.CreatorId) {
+                                  history.push(`/artists/${podData.CreatorId}`);
+                                  dispatch(setSelectedUser(podData.CreatorId));
+                                }
+                              }}
+                            >
+                              <Box
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                width={1}
+                              >
+                                <Box display="flex" alignItems="center">
+                                  <SkeletonImageBox
+                                    className={styles.collabAvatar}
+                                    loading={false}
+                                    image={v.userImage.urlIpfsImage}
+                                    style={{
+                                      backgroundRepeat: "no-repeat",
+                                      backgroundSize: "cover",
+                                      backgroundPosition: "center",
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                  <div style={{ margin: "0 50px 0 15px", color: "#404658" }}>
+                                    {v.firstName + " " + v.lastName}
+                                  </div>
+                                </Box>
+                                <div style={{ color: "#7E7D95" }}>{v.numFollowers} Followers</div>
+                              </Box>
+                            </MenuItem>
+                          );
+                        })}
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
+          </Box>
           <Box className={styles.socialButtons}>
             <FruitSelect
               fruitObject={podData}

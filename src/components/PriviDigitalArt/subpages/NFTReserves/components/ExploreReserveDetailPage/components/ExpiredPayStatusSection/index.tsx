@@ -6,7 +6,7 @@ export default () => {
   const classes = exploreOptionDetailPageStyles();
 
   return (
-    <Box display="flex" flexDirection="column" p={4} pl={4.5} width="100%">
+    <Box display="flex" flexDirection="column" p={4} pl={4.5} width="100%" style={{ border: "1px solid #9EACF2" }} borderRadius="20px">
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box display="flex" flexDirection="column" color="#FF253F">
           <Box fontFamily='Agrandir GrandHeavy' fontSize={18}>Manage Collateral</Box>

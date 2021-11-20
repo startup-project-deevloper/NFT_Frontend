@@ -14,7 +14,6 @@ import Box from "shared/ui-kit/Box";
 import URL from "shared/functions/getURL";
 import { removeUndef } from "shared/helpers";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
-// import PrintChart from "shared/ui-kit/Chart/Chart";
 import { getOwnPixProfileItem, getPixProfileItems } from "shared/services/API";
 import ProfileEditModal from "components/PriviSocial/subpages/Home/modals/ProfileEdit";
 import { socket } from "components/Login/Auth";
@@ -210,18 +209,6 @@ const ProfilePage = () => {
             setUserId(id);
           } else {
             history.goBack();
-            // Axios.get(`${URL()}/user/getIdFromSlug/${params.id}/mediaUsers`)
-            //   .then(response => {
-            //     if (response.data.success) {
-            //       const id = response.data.data.id;
-            //       setUserId(id);
-            //     } else {
-            //       setUserId(params.id);
-            //     }
-            //   })
-            //   .catch(error => {
-            //     console.log(error);
-            //   });
           }
         })
         .catch(error => {

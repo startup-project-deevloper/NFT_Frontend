@@ -140,6 +140,9 @@ export const tokenomicsTabStyles = makeStyles(() => ({
     outline: "none",
     marginTop: 8,
     fontFamily: "Montserrat",
+    "& .MuiFormControl-root": {
+      paddingTop: 27,
+    },
   },
   selectorFormControlCreatePod: {
     width: "100%",

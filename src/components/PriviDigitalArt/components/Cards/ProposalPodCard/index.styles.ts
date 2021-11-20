@@ -3,11 +3,11 @@ import { Color } from "shared/ui-kit";
 
 export const ProposalPodCardStyles = makeStyles(theme => ({
   root: {
-    background: "transparent",
-    borderRadius: theme.spacing(2),
-    boxShadow: "0px 18px 10px -10px rgba(19, 45, 38, 0.07)",
+    background: "#ffffff",
+    borderRadius: 18,
+    boxShadow: "0px 4px 8px #9EACF2",
     padding: theme.spacing(3),
-    marginTop: theme.spacing(2),
+    margin: theme.spacing(2),
   },
   header1: {
     fontSize: 14,
@@ -31,7 +31,7 @@ export const ProposalPodCardStyles = makeStyles(theme => ({
     fontSize: 14,
     fontWeight: 500,
     color: "#1A1B1C",
-    maxWidth: 180
+    maxWidth: 180,
   },
   flexBox: {
     display: "flex",

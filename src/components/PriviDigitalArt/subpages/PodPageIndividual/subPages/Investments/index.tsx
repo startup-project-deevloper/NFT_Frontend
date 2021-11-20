@@ -310,16 +310,16 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                   setOpenBuySellModal(true);
                 }}
                 style={{
-                  background: Gradient.Green1,
+                  background: "#DDFF57",
                   padding: "11px 48px",
-                  borderRadius: "46px",
+                  borderRadius: "4px",
                   fontFamily: "Montserrat",
                   fontWeight: 600,
                   fontSize: "14px",
                   lineHeight: "18px",
                   border: "none",
                   height: "auto",
-                  textTransform: "uppercase",
+                  color: "#431AB7",
                 }}
                 isRounded
               >
@@ -421,7 +421,7 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                 <Box className={classes.timeBox} mt={2}>
                   <Box className={classes.header2}>Time to finish funding</Box>
                   <Box className={classes.timeValueBox}>
-                    <Box className={classes.timeGreenBox}>
+                    <Box className={classes.timeGreenBox} ml={1}>
                       {fundingEndTime.days} Day{fundingEndTime.days > 1 ? "s" : ""}
                     </Box>
                     <Box className={classes.timeGreenBox} ml={1} color="#65CB63">

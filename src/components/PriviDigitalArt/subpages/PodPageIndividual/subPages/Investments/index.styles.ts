@@ -243,7 +243,6 @@ export const investmentStyles = makeStyles(theme => ({
   timeBox: {
     display: "flex",
     alignItems: "center",
-    background: Color.Violet,
     padding: theme.spacing(1),
     borderRadius: "12px",
     color: Color.White,
@@ -253,6 +252,7 @@ export const investmentStyles = makeStyles(theme => ({
   },
   timeGreenBox: {
     display: "flex",
+    color: "rgb(101, 203, 99)",
     alignItems: "center",
     background: "linear-gradient(0deg, #F2FBF6, #F2FBF6), #17172D",
     padding: "8px 8px",

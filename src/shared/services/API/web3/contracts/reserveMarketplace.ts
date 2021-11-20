@@ -7,7 +7,7 @@ const reserveMarketplace = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/reserve/ReserveMarketplace.json");
   const contractAddress = config[network].CONTRACT_ADDRESSES.RESERVE_MARKETPLACE;
 
-  const cancelSaleReserveProposal = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
+  const cancelSaleReserveProposal = async (web3: Web3, account: string, payload: any): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contractAddress = config[network].CONTRACT_ADDRESSES.RESERVE_MARKETPLACE;

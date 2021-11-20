@@ -26,9 +26,9 @@ const ExploreReserveDetailPage = () => {
   const { img_id } = useParams();
 
   // todo:
-  const isOwnership = false;
+  const isOwnership = true;
   const isRentedNFT = false; // nft.owner == current user && nft.isRent == true
-  const isBlockedNFT = true; // nft.owner == current user && nft.isBlocked == true
+  const isBlockedNFT = false; // nft.owner == current user && nft.isBlocked == true
   const isPaidBlocking = false;
   const isUnpaidReserval = false;
   const isExpired = false;

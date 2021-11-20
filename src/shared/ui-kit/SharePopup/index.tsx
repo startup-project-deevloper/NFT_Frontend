@@ -115,14 +115,14 @@ export const SharePopup = ({ item, openMenu, anchorRef, handleCloseMenu }) => {
             <Paper>
               <ClickAwayListener onClickAway={handleCloseMenu}>
                 <MenuList autoFocusItem={openMenu} id="menu-list-grow">
-                  <MenuItem onClick={handleOpenPriviShareModal}>
+                  {/* <MenuItem onClick={handleOpenPriviShareModal}>
                     <img
                       src={require("assets/icons/spaceship.png")}
                       alt={"spaceship"}
                       style={{ width: 20, height: 20, marginRight: 5 }}
                     />
                     <b style={{ marginRight: 5 }}>{"Share & Earn"}</b> to Privi
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem onClick={handleOpenShareModal}>
                     <img
                       src={require("assets/icons/butterfly.png")}

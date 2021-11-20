@@ -17,9 +17,9 @@ import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { toDecimals } from "shared/functions/web3";
 import { useAuth } from "shared/contexts/AuthContext";
+import TradePodTokenModal from "components/PriviDigitalArt/modals/TradePodTokenModal";
 import TransactionProgressModal from "../../../../modals/TransactionProgressModal";
 import { investmentStyles } from "./index.styles";
-import TradePodTokenModal from "components/PriviDigitalArt/modals/TradePodTokenModal";
 
 const INVESTTABLEHEADER: Array<CustomTableHeaderInfo> = [
   {
@@ -301,7 +301,15 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
       {podInfo && (
         <Box>
           <Box className={classes.flexBox} justifyContent="space-between" px={1} mb={"27px"}>
-            <Box className={classes.title}>Investment</Box>
+            <Box display="flex" alignItems="center">
+              <Box className={classes.title}>Investment</Box>
+              <div className={classes.contractAddressSection}>
+                <Box mt={"2px"} mr={1}>
+                  Contract Address
+                </Box>
+                <img src={require("assets/pixImages/EthScanIcon.png")} />
+              </div>
+            </Box>
             {!fundingEnded && !isFundingTargetReached && isSignedin && (
               <PrimaryButton
                 size="small"
@@ -311,12 +319,11 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                 }}
                 style={{
                   background: "#DDFF57",
-                  padding: "11px 48px",
+                  padding: "10px 48px",
                   borderRadius: "4px",
-                  fontFamily: "Montserrat",
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  lineHeight: "18px",
+                  fontFamily: "Agrandir",
+                  fontWeight: 800,
+                  fontSize: 18,
                   border: "none",
                   height: "auto",
                   color: "#431AB7",
@@ -357,11 +364,17 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                       <Box style={{ width: `${(podInfo.raisedFunds / podInfo.fundingTarget) * 100}%` }} />
                     </Box>
                     <Box className={classes.flexBox} justifyContent="space-between">
-                      <Box className={classes.header2}>
-                        Supply <br /> already sold
-                      </Box>
+                      <Box className={classes.header2}>Supply already sold</Box>
                       <Box className={classes.flexBox}>
-                        <Box className={classes.header2} style={{ fontFamily: "Agrandir", fontSize: "18px" }}>
+                        <Box
+                          className={classes.header2}
+                          style={{
+                            fontFamily: "Agrandir",
+                            fontSize: "18px",
+                            fontWeight: 800,
+                            color: "#431AB7",
+                          }}
+                        >
                           {podInfo.raisedFunds ? podInfo.raisedFunds / podInfo.fundingTokenPrice : 0}/
                         </Box>
                         <Box className={classes.header3}>
@@ -378,17 +391,19 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                 >
                   <Box flex={1} className={classes.flexBox} justifyContent="space-between">
                     <Box display="flex" flexDirection="column" alignItems="center" width={1}>
-                      <Box className={classes.header2} style={{ textAlign: "center" }}>
-                        Amount of Media Fractions purchased
+                      <Box className={classes.header2} style={{ textAlign: "center", color: "#fff" }}>
+                        Amount of Pods purchased
                       </Box>
-                      <Box className={classes.header3} mt={1}>
+                      <Box className={classes.header3} mt={1} style={{ color: "#fff" }}>
                         {formatNumber((paidAmount || 0) / podInfo.fundingTokenPrice, pod.TokenSymbol, 4)}
                       </Box>
                     </Box>
-                    <Box className={classes.divider} />
+                    <Box className={classes.divider} style={{ background: "#ffffff", opacity: "unset" }} />
                     <Box display="flex" flexDirection="column" alignItems="center" width={1}>
-                      <Box className={classes.header2}>Amount paid</Box>
-                      <Box className={classes.header3} mt={1}>
+                      <Box className={classes.header2} style={{ color: "#fff" }}>
+                        Amount paid
+                      </Box>
+                      <Box className={classes.header3} mt={1} style={{ color: "#fff" }}>
                         {formatNumber(paidAmount || 0, pod.FundingToken, 4)}
                       </Box>
                     </Box>
@@ -399,10 +414,17 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                     <SecondaryButton
                       size="medium"
                       onClick={onClaimPodTokens}
-                      style={{ background: Color.MusicDAOGreen, color: "white", border: "none" }}
+                      style={{
+                        background: "#DDFF57",
+                        color: "#431AB7",
+                        border: "none",
+                        boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
+                        borderRadius: 4,
+                        padding: "3px 48px",
+                      }}
                       isRounded
                     >
-                      CLAIM YOUR MEDIA FRACTIONS
+                      Claim Your Pod Tokens
                     </SecondaryButton>
                   </Box>
                 )}
@@ -411,10 +433,17 @@ const Investments = ({ pod, podInfo, handleRefresh }) => {
                     <SecondaryButton
                       size="medium"
                       onClick={onRedeemBack}
-                      style={{ background: "#FF8E3C", color: "white", border: "none" }}
+                      style={{
+                        background: "#DDFF57",
+                        color: "#431AB7",
+                        border: "none",
+                        boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.12)",
+                        borderRadius: 4,
+                        padding: "3px 48px",
+                      }}
                       isRounded
                     >
-                      RETURN BACK THE FUNDS
+                      Redeem Back The Funds
                     </SecondaryButton>
                   </Box>
                 )}

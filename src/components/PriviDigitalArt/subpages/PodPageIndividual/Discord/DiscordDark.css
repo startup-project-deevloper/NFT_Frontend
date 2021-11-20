@@ -64,7 +64,7 @@
 .podDiscordFullPage.dark .podInputDiscordChat {
   width: 100%;
   /* White */
-  border: 1px solid #431AB7;
+  border: 1px solid #431ab7;
   padding: 7px 16px;
   border-radius: 8px;
 }
@@ -75,7 +75,7 @@
   background: transparent;
   width: 100%;
   box-shadow: none;
-  color: #2D3047;
+  color: #2d3047;
   font-size: 14px;
   padding: 0;
 }
@@ -109,8 +109,8 @@
 }
 
 .dark .podMessageDiscordChat.notmine .podMessageRowDiscordChat .bubble {
-  background: #DAE6E5;
-  color: #2D3047;
+  background: #dae6e5;
+  color: #2d3047;
   box-shadow: none;
   padding: 12px 20px;
 }
@@ -118,9 +118,9 @@
 .dark .podMessageDiscordChat.mine .podMessageRowDiscordChat .bubble {
   box-shadow: none;
   padding: 12px 20px 8px 20px;
-  background: linear-gradient(0deg, #EEF2F7, #EEF2F7), #F0F5F8;
+  background: #ddff57;
   max-width: 350px;
-  color: #2D3047;
+  color: #2d3047;
   text-align: right;
 }
 
@@ -152,7 +152,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid #1818181A;
+  border-bottom: 1px solid #1818181a;
   padding-bottom: 16px;
   color: #707582;
   font-size: 14px;

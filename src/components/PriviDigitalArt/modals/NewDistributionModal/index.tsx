@@ -232,7 +232,7 @@ export default function NewDistributionModal(props: any) {
             padding: acceptWarning
               ? isMobile
                 ? "32px 12px 50px"
-                : "32px 39px 50px"
+                : "64px 39px 50px"
               : isMobile
               ? "20px 22px 63px"
               : "20px 58px 63px",
@@ -246,9 +246,9 @@ export default function NewDistributionModal(props: any) {
                 </Box>
                 <h3>Distribution Proposal</h3>
                 <p>
-                  In the next steps you will be claiming your share of <b>Claimable Song Name</b>. Since there
-                  are other {pod && pod.Collabs ? pod.Collabs.length : 4} artists that are part of this pod
-                  you have to decide and assign the percentage of the share that each one of you will receive.
+                  In the next steps you will be claiming your share of this <b>{pod.Name}</b>. Since there are
+                  other {pod && pod.Collabs ? pod.Collabs.length : 4} artists that are part of this pod you
+                  have to decide and assign the percentage of the share that each one of you will receive.
                 </p>
                 <PrimaryButton size="medium" onClick={() => setAcceptWarning(true)}>
                   Ok, Let’s Do it

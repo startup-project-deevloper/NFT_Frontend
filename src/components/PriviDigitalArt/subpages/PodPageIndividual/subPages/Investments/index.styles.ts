@@ -62,8 +62,21 @@ export const investmentStyles = makeStyles(theme => ({
       borderBottom: "1px solid #18181822",
     },
   },
+  contractAddressSection: {
+    background: "#EFF2FD",
+    borderRadius: 6,
+    fontSize: 14,
+    fontWeight: 400,
+    fontFamily: "Agrandir",
+    color: "#431AB7",
+    display: "flex",
+    alignItems: "center",
+    padding: 4,
+    marginLeft: 18,
+    cursor: "pointer",
+  },
   title: {
-    fontSize: "22px",
+    fontSize: "32px",
     fontWeight: 800,
     fontFamily: "Agrandir",
     lineHeight: "130%",
@@ -77,12 +90,11 @@ export const investmentStyles = makeStyles(theme => ({
     color: "#081831",
   },
   header2: {
-    fontFamily: "Montserrat",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: "16px",
+    fontFamily: "Agrandir",
+    fontWeight: 400,
+    fontSize: 16,
     lineHeight: "120%",
-    color: "#707582",
+    color: "#181818",
     textShadow: "2px 2px 12px rgba(0, 0, 0, 0.1)",
     [theme.breakpoints.down("xs")]: {
       fontSize: "14px",
@@ -93,9 +105,9 @@ export const investmentStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     fontStyle: "normal",
     fontWeight: 800,
-    fontSize: "18px",
+    fontSize: 18,
     lineHeight: "120%",
-    color: "#081831",
+    color: "#181818",
     textShadow: "2px 2px 12px rgba(0, 0, 0, 0.1)",
   },
   flexBoxHeader: {
@@ -144,7 +156,6 @@ export const investmentStyles = makeStyles(theme => ({
       marginTop: 13,
     },
   },
-
   graphBox: {
     display: "flex",
     flexDirection: "column",
@@ -221,7 +232,6 @@ export const investmentStyles = makeStyles(theme => ({
       },
     },
   },
-
   barContainer: {
     background: Color.Violet,
     height: 3,
@@ -233,7 +243,6 @@ export const investmentStyles = makeStyles(theme => ({
       borderRadius: "20px",
     },
   },
-
   divider: {
     height: 40,
     opacity: 0.1,

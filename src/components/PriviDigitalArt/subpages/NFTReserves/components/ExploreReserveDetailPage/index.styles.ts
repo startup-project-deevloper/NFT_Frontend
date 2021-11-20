@@ -17,39 +17,52 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     "& .chartjs-render-monitor": {
       borderRadius: "8px",
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down("xs")]: {
       padding: "16px 16px 45px 16px",
-    }
+    },
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  cancelBlockingBtn: {
+    width: "100%",
+    height: 52,
+    "& img": {
+      marginLeft: 2,
+    },
   },
   badge: {
     backgroundColor: "#1FC88B",
-    padding: '5px 8px',
+    padding: "5px 8px",
     fontSize: 8,
-    lineHeight: '10px',
-    textTransform: 'uppercase',
-    color: '#fff',
-    width: 'fit-content',
+    lineHeight: "10px",
+    textTransform: "uppercase",
+    color: "#fff",
+    width: "fit-content",
     borderRadius: 6,
-    marginBottom: 16
+    marginBottom: 16,
   },
   detailImg: {
     width: "100%",
     objectFit: "fill",
     borderRadius: 16,
-    cursor: 'pointer'
+    cursor: "pointer",
   },
   creatorName: {
     maxWidth: 124,
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    fontFamily: 'Agrandir',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    fontSize: '30px !important',
-    lineHeight: '39px',
-    color: '#1A1B1C',
-    mixBlendMode: 'normal',
+    fontFamily: "Agrandir",
+    fontStyle: "normal",
+    fontWeight: "normal",
+    fontSize: "30px !important",
+    lineHeight: "39px",
+    color: "#1A1B1C",
+    mixBlendMode: "normal",
   },
   artist: {
     "& + &": {
@@ -86,32 +99,32 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     borderRadius: "4px !important",
     width: "130px !important",
     fontSize: "14px !important",
-    fontFamily: 'Agrandir',
-    fontStyle: 'normal',
+    fontFamily: "Agrandir",
+    fontStyle: "normal",
     fontWeight: 800,
-    lineHeight: '18px',
-    textAlign: 'center',
-    color: '#000000',
+    lineHeight: "18px",
+    textAlign: "center",
+    color: "#000000",
     position: "relative",
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       marginTop: 15,
-    }
+    },
   },
   checkOnBtn: {
     border: "0.7px solid #CBCBCB !important",
     borderRadius: "4px !important",
     width: "130px !important",
     fontSize: "14px !important",
-    fontFamily: 'Agrandir',
-    fontStyle: 'normal',
+    fontFamily: "Agrandir",
+    fontStyle: "normal",
     fontWeight: 800,
-    lineHeight: '18px',
-    textAlign: 'center',
-    color: '#000000',
+    lineHeight: "18px",
+    textAlign: "center",
+    color: "#000000",
     position: "relative",
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       marginTop: 15,
-    }
+    },
   },
   label: {
     color: "#1A1B1C",
@@ -128,62 +141,62 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     color: "#431AB7 !important",
     border: "1px solid #431AB7 !important",
     background: "white !important",
-    borderRadius: '4px !important',
-    height: '40px !important',
-    padding: '0px 38px !important',
+    borderRadius: "4px !important",
+    height: "40px !important",
+    padding: "0px 38px !important",
     marginLeft: 24,
-    [theme.breakpoints.down('sm')]: {
-      padding: '0px 20px !important',
-      marginLeft: 12
-    }
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 20px !important",
+      marginLeft: 12,
+    },
   },
   primary: {
     color: "white !important",
     border: "1px solid #431AB7 !important",
     background: "#431AB7 !important",
-    height: '40px !important',
-    padding: '0px 27px !important',
-    borderRadius: '4px !important',
-    [theme.breakpoints.down('sm')]: {
-      padding: '0px 20px !important',
-    }
+    height: "40px !important",
+    padding: "0px 27px !important",
+    borderRadius: "4px !important",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 20px !important",
+    },
   },
   detailPrimary: {
-    fontSize: '14px !important',
+    fontSize: "14px !important",
     color: "white !important",
     border: "1px solid #431AB7 !important",
     background: "#431AB7 !important",
-    height: '34px !important',
-    lineHeight: '34px !important',
-    padding: '0px 27px !important',
-    borderRadius: '4px !important',
-    [theme.breakpoints.down('sm')]: {
-      padding: '0px 8px !important',
-      minWidth: 160
-    }
+    height: "34px !important",
+    lineHeight: "34px !important",
+    padding: "0px 27px !important",
+    borderRadius: "4px !important",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 8px !important",
+      minWidth: 160,
+    },
   },
   detailSecondary: {
     color: "#431AB7 !important",
     border: "1px solid #DDFF57 !important",
     background: "#DDFF57 !important",
-    fontSize: '14px !important',
-    height: '34px !important',
-    lineHeight: '34px !important',
-    padding: '0px 27px !important',
-    borderRadius: '4px !important',
-    [theme.breakpoints.down('sm')]: {
-      padding: '0px 20px !important',
-    }
+    fontSize: "14px !important",
+    height: "34px !important",
+    lineHeight: "34px !important",
+    padding: "0px 27px !important",
+    borderRadius: "4px !important",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 20px !important",
+    },
   },
   debtTitle: {
     color: "#181818",
     fontSize: "14px",
     lineHeight: "120%",
     marginRight: "8px",
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       fontSize: 11,
       marginRight: 3,
-    }
+    },
   },
   debt: {
     color: "#431AB7",
@@ -199,13 +212,13 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
       color: "#A4A4A4",
       fontSize: "11px",
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       fontSize: 14,
       "& span": {
         fontSize: 9,
-        marginLeft: 3
-      }
-    }
+        marginLeft: 3,
+      },
+    },
   },
   greenBox: {
     borderRadius: "8px",
@@ -215,7 +228,7 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     padding: "32px 60px",
     color: "#431AB7",
-    flexDirection: 'row',
+    flexDirection: "row",
     "& label": {
       fontSize: "14px",
       lineHeight: "120%",
@@ -227,8 +240,8 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
       fontWeight: 800,
       lineHeight: "104.5%",
     },
-    [theme.breakpoints.down('sm')]: {
-      padding: '32px 24px',
+    [theme.breakpoints.down("sm")]: {
+      padding: "32px 24px",
       "& label": {
         fontSize: 11,
       },
@@ -236,20 +249,20 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
         fontSize: 16,
       },
     },
-    [theme.breakpoints.down('xs')]: {
-      flexDirection: 'column',
-      padding: '32px 16px',
-    }
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      padding: "32px 16px",
+    },
   },
   mediaName: {
     marginRight: 18,
     color: "#1A1B1C",
     fontSize: "30px",
     lineHeight: "39px",
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       fontSize: 20,
       marginRight: 8,
-    }
+    },
   },
   chain: {
     width: 24,
@@ -281,18 +294,18 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     backgroundPosition: "center",
     borderRadius: "50%",
     marginRight: 8,
-    cursor: "pointer"
+    cursor: "pointer",
   },
   transactionsSection: {
-    width: '100%'
+    width: "100%",
   },
   transactionsHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    width: '100%',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+    width: "100%",
     marginBottom: 12,
-    marginTop: 50
+    marginTop: 50,
   },
   transactionsTable: {
     width: "100%",
@@ -302,10 +315,10 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
 
     "& .MuiTableContainer-root": {
       borderRadius: 16,
-      overflowX: 'auto',
+      overflowX: "auto",
       "&::-webkit-scrollbar-thumb": {
         background: "rgb(193 193 193)",
-      }
+      },
     },
 
     "& .MuiTableCell-head": {
@@ -314,24 +327,24 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
 
     "&.position-table .MuiTable-root": {
       "& td, & th": {
-        borderRadius: '0px !important',
+        borderRadius: "0px !important",
         paddingRight: 0,
         paddingLeft: 16,
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down("md")]: {
           fontSize: 12,
           padding: 8,
           paddingRight: 0,
         },
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
           fontSize: 10,
         },
         "&:last-child": {
           paddingRight: 16,
-          [theme.breakpoints.down('md')]: {
+          [theme.breakpoints.down("md")]: {
             paddingRight: 8,
           },
-        }
-      }
+        },
+      },
     },
   },
   coinFlipHistorySection: {
@@ -345,10 +358,10 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     fontWeight: 800,
     lineHeight: "104.5%",
     fontFamily: "Agrandir GrandHeavy",
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     color: "rgba(67, 26, 183, 1)",
-    '& span': {
+    "& span": {
       marginTop: 4,
       marginLeft: 16,
     },
@@ -380,7 +393,7 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
         padding: "8px",
       },
       "&:first-child": {
-        textAlign:'left'
+        textAlign: "left",
       },
     },
     "& .MuiTableRow-head": {
@@ -411,21 +424,20 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
       },
     },
     "& tr th": {
-        color:'#707582 !important',
-        fontSize:'16px !important',
-        fontWeight: '600 !important',
-        textAlign:'center'
+      color: "#707582 !important",
+      fontSize: "16px !important",
+      fontWeight: "600 !important",
+      textAlign: "center",
     },
     "& tr td:first-child": {
-        color:'#431AB7 !important',
+      color: "#431AB7 !important",
     },
     "& tr td": {
-        color:'#1A1B1C !important',
-        fontSize:'16px !important',
-        fontWeight: '600 !important',
-        textAlign:'center'
+      color: "#1A1B1C !important",
+      fontSize: "16px !important",
+      fontWeight: "600 !important",
+      textAlign: "center",
     },
-
 
     [theme.breakpoints.down("sm")]: {
       minHeight: 200,
@@ -449,40 +461,40 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     },
   },
   pricingText1: {
-    fontFamily: 'Montserrat',
+    fontFamily: "Montserrat",
     fontWeight: 600,
-    fontSize: '16px !important',
-    lineHeight: '19px',
-    color: '#7E7D95 !important'
+    fontSize: "16px !important",
+    lineHeight: "19px",
+    color: "#7E7D95 !important",
   },
   pricingText2: {
-    fontFamily: 'Agrandir GrandHeavy',
+    fontFamily: "Agrandir GrandHeavy",
     fontWeight: 800,
     fontSize: "18px !important",
-    lineHeight: '23px',
-    color: '#431AB7 !important',
-    textAlign: 'right',
+    lineHeight: "23px",
+    color: "#431AB7 !important",
+    textAlign: "right",
     marginRight: 21,
-    flex: 1
+    flex: 1,
   },
   pricingButton: {
     background: "#431AB7 !important",
     color: "#ffffff !important",
-    padding:'0px 40px !important',
-    fontSize:'16px !important',
+    padding: "0px 40px !important",
+    fontSize: "16px !important",
     fontWeight: 700,
-    lineHeight: '37px !important',
-    height: '37px !important'
+    lineHeight: "37px !important",
+    height: "37px !important",
   },
   cancelOfferButton: {
     background: "#431AB7 !important",
     color: "#ffffff !important",
-    padding:'0px 30px !important',
-    fontSize:'16px !important',
+    padding: "0px 30px !important",
+    fontSize: "16px !important",
     fontWeight: 700,
-    lineHeight: '37px !important',
-    height: '37px !important',
-    marginLeft: 55
+    lineHeight: "37px !important",
+    height: "37px !important",
+    marginLeft: 55,
   },
   subTitleSection: {
     display: "flex",
@@ -514,7 +526,7 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     margin: "0 40px",
     fontSize: 18,
     fontFamily: "Agrandir GrandHeavy",
-    '& div': {
+    "& div": {
       width: "20px",
       height: "20px",
       fontSize: "10px",
@@ -552,7 +564,7 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
   selectedTabSection: {
     borderBottom: "4px solid #431AB7",
     color: "#431AB7",
-    '& div': {
+    "& div": {
       background: "#431AB7",
       color: "#fff",
     },
@@ -560,62 +572,62 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
   secondaryBtn: {
     fontSize: 16,
     lineHeight: 21,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    color: '#4218B5 !important',
-    backgroundColor: '#fff',
+    textAlign: "center",
+    textTransform: "uppercase",
+    color: "#4218B5 !important",
+    backgroundColor: "#fff",
     height: 30,
     padding: "0 14px",
-    borderColor: "#4218B5 !important"
+    borderColor: "#4218B5 !important",
   },
   primaryBtn: {
     fontSize: 16,
     lineHeight: 21,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    color: '#fff',
-    backgroundColor: '#4218B5 !important',
+    textAlign: "center",
+    textTransform: "uppercase",
+    color: "#fff",
+    backgroundColor: "#4218B5 !important",
     height: 30,
     padding: "0 14px",
   },
   RentedDetailSection: {
-    background: '#FAFBFF',
-    border: '1px solid #E9E9F2',
+    background: "#FAFBFF",
+    border: "1px solid #E9E9F2",
     borderRadius: 16,
-    fontSize: 16
+    fontSize: 16,
   },
   RentedDetailSectionOne: {
-    background: '#ffffff',
-    border: '1px solid #E9E9F2',
-    borderRadius: 16
+    background: "#ffffff",
+    border: "1px solid #E9E9F2",
+    borderRadius: 16,
   },
   BlockedDetailSection: {
-    background: 'rgba(158, 172, 242, 0.16)',
-    border: '1px solid rgba(158, 172, 242, 0.2)',
+    background: "rgba(158, 172, 242, 0.16)",
+    border: "1px solid rgba(158, 172, 242, 0.2)",
     borderRadius: 16,
-    fontSize: 18
+    fontSize: 18,
   },
   ExpiredPayFailed: {
-    background: 'rgba(242, 198, 158, 0.16)',
-    border: '1px solid #FF8E3C',
+    background: "rgba(242, 198, 158, 0.16)",
+    border: "1px solid #FF8E3C",
     borderRadius: 8,
-    fontSize: 14
+    fontSize: 14,
   },
   ExpiredPaySuccess: {
-    background: 'rgba(158, 172, 242, 0.16)',
-    border: '1px solid rgba(158, 172, 242, 0.2)',
+    background: "rgba(158, 172, 242, 0.16)",
+    border: "1px solid rgba(158, 172, 242, 0.2)",
     borderRadius: 8,
-    fontSize: 14
+    fontSize: 14,
   },
   BlockedDetailBottomSection: {
-    background: '#431AB710',
+    background: "#431AB710",
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
   },
   claimButton: {
     padding: "0 37px !important",
     height: "52px !important",
-    backgroundColor: "#F2604C !important"
+    backgroundColor: "#F2604C !important",
   },
   addCollateral: {
     padding: "0 37px !important",
@@ -629,7 +641,7 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     fontSize: 18,
     lineHeight: "19.5px",
     fontWeight: 600,
-    fontFamily: "Montserrat"
+    fontFamily: "Montserrat",
   },
   time: {
     background: "#4218B5",
@@ -637,6 +649,6 @@ export const exploreOptionDetailPageStyles = makeStyles(theme => ({
     padding: "8px 12px",
     margin: 2,
     color: "#fff",
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 }));

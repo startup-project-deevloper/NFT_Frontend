@@ -12,8 +12,9 @@ import { TokenSelect } from "shared/ui-kit/Select/TokenSelect";
 import { BlockchainNets } from "shared/constants/constants";
 
 import ExploreCard from "components/PriviDigitalArt/components/Cards/ExploreCard";
+import ProcessingPaymentModal from "components/PriviDigitalArt/modals/ProcessingPaymentModal";
 
-export default function ClaimYourNFTModal({ open, handleClose = () => {}, onConfirm, img_url }) {
+export default function ClaimYourNFTModal({ open, claimType, handleClose = () => {}, onConfirm, img_url }) {
   const classes = ClaimYourNFTModalStyles();
   const { account, library, chainId } = useWeb3React();
 
@@ -28,20 +29,25 @@ export default function ClaimYourNFTModal({ open, handleClose = () => {}, onConf
   const [tokenList, setTokenList] = useState<string[]>(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
   const [reservePriceToken, setReservePriceToken] = useState<string>("ETH");
   const [confirmSuccess, setConfirmSuccess] = useState(false);
+  const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
+  const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
+  const [hash, setHash] = useState<string>("0xf273a38fec99acf1e....eba");
 
   useEffect(() => {
     setTokenList(Object.keys(selectedChain.config.TOKEN_ADDRESSES));
     setReservePriceToken(Object.keys(selectedChain.config.TOKEN_ADDRESSES)[0]);
   }, [selectedChain]);
 
+  useEffect(() => {
+    if (!open) {
+      setOpenTransactionModal(false);
+    }
+  }, [open]);
+
   const handleAddToken = () => {};
 
   const handleConfirm = () => {
-    setConfirmSuccess(true);
-  };
-
-  const handleCloseModal = () => {
-    onConfirm();
+    setOpenTransactionModal(true);
   };
 
   const nft = {
@@ -56,40 +62,44 @@ export default function ClaimYourNFTModal({ open, handleClose = () => {}, onConf
     type: "LISTED",
   };
 
-  return (
-    <Modal size="medium" isOpen={open} onClose={handleCloseModal} showCloseIcon className={classes.container}>
-      <Box
-        style={{ padding: "25px" }}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexWrap="wrap"
-        flexDirection="column"
-      >
-        <Grid xs={6} sm={6} md={6} lg={6}>
-          <ExploreCard nft={nft} />
-        </Grid>
-        <div style={{ color: "#2D3047", fontSize: "22px", fontWeight: 800, marginTop: "31px" }}>
-          Claim your NFT
-        </div>
-        <div style={{ color: "#54658F", fontSize: "16px", marginTop: "20px", textAlign: "center" }}>
-          Congrat,s you’ve succesfullycan claim your
-          <br /> resrved NFT [ NFT name] at [Price]
-        </div>
-        <PrimaryButton
-          size="medium"
-          style={{
-            background: "#431AB7",
-            color: "#ffffff",
-            minWidth: "56%",
-            fontSize: "14px",
-            marginTop: "35px",
-          }}
-          onClick={handleCloseModal}
-        >
-          Confirm Claim
-        </PrimaryButton>
+  return openTranactionModal ? (
+    <ProcessingPaymentModal
+      open={openTranactionModal}
+      onClose={() => {
+        setOpenTransactionModal(false);
+      }}
+      txSuccess={transactionSuccess}
+      hash={hash}
+    />
+  ) : (
+    <Modal size="medium" isOpen={open} onClose={handleClose} showCloseIcon className={classes.container}>
+      <Box className={classes.card}>
+        <ExploreCard nft={nft} />
+        {transactionSuccess && (
+          <Box className={classes.checkMark}>
+            <img src={require("assets/icons/check.svg")} alt="check" />
+          </Box>
+        )}
       </Box>
+      <div className={classes.title}>Claim your Collateral & NFT</div>
+      <div className={classes.description}>
+        {transactionSuccess
+          ? `Congrats, you’ve succesfully ${claimType}ed your NFT [NFT Name] and Collateral. here is summary`
+          : `Congrats, you can claim your ${claimType}ed NFT [ NFT name] at [Price]`}
+      </div>
+      <Box className={classes.infoPanel}>
+        <span className={classes.infoLabel}>Collateral to claim</span>
+        <Box className={classes.infoValueRow}>
+          <span className={classes.infoValue}>2455 USDT</span>
+          <div className={classes.divider} />
+          <span className={classes.infoValue}>2455 DAI</span>
+          <div className={classes.divider} />
+          <span className={classes.infoValue}>2455 SHIB</span>
+        </Box>
+      </Box>
+      <PrimaryButton size="medium" onClick={handleConfirm} className={classes.confirmButton}>
+        Confirm Claim
+      </PrimaryButton>
     </Modal>
   );
 }

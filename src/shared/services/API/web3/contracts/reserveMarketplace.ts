@@ -7,35 +7,44 @@ const reserveMarketplace = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/reserve/ReserveMarketplace.json");
   const contractAddress = config[network].CONTRACT_ADDRESSES.RESERVE_MARKETPLACE;
 
-  const cancelSaleReserveProposal = async (web3: Web3, account: string, payload: any): Promise<any> => {
+  const cancelSaleReserveProposal = async (
+    web3: Web3,
+    account: string,
+    collection: any,
+    payload: any
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contractAddress = config[network].CONTRACT_ADDRESSES.RESERVE_MARKETPLACE;
-        const { tokenId, price, collateralPercent, reservePeriod, buyerAddress, paymentToken, setHash } = payload;
+        const { tokenId, price, collateralPercent, reservePeriod, buyerAddress, paymentToken, setHash } =
+          payload;
 
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
 
-        const gas = await contract.methods.cancelPurchaseReserveProposal(
-          tokenId,
-          paymentToken,
-          price,
-          collateralPercent,
-          reservePeriod,
-          buyerAddress
-        ).estimateGas({ from: Account });
+        const gas = await contract.methods
+          .cancelPurchaseReserveProposal(
+            tokenId,
+            paymentToken,
+            price,
+            collateralPercent,
+            reservePeriod,
+            buyerAddress
+          )
+          .estimateGas({ from: Account });
 
-        const response = await contract.methods.cancelPurchaseReserveProposal(
-          tokenId,
-          paymentToken,
-          price,
-          collateralPercent,
-          reservePeriod,
-          buyerAddress
-        )
-        .send({ from: account, gas: gas })
-        .on("transactionHash", hash => {
-          setHash(hash);
-        });
+        const response = await contract.methods
+          .cancelPurchaseReserveProposal(
+            tokenId,
+            paymentToken,
+            price,
+            collateralPercent,
+            reservePeriod,
+            buyerAddress
+          )
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
 
         console.log("transaction succeed... ", response);
         resolve(response);
@@ -45,8 +54,13 @@ const reserveMarketplace = (network: string) => {
       }
     });
   };
-  
-  const approveReserveToBuy = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
+
+  const approveReserveToBuy = async (
+    web3: Web3,
+    account: string,
+    payload: any,
+    setHash: any
+  ): Promise<any> => {
     return new Promise(async resolve => {
       try {
         const contract = ContractInstance(web3, metadata.abi, contractAddress);
@@ -89,7 +103,58 @@ const reserveMarketplace = (network: string) => {
     });
   };
 
-  return { cancelSaleReserveProposal, approveReserveToBuy };
-}
+  const approveReserveToSell = async (
+    web3: Web3,
+    account: string,
+    payload: any,
+    setHash: any
+  ): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const contract = ContractInstance(web3, metadata.abi, contractAddress);
+        console.log("Getting gas....");
+        console.log("payload", payload);
+        const gas = await contract.methods
+          .approveReserveToSell(
+            payload.collection,
+            payload.tokenId,
+            payload.paymentToken,
+            payload.price,
+            payload.beneficiary,
+            payload.collateralPercent,
+            payload.reservePeriod,
+            payload.buyerToMatch
+          )
+          .estimateGas({ from: account });
+        console.log("calced gas price is.... ", gas);
+        const response = await contract.methods
+          .approveReserveToSell(
+            payload.collection,
+            payload.tokenId,
+            payload.paymentToken,
+            payload.price,
+            payload.beneficiary,
+            payload.collateralPercent,
+            payload.reservePeriod,
+            payload.buyerToMatch
+          )
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
+        console.log("transaction succeed");
+        const offer = response.events.SaleReserveProposed?.returnValues;
+        resolve({ success: true, offer });
+      } catch (e) {
+        console.log(e);
+        resolve({
+          success: false,
+        });
+      }
+    });
+  };
+
+  return { cancelSaleReserveProposal, approveReserveToBuy, approveReserveToSell };
+};
 
 export default reserveMarketplace;

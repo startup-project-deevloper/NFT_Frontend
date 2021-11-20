@@ -13,7 +13,7 @@ import Box from "shared/ui-kit/Box";
 import { CustomTable, CustomTableCellInfo, CustomTableHeaderInfo } from "shared/ui-kit/Table";
 // import PrintChart from "shared/ui-kit/Chart/Chart";
 // import { getRandomAvatar } from "shared/services/user/getUserAvatar";
-import { Avatar } from "shared/ui-kit";
+import { Avatar, CircularLoadingIndicator } from "shared/ui-kit";
 import { useTypedSelector } from "store/reducers/Reducer";
 import { getUnixEpochTimeStamp } from "shared/helpers";
 import { BlockchainNets } from "shared/constants/constants";
@@ -211,6 +211,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   //   const [userRole, setUserRole] = useState(userProfile.role.toLowerCase());
 
   const [token, setToken] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [selectedTimeFilter, setSelectedTimeFilter] = useState<number>(0);
   const [selectedTableFilter, setSelectedTableFilter] = useState<number>(0);
   const [rewardConfig, setRewardConfig] = React.useState<any>();
@@ -328,6 +329,7 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   };
 
   const refreshPageData = async () => {
+    setIsLoading(true);
     // get owner social token
     const token = await axios
       .get(`${URL()}/social/getOwnSocialToken/${userId}`)
@@ -341,11 +343,9 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
       })
       .catch(err => null);
 
+    setIsLoading(false);
     if (!token) return;
-
     setToken(token);
-
-    console.log("token", token);
 
     getChartDatas();
 
@@ -586,7 +586,11 @@ const SocialTokenPage = ({ userId, userProfile }: { userId: string; userProfile:
   return (
     <div className={classes.mainContent}>
       <div className={classes.title}>Social Token Management</div>
-      {!token ? (
+      {isLoading ? (
+        <Box display="flex" justifyContent="center">
+          <CircularLoadingIndicator />
+        </Box>
+      ) : !token ? (
         <div className={classes.NoTokenContent}>
           <img src={require("assets/pixImages/profile_social_token.png")} alt="social_token" />
           <div className={classes.typo1}>No Token Available</div>

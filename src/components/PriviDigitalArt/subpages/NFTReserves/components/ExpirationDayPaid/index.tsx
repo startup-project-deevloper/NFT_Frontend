@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import {  useMediaQuery } from "@material-ui/core";
+import { useMediaQuery } from "@material-ui/core";
 
 import { Avatar, Color, FontSize, PrimaryButton, SecondaryButton, Text } from "shared/ui-kit";
 import { BackButton } from "components/PriviDigitalArt/components/BackButton";
@@ -19,95 +19,95 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Slider from "@material-ui/core/Slider";
 import OrderBookModal from "components/PriviDigitalArt/modals/OrderBookModal";
 import ClaimYourNFTModal from "components/PriviDigitalArt/modals/ClaimYourNFTModal";
-import ProcessingPaymentModal from "components/PriviDigitalArt/modals/ProcessingPaymentModal";
 
 const useStyles = makeStyles({
   root: {
-    width: 700
-  }
+    width: 700,
+  },
 });
 
 const marks = [
   {
     value: 0,
-    label: '0%',
+    label: "0%",
   },
   {
     value: 10,
-    label: '10%',
+    label: "10%",
   },
   {
     value: 20,
-    label: '20%',
+    label: "20%",
   },
   {
     value: 30,
-    label: '30%',
+    label: "30%",
   },
   {
     value: 40,
-    label: '40%',
+    label: "40%",
   },
   {
     value: 50,
-    label: '50%',
+    label: "50%",
   },
   {
     value: 60,
-    label: '60%',
+    label: "60%",
   },
   {
     value: 70,
-    label: '70%',
+    label: "70%",
   },
   {
     value: 80,
-    label: '80%',
+    label: "80%",
   },
   {
     value: 90,
-    label: '90%',
+    label: "90%",
   },
   {
     value: 100,
-    label: '100%',
+    label: "100%",
   },
 ];
 
 const CustomSlider = withStyles({
   rail: {
-    border: '2px solid black',
+    border: "2px solid black",
     height: 8,
     borderRadius: 4,
-    backgroundImage: "linear-gradient(90deg, #C70000 0%, #FF0F00 15.64%, #FF6B00 32.88%, #FFE600 42.11%, #FFE600 65.18%, #B5F400 75.74%, #B5F400 100%)"
-
+    backgroundImage:
+      "linear-gradient(90deg, #C70000 0%, #FF0F00 15.64%, #FF6B00 32.88%, #FFE600 42.11%, #FFE600 65.18%, #B5F400 75.74%, #B5F400 100%)",
   },
   track: {
     height: 8,
     borderRadius: 4,
-    backgroundImage: "linear-gradient(90deg, #C70000 0%, #FF0F00 15.64%, #FF6B00 32.88%, #FFE600 42.11%, #FFE600 65.18%, #B5F400 75.74%, #B5F400 100%)"
+    backgroundImage:
+      "linear-gradient(90deg, #C70000 0%, #FF0F00 15.64%, #FF6B00 32.88%, #FFE600 42.11%, #FFE600 65.18%, #B5F400 75.74%, #B5F400 100%)",
   },
   root: {
-    color: '#4218B5',
+    color: "#4218B5",
     height: 8,
   },
   thumb: {
     height: 24,
     width: 24,
-    backgroundColor: '#fff',
-    border: '2px solid currentColor',
+    backgroundColor: "#fff",
+    border: "2px solid currentColor",
     marginTop: -8,
     marginLeft: -12,
-    '&:focus, &:hover, &$active': {
-      boxShadow: 'inherit',
+    "&:focus, &:hover, &$active": {
+      boxShadow: "inherit",
     },
   },
   active: {},
   valueLabel: {
-    left: 'calc(-50% + 4px)',
+    left: "calc(-50% + 4px)",
   },
   mark: {
-    backgroundColor: '#bfbfbf',
+    backgroundColor: "#bfbfbf",
     height: 8,
     width: 2,
     marginTop: 10,
@@ -120,12 +120,11 @@ const ExpirationDayPaid = () => {
   const [sliderValue, setSliderValue] = React.useState(30);
 
   const handleChange = (event, newValue) => {
-      setSliderValue(newValue);
+    setSliderValue(newValue);
   };
 
   const isMobileScreen = useMediaQuery("(max-width:400px)");
   const isTableScreen = useMediaQuery("(max-width:550px)");
-
 
   const [loan, setLoan] = useState<any>(true);
   const [loanMedia, setLoanMedia] = useState<any>(true);
@@ -146,17 +145,10 @@ const ExpirationDayPaid = () => {
   };
   const [openOrderBookModal, setOpenOrderBookModal] = useState<boolean>(false);
   const handleConfirmOrderBook = () => {
-      setOpenOrderBookModal(false);
-  }
+    setOpenOrderBookModal(false);
+  };
   const [openClaimYourNFTModal, setOpenClaimYourNFTModal] = useState<boolean>(false);
-  const handleConfirmClaimYourNFT = () => {
-      setOpenClaimYourNFTModal(false);
-      setOpenTransactionModal(true);
-  }
-  const [transactionSuccess, setTransactionSuccess] = useState<boolean | null>(null);
-  const [hash, setHash] = useState<string>("0xf273a38fec99acf1e....eba");
-
-  const [openTranactionModal, setOpenTransactionModal] = useState<boolean>(false);
+  const handleConfirmClaimYourNFT = () => {};
 
   const tableHeaders: Array<CustomTableHeaderInfo> = [
     {
@@ -178,21 +170,20 @@ const ExpirationDayPaid = () => {
     },
   ];
   const [flipHistory, setFlipHistory] = useState<any>([
-    {account:'0xeec9...82f8', symbol:'2450 USDT', amount:'232 USDT', of:'25', action:'s'},
-    {account:'0xeec9...82f8', symbol:'2450 USDT', amount:'232 USDT', of:'25', action:'s'},
-    {account:'0xeec9...82f8', symbol:'2450 USDT', amount:'232 USDT', of:'25', action:'s'},
-    {account:'0xeec9...82f8', symbol:'2450 USDT', amount:'232 USDT', of:'25', action:'s'},
+    { account: "0xeec9...82f8", symbol: "2450 USDT", amount: "232 USDT", of: "25", action: "s" },
+    { account: "0xeec9...82f8", symbol: "2450 USDT", amount: "232 USDT", of: "25", action: "s" },
+    { account: "0xeec9...82f8", symbol: "2450 USDT", amount: "232 USDT", of: "25", action: "s" },
+    { account: "0xeec9...82f8", symbol: "2450 USDT", amount: "232 USDT", of: "25", action: "s" },
   ]);
 
   return (
     <Box style={{ position: "relative", width: "100%" }}>
       <div className={classes.content}>
         <Box display="flex" justifyContent="space-between" width="100%">
-          <BackButton purple/>
+          <BackButton purple />
         </Box>
         {loan && loanMedia ? (
           <LoadingWrapper loading={loadingLoan} theme={"blue"} height="calc(100vh - 100px)">
-
             <Box
               display="flex"
               flexDirection={isMobileScreen || isTableScreen ? "column" : "row"}
@@ -211,7 +202,7 @@ const ExpirationDayPaid = () => {
                       ? imageIPFS
                       : loanMedia.Type === "VIDEO_TYPE"
                       ? loanMedia.UrlMainPhoto
-                      : loanMedia.Url || loanMedia.url || require('assets/backgrounds/nft-card-img.png')
+                      : loanMedia.Url || loanMedia.url || require("assets/backgrounds/nft-card-img.png")
                   }
                   className={classes.detailImg}
                   width="100%"
@@ -225,7 +216,6 @@ const ExpirationDayPaid = () => {
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                   <Box display="flex" flexDirection={isMobileScreen ? "column" : "row"} alignItems="center">
                     <Box display="flex" flexDirection="row" alignItems="center">
-
                       <Box display="flex" flexDirection="column" ml={0.25} mr={1.25}>
                         <Text color={Color.Black} className={classes.creatorName} style={{ marginBottom: 4 }}>
                           Test
@@ -234,54 +224,51 @@ const ExpirationDayPaid = () => {
                     </Box>
                   </Box>
                   <Box display="flex" flexDirection="row" alignItems="center">
-                        <SecondaryButton
-                            size="small"
-                            // onClick={handleFollow}
-                            className={classes.checkOnBtn}
-                        >
-                          Check on
-                          <img
-                                src={require("assets/walletImages/contract.svg")}
-                                alt=""
-                                style={{ position: 'absolute', top: '6px', right: '8px' }}
-                            />
-                        </SecondaryButton>
+                    <SecondaryButton
+                      size="small"
+                      // onClick={handleFollow}
+                      className={classes.checkOnBtn}
+                    >
+                      Check on
+                      <img
+                        src={require("assets/walletImages/contract.svg")}
+                        alt=""
+                        style={{ position: "absolute", top: "6px", right: "8px" }}
+                      />
+                    </SecondaryButton>
                   </Box>
                 </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="flex-start">
-                    <Avatar
-                        url={require("assets/anonAvatars/ToyFaces_Colored_BG_066.jpg")}
-                        size="small"
-                    />
-                    <Text style={{margin:'0px 9px'}}>Owned by</Text>
-                    <Text>0xeec9...82f8</Text>
+                  <Avatar url={require("assets/anonAvatars/ToyFaces_Colored_BG_066.jpg")} size="small" />
+                  <Text style={{ margin: "0px 9px" }}>Owned by</Text>
+                  <Text>0xeec9...82f8</Text>
                 </Box>
                 <hr className={classes.divider} />
                 <Box display="flex">
-                    <Text style={{fontSize: '18px', color:'#1A1B1C', fontWeight: 800}}>Details</Text>
+                  <Text style={{ fontSize: "18px", color: "#1A1B1C", fontWeight: 800 }}>Details</Text>
                 </Box>
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
-                    <Box>
-                        <Text className={classes.detailHeaderText}>Option Time</Text>
-                        <br />
-                        <Text className={classes.detailBodyText}>20 days (15.11.2021)</Text>
-                    </Box>
-                    <Box style={{ borderRight: '1px solid rgb(158 172 242 / 30%)', height: '45px'}}></Box>
-                    <Box>
-                        <Text className={classes.detailHeaderText}>Collateral</Text>
-                        <br />
-                        <Text className={classes.detailBodyText}>20%</Text>
-                    </Box>
-                    <Box style={{ borderRight: '1px solid rgb(158 172 242 / 30%)', height: '45px'}}></Box>
-                    <Box>
-                        <SecondaryButton
-                            size="small"
-                            onClick={()=>setOpenOrderBookModal(true)}
-                            className={classes.checkOrderbookBtn}
-                        >
-                            Check Orderbook
-                        </SecondaryButton>
-                    </Box>
+                  <Box>
+                    <Text className={classes.detailHeaderText}>Option Time</Text>
+                    <br />
+                    <Text className={classes.detailBodyText}>20 days (15.11.2021)</Text>
+                  </Box>
+                  <Box style={{ borderRight: "1px solid rgb(158 172 242 / 30%)", height: "45px" }}></Box>
+                  <Box>
+                    <Text className={classes.detailHeaderText}>Collateral</Text>
+                    <br />
+                    <Text className={classes.detailBodyText}>20%</Text>
+                  </Box>
+                  <Box style={{ borderRight: "1px solid rgb(158 172 242 / 30%)", height: "45px" }}></Box>
+                  <Box>
+                    <SecondaryButton
+                      size="small"
+                      onClick={() => setOpenOrderBookModal(true)}
+                      className={classes.checkOrderbookBtn}
+                    >
+                      Check Orderbook
+                    </SecondaryButton>
+                  </Box>
                 </Box>
                 <hr className={classes.divider} />
                 {/* <Box className={classes.importantNotify}>
@@ -294,33 +281,32 @@ const ExpirationDayPaid = () => {
                   </Box>
                 </Box> */}
                 <Box className={classes.priceBox}>
-                    <Box className={classes.notifyHeader}>
-                      Offer Paid
+                  <Box className={classes.notifyHeader}>Offer Paid</Box>
+                  <Box className={classes.notifyGeneral}>
+                    You didn’t manage to pay full amount necessary to buy out your NFT. Yu can withdraw your
+                    funds and NFT will be returned to it’s owner.
+                  </Box>
+                  {/* <Box className={classes.notifyHeader}>Future payment in:</Box> */}
+                  <Box display="flex" alignItems="center" mt={3} justifyContent="space-between">
+                    <Box>
+                      <Box sx={{ fontSize: "16px", color: "#181818" }}>Future price </Box>
+                      <Box sx={{ fontSize: "18px", color: "#431AB7", fontWeight: 800 }}>2545 USDT</Box>
                     </Box>
-                    <Box className={classes.notifyGeneral}>
-                      You didn’t manage to pay full amount necessary to buy out your NFT. Yu can withdraw your funds and NFT will be returned to it’s owner.
+                    <Box style={{ borderRight: "1px solid rgba(164, 164, 164, 0.2)", height: "45px" }}></Box>
+                    <Box>
+                      <Box sx={{ fontSize: "16px", color: "#181818" }}>Paid amount to withdraw </Box>
+                      <Box sx={{ fontSize: "18px", color: "#431AB7", fontWeight: 800 }}>100%</Box>
                     </Box>
-                    {/* <Box className={classes.notifyHeader}>Future payment in:</Box> */}
-                    <Box display="flex" alignItems="center" mt={3} justifyContent="space-between">
-                      <Box>
-                        <Box sx={{fontSize:'16px', color:'#181818'}}>Future price </Box>
-                        <Box sx={{fontSize:'18px', color:'#431AB7', fontWeight:800}}>2545 USDT</Box>
-                      </Box>
-                      <Box style={{ borderRight: '1px solid rgba(164, 164, 164, 0.2)', height: '45px'}}></Box>
-                      <Box>
-                        <Box sx={{fontSize:'16px', color:'#181818'}}>Paid amount to withdraw </Box>
-                        <Box sx={{fontSize:'18px', color:'#431AB7', fontWeight:800}}>100%</Box>
-                      </Box>
-                    </Box>
-                    <Box mt={5}>
-                      <PrimaryButton
-                        onClick={()=>setOpenClaimYourNFTModal(true)}
-                        size="medium"
-                        style={{ background: "#4218B5", color: "#ffffff", padding:'2px 15px', width:'100%'}}
-                      >
-                        Claim NFT
-                      </PrimaryButton>
-                    </Box>
+                  </Box>
+                  <Box mt={5}>
+                    <PrimaryButton
+                      onClick={() => setOpenClaimYourNFTModal(true)}
+                      size="medium"
+                      style={{ background: "#4218B5", color: "#ffffff", padding: "2px 15px", width: "100%" }}
+                    >
+                      Claim NFT
+                    </PrimaryButton>
+                  </Box>
                 </Box>
               </Box>
             </Box>
@@ -334,18 +320,8 @@ const ExpirationDayPaid = () => {
               handleClose={() => setOpenClaimYourNFTModal(false)}
               onConfirm={handleConfirmClaimYourNFT}
               img_url={1}
+              claimType="block"
             />
-            <ProcessingPaymentModal
-              open={openTranactionModal}
-              onClose={() => {
-                setHash("");
-                setTransactionSuccess(null);
-                setOpenTransactionModal(false);
-              }}
-              txSuccess={transactionSuccess}
-              hash={hash}
-            />
-
           </LoadingWrapper>
         ) : (
           <LoadingWrapper loading={true} theme={"blue"} height="calc(100vh - 100px)" />

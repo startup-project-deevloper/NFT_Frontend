@@ -1,76 +1,80 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const ClaimYourNFTModalStyles = makeStyles((theme) => ({
+export const ClaimYourNFTModalStyles = makeStyles(theme => ({
   container: {
-    maxWidth: "508px !important",
-    padding:'0px !important'
+    maxWidth: "681px !important",
+    padding: "50px 70px !important",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
   },
-  nameField: {
-    margin: '27px 0px 7px 0px',
-    fontFamily: 'Montserrat',
-    fontStyle: 'normal',
-    fontWeight: 500,
-    fontSize: '14px',
-    color: '#1A1B1C',
-  },
-  inputJOT: {
-    background: "rgba(144, 155, 255, 0.16)",
-    border: "1px solid #431AB7 !important",
+  infoPanel: {
+    marginTop: 17,
+    marginBottom: 34,
+    borderRadius: "16px",
+    padding: 19,
     width: "100%",
-    borderRadius: theme.spacing(1),
-    padding: theme.spacing(1),
-  },
-  purpleText: {
-    fontFamily: "Agrandir Variable !important",
-    cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    background: "#eceefc",
     color: "#431AB7",
-    fontSize: "16px",
-    minWidth: "55px",
-    fontWeight: 700
   },
-  usdWrap: {
+  divider: {
+    background: "#431AB7",
+    opacity: 0.2,
+    margin: "0 36px",
+    width: 1,
+    height: 28,
+  },
+  infoLabel: {
+    fontSize: 16,
+    marginBottom: 12,
+  },
+  infoValueRow: {
     display: "flex",
     alignItems: "center",
-    [theme.breakpoints.down("sm")]: {
-      paddingTop: "0",
-    },
-  },
-  point: {
-    background: "#D9F66F",
-    width: "13px",
-    height: "13px",
-    borderRadius: "100%",
-    marginRight: 4,
-  },
-  receiveContainer: {
-    background: "rgba(158, 172, 242, 0.2)",
-    borderRadius: "12px",
-    padding: "20px 26px",
-    display: "flex",
     justifyContent: "space-between",
-    marginTop: "22px",
-    "& span": {
-      color: "#431AB7",
-      fontSize: "16px"
-    }
   },
-  usdt: {
-    fontFamily: "Agrandir GrandHeavy !important",
-    color: "#431AB7",
+  infoValue: {
+    fontSize: 16,
+    fontFamily: "Agrandir GrandHeavy",
+  },
+  confirmButton: {
+    background: "#431AB7 !important",
+    color: "#ffffff",
+    width: "100% !important",
+    fontSize: "14px",
+  },
+  title: {
+    fontFamily: "Agrandir GrandHeavy",
+    color: "#2D3047",
+    fontSize: "22px",
     fontWeight: 800,
-    fontSize: "16px"
   },
-  totalText: {
-    fontFamily: 'Agrandir',
-    fontStyle: 'normal',
-    fontWeight: 800,
-    fontSize: '14px',
-    lineHeight: '150%',
-    letterSpacing: '0.02em',
-    color: '#431AB7',
+  description: {
+    color: "#54658F",
+    fontSize: "16x",
+    fontWeight: 500,
+    marginTop: "20px",
+    opacity: 0.9,
+    width: "70%",
+    textAlign: "center",
   },
-  footer: {
-    padding: '18px 25px 25px 25px',
-    background: '#e0e0e53b',
-  }
+  card: {
+    transform: "scale(0.8)",
+    position: "relative",
+  },
+  checkMark: {
+    width: "103px",
+    height: "103px",
+    background: "linear-gradient(0deg, #F4F2FB, #F4F2FB), #17172D",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: -22,
+    left: "calc(50% - 52px)",
+  },
 }));

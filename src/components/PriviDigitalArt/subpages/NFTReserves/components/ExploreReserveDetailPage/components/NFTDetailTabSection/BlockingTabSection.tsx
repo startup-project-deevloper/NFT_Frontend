@@ -237,6 +237,7 @@ export default ({ offerData, historyData, isOwnership }) => {
         open={openMakeNewOfferModal}
         handleClose={() => setOpenMakeNewOfferModal(false)}
         onConfirm={handleConfirmMakeNewOffer}
+        nftDetailData={{tokenId: 1, nftAddress: '0x12345776543345234'}}
       />
       <CancelOfferModal
         open={openCancelOfferModal}

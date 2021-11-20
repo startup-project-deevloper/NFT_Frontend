@@ -5,6 +5,17 @@ export const MakeNewOfferModalStyles = makeStyles(theme => ({
     maxWidth: "508px !important",
     padding: "0px !important",
   },
+  tokenSelect: {
+    borderRadius: "44px !important",
+    backgroundColor: "rgba(218, 230, 229, 0.8) !important",
+    "& .MuiSelect-root": {
+      "& div": {
+        fontSize: 14,
+        color: "#181818",
+        fontWeight: 600,
+      },
+    },
+  },
   nameField: {
     margin: "27px 0px 7px 0px",
     fontFamily: "Montserrat",

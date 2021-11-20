@@ -5,6 +5,7 @@ import { Account } from "ethereumjs-util";
 
 const reserveMarketplace = (network: string) => {
   const metadata = require("shared/connectors/web3/contracts/reserve/ReserveMarketplace.json");
+  const contractAddress = config[network].CONTRACT_ADDRESSES.RESERVE_MARKETPLACE;
 
   const cancelSaleReserveProposal = async (web3: Web3, account: string, collection: any, payload: any): Promise<any> => {
     return new Promise(async resolve => {
@@ -45,7 +46,50 @@ const reserveMarketplace = (network: string) => {
     });
   };
   
-  return { cancelSaleReserveProposal };
+  const approveReserveToBuy = async (web3: Web3, account: string, payload: any, setHash: any): Promise<any> => {
+    return new Promise(async resolve => {
+      try {
+        const contract = ContractInstance(web3, metadata.abi, contractAddress);
+        console.log("Getting gas....");
+        const gas = await contract.methods
+          .approveReserveToBuy(
+            payload.collection,
+            payload.tokenId,
+            payload.paymentToken,
+            payload.price,
+            payload.beneficiary,
+            payload.buyerToMatch
+          )
+          .estimateGas({ from: account });
+        console.log("calced gas price is.... ", gas);
+        const response = await contract.methods
+          .approveReserveToBuy(
+            payload.collection,
+            payload.tokenId,
+            payload.paymentToken,
+            payload.price,
+            payload.collateralPercent * 100,
+            payload.beneficiary,
+            payload.reservePeriod,
+            payload.sellerToMatch
+          )
+          .send({ from: account, gas: gas })
+          .on("transactionHash", hash => {
+            setHash(hash);
+          });
+        console.log("transaction succeed");
+
+        resolve({ success: true });
+      } catch (e) {
+        console.log(e);
+        resolve({
+          success: false,
+        });
+      }
+    });
+  };
+
+  return { cancelSaleReserveProposal, approveReserveToBuy };
 }
 
 export default reserveMarketplace;

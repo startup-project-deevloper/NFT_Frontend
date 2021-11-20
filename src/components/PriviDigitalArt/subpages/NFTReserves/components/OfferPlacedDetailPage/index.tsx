@@ -252,6 +252,7 @@ const OfferPlacedDetailPage = () => {
               open={openMakeNewOfferModal}
               handleClose={() => setOpenMakeNewOfferModal(false)}
               onConfirm={handleConfirmMakeNewOffer}
+              nftDetailData={{tokenId: 1, nftAddress: '0x12345776543345234'}}
             />
             <OrderBookModal
               open={openOrderBookModal}

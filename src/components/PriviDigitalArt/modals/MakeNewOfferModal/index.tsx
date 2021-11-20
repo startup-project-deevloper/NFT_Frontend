@@ -113,7 +113,7 @@ export default function MakeNewOfferModal({ open, handleClose, nftDetailData, on
       const approved = await web3APIHandler.Erc20[reservePriceToken.Symbol].approve(
         web3,
         account!,
-        web3Config.CONTRACT_ADDRESSES.OPEN_SALES_MANAGER,
+        web3Config.CONTRACT_ADDRESSES.RESERVE_MARKETPLACE,
         toNDecimals(price, reservePriceToken.Decimals)
       );
       if (!approved) {
@@ -151,7 +151,7 @@ export default function MakeNewOfferModal({ open, handleClose, nftDetailData, on
     const tokenId = nftDetailData.tokenId ? nftDetailData.tokenId : 1;
     const collection = nftDetailData.nftAddress;
 
-    const response = await web3APIHandler.openSalesManager.approveReserveToBuy(
+    const response = await web3APIHandler.reserveMarketplace.approveReserveToBuy(
       web3,
       account!,
       {

@@ -393,22 +393,15 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
                   </Box>
                 </>
               </Grid>
-              <Grid item xs={6} md={3}>
-                <>
+              <Grid item xs={12} md={6}>
+                <Box className={classes.commentBox}>
                   <Box mb={1} fontSize="14px" display="flex" alignItems="center" color="#707582">
                     <span style={{ position: "relative", display: "inline-block" }}>
                       Comments
                       <img
                         src={infoIcon}
                         alt="info"
-                        style={{
-                          position: "absolute",
-                          top: -5,
-                          right: -15,
-                          width: "12px",
-                          height: "12px",
-                          marginLeft: "4px",
-                        }}
+                        style={{ /*position: "absolute", top: -5, right: -15, */width: "12px", height: "12px", marginLeft: "4px" }}
                       />
                     </span>
                   </Box>
@@ -422,9 +415,9 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
                     }}
                     checked={post.comments}
                   />
-                </>
+                </Box>
               </Grid>
-              <Grid item md={3} xs={5}>
+              {/* <Grid item md={3} xs={5}>
                 <>
                   <Box mb={1} fontSize="14px" color="#707582">
                     <span style={{ position: "relative", display: "inline-block" }}>
@@ -454,12 +447,12 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
                     checked={post.scheduled}
                   />
                 </>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
 
           <Post title="Post description" editor={editor} setterEditor={setEditor} />
-          {post.scheduled && (
+          {/* {post.scheduled && (
             <Box display="flex" alignItems="center" mb={2}>
               <AuthorSchedulePost
                 author={post.author}
@@ -477,7 +470,7 @@ export default function CreateWallPostModal({ open, handleClose, userId, type, h
                 }}
               />
             </Box>
-          )}
+          )} */}
         </>
       ) : (
         <>

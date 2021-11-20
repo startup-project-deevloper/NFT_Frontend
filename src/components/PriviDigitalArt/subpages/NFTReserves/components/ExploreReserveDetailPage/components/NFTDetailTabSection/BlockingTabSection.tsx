@@ -13,6 +13,7 @@ export default ({ offerData, historyData, isOwnership }) => {
   const classes = exploreOptionDetailPageStyles();
   const [openMakeNewOfferModal, setOpenMakeNewOfferModal] = useState<boolean>(false);
   const [openCancelOfferModal, setOpenCancelOfferModal] = useState<boolean>(false);
+  const [selectedOfferData, setSelectedOfferData] = useState<any>();
   const [proceedItem, setProceedItem] = useState<any>(null);
 
   const handleConfirmMakeNewOffer = () => {
@@ -101,6 +102,11 @@ export default ({ offerData, historyData, isOwnership }) => {
     setProceedItem({ type: "decline", item });
   };
 
+  const handleCancelOffer = (item) => {
+    setOpenCancelOfferModal(true);
+    setSelectedOfferData(item);
+  }
+
   return (
     <>
       <div className={classes.transactionsSection}>
@@ -132,7 +138,7 @@ export default ({ offerData, historyData, isOwnership }) => {
                         <PrimaryButton
                           size="small"
                           className={classes.cancelOfferButton}
-                          onClick={() => setOpenCancelOfferModal(true)}
+                          onClick={() => handleCancelOffer(item)}
                         >
                           CANCEL OFFER
                         </PrimaryButton>
@@ -236,6 +242,8 @@ export default ({ offerData, historyData, isOwnership }) => {
         open={openCancelOfferModal}
         handleClose={() => setOpenCancelOfferModal(false)}
         onConfirm={() => setOpenCancelOfferModal(false)}
+        collection={offerData.nft}
+        offer={selectedOfferData}
       />
       {proceedItem && (
         <BlockProceedModal

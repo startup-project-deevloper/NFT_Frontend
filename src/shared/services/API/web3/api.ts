@@ -18,6 +18,7 @@ import syntheticNFTAuction from "./contracts/SyntheticNFTAuction";
 import redemptionPool from "./contracts/RedemptionPool";
 import socialErc20 from "./contracts/SocialERC20";
 import socialTokenDeployer from "./contracts/SocialTokenDeployer";
+import reserveMarketplace from "./contracts/reserveMarketplace";
 
 const api = network => {
   return {
@@ -41,6 +42,7 @@ const api = network => {
     DistributionManager: distributionManager(network),
     SocialERC20: socialErc20(network),
     SocialTokenDeployer: socialTokenDeployer(network),
+    ReserveMarketplace: reserveMarketplace(network)
   };
 };
 

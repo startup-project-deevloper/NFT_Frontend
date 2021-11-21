@@ -71,13 +71,13 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
     //TODO: update on backend and set who can post on user's wall
   }, [superFollowersAllowed]);
 
-  const getPosts = () => {
+  const getPosts = (init = false) => {
     if (isDataLoading) return;
     setIsDataLoading(true);
     const config = {
       params: {
         userId: userId,
-        lastId: lastId,
+        lastId: init ? null : lastId,
       },
     };
     axios
@@ -106,16 +106,14 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
 
           let newPosts = data.filter(wall => wall.selectedFormat === 1 || wall.selectedFormat === 2);
 
-          let oldPosts;
-          if (lastId === null) {
-            oldPosts = [];
-          } else {
-            oldPosts = [...posts];
-          }
-
           setHasMore(resp.hasMore);
           setLastId(resp.lastId);
-          setPosts([...oldPosts, ...newPosts]);
+
+          if (init) {
+            setPosts(newPosts);
+          } else {
+            setPosts(prev => [...prev, ...newPosts]);
+          }
         } else {
           setStatus({
             msg: resp.error,
@@ -153,6 +151,7 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
     });
   }
 
+  console.log(posts)
   if (userId)
     return (
       <>
@@ -215,7 +214,15 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
             <MasonryGrid
               data={posts}
               renderItem={(item, index) => (
-                <WallFeedCard userProfile={userProfile} item={item} key={`feed-item-${index}`} />
+                <WallFeedCard
+                  delRefresh={() => {
+                    setPosts(prev => prev.filter((_, i) => i !== index));
+                    getPosts();
+                  }}
+                  userProfile={userProfile}
+                  item={item}
+                  key={`feed-item-${index}`}
+                />
               )}
               columnsCountBreakPoints={COLUMNS_COUNT_BREAK_POINTS}
               gutter={GUTTER}
@@ -229,7 +236,7 @@ const MyWall = React.memo(({ userId, userProfile }: { userId: string; userProfil
           handleClose={handleCloseCreateWallPostModal}
           userId={userId}
           type={"UserPost"}
-          handleRefresh={getPosts}
+          handleRefresh={() => getPosts(true)}
         />
       </>
     );

@@ -14,6 +14,8 @@ import Box from "shared/ui-kit/Box";
 import getPhotoIPFS from "shared/functions/getPhotoIPFS";
 import useIPFS from "shared/utils-IPFS/useIPFS";
 import { getDefaultAvatar } from "shared/services/user/getUserAvatar";
+import RemovePostModal from "components/PriviDigitalArt/modals/RemovePostModal";
+
 
 // import { ReactComponent as FacebookIcon } from "assets/snsIcons/facebook.svg";
 // import { ReactComponent as TwitterIcon } from "assets/snsIcons/twitter.svg";
@@ -26,11 +28,13 @@ export default function WallFeedCard({
   userProfile,
   feedItem,
   type,
+  delRefresh,
 }: {
   item: any;
   userProfile: any;
   feedItem?: boolean;
   type?: string;
+  delRefresh?: any;
 }) {
   const userSelector = useSelector((state: RootState) => state.user);
 
@@ -54,6 +58,8 @@ export default function WallFeedCard({
   const [videoWallIPFS, setVideoWallIPFS] = useState<any>(null);
 
   const { isIPFSAvailable, downloadWithNonDecryption } = useIPFS();
+
+  const [openRemovePostModal, setOpenRemovePostModal] = useState<any>(false);
 
   useEffect(() => {
     if (feedData && isIPFSAvailable) {
@@ -90,6 +96,14 @@ export default function WallFeedCard({
     }
   };
 
+  const handleOpenRemovePostModal = e => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    setOpenRemovePostModal(true);
+  };
+
+
   // const handleFruit = type => {
   //   const body = {
   //     userId: userSelector.id,
@@ -113,6 +127,11 @@ export default function WallFeedCard({
   return (
     <>
       <div className={classes.wallItem} onClick={handleOpenWallItemModal}>
+        {userSelector.id === item.userId && (
+          <div className={classes.removeIcon} onClick={handleOpenRemovePostModal}>
+            <RemoveIcon />
+          </div>
+        )}
         <Box mb={"16px"} display="flex" alignItems="center">
           <Avatar size={"small"} url={feedData.userInfo?.imageUrl ?? getDefaultAvatar()} />
           <Box ml="8px" fontSize="12px">
@@ -219,6 +238,25 @@ export default function WallFeedCard({
           videoWallIPFS={videoWallIPFS}
         />
       )}
+      {openRemovePostModal && (
+        <RemovePostModal
+          open={openRemovePostModal}
+          onClose={() => setOpenRemovePostModal(false)}
+          refresh={delRefresh}
+          userId={userSelector.id}
+          creatorId={item.userId}
+          postId={item.id}
+        />
+      )}
     </>
   );
 }
+
+const RemoveIcon = () => (
+  <svg width="30" height="29" viewBox="0 0 30 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.5 14.5C0.5 6.49187 6.99187 0 15 0C23.0081 0 29.5 6.49187 29.5 14.5C29.5 22.5081 23.0081 29 15 29C6.99187 29 0.5 22.5081 0.5 14.5Z" fill="#F0F5F8" />
+    <path d="M0.5 14.5C0.5 6.49187 6.99187 0 15 0C23.0081 0 29.5 6.49187 29.5 14.5C29.5 22.5081 23.0081 29 15 29C6.99187 29 0.5 22.5081 0.5 14.5Z" fill="#EEF2F7" />
+    <path d="M12.7332 9.16404C12.7332 8.90819 12.9406 8.70078 13.1964 8.70078H16.5629C16.8187 8.70078 17.0261 8.90819 17.0261 9.16404C17.0261 9.41989 16.8187 9.62729 16.5629 9.62729H13.1964C12.9406 9.62729 12.7332 9.41989 12.7332 9.16404Z" fill="#54658F" />
+    <path d="M9.25879 11.4179H10.4941L11.2662 20.0654C11.2825 20.309 11.4852 20.4985 11.7295 20.4979H18.0293C18.2736 20.4985 18.4763 20.309 18.4926 20.0654L19.2647 11.4179H20.5V10.4914H9.25879V11.4179Z" fill="#54658F" />
+  </svg>
+);

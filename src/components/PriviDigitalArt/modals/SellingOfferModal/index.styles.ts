@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core";
 
-export const EditSellingPriceModalStyles = makeStyles((theme) => ({
+export const modalStyles = makeStyles(() => ({
   content: {
     padding: "16px 0px",
     display: "flex",
@@ -58,35 +58,6 @@ export const EditSellingPriceModalStyles = makeStyles((theme) => ({
     fontSize: 14,
     fontWeight: 500,
     fontFamily: "Montserrat",
-  },
-  typo4: {
-    color: '#65CB63',
-    fontSize: '18px',
-    fontWeight: 700,
-    fontFamily: 'Agrandir',
-    lineHeight: '18.81px',
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  typo5: {
-    color: '#2D3047',
-    fontSize: '28px',
-    fontWeight: 800,
-    fontFamily: 'Agrandir',
-    lineHeight: '29.26px',
-    marginRight: '6px'
-  },
-  typo6: {
-    color: 'lightgray',
-    fontSize: '28px',
-    fontWeight: 800,
-    fontFamily: 'Agrandir',
-    lineHeight: '29.26px'
-  },
-  priceContainer: {
-    background: 'linear-gradient(0deg, #F2FBF6, #F2FBF6), #17172D',
-    padding: '37px',
-    marginTop: '12px'
   },
   maxButton: {
     cursor: 'pointer'

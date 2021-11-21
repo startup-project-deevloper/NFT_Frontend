@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core";
 
-export const EditSellingPriceModalStyles = makeStyles((theme) => ({
+export const modalStyles = makeStyles(() => ({
   content: {
     padding: "16px 0px",
     display: "flex",

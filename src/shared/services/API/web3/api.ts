@@ -19,6 +19,7 @@ import redemptionPool from "./contracts/RedemptionPool";
 import socialErc20 from "./contracts/SocialERC20";
 import socialTokenDeployer from "./contracts/SocialTokenDeployer";
 import reserveMarketplace from "./contracts/reserveMarketplace";
+import openSalesManager from "./contracts/OpenSalesManager";
 
 const api = network => {
   return {
@@ -42,7 +43,8 @@ const api = network => {
     DistributionManager: distributionManager(network),
     SocialERC20: socialErc20(network),
     SocialTokenDeployer: socialTokenDeployer(network),
-    ReserveMarketplace: reserveMarketplace(network)
+    ReserveMarketplace: reserveMarketplace(network),
+    openSalesManager: openSalesManager(network),
   };
 };
 

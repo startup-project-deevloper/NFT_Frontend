@@ -10,6 +10,10 @@ export const cardStyles = makeStyles(theme => ({
     height: "fit-content",
     padding: 9,
     backdropFilter: "blur(3.59442px)",
+    "&:hover": {
+      boxShadow: "0px 10px 24px rgba(19, 45, 38, 0.25), 0px 31px 44px -13px rgba(0, 0, 0, 0.02)",
+      transform: "scale(1.02)",
+    },
   },
   innerCardGradient: {
     padding: "2px",

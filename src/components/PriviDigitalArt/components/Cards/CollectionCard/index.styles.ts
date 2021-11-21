@@ -11,7 +11,11 @@ export const collectionCardStyles = makeStyles(theme => ({
     cursor: 'pointer',
     boxShadow: "0px 4px 8px #9EACF2",
     borderRadius: 16,
-    position: 'relative'
+    position: 'relative',
+    "&:hover": {
+      boxShadow: "0px 10px 24px rgba(19, 45, 38, 0.25), 0px 31px 44px -13px rgba(0, 0, 0, 0.02)",
+      transform: "scale(1.02)",
+    },
   },
   image: {
     width: '100%',

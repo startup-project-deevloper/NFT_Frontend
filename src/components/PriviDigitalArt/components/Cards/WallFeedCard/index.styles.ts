@@ -32,8 +32,8 @@ export const wallFeedCardStyles = makeStyles(theme => ({
   },
   removeIcon: {
     position: "absolute",
-    top: "15px",
-    right: "15px",
+    top: "10px",
+    right: "10px",
   },
   desc: {
     overflow: "hidden",

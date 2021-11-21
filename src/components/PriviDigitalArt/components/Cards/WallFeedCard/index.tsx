@@ -133,10 +133,12 @@ export default function WallFeedCard({
           </div>
         )}
         <Box mb={"16px"} display="flex" alignItems="center">
-          <Avatar size={"small"} url={feedData.userInfo?.imageUrl ?? getDefaultAvatar()} />
-          <Box ml="8px" fontSize="12px">
-            {userSelector.id !== feedData.createdBy ? <span>{feedData.userInfo?.name}</span> : "You"}
-            {/* {!feedItem
+          {userSelector.id !== item.userId && (
+            <>
+              <Avatar size={"small"} url={feedData.userInfo?.imageUrl ?? getDefaultAvatar()} />
+              <Box ml="8px" fontSize="12px">
+                {userSelector.id !== feedData.createdBy ? <span>{feedData.userInfo?.name}</span> : "You"}
+                {/* {!feedItem
               ? feedData.name === ` ` && feedData.textShort === ` `
                 ? userSelector.id !== feedData.createdBy
                   ? ` sent `
@@ -158,7 +160,9 @@ export default function WallFeedCard({
               : !feedItem
               ? `${!ownUserWall ? "'s" : ""} wall`
               : ""} */}
-          </Box>
+              </Box>
+            </>
+          )}
         </Box>
         <Box mb={"16px"} display="flex" alignItems="flex-start" flexDirection="column" gridColumnGap={16}>
           {imageWallIPFS && (

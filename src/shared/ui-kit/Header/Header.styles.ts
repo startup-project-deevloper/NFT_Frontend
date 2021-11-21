@@ -446,5 +446,75 @@ export const headerStyles = makeStyles(theme => ({
     [theme.breakpoints.down(769)]: {
       display: "block"
     },
-  }
+  },
+  searchMenuItem: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "12px 20px",
+    margin: 0,
+    width: "100%",
+  },
+  userImage: {
+    width: 32,
+    height: 32,
+    minWidth: 32,
+    borderRadius: 15,
+    backgroundColor: "#656e7e",
+    marginRight: 10,
+    filter: "drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.12))",
+    cursor: "pointer",
+  },
+  divider: {
+    width: 1,
+    height: 27,
+    background: "#70758220",
+    marginTop: 14,
+    marginRight: 11,
+    marginLeft: 8,
+  },
+  searchMenuItemName: {
+    fontWeight: 500,
+    fontSize: "14px",
+    color: "#404658",
+    fontFamily: "Montserrat",
+  },
 }));
+
+export const useAutoCompleteStyles = makeStyles({
+  root: {
+    width: 360,
+    background: "rgba(255, 255, 255, 0.4)",
+    border: "1px solid #DADADB",
+    borderRadius: 48,
+    "& .MuiInputBase-root": {
+      padding: "0 24px",
+      width: "100%",
+    }
+  },
+  paper: {
+    borderRadius: 24,
+    boxShadow: "0px 9px 9px -4px rgba(86, 101, 123, 0.15), 0px 28px 41px -1.17748px rgba(42, 52, 65, 0.12)",
+  },
+  listbox: {
+    borderRadius: 24,
+    background: "rgba(255, 255, 255, 0.4)",
+    border: "1px solid #DEE7DA",
+    padding: 0,
+  },
+  option: {
+    padding: 0,
+    borderBottom: "1px solid #00000021",
+    "&:last-child": {
+      borderBottom: "none",
+    }
+  },
+  input: {
+    height: 50,
+    boxSizing: "border-box",
+    fontSize: 16,
+    fontWeight: 600,
+    fontFamily: "Montserrat",
+    color: "#6b6b6b",
+  }
+});

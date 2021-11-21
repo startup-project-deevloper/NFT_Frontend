@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useWeb3React } from "@web3-react/core";
+import { Autocomplete } from "@material-ui/lab";
 import axios from "axios";
 
 import {
@@ -15,7 +16,11 @@ import {
   Hidden,
   useMediaQuery,
   useTheme,
+  InputBase,
+  InputAdornment,
 } from "@material-ui/core";
+
+import Box from "shared/ui-kit/Box";
 
 import { socket } from "components/Login/Auth";
 import SignInModal from "components/Login/SignInModal";
@@ -48,7 +53,7 @@ import { ToolbarButtonWithPopper } from "./components/Toolbar/ToolbarButtonWithP
 import { MessageNotifications } from "./components/Message/MessageNotifications";
 import { NotificationsPopperContent } from "./components/Notifications/NotificationsPopperContent";
 import { PrimaryButton, SecondaryButton } from "../Buttons";
-import { headerStyles } from "./Header.styles";
+import { headerStyles, useAutoCompleteStyles } from "./Header.styles";
 
 import { ReactComponent as SubStratIcon } from "assets/icons/substrat_card.svg";
 import { ReactComponent as PriviIcon } from "assets/icons/privi_wallet_card.svg";
@@ -73,6 +78,8 @@ enum OpenType {
 
 const Header = props => {
   const classes = headerStyles();
+  const autocompleteStyle = useAutoCompleteStyles();
+
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down(769));
 
@@ -137,6 +144,10 @@ const Header = props => {
   const [imageIPFS, setImageIPFS] = useState<any>(null);
 
   const { profileAvatarChanged } = usePageRefreshContext();
+
+  const [autocompleteKey, setAutocompleteKey] = useState<number>(new Date().getTime());
+  const [usersList, setUsersList] = useState<string[]>([]);
+  const [searchName, setSearchName] = useState<string>("");
 
   useEffect(() => {
     getPhotoUser();
@@ -354,7 +365,7 @@ const Header = props => {
                   user.creds.length ?? 0,
                   user.badges ?? [],
                   user.urlSlug ??
-                    `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
+                  `${user.firstName ? user.firstName : ""}${user.lastName ? user.lastName : ""}`,
                   user.twitter ?? "",
                   user.anon ?? false,
                   user.verified ?? false,
@@ -503,10 +514,10 @@ const Header = props => {
             >
               <div>My apps</div>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <PrimaryButton size="small" onClick={() => {}}>
+                <PrimaryButton size="small" onClick={() => { }}>
                   See All
                 </PrimaryButton>
-                <SecondaryButton size="small" onClick={() => {}}>
+                <SecondaryButton size="small" onClick={() => { }}>
                   Edit
                 </SecondaryButton>
               </div>
@@ -594,7 +605,7 @@ const Header = props => {
                 justifyContent: "center",
               }}
             >
-              <SecondaryButton size="medium" onClick={() => {}} style={{ marginTop: "16px" }}>
+              <SecondaryButton size="medium" onClick={() => { }} style={{ marginTop: "16px" }}>
                 Discover More Apps
               </SecondaryButton>
             </div>
@@ -622,6 +633,15 @@ const Header = props => {
   const handleMessage = e => {
     handleCloseMobileMenu(e);
     history.push(`/${userSelector.urlSlug}/messages`);
+  };
+  const userSort = (a: any, b: any) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
   };
 
   const userAvatar = useMemo(() => {
@@ -877,61 +897,145 @@ const Header = props => {
         <div className="header-right">
           {isSignedIn() ? (
             <>
-              <div className="header-icons">
-                {!isZoo &&
-                  (isTablet ? (
-                    <div
-                      className={classes.iconMenu}
-                      onClick={() => {
-                        history.push(`/${userSelector.urlSlug}/messages`);
-                      }}
-                    >
-                      <IconMessagesWhite />
-                    </div>
-                  ) : (
+              <Hidden mdDown={(width <= 768 && isPriviPix)}>
+                <div className="header-icons">
+                  <Autocomplete
+                    clearOnBlur
+                    id="autocomplete-share-media"
+                    freeSolo
+                    classes={autocompleteStyle}
+                    key={autocompleteKey}
+                    onChange={(event: any, newValue: any | null) => {
+                      if (newValue) {
+                        const userAddress = newValue.address;
+                        const usersCopy = [...usersList];
+                        usersCopy.push(userAddress);
+                        setUsersList(usersCopy);
+
+                        // reset search query
+                        setAutocompleteKey(new Date().getTime());
+                      }
+                    }}
+                    options={[
+                      ...usersInfoList
+                        .sort(userSort)
+                        .filter(user => user.name && user.name !== " " && !usersList.includes(user.address)),
+                    ]}
+                    renderOption={(option, { selected }) => (
+                      <div
+                        className={classes.searchMenuItem}
+                        onClick={() => {
+                          history.push(`/${option.urlSlug}/profile/`);
+                        }}
+                      >
+                        <Box display="flex" alignItems="center">
+                          <div
+                            className={classes.userImage}
+                            style={{
+                              backgroundImage:
+                                typeof option !== "string" && option.urlIpfsImage
+                                  ? `url(${option.urlIpfsImage})`
+                                  : `url(${getDefaultAvatar()})`,
+                              backgroundRepeat: "no-repeat",
+                              backgroundSize: "contain",
+                              backgroundPosition: "center",
+                            }}
+                          />
+                          <div className={classes.searchMenuItemName}>{option.name}</div>
+                        </Box>
+                        <div>
+                          <RightArrowIcon />
+                        </div>
+                      </div>
+                    )}
+                    getOptionLabel={option => option.name}
+                    getOptionSelected={option => option.address === usersList[0]}
+                    renderInput={params => (
+                      <InputBase
+                        value={searchName}
+                        onChange={event => {
+                          setSearchName(event.target.value);
+                        }}
+                        ref={params.InputProps.ref}
+                        inputProps={params.inputProps}
+                        style={{ width: "100%" }}
+                        autoFocus
+                        placeholder="Search for user"
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <svg
+                              width="29"
+                              height="29"
+                              viewBox="0 0 29 29"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M23.1612 24.3928C23.621 24.8526 24.3666 24.8526 24.8264 24.3928C25.2862 23.933 25.2862 23.1874 24.8264 22.7276L23.1612 24.3928ZM20.4613 12.3741C20.4613 16.6011 17.0347 20.0277 12.8077 20.0277V22.3827C18.3353 22.3827 22.8163 17.9017 22.8163 12.3741H20.4613ZM12.8077 20.0277C8.5807 20.0277 5.15405 16.6011 5.15405 12.3741H2.79908C2.79908 17.9017 7.28009 22.3827 12.8077 22.3827V20.0277ZM5.15405 12.3741C5.15405 8.1471 8.5807 4.72045 12.8077 4.72045V2.36549C7.28009 2.36549 2.79908 6.84649 2.79908 12.3741H5.15405ZM12.8077 4.72045C17.0347 4.72045 20.4613 8.1471 20.4613 12.3741H22.8163C22.8163 6.84649 18.3353 2.36549 12.8077 2.36549V4.72045ZM24.8264 22.7276L19.8956 17.7968L18.2304 19.462L23.1612 24.3928L24.8264 22.7276Z"
+                                fill="#707582"
+                              />
+                            </svg>
+                          </InputAdornment>
+                        }
+                      />
+                    )}
+                  />
+                  <div className={classes.divider} />
+                  {!isZoo &&
+                    (isTablet ? (
+                      <div
+                        className={classes.iconMenu}
+                        onClick={() => {
+                          history.push(`/${userSelector.urlSlug}/messages`);
+                        }}
+                      >
+                        <IconMessagesWhite />
+                      </div>
+                    ) : (
+                      <ToolbarButtonWithPopper
+                        theme={isTransparent ? "dark" : "light"}
+                        tooltip="Messages"
+                        icon={isTablet ? IconMessagesWhite : IconMessages}
+                        badge={numberMessages > 0 ? numberMessages.toString() : undefined}
+                        onIconClick={markAllMessagesAsRead}
+                        openToolbar={openMessagesModal}
+                        handleOpenToolbar={showMessagesModal}
+                      >
+                        <MessageNotifications handleClosePopper={() => showMessagesModal(false)} />
+                      </ToolbarButtonWithPopper>
+                    ))}
+                  {!isZoo && (
                     <ToolbarButtonWithPopper
                       theme={isTransparent ? "dark" : "light"}
-                      tooltip="Messages"
-                      icon={isTablet ? IconMessagesWhite : IconMessages}
-                      badge={numberMessages > 0 ? numberMessages.toString() : undefined}
-                      onIconClick={markAllMessagesAsRead}
-                      openToolbar={openMessagesModal}
-                      handleOpenToolbar={showMessagesModal}
+                      tooltip="Notifications"
+                      icon={isTablet ? IconNotificationsWhite : IconNotifications}
+                      badge={unreadNotifications > 0 ? unreadNotifications.toString() : undefined}
+                      onIconClick={markAllNotificationsAsRead}
+                      openToolbar={openNotificationModal}
+                      handleOpenToolbar={setOpenNotificationModal}
+                      hidden={hideNotificationsModal}
                     >
-                      <MessageNotifications handleClosePopper={() => showMessagesModal(false)} />
+                      <NotificationsPopperContent
+                        theme={isTransparent ? "dark" : "light"}
+                        notifications={notifications}
+                        onDismissNotification={dismissNotification}
+                        removeNotification={removeNotification}
+                        onRefreshAllProfile={() => null}
+                        viewMore={value => viewMore(value)}
+                        setSelectedNotification={setSelectedNotification}
+                        handleShowContributionModal={handleOpenContributionModal}
+                        handleClosePopper={() => {
+                          setOpenNotificationModal(false);
+                          setHideNotificationsModal(false);
+                        }}
+                        handleHidePopper={() => {
+                          setHideNotificationsModal(true);
+                        }}
+                      />
                     </ToolbarButtonWithPopper>
-                  ))}
-                {!isZoo && (
-                  <ToolbarButtonWithPopper
-                    theme={isTransparent ? "dark" : "light"}
-                    tooltip="Notifications"
-                    icon={isTablet ? IconNotificationsWhite : IconNotifications}
-                    badge={unreadNotifications > 0 ? unreadNotifications.toString() : undefined}
-                    onIconClick={markAllNotificationsAsRead}
-                    openToolbar={openNotificationModal}
-                    handleOpenToolbar={setOpenNotificationModal}
-                    hidden={hideNotificationsModal}
-                  >
-                    <NotificationsPopperContent
-                      theme={isTransparent ? "dark" : "light"}
-                      notifications={notifications}
-                      onDismissNotification={dismissNotification}
-                      removeNotification={removeNotification}
-                      onRefreshAllProfile={() => null}
-                      viewMore={value => viewMore(value)}
-                      setSelectedNotification={setSelectedNotification}
-                      handleShowContributionModal={handleOpenContributionModal}
-                      handleClosePopper={() => {
-                        setOpenNotificationModal(false);
-                        setHideNotificationsModal(false);
-                      }}
-                      handleHidePopper={() => {
-                        setHideNotificationsModal(true);
-                      }}
-                    />
-                  </ToolbarButtonWithPopper>
-                )}
-              </div>
+                  )}
+                </div>
+              </Hidden>
               <Hidden mdDown={width <= 768 && isPriviPix}>
                 {isPriviPix && account && (
                   <Hidden smDown>
@@ -964,12 +1068,12 @@ const Header = props => {
               </Hidden>
             </>
           ) : // <div className="header-buttons">
-          //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
-          //     Get Privi Wallet
-          //   </button>
-          //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
-          // </div>
-          null}
+            //   <button className={classes.header_secondary_button} onClick={handleOpenWalletDialog}>
+            //     Get Privi Wallet
+            //   </button>
+            //   <button onClick={() => setOpenSignInModal(true)}>Sign In</button>
+            // </div>
+            null}
         </div>
         <SignInModal open={openSignInModal} handleClose={() => setOpenSignInModal(false)} />
         <Popper
@@ -1098,7 +1202,7 @@ const Header = props => {
             user={userSelector}
             handleClose={handleCloseSocialTokenModal}
             type={"FT"}
-            handleRefresh={() => {}}
+            handleRefresh={() => { }}
             open={openCreateSocialTokenModal}
           />
         )}
@@ -1154,3 +1258,33 @@ const Header = props => {
 };
 
 export default Header;
+
+export const DetailIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6.5" y="0.625" width="6" height="6" rx="1" transform="rotate(90 6.5 0.625)" fill="#fff" />
+    <rect x="6.5" y="7.625" width="6" height="6" rx="1" transform="rotate(90 6.5 7.625)" fill="#fff" />
+    <rect x="13.5" y="0.625" width="6" height="6" rx="1" transform="rotate(90 13.5 0.625)" fill="#fff" />
+    <rect x="13.5" y="7.625" width="6" height="6" rx="1" transform="rotate(90 13.5 7.625)" fill="#fff" />
+  </svg>
+);
+
+export const DownArrowIcon = ({ color = "white" }) => (
+  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M4.86914 5.77441C4.95508 5.77441 5.03613 5.75879 5.1123 5.72754C5.18848 5.69629 5.25586 5.64551 5.31445 5.5752L9.56836 1.22754C9.68555 1.11426 9.74414 0.977539 9.74414 0.817383C9.74414 0.708008 9.71777 0.608398 9.66504 0.518555C9.6123 0.428711 9.54199 0.357422 9.4541 0.304688C9.36621 0.251953 9.26562 0.225586 9.15234 0.225586C8.99219 0.225586 8.85156 0.28418 8.73047 0.401367L4.87162 4.35337L1.00781 0.401367C0.890625 0.28418 0.751953 0.225586 0.591797 0.225586C0.478516 0.225586 0.37793 0.251953 0.290039 0.304688C0.202148 0.357422 0.131836 0.428711 0.0791016 0.518555C0.0263672 0.608398 0 0.708008 0 0.817383C0 0.899414 0.015625 0.974609 0.046875 1.04297C0.078125 1.11133 0.121094 1.17285 0.175781 1.22754L4.42383 5.58105C4.55664 5.70996 4.70508 5.77441 4.86914 5.77441Z"
+      fill={color}
+    />
+  </svg>
+);
+
+export const RightArrowIcon = () => (
+  <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M1 9L5 5L1 1"
+      stroke="#65CB63"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);

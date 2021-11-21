@@ -12,6 +12,7 @@ export const wallFeedCardStyles = makeStyles(theme => ({
     color: "#707582",
     padding: 24,
     cursor: "pointer",
+    position: "relative",
     h3: {
       fontStyle: "normal",
       fontWeight: 800,
@@ -24,6 +25,11 @@ export const wallFeedCardStyles = makeStyles(theme => ({
       background: "#EFF2FD",
       borderRadius: 20,
     },
+  },
+  removeIcon: {
+    position: "absolute",
+    top: "15px",
+    right: "15px",
   },
   desc: {
     overflow: "hidden",

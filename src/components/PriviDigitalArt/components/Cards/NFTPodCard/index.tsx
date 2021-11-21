@@ -293,7 +293,7 @@ export default function NFTPodCard({ item }) {
                               className={styles.collabItem}
                               onClick={() => {
                                 if (podData.CreatorId) {
-                                  history.push(`/artists/${podData.CreatorId}`);
+                                  history.push(`/${podData.CreatorId}/profile`);
                                   dispatch(setSelectedUser(podData.CreatorId));
                                 }
                               }}

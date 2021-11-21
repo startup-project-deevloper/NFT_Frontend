@@ -105,7 +105,7 @@ export const subPageStyles = makeStyles(theme => ({
       },
     },
     "& input::placeholder": {
-      color: "#181818",
+      color: "#6b6b6b",
     },
     "& img": {
       width: 28,

@@ -14,6 +14,9 @@ export const syntheticCollectionCardStyles = makeStyles(theme => ({
     boxShadow: "0px 4px 8px #9EACF2",
     borderRadius: 16,
     position: 'relative',
+    "&:hover": {
+      transform: "scale(1.02)",
+    },
   },
   image: {
     width: '100%',

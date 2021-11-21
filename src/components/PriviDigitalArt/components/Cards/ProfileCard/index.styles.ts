@@ -16,6 +16,10 @@ export const profileCardStyles = makeStyles(theme => ({
     boxShadow: "0px 4px 8px #9EACF2",
     borderRadius: 16,
     overflow: "hidden",
+    "&:hover": {
+      boxShadow: "0px 16px 24px rgba(19, 45, 38, 0.25), 0px 31px 44px -13px rgba(0, 0, 0, 0.02)",
+      transform: "scale(1.02)"
+    }
   },
   topActions: {
     marginBottom: -60,
@@ -148,6 +152,9 @@ export const profileCardStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     flexWrap: "wrap",
     paddingBottom: 50,
+    paddingLeft: 40,
+    paddingRight: 40,
+    marginLeft: -40,
   },
   column: {
     display: "flex",

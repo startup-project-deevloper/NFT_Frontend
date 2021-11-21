@@ -37,7 +37,11 @@ export const artistCardStyles = makeStyles(theme => ({
       objectFit: "cover",
       borderRadius: 16,
       zIndex: -1
-    }
+    },
+    "&:hover": {
+      boxShadow: "none",
+      transform: "scale(1.02)",
+    },
   },
   filter: {
     width: '100%',

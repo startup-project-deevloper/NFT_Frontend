@@ -25,6 +25,10 @@ export const wallFeedCardStyles = makeStyles(theme => ({
       background: "#EFF2FD",
       borderRadius: 20,
     },
+    "&:hover": {
+      boxShadow: "0px 16px 24px rgba(19, 45, 38, 0.25), 0px 31px 44px -13px rgba(0, 0, 0, 0.02)",
+      transform: "scale(1.02)"
+    }
   },
   removeIcon: {
     position: "absolute",

@@ -121,6 +121,7 @@ export default ({ isOwnership, img_id }) => {
         open={openEditSellingPriceModal}
         handleClose={() => setOpenEditSellingPriceModal(false)}
         onConfirm={() => setOpenEditSellingPriceModal(false)}
+        nftDetailData={{ tokenId: 21, nftAddress: "0x28e041c8fdbb8ef06e638c30a833c2e97e629002" }}
       />
       <EditBlockingPriceModal
         open={openEditBlockingPriceModal}

@@ -65,7 +65,7 @@ export const myNFTCardStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     lineHeight: "16px",
     textTransform: "capitalize",
-    color: '#1A1B1C',
+    color: "#1A1B1C",
     marginRight: 8,
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -75,7 +75,7 @@ export const myNFTCardStyles = makeStyles(theme => ({
       marginBottom: 0,
     },
     [theme.breakpoints.down(768)]: {
-      fontSize: 7,
+      fontSize: 10,
       marginBottom: 0,
     },
   },
@@ -107,21 +107,21 @@ export const myNFTCardStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     lineHeight: "100%",
     borderRadius: 6,
-    background: '#DDFF57',
+    background: "#DDFF57",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     "& span": {
-      textAlign: "center"
+      textAlign: "center",
     },
     [theme.breakpoints.down(880)]: {
-      fontSize: 7,
+      fontSize: 10,
       height: 16,
       borderRadius: 4,
     },
     [theme.breakpoints.down(768)]: {
-      fontSize: 5,
+      fontSize: 10,
       height: 11,
       borderRadius: 3.5,
     },
@@ -135,13 +135,13 @@ export const myNFTCardStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     lineHeight: "100%",
     borderRadius: 6,
-    background: '#431AB7',
+    background: "#431AB7",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     "& span": {
-      textAlign: "center"
+      textAlign: "center",
     },
     [theme.breakpoints.down(880)]: {
       fontSize: 7,
@@ -163,13 +163,13 @@ export const myNFTCardStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     lineHeight: "100%",
     borderRadius: 6,
-    background: '#1DCC00',
+    background: "#1DCC00",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     "& span": {
-      textAlign: "center"
+      textAlign: "center",
     },
     [theme.breakpoints.down(880)]: {
       fontSize: 7,
@@ -191,13 +191,13 @@ export const myNFTCardStyles = makeStyles(theme => ({
     fontFamily: "Agrandir",
     lineHeight: "100%",
     borderRadius: 6,
-    background: '#F2604C',
+    background: "#F2604C",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     "& span": {
-      textAlign: "center"
+      textAlign: "center",
     },
     [theme.breakpoints.down(880)]: {
       fontSize: 7,
@@ -233,8 +233,8 @@ export const myNFTCardStyles = makeStyles(theme => ({
     [theme.breakpoints.down(768)]: {
       marginTop: 4,
       height: 16,
-      fontSize: 8,
-    }
+      fontSize: 10,
+    },
   },
   starGroup: {
     display: "flex",

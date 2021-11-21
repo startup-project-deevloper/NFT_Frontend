@@ -207,6 +207,7 @@ export const useStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
+    paddingTop: 18,
   },
   dateHourSelect: {
     display: "flex",

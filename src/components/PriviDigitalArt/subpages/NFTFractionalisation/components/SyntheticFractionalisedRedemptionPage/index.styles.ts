@@ -55,12 +55,16 @@ export const SyntheticFractionalisedRedemptionPageStyles = makeStyles(theme => (
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-
     "& span": {
       fontFamily: "Agrandir GrandHeavy",
       fontWeight: 800,
       fontSize: "24px",
       lineHeight: "104.5%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      "& span": {
+        fontSize: 18,
+      },
     },
   },
   ownerInfo: {

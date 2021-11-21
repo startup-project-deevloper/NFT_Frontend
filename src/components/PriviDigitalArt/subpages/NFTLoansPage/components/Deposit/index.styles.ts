@@ -122,6 +122,7 @@ export const useDepositPageStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
+    paddingTop: 18,
   },
   detailsLabel: {
     color: "#431AB7",

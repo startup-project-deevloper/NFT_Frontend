@@ -226,15 +226,12 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     border: "1px solid rgba(67, 26, 183, 0.24)",
     boxSizing: "border-box",
     borderRadius: "20px",
-    // padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
-    // textAlign: "center",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
-    // height: "100%",
-    // height: "calc(100% - 24px - 20px)",
+    paddingTop: 18,
   },
   label: {
     marginBottom: "9px",
@@ -301,7 +298,8 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     clipPath: "polygon(100% 0%, 100% 79%,  50% 91%, 0% 79%, 0% 0%)",
   },
   innerBox: {
-    background: "linear-gradient(180deg, rgba(255, 255, 255, 0.4) 3.83%, rgba(255, 255, 255, 0) 31.54%), #9EACF2;",
+    background:
+      "linear-gradient(180deg, rgba(255, 255, 255, 0.4) 3.83%, rgba(255, 255, 255, 0) 31.54%), #9EACF2;",
     boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 79%,  50% 90%, 0% 79%, 0% 0%)",
@@ -338,7 +336,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     textAlign: "center",
     textOverflow: "ellipsis",
     overflow: "hidden",
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
   },
   priceSection: {
     display: "flex",

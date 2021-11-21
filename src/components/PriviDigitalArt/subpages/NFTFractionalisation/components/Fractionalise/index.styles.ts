@@ -110,10 +110,10 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       textAlign: "center",
       width: "fit-content",
       [theme.breakpoints.down("md")]: {
-        width: "80%"
+        width: "80%",
       },
       [theme.breakpoints.down("xs")]: {
-        width: "100%"
+        width: "100%",
       },
       padding: "8px 32px",
     },
@@ -223,6 +223,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     boxShadow: "0px 4px 8px #9EACF2",
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     textAlign: "center",
+    paddingTop: 18,
   },
 }));
 

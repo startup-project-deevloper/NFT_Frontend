@@ -139,9 +139,12 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     [theme.breakpoints.down(768)]: {
       width: "calc(50% - 8px)",
       "& > div": {
-        padding: 0,
         justifyContent: "center",
         height: "100%",
+        padding: "8px 22px",
+        "& span": {
+          fontSize: "16px !important",
+        },
       },
     },
   },
@@ -173,6 +176,12 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
       width: 18,
       height: 18,
       marginLeft: 8,
+    },
+    [theme.breakpoints.down("xs")]: {
+      "& svg": {
+        width: 32,
+        height: 32,
+      },
     },
   },
   metaMaskButton: {
@@ -261,8 +270,10 @@ export const fractionalisedCollectionStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       marginTop: 24,
       "& > div": {
-        width: "50%",
         paddingRight: 8,
+        display: "flex",
+        justifyContent: "space-between",
+        width: "100%",
       },
     },
   },

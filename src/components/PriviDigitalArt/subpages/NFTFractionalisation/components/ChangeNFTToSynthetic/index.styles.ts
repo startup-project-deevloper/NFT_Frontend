@@ -209,8 +209,8 @@ export const useFractionaliseStyles = makeStyles(theme => ({
       border: "1px solid rgba(67, 26, 183, 0.24)",
       background: "rgb(239, 242, 253)",
       color: "#431AB7",
-      cursor: "not-allowed"
-    }
+      cursor: "not-allowed",
+    },
   },
   sliderContainer: { width: "100%" },
   borderBox: {
@@ -238,6 +238,7 @@ export const useFractionaliseStyles = makeStyles(theme => ({
     boxShadow: "0px 4px 8px #9EACF2",
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     textAlign: "center",
+    paddingTop: 18,
     [theme.breakpoints.down("xs")]: {
       border: "1px solid rgba(67, 26, 183, 0.24)",
       width: "100%",
@@ -298,7 +299,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 91%, 0% 80%, 0% 0%)",
     padding: 8,
-    height: '100%',
+    height: "100%",
     width: "100%",
     cursor: "pointer",
   },
@@ -310,7 +311,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     boxShadow: "0px 1.67251px 1.67251px rgba(0, 0, 0, 0.03)",
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 81%,  50% 92%, 0% 81%, 0% 0%)",
-    height: '100%',
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -329,7 +330,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 81%,  50% 92%, 0% 81%, 0% 0%)",
     padding: 4,
-    height: '100%',
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -346,7 +347,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 90%, 0% 80%, 0% 0%)",
     padding: 16,
-    height: '100%',
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -354,7 +355,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     "& img": {
       width: "110px",
       height: "110px",
-      borderRadius: 10
+      borderRadius: 10,
     },
     [theme.breakpoints.between(960, 980)]: {
       padding: 12,
@@ -369,7 +370,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     borderRadius: 11.3,
     clipPath: "polygon(100% 0%, 100% 80%,  50% 90%, 0% 80%, 0% 0%)",
     padding: 16,
-    height: '100%',
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -377,7 +378,7 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     "& img": {
       width: "210px",
       height: "210px",
-      borderRadius: 20
+      borderRadius: 20,
     },
     [theme.breakpoints.between(960, 980)]: {
       padding: 12,
@@ -396,13 +397,13 @@ export const normalNFTCardStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     marginBottom: 30,
-    marginTop: 30
+    marginTop: 30,
   },
   smallStarGroup: {
     display: "flex",
     alignItems: "center",
     marginBottom: 30,
-    marginTop: 15
+    marginTop: 15,
   },
   ntfName: {
     fontSize: 16,

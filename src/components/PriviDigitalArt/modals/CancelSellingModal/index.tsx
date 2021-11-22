@@ -61,7 +61,7 @@ const CancelSellingModal = ({open, handleClose, nftDetailData, onConfirm}) => {
       //   songId: nftDetailData.Id,
       //   offerId: nftDetailData.offerId
       // });
-      onClose();
+      handleClose();
       onConfirm();
       //   handleRefresh();
     } else {
@@ -71,7 +71,7 @@ const CancelSellingModal = ({open, handleClose, nftDetailData, onConfirm}) => {
   };
 
   return (
-    <Modal size="daoMedium" isOpen={open} onClose={onClose} showCloseIcon>
+    <Modal size="daoMedium" isOpen={open} onClose={handleClose} showCloseIcon>
       <div className={classes.content}>
         <div className={classes.typo1}>Cancel Selling the NFT</div>
         <div className={classes.typo2}>THis action will remove NFT as available for sale. Users will still be able to make an offer but they NFT wont be available to get through Buy Now button.</div>
@@ -80,7 +80,7 @@ const CancelSellingModal = ({open, handleClose, nftDetailData, onConfirm}) => {
             size="medium"
             isRounded
             style={{ width: 250, height: 53, background: "#54658F", marginTop: 52 }}
-            onClick={() => {onClose()}}
+            onClick={() => {handleClose()}}
           >
             Cancel
           </PrimaryButton>

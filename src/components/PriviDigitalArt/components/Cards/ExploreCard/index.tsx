@@ -20,8 +20,8 @@ const ExploreCard = ({ nft }) => {
   const [owner, setOwner] = useState<any>();
 
   const handleRefresh = async () => {
-    if (nft.OwnerAddress) {
-      const data = await getUserByAddress((nft.ownerAddress || "").toLowerCase());
+    if (nft.owner_of) {
+      const data = await getUserByAddress((nft.owner_of || "").toLowerCase());
       setOwner(data.data);
     }
   };
@@ -37,7 +37,7 @@ const ExploreCard = ({ nft }) => {
   const userName = React.useMemo(() => {
     if (!owner) {
       return (
-        nft.ownerAddress.substr(0, 5) + "..." + nft.ownerAddress.substr(nft.ownerAddress.length - 5, 5) ?? ""
+        nft.owner_of.substr(0, 5) + "..." + nft.owner_of.substr(nft.owner_of.length - 5, 5) ?? ""
       );
     }
     let name: string = "";
@@ -54,7 +54,7 @@ const ExploreCard = ({ nft }) => {
       <div className={classes.innerCardGradient}>
         <div className={classes.innerCard}>
           <div className={classes.cardImg}>
-            <img src={"assets/test/" + nft.imageUrl + ".png"} style={{ width: "100%" }} />
+            <img src={nft.content_url} style={{ width: "100%" }} />
             <span className={classes.cardOptionButton} style={{ background: CARD_COLORS[nft.type] }}>
               {nft.type}
             </span>

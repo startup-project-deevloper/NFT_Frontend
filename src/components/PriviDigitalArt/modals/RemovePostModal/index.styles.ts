@@ -9,17 +9,17 @@ export const modalStyles = makeStyles(() => ({
   },
   typo1: {
     color: "#2D3047",
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 800,
     fontFamily: "Agrandir",
     textAlign: "center",
   },
   typo2: {
-    color: "#2D304790",
+    color: "#54658F",
     fontSize: 16,
     fontWeight: 600,
     fontFamily: "Montserrat",
-    marginTop: 41,
+    marginTop: 20,
     textAlign: "center",
   },
 }));

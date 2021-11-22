@@ -35,21 +35,27 @@ const RemovePostModal = props => {
   return (
     <Modal size="small" isOpen={props.open} onClose={props.onClose} showCloseIcon>
       <div className={classes.content}>
-        <div className={classes.typo1}>Removing Post </div>
+        <div className={classes.typo1}>Removing Post</div>
         <div className={classes.typo2}>Are you sure you want to remove your post?</div>
-        <Box width={1} display="flex" justifyContent="center" marginTop="31px">
+        <Box display="flex" justifyContent="center" marginTop="40px">
           <PrimaryButton
             size="medium"
-            isRounded
-            style={{ width: 250, height: 53, background: "#54658F", marginTop: 22 }}
+            style={{
+              width: 192,
+              height: 44,
+              borderRadius: "4px",
+              border: "1px solid #CBCBCB",
+              background: "transparent",
+              color: "#000",
+              fontSize: 14,
+            }}
             onClick={() => { props.onClose() }}
           >
             Cancel
           </PrimaryButton>
           <PrimaryButton
             size="medium"
-            isRounded
-            style={{ width: 250, height: 53, background: "#65CB63", marginTop: 22 }}
+            style={{ width: 192, height: 44, background: "#431AB7", borderRadius: "4px", fontSize: 14, }}
             onClick={handleConfirm}
           >
             Yes, remove

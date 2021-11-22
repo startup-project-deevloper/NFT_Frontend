@@ -5,9 +5,9 @@ import { Gradient } from "shared/constants/const";
 const useStyles = makeStyles(theme => ({
   switch: {
     display: "flex",
-    background: Gradient.Mint,
-    width: "40px",
-    height: "24px",
+    background: "#431AB7",
+    width: "38px",
+    height: "21px",
     padding: "2px",
     cursor: "pointer",
     justifyContent: "flex-end",
@@ -16,8 +16,8 @@ const useStyles = makeStyles(theme => ({
       transition: "all 0.25s",
       padding: "0",
       margin: "0",
-      width: "20px",
-      height: "20px",
+      width: "16px",
+      height: "16px",
       backgroundColor: "white",
       borderRadius: "10px",
       boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.15), 0px 3px 1px rgba(0, 0, 0, 0.06)",

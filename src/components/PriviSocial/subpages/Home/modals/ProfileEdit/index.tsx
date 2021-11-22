@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import cls from "classnames";
 import { Tooltip, Fade } from "@material-ui/core";
 import { useAlertMessage } from "shared/hooks/useAlertMessage";
 import { profileEditModalStyles } from "./index.styles";
@@ -13,6 +14,7 @@ import { AutocompleteSingleSelect } from "shared/ui-kit/Autocomplete/SingleSelec
 import { EUROPEAN_COUNTRIES } from "shared/constants/constants";
 import CustomSwitch from "shared/ui-kit/CustomSwitch";
 import { Modal, TabNavigation } from "shared/ui-kit";
+import Box from "shared/ui-kit/Box";
 import InputWithLabelAndTooltip from "shared/ui-kit/InputWithLabelAndTooltip";
 import { SocialPrimaryButton } from "components/PriviSocial/index.styles";
 
@@ -159,25 +161,10 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
     return (
       <Modal className={classes.root} size="medium" isOpen={open} onClose={onCloseModal} showCloseIcon>
         <div className={classes.tabWrapper}>
-          <TabNavigation
-            tabs={editProfileMenuOptions}
-            currentTab={editProfileMenuSelection}
-            variant="primary"
-            onTabChange={setEditProfileMenuSelection}
-            padding={0}
-            theme="green"
-          />
-          <div className="anon-mode">
-            <CustomSwitch
-              checked={userSelector.anon}
-              theme="green"
-              onChange={() => {
-                toggleAnonymousMode(!userSelector.anon);
-              }}
-            />
-            <div className="private-title">
+          <Box width="fit-content" display="flex" flexDirection="column" alignItems="end">
+            <div className="private-title" style={{paddingBottom:10}}>
               <span>Private mode</span>
-              <Tooltip
+              {/* <Tooltip
                 TransitionComponent={Fade}
                 TransitionProps={{ timeout: 600 }}
                 arrow
@@ -185,9 +172,47 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
                 title={`While using the PRIVI network, you have the option to share your data or not. When you see an advertisement, you earn PRIVI data coins. This part of the system at this time is not functional, any ad you see is simply as an example. To learn more about PRIVI Data and how you can make money off our data, head to our Medium or ask our Community in either PRIVI Communities or Governance`}
               >
                 <img className="icon" src={infoIcon} alt="info" />
-              </Tooltip>
+              </Tooltip> */}
+            </div>
+            <div className="anon-mode">
+              <CustomSwitch
+                checked={userSelector.anon}
+                theme="privi-pix"
+                onChange={() => {
+                  toggleAnonymousMode(!userSelector.anon);
+                }}
+              />
+            </div>
+          </Box>
+          <div className={classes.title}>Edit Profile</div>
+          <div className={classes.cardsOptions}>
+            <div
+              onClick={() => setEditProfileMenuSelection(0)}
+              className={cls(
+                { [classes.tabHeaderPodMediaSelected]: editProfileMenuSelection === 0 },
+                classes.tabHeaderPodMedia
+              )}
+            >
+              General
+            </div>
+            <div
+              className={cls(
+                { [classes.tabHeaderPodMediaSelected]: editProfileMenuSelection === 1 },
+                classes.tabHeaderPodMedia
+              )}
+              onClick={() => setEditProfileMenuSelection(1)}
+            >
+              Social
             </div>
           </div>
+          {/* <TabNavigation
+            tabs={editProfileMenuOptions}
+            currentTab={editProfileMenuSelection}
+            variant="primary"
+            onTabChange={setEditProfileMenuSelection}
+            padding={0}
+            theme="green"
+          /> */}
         </div>
 
         {/* SOCIAL */}
@@ -206,7 +231,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
               labelName="Twitter"
               endAdornment={<img src={twitterIcon} alt="twitter" />}
               placeHolder={"Connect your Twitter account"}
-              tooltip={`Connect your Twitter account to your PRIVI profile account.`}
+              // tooltip={`Connect your Twitter account to your PRIVI profile account.`}
             />
 
             {/* FACEBOOK */}
@@ -222,7 +247,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
               labelName="Facebook"
               endAdornment={<img src={facebookIcon} alt="facebook" />}
               placeHolder={"Connect your Facebook account"}
-              tooltip={`Connect your Facebook account to your PRIVI profile account.`}
+              // tooltip={`Connect your Facebook account to your PRIVI profile account.`}
             />
 
             {/* INSTAGRAM */}
@@ -238,11 +263,11 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
               labelName="Instagram"
               endAdornment={<img src={instagramIcon} alt="instagram" />}
               placeHolder={"Connect your Instagram account"}
-              tooltip={`Connect your Instagram account to your PRIVI profile account.`}
+              // tooltip={`Connect your Instagram account to your PRIVI profile account.`}
             />
 
             {/* TIKTOK */}
-            <InputWithLabelAndTooltip
+            {/* <InputWithLabelAndTooltip
               theme="light"
               type={"text"}
               inputValue={user.tiktok}
@@ -254,8 +279,8 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
               labelName="Tiktok"
               endAdornment={<img src={tiktokIcon} alt="tiktok" />}
               placeHolder={"Connect your Tiktok account"}
-              tooltip={`Connect your Tiktok account to your PRIVI profile account.`}
-            />
+              // tooltip={`Connect your Tiktok account to your PRIVI profile account.`}
+            /> */}
           </>
         ) : null}
 
@@ -290,29 +315,20 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
                 }}
                 placeholder="Select countries"
                 getOptionLabel={country => country.name}
-                renderOption={country => (
-                  <>
-                    <img
-                      alt={`${country.name} flag`}
-                      src={`https://www.countryflags.io/${country.id.toLowerCase()}/flat/24.png`}
-                      style={{ marginRight: "8px" }}
-                    />
-                    {country.name}
-                  </>
-                )}
+                renderOption={country => country.name}
               />
             </div>
             <div style={{ marginTop: "16px", marginBottom: "16px", width: "100%" }}>
               <div className={classes.flexRowInputs}>
                 <div className={classes.infoHeaderEdit}>Date of Birth</div>
-                <Tooltip
+                {/* <Tooltip
                   TransitionComponent={Fade}
                   TransitionProps={{ timeout: 600 }}
                   arrow
                   title={"Enter your birthday date"}
                 >
                   <img className={classes.infoIconEdit} src={infoIcon} alt={"info"} />
-                </Tooltip>
+                </Tooltip> */}
               </div>
               <div style={{ marginTop: "8px" }}>
                 <DateInput
@@ -335,7 +351,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
               }}
               labelName="Profile URL"
               placeHolder={"Enter a custom profile URL"}
-              tooltip={"Customize your profile's URL with a custom Slug, to display in the navigation bar"}
+              // tooltip={"Customize your profile's URL with a custom Slug, to display in the navigation bar"}
             />
 
             <InputWithLabelAndTooltip
@@ -349,7 +365,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
               }}
               labelName="Bio"
               placeHolder={"Enter your bio"}
-              tooltip={"Type a small bio to let everyone know about yourself"}
+              // tooltip={"Type a small bio to let everyone know about yourself"}
             />
           </>
         ) : null}
@@ -358,7 +374,7 @@ const ProfileEditModal = ({ open, onCloseModal, toggleAnonymousMode, getBasicInf
           <SocialPrimaryButton
             disabled={editionProgress}
             onClick={editProfile}
-            className={editionProgress ? "disabled" : ""}
+            className={editionProgress ? "btnBody disabled" : "btnBody"}
           >
             Save Changes
           </SocialPrimaryButton>

@@ -51,6 +51,7 @@ export const AutocompleteSingleSelect = <T extends { id: string | number }>({
               inputProps={params.inputProps}
               autoFocus={autoFocus}
               placeholder={placeholder}
+              style={{color:"#181818"}}
             />
           </>
         )}

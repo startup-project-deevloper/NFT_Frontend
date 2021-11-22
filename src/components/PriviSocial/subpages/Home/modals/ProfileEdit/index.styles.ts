@@ -6,6 +6,11 @@ export const profileEditModalStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     width: "800px !important",
+    fontFamily: "Montserrat",
+    padding: "48px",
+    [theme.breakpoints.down("xs")]: {
+      padding: 24
+    },
   },
   content: {
     width: "100%",
@@ -47,20 +52,25 @@ export const profileEditModalStyles = makeStyles(theme => ({
   },
   tabWrapper: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     marginBottom: "40px",
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: "20px",
+      marginTop: "8px",
+    },
 
     "& .MuiAppBar-root": {
       width: "auto",
     },
     "& .anon-mode": {
-      display: "flex",
-      columnGap: 8,
-      alignItems: "center",
-      marginLeft: "40px",
+      // display: "flex",
+      // columnGap: 8,
+      // alignItems: "center",
+      // marginLeft: "40px",
       [theme.breakpoints.down("xs")]: {
-        marginLeft: 12,
-      }
+        marginLeft: 0,
+        justifyContent: "flex-end",
+      },
     },
     "& .option-buttons": {
       borderRadius: 20,
@@ -84,14 +94,73 @@ export const profileEditModalStyles = makeStyles(theme => ({
   },
   editButton: {
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     marginTop: "16px",
     "& button": {
-      width: "fit-content",
+      // width: "fit-content",
       backgroundColor: `${Color.Purple} !important`,
     },
     "& button.disabled": {
       opacity: 0.6,
     },
+    "& button.btnBody": {
+      paddingLeft: 85,
+      paddingRight: 85,
+    },
+  },
+  title: {
+    fontFamily: "Agrandir",
+    fontWeight: "bold",
+    fontSize: 20,
+    lineHeight: "130%",
+    color: "#181818",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "16px",
+    [theme.breakpoints.down("xs")]: {
+      marginBottom: 0,
+      marginTop: "24px",
+    },
+  },
+
+  cardsOptions: {
+    alignSelf: "center",
+    display: "flex",
+    alignItems: "center",
+    borderRadius: "100vh",
+    border: "2px solid #EBEBEB",
+    [theme.breakpoints.down('xs')]: {
+      marginTop: 24,
+      // marginBottom: 32,
+    }
+  },
+
+  tabHeaderPodMedia: {
+    fontStyle: "normal",
+    fontWeight: 800,
+    fontSize: 16,
+    fontFamily: "Agrandir",
+    cursor: "pointer",
+    color: "#A4A4A4",
+    padding: "10px 17px",
+    "&:last-child": {
+      marginRight: 0,
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: 9,
+      marginRight: 5,
+    }
+  },
+  tabHeaderPodMediaSelected: {
+    color: "#431AB7",
+  },
+  tooltipHeaderInfo: {
+    width: 14,
+    height: 14,
+    margin: 0,
+    marginLeft: 3,
+    transform: "translateY(-1px)",
   },
 }));

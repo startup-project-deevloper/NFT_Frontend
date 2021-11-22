@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 8,
     border: "1px solid #e0e4f3",
     backgroundColor: "#f7f9fe",
-    color: "rgb(101, 110, 126)",
+    color: "#181818",
     fontSize: 14,
     fontWeight: 400,
     "& .MuiInputAdornment-root": {
@@ -118,7 +118,7 @@ export const DateInput = ({ width, height, customStyle, format, theme, ...props 
         DialogProps={{
           className: theme === "dark" ? classes.datePickerModalDark : classes.datePickerModal,
         }}
-        format={format || "MM.dd.yyyy"}
+        format={format || "MMM dd yyyy"}
         keyboardIcon={<img src={theme === "dark" ? calendarIconWhite : calendarIcon} alt={"calendar"} />}
         style={{
           width: width || "100%",

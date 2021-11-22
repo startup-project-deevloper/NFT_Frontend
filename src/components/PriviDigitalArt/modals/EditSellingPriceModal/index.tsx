@@ -210,7 +210,7 @@ const EditPriceModal = ({ open, handleClose, nftDetailData, onConfirm }) => {
     step == 0 ? (
       <Modal size="daoMedium" isOpen={open} onClose={handleClose} showCloseIcon>
         <div className={classes.content}>
-          <div className={classes.typo1}>Are you sure you want to edit price? </div>
+          <div className={classes.typo1}>Edit Selling Price</div>
           <div className={classes.typo2}>This process will require changes through smart contract that will take few moments. </div>
           <Box width={1} display="flex" justifyContent="center" marginTop="31px">
             <PrimaryButton

@@ -129,7 +129,7 @@ const EditPriceModal = ({open, handleClose, nftDetailData, onConfirm}) => {
       //   PaymentToken: token.Address,
       //   Beneficiary: account,
       // });
-      onClose();
+      handleClose();
       onConfirm();
       //   handleRefresh();
     } else {
@@ -139,7 +139,7 @@ const EditPriceModal = ({open, handleClose, nftDetailData, onConfirm}) => {
   };
 
   return (
-    <Modal size="daoMedium" isOpen={open} onClose={onClose} showCloseIcon>
+    <Modal size="daoMedium" isOpen={open} onClose={handleClose} showCloseIcon>
       <div className={classes.content}>
         <div className={classes.typo1}>Set NFT Sale Price</div>
         <div className={classes.typo2}>Set new price</div>
